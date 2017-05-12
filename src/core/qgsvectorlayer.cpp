@@ -1279,7 +1279,7 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
-bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsPathResolver &pathResolver )
+bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 
@@ -1332,7 +1332,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsPathResolver 
   updateFields();
 
   QString errorMsg;
-  if ( !readSymbology( layer_node, errorMsg, pathResolver ) )
+  if ( !readSymbology( layer_node, errorMsg, context ) )
   {
     return false;
   }
@@ -1487,7 +1487,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
 /* virtual */
 bool QgsVectorLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
-                               const QgsPathResolver &pathResolver ) const
+                               const QgsReadWriteContext &context ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -1548,7 +1548,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // renderer specific settings
   QString errorMsg;
-  return writeSymbology( layer_node, document, errorMsg, pathResolver );
+  return writeSymbology( layer_node, document, errorMsg, context );
 } // bool QgsVectorLayer::writeXml
 
 
@@ -1558,7 +1558,7 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 }
 
 
-bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context )
 {
   if ( !mExpressionFieldBuffer )
     mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -1566,7 +1566,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   updateFields();
 
-  readStyle( layerNode, errorMessage, pathResolver );
+  readStyle( layerNode, errorMessage, context );
 
   mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
   mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
@@ -1738,7 +1738,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   mAttributeTableConfig.readXml( layerNode );
 
-  mConditionalStyles->readXml( layerNode, pathResolver );
+  mConditionalStyles->readXml( layerNode, context );
 
   readCustomProperties( layerNode, QStringLiteral( "variable" ) );
 
@@ -1751,7 +1751,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   return true;
 }
 
-bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
@@ -1762,7 +1762,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
     if ( !rendererElement.isNull() )
     {
-      QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement, pathResolver );
+      QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement, context );
       if ( r )
       {
         setRenderer( r );
@@ -1829,13 +1829,13 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXml( singleCatDiagramElem, this, pathResolver );
+      mDiagramRenderer->readXml( singleCatDiagramElem, context );
     }
     QDomElement linearDiagramElem = node.firstChildElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
     if ( !linearDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXml( linearDiagramElem, this, pathResolver );
+      mDiagramRenderer->readXml( linearDiagramElem, context );
     }
 
     if ( mDiagramRenderer )
@@ -1845,16 +1845,16 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
       {
         delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
-        mDiagramLayerSettings->readXml( diagramSettingsElem, this );
+        mDiagramLayerSettings->readXml( diagramSettingsElem );
       }
     }
   }
   return result;
 }
 
-bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const
+bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  ( void )writeStyle( node, doc, errorMessage, pathResolver );
+  ( void )writeStyle( node, doc, errorMessage, context );
 
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
   node.appendChild( fieldConfigurationElement );
@@ -1965,7 +1965,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   mActions->writeXml( node );
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig.writeXml( node );
-  mConditionalStyles->writeXml( node, doc, pathResolver );
+  mConditionalStyles->writeXml( node, doc, context );
 
   // save expression fields
   if ( !mExpressionFieldBuffer )
@@ -1995,7 +1995,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   return true;
 }
 
-bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const
+bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = node.toElement();
 
@@ -2005,7 +2005,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
   {
     if ( mRenderer )
     {
-      QDomElement rendererElement = mRenderer->save( doc, pathResolver );
+      QDomElement rendererElement = mRenderer->save( doc, context );
       node.appendChild( rendererElement );
     }
 
@@ -2045,9 +2045,9 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
     if ( mDiagramRenderer )
     {
-      mDiagramRenderer->writeXml( mapLayerNode, doc, this, pathResolver );
+      mDiagramRenderer->writeXml( mapLayerNode, doc, context );
       if ( mDiagramLayerSettings )
-        mDiagramLayerSettings->writeXml( mapLayerNode, doc, this );
+        mDiagramLayerSettings->writeXml( mapLayerNode, doc );
     }
   }
   return true;

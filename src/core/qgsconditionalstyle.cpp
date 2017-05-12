@@ -48,13 +48,13 @@ QList<QgsConditionalStyle> QgsConditionalLayerStyles::fieldStyles( const QString
   return QList<QgsConditionalStyle>();
 }
 
-bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, const QgsPathResolver &pathResolver ) const
+bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement stylesel = doc.createElement( QStringLiteral( "conditionalstyles" ) );
   QDomElement rowel = doc.createElement( QStringLiteral( "rowstyles" ) );
   Q_FOREACH ( const QgsConditionalStyle &style, mRowStyles )
   {
-    style.writeXml( rowel, doc, pathResolver );
+    style.writeXml( rowel, doc, context );
   }
 
   stylesel.appendChild( rowel );
@@ -68,7 +68,7 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, con
     QgsConditionalStyles styles = it.value();
     Q_FOREACH ( const QgsConditionalStyle &style, styles )
     {
-      style.writeXml( fieldel, doc, pathResolver );
+      style.writeXml( fieldel, doc, context );
     }
     fieldsel.appendChild( fieldel );
   }
@@ -79,7 +79,7 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, con
   return true;
 }
 
-bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsPathResolver &pathResolver )
+bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   QDomElement condel = node.firstChildElement( QStringLiteral( "conditionalstyles" ) );
   mRowStyles.clear();
@@ -90,7 +90,7 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsPathReso
   {
     QDomElement styleElm = nodelist.at( i ).toElement();
     QgsConditionalStyle style = QgsConditionalStyle();
-    style.readXml( styleElm, pathResolver );
+    style.readXml( styleElm, context );
     mRowStyles.append( style );
   }
 
@@ -108,7 +108,7 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsPathReso
     {
       QDomElement styleElm = stylenodelist.at( i ).toElement();
       QgsConditionalStyle style = QgsConditionalStyle();
-      style.readXml( styleElm, pathResolver );
+      style.readXml( styleElm, context );
       styles.append( style );
     }
     mFieldStyles.insert( fieldName, styles );
@@ -271,7 +271,7 @@ QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditio
   return style;
 }
 
-bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const QgsPathResolver &pathResolver ) const
+bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement stylesel = doc.createElement( QStringLiteral( "style" ) );
   stylesel.setAttribute( QStringLiteral( "rule" ), mRule );
@@ -282,14 +282,14 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc, const Qgs
   stylesel.appendChild( labelFontElem );
   if ( mSymbol )
   {
-    QDomElement symbolElm = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "icon" ), mSymbol.get(), doc, pathResolver );
+    QDomElement symbolElm = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "icon" ), mSymbol.get(), doc, context );
     stylesel.appendChild( symbolElm );
   }
   node.appendChild( stylesel );
   return true;
 }
 
-bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsPathResolver &pathResolver )
+bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   QDomElement styleElm = node.toElement();
   setRule( styleElm.attribute( QStringLiteral( "rule" ) ) );
@@ -300,7 +300,7 @@ bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsPathResolver &
   QDomElement symbolElm = styleElm.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElm.isNull() )
   {
-    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElm, pathResolver );
+    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElm, context );
     setSymbol( symbol );
   }
   return true;

@@ -18,6 +18,7 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
@@ -94,7 +95,10 @@ void QgsComposerPolygon::_draw( QPainter *painter )
 
 void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, mComposition->project()->pathResolver() ) );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context ) );
 }
 
 void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol *symbol )
@@ -106,10 +110,13 @@ void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol *symbol )
 
 void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolygonStyleSymbol.get(),
                          doc,
-                         mComposition->project()->pathResolver() );
+                         context );
   elmt.appendChild( pe );
 }
 

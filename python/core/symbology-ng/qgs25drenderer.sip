@@ -27,8 +27,8 @@ class Qgs25DRenderer : QgsFeatureRenderer
      *
      * @param element XML information
      */
-    static QgsFeatureRenderer* create( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
-    QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     void startRender( QgsRenderContext &context, const QgsFields &fields );
     void stopRender( QgsRenderContext &context );

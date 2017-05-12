@@ -42,7 +42,7 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsLineSymbolLayer,
                        QgsMarkerLineSymbolLayer,
                        QgsMarkerSymbolLayer,
-                       QgsPathResolver,
+                       QgsReadWriteContext,
                        QgsPointPatternFillSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsSimpleLineSymbolLayer,
@@ -324,9 +324,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         symbol.changeSymbolLayer(0, layer)
 
         doc = QDomDocument("testdoc")
-        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc, QgsPathResolver())
+        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc, QgsReadWriteContext())
 
-        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem, QgsPathResolver())
+        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
         restored_layer = restored_symbol.symbolLayer(0)
         self.assertFalse(restored_layer.enabled())
         self.assertTrue(restored_layer.isLocked())

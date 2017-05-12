@@ -18,6 +18,7 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
@@ -118,7 +119,10 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 
 void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, mComposition->project()->pathResolver() ) );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt, context ) );
 }
 
 void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol *symbol )
@@ -130,9 +134,12 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol *symbol )
 
 void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolylineStyleSymbol.get(),
                          doc,
-                         mComposition->project()->pathResolver() );
+                         context );
   elmt.appendChild( pe );
 }

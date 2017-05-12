@@ -111,9 +111,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;

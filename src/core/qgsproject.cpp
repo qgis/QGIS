@@ -31,6 +31,7 @@
 #include "qgspathresolver.h"
 #include "qgsprojectversion.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
@@ -686,7 +687,9 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     }
     else
     {
-      if ( !addLayer( element, brokenNodes, pathResolver() ) )
+      QgsReadWriteContext context;
+      context.setPathResolver( pathResolver() );
+      if ( !addLayer( element, brokenNodes, context ) )
       {
         returnStatus = false;
       }
@@ -698,7 +701,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsPathResolver &pathResolver )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context )
 {
   QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -728,7 +731,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   Q_CHECK_PTR( mapLayer ); // NOLINT
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readLayerXml( layerElem, pathResolver ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXml( layerElem, context ) && mapLayer->isValid() )
   {
     emit readMapLayer( mapLayer, layerElem );
 
@@ -835,6 +838,9 @@ bool QgsProject::read()
   // now get project title
   _getTitle( *doc, mTitle );
 
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
+
   //crs
   QgsCoordinateReferenceSystem projectCrs;
   if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
@@ -940,7 +946,7 @@ bool QgsProject::read()
   mLabelingEngineSettings->readSettingsFromProject( this );
   emit labelingEngineSettingsChanged();
 
-  mAnnotationManager->readXml( doc->documentElement(), *doc, pathResolver() );
+  mAnnotationManager->readXml( doc->documentElement(), context );
   mLayoutManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
@@ -1189,8 +1195,10 @@ void QgsProject::cleanTransactionGroups( bool force )
 
 bool QgsProject::readLayer( const QDomNode &layerNode )
 {
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
   QList<QDomNode> brokenNodes;
-  if ( addLayer( layerNode.toElement(), brokenNodes, pathResolver() ) )
+  if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
@@ -1227,6 +1235,9 @@ bool QgsProject::write()
               .arg( mFile.fileName() ) );
     return false;
   }
+
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
 
   QDomImplementation DomImplementation;
   DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -1289,7 +1300,7 @@ bool QgsProject::write()
         // general layer metadata
         QDomElement maplayerElem = doc->createElement( QStringLiteral( "maplayer" ) );
 
-        ml->writeLayerXml( maplayerElem, *doc, pathResolver() );
+        ml->writeLayerXml( maplayerElem, *doc, context );
 
         emit writeMapLayer( ml, maplayerElem, *doc );
 
@@ -1340,7 +1351,7 @@ bool QgsProject::write()
 
   mLabelingEngineSettings->writeSettingsToProject( this );
 
-  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, pathResolver() );
+  QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );
 
   QDomElement layoutElem = mLayoutManager->writeXml( *doc );
@@ -1720,9 +1731,9 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
     }
   }
 
-  QgsPathResolver embeddedPathResolver;
+  QgsReadWriteContext embeddedContext;
   if ( !useAbsolutePaths )
-    embeddedPathResolver = QgsPathResolver( projectFilePath );
+    embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
 
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
@@ -1746,7 +1757,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
 
-      if ( addLayer( mapLayerElem, brokenNodes, embeddedPathResolver ) )
+      if ( addLayer( mapLayerElem, brokenNodes, embeddedContext ) )
       {
         return true;
       }

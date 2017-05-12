@@ -25,11 +25,11 @@ class QgsPointDisplacementRenderer : QgsPointDistanceRenderer
     virtual QgsPointDisplacementRenderer* clone() const /Factory/;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
-    QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
     virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem, const QgsPathResolver &pathResolver ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 
     /** Sets the line width for the displacement group circle.
      * @param width line width in mm

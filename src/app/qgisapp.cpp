@@ -208,7 +208,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsoptions.h"
-#include "qgspathresolver.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
@@ -233,6 +232,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterprojector.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
@@ -8702,8 +8702,8 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *de
     rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
-    srcLayer->writeSymbology( rootNode, doc, errorMsg, QgsPathResolver() );
-    destLayer->readSymbology( rootNode, errorMsg, QgsPathResolver() );
+    srcLayer->writeSymbology( rootNode, doc, errorMsg, QgsReadWriteContext() );
+    destLayer->readSymbology( rootNode, errorMsg, QgsReadWriteContext() );
   }
 }
 

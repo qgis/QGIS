@@ -22,6 +22,7 @@
 #include "qgssvgcache.h"
 #include "qgsmapsettings.h"
 #include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
@@ -434,8 +435,11 @@ bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
   composerArrowElem.setAttribute( QStringLiteral( "endMarkerFile" ), mEndMarkerFile );
   composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviorVersion" ), QString::number( mBoundsBehavior ) );
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   QDomElement styleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
-  QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc, mComposition->project()->pathResolver() );
+  QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc, context );
   styleElem.appendChild( lineStyleElem );
   composerArrowElem.appendChild( styleElem );
 
@@ -467,6 +471,9 @@ bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument 
   //if bounds behavior version is not set, default to 2.2 behavior
   mBoundsBehavior = itemElem.attribute( QStringLiteral( "boundsBehaviorVersion" ), QStringLiteral( "22" ) ).toInt();
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   //arrow style
   QDomElement styleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
   if ( !styleElem.isNull() )
@@ -475,7 +482,7 @@ bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument 
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
-      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineStyleElem, mComposition->project()->pathResolver() );
+      mLineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineStyleElem, context );
     }
   }
   else

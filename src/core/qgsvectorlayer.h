@@ -682,12 +682,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    virtual bool readXml( const QDomNode &layer_node, const QgsPathResolver &pathResolver ) override;
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     /** Write vector layer specific state to project file Dom node.
      * \note Called by QgsMapLayer::writeXml().
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsPathResolver &pathResolver ) const override;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
      * \since QGIS 3.0
@@ -748,36 +748,36 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Read the symbology for the current layer from the Dom node supplied.
      * \param layerNode node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
-     * \param pathResolver for transform from relative to absolute paths
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsPathResolver &pathResolver ) override;
+    bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     /** Read the style for the current layer from the Dom node supplied.
      * \param node node that will contain the style definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
-     * \param pathResolver for transform from relative to absolute paths
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     /** Write the symbology for the layer into the docment provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param pathResolver for transform from absolute to relative paths
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     /** Write just the style information for the layer into the document
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
-     *  \param pathResolver for transform from absolute to relative paths
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     /**
      * Writes the symbology of the layer into the document provided in SLD 1.1 format

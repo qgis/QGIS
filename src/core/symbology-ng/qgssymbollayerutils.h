@@ -32,6 +32,7 @@
 
 class QgsExpression;
 class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsSymbolLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
@@ -203,21 +204,21 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Attempts to load a symbol from a DOM element
      * \param element DOM element representing symbol
-     * \param pathResolver object to transform relative to absolute paths
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
+    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * \param element DOM element representing symbol
-     * \param pathResolver object to transform relative to absolute paths
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsPathResolver &pathResolver ) SIP_SKIP
+    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, pathResolver );
+      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
 
       if ( symbolCastToType )
@@ -232,8 +233,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
       }
     }
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsPathResolver &pathResolver );
+    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
@@ -347,8 +348,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
-    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsPathResolver &pathResolver );
+    static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 

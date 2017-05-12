@@ -218,10 +218,10 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     );
 
     //! create renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );

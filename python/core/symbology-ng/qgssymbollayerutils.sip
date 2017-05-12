@@ -158,7 +158,7 @@ class QgsSymbolLayerUtils
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
-    static QgsSymbol* loadSymbol( const QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
+    static QgsSymbol* loadSymbol( const QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -166,10 +166,10 @@ class QgsSymbolLayerUtils
      * @returns decoded symbol cast to specified type, if possible
      * @note not available in python bindings
      */
-    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element, const QgsPathResolver &pathResolver );
+    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element, const QgsReadWriteContext &context );
 
-    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
-    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc, const QgsPathResolver &pathResolver );
+    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
@@ -277,8 +277,8 @@ class QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
-    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc, const QgsPathResolver &pathResolver );
+    static QgsSymbolMap loadSymbols( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 

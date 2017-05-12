@@ -124,13 +124,13 @@ QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
 }
 
 
-QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const QgsPathResolver &pathResolver )
+QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
   if ( symbolsElem.isNull() )
     return nullptr;
 
-  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, pathResolver );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
 
   if ( !symbolMap.contains( QStringLiteral( "0" ) ) )
     return nullptr;
@@ -246,7 +246,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
   return new QgsSingleSymbolRenderer( symbol );
 }
 
-QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsPathResolver &pathResolver )
+QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singleSymbol" ) );
@@ -255,7 +255,7 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsPathResol
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mSymbol.get();
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, pathResolver );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );

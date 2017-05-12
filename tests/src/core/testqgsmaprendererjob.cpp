@@ -33,7 +33,7 @@
 #include <qgis.h> //defines GEOWkt
 #include "qgsmaprenderersequentialjob.h"
 #include <qgsmaplayer.h>
-#include <qgspathresolver.h>
+#include <qgsreadwritecontext.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
@@ -281,7 +281,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   }
 
   QString errorMsg;
-  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsPathResolver() ) )
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsReadWriteContext() ) )
   {
     QFAIL( errorMsg.toLocal8Bit().data() );
   }

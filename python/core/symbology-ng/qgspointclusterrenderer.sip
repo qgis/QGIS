@@ -15,11 +15,11 @@ class QgsPointClusterRenderer : QgsPointDistanceRenderer
     virtual QgsPointClusterRenderer* clone() const /Factory/;
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
     void stopRender( QgsRenderContext& context );
-    QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
     virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem, const QgsPathResolver &pathResolver ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
      * @see setClusterSymbol()

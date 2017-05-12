@@ -21,7 +21,7 @@
 #include <QObject>
 #include <QDomElement>
 
-class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsProject;
 class QgsAnnotation;
 
@@ -97,13 +97,13 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * present in the XML document.
      * \see writeXml()
      */
-    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsPathResolver &pathResolver );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns a DOM element representing the state of the manager.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &doc, const QgsPathResolver &pathResolver ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
   signals:
 
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
 
     QList< QgsAnnotation * > mAnnotations;
 
-    void createAnnotationFromXml( const QDomElement &element, const QDomDocument &doc, const QgsPathResolver &pathResolver );
+    void createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 };
 

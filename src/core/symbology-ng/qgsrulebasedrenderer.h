@@ -405,7 +405,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /////
 
-    static QgsFeatureRenderer *create( QDomElement &element, const QgsPathResolver &pathResolver ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! Constructs the renderer from given tree of rules (takes ownership)
     QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule *root SIP_TRANSFER );
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsPathResolver &pathResolver ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString &key ) override;

@@ -371,21 +371,21 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::clone() const
   return newRenderer;
 }
 
-QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsPathResolver &pathResolver )
+QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsInvertedPolygonRenderer *r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( QStringLiteral( "renderer-v2" ) );
   if ( !embeddedRendererElem.isNull() )
   {
-    QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, pathResolver );
+    QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem, context );
     r->setEmbeddedRenderer( renderer );
   }
   r->setPreprocessingEnabled( element.attribute( QStringLiteral( "preprocessing" ), QStringLiteral( "0" ) ).toInt() == 1 );
   return r;
 }
 
-QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsPathResolver &pathResolver )
+QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invertedPolygonRenderer" ) );
@@ -394,7 +394,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsPathRe
 
   if ( mSubRenderer )
   {
-    QDomElement embeddedRendererElem = mSubRenderer->save( doc, pathResolver );
+    QDomElement embeddedRendererElem = mSubRenderer->save( doc, context );
     rendererElem.appendChild( embeddedRendererElem );
   }
 

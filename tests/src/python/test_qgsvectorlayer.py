@@ -34,7 +34,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsPathResolver,
+                       QgsReadWriteContext,
                        QgsProject,
                        QgsUnitTypes,
                        QgsAggregateCalculator,
@@ -1773,10 +1773,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         # no default expressions
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer2 = createLayerWithOnePoint()
-        self.assertTrue(layer2.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.attributeAlias(0))
         self.assertFalse(layer2.attributeAlias(1))
 
@@ -1786,10 +1786,10 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer3 = createLayerWithOnePoint()
-        self.assertTrue(layer3.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer3.attributeAlias(0), "test")
         self.assertEqual(layer3.attributeAlias(1), "test2")
         self.assertEqual(layer3.fields().at(0).alias(), "test")
@@ -1823,10 +1823,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         # no default expressions
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer2 = createLayerWithOnePoint()
-        self.assertTrue(layer2.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.defaultValueExpression(0))
         self.assertFalse(layer2.defaultValueExpression(1))
 
@@ -1836,10 +1836,10 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer3 = createLayerWithOnePoint()
-        self.assertTrue(layer3.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer3.defaultValueExpression(0), "'test'")
         self.assertEqual(layer3.defaultValueExpression(1), "2+2")
         self.assertEqual(layer3.fields().at(0).defaultValueExpression(), "'test'")
@@ -1948,10 +1948,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         # no constraints
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer2 = createLayerWithOnePoint()
-        self.assertTrue(layer2.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.fieldConstraints(0))
         self.assertFalse(layer2.fieldConstraints(1))
 
@@ -1962,10 +1962,10 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer3 = createLayerWithOnePoint()
-        self.assertTrue(layer3.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer3.fieldConstraints(0), QgsFieldConstraints.ConstraintNotNull)
         self.assertEqual(layer3.fieldConstraints(1), QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique)
         self.assertEqual(layer3.fields().at(0).constraints().constraints(), QgsFieldConstraints.ConstraintNotNull)
@@ -2020,10 +2020,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         # no constraints
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer2 = createLayerWithOnePoint()
-        self.assertTrue(layer2.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
         self.assertFalse(layer2.constraintExpression(0))
         self.assertFalse(layer2.constraintExpression(1))
 
@@ -2033,10 +2033,10 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
-        self.assertTrue(layer.writeXml(elem, doc, QgsPathResolver()))
+        self.assertTrue(layer.writeXml(elem, doc, QgsReadWriteContext()))
 
         layer3 = createLayerWithOnePoint()
-        self.assertTrue(layer3.readXml(elem, QgsPathResolver()))
+        self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(layer3.constraintExpression(0), '1+2')
         self.assertEqual(layer3.constraintExpression(1), '3+4')
         self.assertEqual(layer3.constraintDescription(1), 'desc')

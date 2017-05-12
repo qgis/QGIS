@@ -20,7 +20,7 @@
 #include "qgssymbollayerregistry.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgssettings.h"
 
 #include <QDomDocument>
@@ -113,7 +113,7 @@ bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite
 {
   // TODO add support for groups
   QDomDocument doc( QStringLiteral( "dummy" ) );
-  QDomElement symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol, doc, QgsPathResolver() );
+  QDomElement symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol, doc, QgsReadWriteContext() );
   if ( symEl.isNull() )
   {
     QgsDebugMsg( "Couldn't convert symbol to valid XML!" );
@@ -388,7 +388,7 @@ bool QgsStyle::load( const QString &filename )
     }
 
     QDomElement symElement = doc.documentElement();
-    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsPathResolver() );
+    QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
     if ( symbol )
       mSymbols.insert( symbol_name, symbol );
   }
@@ -1453,7 +1453,7 @@ bool QgsStyle::exportXml( const QString &filename )
   QStringList favoriteColorramps = symbolsOfFavorite( ColorrampEntity );
 
   // save symbols and attach tags
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc, QgsPathResolver() );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( mSymbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
   QDomNodeList symbolsList = symbolsElem.elementsByTagName( QStringLiteral( "symbol" ) );
   int nbSymbols = symbolsList.count();
   for ( int i = 0; i < nbSymbols; ++i )
@@ -1572,7 +1572,7 @@ bool QgsStyle::importXml( const QString &filename )
           favorite = true;
         }
 
-        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsPathResolver() );
+        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, QgsReadWriteContext() );
         if ( symbol )
         {
           addSymbol( name, symbol );
@@ -1592,7 +1592,7 @@ bool QgsStyle::importXml( const QString &filename )
   else
   {
     // for the old version, use the utility function to solve @symbol@layer subsymbols
-    symbols = QgsSymbolLayerUtils::loadSymbols( symbolsElement, QgsPathResolver() );
+    symbols = QgsSymbolLayerUtils::loadSymbols( symbolsElement, QgsReadWriteContext() );
 
     // save the symbols with proper name
     for ( QMap<QString, QgsSymbol *>::iterator it = symbols.begin(); it != symbols.end(); ++it )
@@ -1663,7 +1663,7 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
       return false;
     }
 
-    symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc, QgsPathResolver() );
+    symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc, QgsReadWriteContext() );
     if ( symEl.isNull() )
     {
       QgsDebugMsg( "Couldn't convert symbol to valid XML!" );

@@ -33,9 +33,9 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
      * @param element DOM element
      * @returns new null symbol renderer
      */
-    static QgsFeatureRenderer* create( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
-    virtual QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
      * @param renderer renderer to convert from

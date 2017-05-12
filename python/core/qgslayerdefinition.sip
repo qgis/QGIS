@@ -11,13 +11,13 @@ class QgsLayerDefinition
 #include <qgslayerdefinition.h>
 %End
   public:
-    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/ );
-    static bool loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, const QgsPathResolver &pathResolver );
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*> &selectedTreeNodes, QString &errorMessage /Out/ );
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*> &selectedTreeNodes, QString &errorMessage /Out/, const QgsPathResolver &pathResolver );
+    static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
+    static bool loadLayerDefinition( QDomDocument doc, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/, const QgsReadWriteContext &context );
+    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/ );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/, const QgsReadWriteContext &context );
 
-    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*> &layers, const QgsPathResolver &pathResolver );
-    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument &document, const QgsPathResolver &pathResolver ) /Factory/;
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QgsReadWriteContext &context );
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document, const QgsReadWriteContext &context ) /Factory/;
     static QList<QgsMapLayer*> loadLayerDefinitionLayers( const QString &qlrfile ) /Factory/;
 
     /**

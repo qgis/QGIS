@@ -1315,10 +1315,10 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( pathResolver );
+  Q_UNUSED( context );
   QDomElement rasterRendererElem;
 
   // pipe element was introduced in the end of 1.9 development when there were
@@ -1405,9 +1405,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
   return true;
 }
 
-bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
-  return readSymbology( node, errorMessage, pathResolver );
+  return readSymbology( node, errorMessage, context );
 } //readSymbology
 
 /**
@@ -1416,7 +1416,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, con
 
   @note Called by QgsMapLayer::readXml().
 */
-bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsPathResolver &pathResolver )
+bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   // Make sure to read the file first so stats etc are initialized properly!
@@ -1485,7 +1485,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsPathResolver 
   if ( !mValid ) return false;
 
   QString error;
-  bool res = readSymbology( layer_node, error, pathResolver );
+  bool res = readSymbology( layer_node, error, context );
 
   // old wms settings we need to correct
   if ( res && mProviderKey == QLatin1String( "wms" ) && ( !renderer() || renderer()->type() != QLatin1String( "singlebandcolordata" ) ) )
@@ -1557,10 +1557,10 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsPathResolver 
  * @param errorMessage reference to string that will be updated with any error messages
  * @return true in case of success.
  */
-bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsPathResolver &pathResolver ) const
+bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( pathResolver );
+  Q_UNUSED( context );
 
   // Store pipe members (except provider) into pipe element, in future, it will be
   // possible to add custom filters into the pipe
@@ -1584,9 +1584,9 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   return true;
 }
 
-bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsPathResolver &pathResolver ) const
+bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  return writeSymbology( node, doc, errorMessage, pathResolver );
+  return writeSymbology( node, doc, errorMessage, context );
 
 } // bool QgsRasterLayer::writeSymbology
 
@@ -1596,7 +1596,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
  */
 bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
-                               const QgsPathResolver &pathResolver ) const
+                               const QgsReadWriteContext &context ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -1647,7 +1647,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
   //write out the symbology
   QString errorMsg;
-  return writeSymbology( layer_node, document, errorMsg, pathResolver );
+  return writeSymbology( layer_node, document, errorMsg, context );
 }
 
 int QgsRasterLayer::width() const

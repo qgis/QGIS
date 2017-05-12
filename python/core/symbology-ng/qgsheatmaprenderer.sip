@@ -19,8 +19,8 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context );
     virtual QString dump() const;
     virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
-    static QgsFeatureRenderer* create( QDomElement& element, const QgsPathResolver &pathResolver ) /Factory/;
-    virtual QDomElement save( QDomDocument& doc, const QgsPathResolver &pathResolver );
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside

@@ -920,6 +920,7 @@ QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 - xform, fields were no longer required and are removed.
 - referencedFields() no longer takes a QgsFields argument.
 - renderDiagram() now takes an optional data defined overrides collection argument.
+- readXml(), _readXml(), writeXml(), _writeXml() do not take QgsVectorLayer as an argument anymore.
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}
@@ -951,11 +952,13 @@ setting data defined properties instead.
 - The renderer member variable was removed, and getRenderer() was renamed to renderer()
 - The showAll member variable was removed. setShowAllDiagrams() and showAllDiagrams() should be used instead.
 - referencedFields() no longer requires a QgsFields argument.
+- readXml() and writeXml() do not take QgsVectorLayer as an argument anymore.
 
 QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 ------------------
 
 - The SizeType enum was removed. Use QgsUnitTypes.RenderUnit instead.
+- readXml() and writeXml() do not take QgsVectorLayer as an argument anymore.
 
 QgsDial        {#qgis_api_break_3_0_QgsDial}
 -------
@@ -1280,7 +1283,7 @@ QgsLayerDefinition        {#qgis_api_break_3_0_QgsLayerDefinition}
 ------------------
 
 - loadLayerDefinition() now also requires QgsProject as the second argument
-- loadLayerDefinition() and exportLayerDefinition() variants that take QDomDocument as the first argument now expect QgsPathResolver as the last argument
+- loadLayerDefinition() and exportLayerDefinition() variants that take QDomDocument as the first argument now expect QgsReadWriteContext as the last argument
 
 
 QgsLayerPropertiesWidget        {#qgis_api_break_3_0_QgsLayerPropertiesWidget}
@@ -1413,7 +1416,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - capitaliseLayerName() was renamed to capitalizeLayerName() <!--#spellok-->
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
-- readLayerXml() and writeLayerXml() expect QgsPathResolver reference as the last argument
+- readLayerXml() and writeLayerXml() expect QgsReadWriteContext reference as the last argument
 - the invalidTransformInput() slot was removed - calling this slot had no effect
 - metadata() was renamed to htmlMetadata()
 

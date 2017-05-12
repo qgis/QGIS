@@ -38,7 +38,7 @@ class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
 class QgsMapToPixel;
-class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
@@ -253,13 +253,13 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Reads the diagram settings from a DOM element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
+    void readXml( const QDomElement &elem );
 
     /**
      * Writes the diagram settings to a DOM element.
      * \see readXml()
      */
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void writeXml( QDomElement &layerElem, QDomDocument &doc ) const;
 
     /**
      * Prepares the diagrams for a specified expression context. Calling prepare before rendering
@@ -423,8 +423,8 @@ class CORE_EXPORT QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement &elem );
+    void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
 
     /** Returns list of legend nodes for the diagram
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -500,14 +500,14 @@ class CORE_EXPORT QgsDiagramRenderer
      * by their readXml implementation to restore the general QgsDiagramRenderer settings.
      * \see writeXml()
      */
-    virtual void readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) = 0;
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Writes diagram state to a DOM element. Subclasses should ensure that _writeXml() is called
      * by their writeXml implementation to save the general QgsDiagramRenderer settings.
      * \see readXml()
      */
-    virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const = 0;
+    virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     /** Returns list of legend nodes for the diagram
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -588,13 +588,13 @@ class CORE_EXPORT QgsDiagramRenderer
      * Reads internal QgsDiagramRenderer state from a DOM element.
      * \see _writeXml()
      */
-    void _readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver );
+    void _readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /**
      * Writes internal QgsDiagramRenderer diagram state to a DOM element.
      * \see _readXml()
      */
-    void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const;
+    void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     //! Reference to the object that does the real diagram rendering
     QgsDiagram *mDiagram = nullptr;
@@ -627,8 +627,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 
     QList<QgsDiagramSettings> diagramSettings() const override;
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) override;
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override;
 
@@ -694,8 +694,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) override;
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer, const QgsPathResolver &pathResolver ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override;
 

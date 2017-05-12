@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsogcutils.h"
 #include "qgslogger.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsunittypes.h"
 
@@ -802,7 +803,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 /////
 
 
-QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsPathResolver &pathResolver )
+QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsSymbolLayerList layers;
   QDomNode layerNode = element.firstChild();
@@ -818,7 +819,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
       }
       else
       {
-        QgsSymbolLayer *layer = loadSymbolLayer( e, pathResolver );
+        QgsSymbolLayer *layer = loadSymbolLayer( e, context );
 
         if ( layer )
         {
@@ -826,7 +827,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
           QDomElement s = e.firstChildElement( QStringLiteral( "symbol" ) );
           if ( !s.isNull() )
           {
-            QgsSymbol *subSymbol = loadSymbol( s, pathResolver );
+            QgsSymbol *subSymbol = loadSymbol( s, context );
             bool res = layer->setSubSymbol( subSymbol );
             if ( !res )
             {
@@ -878,7 +879,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   return symbol;
 }
 
-QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, const QgsPathResolver &pathResolver )
+QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context )
 {
   QString layerClass = element.attribute( QStringLiteral( "class" ) );
   bool locked = element.attribute( QStringLiteral( "locked" ) ).toInt();
@@ -889,7 +890,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   QgsStringMap props = parseProperties( element );
 
   // if there are any paths stored in properties, convert them from relative to absolute
-  QgsApplication::symbolLayerRegistry()->resolvePaths( layerClass, props, pathResolver, false );
+  QgsApplication::symbolLayerRegistry()->resolvePaths( layerClass, props, context.pathResolver(), false );
 
   QgsSymbolLayer *layer = nullptr;
   layer = QgsApplication::symbolLayerRegistry()->createSymbolLayer( layerClass, props );
@@ -937,7 +938,7 @@ static QString _nameForSymbolType( QgsSymbol::SymbolType type )
   }
 }
 
-QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *symbol, QDomDocument &doc, const QgsPathResolver &pathResolver )
+QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_ASSERT( symbol );
   QDomElement symEl = doc.createElement( QStringLiteral( "symbol" ) );
@@ -960,7 +961,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
     QgsStringMap props = layer->properties();
 
     // if there are any paths in properties, convert them from absolute to relative
-    QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, pathResolver, true );
+    QgsApplication::symbolLayerRegistry()->resolvePaths( layer->layerType(), props, context.pathResolver(), true );
 
     saveProperties( props, doc, layerEl );
     if ( !QgsPaintEffectRegistry::isDefaultStack( layer->paintEffect() ) )
@@ -973,7 +974,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
     if ( layer->subSymbol() )
     {
       QString subname = QStringLiteral( "@%1@%2" ).arg( name ).arg( i );
-      QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc, pathResolver );
+      QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc, context );
       layerEl.appendChild( subEl );
     }
     symEl.appendChild( layerEl );
@@ -985,7 +986,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
 QString QgsSymbolLayerUtils::symbolProperties( QgsSymbol *symbol )
 {
   QDomDocument doc( QStringLiteral( "qgis-symbol-definition" ) );
-  QDomElement symbolElem = saveSymbol( QStringLiteral( "symbol" ), symbol, doc, QgsPathResolver() );
+  QDomElement symbolElem = saveSymbol( QStringLiteral( "symbol" ), symbol, doc, QgsReadWriteContext() );
   QString props;
   QTextStream stream( &props );
   symbolElem.save( stream, -1 );
@@ -2686,7 +2687,7 @@ void QgsSymbolLayerUtils::saveProperties( QgsStringMap props, QDomDocument &doc,
   }
 }
 
-QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsPathResolver &pathResolver )
+QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
 {
   // go through symbols one-by-one and load them
 
@@ -2697,7 +2698,7 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsPa
   {
     if ( e.tagName() == QLatin1String( "symbol" ) )
     {
-      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, pathResolver );
+      QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e, context );
       if ( symbol )
         symbols.insert( e.attribute( QStringLiteral( "name" ) ), symbol );
     }
@@ -2764,14 +2765,14 @@ QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsPa
   return symbols;
 }
 
-QDomElement QgsSymbolLayerUtils::saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsPathResolver &pathResolver )
+QDomElement QgsSymbolLayerUtils::saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = doc.createElement( tagName );
 
   // save symbols
   for ( QMap<QString, QgsSymbol *>::iterator its = symbols.begin(); its != symbols.end(); ++its )
   {
-    QDomElement symEl = saveSymbol( its.key(), its.value(), doc, pathResolver );
+    QDomElement symEl = saveSymbol( its.key(), its.value(), doc, context );
     symbolsElem.appendChild( symEl );
   }
 
