@@ -93,8 +93,9 @@ bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap
   return false;
 }
 
-QVariant QgsVectorDataProvider::defaultValue( int fieldId )
+QVariant QgsVectorDataProvider::defaultValue( int fieldId, bool forceLazyEval )
 {
+  Q_UNUSED( forceLazyEval )
   Q_UNUSED( fieldId );
   return QVariant();
 }

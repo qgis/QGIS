@@ -42,7 +42,11 @@ QgsField QgsEditorWidgetWrapper::field() const
 
 QVariant QgsEditorWidgetWrapper::defaultValue() const
 {
-  mDefaultValue = layer()->dataProvider()->defaultValue( mFieldIdx );
+  if ( !mDefaultValue.isValid() )
+  {
+    QgsVectorLayer* lyr = layer();
+    mDefaultValue = lyr->dataProvider()->defaultValue( lyr->fields().fieldOriginIndex( mFieldIdx ) );
+  }
 
   return mDefaultValue;
 }

@@ -285,9 +285,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                                  const QgsGeometryMap &geometry_map );
 
     /**
-     * Returns the default value for field specified by @c fieldId
+     * Returns the default value for field specified by \a fieldId.
+     * If \a forceLazyEval is set to true, the provider the default value
+     * will not be evaluated on server side even if specified in the project properties.
      */
-    virtual QVariant defaultValue( int fieldId );
+    virtual QVariant defaultValue( int fieldId, bool forceLazyEval = false );
 
     /**
      * Changes geometries of existing features

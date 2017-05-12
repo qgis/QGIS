@@ -182,8 +182,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /** Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
-    /** Returns the default value for field specified by @c fieldId */
-    QVariant defaultValue( int fieldId ) override;
+    /**
+     * Returns the default value for field specified by \a fieldId.
+     * If \a forceLazyEval is set to true, the provider the default value
+     * will not be evaluated on server side even if specified in the project properties.
+     */
+    virtual QVariant defaultValue( int fieldId, bool forceLazyEval = false ) override;
 
     /** Adds a list of features
       @return true in case of success and false in case of failure*/

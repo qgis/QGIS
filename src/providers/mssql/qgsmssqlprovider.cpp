@@ -502,8 +502,10 @@ QString QgsMssqlProvider::quotedValue( const QVariant& value )
   }
 }
 
-QVariant QgsMssqlProvider::defaultValue( int fieldId )
+QVariant QgsMssqlProvider::defaultValue( int fieldId, bool forceLazyEval )
 {
+  Q_UNUSED( forceLazyEval )
+
   if ( mDefaultValues.contains( fieldId ) )
     return mDefaultValues[fieldId];
   else
