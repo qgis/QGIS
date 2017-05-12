@@ -531,9 +531,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       continue;
     }
 
+    // _TAG
     QString defVal;
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
-      defVal = vlayer->dataProvider()->defaultValue( fields.fieldOriginIndex( i ) ).toString();
+      defVal = vlayer->dataProvider()->defaultValue( fields.fieldOriginIndex( i ), true ).toString();
 
     QString value = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );

@@ -70,7 +70,7 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
 
   QString defVal;
   if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginProvider && vl->dataProvider() )
-    defVal = vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( fieldIdx ) ).toString();
+    defVal = vl->dataProvider()->defaultValue( vl->fields().fieldOriginIndex( fieldIdx ), true ).toString();
 
   return value == defVal ? defVal : vl->fields().at( fieldIdx ).displayString( value );
 }

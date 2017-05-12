@@ -1188,8 +1188,9 @@ bool QgsOracleProvider::isValid()
   return mValid;
 }
 
-QVariant QgsOracleProvider::defaultValue( int fieldId )
+QVariant QgsOracleProvider::defaultValue( int fieldId, bool forceLazyEval )
 {
+  Q_UNUSED( forceLazyEval )
   return mDefaultValues.value( fieldId, QVariant() );
 }
 

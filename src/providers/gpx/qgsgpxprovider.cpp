@@ -515,8 +515,9 @@ void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttribut
 }
 
 
-QVariant QgsGPXProvider::defaultValue( int fieldId )
+QVariant QgsGPXProvider::defaultValue( int fieldId, bool forceLazyEval )
 {
+  Q_UNUSED( forceLazyEval )
   if ( fieldId == SrcAttr )
     return tr( "Digitized in QGIS" );
   return QVariant();

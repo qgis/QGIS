@@ -1714,11 +1714,11 @@ bool QgsPostgresProvider::isValid()
   return mValid;
 }
 
-QVariant QgsPostgresProvider::defaultValue( int fieldId )
+QVariant QgsPostgresProvider::defaultValue( int fieldId, bool forceLazyEval )
 {
-  QVariant defVal = mDefaultValues.value( fieldId, QString::null );
+  QVariant defVal = mDefaultValues.value( fieldId, QString() );
 
-  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isNull() && !forceLazyEval )
   {
     const QgsField& fld = field( fieldId );
 
