@@ -671,7 +671,6 @@ void TestQgsTaskManager::waitForFinished()
   QTimer timer;
   connect( &timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish );
   timer.start( 100 );
-  QCOMPARE( finishedTask->status(), QgsTask::Running );
   QCOMPARE( finishedTask->waitForFinished(), true );
   QCOMPARE( finishedTask->status(), QgsTask::Complete );
 
@@ -683,7 +682,6 @@ void TestQgsTaskManager::waitForFinished()
 
   connect( &timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate );
   timer.start( 100 );
-  QCOMPARE( failedTask->status(), QgsTask::Running );
   QCOMPARE( failedTask->waitForFinished(), true );
   QCOMPARE( failedTask->status(), QgsTask::Terminated );
 
@@ -695,7 +693,6 @@ void TestQgsTaskManager::waitForFinished()
 
   connect( &timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish );
   timer.start( 1000 );
-  QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
   QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
   QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
 }

@@ -158,6 +158,8 @@ bool QgsTask::waitForFinished( int timeout )
     connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
   }
 
+  if ( status() == QgsTask::Complete || status() == QgsTask::Terminated )
+    return true;
   loop.exec();
 
   return rv;
