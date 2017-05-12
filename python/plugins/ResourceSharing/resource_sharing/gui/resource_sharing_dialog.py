@@ -317,7 +317,7 @@ class ResourceSharingDialog(QDialog, FORM_CLASS):
 
         new_name = dlg.line_edit_name.text()
         if (new_name in self.repository_manager.directories) and (
-                new_name != repo_name):
+                    new_name != repo_name):
             new_name += '(2)'
 
         new_auth_cfg = dlg.line_edit_auth_id.text()
@@ -462,7 +462,7 @@ class ResourceSharingDialog(QDialog, FORM_CLASS):
 
     def install_canceled(self):
         self.progress_dialog.hide()
-        self.show_progress_dialog('Canceling installation...')
+        self.show_progress_dialog('Cancelling installation...')
         self.installer_worker.abort()
 
     def install_aborted(self):
@@ -483,7 +483,7 @@ class ResourceSharingDialog(QDialog, FORM_CLASS):
         QMessageBox.information(
             self,
             'Resource Sharing',
-            'The collection is uninstalled successfully!')
+            'The collection is uninstalled succesfully!')
 
     def open_collection(self):
         """Slot for when user clicks 'Open' button."""
