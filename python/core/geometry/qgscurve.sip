@@ -156,6 +156,7 @@ class QgsCurve: QgsAbstractGeometry
 %End
 
 
+
   protected:
 
     virtual void clearCache() const;

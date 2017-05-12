@@ -28,29 +28,29 @@ class QgsAbstractGeometry
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsPoint *>( sipCpp ) != NULL )
       sipType = sipType_QgsPoint;
-    else if ( dynamic_cast<QgsLineString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsLineString *>( sipCpp ) != NULL )
       sipType = sipType_QgsLineString;
-    else if ( dynamic_cast<QgsCircularString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCircularString *>( sipCpp ) != NULL )
       sipType = sipType_QgsCircularString;
-    else if ( dynamic_cast<QgsCompoundCurve *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != NULL )
       sipType = sipType_QgsCompoundCurve;
-    else if ( dynamic_cast<QgsTriangle *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != NULL )
       sipType = sipType_QgsTriangle;
-    else if ( dynamic_cast<QgsPolygonV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsPolygonV2 *>( sipCpp ) != NULL )
       sipType = sipType_QgsPolygonV2;
-    else if ( dynamic_cast<QgsCurvePolygon *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != NULL )
       sipType = sipType_QgsCurvePolygon;
-    else if ( dynamic_cast<QgsMultiPointV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != NULL )
       sipType = sipType_QgsMultiPointV2;
-    else if ( dynamic_cast<QgsMultiLineString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != NULL )
       sipType = sipType_QgsMultiLineString;
-    else if ( dynamic_cast<QgsMultiPolygonV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != NULL )
       sipType = sipType_QgsMultiPolygonV2;
-    else if ( dynamic_cast<QgsMultiSurface *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != NULL )
       sipType = sipType_QgsMultiSurface;
-    else if ( dynamic_cast<QgsMultiCurve *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != NULL )
       sipType = sipType_QgsMultiCurve;
-    else if ( dynamic_cast<QgsGeometryCollection *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsGeometryCollection *>( sipCpp ) != NULL )
       sipType = sipType_QgsGeometryCollection;
     else
       sipType = 0;
@@ -526,6 +526,7 @@ struct QgsVertexId
   int vertex;
   VertexType type;
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

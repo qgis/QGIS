@@ -114,6 +114,22 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCircularString.
+     * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCircularString *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CircularString )
+        return static_cast<const QgsCircularString *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
 

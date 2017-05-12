@@ -46,6 +46,24 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     virtual bool addGeometry( QgsAbstractGeometry *g ) override  SIP_TRANSFER;
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiSurface.
+     * Should be used by qgsgeometry_cast<QgsMultiSurface *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiSurface *cast( const QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface )
+        return static_cast<const QgsMultiSurface *>( geom );
+      return nullptr;
+    }
+#endif
+
 };
 
 #endif // QGSMULTISURFACEV2_H

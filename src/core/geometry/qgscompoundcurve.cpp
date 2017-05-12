@@ -37,7 +37,7 @@ QgsCompoundCurve::~QgsCompoundCurve()
 
 bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
 {
-  const QgsCompoundCurve *otherCurve = dynamic_cast< const QgsCompoundCurve * >( &other );
+  const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
   if ( !otherCurve )
     return false;
 

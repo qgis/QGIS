@@ -51,6 +51,23 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiCurve.
+     * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiCurve *cast( const QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiCurve )
+        return static_cast<const QgsMultiCurve *>( geom );
+      return nullptr;
+    }
+#endif
+
 };
 
 #endif // QGSMULTICURVEV2_H
