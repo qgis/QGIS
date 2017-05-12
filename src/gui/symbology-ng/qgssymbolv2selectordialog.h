@@ -128,6 +128,14 @@ class GUI_EXPORT QgsSymbolV2SelectorWidget: public QgsPanelWidget, private Ui::Q
      */
     QgsSymbolV2* symbol() { return mSymbol; }
 
+    /**
+     * Delete the symbol.
+     *
+     * \note Not available in Python
+     * \note Added in QGIS 2.18.8
+     */
+    void releaseSymbol();
+
   protected:
 
     /**

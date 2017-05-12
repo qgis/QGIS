@@ -1011,7 +1011,7 @@ void QgsCategorizedSymbolRendererV2Widget::cleanUpSymbolSelector( QgsPanelWidget
   if ( !dlg )
     return;
 
-  delete dlg->symbol();
+  dlg->releaseSymbol();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateSymbolsFromWidget()
