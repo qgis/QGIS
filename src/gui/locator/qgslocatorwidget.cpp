@@ -66,6 +66,8 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mProxyModel = new QgsLocatorProxyModel( mLocatorModel );
   mProxyModel->setSourceModel( mLocatorModel );
   mResultsView->setModel( mProxyModel );
+  mResultsView->setUniformRowHeights( true );
+  mResultsView->setIconSize( QSize( 16, 16 ) );
   mResultsView->recalculateSize();
 
   connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorWidget::addResult );
@@ -123,6 +125,14 @@ void QgsLocatorWidget::showList()
   mResultsContainer->raise();
 }
 
+void QgsLocatorWidget::triggerSearchAndShowList()
+{
+  if ( mProxyModel->rowCount() == 0 )
+    performSearch();
+  else
+    showList();
+}
+
 void QgsLocatorWidget::searchFinished()
 {
   if ( mHasQueuedRequest )
@@ -146,7 +156,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
       case Qt::Key_Down:
       case Qt::Key_PageUp:
       case Qt::Key_PageDown:
-        showList();
+        triggerSearchAndShowList();
         mHasSelectedResult = true;
         QgsApplication::sendEvent( mResultsView, event );
         return true;
@@ -154,7 +164,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
       case Qt::Key_End:
         if ( keyEvent->modifiers() & Qt::ControlModifier )
         {
-          showList();
+          triggerSearchAndShowList();
           mHasSelectedResult = true;
           QgsApplication::sendEvent( mResultsView, event );
           return true;
@@ -192,7 +202,7 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
   }
   else if ( event->type() == QEvent::FocusIn && obj == mLineEdit )
   {
-    showList();
+    triggerSearchAndShowList();
   }
   else if ( obj == window() && event->type() == QEvent::Resize )
   {
@@ -272,7 +282,7 @@ QgsLocatorContext QgsLocatorWidget::createContext()
 //
 
 QgsLocatorModel::QgsLocatorModel( QObject *parent )
-  : QAbstractListModel( parent )
+  : QAbstractTableModel( parent )
 {}
 
 void QgsLocatorModel::clear()
@@ -290,7 +300,7 @@ int QgsLocatorModel::rowCount( const QModelIndex & ) const
 
 int QgsLocatorModel::columnCount( const QModelIndex & ) const
 {
-  return 1;
+  return 2;
 }
 
 QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
@@ -304,17 +314,37 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-      if ( !mResults.at( index.row() ).filter )
-        return mResults.at( index.row() ).result.displayString;
-      else
-        return mResults.at( index.row() ).filterTitle;
+      switch ( index.column() )
+      {
+        case Name:
+          if ( !mResults.at( index.row() ).filter )
+            return mResults.at( index.row() ).result.displayString;
+          else
+            return mResults.at( index.row() ).filterTitle;
+        case Description:
+          if ( !mResults.at( index.row() ).filter )
+            return mResults.at( index.row() ).result.description;
+          else
+            return QVariant();
+      }
     }
 
     case Qt::DecorationRole:
-      if ( !mResults.at( index.row() ).filter )
-        return mResults.at( index.row() ).result.icon;
-      else
-        return QVariant();
+      switch ( index.column() )
+      {
+        case Name:
+          if ( !mResults.at( index.row() ).filter )
+          {
+            QIcon icon = mResults.at( index.row() ).result.icon;
+            if ( !icon.isNull() )
+              return icon;
+            return QgsApplication::getThemeIcon( "/search.svg" );
+          }
+          else
+            return QVariant();
+        case Description:
+          return QVariant();
+      }
 
     case ResultDataRole:
       if ( !mResults.at( index.row() ).filter )
@@ -354,9 +384,9 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
        index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
-    return QAbstractListModel::flags( index );
+    return QAbstractTableModel::flags( index );
 
-  Qt::ItemFlags flags = QAbstractListModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
   if ( !mResults.at( index.row() ).filterTitle.isEmpty() )
   {
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
@@ -411,6 +441,9 @@ void QgsLocatorResultsView::recalculateSize()
   // resize the floating widget this is contained within
   parentWidget()->resize( newSize );
   QTreeView::resize( newSize );
+
+  header()->resizeSection( 0, width / 2 );
+  header()->resizeSection( 1, 0 );
 }
 
 void QgsLocatorResultsView::selectNextResult()
@@ -497,9 +530,10 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
 
     QgsLocatorResult result;
     result.filter = this;
-    result.displayString = QString( "%1 (%2)" ).arg( fIt.key(), fIt.value()->displayName() );
+    result.displayString = fIt.key();
+    result.description = fIt.value()->displayName();
     result.userData = fIt.key() + ' ';
-    //result.icon = action->icon();
+    result.icon = QgsApplication::getThemeIcon( "/search.svg" );
     emit resultFetched( result );
   }
 }

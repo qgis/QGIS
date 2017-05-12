@@ -67,6 +67,11 @@ class GUI_EXPORT QgsLocatorResult
     QString displayString;
 
     /**
+     * Descriptive text for result.
+     */
+    QString description;
+
+    /**
      * Custom reference or other data set by the filter.
      */
     QVariant userData;
