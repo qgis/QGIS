@@ -91,6 +91,8 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorJoinInfo& joinInfo )
     connect( vl, SIGNAL( layerModified() ), this, SLOT( joinedLayerModified() ), Qt::UniqueConnection );
   }
 
+  locker.unlock();
+
   emit joinedFieldsChanged();
   return true;
 }
