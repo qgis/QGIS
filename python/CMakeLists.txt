@@ -70,6 +70,7 @@ ADD_SUBDIRECTORY(PyQt)
 ADD_SUBDIRECTORY(pyplugin_installer)
 ADD_SUBDIRECTORY(ext-libs)
 ADD_SUBDIRECTORY(testing)
+ADD_SUBDIRECTORY(ResourceSharing) 
 
 IF(POLICY CMP0040)
   CMAKE_POLICY (POP) # see PUSH above
@@ -264,6 +265,7 @@ SET(PY_FILES
   __init__.py
   utils.py
   user.py
+  version_compare.py
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)

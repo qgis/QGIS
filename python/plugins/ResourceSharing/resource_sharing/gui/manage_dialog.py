@@ -34,6 +34,7 @@ FORM_CLASS, _ = uic.loadUiType(ui_path('manage_repository.ui'))
 
 
 class ManageRepositoryDialog(QDialog, FORM_CLASS):
+
     def __init__(self, parent=None):
         """Create the dialog and configure the UI."""
         super(ManageRepositoryDialog, self).__init__(parent)

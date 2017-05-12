@@ -18,6 +18,7 @@ COLLECTION_STATUS_ROLE = Qt.UserRole + 6
 
 class CustomSortFilterProxyModel(QSortFilterProxyModel):
     """Custom QSortFilterProxyModel to be able to search on multiple data."""
+
     def __init__(self, parent=None):
         super(CustomSortFilterProxyModel, self).__init__(parent)
         self._accepted_status = None
