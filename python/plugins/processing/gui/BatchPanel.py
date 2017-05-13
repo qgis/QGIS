@@ -201,7 +201,7 @@ class BatchPanel(BASE, WIDGET):
                         continue
                     widget = self.tblParameters.cellWidget(row, column)
                     if param.name in params:
-                        value = params[param.name]
+                        value = params[param.name].strip('"')
                         self.setValueInWidget(widget, value)
                     column += 1
 
@@ -210,7 +210,7 @@ class BatchPanel(BASE, WIDGET):
                         continue
                     widget = self.tblParameters.cellWidget(row, column)
                     if out.name in outputs:
-                        value = outputs[out.name]
+                        value = outputs[out.name].strip('"')
                         self.setValueInWidget(widget, value)
                     column += 1
         except TypeError:
@@ -257,6 +257,7 @@ class BatchPanel(BASE, WIDGET):
                     return
                 algParams[param.name] = param.getValueAsCommandLineParameter()
                 col += 1
+
             col = 0
             for param in alg.parameters:
                 if param.hidden:
@@ -269,6 +270,7 @@ class BatchPanel(BASE, WIDGET):
                         return
                     algParams[param.name] = unicode(param.value)
                 col += 1
+
             for out in alg.outputs:
                 if out.hidden:
                     continue
