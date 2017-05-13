@@ -1983,6 +1983,19 @@ QgsSvgMarkerSymbolLayer    {#qgis_api_break_3_0_QgsSvgMarkerSymbolLayer}
 
 - The first argument of the constructor (path) does not have a default value anymore.
 
+QgsSvgSelectorWidget   {#qgis_api_break_3_0_QgsSvgSelectorWidget}
+--------------------
+
+- create() has been removed - use ordinary constructor instead.
+- currentSvgPathToName() has been removed - absolute paths are always used.
+- groupsTreeView(), imagesListView(), filePathLineEdit(), filePathButton(), relativePathCheckbox(), selectorLayout() have been removed as they were leaking implementation details.
+
+QgsSvgSelectorDialog   {#qgis_api_break_3_0_QgsSvgSelectorDialog}
+--------------------
+
+- layout(), buttonBox() has been removed as they were leaking implementation details.
+
+
 QgsStyle (renamed from QgsStyleV2)        {#qgis_api_break_3_0_QgsStyle}
 ----------------------------------
 - All group functions have been removed: group(), addGroup(), groupId(), groupName(), groupNames(), groupIds(), symbolsOfGroup(), getGroupRemoveQuery()
