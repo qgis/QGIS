@@ -10,22 +10,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), os.path.pardir))
 # QGIS 2.x: QgsRandomColorRamp
 # QGIS 3.x is QgsLimitedRandomColorRamp
 
-try:  # QGIS 2.x
-    from qgis.core import (
-        QgsVectorColorBrewerColorRampV2 as QgsColorBrewerColorRamp,
-        QgsVectorGradientColorRampV2 as QgsGradientColorRamp,
-        QgsVectorRandomColorRampV2 as random_color_ramp,  # <-- !!!!
-        QgsFillSymbolV2 as QgsFillSymbol,
-        QgsLineSymbolV2 as QgsLineSymbol,
-        QgsMarkerSymbolV2 as QgsMarkerSymbol)
-except ImportError:  # QGIS 3.x
-    from qgis.core import (
-        QgsColorBrewerColorRamp,
-        QgsLimitedRandomColorRamp as random_color_ramp,  # <-- !!!!
-        QgsGradientColorRamp,
-        QgsFillSymbol,
-        QgsLineSymbol,
-        QgsMarkerSymbol)
+from qgis.core import (
+    QgsColorBrewerColorRamp,
+    QgsLimitedRandomColorRamp as random_color_ramp,  # <-- !!!!
+    QgsGradientColorRamp,
+    QgsFillSymbol,
+    QgsLineSymbol,
+    QgsMarkerSymbol)
 
 from ResourceSharing.symbol_xml_extractor import SymbolXMLExtractor
 from utilities import test_data_path
@@ -62,7 +53,9 @@ class TestSymbolXMLExtractor(unittest.TestCase):
         expected_colorramps = {
             'cr_colorbrewer': QgsColorBrewerColorRamp,
             'cr_gradient': QgsGradientColorRamp,
-            'cr_random': random_color_ramp # QGIS 2.x is QgsRandomColorRamp QGIS 3.x is QgsLimitedRandomColorRamp
+            # QGIS 2.x is QgsRandomColorRamp QGIS 3.x is
+            # QgsLimitedRandomColorRamp
+            'cr_random': random_color_ramp
         }
         self.assertEqual(len(extractor.colorramps), len(expected_colorramps))
         for colorramp in extractor.colorramps:
