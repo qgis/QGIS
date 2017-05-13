@@ -41,7 +41,7 @@ cleanup() {
 		i18n/qgis_ts.tar \
 		qgis_ts.pro
 	do
-		[ -f "$i" ] && rm "$i"
+		rm -f "$i"
 	done
 
 	for i in \
@@ -91,6 +91,10 @@ while (( $# > 0 )); do
     fi
   elif [ "$arg" = "-f" ]; then
     fast=--remove-files
+  elif [ "$arg" = "-b" ]; then
+    builddir=$1
+    echo builddir:$builddir
+    shift
   elif [ -f "i18n/qgis_$arg.ts" ]; then
     exclude="$exclude --exclude i18n/qgis_$arg.ts"
   else
@@ -102,11 +106,10 @@ trap cleanup EXIT
 
 if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   echo Saving excluded translations
-  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
+  tar $fast $exclude -cf i18n/qgis_ts.tar i18n/qgis_*.ts
 fi
 
-builddir=$1
-if [ -d "$builddir" ]; then
+if ! [ -d "$builddir" ]; then
 	echo Build directory not found
 	exit 1
 fi
