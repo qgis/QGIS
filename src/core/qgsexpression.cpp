@@ -2926,8 +2926,8 @@ static QVariant fcnInclination( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom1 = getGeometry( values.at( 0 ), parent );
   QgsGeometry fGeom2 = getGeometry( values.at( 1 ), parent );
 
-  const QgsPointV2 *pt1 = static_cast<const QgsPointV2 *>( fGeom1.geometry() );
-  const QgsPointV2 *pt2 = static_cast<const QgsPointV2 *>( fGeom2.geometry() );
+  const QgsPointV2 *pt1 = dynamic_cast<const QgsPointV2 *>( fGeom1.geometry() );
+  const QgsPointV2 *pt2 = dynamic_cast<const QgsPointV2 *>( fGeom2.geometry() );
 
   if ( ( fGeom1.type() != QgsWkbTypes::PointGeometry ) || ( fGeom2.type() != QgsWkbTypes::PointGeometry ) ||
        !pt1 || !pt2 )
