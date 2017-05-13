@@ -1,2 +1,3 @@
 dulwich==0.13.0
 giturlparse.py
+Jinja2==2.7.2

@@ -42,4 +42,4 @@ wait $SETUP_OSGEO4W_PID
 popd
 popd
 
-pip install psycopg2 numpy nose2 pyyaml mock future termcolor
+pip install psycopg2 numpy nose2 pyyaml mock future termcolor jinja2 dulwich==0.13.0 giturlparse.py
