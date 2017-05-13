@@ -423,7 +423,9 @@ class CORE_EXPORT QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
 
+    //! Reads diagram settings from XML
     void readXml( const QDomElement &elem );
+    //! Writes diagram settings to XML
     void writeXml( QDomElement &rendererElem, QDomDocument &doc ) const;
 
     /** Returns list of legend nodes for the diagram

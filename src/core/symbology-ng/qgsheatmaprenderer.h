@@ -52,6 +52,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    //! Creates a new heatmap renderer instance from XML
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

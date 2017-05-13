@@ -405,6 +405,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /////
 
+    //! Creates a new rule-based renderer instance from XML
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! Constructs the renderer from given tree of rules (takes ownership)

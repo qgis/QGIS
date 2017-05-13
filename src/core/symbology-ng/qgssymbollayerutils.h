@@ -233,7 +233,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
       }
     }
 
+    //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a symbol definition to XML
     static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
@@ -348,7 +350,9 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
+    //! Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a collection of symbols to XML with specified tagName for the top-level element
     static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
