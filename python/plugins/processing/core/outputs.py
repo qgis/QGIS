@@ -35,7 +35,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
-from processing.tools.vector import VectorWriter, TableWriter
+from processing.tools.vector import TableWriter, NOGEOMETRY_EXTENSIONS
 from processing.tools import dataobjects
 
 from qgis.core import (QgsExpressionContext,
@@ -44,7 +44,8 @@ from qgis.core import (QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsProject,
                        QgsSettings,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsProcessingUtils)
 
 
 def _expressionContext(alg):
@@ -324,7 +325,7 @@ class OutputVector(Output):
     def getSupportedOutputVectorLayerExtensions(self):
         exts = QgsVectorFileWriter.supportedFormatExtensions()
         if not self.hasGeometry():
-            exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
+            exts = ['dbf'] + [ext for ext in exts if ext in NOGEOMETRY_EXTENSIONS]
         return exts
 
     def getFileFilter(self, alg):
@@ -360,7 +361,7 @@ class OutputVector(Output):
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
 
-    def getVectorWriter(self, fields, geomType, crs, options=None):
+    def getVectorWriter(self, fields, geomType, crs, context):
         """Returns a suitable writer to which features can be added as
         a result of the algorithm. Use this to transparently handle
         output values instead of creating your own method.
@@ -377,16 +378,15 @@ class OutputVector(Output):
         @param crs      the crs of the layer to create
 
         @return writer  instance of the vector writer class
+        :param context:
         """
 
         if self.encoding is None:
             settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
-        w = VectorWriter(self.value, self.encoding, fields, geomType,
-                         crs, options)
-        self.layer = w.layer
-        self.value = w.destination
+        w, w_dest = QgsProcessingUtils.createFeatureSink(self.value, self.encoding, fields, geomType, crs, context)
+        self.value = w_dest
         return w
 
     def dataType(self):

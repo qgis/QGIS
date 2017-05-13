@@ -12,14 +12,14 @@ class QgsPaintEffectWidget : QWidget
 %End
 
   public:
-    QgsPaintEffectWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsPaintEffectWidget( QWidget *parent /TransferThis/ = 0 );
     virtual ~QgsPaintEffectWidget();
 
     /**
      * Sets the paint effect to modify with the widget
      * @param effect paint effect
      */
-    virtual void setPaintEffect( QgsPaintEffect* effect ) = 0;
+    virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 
   signals:
 
@@ -38,11 +38,11 @@ class QgsDrawSourceWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsDrawSourceWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsDrawSourceWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 
 };
 
@@ -53,11 +53,11 @@ class QgsBlurWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsBlurWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsBlurWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 
 };
 
@@ -68,11 +68,11 @@ class QgsShadowEffectWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsShadowEffectWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsShadowEffectWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 
 };
 
@@ -83,11 +83,11 @@ class QgsGlowWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsGlowWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsGlowWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 };
 
 
@@ -98,11 +98,11 @@ class QgsTransformWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsTransformWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsTransformWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 
 };
 
@@ -113,11 +113,11 @@ class QgsColorEffectWidget : QgsPaintEffectWidget
 %End
 
   public:
-    QgsColorEffectWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsColorEffectWidget( QWidget *parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create() /Factory/;
+    static QgsPaintEffectWidget *create() /Factory/;
 
-    virtual void setPaintEffect( QgsPaintEffect* effect );
+    virtual void setPaintEffect( QgsPaintEffect *effect );
 
 };
 

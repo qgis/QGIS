@@ -33,7 +33,7 @@ class QgsEditFormConfig
     struct GroupData
     {
       GroupData();
-      GroupData( const QString& name, const QList<QString>& fields );
+      GroupData( const QString &name, const QList<QString> &fields );
       QString mName;
       QList<QString> mFields;
     };
@@ -41,7 +41,7 @@ class QgsEditFormConfig
     struct TabData
     {
       TabData();
-      TabData( const QString& name, const QList<QString>& fields, const QList<QgsEditFormConfig::GroupData>& groups );
+      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups );
       QString mName;
       QList<QString> mFields;
       QList<QgsEditFormConfig::GroupData> mGroups;
@@ -73,7 +73,7 @@ class QgsEditFormConfig
      *
      * Adds a new tab to the layout. Should be a QgsAttributeEditorContainer.
      */
-    void addTab( QgsAttributeEditorElement* data /Transfer/ );
+    void addTab( QgsAttributeEditorElement *data /Transfer/ );
 
     /**
      * Returns a list of tabs for EditorLayout::TabLayout.
@@ -90,7 +90,7 @@ class QgsEditFormConfig
      *
      * @note Added in QGIS 3
      */
-    QgsAttributeEditorContainer* invisibleRootContainer();
+    QgsAttributeEditorContainer *invisibleRootContainer();
 
     /** Get the active layout style for the attribute editor for this layer */
     EditorLayout layout();
@@ -107,10 +107,10 @@ class QgsEditFormConfig
      * if an empty or a null string is provided, the layout style will be set to
      * EditorLayout::GeneratedLayout.
      */
-    void setUiForm( const QString& ui );
-    bool setWidgetConfig( const QString& widgetName, const QVariantMap& config );
-    QVariantMap widgetConfig( const QString& widgetName ) const;
-    bool removeWidgetConfig( const QString& widgetName );
+    void setUiForm( const QString &ui );
+    bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
+    QVariantMap widgetConfig( const QString &widgetName ) const;
+    bool removeWidgetConfig( const QString &widgetName );
 
     bool readOnly( int idx ) const;
 
@@ -151,7 +151,7 @@ class QgsEditFormConfig
      * includes a module name or if it's a pure function name it will searched
      * in the python code set with @link setInitCode @endlink.
      */
-    void setInitFunction( const QString& function );
+    void setInitFunction( const QString &function );
 
     /**
      * Get python code for edit form initialization.
@@ -163,7 +163,7 @@ class QgsEditFormConfig
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
-    void setInitCode( const QString& code );
+    void setInitCode( const QString &code );
 
     /**
      * Get python external file path for edit form initialization.
@@ -175,7 +175,7 @@ class QgsEditFormConfig
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
-    void setInitFilePath( const QString& filePath );
+    void setInitFilePath( const QString &filePath );
 
     /** Return python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
@@ -197,16 +197,16 @@ class QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode& node );
+    void readXml( const QDomNode &node );
 
     /**
      * Write XML information
      * Serialize on project save
      */
-    void writeXml( QDomNode& node ) const;
+    void writeXml( QDomNode &node ) const;
 
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent );
 };

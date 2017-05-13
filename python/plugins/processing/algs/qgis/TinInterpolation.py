@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRectangle
+from qgis.core import (QgsRectangle,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
                            QgsGridFileWriter
@@ -47,7 +48,6 @@ from processing.core.parameters import (Parameter,
 from processing.core.outputs import (OutputRaster,
                                      OutputVector
                                      )
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -158,7 +158,7 @@ class TinInterpolation(GeoAlgorithm):
                                     self.tr('Triangulation'),
                                     ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         method = self.getParameterValue(self.METHOD)
         columns = self.getParameterValue(self.COLUMNS)
@@ -190,7 +190,7 @@ class TinInterpolation(GeoAlgorithm):
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = dataobjects.getLayerFromString(v[0])
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
             data.vectorLayer = layer
             layers.append(layer)
 

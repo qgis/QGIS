@@ -63,6 +63,7 @@
 #include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
+#include <QDesktopServices>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -147,7 +148,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QgsProject::instance()->fileName() );
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
+
+  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [=] {
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    QString folder = fi.path();
+    QDesktopServices::openUrl(QUrl::fromLocalFile( folder ));
+   });
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)

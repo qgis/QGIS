@@ -33,8 +33,8 @@ from qgis.core import (QgsExpression,
                        QgsField,
                        QgsDistanceArea,
                        QgsProject,
-                       GEO_NONE,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -43,7 +43,6 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
@@ -97,8 +96,8 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
         width = self.getParameterValue(self.FIELD_LENGTH)
@@ -112,8 +111,7 @@ class FieldsCalculator(GeoAlgorithm):
         if newField:
             fields.append(QgsField(fieldName, fieldType, '', width, precision))
 
-        writer = output.getVectorWriter(fields, layer.wkbType(),
-                                        layer.crs())
+        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
         exp = QgsExpression(formula)
 
@@ -137,8 +135,8 @@ class FieldsCalculator(GeoAlgorithm):
         error = ''
         calculationSuccess = True
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         rownum = 1
         for current, f in enumerate(features):

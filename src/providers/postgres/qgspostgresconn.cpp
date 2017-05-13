@@ -149,7 +149,7 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   if ( shared )
   {
     // sharing connection between threads is not safe
-    // See http://hub.qgis.org/issues/13141
+    // See https://issues.qgis.org/issues/13141
     Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
 
     if ( connections.contains( conninfo ) )
@@ -1266,7 +1266,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohs( oid );
       /* cast to signed 16bit
-       * See http://hub.qgis.org/issues/14262 */
+       * See https://issues.qgis.org/issues/14262 */
       oid = ( qint16 )oid;
       break;
 
@@ -1316,7 +1316,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       if ( mSwapEndian )
         oid = ntohl( oid );
       /* cast to signed 32bit
-       * See http://hub.qgis.org/issues/14262 */
+       * See https://issues.qgis.org/issues/14262 */
       oid = ( qint32 )oid;
       break;
   }

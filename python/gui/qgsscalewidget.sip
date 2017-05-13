@@ -75,7 +75,6 @@ Function to read the min scale
 
     static QString toString( double scale );
 %Docstring
-be expected.
  :rtype: str
 %End
     static double toDouble( const QString &scaleString, bool *ok = 0 );
@@ -115,4 +114,3 @@ Signal is emitted when *user* has finished editing/selecting a new scale.
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

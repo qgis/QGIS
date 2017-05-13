@@ -38,7 +38,6 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-  , mFeatureFetched( false )
   , mConn( nullptr )
   , ogrLayer( nullptr )
   , mSubsetStringSet( false )
@@ -47,7 +46,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
-  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mProvider->dataSourceUri() );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mDataSource );
   if ( !mConn->ds )
   {
     return;
@@ -353,19 +352,18 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
-  : mProvider( p )
+  : mDataSource( p->dataSourceUri() )
+  , mLayerName( p->layerName() )
+  , mLayerIndex( p->layerIndex() )
+  , mSubsetString( p->mSubsetString )
+  , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
+  , mFields( p->mAttributeFields )
+  , mFirstFieldIsFid( p->mFirstFieldIsFid )
+  , mOgrGeometryTypeFilter( QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter ) )
+  , mDriverName( p->ogrDriverName )
 {
-  mDataSource = p->dataSourceUri();
-  mLayerName = p->layerName();
-  mLayerIndex = p->layerIndex();
-  mSubsetString = p->mSubsetString;
-  mEncoding = p->textEncoding(); // no copying - this is a borrowed pointer from Qt
-  mFields = p->mAttributeFields;
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
-  mDriverName = p->ogrDriverName;
-  mFirstFieldIsFid = p->mFirstFieldIsFid;
-  mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 

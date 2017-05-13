@@ -17,6 +17,7 @@
 #define QGSCHECKBOXSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
      * \param fieldIdx index of associated field
      * \param parent parent widget
      */
-    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a variant representing the current state of the widget.
      * \note this will not be a boolean true or false value, it will instead
@@ -55,9 +56,9 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 

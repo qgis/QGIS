@@ -11,13 +11,13 @@ class QgsLayerDefinition
 #include <qgslayerdefinition.h>
 %End
   public:
-    static bool loadLayerDefinition( const QString & path, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/ );
-    static bool loadLayerDefinition( QDomDocument doc, QgsProject* project, QgsLayerTreeGroup* rootGroup, QString &errorMessage /Out/, const QgsPathResolver& pathResolver );
-    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/ );
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage /Out/, const QgsPathResolver& pathResolver );
+    static bool loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/ );
+    static bool loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage /Out/, const QgsPathResolver &pathResolver );
+    static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*> &selectedTreeNodes, QString &errorMessage /Out/ );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*> &selectedTreeNodes, QString &errorMessage /Out/, const QgsPathResolver &pathResolver );
 
-    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*>& layers, const QgsPathResolver& pathResolver );
-    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument& document, const QgsPathResolver& pathResolver ) /Factory/;
+    static QDomDocument exportLayerDefinitionLayers( const QList<QgsMapLayer*> &layers, const QgsPathResolver &pathResolver );
+    static QList<QgsMapLayer*> loadLayerDefinitionLayers( QDomDocument &document, const QgsPathResolver &pathResolver ) /Factory/;
     static QList<QgsMapLayer*> loadLayerDefinitionLayers( const QString &qlrfile ) /Factory/;
 
     /**
@@ -29,12 +29,12 @@ class QgsLayerDefinition
       /** Constructor
        * @param doc The XML document containing maplayer elements
        */
-      DependencySorter( const QDomDocument& doc );
+      DependencySorter( const QDomDocument &doc );
 
       /** Constructor
        * @param fileName The filename where the XML document is stored
        */
-      DependencySorter( const QString& fileName );
+      DependencySorter( const QString &fileName );
 
       /** Get the layer nodes in an order where they can be loaded incrementally without dependency break */
       QVector<QDomNode> sortedLayerNodes() const;

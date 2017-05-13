@@ -12,13 +12,13 @@ class QgsAddRemoveItemCommand: QObject, QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
+    QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
     ~QgsAddRemoveItemCommand();
 
     void redo();
     void undo();
 
   signals:
-    void itemAdded( QgsComposerItem* item );
-    void itemRemoved( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
+    void itemRemoved( QgsComposerItem *item );
 };

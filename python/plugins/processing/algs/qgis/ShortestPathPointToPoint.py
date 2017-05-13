@@ -31,7 +31,14 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsFields,
+                       QgsField,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -150,9 +157,8 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         endPoint = self.getParameterValue(self.END_POINT)
         strategy = self.getParameterValue(self.STRATEGY)
@@ -174,10 +180,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields.toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = startPoint.split(',')
         startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))

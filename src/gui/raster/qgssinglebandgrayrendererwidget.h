@@ -53,7 +53,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     void loadMinMax( int bandNo, double min, double max );
 
   private slots:
-    void on_mGrayBandComboBox_currentIndexChanged( int index );
+    void bandChanged();
     void on_mMinLineEdit_textChanged( const QString & );
     void on_mMaxLineEdit_textChanged( const QString & );
 

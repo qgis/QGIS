@@ -21,17 +21,13 @@ class QgsAfsProvider;
 class QgsSpatialIndex;
 
 
-class QgsAfsFeatureSource : public QObject, public QgsAbstractFeatureSource
+class QgsAfsFeatureSource : public QgsAbstractFeatureSource
 {
-    Q_OBJECT
 
   public:
     QgsAfsFeatureSource( const QgsAfsProvider *provider );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
     QgsAfsProvider *provider() const;
-
-  signals:
-    void extentRequested( const QgsRectangle & );
 
   protected:
     QgsAfsProvider *mProvider = nullptr;
@@ -51,7 +47,7 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
     bool fetchFeature( QgsFeature &f ) override;
 
   private:
-    QgsFeatureId mFeatureIterator;
+    QgsFeatureId mFeatureIterator = 0;
 };
 
 #endif // QGSAFSFEATUREITERATOR_H

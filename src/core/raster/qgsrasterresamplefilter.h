@@ -19,6 +19,7 @@
 #define QGSRASTERRESAMPLEFILTER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterresampler.h"
 
@@ -43,11 +44,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Set resampler for zoomed in scales. Takes ownership of the object
-    void setZoomedInResampler( QgsRasterResampler *r );
+    void setZoomedInResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
 
     //! Set resampler for zoomed out scales. Takes ownership of the object
-    void setZoomedOutResampler( QgsRasterResampler *r );
+    void setZoomedOutResampler( QgsRasterResampler *r SIP_TRANSFER );
     const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
 
     void setMaxOversampling( double os ) { mMaxOversampling = os; }

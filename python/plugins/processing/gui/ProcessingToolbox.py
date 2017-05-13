@@ -49,6 +49,7 @@ from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -83,6 +84,10 @@ class ProcessingToolbox(BASE, WIDGET):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
 
         self.fillTree()
+
+        # connect to existing providers
+        for p in QgsApplication.processingRegistry().providers():
+            p.algorithmsLoaded.connect(self.updateProvider)
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
@@ -241,7 +246,11 @@ class ProcessingToolbox(BASE, WIDGET):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
+            #hack - remove when getCopy is removed
+            provider = alg.provider()
             alg = alg.getCopy()
+            #hack pt 2
+            alg.setProvider(provider)
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
             dlg.exec_()
@@ -249,6 +258,7 @@ class ProcessingToolbox(BASE, WIDGET):
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
+            context = dataobjects.createContext()
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
@@ -259,7 +269,12 @@ class ProcessingToolbox(BASE, WIDGET):
                             'be run :-( </h3>\n{0}').format(message))
                 dlg.exec_()
                 return
+
+            # temporary hack - TODO remove this getCopy when parameters are moved from algorithm
+            provider = alg.provider()
             alg = alg.getCopy()
+            alg.setProvider(provider)
+
             if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
                 dlg = alg.getCustomParametersDialog()
                 if not dlg:
@@ -281,8 +296,8 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
-                execute(alg, feedback)
-                handleAlgorithmResults(alg, feedback)
+                execute(alg, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action

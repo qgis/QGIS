@@ -17,6 +17,7 @@
 #define QGSDUALVIEW_H
 
 #include <QStackedWidget>
+#include "qgis.h"
 
 #include "ui_qgsdualviewbase.h"
 
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \brief Constructor
      * \param parent  The parent widget
      */
-    explicit QgsDualView( QWidget *parent = nullptr );
+    explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Has to be called to initialize the dual view.
@@ -355,6 +356,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsMapCanvas *mMapCanvas = nullptr;
 
     friend class TestQgsDualView;
+    friend class TestQgsAttributeTable;
 };
 
 /** \ingroup gui

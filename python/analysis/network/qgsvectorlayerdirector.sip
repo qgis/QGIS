@@ -1,55 +1,70 @@
-/**
-* \ingroup analysis
-* \class QgsVectorLayerDirector
-* \brief Determine making the graph from vector line layer
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsvectorlayerdirector.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsVectorLayerDirector : QgsGraphDirector
 {
-%TypeHeaderCode
-#include <qgsvectorlayerdirector.h>
+%Docstring
+.. versionadded:: 3.0
+ Determine making the graph from vector line layer
 %End
 
+%TypeHeaderCode
+#include "qgsvectorlayerdirector.h"
+%End
   public:
-    /** Edge direction
-     * Edge can be one-way with direct flow (one can move only from the start
-     * point to the end point), one-way with reversed flow (one can move only
-     * from the end point to the start point) and bidirectional or two-way
-     * (one can move in any direction)
-     */
+
     enum Direction
     {
-      DirectionForward,     //!< One-way direct
-      DirectionBackward,    //!< One-way reversed
-      DirectionBoth,        //!< Two-way
+      DirectionForward,
+      DirectionBackward,
+      DirectionBoth,
     };
 
-    /**
-     * @param myLayer source vector layer
-     * @param directionFieldId feield contain road direction value
-     * @param directDirectionValue value for one-way road
-     * @param reverseDirectionValue value for reverse one-way road
-     * @param bothDirectionValue value for road
-     * @param defaultDirection default direction. Will be used if corresponding
-     * attribute value is not set or does not equal to the given values
-     */
-    QgsVectorLayerDirector( QgsVectorLayer* myLayer,
+    QgsVectorLayerDirector( QgsVectorLayer *myLayer,
                             int directionFieldId,
-                            const QString& directDirectionValue,
-                            const QString& reverseDirectionValue,
-                            const QString& bothDirectionValue,
+                            const QString &directDirectionValue,
+                            const QString &reverseDirectionValue,
+                            const QString &bothDirectionValue,
                             const Direction defaultDirection
                           );
+%Docstring
+ Default constructor
+ \param myLayer source vector layer
+ \param directionFieldId field containing direction value
+ \param directDirectionValue value for direct one-way road
+ \param reverseDirectionValue value for reversed one-way road
+ \param bothDirectionValue value for two-way (bidirectional) road
+ \param defaultDirection default direction. Will be used if corresponding
+ attribute value is not set or does not equal to the given values
+%End
 
-    //! Destructor
     virtual ~QgsVectorLayerDirector();
 
-    /*
-     * MANDATORY DIRECTOR PROPERTY DECLARATION
-     */
-    void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPoint >& additionalPoints,
-                    QVector< QgsPoint>& snappedPoints /Out/ ) const;
+     virtual void makeGraph( QgsGraphBuilderInterface *builder,
+                    const QVector< QgsPoint > &additionalPoints,
+                    QVector< QgsPoint> &snappedPoints /Out/ ) const;
+%Docstring
+ MANDATORY DIRECTOR PROPERTY DECLARATION
+%End
 
-    QString name() const;
+    virtual QString name() const;
+
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsvectorlayerdirector.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

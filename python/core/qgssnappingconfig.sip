@@ -79,15 +79,15 @@ class QgsSnappingConfig
         /**
          * Compare this configuration to other.
          */
-        //bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings& other ) const;
+        //bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
-        //bool operator== ( const QgsSnappingConfig::IndividualLayerSettings& other ) const;
+        //bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
     };
 
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject* project = nullptr );
+    explicit QgsSnappingConfig( QgsProject *project = 0 );
 
     ~QgsSnappingConfig();
 
@@ -134,7 +134,7 @@ class QgsSnappingConfig
     SIP_PYDICT individualLayerSettings() const;
 %MethodCode
     // Create the dictionary.
-    PyObject* d = PyDict_New();
+    PyObject *d = PyDict_New();
     if (!d)
         return nullptr;
     // Set the dictionary elements.
@@ -142,11 +142,11 @@ class QgsSnappingConfig
     QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
     while ( i != container.constEnd() )
     {
-      QgsVectorLayer* vl = i.key();
-      QgsSnappingConfig::IndividualLayerSettings* ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
+      QgsVectorLayer *vl = i.key();
+      QgsSnappingConfig::IndividualLayerSettings *ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
 
-      PyObject* vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
-      PyObject* ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
+      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
+      PyObject *ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
 
       if ( !vlobj || !ilsobj || PyDict_SetItem( d, vlobj, ilsobj) < 0)
       {
@@ -173,15 +173,15 @@ class QgsSnappingConfig
 %End
 
     //! return individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer* vl ) const;
+    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 
     //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer* vl, const QgsSnappingConfig::IndividualLayerSettings& individualLayerSettings );
+    void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Compare this configuration to other.
      */
-    bool operator!= ( const QgsSnappingConfig& other ) const;
+    bool operator!= ( const QgsSnappingConfig &other ) const;
 
   public:
     /**
@@ -189,14 +189,14 @@ class QgsSnappingConfig
      *
      * @note Added in QGIS 3.0
      */
-    void readProject( const QDomDocument& doc );
+    void readProject( const QDomDocument &doc );
 
     /**
      * Writes the configuration to the specified QGIS project document.
      *
      * @note Added in QGIS 3.0
      */
-    void writeProject( QDomDocument& doc );
+    void writeProject( QDomDocument &doc );
 
     /**
      * Adds the specified layers as individual layers to the configuration
@@ -208,7 +208,7 @@ class QgsSnappingConfig
      *
      * @note Added in QGIS 3.0
      */
-    bool addLayers( const QList<QgsMapLayer*>& layers );
+    bool addLayers( const QList<QgsMapLayer*> &layers );
 
 
     /**
@@ -220,8 +220,8 @@ class QgsSnappingConfig
      *
      * @note Added in QGIS 3.0
      */
-    bool removeLayers( const QList<QgsMapLayer*>& layers );
-    QgsProject* project() const;
-    void setProject( QgsProject* project );
+    bool removeLayers( const QList<QgsMapLayer*> &layers );
+    QgsProject *project() const;
+    void setProject( QgsProject *project );
 
 };

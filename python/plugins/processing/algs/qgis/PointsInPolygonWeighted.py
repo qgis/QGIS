@@ -31,7 +31,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsFeatureRequest,
                        QgsFeature,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -80,9 +81,9 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        polyLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+    def processAlgorithm(self, context, feedback):
+        polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
+        pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)
         fieldIdx = pointLayer.fields().lookupField(self.getParameterValue(self.WEIGHT))
 
@@ -92,17 +93,17 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields.toList(), polyLayer.wkbType(), polyLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, polyLayer.wkbType(),
+                                                                     polyLayer.crs(), context)
 
-        spatialIndex = vector.spatialindex(pointLayer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(pointLayer, context)
 
         ftPoint = QgsFeature()
         outFeat = QgsFeature()
         geom = QgsGeometry()
 
-        features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(polyLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

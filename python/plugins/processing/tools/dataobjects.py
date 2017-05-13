@@ -38,8 +38,11 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
                        QgsSettings,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingContext,
+                       QgsFeatureRequest)
 from qgis.gui import QgsSublayersDialog
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -47,6 +50,7 @@ from processing.tools.system import (getTempFilenameInTempFolder,
                                      getTempFilename,
                                      removeInvalidChars,
                                      isWindows)
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
 
@@ -59,6 +63,34 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
+def createContext():
+    """
+    Creates a default processing context
+    """
+    context = QgsProcessingContext()
+    context.setProject(QgsProject.instance())
+
+    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    if use_selection:
+        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
+
+    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    if not invalid_features_method:
+        invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
+    context.setInvalidGeometryCheck(invalid_features_method)
+
+    def raise_error(f):
+        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
+                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
+
+    context.setInvalidGeometryCallback(raise_error)
+
+    settings = QgsSettings()
+    context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
+
+    return context
+
+
 def getSupportedOutputRasterLayerExtensions():
     allexts = []
     for exts in list(GdalUtils.getSupportedRasters().values()):
@@ -68,35 +100,6 @@ def getSupportedOutputRasterLayerExtensions():
     allexts.sort()
     allexts.insert(0, 'tif')  # tif is the default, should be the first
     return allexts
-
-
-def extent(layers):
-    first = True
-    for layer in layers:
-        if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
-            layer = getLayerFromString(layer)
-            if layer is None:
-                continue
-        if first:
-            xmin = layer.extent().xMinimum()
-            xmax = layer.extent().xMaximum()
-            ymin = layer.extent().yMinimum()
-            ymax = layer.extent().yMaximum()
-        else:
-            xmin = min(xmin, layer.extent().xMinimum())
-            xmax = max(xmax, layer.extent().xMaximum())
-            ymin = min(ymin, layer.extent().yMinimum())
-            ymax = max(ymax, layer.extent().yMaximum())
-        first = False
-    if first:
-        return '0,0,0,0'
-    else:
-        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
-
-
-def loadList(layers):
-    for layer in layers:
-        load(layer)
 
 
 def load(fileName, name=None, crs=None, style=None):
@@ -112,20 +115,9 @@ def load(fileName, name=None, crs=None, style=None):
         settings.setValue('/Projections/defaultBehavior', '')
     if name is None:
         name = os.path.split(fileName)[1]
-    qgslayer = QgsVectorLayer(fileName, name, 'ogr')
-    if qgslayer.isValid():
-        if crs is not None and qgslayer.crs() is None:
-            qgslayer.setCrs(crs, False)
-        if style is None:
-            if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
-            else:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
-        qgslayer.loadNamedStyle(style)
-        QgsProject.instance().addMapLayers([qgslayer])
-    else:
+
+    suffix = os.path.splitext(fileName)[1][1:]
+    if suffix in getSupportedOutputRasterLayerExtensions():
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
@@ -139,31 +131,25 @@ def load(fileName, name=None, crs=None, style=None):
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError('Could not load layer: ' + str(fileName) +
                                '\nCheck the processing framework log to look for errors')
+    else:
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        if qgslayer.isValid():
+            if crs is not None and qgslayer.crs() is None:
+                qgslayer.setCrs(crs, False)
+            if style is None:
+                if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                else:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+            qgslayer.loadNamedStyle(style)
+            QgsProject.instance().addMapLayers([qgslayer])
+
     if prjSetting:
         settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
-
-
-def getLayerFromString(string, forceLoad=True):
-    """Returns an object (layer/table) given a source definition.
-
-    if forceLoad is true, it tries to load it if it is not currently open
-    Otherwise, it will return the object only if it is loaded in QGIS.
-    """
-
-    if string is None:
-        return None
-
-    # prefer project layers
-    layer = QgsProcessingUtils.mapLayerFromProject(string, QgsProject.instance())
-    if layer:
-        return layer
-
-    if not forceLoad:
-        return None
-
-    return QgsProcessingUtils.mapLayerFromString(string)
 
 
 def exportVectorLayer(layer, supported=None):

@@ -36,6 +36,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${CMAKE_BINARY_DIR}/src/core

@@ -92,6 +92,7 @@
 #include <QtWinExtras/QWinJumpListCategory>
 #endif
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 //
 // Mac OS X Includes
@@ -110,7 +111,8 @@
 // QGIS Specific Includes
 //
 
-#include "qgscrashdialog.h"
+#include "qgscrashhandler.h"
+
 #include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
@@ -199,6 +201,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -270,7 +273,9 @@
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
+#include "qgsmapsavedialog.h"
 #include "qgsmaprenderertask.h"
+#include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
 
 #include "qgssublayersdialog.h"
@@ -1701,6 +1706,7 @@ void QgisApp::createActions()
   connect( mActionSaveProject, &QAction::triggered, this, &QgisApp::fileSave );
   connect( mActionSaveProjectAs, &QAction::triggered, this, &QgisApp::fileSaveAs );
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
+  connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
@@ -2698,6 +2704,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) ) );
   mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionComposerManager.svg" ) ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
+  mActionSaveMapAsPdf->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
   mActionExit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileExit.png" ) ) );
   mActionAddOgrLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
   mActionAddRasterLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
@@ -3514,7 +3521,8 @@ void QgisApp::updateRecentProjectPaths()
 
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
   {
-    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(), recentProject.path ) );
+    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(),
+                      QDir::toNativeSeparators( recentProject.path ) ) );
     action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
@@ -4365,7 +4373,7 @@ void QgisApp::addDatabaseLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "postgres" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "postgres" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
@@ -4455,7 +4463,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 void QgisApp::addSpatiaLiteLayer()
 {
   // show the SpatiaLite dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "spatialite" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "SpatiaLite" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
@@ -4470,7 +4478,7 @@ void QgisApp::addSpatiaLiteLayer()
 void QgisApp::addDelimitedTextLayer()
 {
   // show the Delimited text dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "delimitedtext" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "delimitedtext" ), this ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Delimited Text" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
@@ -4485,7 +4493,7 @@ void QgisApp::addDelimitedTextLayer()
 void QgisApp::addVirtualLayer()
 {
   // show the Delimited text dialog
-  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "virtual" ), this ) );
+  QDialog *dts = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "virtual" ), this ) );
   if ( !dts )
   {
     QMessageBox::warning( this, tr( "Virtual layer" ), tr( "Cannot get virtual layer select dialog from provider." ) );
@@ -4526,7 +4534,7 @@ void QgisApp::replaceSelectedVectorLayer( const QString &oldId, const QString &u
 void QgisApp::addMssqlLayer()
 {
   // show the MSSQL dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "mssql" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "mssql" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
@@ -4542,7 +4550,7 @@ void QgisApp::addDb2Layer()
 {
   // show the DB2 dialog
   QgsDebugMsg( "Show dialog for DB2 " );
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "DB2" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "DB2" ), this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "DB2" ), tr( "Cannot get DB2 select dialog from provider." ) );
@@ -4558,7 +4566,7 @@ void QgisApp::addOracleLayer()
 {
 #ifdef HAVE_ORACLE
   // show the Oracle dialog
-  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( "oracle", this ) );
+  QDialog *dbs = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( "oracle", this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
@@ -4581,7 +4589,7 @@ void QgisApp::addWmsLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wms" ), this ) );
+  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wms" ), this ) );
   if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
@@ -4598,7 +4606,7 @@ void QgisApp::addWcsLayer()
   QgsDebugMsg( "about to addWcsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wcss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "wcs" ), this ) );
+  QDialog *wcss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wcs" ), this ) );
   if ( !wcss )
   {
     QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );
@@ -4615,7 +4623,7 @@ void QgisApp::addWfsLayer()
   QgsDebugMsg( "about to addWfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wfss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "WFS" ), this ) );
+  QDialog *wfss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "WFS" ), this ) );
   if ( !wfss )
   {
     QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
@@ -4644,7 +4652,7 @@ void QgisApp::addAfsLayer()
   QgsDebugMsg( "about to addAfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "arcgisfeatureserver" ), this ) );
+  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgisfeatureserver" ), this ) );
   if ( !afss )
   {
     QMessageBox::warning( this, tr( "ArcGIS Feature Server" ), tr( "Cannot get ArcGIS Feature Server select dialog from provider." ) );
@@ -4678,7 +4686,7 @@ void QgisApp::addAmsLayer()
   QgsDebugMsg( "about to addAmsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->selectWidget( QStringLiteral( "arcgismapserver" ), this ) );
+  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgismapserver" ), this ) );
   if ( !amss )
   {
     QMessageBox::warning( this, tr( "ArcGIS Map Server" ), tr( "Cannot get ArcGIS Map Server select dialog from provider." ) );
@@ -4763,8 +4771,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   closeProject();
 
   QgsProject *prj = QgsProject::instance();
-  prj->clear();
-
   prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( QStringLiteral( "qgis/new_layers_visible" ), true ).toBool() );
 
   //set the color for selections
@@ -4958,7 +4964,7 @@ void QgisApp::fileOpenAfterLaunch()
     return;
   }
 
-  if ( !projPath.endsWith( QLatin1String( "qgs" ), Qt::CaseInsensitive ) )
+  if ( !projPath.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
   {
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Not valid project file: %1" ).arg( projPath ),
@@ -5378,7 +5384,7 @@ bool QgisApp::fileSave()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
     saveRecentProjectPath( fullPath.filePath() );
 
@@ -5388,7 +5394,7 @@ bool QgisApp::fileSave()
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error() );
     return false;
   }
@@ -5430,7 +5436,7 @@ void QgisApp::fileSaveAs()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath() );
     mProjectLastModified = fullPath.lastModified();
@@ -5438,7 +5444,7 @@ void QgisApp::fileSaveAs()
   else
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
+                           tr( "Unable to save project %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ),
                            QgsProject::instance()->error(),
                            QMessageBox::Ok,
                            Qt::NoButton );
@@ -5779,47 +5785,62 @@ void QgisApp::updateFilterLegend()
 
 void QgisApp::saveMapAsImage()
 {
-  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( myFileNameAndFilter.first != QLatin1String( "" ) )
+  QList< QgsMapDecoration * > decorations;
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
   {
-    //TODO: GUI
-    int dpi = 90;
-    QSize size = mMapCanvas->size() * ( dpi / 90 );
+    if ( decoration->enabled() )
+    {
+      decorations << decoration;
+      if ( activeDecorations.isEmpty() )
+        activeDecorations = decoration->name().toLower();
+      else
+        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+    }
+  }
 
+  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations );
+  if ( !dlg.exec() )
+    return;
+
+  QPair< QString, QString> fileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  if ( fileNameAndFilter.first != QLatin1String( "" ) )
+  {
     QgsMapSettings ms = QgsMapSettings();
-    ms.setDestinationCrs( QgsProject::instance()->crs() );
-    ms.setExtent( mMapCanvas->extent() );
-    ms.setOutputSize( size );
-    ms.setOutputDpi( dpi );
-    ms.setBackgroundColor( mMapCanvas->canvasColor() );
-    ms.setRotation( mMapCanvas->rotation() );
-    ms.setLayers( mMapCanvas->layers() );
+    dlg.applyMapSettings( ms );
 
-    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, myFileNameAndFilter.first, myFileNameAndFilter.second );
-    mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
+
+    if ( dlg.drawAnnotations() )
+    {
+      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+    }
+
+    if ( dlg.drawDecorations() )
+    {
+      mapRendererTask->addDecorations( decorations );
+    }
+
+    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
 
     connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
     {
-      QgsMessageBarItem *successMsg = new QgsMessageBarItem(
-        tr( "Successfully saved canvas to image" ),
-        QgsMessageBar::SUCCESS );
-      messageBar()->pushItem( successMsg );
+      messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
     } );
     connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int error )
     {
-      if ( error == QgsMapRendererTask::ImageAllocationFail )
+      switch ( error )
       {
-        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
-          tr( "Could not allocate required memory for image" ),
-          QgsMessageBar::WARNING );
-        messageBar()->pushItem( errorMsg );
-      }
-      else if ( error == QgsMapRendererTask::ImageAllocationFail )
-      {
-        QgsMessageBarItem *errorMsg = new QgsMessageBarItem(
-          tr( "Could not save the image to file" ),
-          QgsMessageBar::WARNING );
-        messageBar()->pushItem( errorMsg );
+        case QgsMapRendererTask::ImageAllocationFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not allocate required memory for image" ) );
+          break;
+        }
+        case QgsMapRendererTask::ImageSaveFail:
+        {
+          messageBar()->pushWarning( tr( "Save as image" ), tr( "Could not save the image to file" ) );
+          break;
+        }
       }
     } );
 
@@ -5827,6 +5848,106 @@ void QgisApp::saveMapAsImage()
   }
 
 } // saveMapAsImage
+
+void QgisApp::saveMapAsPdf()
+{
+  QList< QgsMapDecoration * > decorations;
+  QString activeDecorations;
+  Q_FOREACH ( QgsDecorationItem *decoration, mDecorationItems )
+  {
+    if ( decoration->enabled() )
+    {
+      decorations << decoration;
+      if ( activeDecorations.isEmpty() )
+        activeDecorations = decoration->name().toLower();
+      else
+        activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+    }
+  }
+
+  QgsMapSaveDialog dlg( this, mMapCanvas, activeDecorations, QgsMapSaveDialog::Pdf );
+  if ( !dlg.exec() )
+    return;
+
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save map as" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  if ( !fileName.isEmpty() )
+  {
+    QgsMapSettings ms = QgsMapSettings();
+    dlg.applyMapSettings( ms );
+
+    QPrinter *printer = new QPrinter();
+    printer->setOutputFileName( fileName );
+    printer->setOutputFormat( QPrinter::PdfFormat );
+    printer->setOrientation( QPrinter::Portrait );
+    printer->setPaperSize( dlg.size(), QPrinter::DevicePixel );
+    printer->setPageMargins( 0, 0, 0, 0, QPrinter::DevicePixel );
+
+    QPainter *p = new QPainter();
+    QImage *image = nullptr;
+    if ( dlg.saveAsRaster() )
+    {
+      image = new QImage( dlg.size(), QImage::Format_ARGB32 );
+      if ( image->isNull() )
+      {
+        messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not allocate required memory for image" ) );
+        delete p;
+        delete image;
+        delete printer;
+
+        return;
+      }
+      p->begin( image );
+    }
+    else
+    {
+      p->begin( printer );
+    }
+
+    QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, p );
+
+    if ( dlg.drawAnnotations() )
+    {
+      mapRendererTask->addAnnotations( QgsProject::instance()->annotationManager()->annotations() );
+    }
+
+    if ( dlg.drawDecorations() )
+    {
+      mapRendererTask->addDecorations( decorations );
+    }
+
+    mapRendererTask->setSaveWorldFile( dlg.saveWorldFile() );
+
+    connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ this, p, image, printer ]
+    {
+      p->end();
+
+      if ( image )
+      {
+        QPainter pp;
+        pp.begin( printer );
+        QRectF rect( 0, 0, image->width(), image->height() );
+        pp.drawImage( rect, *image, rect );
+        pp.end();
+      }
+
+      messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
+      delete p;
+      delete image;
+      delete printer;
+    } );
+    connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ this, p, image, printer ]( int )
+    {
+      delete p;
+      delete image;
+      delete printer;
+    } );
+
+    QgsApplication::taskManager()->addTask( mapRendererTask );
+  }
+
+} // saveMapAsPdf
 
 //overloaded version of the above function
 void QgisApp::saveMapAsImage( const QString &imageFileNameQString, QPixmap *theQPixmap )
@@ -7606,7 +7727,7 @@ void QgisApp::mergeSelectedFeatures()
     vl->deleteFeature( *feature_it );
   }
 
-  vl->addFeature( newFeature, false );
+  vl->addFeature( newFeature );
 
   vl->endEditCommand();
 
@@ -7908,7 +8029,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     // now create new feature using pasted feature as a template. This automatically handles default
     // values and field constraints
     QgsFeature newFeature = QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, dstAttr, &context );
-    pasteVectorLayer->addFeature( newFeature, false );
+    pasteVectorLayer->addFeature( newFeature );
     newIds << newFeature.id();
 
     ++featureIt;
@@ -8034,8 +8155,6 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QgsWkbTypes::Type wkbType = !typeCounts.isEmpty() ? typeCounts.keys().value( 0 ) : QgsWkbTypes::NoGeometry;
 
-  QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : QStringLiteral( "none" );
-
   if ( features.isEmpty() )
   {
     // should not happen
@@ -8046,15 +8165,13 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
   else if ( typeCounts.size() > 1 )
   {
+    QString typeName = wkbType != QgsWkbTypes::NoGeometry ? QgsWkbTypes::displayString( wkbType ) : QStringLiteral( "none" );
     messageBar()->pushMessage( tr( "Paste features" ),
                                tr( "Multiple geometry types found, features with geometry different from %1 will be created without geometry." ).arg( typeName ),
                                QgsMessageBar::INFO, messageTimeout() );
   }
 
-  typeName += QStringLiteral( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
-  QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
-
-  QgsVectorLayer *layer = new QgsVectorLayer( typeName, QStringLiteral( "pasted_features" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "pasted_features" ), QgsFields(), wkbType, clipboard()->crs() );
 
   if ( !layer->isValid() || !layer->dataProvider() )
   {
@@ -8066,9 +8183,6 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   }
 
   layer->startEditing();
-  if ( wkbType != QgsWkbTypes::NoGeometry )
-    layer->setCrs( clipboard()->crs(), false );
-
   Q_FOREACH ( QgsField f, clipboard()->fields().toList() )
   {
     QgsDebugMsg( QString( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
@@ -8105,7 +8219,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.setGeometry( g );
     }
   }
-  if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
+  if ( ! layer->addFeatures( features ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;
@@ -8709,11 +8823,6 @@ void QgisApp::removingLayers( const QStringList &layers )
 
     toggleEditing( vlayer, false );
   }
-}
-
-void QgisApp::removeAllLayers()
-{
-  QgsProject::instance()->removeAllMapLayers();
 }
 
 void QgisApp::removeLayer()
@@ -10006,7 +10115,7 @@ void QgisApp::closeProject()
   mMapCanvas->clearCache();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->freeze( false );
-  removeAllLayers();
+  QgsProject::instance()->clear();
 }
 
 
@@ -11718,7 +11827,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 #if defined(Q_OS_WIN) && defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
   {
-    qgisCrashDump( 0 );
+    QgsCrashHandler::handle( 0 );
   }
 #endif
   else
@@ -12547,59 +12656,3 @@ void QgisApp::transactionGroupCommitError( const QString &error )
 {
   displayMessage( tr( "Transaction" ), error, QgsMessageBar::CRITICAL );
 }
-
-#ifdef Q_OS_WIN
-LONG WINAPI QgisApp::qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
-{
-  // Crash dump creation will be move to a new class in the near future.
-
-#if 0
-  QString dumpName = QDir::toNativeSeparators(
-                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
-                       .arg( QDir::tempPath() )
-                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
-                       .arg( GetCurrentProcessId() )
-                       .arg( GetCurrentThreadId() )
-                       .arg( Qgis::QGIS_DEV_VERSION )
-                     );
-
-  QString msg;
-  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-  if ( hDumpFile != INVALID_HANDLE_VALUE )
-  {
-    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
-    ExpParam.ThreadId = GetCurrentThreadId();
-    ExpParam.ExceptionPointers = ExceptionInfo;
-    ExpParam.ClientPointers = TRUE;
-
-    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : nullptr, nullptr, nullptr ) )
-    {
-      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
-    }
-    else
-    {
-      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-    }
-
-    CloseHandle( hDumpFile );
-  }
-  else
-  {
-    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
-  }
-#endif
-
-  QgsCrashDialog dlg( QApplication::activeWindow() );
-  if ( dlg.exec() )
-  {
-    QStringList arguments;
-    arguments = QCoreApplication::arguments();
-    QString path = arguments.at( 0 );
-    arguments.removeFirst();
-    arguments << QgsProject::instance()->fileName();
-    QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
-  }
-
-  return EXCEPTION_EXECUTE_HANDLER;
-}
-#endif

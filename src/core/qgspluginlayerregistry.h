@@ -20,6 +20,7 @@
 #define QGSPLUGINLAYERREGSITRY_H
 
 #include <QMap>
+#include "qgis.h"
 #include <QDomNode>
 
 #include "qgis_core.h"
@@ -39,12 +40,12 @@ class CORE_EXPORT QgsPluginLayerType
     QString name();
 
     //! Return new layer of this type. Return NULL on error
-    virtual QgsPluginLayer *createLayer();
+    virtual QgsPluginLayer *createLayer() SIP_FACTORY;
 
     /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
      * \since QGIS 2.10
      */
-    virtual QgsPluginLayer *createLayer( const QString &uri );
+    virtual QgsPluginLayer *createLayer( const QString &uri ) SIP_FACTORY;
 
     //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
     virtual bool showLayerProperties( QgsPluginLayer *layer );
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QStringList pluginLayerTypes();
 
     //! Add plugin layer type (take ownership) and return true on success
-    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType );
+    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType SIP_TRANSFER );
 
     //! Remove plugin layer type and return true on success
     bool removePluginLayerType( const QString &typeName );
@@ -89,7 +90,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
     /** Returns new layer if corresponding plugin has been found else returns a nullptr.
      * \note parameter uri has been added in QGIS 2.10
      */
-    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() );
+    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) SIP_FACTORY;
 
   private:
 

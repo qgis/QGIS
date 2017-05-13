@@ -43,15 +43,17 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void setHeader( const QString &key, const QString &value ) override {  mResponse.setHeader( key, value ); }
 
-    void clearHeader( const QString &key ) override { mResponse.clearHeader( key ); }
+    void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
-    QString getHeader( const QString &key ) const override { return mResponse.getHeader( key ); }
+    QString header( const QString &key ) const override { return mResponse.header( key ); }
 
-    QList<QString> headerKeys() const override { return mResponse.headerKeys(); }
+    QMap<QString, QString> headers() const override { return mResponse.headers( ); }
 
     bool headersSent() const override { return mResponse.headersSent(); }
 
-    void setReturnCode( int code ) override { mResponse.setReturnCode( code ); }
+    void setStatusCode( int code ) override { mResponse.setStatusCode( code ); }
+
+    int statusCode( ) const override { return mResponse.statusCode( ); }
 
     void sendError( int code,  const QString &message ) override { mResponse.sendError( code, message ); }
 

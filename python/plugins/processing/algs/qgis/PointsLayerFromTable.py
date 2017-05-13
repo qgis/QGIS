@@ -29,13 +29,14 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsPointV2,
                        QgsCoordinateReferenceSystem,
-                       QgsGeometry)
+                       QgsGeometry,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class PointsLayerFromTable(GeoAlgorithm):
@@ -81,9 +82,9 @@ class PointsLayerFromTable(GeoAlgorithm):
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)
-        vlayer = dataobjects.getLayerFromString(source)
+        vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)
 
         fields = vlayer.fields()
@@ -106,10 +107,10 @@ class PointsLayerFromTable(GeoAlgorithm):
         target_crs = QgsCoordinateReferenceSystem()
         target_crs.createFromUserInput(crsId)
 
-        writer = output.getVectorWriter(fields, wkb_type, target_crs)
+        writer = output.getVectorWriter(fields, wkb_type, target_crs, context)
 
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
 
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))

@@ -14,10 +14,10 @@ class QgsSmartGroupCondition : QWidget
     QString parameter();
 
     //! sets the given constraint
-    void setConstraint( const QString& constraint );
+    void setConstraint( const QString &constraint );
 
     //! sets the given param
-    void setParameter( const QString& param );
+    void setParameter( const QString &param );
 
     //! sets the remove button hidden state to 'hide'
     void hideRemoveButton( bool hide );
@@ -36,7 +36,7 @@ class QgsSmartGroupEditorDialog : QDialog
 %End
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent /TransferThis/ = NULL );
+    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent /TransferThis/ = NULL );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit

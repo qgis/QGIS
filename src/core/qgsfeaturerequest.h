@@ -16,6 +16,7 @@
 #define QGSFEATUREREQUEST_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QFlags>
 #include <QList>
 #include <memory>
@@ -85,6 +86,14 @@ class CORE_EXPORT QgsFeatureRequest
       FilterFids        //!< Filter using feature IDs
     };
 
+    //! Handling of features with invalid geometries
+    enum InvalidGeometryCheck
+    {
+      GeometryNoCheck = 0, //!< No invalid geometry checking
+      GeometrySkipInvalid = 1, //!< Skip any features with invalid geometry. This requires a slow geometry validity check for every feature.
+      GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
+    };
+
     /** \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
@@ -131,10 +140,38 @@ class CORE_EXPORT QgsFeatureRequest
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 
         /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         *                   If the order is ascending, by default nulls are last
+         *                   If the order is descending, by default nulls are first
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending = true );
+
+        /**
+         * Creates a new OrderByClause for a QgsFeatureRequest
+         *
+         * \param expression The expression to use for ordering
+         * \param ascending  If the order should be ascending (1,2,3) or descending (3,2,1)
+         * \param nullsfirst If true, NULLS are at the beginning, if false, NULLS are at the end
+         */
+        OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
+
+        /**
          * The expression
          * \returns the expression
          */
         QgsExpression expression() const;
+
+        /**
+         * Prepare the expression with the given context.
+         *
+         * \see QgsExpression::prepare
+         *
+         * \since QGIS 3.0
+         */
+        bool prepare( QgsExpressionContext *context );
 
         /**
          * Order ascending
@@ -269,6 +306,40 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
     //! Get feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
+
+    /**
+     * Sets invalid geometry checking behavior.
+     * \note Invalid geometry checking is not performed when retrieving features
+     * directly from a QgsVectorDataProvider.
+     * \see invalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
+
+    /**
+     * Returns the invalid geometry checking behavior.
+     * \see setInvalidGeometryCheck()
+     * \since QGIS 3.0
+     */
+    InvalidGeometryCheck invalidGeometryCheck() const { return mInvalidGeometryFilter; }
+
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * called using the feature with invalid geometry as a parameter.
+     * \since QGIS 3.0
+     * \see invalidGeometryCallback()
+     */
+    QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+
+    /**
+     * Returns the callback function to use when encountering an invalid geometry and
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setInvalidGeometryCallback()
+     */
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
     /** Set the filter expression. {\see QgsExpression}
      * \param expression expression string
@@ -415,6 +486,8 @@ class CORE_EXPORT QgsFeatureRequest
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit = -1;
     OrderBy mOrderBy;
+    InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
@@ -437,7 +510,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
      * \param request The request
      * \returns A feature iterator
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 
   protected:
     void iteratorOpened( QgsAbstractFeatureIterator *it );

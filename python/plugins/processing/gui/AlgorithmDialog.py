@@ -113,6 +113,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def checkExtentCRS(self):
         unmatchingCRS = False
         hasExtent = False
+        context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.alg.parameters:
@@ -128,7 +129,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 if layer.crs() != projectCRS:
                                     unmatchingCRS = True
 
-                        p = dataobjects.getLayerFromString(inputlayer)
+                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True
@@ -144,6 +145,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
+
+        context = dataobjects.createContext()
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
@@ -168,7 +171,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg._checkParameterValuesBeforeExecuting()
+            msg = self.alg._checkParameterValuesBeforeExecuting(context)
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -199,18 +202,17 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
-                if executeIterating(self.alg, self.iterateParam, self.feedback):
-                    self.finish()
+                if executeIterating(self.alg, self.iterateParam, context, self.feedback):
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
                 command = self.alg.getAsCommand()
                 if command:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ALGORITHM, command)
-                if execute(self.alg, self.feedback):
-                    self.finish()
+                    ProcessingLog.addToLog(command)
+                if execute(self.alg, context, self.feedback):
+                    self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -227,11 +229,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self):
+    def finish(self, context):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            if not handleAlgorithmResults(self.alg, self.feedback, not keepOpen):
+            if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()
                 return
 

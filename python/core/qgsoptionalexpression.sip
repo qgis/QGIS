@@ -40,12 +40,12 @@ class QgsOptionalExpression
      * Construct an optional expression with the provided expression.
      * It will be enabled.
      */
-    QgsOptionalExpression( const QgsExpression& expression );
+    QgsOptionalExpression( const QgsExpression &expression );
 
     /**
      * Construct an optional expression with the provided expression and enabled state.
      */
-    QgsOptionalExpression( const QgsExpression& expression, bool enabled );
+    QgsOptionalExpression( const QgsExpression &expression, bool enabled );
 
     /**
      * Compare this QgsOptionalExpression to another one.
@@ -55,7 +55,7 @@ class QgsOptionalExpression
      *
      * @note Added in QGIS 3.0
      */
-    int operator== ( const QgsOptionalExpression& other ) const;
+    int operator== ( const QgsOptionalExpression &other ) const;
 %MethodCode
       sipRes = *sipCpp == *a0;
 %End
@@ -91,7 +91,7 @@ class QgsOptionalExpression
      *
      * @note Added in QGIS 3.0
      */
-    void setData( const QgsExpression& data );
+    void setData( const QgsExpression &data );
 
     /**
      * Save the optional expression to the provided QDomElement.
@@ -101,12 +101,12 @@ class QgsOptionalExpression
      *
      * @note Added in QGIS 2.18
      */
-    void writeXml( QDomElement& element );
+    void writeXml( QDomElement &element );
 
     /**
      * Read the optional expression from the provided QDomElement.
      *
      * @note Added in QGIS 2.18
      */
-    void readXml( const QDomElement& element );
+    void readXml( const QDomElement &element );
 };

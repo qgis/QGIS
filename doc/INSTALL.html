@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday April 20, 2017</H3>
+<H3>Sunday April 30, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday April 20, 2017
-Last Change : Thursday April 20, 2017
+Last Updated: Sunday April 30, 2017
+Last Change : Sunday April 30, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -312,23 +312,23 @@ sudo apt-get update
 </TR>
 <TR>
 <TD>stretch</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>xenial</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>yakkety</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>zesty</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>sid</TD>
-<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qt5keychain-dev qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 </TABLE>
 
@@ -2480,7 +2480,6 @@ mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
--D WITH_PYSPATIALITE=FALSE \
 -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
 -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
 -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
@@ -2647,16 +2646,16 @@ If you installed in /Applications, adjust the path accordingly and prefix the
 whole command with 'sudo '.
 </P>
 <P>
-<B>QGIS Mapserver</B>
+<B>QGIS Server</B>
 </P>
 <P>
-See the QGIS Mapserver wiki page at:
+See the QGIS Server documentation page at:
 </P>
 <P>
-<A HREF="http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial">http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial</A>
+<A HREF="http://docs.qgis.org/2.18/en/docs/user_manual/working_with_ogc/ogc_server_support.html">http://docs.qgis.org/2.18/en/docs/user_manual/working_with_ogc/ogc_server_support.html</A>
 </P>
 <P>
-for instructions on setting up Apache fastcgi and testing Mapserver, including
+for instructions on setting up Apache fastcgi and testing qgis server, including
 installing the mod-fastcgi that is missing on Lion.
 </P>
 

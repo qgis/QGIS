@@ -30,7 +30,14 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsRectangle,
+                       QgsCoordinateReferenceSystem,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -90,7 +97,7 @@ class GridPolygon(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         idx = self.getParameterValue(self.TYPE)
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
@@ -123,15 +130,14 @@ class GridPolygon(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
-        fields = [QgsField('left', QVariant.Double, '', 24, 16),
-                  QgsField('top', QVariant.Double, '', 24, 16),
-                  QgsField('right', QVariant.Double, '', 24, 16),
-                  QgsField('bottom', QVariant.Double, '', 24, 16),
-                  QgsField('id', QVariant.Int, '', 10, 0)
-                  ]
+        fields = QgsFields()
+        fields.append(QgsField('left', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('top', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('right', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('bottom', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, crs)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, crs, context)
 
         if idx == 0:
             self._rectangleGrid(

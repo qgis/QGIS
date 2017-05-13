@@ -28,13 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsApplication,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -82,23 +83,19 @@ class OffsetLine(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.LineString, layer.crs(), context)
 
         distance = self.getParameterValue(self.DISTANCE)
         segments = int(self.getParameterValue(self.SEGMENTS))
         join_style = self.getParameterValue(self.JOIN_STYLE) + 1
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

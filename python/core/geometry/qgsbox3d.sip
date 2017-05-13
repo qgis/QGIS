@@ -18,7 +18,7 @@ class QgsBox3d
  extent of a geometry or collection of geometries.
 
 .. versionadded:: 3.0
- \see QgsRectangle
+.. seealso:: QgsRectangle
 %End
 
 %TypeHeaderCode
@@ -40,90 +40,90 @@ class QgsBox3d
     void setXMinimum( double x );
 %Docstring
  Sets the minimum ``x`` value.
- \see xMinimum()
- \see setXMaximum()
+.. seealso:: xMinimum()
+.. seealso:: setXMaximum()
 %End
 
     void setXMaximum( double x );
 %Docstring
  Sets the maximum ``x`` value.
- \see xMaximum()
- \see setXMinimum()
+.. seealso:: xMaximum()
+.. seealso:: setXMinimum()
 %End
 
     double xMinimum() const;
 %Docstring
  Returns the minimum x value.
- \see setXMinimum()
- \see xMaximum()
+.. seealso:: setXMinimum()
+.. seealso:: xMaximum()
  :rtype: float
 %End
 
     double xMaximum() const;
 %Docstring
  Returns the maximum x value.
- \see setXMaximum()
- \see xMinimum()
+.. seealso:: setXMaximum()
+.. seealso:: xMinimum()
  :rtype: float
 %End
 
     void setYMinimum( double y );
 %Docstring
  Sets the minimum ``y`` value.
- \see yMinimum()
- \see setYMaximum()
+.. seealso:: yMinimum()
+.. seealso:: setYMaximum()
 %End
 
     void setYMaximum( double y );
 %Docstring
  Sets the maximum ``y`` value.
- \see yMaximum()
- \see setYMinimum()
+.. seealso:: yMaximum()
+.. seealso:: setYMinimum()
 %End
 
     double yMinimum() const;
 %Docstring
  Returns the minimum y value.
- \see setYMinimum()
- \see yMaximum()
+.. seealso:: setYMinimum()
+.. seealso:: yMaximum()
  :rtype: float
 %End
 
     double yMaximum() const;
 %Docstring
  Returns the maximum y value.
- \see setYMaximum()
- \see yMinimum()
+.. seealso:: setYMaximum()
+.. seealso:: yMinimum()
  :rtype: float
 %End
 
     void setZMinimum( double z );
 %Docstring
  Sets the minimum ``z`` value.
- \see zMinimum()
- \see setZMaximum()
+.. seealso:: zMinimum()
+.. seealso:: setZMaximum()
 %End
 
     void setZMaximum( double z );
 %Docstring
  Sets the maximum ``z`` value.
- \see zMaximum()
- \see setZMinimum()
+.. seealso:: zMaximum()
+.. seealso:: setZMinimum()
 %End
 
     double zMinimum() const;
 %Docstring
  Returns the minimum z value.
- \see setZMinimum()
- \see zMaximum()
+.. seealso:: setZMinimum()
+.. seealso:: zMaximum()
  :rtype: float
 %End
 
     double zMaximum() const;
 %Docstring
  Returns the maximum z value.
- \see setZMaximum()
- \see zMinimum()
+.. seealso:: setZMaximum()
+.. seealso:: zMinimum()
  :rtype: float
 %End
 
@@ -135,24 +135,24 @@ class QgsBox3d
     double width() const;
 %Docstring
  Returns the width of the box.
- \see height()
- \see depth()
+.. seealso:: height()
+.. seealso:: depth()
  :rtype: float
 %End
 
     double height() const;
 %Docstring
  Returns the height of the box.
- \see width()
- \see depth()
+.. seealso:: width()
+.. seealso:: depth()
  :rtype: float
 %End
 
     double depth() const;
 %Docstring
  Returns the depth of the box.
- \see width()
- \see height()
+.. seealso:: width()
+.. seealso:: height()
  :rtype: float
 %End
 
@@ -211,4 +211,3 @@ class QgsBox3d
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

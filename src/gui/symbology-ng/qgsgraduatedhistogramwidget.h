@@ -18,6 +18,7 @@
 #define QGSGRADUATEDHISTOGRAMWIDGET_H
 
 #include "qgshistogramwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QwtPlotPicker;
@@ -40,7 +41,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     /** QgsGraduatedHistogramWidget constructor
      * \param parent parent widget
      */
-    QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
+    QgsGraduatedHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
@@ -74,11 +75,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
-#else
-    HistogramItem *createHistoItem( const QString &title, const QColor &color ) const;
-#endif
 
 };
 

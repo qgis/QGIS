@@ -83,7 +83,6 @@ QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers )
   , mRenderHints( 0 )
   , mClipFeaturesToExtent( true )
   , mLayer( nullptr )
-  , mSymbolRenderContext( nullptr )
 {
 
   // check they're all correct symbol layers
@@ -188,7 +187,6 @@ void QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderC
 
 QgsSymbol::~QgsSymbol()
 {
-  delete mSymbolRenderContext;
   // delete all symbol layers (we own them, so it's okay)
   qDeleteAll( mLayers );
 }
@@ -377,14 +375,12 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 
 void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  delete mSymbolRenderContext;
-  mSymbolRenderContext = new QgsSymbolRenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
+  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() ) );
 
   QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
 
-  QgsExpressionContextScope *scope = QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() );
-
-  mSymbolRenderContext->setExpressionContextScope( scope );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
+  mSymbolRenderContext->setExpressionContextScope( scope.release() );
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
@@ -410,8 +406,7 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
     }
   }
 
-  delete mSymbolRenderContext;
-  mSymbolRenderContext = nullptr;
+  mSymbolRenderContext.reset( nullptr );
 
   mLayer = nullptr;
 }
@@ -643,6 +638,27 @@ bool QgsSymbol::hasDataDefinedProperties() const
   return false;
 }
 
+///@cond PRIVATE
+
+/**
+ * RAII class to pop scope from an expression context on destruction
+ */
+class ExpressionContextScopePopper
+{
+  public:
+
+    ExpressionContextScopePopper() = default;
+
+    ~ExpressionContextScopePopper()
+    {
+      if ( context )
+        context->popScope();
+    }
+
+    QgsExpressionContext *context = nullptr;
+};
+///@endcond PRIVATE
+
 void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
 {
   QgsGeometry geom = feature.geometry();
@@ -672,9 +688,17 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry.geometry()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
 
+  ExpressionContextScopePopper scopePopper;
   if ( mSymbolRenderContext->expressionContextScope() )
   {
+    // this is somewhat nasty - by appending this scope here it's now owned
+    // by both mSymbolRenderContext AND context.expressionContext()
+    // the RAII scopePopper is required to make sure it always has ownership transferred back
+    // from context.expressionContext(), even if exceptions of other early exits occur in this
+    // function
     context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+    scopePopper.context = &context.expressionContext();
+
     QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
     mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
     mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
@@ -952,14 +976,11 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       }
     }
   }
-
-  if ( mSymbolRenderContext->expressionContextScope() )
-    context.expressionContext().popScope();
 }
 
 QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
 {
-  return mSymbolRenderContext;
+  return mSymbolRenderContext.get();
 }
 
 void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize )
@@ -972,7 +993,6 @@ void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int c
 
 QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, QgsSymbol::RenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
   : mRenderContext( c )
-  , mExpressionContextScope( nullptr )
   , mOutputUnit( u )
   , mMapUnitScale( mapUnitScale )
   , mAlpha( alpha )
@@ -983,11 +1003,6 @@ QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitType
   , mGeometryPartCount( 0 )
   , mGeometryPartNum( 0 )
 {
-}
-
-QgsSymbolRenderContext::~QgsSymbolRenderContext()
-{
-  delete mExpressionContextScope;
 }
 
 void QgsSymbolRenderContext::setOriginalValueVariable( const QVariant &value )
@@ -1017,12 +1032,12 @@ QgsSymbolRenderContext &QgsSymbolRenderContext::operator=( const QgsSymbolRender
 
 QgsExpressionContextScope *QgsSymbolRenderContext::expressionContextScope()
 {
-  return mExpressionContextScope;
+  return mExpressionContextScope.get();
 }
 
 void QgsSymbolRenderContext::setExpressionContextScope( QgsExpressionContextScope *contextScope )
 {
-  mExpressionContextScope = contextScope;
+  mExpressionContextScope.reset( contextScope );
 }
 
 ///////////////////

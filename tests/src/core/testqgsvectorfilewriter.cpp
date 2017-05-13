@@ -77,7 +77,7 @@ class TestQgsVectorFileWriter: public QObject
     void polygonGridTest();
     //! As above but using a projected CRS
     void projectedPlygonGridTest();
-    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) http://hub.qgis.org/issues/1141
+    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://issues.qgis.org/issues/1141
     void regression1141();
 
   private:

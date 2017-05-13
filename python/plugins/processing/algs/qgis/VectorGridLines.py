@@ -83,7 +83,7 @@ class VectorGridLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)
@@ -98,8 +98,7 @@ class VectorGridLines(GeoAlgorithm):
 
         fields.append(QgsField('coord', QVariant.Double, '', 24, 15))
         fieldCount = 2
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.LineString, mapCRS)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, mapCRS, context)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)

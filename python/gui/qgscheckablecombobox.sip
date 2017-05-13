@@ -34,7 +34,7 @@ class QgsCheckableComboBox : QComboBox
     QString separator() const;
 %Docstring
  Returns separator used to separate items in the display text.
- \see setSeparator()
+.. seealso:: setSeparator()
  :rtype: str
 %End
 
@@ -42,14 +42,14 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Set separator used to separate items in the display text.
  \param separator separator to use
- \see separator()
+.. seealso:: separator()
 %End
 
     QString defaultText() const;
 %Docstring
  Returns default text which will be displayed in the widget
  when no items selected.
- \see setDefaultText()
+.. seealso:: setDefaultText()
  :rtype: str
 %End
 
@@ -58,13 +58,13 @@ class QgsCheckableComboBox : QComboBox
  Set default text which will be displayed in the widget when
  no items selected.
  \param text default text
- \see defaultText()
+.. seealso:: defaultText()
 %End
 
     QStringList checkedItems() const;
 %Docstring
  Returns currently checked items.
- \see setCheckedItems()
+.. seealso:: setCheckedItems()
  :rtype: list of str
 %End
 
@@ -72,8 +72,8 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Returns the checked state of the item identified by index
  \param index item index
- \see setItemCheckState()
- \see toggleItemCheckState()
+.. seealso:: setItemCheckState()
+.. seealso:: toggleItemCheckState()
  :rtype: Qt.CheckState
 %End
 
@@ -82,16 +82,16 @@ class QgsCheckableComboBox : QComboBox
  Sets the item check state to state
  \param index item index
  \param state check state
- \see itemCheckState()
- \see toggleItemCheckState()
+.. seealso:: itemCheckState()
+.. seealso:: toggleItemCheckState()
 %End
 
     void toggleItemCheckState( int index );
 %Docstring
  Toggles the item check state
  \param index item index
- \see itemCheckState()
- \see setItemCheckState()
+.. seealso:: itemCheckState()
+.. seealso:: setItemCheckState()
 %End
 
     virtual void hidePopup();
@@ -119,7 +119,7 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Set items which should be checked/selected.
  \param items items to select
- \see checkedItems()
+.. seealso:: checkedItems()
 %End
 
   protected:
@@ -156,4 +156,3 @@ class QgsCheckableComboBox : QComboBox
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

@@ -22,20 +22,20 @@ class QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSel
 %End
 
   public:
-    QgsStyleGroupSelectionDialog( QgsStyle* style, QWidget *parent = 0 );
+    QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent = 0 );
     ~QgsStyleGroupSelectionDialog();
     //! Set bold font for item
     void setBold( QStandardItem *item );
 
   signals:
     //! tag with tagName has been selected
-    void tagSelected( const QString& tagName );
+    void tagSelected( const QString &tagName );
     //! tag with tagName has been deselected
-    void tagDeselected( const QString& tagName );
+    void tagDeselected( const QString &tagName );
     //! smartgroup with groupName has been selected
-    void smartgroupSelected( const QString& groupName );
+    void smartgroupSelected( const QString &groupName );
     //! smart group with groupName has been deselected
-    void smartgroupDeselected( const QString& groupName );
+    void smartgroupDeselected( const QString &groupName );
     //! all deselected
     void allDeselected();
     //! all selected

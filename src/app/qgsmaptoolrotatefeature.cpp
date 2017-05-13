@@ -284,7 +284,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       mRubberBand = createRubberBand( vlayer->geometryType() ) ;
 
       QgsFeature feat;
-      QgsFeatureIterator it = vlayer->selectedFeaturesIterator();
+      QgsFeatureIterator it = vlayer->getSelectedFeatures();
       while ( it.nextFeature( feat ) )
       {
         mRubberBand->addGeometry( feat.geometry(), vlayer );

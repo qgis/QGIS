@@ -15,11 +15,9 @@
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequence;
 
 
-
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink
 {
 %Docstring
  Represents a vector layer which manages a vector based data sets.
@@ -291,7 +289,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
  Provider to display vector data in a GRASS GIS layer.
 
  TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
- \see QgsVectorLayerUtils()
+.. seealso:: QgsVectorLayerUtils()
 %End
 
 %TypeHeaderCode
@@ -335,7 +333,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     virtual ~QgsVectorLayer();
 
-//     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
+
     QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.
@@ -360,7 +358,7 @@ Returns a comment for the data in the layer
  If the displayExpression is more complex than a simple field, a null string will
  be returned.
 
- \see displayExpression
+.. seealso:: displayExpression
  :rtype: str
 %End
 
@@ -426,7 +424,7 @@ Setup the coordinate system transformation for the layer
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 %Docstring
  Sets the list of dependencies.
- \see dependencies()
+.. seealso:: dependencies()
 
  \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
  :return: false if a dependency cycle has been detected
@@ -436,7 +434,7 @@ Setup the coordinate system transformation for the layer
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
- Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
+.. seealso:: setDataDependencies)
  as well as dependencies given by the provider
 
  :return: a set of QgsMapLayerDependency
@@ -512,9 +510,9 @@ Setup the coordinate system transformation for the layer
  \param rect search rectangle
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
- \see invertSelectionInRectangle(QgsRectangle & rect)
- \see selectByExpression()
- \see selectByIds()
+.. seealso:: invertSelectionInRectangle(QgsRectangle & rect)
+.. seealso:: selectByExpression()
+.. seealso:: selectByIds()
 %End
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
@@ -524,8 +522,8 @@ Setup the coordinate system transformation for the layer
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
- \see selectByRect()
- \see selectByIds()
+.. seealso:: selectByRect()
+.. seealso:: selectByIds()
 %End
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
@@ -536,8 +534,8 @@ Setup the coordinate system transformation for the layer
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
- \see selectByRect()
- \see selectByExpression()
+.. seealso:: selectByRect()
+.. seealso:: selectByExpression()
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -547,11 +545,11 @@ Setup the coordinate system transformation for the layer
  \param selectIds    Select these ids
  \param deselectIds  Deselect these ids
 
- \see   select(QgsFeatureIds)
- \see   select(QgsFeatureId)
- \see   deselect(QgsFeatureIds)
- \see   deselect(QgsFeatureId)
- \see selectByExpression()
+.. seealso::   select(QgsFeatureIds)
+.. seealso::   select(QgsFeatureId)
+.. seealso::   deselect(QgsFeatureIds)
+.. seealso::   deselect(QgsFeatureId)
+.. seealso:: selectByExpression()
 %End
 
     void invertSelection();
@@ -576,7 +574,7 @@ Get all feature Ids
 
  \param rect  The rectangle in which the selection of features will be inverted
 
- \see   invertSelection()
+.. seealso::   invertSelection()
 %End
 
     QgsFeatureList selectedFeatures() const;
@@ -585,12 +583,12 @@ Get all feature Ids
 
  :return: A list of QgsFeature
 
- \see    selectedFeatureIds()
- \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
+.. seealso::    selectedFeatureIds()
+.. seealso::    getSelectedFeatures() which is more memory friendly when handling large selections
  :rtype: QgsFeatureList
 %End
 
-    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
+    QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 %Docstring
  Get an iterator of the selected features
 
@@ -599,8 +597,8 @@ Get all feature Ids
 
  :return: Iterator over the selected features
 
- \see    selectedFeatureIds()
- \see    selectedFeatures()
+.. seealso::    selectedFeatureIds()
+.. seealso::    selectedFeatures()
  :rtype: QgsFeatureIterator
 %End
 
@@ -609,7 +607,7 @@ Get all feature Ids
  Return reference to identifiers of selected features
 
  :return: A list of QgsFeatureId
- \see selectedFeatures()
+.. seealso:: selectedFeatures()
  :rtype: QgsFeatureIds
 %End
 
@@ -843,11 +841,19 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures();
 %Docstring
- Count features for symbols. Feature counts may be get by featureCount().
- \param showProgress show progress dialog
- :return: true if calculated, false if failed or was canceled by user
+ Count features for symbols.
+ The method will return immediately. You will need to connect to the
+ symbolFeatureCountMapChanged() signal to be notified when the freshly updated
+ feature counts are ready.
+
+.. note::
+
+   If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
+       task and call waitForFinished().
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -901,14 +907,8 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
-%Docstring
- Adds a feature
-\param feature feature to add
-\param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-:return:                    True in case of success and False in case of error
- :rtype: bool
-%End
+    virtual bool addFeature( QgsFeature &feature );
+
 
     bool updateFeature( QgsFeature &f );
 %Docstring
@@ -973,25 +973,21 @@ changeGeometry() instead.
 
     int addRing( const QList<QgsPoint> &ring, QgsFeatureId *featureId = 0 );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addPart( const QList<QgsPoint> &ring );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
@@ -1015,13 +1011,11 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
 
     int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
     int splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
 %Docstring
-TODO QGIS 3.0 returns an enum instead of a magic constant
  :rtype: int
 %End
 
@@ -1202,7 +1196,7 @@ Change feature's geometry
 %Docstring
  Returns the alias of an attribute name or a null string if there is no alias.
 
- \see {attributeDisplayName( int attributeIndex )} which returns the field name
+.. seealso:: {attributeDisplayName( int attributeIndex )} which returns the field name
       if no alias is defined.
  :rtype: str
 %End
@@ -1256,11 +1250,8 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    bool addFeatures( QgsFeatureList features, bool makeSelected = true );
-%Docstring
-Insert a copy of the given features into the layer  (but does not commit it)
- :rtype: bool
-%End
+    virtual bool addFeatures( QgsFeatureList &features );
+
 
     bool deleteFeature( QgsFeatureId fid );
 %Docstring
@@ -1293,7 +1284,7 @@ Delete a feature from the layer (but does not commit it)
  so if a stage fails, it's difficult to roll back cleanly.
  Therefore any error message also includes which stage failed so
  that the user has some chance of repairing the damage cleanly.
- \see commitErrors()
+.. seealso:: commitErrors()
  :rtype: bool
 %End
 
@@ -1301,7 +1292,7 @@ Delete a feature from the layer (but does not commit it)
 %Docstring
  Returns a list containing any error messages generated when attempting
  to commit changes to the layer.
- \see commitChanges()
+.. seealso:: commitChanges()
  :rtype: list of str
 %End
 
@@ -1386,7 +1377,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  specified, a default context will be created
  :return: calculated default value
 .. versionadded:: 3.0
- \see setDefaultValueExpression()
+.. seealso:: setDefaultValueExpression()
  :rtype: QVariant
 %End
 
@@ -1397,8 +1388,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  \param expression expression to evaluate when calculating default values for field. Pass
  an empty expression to clear the default.
 .. versionadded:: 3.0
- \see defaultValue()
- \see defaultValueExpression()
+.. seealso:: defaultValue()
+.. seealso:: defaultValueExpression()
 %End
 
     QString defaultValueExpression( int index ) const;
@@ -1408,8 +1399,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :return: expression evaluated when calculating default values for field, or an
  empty string if no default is set
 .. versionadded:: 3.0
- \see defaultValue()
- \see setDefaultValueExpression()
+.. seealso:: defaultValue()
+.. seealso:: setDefaultValueExpression()
  :rtype: str
 %End
 
@@ -1419,7 +1410,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  field index. These constraints may be inherited from the layer's data provider
  or may be set manually on the vector layer from within QGIS.
 .. versionadded:: 3.0
- \see setFieldConstraint()
+.. seealso:: setFieldConstraint()
  :rtype: QgsFieldConstraints.Constraints
 %End
 
@@ -1429,8 +1420,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
  constraints to be added on top of the existing provider constraints.
 .. versionadded:: 3.0
- \see fieldConstraints()
- \see removeFieldConstraint()
+.. seealso:: fieldConstraints()
+.. seealso:: removeFieldConstraint()
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
@@ -1438,17 +1429,17 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Removes a constraint for a specified field index. Any constraints inherited from the layer's
  data provider will be kept intact and cannot be removed.
 .. versionadded:: 3.0
- \see fieldConstraints()
- \see setFieldConstraint()
+.. seealso:: fieldConstraints()
+.. seealso:: setFieldConstraint()
 %End
 
     QString constraintExpression( int index ) const;
 %Docstring
  Returns the constraint expression for for a specified field index, if set.
 .. versionadded:: 3.0
- \see fieldConstraints()
- \see constraintDescription()
- \see setConstraintExpression()
+.. seealso:: fieldConstraints()
+.. seealso:: constraintDescription()
+.. seealso:: setConstraintExpression()
  :rtype: str
 %End
 
@@ -1456,9 +1447,9 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 %Docstring
  Returns the descriptive name for the constraint expression for a specified field index.
 .. versionadded:: 3.0
- \see constraints()
- \see constraintExpression()
- \see setConstraintExpression()
+.. seealso:: constraints()
+.. seealso:: constraintExpression()
+.. seealso:: setConstraintExpression()
  :rtype: str
 %End
 
@@ -1467,9 +1458,9 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Set the constraint expression for the specified field index. An optional descriptive name for the constraint
  can also be set. Setting an empty expression will clear any existing expression constraint.
 .. versionadded:: 3.0
- \see constraintExpression()
- \see constraintDescription()
- \see constraints()
+.. seealso:: constraintExpression()
+.. seealso:: constraintDescription()
+.. seealso:: constraints()
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
@@ -1496,8 +1487,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  \param index column index for attribute
  \param uniqueValues out: result list
  \param limit maximum number of values to return (or -1 if unlimited)
- \see minimumValue()
- \see maximumValue()
+.. seealso:: minimumValue()
+.. seealso:: maximumValue()
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -1523,8 +1514,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the minimum).
- \see maximumValue()
- \see uniqueValues()
+.. seealso:: maximumValue()
+.. seealso:: uniqueValues()
  :rtype: QVariant
 %End
 
@@ -1534,8 +1525,8 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the maximum).
- \see minimumValue()
- \see uniqueValues()
+.. seealso:: minimumValue()
+.. seealso:: uniqueValues()
  :rtype: QVariant
 %End
 
@@ -1565,7 +1556,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  \param feedback optional feedback object to allow cancelation
  :return: list of fetched values
 .. versionadded:: 2.9
- \see getDoubleValues
+.. seealso:: getDoubleValues
  :rtype: list of QVariant
 %End
 
@@ -1580,7 +1571,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  \param feedback optional feedback object to allow cancelation
  :return: list of fetched values
 .. versionadded:: 2.9
- \see getValues
+.. seealso:: getValues
  :rtype: list of float
 %End
 
@@ -1605,7 +1596,6 @@ Returns the current transparency for the vector layer
 %End
 
     virtual QString htmlMetadata() const;
-
 
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
@@ -1705,7 +1695,7 @@ Returns the current transparency for the vector layer
 
  \param featureId  The id of the feature to select
 
- \see select(QgsFeatureIds)
+.. seealso:: select(QgsFeatureIds)
 %End
 
     void select( const QgsFeatureIds &featureIds );
@@ -1714,7 +1704,7 @@ Returns the current transparency for the vector layer
 
  \param featureIds The ids of the features to select
 
- \see select(QgsFeatureId)
+.. seealso:: select(QgsFeatureId)
 %End
 
     void deselect( const QgsFeatureId featureId );
@@ -1723,7 +1713,7 @@ Returns the current transparency for the vector layer
 
  \param featureId  The id of the feature to deselect
 
- \see deselect(QgsFeatureIds)
+.. seealso:: deselect(QgsFeatureIds)
 %End
 
     void deselect( const QgsFeatureIds &featureIds );
@@ -1732,14 +1722,14 @@ Returns the current transparency for the vector layer
 
  \param featureIds The ids of the features to deselect
 
- \see deselect(QgsFeatureId)
+.. seealso:: deselect(QgsFeatureId)
 %End
 
     void removeSelection();
 %Docstring
  Clear selection
 
- \see selectByIds()
+.. seealso:: selectByIds()
 %End
 
     virtual void updateExtents();
@@ -1814,7 +1804,7 @@ Is emitted, before changes are rolled back
 
  \param idx The index of the new attribute
 
- \see updatedFields()
+.. seealso:: updatedFields()
 %End
 
     void beforeAddingExpressionField( const QString &fieldName );
@@ -1832,7 +1822,7 @@ Is emitted, before changes are rolled back
 
  \param idx The index of the deleted attribute
 
- \see updatedFields()
+.. seealso:: updatedFields()
 %End
 
     void beforeRemovingExpressionField( int idx );
@@ -1854,7 +1844,7 @@ Is emitted, before changes are rolled back
 %Docstring
  Emitted when a feature has been deleted.
 
- If you do expensive operations in a slot connected to this, you should prever to use
+ If you do expensive operations in a slot connected to this, you should prefer to use
  featuresDeleted( const QgsFeatureIds& ).
 
  \param fid The id of the feature which has been deleted
@@ -2018,6 +2008,12 @@ Signal emitted when setLayerTransparency() is called
 .. versionadded:: 3.0
 %End
 
+    void symbolFeatureCountMapChanged();
+%Docstring
+ Emitted when the feature count for symbols on this layer has been recalculated.
+
+.. versionadded:: 3.0
+%End
 
   protected:
     virtual void setExtent( const QgsRectangle &rect );
@@ -2037,4 +2033,3 @@ Set the extent
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

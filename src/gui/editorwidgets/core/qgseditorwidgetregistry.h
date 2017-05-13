@@ -17,6 +17,8 @@
 #define QGSEDITORWIDGETREGISTRY_H
 
 #include <QObject>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QMap>
 #include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
@@ -98,8 +100,8 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     int fieldIdx,
                                     const QVariantMap &config,
                                     QWidget *editor,
-                                    QWidget *parent,
-                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+                                    QWidget *parent SIP_TRANSFERTHIS,
+                                    const QgsAttributeEditorContext &context  SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
@@ -116,15 +118,15 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
                                     int fieldIdx,
                                     QWidget *editor,
-                                    QWidget *parent,
-                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+                                    QWidget *parent SIP_TRANSFERTHIS,
+                                    const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
     QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
         QgsVectorLayer *vl,
         int fieldIdx,
         const QVariantMap &config,
-        QWidget *parent,
-        const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+        QWidget *parent SIP_TRANSFERTHIS,
+        const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) SIP_FACTORY;
 
     /**
      * Creates a configuration widget
@@ -136,7 +138,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \returns A new configuration widget
      */
-    QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
+    QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS ) SIP_FACTORY;
 
     /**
      * Get the human readable name for a widget type
@@ -169,7 +171,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * \returns true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
-    bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory );
+    bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory SIP_TRANSFER );
 
     /**
      * Register a new auto-conf plugin.

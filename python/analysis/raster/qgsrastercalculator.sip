@@ -5,7 +5,7 @@ struct QgsRasterCalculatorEntry
 %End
 
   QString ref; //name
-  QgsRasterLayer* raster; //pointer to rasterlayer
+  QgsRasterLayer *raster;
   int bandNumber; //raster band number
 };
 
@@ -39,7 +39,7 @@ class QgsRasterCalculator
      * @param rasterEntries list of referenced raster layers
      */
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-                         const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
+                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
@@ -53,10 +53,10 @@ class QgsRasterCalculator
      * @note added in QGIS 2.10
      */
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-                         const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
+                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
-    int processCalculation( QProgressDialog* p = 0 );
+    int processCalculation( QProgressDialog *p = 0 );
 };

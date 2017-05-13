@@ -19,6 +19,8 @@
 #define QGSCOMPOSERMAPGRID_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
@@ -60,7 +62,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * \see removeGrid
      */
-    void addGrid( QgsComposerMapGrid *grid );
+    void addGrid( QgsComposerMapGrid *grid SIP_TRANSFER );
 
     /** Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
      * \param gridId id for the QgsComposerMapGrid to remove
@@ -479,7 +481,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * \see setMarkerSymbol
      * \see setStyle
      */
-    void setLineSymbol( QgsLineSymbol *symbol );
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -489,7 +491,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * \see style
      * \note not available in Python bindings
      */
-    const QgsLineSymbol *lineSymbol() const { return mGridLineSymbol; }
+    const QgsLineSymbol *lineSymbol() const { return mGridLineSymbol; } SIP_SKIP
 
     /** Gets the line symbol used for drawing grid lines. This is only used for grids with
      * QgsComposerMapGrid::Solid or QgsComposerMapGrid::Cross styles.
@@ -517,7 +519,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * \see style
      * \note not available in Python bindings
      */
-    const QgsMarkerSymbol *markerSymbol() const { return mGridMarkerSymbol; }
+    const QgsMarkerSymbol *markerSymbol() const { return mGridMarkerSymbol; } SIP_SKIP
 
     /** Gets the marker symbol used for drawing grid points. This is only used for grids with a
      * QgsComposerMapGrid::Markers style.

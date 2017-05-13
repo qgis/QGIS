@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 from osgeo import gdal
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
-from processing.tools import dataobjects
 
 
 class CreateConstantRaster(GeoAlgorithm):
@@ -67,9 +67,8 @@ class CreateConstantRaster(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         value = self.getParameterValue(self.NUMBER)
 
         output = self.getOutputFromName(self.OUTPUT)

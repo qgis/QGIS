@@ -26,8 +26,9 @@ __copyright__ = '(C) 2012, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
-                       QgsVectorLayerImport,
-                       QgsApplication)
+                       QgsVectorLayerExporter,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -35,7 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, spatialite
+from processing.tools import spatialite
 
 
 class ImportIntoSpatialite(GeoAlgorithm):
@@ -80,7 +81,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         database = self.getParameterValue(self.DATABASE)
         uri = QgsDataSourceUri(database)
         if uri.database() is '':
@@ -98,7 +99,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(layerUri)
+        layer = QgsProcessingUtils.mapLayerFromString(layerUri, context)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:
@@ -133,12 +134,11 @@ class ImportIntoSpatialite(GeoAlgorithm):
         if encoding:
             layer.setProviderEncoding(encoding)
 
-        (ret, errMsg) = QgsVectorLayerImport.importLayer(
+        (ret, errMsg) = QgsVectorLayerExporter.exportLayer(
             layer,
             uri.uri(),
             providerName,
             self.crs,
-            False,
             False,
             options,
         )

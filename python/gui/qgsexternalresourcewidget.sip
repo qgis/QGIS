@@ -11,6 +11,14 @@
 
 
 
+%ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsexternalresourcewidget.h>
+%End
+
+
 class QgsExternalResourceWidget : QWidget
 {
 %Docstring
@@ -21,6 +29,13 @@ class QgsExternalResourceWidget : QWidget
 
 %TypeHeaderCode
 #include "qgsexternalresourcewidget.h"
+%End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
+      sipType = sipType_QgsExternalResourceWidget;
+    else
+      sipType = NULL;
 %End
   public:
     enum DocumentViewerContent
@@ -34,7 +49,7 @@ class QgsExternalResourceWidget : QWidget
 %Docstring
  QgsExternalResourceWidget creates a widget with a file widget and a document viewer
  Both part of the widget are optional.
- \see QgsFileWidget
+.. seealso:: QgsFileWidget
 %End
 
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
@@ -141,4 +156,3 @@ emitteed as soon as the current document changes
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

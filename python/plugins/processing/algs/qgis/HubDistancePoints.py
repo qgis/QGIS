@@ -34,7 +34,8 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsProject)
+                       QgsProject,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -42,7 +43,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from math import sqrt
 
@@ -94,11 +95,9 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layerPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.POINTS))
-        layerHubs = dataobjects.getLayerFromString(
-            self.getParameterValue(self.HUBS))
+    def processAlgorithm(self, context, feedback):
+        layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
+        layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         fieldName = self.getParameterValue(self.FIELD)
 
         units = self.UNITS[self.getParameterValue(self.UNIT)]
@@ -111,18 +110,18 @@ class HubDistancePoints(GeoAlgorithm):
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layerPoints.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layerPoints.crs(),
+                                                                     context)
 
-        index = vector.spatialindex(layerHubs)
+        index = QgsProcessingUtils.createSpatialIndex(layerHubs, context)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())
         distance.setEllipsoid(QgsProject.instance().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
-        features = vector.features(layerPoints)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layerPoints, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

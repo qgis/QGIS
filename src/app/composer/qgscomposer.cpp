@@ -763,6 +763,8 @@ void QgsComposer::connectViewSlots()
   //listen out for position updates from the QgsComposerView
   connect( mView, &QgsComposerView::cursorPosChanged, this, &QgsComposer::updateStatusCursorPos );
   connect( mView, &QgsComposerView::zoomLevelChanged, this, &QgsComposer::updateStatusZoom );
+
+  connect( mView, &QgsComposerView::zoomLevelChanged, this, &QgsComposer::invalidateCachedRenders );
 }
 
 void QgsComposer::connectCompositionSlots()
@@ -774,7 +776,6 @@ void QgsComposer::connectCompositionSlots()
 
   connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setWindowTitle );
   connect( mComposition, &QgsComposition::selectedItemChanged, this, &QgsComposer::showItemOptions );
-  connect( mComposition, &QgsComposition::itemAdded, this, &QgsComposer::compositionItemAdded );
   connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposer::deleteItem );
   connect( mComposition, &QgsComposition::paperSizeChanged, this, [ = ]
   {
@@ -802,6 +803,7 @@ void QgsComposer::connectOtherSlots()
   connect( mVerticalRuler, &QgsComposerRuler::cursorPosChanged, this, &QgsComposer::updateStatusCursorPos );
   //listen out for zoom updates
   connect( this, &QgsComposer::zoomLevelChanged, this, &QgsComposer::updateStatusZoom );
+  connect( this, &QgsComposer::zoomLevelChanged, this, &QgsComposer::invalidateCachedRenders );
 }
 
 void QgsComposer::open()
@@ -1007,11 +1009,15 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
 }
 
-void QgsComposer::compositionItemAdded( QgsComposerItem *item )
+void QgsComposer::invalidateCachedRenders()
 {
-  if ( item && item->type() == QgsComposerItem::ComposerMap )
+  //redraw cached map items
+  QList< QgsComposerMap *> maps;
+  mComposition->composerItems( maps );
+
+  Q_FOREACH ( QgsComposerMap *map, maps )
   {
-    connect( this, &QgsComposer::zoomLevelChanged, static_cast< QgsComposerMap *>( item ), &QgsComposerMap::renderModeUpdateCachedImage );
+    map->invalidateCache();
   }
 }
 
@@ -1045,6 +1051,9 @@ QgsPanelWidget *QgsComposer::createItemWidget( QgsComposerItem *item )
 
     case QgsComposerItem::ComposerPicture:
       return new QgsComposerPictureWidget( static_cast< QgsComposerPicture * >( item ) );
+
+    case QgsComposerItem::ComposerShape:
+      return new QgsComposerShapeWidget( static_cast< QgsComposerShape * >( item ) );
 
     case QgsComposerItem::ComposerFrame:
     {

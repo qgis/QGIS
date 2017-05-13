@@ -30,14 +30,15 @@ from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsPoint,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class HubLines(GeoAlgorithm):
@@ -74,11 +75,9 @@ class HubLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        layerHub = dataobjects.getLayerFromString(
-            self.getParameterValue(self.HUBS))
-        layerSpoke = dataobjects.getLayerFromString(
-            self.getParameterValue(self.SPOKES))
+    def processAlgorithm(self, context, feedback):
+        layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
+        layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
 
         fieldHub = self.getParameterValue(self.HUB_FIELD)
         fieldSpoke = self.getParameterValue(self.SPOKE_FIELD)
@@ -87,12 +86,12 @@ class HubLines(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layerSpoke.fields(), QgsWkbTypes.LineString, layerSpoke.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layerSpoke.fields(), QgsWkbTypes.LineString,
+                                                                     layerSpoke.crs(), context)
 
-        spokes = vector.features(layerSpoke)
-        hubs = vector.features(layerHub)
-        total = 100.0 / len(spokes)
+        spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
+        hubs = QgsProcessingUtils.getFeatures(layerHub, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

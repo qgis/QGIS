@@ -18,6 +18,7 @@
 #define QGSORDERBYDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
      * \param layer  The vector layer for which the order by should be produced
      * \param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Set the order by to manage

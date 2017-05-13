@@ -33,7 +33,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsDistanceArea
+from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
@@ -41,7 +41,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputTable
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -90,12 +90,10 @@ class PointDistance(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
-    def processAlgorithm(self, feedback):
-        inLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         inField = self.getParameterValue(self.INPUT_FIELD)
-        targetLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.TARGET_LAYER))
+        targetLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET_LAYER), context)
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -103,39 +101,39 @@ class PointDistance(GeoAlgorithm):
         outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
-            nPoints = len(vector.features(targetLayer))
+            nPoints = QgsProcessingUtils.featureCount(targetLayer, context)
 
         self.writer = outputFile.getTableWriter([])
 
         if matType == 0:
             # Linear distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+            self.linearMatrix(context, inLayer, inField, targetLayer, targetField,
                               matType, nPoints, feedback)
         elif matType == 1:
             # Standard distance matrix
-            self.regularMatrix(inLayer, inField, targetLayer, targetField,
+            self.regularMatrix(context, inLayer, inField, targetLayer, targetField,
                                nPoints, feedback)
         elif matType == 2:
             # Summary distance matrix
-            self.linearMatrix(inLayer, inField, targetLayer, targetField,
+            self.linearMatrix(context, inLayer, inField, targetLayer, targetField,
                               matType, nPoints, feedback)
 
-    def linearMatrix(self, inLayer, inField, targetLayer, targetField,
+    def linearMatrix(self, context, inLayer, inField, targetLayer, targetField,
                      matType, nPoints, feedback):
         if matType == 0:
             self.writer.addRecord(['InputID', 'TargetID', 'Distance'])
         else:
             self.writer.addRecord(['InputID', 'MEAN', 'STDDEV', 'MIN', 'MAX'])
 
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
         outIdx = targetLayer.fields().lookupField(targetField)
 
         distArea = QgsDistanceArea()
 
-        features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(inLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(inLayer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = str(inFeat.attributes()[inIdx])
@@ -164,17 +162,17 @@ class PointDistance(GeoAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-    def regularMatrix(self, inLayer, inField, targetLayer, targetField,
+    def regularMatrix(self, context, inLayer, inField, targetLayer, targetField,
                       nPoints, feedback):
-        index = vector.spatialindex(targetLayer)
+        index = QgsProcessingUtils.createSpatialIndex(targetLayer, context)
 
         inIdx = inLayer.fields().lookupField(inField)
 
         distArea = QgsDistanceArea()
 
         first = True
-        features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(inLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(inLayer, context)
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = str(inFeat.attributes()[inIdx])

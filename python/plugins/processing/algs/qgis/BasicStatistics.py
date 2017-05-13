@@ -34,14 +34,14 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -120,32 +120,31 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))
 
         output_file = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], layer.fields())
-        features = vector.features(layer, request)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        count = QgsProcessingUtils.featureCount(layer, context)
 
         data = []
         data.append(self.tr('Analyzed layer: {}').format(layer.name()))
         data.append(self.tr('Analyzed field: {}').format(field_name))
 
         if field.isNumeric():
-            data.extend(self.calcNumericStats(features, feedback, field))
+            data.extend(self.calcNumericStats(features, feedback, field, count))
         elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
-            data.extend(self.calcDateTimeStats(features, feedback, field))
+            data.extend(self.calcDateTimeStats(features, feedback, field, count))
         else:
-            data.extend(self.calcStringStats(features, feedback, field))
+            data.extend(self.calcStringStats(features, feedback, field, count))
 
         self.createHTML(output_file, data)
 
-    def calcNumericStats(self, features, feedback, field):
-        count = len(features)
+    def calcNumericStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
@@ -192,8 +191,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         data.append(self.tr('Interquartile Range (IQR): {}').format(stat.interQuartileRange()))
         return data
 
-    def calcStringStats(self, features, feedback, field):
-        count = len(features)
+    def calcStringStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
@@ -223,8 +221,7 @@ class BasicStatisticsForField(GeoAlgorithm):
 
         return data
 
-    def calcDateTimeStats(self, features, feedback, field):
-        count = len(features)
+    def calcDateTimeStats(self, features, feedback, field, count):
         total = 100.0 / float(count)
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):

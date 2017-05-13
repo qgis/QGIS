@@ -20,6 +20,7 @@
 #include <QColorDialog>
 #include "ui_qgscolordialog.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QColor;
 
@@ -42,7 +43,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param fl window flags
      * \param color initial color for dialog
      */
-    QgsColorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsColorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                     const QColor &color = QColor() );
 
     /** Returns the current color for the dialog

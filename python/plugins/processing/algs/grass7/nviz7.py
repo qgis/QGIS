@@ -33,7 +33,8 @@ import time
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingAlgorithm,
-                       QgsRasterLayer)
+                       QgsRasterLayer,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
@@ -92,7 +93,7 @@ class nviz7(GeoAlgorithm):
             self.tr('GRASS region cellsize (leave 0 for default)'),
             0, None, 0.0))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         commands = []
         vector = self.getParameterValue(self.VECTOR)
         elevation = self.getParameterValue(self.ELEVATION)
@@ -167,13 +168,14 @@ class nviz7(GeoAlgorithm):
 
     def getDefaultCellsize(self):
         cellsize = 0
+        context = dataobjects.createContext()
         for param in self.parameters:
             if param.value:
                 if isinstance(param, ParameterRaster):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getLayerFromString(param.value)
+                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -181,7 +183,7 @@ class nviz7(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getLayerFromString(layername)
+                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -

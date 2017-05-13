@@ -10,7 +10,7 @@ class QgsEditorWidgetSetup
     /**
      * Constructor
      */
-    QgsEditorWidgetSetup( const QString& type, const QVariantMap& config );
+    QgsEditorWidgetSetup( const QString &type, const QVariantMap &config );
     QgsEditorWidgetSetup();
 
     /**

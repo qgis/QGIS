@@ -56,6 +56,7 @@ email                : sherman at mrcc.com
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettingsutils.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgspallabeling.h"
@@ -525,17 +526,6 @@ void QgsMapCanvas::refreshMap()
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
 
-  QStringList layersForGeometryCache;
-  Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-    {
-      if ( vl->isEditable() )
-        layersForGeometryCache << vl->id();
-    }
-  }
-  mJob->setRequestedGeometryCacheForLayers( layersForGeometryCache );
-
   mJob->start();
 
   // from now on we can accept refresh requests again
@@ -723,24 +713,8 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
   painter.end();
   image.save( fileName, format.toLocal8Bit().data() );
 
-  //create a world file to go with the image...
-  QgsRectangle myRect = mapSettings().visibleExtent();
-  QString myHeader;
-  // note: use 17 places of precision for all numbers output
-  //Pixel XDim
-  myHeader += qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
-  //Rotation on y axis - hard coded
-  myHeader += QLatin1String( "0 \r\n" );
-  //Rotation on x axis - hard coded
-  myHeader += QLatin1String( "0 \r\n" );
-  //Pixel YDim - almost always negative - see
-  //http://en.wikipedia.org/wiki/World_file#cite_note-2
-  myHeader += '-' + qgsDoubleToString( mapUnitsPerPixel() ) + "\r\n";
-  //Origin X (center of top left cell)
-  myHeader += qgsDoubleToString( myRect.xMinimum() + ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
-  //Origin Y (center of top left cell)
-  myHeader += qgsDoubleToString( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ) ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( fileName );
+
   // build the world file name
   QString outputSuffix = myInfo.suffix();
   QString myWorldFileName = myInfo.absolutePath() + '/' + myInfo.baseName() + '.'
@@ -751,7 +725,7 @@ void QgsMapCanvas::saveAsImage( const QString &fileName, QPixmap *theQPixmap, co
     return;
   }
   QTextStream myStream( &myWorldFile );
-  myStream << myHeader;
+  myStream << QgsMapSettingsUtils::worldFileContent( mapSettings() );
 } // saveAsImage
 
 

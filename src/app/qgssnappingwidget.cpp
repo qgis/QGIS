@@ -110,6 +110,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
   // tolerance
   mToleranceSpinBox = new QDoubleSpinBox();
+  mToleranceSpinBox->setDecimals( 5 );
+  mToleranceSpinBox->setMaximum( 99999999.990000 );
   mToleranceSpinBox->setToolTip( tr( "Snapping Tolerance in Defined Units" ) );
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
@@ -137,7 +139,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mIntersectionSnappingAction->setToolTip( tr( "Enable Snapping on Intersection" ) );
   mIntersectionSnappingAction->setObjectName( QStringLiteral( "IntersectionSnappingAction" ) );
   connect( mIntersectionSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableIntersectionSnapping );
-
 
   // snapping on intersection button
   mEnableTracingAction = new QAction( tr( "enable tracing" ), this );
@@ -224,7 +225,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingWidget::projectSnapSettingsChanged );
   connect( project, &QgsProject::topologicalEditingChanged, this, &QgsSnappingWidget::projectTopologicalEditingChanged );
   connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSnappingWidget::updateToleranceDecimals );
-
 
   // Slightly modify the config so the settings changed code doesn't early exit
   mConfig = project->snappingConfig();

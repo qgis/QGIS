@@ -99,4 +99,3 @@ Minimum Y-coordinate of the rectangular box used for clipping.
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

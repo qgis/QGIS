@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -35,7 +36,6 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class SelectByAttribute(GeoAlgorithm):
@@ -103,9 +103,9 @@ class SelectByAttribute(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(fileName)
+        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)

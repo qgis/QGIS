@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES(
   .
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ${CMAKE_CURRENT_SOURCE_DIR}/../../core/symbology-ng
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

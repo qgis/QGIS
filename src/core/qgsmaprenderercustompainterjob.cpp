@@ -341,19 +341,6 @@ void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderC
 }
 
 
-void QgsMapRendererJob::updateLayerGeometryCaches()
-{
-  QMap<QString, QgsGeometryCache>::const_iterator it = mGeometryCaches.constBegin();
-  for ( ; it != mGeometryCaches.constEnd(); ++it )
-  {
-    const QgsGeometryCache &cache = it.value();
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( it.key() ) ) )
-      * vl->cache() = cache;
-  }
-  mGeometryCaches.clear();
-}
-
-
 bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
 {
   if ( ml->type() == QgsMapLayer::VectorLayer )

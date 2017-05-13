@@ -20,11 +20,13 @@
 
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
+#include "qgssettings.h"
 
 
 QString QgsOSMDownload::defaultServiceUrl()
 {
-  return QStringLiteral( "http://overpass-api.de/api/interpreter" );
+  QgsSettings settings;
+  return settings.value( "overpass_url", "http://overpass-api.de/api/interpreter" ).toString();
 }
 
 
@@ -37,6 +39,13 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle &rect )
 
 QgsOSMDownload::QgsOSMDownload()
   : mServiceUrl( defaultServiceUrl() )
+  , mReply( nullptr )
+{
+}
+
+QgsOSMDownload::QgsOSMDownload( const QString &query )
+  : mServiceUrl( defaultServiceUrl() )
+  , mQuery( query )
   , mReply( nullptr )
 {
 }

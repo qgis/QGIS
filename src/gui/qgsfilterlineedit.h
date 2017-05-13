@@ -19,9 +19,11 @@
 #define QGSFILTERLINEEDIT_H
 
 #include <QLineEdit>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QToolButton;
+
 
 /** \class QgsFilterLineEdit
  * \ingroup gui
@@ -34,6 +36,16 @@ class QToolButton;
  **/
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFilterLineEdit *>( sipCpp ) )
+      sipType = sipType_QgsFilterLineEdit;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_ENUMS( ClearMode )
     Q_PROPERTY( ClearMode clearMode READ clearMode WRITE setClearMode )
@@ -56,7 +68,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget *parent = nullptr, const QString &nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString::null );
 
     /** Returns true if the widget's clear button is visible.
      * \see setShowClearButton()
@@ -224,7 +236,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
  * of clicks, but override clearValue() and let Qgs(Double)SpinBox handle the clearing
  * themselves.
  */
-class QgsSpinBoxLineEdit : public QgsFilterLineEdit
+class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
 {
     Q_OBJECT
 

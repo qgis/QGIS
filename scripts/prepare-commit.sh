@@ -99,11 +99,9 @@ if [ -s "$ASTYLEDIFF" ]; then
   else
     echo "Files changed (see $ASTYLEDIFF)"
   fi
-  exit 1
 else
   rm $ASTYLEDIFF
 fi
-
 
 
 # verify SIP files
@@ -111,11 +109,11 @@ SIPIFYDIFF=sipify.$REV.diff
 >$SIPIFYDIFF
 for f in $MODIFIED; do
   # if cpp header
-  if [[ $f =~ ^src\/(core|gui|analysis)\/.*\.h$ ]]; then
+  if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
     # look if corresponding SIP file
     #echo $f
     sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
-    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis)\///; s/\.h$/.sip/' <<<$f )
+    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\///; s/\.h$/.sip/' <<<$f )
     if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
       #echo "in SIP"
       sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
@@ -125,13 +123,11 @@ for f in $MODIFIED; do
         m=python/$sip_file.$REV.prepare
         touch python/$sip_file
         cp python/$sip_file $m
-        ${TOPLEVEL}/scripts/sipify.pl $f > $m
-        if diff -u $m python/$sip_file >>$SIPIFYDIFF; then
-          # no difference found
-          rm $m
-        else
+        ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
+        if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
           echo "python/$sip_file is not up to date"
         fi
+        rm $m
       fi
     fi
   fi
@@ -146,6 +142,9 @@ if [[ -s "$SIPIFYDIFF" ]]; then
   exit 1
 else
   rm $SIPIFYDIFF
+fi
+if [ -s "$ASTYLEDIFF" ]; then
+    exit 1
 fi
 
 # If there are whitespace errors, print the offending file names and fail.

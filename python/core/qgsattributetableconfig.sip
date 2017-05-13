@@ -36,6 +36,7 @@ class QgsAttributeTableConfig
 Constructor for ColumnConfig
 %End
 
+
       QgsAttributeTableConfig::Type type;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
       bool hidden;  //!< Flag that controls if the column is hidden
@@ -132,7 +133,7 @@ Constructor for ColumnConfig
 %Docstring
  Returns the width of a column, or -1 if column should use default width.
  \param column column index
- \see setColumnWidth()
+.. seealso:: setColumnWidth()
  :rtype: int
 %End
 
@@ -141,14 +142,14 @@ Constructor for ColumnConfig
  Sets the width of a column.
  \param column column index
  \param width column width in pixels, or -1 if column should use default width
- \see columnWidth()
+.. seealso:: columnWidth()
 %End
 
     bool columnHidden( int column ) const;
 %Docstring
  Returns true if the specified column is hidden.
  \param column column index
- \see setColumnHidden()
+.. seealso:: setColumnHidden()
  :rtype: bool
 %End
 
@@ -157,7 +158,7 @@ Constructor for ColumnConfig
  Sets whether the specified column should be hidden.
  \param column column index
  \param hidden set to true to hide column
- \see columnHidden()
+.. seealso:: columnHidden()
 %End
 
     Qt::SortOrder sortOrder() const;
@@ -188,4 +189,3 @@ Constructor for ColumnConfig
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

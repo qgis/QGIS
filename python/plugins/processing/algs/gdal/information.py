@@ -77,7 +77,7 @@ class information(GdalAlgorithm):
         arguments.append(self.getParameterValue(information.INPUT))
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         GdalUtils.runGdal(self.getConsoleCommands(), feedback)
         output = self.getOutputValue(information.OUTPUT)
         with open(output, 'w') as f:

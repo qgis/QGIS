@@ -7,7 +7,7 @@ class QgsRenderContext
 
   public:
     QgsRenderContext();
-    QgsRenderContext( const QgsRenderContext& rh );
+    QgsRenderContext( const QgsRenderContext &rh );
     ~QgsRenderContext();
 
     /** Enumeration of flags that affect rendering operations.
@@ -49,7 +49,7 @@ class QgsRenderContext
 
     //! create initialized QgsRenderContext instance from given QgsMapSettings
     //! @note added in 2.4
-    static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
+    static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 
     /**
      * Creates a default render context given a pixel based QPainter destination.
@@ -57,20 +57,20 @@ class QgsRenderContext
      * DPI of 88 will be assumed.
      * @note added in QGIS 3.0
      */
-    static QgsRenderContext fromQPainter( QPainter* painter );
+    static QgsRenderContext fromQPainter( QPainter *painter );
 
     //getters
 
-    QPainter* painter();
+    QPainter *painter();
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
      */
     QgsCoordinateTransform coordinateTransform() const;
 
-    const QgsRectangle& extent() const;
+    const QgsRectangle &extent() const;
 
-    const QgsMapToPixel& mapToPixel() const;
+    const QgsMapToPixel &mapToPixel() const;
 
     double scaleFactor() const;
 
@@ -92,7 +92,7 @@ class QgsRenderContext
 
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    // QgsLabelingEngine* labelingEngine() const;
+    // QgsLabelingEngine *labelingEngine() const;
 
     QColor selectionColor() const;
 
@@ -107,24 +107,24 @@ class QgsRenderContext
     //setters
 
     /** Sets coordinate transformation.*/
-    void setCoordinateTransform( const QgsCoordinateTransform& t );
+    void setCoordinateTransform( const QgsCoordinateTransform &t );
 
-    void setMapToPixel( const QgsMapToPixel& mtp );
-    void setExtent( const QgsRectangle& extent );
+    void setMapToPixel( const QgsMapToPixel &mtp );
+    void setExtent( const QgsRectangle &extent );
 
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped );
     void setScaleFactor( double factor );
     void setRendererScale( double scale );
-    void setPainter( QPainter* p );
+    void setPainter( QPainter *p );
 
     void setForceVectorOutput( bool force );
 
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    // void setLabelingEngine( QgsLabelingEngine* engine2 );
-    void setSelectionColor( const QColor& color );
+    // void setLabelingEngine( QgsLabelingEngine *engine2 );
+    void setSelectionColor( const QColor &color );
 
     /** Sets whether vector selections should be shown in the rendered map
      * @param showSelection set to true if selections should be shown
@@ -141,22 +141,22 @@ class QgsRenderContext
     void setUseRenderingOptimization( bool enabled );
 
     //! Added in QGIS v2.4
-    const QgsVectorSimplifyMethod& vectorSimplifyMethod() const;
-    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod );
+    const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
+    void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
      * @see expressionContext()
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
      * @see setExpressionContext()
      * @note added in QGIS 2.12
      */
-    QgsExpressionContext& expressionContext();
+    QgsExpressionContext &expressionContext();
 
     /** Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
@@ -164,26 +164,26 @@ class QgsRenderContext
      * @note added in QGIS 2.12
      * @note not available in Python bindings
      */
-    //const QgsExpressionContext& expressionContext() const;
+    //const QgsExpressionContext &expressionContext() const;
 
     /** Returns pointer to the unsegmentized geometry*/
-    const QgsAbstractGeometry* geometry() const;
+    const QgsAbstractGeometry *geometry() const;
     /** Sets pointer to original (unsegmentized) geometry*/
-    void setGeometry( const QgsAbstractGeometry* geometry );
+    void setGeometry( const QgsAbstractGeometry *geometry );
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
      * @note added in QGIS 2.14
      * @see featureFilterProvider()
      */
-    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /** Get the filter feature provider used for additional filtering of rendered features.
      * @return the filter feature provider
      * @note added in QGIS 2.14
      * @see setFeatureFilterProvider()
      */
-    const QgsFeatureFilterProvider* featureFilterProvider() const;
+    const QgsFeatureFilterProvider *featureFilterProvider() const;
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     @param tolerance the segmentation tolerance*/
@@ -197,8 +197,8 @@ class QgsRenderContext
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 
-    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
-    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
+    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 
 };

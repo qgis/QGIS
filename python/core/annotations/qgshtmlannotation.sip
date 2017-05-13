@@ -40,13 +40,13 @@ class QgsHtmlAnnotation: QgsAnnotation
     void setSourceFile( const QString &htmlFile );
 %Docstring
  Sets the file path for the source HTML file.
- \see sourceFile()
+.. seealso:: sourceFile()
 %End
 
     QString sourceFile() const;
 %Docstring
  Returns the file path for the source HTML file.
- \see setSourceFile()
+.. seealso:: setSourceFile()
  :rtype: str
 %End
 
@@ -76,4 +76,3 @@ class QgsHtmlAnnotation: QgsAnnotation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

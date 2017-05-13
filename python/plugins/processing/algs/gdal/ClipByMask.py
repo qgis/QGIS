@@ -30,6 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import QgsProcessingUtils
 from osgeo import gdal
 
 from processing.core.parameters import (ParameterRaster,
@@ -103,8 +104,8 @@ class ClipByMask(GdalAlgorithm):
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
-        maskLayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.MASK))
+        context = dataobjects.createContext()
+        maskLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.MASK), context)
         ogrMask = ogrConnectionString(mask)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)

@@ -19,7 +19,7 @@
 #define QGSDB2PROVIDER_H
 
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include <qgscoordinatereferencesystem.h>
 #include "qgsgeometry.h"
 #include "qgsfields.h"
@@ -92,7 +92,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

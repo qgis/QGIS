@@ -776,6 +776,23 @@ class TestQgsExpression: public QObject
       QTest::newRow( "make_triangle duplicated point" ) << "geom_to_wkt(make_triangle(make_point(2,4), make_point(2,4), make_point(3,5)))" << false << QVariant( "Triangle ()" );
       QTest::newRow( "make_triangle colinear points" ) << "geom_to_wkt(make_triangle(make_point(0,1), make_point(0,2), make_point(0,3)))" << false << QVariant( "Triangle ()" );
       QTest::newRow( "make_triangle" ) << "geom_to_wkt(make_triangle(make_point(0,0), make_point(5,5), make_point(0,10)))" << false << QVariant( "Triangle ((0 0, 5 5, 0 10, 0 0))" );
+      QTest::newRow( "make_circle not geom" ) << "make_circle('a', 5)" << true << QVariant();
+      QTest::newRow( "make_circle null" ) << "make_circle(NULL, 5)" << false << QVariant();
+      QTest::newRow( "make_circle bad" ) << "make_circle(make_line(make_point(1,2), make_point(3,4)), 5)" << false << QVariant();
+      QTest::newRow( "make_circle" ) << "geom_to_wkt(make_circle(make_point(10,10), 5, 4))" << false << QVariant( "Polygon ((10 15, 15 10, 10 5, 5 10, 10 15))" );
+      QTest::newRow( "make_ellipse not geom" ) << "make_ellipse('a', 5, 2, 0)" << true << QVariant();
+      QTest::newRow( "make_ellipse null" ) << "make_ellipse(NULL, 5, 2, 0)" << false << QVariant();
+      QTest::newRow( "make_ellipse bad" ) << "make_ellipse(make_line(make_point(1,2), make_point(3,4)), 5, 2, 0)" << false << QVariant();
+      QTest::newRow( "make_ellipse" ) << "geom_to_wkt(make_ellipse(make_point(10,10), 5, 2, 90, 4))" << false << QVariant( "Polygon ((15 10, 10 8, 5 10, 10 12, 15 10))" );
+      QTest::newRow( "make_regular_polygon not geom (center)" ) << "make_regular_polygon('a', make_point(0,5), 5)" << true << QVariant();
+      QTest::newRow( "make_regular_polygon not geom (vertice)" ) << "make_regular_polygon(make_point(0,0), 'a', 5)" << true << QVariant();
+      QTest::newRow( "make_regular_polygon bad (center)" ) << "make_regular_polygon(make_line(make_point(1,2), make_point(3,4)), make_point(0,5), 5)" << false << QVariant();
+      QTest::newRow( "make_regular_polygon bad (vertice)" ) << "make_regular_polygon(make_point(0,0), make_line(make_point(1,2), make_point(3,4)), 5)" << false << QVariant();
+      QTest::newRow( "make_regular_polygon bad (numEdges < 3)" ) << "make_regular_polygon(make_point(0,0), make_point(0,5), 2)" << true << QVariant();
+      QTest::newRow( "make_regular_polygon bad (invalid option)" ) << "make_regular_polygon(make_point(0,0), make_point(0,5), 5, 5)" << true << QVariant();
+      QTest::newRow( "make_regular_polygon bad (numEdges < 3)" ) << "make_regular_polygon(make_point(0,0), make_point(0,5), 2)" << true << QVariant();
+      QTest::newRow( "make_regular_polygon" ) << "geom_to_wkt(make_regular_polygon(make_point(0,0), make_point(0,5), 5), 2)" << false << QVariant( "Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))" );
+      QTest::newRow( "make_regular_polygon" ) << "geom_to_wkt(make_regular_polygon(make_point(0,0), project(make_point(0,0), 4.0451, radians(36)), 5, 1), 2)" << false << QVariant( "Polygon ((0 5, 4.76 1.55, 2.94 -4.05, -2.94 -4.05, -4.76 1.55, 0 5))" );
       QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
       QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
       QTest::newRow( "z point" ) << "z(make_point(2.2,4.4,6.6))" << false << QVariant( 6.6 );
@@ -800,6 +817,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "project m value preserved" ) << "geom_to_wkt(project( make_point( 1, 2, 2, 5), 1, 0.0, 0.0 ) )" << false << QVariant( "PointZM (1 2 3 5)" );
       QTest::newRow( "project 2D Point" ) << "geom_to_wkt(project( point:=make_point( 1, 2), distance:=1, azimuth:=radians(0), elevation:=0 ) )" << false << QVariant( "PointZ (1 2 1)" );
       QTest::newRow( "project 3D Point" ) << "geom_to_wkt(project( make_point( 1, 2, 2), 5, radians(450), radians (450) ) )" << false << QVariant( "PointZ (6 2 2)" );
+      QTest::newRow( "inclination not geom first" ) << "inclination( 'a', make_point( 1, 2, 2 ) )" << true << QVariant();
+      QTest::newRow( "inclination not geom second" ) << " inclination( make_point( 1, 2, 2 ), 'a' )" << true << QVariant();
+      QTest::newRow( "inclination not point first" ) << "inclination( geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)'), make_point( 1, 2, 2) )" << true << QVariant();
+      QTest::newRow( "inclination not point second" ) << " inclination( make_point( 1, 2, 2 ), geom_from_wkt('LINESTRING(2 0,2 2, 3 2, 3 0)') )" << true << QVariant();
+      QTest::newRow( "inclination" ) << "ceil(inclination( make_point( 159, 753, 460 ), make_point( 123, 456, 789 ) ))" << false << QVariant( 43.0 );
+      QTest::newRow( "inclination" ) << " inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 5 ) )" << false << QVariant( 0.0 );
+      QTest::newRow( "inclination" ) << " inclination( make_point( 5, 10, 0 ), make_point( 5, 10, 0 ) )" << false << QVariant( 90.0 );
+      QTest::newRow( "inclination" ) << " inclination( make_point( 5, 10, 0 ), make_point( 5, 10, -5 ) )" << false << QVariant( 180.0 );
       QTest::newRow( "extrude geom" ) << "geom_to_wkt(extrude( geom_from_wkt('LineString( 1 2, 3 2, 4 3)'),1,2))" << false << QVariant( "Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))" );
       QTest::newRow( "extrude not geom" ) << "extrude('g',5,6)" << true << QVariant();
       QTest::newRow( "extrude null" ) << "extrude(NULL,5,6)" << false << QVariant();
@@ -844,7 +869,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "smooth null" ) << "smooth(NULL,5)" << false << QVariant();
       QTest::newRow( "smooth point" ) << "geom_to_wkt(smooth(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
       QTest::newRow( "smooth line" ) << "geom_to_wkt(smooth(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5 5)'),iterations:=1,offset:=0.2,min_length:=-1,max_angle:=180))" << false << QVariant( "LineString (0 0, 4 0, 5 1, 5 5)" );
-      QTest::newRow( "transform invalid" ) << "transform(make_point(0,0),'EPSG:4326','EPSG:28356')" << false << QVariant();
+      QTest::newRow( "transform invalid" ) << "transform(make_point(500,500),'EPSG:4326','EPSG:28356')" << false << QVariant();
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
@@ -2447,6 +2472,48 @@ class TestQgsExpression: public QObject
       QCOMPARE( badArray.evalErrorString(), QString( "Cannot convert 'not an array' to array" ) );
     }
 
+    void compare_arrays()
+    {
+      QCOMPARE( QgsExpression( "array() = array()" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(NULL) = array(NULL)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array() = array(NULL)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array(1, NULL) = array(NULL, 1)" ).evaluate(), QVariant( false ) );
+
+      QCOMPARE( QgsExpression( "array('hello') = array('hello')" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('hello') = array('hello2')" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') = array('h', 'e', 'l', 'l', 'o')" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') = array('h', 'e', 'l', 'l')" ).evaluate(), QVariant( false ) );
+
+      QCOMPARE( QgsExpression( "array('1') = array(1)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('1.2') = array(1.2)" ).evaluate(), QVariant( true ) );
+
+      QCOMPARE( QgsExpression( "array() != array()" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array(NULL) != array(NULL)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array() != array(NULL)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array('hello') != array('hello')" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('hello') != array('hello2')" ).evaluate(), QVariant( true ) );
+
+      QCOMPARE( QgsExpression( "array() < array(1)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1) < array(NULL)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1) < array(1)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array(1) < array(2)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(2) < array(1)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array(1) < array(1, 2)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1, 2) < array(1)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') < array('h', 'e', 'l', 'l')" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') > array('h', 'e', 'l', 'l')" ).evaluate(), QVariant( true ) );
+
+      QCOMPARE( QgsExpression( "array() <= array(1)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1) <= array(NULL)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1) <= array(1)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1) <= array(2)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(2) <= array(1)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array(1) <= array(1, 2)" ).evaluate(), QVariant( true ) );
+      QCOMPARE( QgsExpression( "array(1, 2) <= array(1)" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') <= array('h', 'e', 'l', 'l')" ).evaluate(), QVariant( false ) );
+      QCOMPARE( QgsExpression( "array('h', 'e', 'l', 'l', 'o') >= array('h', 'e', 'l', 'l')" ).evaluate(), QVariant( true ) );
+    }
+
     void eval_map()
     {
       QgsFeature f( 100 );
@@ -2543,6 +2610,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::quotedValue( QVariant( true ), QVariant::String ), QString( "'true'" ) );
       QCOMPARE( QgsExpression::quotedValue( QVariant() ), QString( "NULL" ) );
       QCOMPARE( QgsExpression::quotedValue( QVariant(), QVariant::String ), QString( "NULL" ) );
+      QVariantList array = QVariantList() << QVariant( 1 ) << QVariant( "a" ) << QVariant();
+      QCOMPARE( QgsExpression::quotedValue( array ), QString( "array( 1, 'a', NULL )" ) );
     }
 
     void reentrant()

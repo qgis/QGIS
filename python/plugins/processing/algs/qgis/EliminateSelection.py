@@ -30,11 +30,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -77,20 +80,19 @@ class EliminateSelection(GeoAlgorithm):
                                              self.modes))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        inLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
 
         if inLayer.selectedFeatureCount() == 0:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
+            QgsMessageLog.logMessage(self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)),
+                                     self.tr('Processing'), QgsMessageLog.WARNING)
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
         output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(inLayer.fields(),
-                                        inLayer.wkbType(), inLayer.crs())
+        writer = output.getVectorWriter(inLayer.fields(), inLayer.wkbType(), inLayer.crs(), context)
 
         for aFeat in inLayer.getFeatures():
             if aFeat.id() in selFeatIds:

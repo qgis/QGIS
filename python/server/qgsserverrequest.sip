@@ -30,6 +30,9 @@ class QgsServerRequest
 %End
   public:
 
+    typedef QMap<QString, QString> Parameters;
+    typedef QMap<QString, QString> Headers;
+
     enum Method
     {
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
@@ -46,23 +49,57 @@ class QgsServerRequest
      * @param url the url string
      * @param method the request method
      */
-    QgsServerRequest( const QString& url, Method method );
+    QgsServerRequest( const QString &url, Method method );
+
 
     /**
      * Constructor
      *
-     * @param url QUrl
-     * @param method the request method (default to GetMethod)
+     * \param url the url string
+     * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QUrl& url, Method method = GetMethod );
+    QgsServerRequest( const QString &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+
+    /**
+     * Constructor
+     *
+     * \param url QUrl
+     * \param method the request method
+     * \param headers
+     */
+    QgsServerRequest( const QUrl &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+
 
     //! destructor
     virtual ~QgsServerRequest();
 
+
     /**
-     * @return the value of the header field for that request
+     * Return the header value
+     * @param name of the header
+     * @return the header value or an empty string
      */
-    virtual QString getHeader( const QString& name ) const;
+    QString header( const QString &name ) const;
+
+    /**
+     * Set an header
+     * @param name
+     * @param value
+     */
+    void setHeader( const QString &name, const QString &value );
+
+    /**
+     * Return the header map
+     * @return the headers map
+     */
+    QMap<QString, QString> headers( ) const;
+
+    /**
+     * Remove an header
+     * @param name
+     */
+    void removeHeader( const QString &name );
 
     /**
      * @return the request url
@@ -82,17 +119,17 @@ class QgsServerRequest
     /**
      * Set a parameter
      */
-    void setParameter( const QString& key, const QString& value );
+    void setParameter( const QString &key, const QString &value );
 
     /**
      * Get a parameter value
      */
-    QString getParameter( const QString& key ) const;
+    QString parameter( const QString& key ) const;
 
     /**
      * Remove a parameter
      */
-    void removeParameter( const QString& key );
+    void removeParameter( const QString &key );
 
     /**
      * Return post/put data
@@ -104,7 +141,7 @@ class QgsServerRequest
     /**
      * Set the request url
      */
-    void setUrl( const QUrl& url );
+    void setUrl( const QUrl &url );
 
     /**
      * Set the request method

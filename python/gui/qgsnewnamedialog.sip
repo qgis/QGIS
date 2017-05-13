@@ -23,7 +23,7 @@ class QgsNewNameDialog : QgsDialog
     QgsNewNameDialog( const QString& source = QString::null, const QString& initial = QString::null,
                       const QStringList& extensions = QStringList(), const QStringList& existing = QStringList(),
                       const QRegExp& regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& flags = QgisGui::ModalDialogFlags );
+                      QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &flags = QgisGui::ModalDialogFlags );
 
     /** Sets the hint string for the dialog (the text shown above the name
      * input box).
@@ -31,7 +31,7 @@ class QgsNewNameDialog : QgsDialog
      * @see hintString()
      * @note added in QGIS 2.12
      */
-    void setHintString( const QString& hintString );
+    void setHintString( const QString &hintString );
 
     /** Returns the hint string for the dialog (the text shown above the name
      * input box).
@@ -59,7 +59,7 @@ class QgsNewNameDialog : QgsDialog
      * @note added in QGIS 2.12
      * @see conflictingNameWarning()
      */
-    void setConflictingNameWarning( const QString& string );
+    void setConflictingNameWarning( const QString &string );
 
     /** Returns the string used for warning users if a conflicting name exists.
      * @note added in QGIS 2.12
@@ -80,14 +80,14 @@ class QgsNewNameDialog : QgsDialog
      * @return true if name exists
      */
     static bool exists( const QString& name, const QStringList& extensions,
-                        const QStringList& existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+                        const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   public slots:
     void nameChanged();
 
   protected:
 
-    QString highlightText( const QString& text );
-    static QStringList fullNames( const QString& name, const QStringList& extensions );
+    QString highlightText( const QString &text );
+    static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
     static QStringList matching( const QStringList& newNames, const QStringList& existingNames,
                                  Qt::CaseSensitivity cs = Qt::CaseSensitive );

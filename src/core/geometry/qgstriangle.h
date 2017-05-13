@@ -19,7 +19,9 @@
 #define QGSTRIANGLE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspolygon.h"
+#include "qgscircle.h"
 #include "qgslinestring.h"
 
 /** \ingroup core
@@ -56,11 +58,11 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
 
-    // inherited: bool operator==( const QgsTriangle& other ) const;
-    // inherited: bool operator!=( const QgsTriangle& other ) const;
+    bool operator==( const QgsTriangle &other ) const;
+    bool operator!=( const QgsTriangle &other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle *clone() const override;
+    virtual QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
@@ -72,12 +74,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2 *surfaceToPolygon() const override;
+    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
-    void addInteriorRing( QgsCurve *ring ) override;
+    void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
     /** Inherited method not used. You cannot add an interior ring into a triangle.
      * \note not available in Python bindings
@@ -89,9 +91,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
     bool moveVertex( QgsVertexId vId, const QgsPointV2 &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve *ring ) override;
+    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 
@@ -277,8 +279,17 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double circumscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle circumscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Circumscribed circle of the triangle.
+    * @return The circumbscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.circumscribedCircle()
+    *   # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
+    * \endcode
+    */
+    QgsCircle circumscribedCircle( ) const;
 
     /**
      * Center of the inscribed circle of the triangle.
@@ -304,8 +315,18 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     double inscribedRadius( ) const;
 
-    // TODO:
-    // QgsCircle inscribedCircle ( ) const; // need QgsCircle (from CADDigitize.CADCircle)
+    /**
+    * Inscribed circle of the triangle.
+    * @return The inscribed of the triangle with a QgsCircle.
+    * Example:
+    * \code{.py}
+    *   tri = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) )
+    *   tri.inscribedCircle()
+    *   # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
+    * \endcode
+    */
+    QgsCircle inscribedCircle( ) const;
+
   private:
 
     /**
@@ -316,7 +337,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      * \returns True if the points can create a triangle, otherwise false.
      * \note not available in Python bindings
      */
-    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 );
+    bool validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 ) SIP_SKIP;
 
 };
 #endif // QGSTRIANGLE_H

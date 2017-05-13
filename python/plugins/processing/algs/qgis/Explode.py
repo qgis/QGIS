@@ -29,11 +29,12 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class Explode(GeoAlgorithm):
@@ -62,16 +63,14 @@ class Explode(GeoAlgorithm):
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, feedback):
-        vlayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         output = self.getOutputFromName(self.OUTPUT)
         fields = vlayer.fields()
-        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString,
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, QgsWkbTypes.LineString, vlayer.crs(), context)
         outFeat = QgsFeature()
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()

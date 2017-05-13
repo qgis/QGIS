@@ -29,12 +29,15 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
-from processing.core.ProcessingLog import ProcessingLog
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -65,22 +68,18 @@ class Difference(GeoAlgorithm):
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
-    def processAlgorithm(self, feedback):
-        layerA = dataobjects.getLayerFromString(
-            self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getLayerFromString(
-            self.getParameterValue(Difference.OVERLAY))
+    def processAlgorithm(self, context, feedback):
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.INPUT), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.OVERLAY), context)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.fields(),
-                                               geomType,
-                                               layerA.crs())
+            Difference.OUTPUT).getVectorWriter(layerA.fields(), geomType, layerA.crs(), context)
 
         outFeat = QgsFeature()
-        index = vector.spatialindex(layerB)
-        selectionA = vector.features(layerA)
-        total = 100.0 / len(selectionA)
+        index = QgsProcessingUtils.createSpatialIndex(layerB, context)
+        selectionA = QgsProcessingUtils.getFeatures(layerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
         for current, inFeatA in enumerate(selectionA):
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
@@ -98,8 +97,7 @@ class Difference(GeoAlgorithm):
                 outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
             except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'), self.tr('Processing'), QgsMessageLog.WARNING)
                 continue
 
             feedback.setProgress(int(current * total))

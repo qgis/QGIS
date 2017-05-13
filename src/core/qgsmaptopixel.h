@@ -18,6 +18,7 @@
 #define QGSMAPTOPIXEL
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QTransform>
 #include <vector>
 #include "qgsunittypes.h"
@@ -94,8 +95,8 @@ class CORE_EXPORT QgsMapToPixel
      */
     void transformInPlace( double &x, double &y ) const;
 
-    // \note not available in Python bindings
-    void transformInPlace( float &x, float &y ) const;
+    //! \note not available in Python bindings
+    void transformInPlace( float &x, float &y ) const SIP_SKIP;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -103,7 +104,7 @@ class CORE_EXPORT QgsMapToPixel
      * transform.
      * \note not available in Python bindings
      */
-    template <class T>
+    template <class T> SIP_SKIP
     void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );

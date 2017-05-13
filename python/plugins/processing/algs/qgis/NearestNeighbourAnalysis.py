@@ -33,13 +33,13 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -82,11 +82,11 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         output = self.getOutputValue(self.OUTPUT)
 
-        spatialIndex = vector.spatialindex(layer)
+        spatialIndex = QgsProcessingUtils.createSpatialIndex(layer, context)
 
         neighbour = QgsFeature()
         distance = QgsDistanceArea()
@@ -95,8 +95,8 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         A = layer.extent()
         A = float(A.width() * A.height())
 
-        features = vector.features(layer)
-        count = len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        count = QgsProcessingUtils.featureCount(layer, context)
         total = 100.0 / count
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(

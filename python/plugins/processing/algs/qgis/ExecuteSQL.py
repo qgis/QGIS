@@ -30,7 +30,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -39,7 +40,6 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class ExecuteSQL(GeoAlgorithm):
@@ -103,7 +103,7 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)
@@ -115,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
         layerIdx = 1
         if layers:
             for layerSource in layers.split(';'):
-                layer = dataobjects.getLayerFromString(layerSource)
+                layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
                 layerIdx += 1
@@ -145,14 +145,12 @@ class ExecuteSQL(GeoAlgorithm):
         if not vLayer.isValid():
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            vLayer.fields().toList(),
-            # Create a point layer (without any points) if 'no geometry' is chosen
-            vLayer.wkbType() if geometry_type != 1 else 1,
-            vLayer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields(),
+                                                                           vLayer.wkbType() if geometry_type != 1 else 1,
+                                                                           vLayer.crs(), context)
 
-        features = vector.features(vLayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vLayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

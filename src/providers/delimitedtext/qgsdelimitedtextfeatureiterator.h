@@ -30,16 +30,16 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    QgsDelimitedTextFile *mFile = nullptr;
+    std::unique_ptr< QgsDelimitedTextFile > mFile;
     QgsFields mFields;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -78,6 +78,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
   protected:
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
+  private:
+
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature &feature );
@@ -86,12 +88,12 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     void fetchAttribute( QgsFeature &feature, int fieldIdx, const QStringList &tokens );
 
     QList<QgsFeatureId> mFeatureIds;
-    IteratorMode mMode;
-    long mNextId;
-    bool mTestSubset;
-    bool mTestGeometry;
-    bool mTestGeometryExact;
-    bool mLoadGeometry;
+    IteratorMode mMode = FileScan;
+    long mNextId = 0;
+    bool mTestSubset = false;
+    bool mTestGeometry = false;
+    bool mTestGeometryExact = false;
+    bool mLoadGeometry = false;
 };
 
 

@@ -32,13 +32,14 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsGeometry,
                        QgsFeature,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -70,20 +71,16 @@ class PolygonCentroids(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Point, layer.crs(), context)
 
         outFeat = QgsFeature()
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, feat in enumerate(features):
             inGeom = feat.geometry()
             attrs = feat.attributes()

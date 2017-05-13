@@ -51,28 +51,28 @@ class QgsFieldModel : QAbstractItemModel
     void setAllowExpression( bool allowExpression );
 %Docstring
  Sets whether custom expressions are accepted and displayed in the model.
- \see allowExpression()
- \see setExpression()
+.. seealso:: allowExpression()
+.. seealso:: setExpression()
 %End
 
     bool allowExpression();
 %Docstring
  Returns true if the model allows custom expressions to be created and displayed.
- \see setAllowExpression()
+.. seealso:: setAllowExpression()
  :rtype: bool
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
  Sets whether an optional empty field ("not set") option is present in the model.
- \see allowEmptyFieldName()
+.. seealso:: allowEmptyFieldName()
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyFieldName() const;
 %Docstring
  Returns true if the model allows the empty field ("not set") choice.
- \see setAllowEmptyFieldName()
+.. seealso:: setAllowEmptyFieldName()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -87,31 +87,27 @@ class QgsFieldModel : QAbstractItemModel
     void setExpression( const QString &expression );
 %Docstring
  Sets a single expression to be added after the fields at the end of the model.
- \see setAllowExpression()
- \see allowExpression()
- \see removeExpression()
+.. seealso:: setAllowExpression()
+.. seealso:: allowExpression()
+.. seealso:: removeExpression()
 %End
 
     void removeExpression();
 %Docstring
  Removes any custom expression from the model.
- \see setExpression()
- \see allowExpression()
+.. seealso:: setExpression()
+.. seealso:: allowExpression()
 %End
 
     QgsVectorLayer *layer();
 %Docstring
  Returns the layer associated with the model.
- \see setLayer()
+.. seealso:: setLayer()
  :rtype: QgsVectorLayer
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-%Docstring
-QAbstractItemModel interface
- :rtype: QModelIndex
-%End
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -126,7 +122,7 @@ QAbstractItemModel interface
     void setLayer( QgsVectorLayer *layer );
 %Docstring
  Set the layer from which fields are displayed.
- \see layer()
+.. seealso:: layer()
 %End
 
   protected slots:
@@ -148,4 +144,3 @@ QAbstractItemModel interface
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

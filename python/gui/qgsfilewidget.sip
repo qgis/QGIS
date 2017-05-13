@@ -20,6 +20,13 @@ class QgsFileWidget : QWidget
 %TypeHeaderCode
 #include "qgsfilewidget.h"
 %End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
+      sipType = sipType_QgsFileWidget;
+    else
+      sipType = NULL;
+%End
   public:
 
     enum StorageMode
@@ -157,4 +164,3 @@ emitted as soon as the current file or directory is changed
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

@@ -36,8 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsMapLayerProxyModel,
                        QgsWkbTypes,
-                       QgsProcessingUtils,
-                       QgsProject
+                       QgsProcessingUtils
                        )
 from qgis.core import QgsFieldProxyModel
 from qgis.analysis import QgsInterpolator
@@ -62,9 +61,6 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
 
-        #self.delegate = InterpolationTypeDelegate()
-        #self.layersTree.setItemDelegateForColumn(2, self.delegate)
-
     @pyqtSlot()
     def on_btnAdd_clicked(self):
         layer = self.cmbLayers.currentLayer()
@@ -87,6 +83,7 @@ class InterpolationDataWidget(BASE, WIDGET):
     @pyqtSlot(QgsMapLayer)
     def on_cmbLayers_layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
+        self.chkUseZCoordinate.setChecked(False)
 
         if layer is None or not layer.isValid():
             return
@@ -125,11 +122,12 @@ class InterpolationDataWidget(BASE, WIDGET):
 
     def value(self):
         layers = ''
+        context = dataobjects.createContext()
         for i in range(self.layersTree.topLevelItemCount()):
             item = self.layersTree.topLevelItem(i)
             if item:
                 layerName = item.text(0)
-                layer = QgsProcessingUtils.mapLayerFromProject(layerName, QgsProject.instance())
+                layer = QgsProcessingUtils.mapLayerFromString(layerName, context)
                 if not layer:
                     continue
 

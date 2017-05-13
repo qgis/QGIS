@@ -17,7 +17,9 @@
 #define QGSGRAPHBUILDER_H
 
 #include "qgsgraphbuilderinterface.h"
+#include "qgis.h"
 
+#include <qgis.h>
 #include <qgsspatialindex.h>
 #include "qgis_analysis.h"
 
@@ -52,7 +54,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /**
      * Returns generated QgsGraph
      */
-    QgsGraph *graph();
+    QgsGraph *graph() SIP_FACTORY;
 
   private:
 

@@ -17,6 +17,7 @@
 #define QGSCURVEEDITORWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QThread>
 #include <QMutex>
 #include <QPen>
@@ -35,9 +36,7 @@ class HistogramItem;
 class QgsCurveEditorPlotEventFilter;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 typedef QPointF QwtDoublePoint;
-#endif
 
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
@@ -143,7 +142,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
 
     ~QgsCurveEditorWidget();
 
@@ -230,11 +229,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     double mMinValueRange = 0.0;
     double mMaxValueRange = 1.0;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *mPlotHistogram = nullptr;
-#else
-    HistogramItem *mPlotHistogramItem = nullptr;
-#endif
 
     void updatePlot();
     void addPlotMarker( double x, double y, bool isSelected = false );
@@ -242,11 +237,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     int findNearestControlPoint( QPointF point ) const;
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#else
-    HistogramItem *createHistoItem( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#endif
 
 };
 

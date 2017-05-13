@@ -18,6 +18,7 @@
 #define QGSAUTHSSLCONFIGWIDGET_H
 
 #include <QDialog>
+#include "qgis.h"
 #include <QWidget>
 #include "ui_qgsauthsslconfigwidget.h"
 
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
      * \param hostport Unique host:port to associate with the server certificate
      * \param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
+    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );

@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessingUtils
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector
@@ -69,8 +71,9 @@ class rasterize_over(GdalAlgorithm):
                                           self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
-        inLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
-        inRasterLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_RASTER))
+        context = dataobjects.createContext()
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
 
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
@@ -85,3 +88,6 @@ class rasterize_over(GdalAlgorithm):
         arguments.append(ogrRasterLayer)
 
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_rasterize"

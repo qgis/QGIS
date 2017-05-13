@@ -5,18 +5,18 @@ class QgsComposerPolyline: QgsComposerNodesItem
 %End
   public:
 
-    QgsComposerPolyline( QgsComposition* c );
-    QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c );
+    QgsComposerPolyline( QgsComposition *c );
+    QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
     ~QgsComposerPolyline();
 
     /** Overridden to return shape name */
     virtual QString displayName() const;
 
     /** Returns the QgsSymbol used to draw the shape. */
-    QgsLineSymbol* polylineStyleSymbol();
+    QgsLineSymbol *polylineStyleSymbol();
 
     /** Set the QgsSymbol used to draw the shape. */
-    void setPolylineStyleSymbol( QgsLineSymbol* symbol );
+    void setPolylineStyleSymbol( QgsLineSymbol *symbol );
 
     /** Overridden to return shape type */
     virtual int type() const;

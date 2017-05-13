@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class AutoincrementalField(GeoAlgorithm):
@@ -60,17 +60,16 @@ class AutoincrementalField(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
-            dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+            QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fields = vlayer.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(),
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
         outFeat = QgsFeature()
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))
             geom = feat.geometry()

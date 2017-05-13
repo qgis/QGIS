@@ -19,6 +19,7 @@
 #define QGSRASTERMINMAXORIGIN_H
 
 #include <QDomDocument>
+#include "qgis.h"
 #include <QDomElement>
 
 #include "qgis_core.h"
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     enum Limits
     {
       //! User defined.
-      None,
+      None SIP_PYNAME( None_ ),
       //! Real min-max values
       MinMax,
       //! Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]

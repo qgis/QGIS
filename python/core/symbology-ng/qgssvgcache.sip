@@ -16,7 +16,7 @@ class QgsSvgCacheEntry
      * @param stroke color of stroke
      * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
-    QgsSvgCacheEntry( const QString& file, double size, double strokeWidth, double widthScaleFactor, const QColor& fill, const QColor& stroke, const QString& lookupKey = QString() );
+    QgsSvgCacheEntry( const QString &file, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, const QString &lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
     //! Absolute path to SVG file
@@ -34,23 +34,23 @@ class QgsSvgCacheEntry
 
     QColor fill;
     QColor stroke;
-    QImage* image;
-    QPicture* picture;
+    QImage *image;
+    QPicture *picture;
     //content (with params replaced)
     QByteArray svgContent;
 
     //keep entries on a least, sorted by last access
-    QgsSvgCacheEntry* nextEntry;
-    QgsSvgCacheEntry* previousEntry;
+    QgsSvgCacheEntry *nextEntry;
+    QgsSvgCacheEntry *previousEntry;
 
     /** Don't consider image, picture, last used timestamp for comparison*/
-    bool operator==( const QgsSvgCacheEntry& other ) const;
+    bool operator==( const QgsSvgCacheEntry &other ) const;
     /** Return memory usage in bytes*/
     int dataSize() const;
 
   private:
 
-    QgsSvgCacheEntry( const QgsSvgCacheEntry& rh );
+    QgsSvgCacheEntry( const QgsSvgCacheEntry &rh );
 };
 
 /** A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
@@ -64,7 +64,7 @@ class QgsSvgCache : QObject
 
   public:
 
-    QgsSvgCache( QObject * parent /TransferThis/ = 0 );
+    QgsSvgCache( QObject *parent /TransferThis/ = 0 );
 
     ~QgsSvgCache();
 
@@ -79,7 +79,7 @@ class QgsSvgCache : QObject
      * @param fitsInCache
      */
     QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
-                              double widthScaleFactor, bool& fitsInCache );
+                              double widthScaleFactor, bool &fitsInCache );
     /** Get SVG  as QPicture&.
      * @param file Absolute or relative path to SVG file.
      * @param size size of cached image
@@ -110,7 +110,7 @@ class QgsSvgCache : QObject
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasStrokeParam, QColor& defaultStrokeColor, bool& hasStrokeWidthParam,
-                         double& defaultStrokeWidth ) const;
+                         double &defaultStrokeWidth ) const;
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
@@ -137,7 +137,7 @@ class QgsSvgCache : QObject
                          bool& hasFillOpacityParam, bool& hasDefaultFillOpacity, double& defaultFillOpacity,
                          bool& hasStrokeParam, bool& hasDefaultStrokeColor, QColor& defaultStrokeColor,
                          bool& hasStrokeWidthParam, bool& hasDefaultStrokeWidth, double& defaultStrokeWidth,
-                         bool& hasStrokeOpacityParam, bool& hasDefaultStrokeOpacity, double& defaultStrokeOpacity ) const /PyName=containsParamsV3/;
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const /PyName=containsParamsV3/;
 
     /** Get image data*/
     QByteArray getImageData( const QString &path ) const;
@@ -165,9 +165,9 @@ class QgsSvgCache : QObject
     QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                  double widthScaleFactor );
 
-    void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
-    void cacheImage( QgsSvgCacheEntry* entry );
-    void cachePicture( QgsSvgCacheEntry* entry, bool forceVectorOutput = false );
+    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
+    void cacheImage( QgsSvgCacheEntry *entry );
+    void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     /** Returns entry from cache or creates a new entry if it does not exist already*/
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                   double widthScaleFactor );
@@ -176,6 +176,6 @@ class QgsSvgCache : QObject
     void trimToMaximumSize();
 
     //Removes entry from the ordered list (but does not delete the entry itself)
-    void takeEntryFromList( QgsSvgCacheEntry* entry );
+    void takeEntryFromList( QgsSvgCacheEntry *entry );
 
 };

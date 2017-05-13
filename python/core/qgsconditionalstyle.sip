@@ -80,7 +80,7 @@ class QgsConditionalStyle
     QgsConditionalStyle( const QgsConditionalStyle &other );
     QgsConditionalStyle( const QString &rule );
 
-//     QgsConditionalStyle &operator=( const QgsConditionalStyle &other );
+
     bool matches( const QVariant &value, QgsExpressionContext &context ) const;
 %Docstring
  Check if the rule matches using the given value and feature
@@ -266,4 +266,3 @@ class QgsConditionalStyle
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

@@ -24,12 +24,13 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber)
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class DeleteHoles(GeoAlgorithm):
@@ -64,9 +65,8 @@ class DeleteHoles(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         min_area = self.getParameterValue(self.MIN_AREA)
         if min_area is not None:
             try:
@@ -76,13 +76,11 @@ class DeleteHoles(GeoAlgorithm):
         if min_area == 0.0:
             min_area = -1.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(),
-            layer.wkbType(),
-            layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
+                                                                     context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             if f.hasGeometry():

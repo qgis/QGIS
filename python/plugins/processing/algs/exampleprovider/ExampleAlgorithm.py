@@ -25,12 +25,12 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsVectorFileWriter, QgsSettings
+from qgis.core import QgsVectorFileWriter, QgsSettings, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class ExampleAlgorithm(GeoAlgorithm):
@@ -79,8 +79,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
 
-    def processAlgorithm(self, feedback):
-        """Here is where the processing itself takes place."""
+    def processAlgorithm(self, context, feedback):
+        """Here is where the processing itself takes place.
+        :param context:
+        """
 
         # The first thing to do is retrieve the values of the parameters
         # entered by the user
@@ -90,8 +92,8 @@ class ExampleAlgorithm(GeoAlgorithm):
         # Input layers vales are always a string with its location.
         # That string can be converted into a QGIS layer (a
         # QgsVectorLayer in this case) using the
-        # dataobjects.getLayerFromString() method.
-        vectorLayer = dataobjects.getLayerFromString(inputFilename)
+        # QgsProcessingUtils.mapLayerFromString() method.
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
         # And now we can process
 
@@ -111,7 +113,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # selection that might exist in layer and the configuration that
         # indicates should algorithm use only selected features or all
         # of them
-        features = vector.features(vectorLayer)
+        features = QgsProcessingUtils.getFeatures(vectorLayer, context)
         for f in features:
             writer.addFeature(f)
 

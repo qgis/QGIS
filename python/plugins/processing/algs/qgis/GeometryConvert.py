@@ -28,14 +28,13 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects, vector
 
 
 class GeometryConvert(GeoAlgorithm):
@@ -72,9 +71,8 @@ class GeometryConvert(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         index = self.getParameterValue(self.TYPE)
 
         splitNodes = False
@@ -92,11 +90,10 @@ class GeometryConvert(GeoAlgorithm):
         else:
             newType = QgsWkbTypes.Point
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields(), newType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), newType, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

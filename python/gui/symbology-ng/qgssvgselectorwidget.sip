@@ -4,14 +4,14 @@ class QgsSvgSelectorListModel : QAbstractListModel
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorListModel( QObject* parent /TransferThis/ );
+    QgsSvgSelectorListModel( QObject *parent /TransferThis/ );
 
     // Constructor to create model for icons in a specific path
-    QgsSvgSelectorListModel( QObject* parent /TransferThis/, const QString& path );
+    QgsSvgSelectorListModel( QObject *parent /TransferThis/, const QString &path );
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 };
 
 class QgsSvgSelectorGroupsModel : QStandardItemModel
@@ -20,7 +20,7 @@ class QgsSvgSelectorGroupsModel : QStandardItemModel
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorGroupsModel( QObject* parent /TransferThis/ );
+    QgsSvgSelectorGroupsModel( QObject *parent /TransferThis/ );
 };
 
 
@@ -30,27 +30,27 @@ class QgsSvgSelectorWidget : QWidget
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsSvgSelectorWidget( QWidget *parent /TransferThis/ = 0 );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) /Factory/;
+    static QgsSvgSelectorWidget *create( QWidget *parent = 0 ) /Factory/;
 
     QString currentSvgPath() const;
     QString currentSvgPathToName() const;
 
-    QTreeView* groupsTreeView();
-    QListView* imagesListView();
-    QLineEdit* filePathLineEdit();
-    QPushButton* filePathButton();
-    QCheckBox* relativePathCheckbox();
-    QLayout* selectorLayout();
+    QTreeView *groupsTreeView();
+    QListView *imagesListView();
+    QLineEdit *filePathLineEdit();
+    QPushButton *filePathButton();
+    QCheckBox *relativePathCheckbox();
+    QLayout *selectorLayout();
 
   public slots:
     /** Accepts absolute and relative paths */
-    void setSvgPath( const QString& svgPath );
+    void setSvgPath( const QString &svgPath );
 
   signals:
-    void svgSelected( const QString& path );
+    void svgSelected( const QString &path );
 
   protected:
     void populateList();
@@ -68,12 +68,12 @@ class QgsSvgSelectorDialog : QDialog
     ~QgsSvgSelectorDialog();
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout* layout();
+    QVBoxLayout *layout();
 
     //! Returns the button box
-    QDialogButtonBox* buttonBox();
+    QDialogButtonBox *buttonBox();
 
     //! Returns pointer to the embedded SVG selector widget
-    QgsSvgSelectorWidget* svgSelector();
+    QgsSvgSelectorWidget *svgSelector();
 
 };

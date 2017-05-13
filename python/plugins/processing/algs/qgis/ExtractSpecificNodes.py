@@ -30,13 +30,14 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsGeometry,
                        QgsField,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
 
 
@@ -68,9 +69,8 @@ class ExtractSpecificNodes(GeoAlgorithm):
                                           self.tr('Node indices'), default='0'))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         fields = layer.fields()
         fields.append(QgsField('node_pos', QVariant.Int))
@@ -79,10 +79,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
         fields.append(QgsField('angle', QVariant.Double))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                fields,
-                QgsWkbTypes.Point,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         node_indices_string = self.getParameterValue(self.NODES)
         indices = []
@@ -93,8 +90,8 @@ class ExtractSpecificNodes(GeoAlgorithm):
                 raise GeoAlgorithmExecutionException(
                     self.tr('\'{}\' is not a valid node index').format(node))
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
 

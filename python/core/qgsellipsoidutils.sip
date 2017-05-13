@@ -8,7 +8,6 @@
 
 
 
-
 class QgsEllipsoidUtils
 {
 %Docstring
@@ -81,7 +80,7 @@ Ellipsoid parameters
 %Docstring
  Returns a list of the definitions for all known ellipsoids from the
  internal ellipsoid database.
- \see acronyms()
+.. seealso:: acronyms()
  :rtype: list of QgsEllipsoidUtils.EllipsoidDefinition
 %End
 
@@ -89,7 +88,7 @@ Ellipsoid parameters
 %Docstring
  Returns a list of all known ellipsoid acronyms from the internal
  ellipsoid database.
- \see definitions()
+.. seealso:: definitions()
  :rtype: list of str
 %End
 
@@ -103,4 +102,3 @@ Ellipsoid parameters
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

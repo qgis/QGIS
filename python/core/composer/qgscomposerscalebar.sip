@@ -10,37 +10,14 @@ class QgsComposerScaleBar: QgsComposerItem
 
   public:
 
-    enum Alignment
-    {
-      Left,
-      Middle,
-      Right
-    };
-
-    enum ScaleBarUnits
-    {
-      MapUnits,
-      Meters,
-      Feet,
-      NauticalMiles
-    };
-
-    /** Modes for setting size for scale bar segments
-     */
-    enum SegmentSizeMode
-    {
-      SegmentSizeFixed, /*!< Scale bar segment size is fixed to a map unit*/
-      SegmentSizeFitWidth /*!< Scale bar segment size is calculated to fit a size range*/
-    };
-
-    QgsComposerScaleBar( QgsComposition* composition /TransferThis/ );
+    QgsComposerScaleBar( QgsComposition *composition /TransferThis/ );
     ~QgsComposerScaleBar();
 
     /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     //getters and setters
     int numSegments() const;
@@ -58,7 +35,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see maxBarWidth
      * @note added in QGIS 2.9
      */
-    SegmentSizeMode segmentSizeMode() const;
+    QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
 
     /** Sets the size mode for scale bar segments.
      * @param mode size mode
@@ -67,7 +44,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see setMaxBarWidth
      * @note added in QGIS 2.9
      */
-    void setSegmentSizeMode( SegmentSizeMode mode );
+    void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
 
     /** Returns the minimum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
@@ -115,10 +92,10 @@ class QgsComposerScaleBar: QgsComposerItem
     void setNumMapUnitsPerScaleBarUnit( double d );
 
     QString unitLabeling() const;
-    void setUnitLabeling( const QString& label );
+    void setUnitLabeling( const QString &label );
 
     QFont font() const;
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
     /** Returns the color used for drawing text in the scalebar.
      * @returns font color for scalebar.
@@ -132,7 +109,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see fontColor
      * @see setFont
      */
-    void setFontColor( const QColor& c );
+    void setFontColor( const QColor &c );
 
     /** Returns the color used for fills in the scalebar.
      * @see setFillColor()
@@ -146,7 +123,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see setFillColor2()
      * @note added in QGIS 3.0
      */
-    void setFillColor( const QColor& color );
+    void setFillColor( const QColor &color );
 
     /** Returns the secondary color used for fills in the scalebar.
      * @see setFillColor2()
@@ -160,7 +137,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see setFillColor2()
      * @note added in QGIS 3.0
      */
-    void setFillColor2( const QColor& color );
+    void setFillColor2( const QColor &color );
 
     /** Returns the color used for lines in the scalebar.
      * @see setLineColor()
@@ -172,7 +149,7 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see lineColor()
      * @note added in QGIS 3.0
      */
-    void setLineColor( const QColor& color );
+    void setLineColor( const QColor &color );
 
     /** Returns the line width in millimeters for lines in the scalebar.
      * @see setLineWidth()
@@ -212,8 +189,8 @@ class QgsComposerScaleBar: QgsComposerItem
     double height() const;
     void setHeight( double h );
 
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap();
+    void setComposerMap( QgsComposerMap *map );
+    QgsComposerMap *composerMap();
 
     double labelBarSpace() const;
     void setLabelBarSpace( double space );
@@ -221,16 +198,14 @@ class QgsComposerScaleBar: QgsComposerItem
     double boxContentSpace() const;
     void setBoxContentSpace( double space );
 
-    double segmentMillimeters() const;
-
     /** Left / Middle/ Right */
-    Alignment alignment() const;
+    QgsScaleBarSettings::Alignment alignment() const;
 
-    void setAlignment( Alignment a );
+    void setAlignment( QgsScaleBarSettings::Alignment a );
 
-    ScaleBarUnits units() const;
+    QgsUnitTypes::DistanceUnit units() const;
 
-    void setUnits( ScaleBarUnits u );
+    void setUnits( QgsUnitTypes::DistanceUnit u );
 
     /** Returns the join style used for drawing lines in the scalebar
      * @returns Join style for lines
@@ -263,20 +238,14 @@ class QgsComposerScaleBar: QgsComposerItem
     /** Apply default settings*/
     void applyDefaultSettings();
     /** Apply default size (scale bar 1/5 of map item width) */
-    void applyDefaultSize( ScaleBarUnits u = Meters );
+    void applyDefaultSize( QgsUnitTypes::DistanceUnit u = QgsUnitTypes::DistanceMeters );
 
     /** Sets style by name
      @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
-    void setStyle( const QString& styleName );
+    void setStyle( const QString &styleName );
 
     /** Returns style name*/
     QString style() const;
-
-    /** Returns the x - positions of the segment borders (in item coordinates) and the width
-     * of the segment
-     * @note not available in Python bindings
-     */
-    // void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
     /** Sets box size suitable to content*/
     void adjustBoxSize();
@@ -284,20 +253,17 @@ class QgsComposerScaleBar: QgsComposerItem
     /** Adjusts box size and calls QgsComposerItem::update()*/
     void update();
 
-    /** Returns string of first label (important for drawing, labeling, size calculation*/
-    QString firstLabelString() const;
-
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
@@ -309,13 +275,6 @@ class QgsComposerScaleBar: QgsComposerItem
     void updateSegmentSize();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
-
-  protected:
-    /** Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
-    void refreshSegmentMillimeters();
-
-    /** Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)*/
-    double mapWidth() const;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
 };

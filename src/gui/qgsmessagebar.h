@@ -18,6 +18,7 @@
 #define QGSMESSAGEBAR_H
 
 #include <qgisgui.h>
+#include "qgis.h"
 
 #include <QString>
 #include <QFrame>
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
       SUCCESS = 3
     };
 
-    QgsMessageBar( QWidget *parent = nullptr );
+    QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Display a message item on the bar after hiding the currently visible one
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * \param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
      * \param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget SIP_TRANSFER, MessageLevel level = INFO, int duration = 0 );
 
     /** Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
@@ -80,11 +81,11 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     bool popWidget( QgsMessageBarItem *item );
 
     //! make out a widget containing a message to be displayed on the bar
-    static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = nullptr ) SIP_FACTORY;
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem *createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &title, const QString &text, QWidget *parent = nullptr ) SIP_FACTORY;
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr ) SIP_FACTORY;
 
     //! convenience method for pushing a message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }

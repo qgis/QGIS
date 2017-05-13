@@ -25,11 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -59,17 +60,20 @@ class SaveSelectedFeatures(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Selection')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        vectorLayer = dataobjects.getLayerFromString(inputFilename)
+        vectorLayer = QgsProcessingUtils.mapLayerFromString(inputFilename, context)
 
-        writer = output.getVectorWriter(vectorLayer.fields(),
-                                        vectorLayer.wkbType(), vectorLayer.crs())
+        writer = output.getVectorWriter(vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.crs(), context)
 
-        features = vectorLayer.selectedFeaturesIterator()
-        total = 100.0 / int(vectorLayer.selectedFeatureCount())
+        features = vectorLayer.getSelectedFeatures()
+        count = int(vectorLayer.selectedFeatureCount())
+        if count == 0:
+            raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
+
+        total = 100.0 / count
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             feedback.setProgress(int(current * total))

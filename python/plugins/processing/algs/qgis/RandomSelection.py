@@ -30,14 +30,13 @@ import os
 import random
 
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import QgsProcessingUtils
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -73,9 +72,9 @@ class RandomSelection(GeoAlgorithm):
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(filename)
+        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
 
         featureCount = layer.featureCount()

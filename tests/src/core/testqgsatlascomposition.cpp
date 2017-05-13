@@ -151,8 +151,6 @@ void TestQgsAtlasComposition::init()
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );
   mAtlasMap->setFrameEnabled( true );
-  // Make sure it doesn't try to render a map for caching onto a still 0-sized image
-  mAtlasMap->setPreviewMode( QgsComposerMap::Rectangle );
   mComposition->addComposerMap( mAtlasMap );
   mAtlasMap->setLayers( QList<QgsMapLayer *>() << mVectorLayer );
 
@@ -165,7 +163,6 @@ void TestQgsAtlasComposition::init()
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
   mOverview->setFrameEnabled( true );
   mOverview->overview()->setFrameMap( mAtlasMap->id() );
-  mOverview->setPreviewMode( QgsComposerMap::Rectangle );
   mOverview->setLayers( QList<QgsMapLayer *>() << mVectorLayer );
   mComposition->addComposerMap( mOverview );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );

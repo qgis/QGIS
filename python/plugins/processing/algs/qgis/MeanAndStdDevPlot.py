@@ -28,14 +28,14 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class MeanAndStdDevPlot(GeoAlgorithm):
@@ -71,15 +71,14 @@ class MeanAndStdDevPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+        values = vector.values(layer, context, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):

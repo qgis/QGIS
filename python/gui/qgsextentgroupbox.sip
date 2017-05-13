@@ -14,7 +14,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 #include <qgsextentgroupbox.h>
 %End
   public:
-    explicit QgsExtentGroupBox( QWidget* parent /TransferThis/ = 0 );
+    explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
 
     enum ExtentState
     {
@@ -24,20 +24,20 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     };
 
     //! Setup original extent - should be called as part of initialization
-    void setOriginalExtent( const QgsRectangle& originalExtent, const QgsCoordinateReferenceSystem& originalCrs );
+    void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 
     QgsRectangle originalExtent() const;
-    const QgsCoordinateReferenceSystem& originalCrs() const;
+    const QgsCoordinateReferenceSystem &originalCrs() const;
 
     //! Setup current extent - should be called as part of initialization (or whenever current extent changes)
-    void setCurrentExtent( const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs );
+    void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 
     QgsRectangle currentExtent() const;
-    const QgsCoordinateReferenceSystem& currentCrs() const;
+    const QgsCoordinateReferenceSystem &currentCrs() const;
 
     //! Set the output CRS - may need to be used for transformation from original/current extent.
     //! Should be called as part of initialization and whenever the the output CRS is changed
-    void setOutputCrs( const QgsCoordinateReferenceSystem& outputCrs );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
@@ -46,7 +46,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 
     //! Set base part of title of the group box (will be appended with extent state)
     //! @note added in 2.12
-    void setTitleBase( const QString& title );
+    void setTitleBase( const QString &title );
     //! Set base part of title of the group box (will be appended with extent state)
     //! @note added in 2.12
     QString titleBase() const;
@@ -59,11 +59,11 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void setOutputExtentFromCurrent();
 
     //! set output extent to custom extent (may be transformed to output CRS)
-    void setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs );
+    void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
 
   signals:
     //! emitted when extent is changed
-    void extentChanged( const QgsRectangle& r );
+    void extentChanged( const QgsRectangle &r );
 
   protected slots:
 
@@ -75,7 +75,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void groupBoxClicked();
 
   protected:
-    void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, QgsExtentGroupBox::ExtentState state );
+    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
 };

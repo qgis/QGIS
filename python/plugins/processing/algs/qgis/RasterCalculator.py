@@ -102,12 +102,12 @@ class RasterCalculator(GeoAlgorithm):
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         expression = self.getParameterValue(self.EXPRESSION)
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}
         if layersValue:
-            layers = [dataobjects.getLayerFromString(f) for f in layersValue.split(";")]
+            layers = [QgsProcessingUtils.mapLayerFromString(f, context) for f in layersValue.split(";")]
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
         for lyr in QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance()):

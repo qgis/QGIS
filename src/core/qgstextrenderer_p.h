@@ -22,6 +22,7 @@
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
 #include "qgsapplication.h"
+#include "qgspainteffect.h"
 #include <QSharedData>
 #include <QPainter>
 
@@ -50,6 +51,7 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
       , fillBufferInterior( false )
       , joinStyle( Qt::RoundJoin )
       , blendMode( QPainter::CompositionMode_SourceOver )
+      , paintEffect( nullptr )
     {
     }
 
@@ -64,7 +66,13 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
       , fillBufferInterior( other.fillBufferInterior )
       , joinStyle( other.joinStyle )
       , blendMode( other.blendMode )
+      , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
     {
+    }
+
+    ~QgsTextBufferSettingsPrivate()
+    {
+      delete paintEffect;
     }
 
     bool enabled;
@@ -76,6 +84,7 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
     bool fillBufferInterior;
     Qt::PenJoinStyle joinStyle;
     QPainter::CompositionMode blendMode;
+    QgsPaintEffect *paintEffect;
 };
 
 
@@ -102,6 +111,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
       , strokeWidth( 0.0 )
       , strokeWidthUnits( QgsUnitTypes::RenderMillimeters )
       , joinStyle( Qt::BevelJoin )
+      , paintEffect( nullptr )
     {
     }
 
@@ -130,7 +140,13 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
       , strokeWidthUnits( other.strokeWidthUnits )
       , strokeWidthMapUnitScale( other.strokeWidthMapUnitScale )
       , joinStyle( other.joinStyle )
+      , paintEffect( other.paintEffect ? other.paintEffect->clone() : nullptr )
     {
+    }
+
+    ~QgsTextBackgroundSettingsPrivate()
+    {
+      delete paintEffect;
     }
 
     bool enabled;
@@ -156,6 +172,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
     QgsUnitTypes::RenderUnit strokeWidthUnits;
     QgsMapUnitScale strokeWidthMapUnitScale;
     Qt::PenJoinStyle joinStyle;
+    QgsPaintEffect *paintEffect;
 };
 
 

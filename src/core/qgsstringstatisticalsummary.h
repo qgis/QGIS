@@ -61,7 +61,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     /** Constructor for QgsStringStatistics
      * \param stats flags for statistics to calculate
      */
-    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
      * are always calculated (e.g., count).
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * \param stats flags for statistics to calculate
      * \see statistics
      */
-    void setStatistics( Statistics stats ) { mStatistics = stats; }
+    void setStatistics( QgsStringStatisticalSummary::Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * \param stat statistic to return
      * \returns calculated value of statistic
      */
-    QVariant statistic( Statistic stat ) const;
+    QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
 
     /** Returns the calculated count of values.
      */
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     /** Returns the friendly display name for a statistic
      * \param statistic statistic to return name for
      */
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsStringStatisticalSummary::Statistic statistic );
 
   private:
 

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -35,7 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -63,9 +63,8 @@ class Boundary(GeoAlgorithm):
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         input_wkb = layer.wkbType()
         if QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.LineGeometry:
@@ -78,13 +77,10 @@ class Boundary(GeoAlgorithm):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                output_wkb,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), output_wkb, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

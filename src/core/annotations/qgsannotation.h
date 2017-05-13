@@ -19,6 +19,7 @@
 #define QGSANNOTATION_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
@@ -55,13 +56,13 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Constructor for QgsAnnotation.
      */
-    QgsAnnotation( QObject *parent = nullptr );
+    QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Clones the annotation, returning a new copy of the annotation
      * reflecting the annotation's current state.
      */
-    virtual QgsAnnotation *clone() const = 0;
+    virtual QgsAnnotation *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns true if the annotation is visible and should be rendered.
@@ -182,7 +183,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * of the symbol is transferred to the annotation.
      * \see fillSymbol()
      */
-    void setFillSymbol( QgsFillSymbol *symbol );
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the symbol that is used for rendering the annotation frame.
@@ -216,7 +217,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * of the symbol is transferred to the annotation.
      * \see markerSymbol()
      */
-    void setMarkerSymbol( QgsMarkerSymbol *symbol );
+    void setMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the symbol that is drawn at the annotation's map position.

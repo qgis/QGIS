@@ -1,127 +1,143 @@
-/**
- * \class QgsFieldConstraints
- * \ingroup core
- * Stores information about constraints which may be present on a field.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfieldconstraints.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 
 class QgsFieldConstraints
 {
-
-%TypeHeaderCode
-#include <qgsfieldconstraints.h>
+%Docstring
+ Stores information about constraints which may be present on a field.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsfieldconstraints.h"
+%End
   public:
 
-    /**
-     * Constraints which may be present on a field.
-     */
     enum Constraint
     {
-      ConstraintNotNull, //!< Field may not be null
-      ConstraintUnique, //!< Field must have a unique value
-      ConstraintExpression, //!< Field has an expression constraint set. See constraintExpression().
+      ConstraintNotNull,
+      ConstraintUnique,
+      ConstraintExpression,
     };
     typedef QFlags<QgsFieldConstraints::Constraint> Constraints;
 
-    /**
-     * Origin of constraints.
-     */
+
     enum ConstraintOrigin
     {
-      ConstraintOriginNotSet, //!< Constraint is not set
-      ConstraintOriginProvider, //!< Constraint was set at data provider
-      ConstraintOriginLayer, //!< Constraint was set by layer
+      ConstraintOriginNotSet,
+      ConstraintOriginProvider,
+      ConstraintOriginLayer,
     };
 
-    /**
-     * Strength of constraints.
-     */
     enum ConstraintStrength
     {
-      ConstraintStrengthNotSet, //!< Constraint is not set
-      ConstraintStrengthHard, //!< Constraint must be honored before feature can be accepted
-      ConstraintStrengthSoft, //!< User is warned if constraint is violated but feature can still be accepted
+      ConstraintStrengthNotSet,
+      ConstraintStrengthHard,
+      ConstraintStrengthSoft,
     };
 
-    /**
-     * Constructor for QgsFieldConstraints.
-     */
     QgsFieldConstraints();
+%Docstring
+ Constructor for QgsFieldConstraints.
+%End
 
-    /**
-     * Returns any constraints which are present for the field.
-     * @see setConstraints()
-     * @see constraintOrigin()
-     */
     Constraints constraints() const;
+%Docstring
+ Returns any constraints which are present for the field.
+.. seealso:: setConstraints()
+.. seealso:: constraintOrigin()
+ :rtype: Constraints
+%End
 
-    /**
-     * Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
-     * is not present on this field.
-     * @see constraints()
-     */
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
+%Docstring
+ Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
+ is not present on this field.
+.. seealso:: constraints()
+ :rtype: ConstraintOrigin
+%End
 
-    /**
-     * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
-     * is not present on this field.
-     * @see constraints()
-     * @see setConstraintStrength()
-     */
     ConstraintStrength constraintStrength( Constraint constraint ) const;
+%Docstring
+ Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
+ is not present on this field.
+.. seealso:: constraints()
+.. seealso:: setConstraintStrength()
+ :rtype: ConstraintStrength
+%End
 
-    /**
-     * Sets the strength of a constraint. Note that the strength of constraints which originate
-     * from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
-     * explicitly changed.
-     * @see constraintStrength()
-     */
     void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
+%Docstring
+ Sets the strength of a constraint. Note that the strength of constraints which originate
+ from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+ explicitly changed.
+.. seealso:: constraintStrength()
+%End
 
-    /**
-     * Sets a constraint on the field.
-     * @see constraints()
-     * @see removeConstraint()
-     */
     void setConstraint( Constraint constraint, ConstraintOrigin origin = ConstraintOriginLayer );
+%Docstring
+ Sets a constraint on the field.
+.. seealso:: constraints()
+.. seealso:: removeConstraint()
+%End
 
-    /**
-     * Removes a constraint from the field.
-     * @see setConstraint()
-     * @see constraints()
-     */
     void removeConstraint( Constraint constraint );
+%Docstring
+ Removes a constraint from the field.
+.. seealso:: setConstraint()
+.. seealso:: constraints()
+%End
 
-    /**
-     * Returns the constraint expression for the field, if set.
-     * @see constraints()
-     * @see constraintDescription()
-     * @see setConstraintExpression()
-     */
     QString constraintExpression() const;
+%Docstring
+ Returns the constraint expression for the field, if set.
+.. seealso:: constraints()
+.. seealso:: constraintDescription()
+.. seealso:: setConstraintExpression()
+ :rtype: str
+%End
 
-    /**
-     * Returns the descriptive name for the constraint expression.
-     * @see constraints()
-     * @see constraintExpression()
-     * @see setConstraintExpression()
-     */
     QString constraintDescription() const;
+%Docstring
+ Returns the descriptive name for the constraint expression.
+.. seealso:: constraints()
+.. seealso:: constraintExpression()
+.. seealso:: setConstraintExpression()
+ :rtype: str
+%End
 
-    /**
-     * Set the constraint expression for the field. An optional descriptive name for the constraint
-     * can also be set. Setting an empty expression will clear any existing expression constraint.
-     * @see constraintExpression()
-     * @see constraintDescription()
-     * @see constraints()
-     */
-    void setConstraintExpression( const QString& expression, const QString& description = QString() );
+    void setConstraintExpression( const QString &expression, const QString &description = QString() );
+%Docstring
+ Set the constraint expression for the field. An optional descriptive name for the constraint
+ can also be set. Setting an empty expression will clear any existing expression constraint.
+.. seealso:: constraintExpression()
+.. seealso:: constraintDescription()
+.. seealso:: constraints()
+%End
 
-    bool operator==( const QgsFieldConstraints& other ) const;
+    bool operator==( const QgsFieldConstraints &other ) const;
+%Docstring
+ :rtype: bool
+%End
 
 };
 
 QFlags<QgsFieldConstraints::Constraint> operator|(QgsFieldConstraints::Constraint f1, QFlags<QgsFieldConstraints::Constraint> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfieldconstraints.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

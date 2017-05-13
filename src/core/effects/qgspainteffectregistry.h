@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QDomElement>
 #include <QDomDocument>
@@ -62,7 +63,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * \param map properties string map
      * \returns new paint effect
      */
-    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0;
+    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0 SIP_FACTORY;
 
     /** Create configuration widget for paint effect of this class. Can return nullptr
      * if there's no GUI for the paint effect class.
@@ -99,31 +100,31 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      */
     QgsPaintEffectMetadata( const QString &name, const QString &visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
-                            QgsPaintEffectWidgetFunc pfWidget = nullptr )
-      : QgsPaintEffectAbstractMetadata( name, visibleName )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
+                            QgsPaintEffectWidgetFunc pfWidget = nullptr ) SIP_SKIP
+  : QgsPaintEffectAbstractMetadata( name, visibleName )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
     {}
 
     /** Returns the paint effect creation function for the paint effect class
      * \returns creation function
      * \note not available in Python bindings
      */
-    QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; }
+    QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
 
     /** Returns the paint effect properties widget creation function for the paint effect class
      * \returns widget creation function
      * \note not available in Python bindings
      * \see setWidgetFunction
      */
-    QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
 
     /** Sets the paint effect properties widget creation function for the paint effect class
      * \param f widget creation function
      * \note not available in Python bindings
      * \see widgetFunction
      */
-    void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
+    void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     /** Creates a new paint effect of the metadata's effect class
      * \param map string map of effect properties
@@ -131,14 +132,14 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_SKIP
 
     /** Creates a new paint effect properties widget for the metadata's effect class
      * \returns effect properties widget
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;
@@ -177,7 +178,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \param metadata effect metadata. Ownership is transferred to the registry.
      * \returns true if add was successful.
      */
-    bool addEffectType( QgsPaintEffectAbstractMetadata *metadata );
+    bool addEffectType( QgsPaintEffectAbstractMetadata *metadata SIP_TRANSFER );
 
     /** Creates a new paint effect given the effect name and properties map.
      * \param name unique name representing paint effect class
@@ -185,7 +186,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect of specified class, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
+    QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const SIP_FACTORY;
 
     /** Creates a new paint effect given a DOM element storing paint effect
      * properties.
@@ -193,7 +194,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns new paint effect, or nullptr if matching
      * paint effect could not be created
      */
-    QgsPaintEffect *createEffect( const QDomElement &element ) const;
+    QgsPaintEffect *createEffect( const QDomElement &element ) const SIP_FACTORY;
 
     /** Returns a list of known paint effects.
      * \returns list of paint effect names
@@ -206,7 +207,7 @@ class CORE_EXPORT QgsPaintEffectRegistry
      * \returns default effects stack
      * \see isDefaultStack()
      */
-    static QgsPaintEffect *defaultStack();
+    static QgsPaintEffect *defaultStack() SIP_FACTORY;
 
     /** Tests whether a paint effect matches the default effects stack.
      * \param effect paint effect to test

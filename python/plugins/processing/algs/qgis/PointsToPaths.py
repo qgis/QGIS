@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -44,7 +45,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class PointsToPaths(GeoAlgorithm):
@@ -87,9 +88,8 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)
         dateFormat = str(self.getParameterValue(self.DATE_FORMAT))
@@ -100,12 +100,12 @@ class PointsToPaths(GeoAlgorithm):
         fields.append(QgsField('group', QVariant.String, '', 254, 0))
         fields.append(QgsField('begin', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
-        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(
-            fields, QgsWkbTypes.LineString, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LINES).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(),
+                                                                           context)
 
         points = dict()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]

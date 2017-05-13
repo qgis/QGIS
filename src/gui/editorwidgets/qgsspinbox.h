@@ -17,9 +17,21 @@
 #define QGSSPINBOX_H
 
 #include <QSpinBox>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsSpinBoxLineEdit;
+
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsspinbox.h>
+% End
+#endif
+
 
 /** \ingroup gui
  * \brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
@@ -28,6 +40,16 @@ class QgsSpinBoxLineEdit;
  */
 class GUI_EXPORT QgsSpinBox : public QSpinBox
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsSpinBox *>( sipCpp ) )
+      sipType = sipType_QgsSpinBox;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
     Q_PROPERTY( bool clearValue READ clearValue WRITE setClearValue )
@@ -46,7 +68,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     /** Constructor for QgsSpinBox.
      * \param parent parent widget
      */
-    explicit QgsSpinBox( QWidget *parent = nullptr );
+    explicit QgsSpinBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.

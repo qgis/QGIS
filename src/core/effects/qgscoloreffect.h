@@ -40,7 +40,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * \param map encoded properties string map
      * \returns new QgsColorEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsColorEffect();
 

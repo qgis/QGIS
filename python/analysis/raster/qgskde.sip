@@ -43,7 +43,7 @@ class QgsKernelDensityEstimation
     struct Parameters
     {
       //! Vector point layer
-      QgsVectorLayer* vectorLayer;
+      QgsVectorLayer *vectorLayer;
 
       //! Fixed radius, in map units
       double radius;
@@ -71,7 +71,7 @@ class QgsKernelDensityEstimation
      * Constructor for QgsKernelDensityEstimation. Requires a Parameters object specifying the options to use
      * to generate the surface. The output path and file format are also required.
      */
-    QgsKernelDensityEstimation( const Parameters& parameters, const QString& outputFile, const QString& outputFormat );
+    QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 
     /**
      * Runs the KDE calculation across the whole layer at once. Either call this method, or manually
@@ -92,7 +92,7 @@ class QgsKernelDensityEstimation
      * @see prepare()
      * @see finalise()
      */
-    Result addFeature( const QgsFeature& feature );
+    Result addFeature( const QgsFeature &feature );
 
     /**
      * Finalises the output file. Must be called after adding all features via addFeature().

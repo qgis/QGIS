@@ -69,7 +69,7 @@ class QgsGPSConnection : QObject
     /** Constructor
         @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice* dev /Transfer/ );
+    QgsGPSConnection( QIODevice *dev /Transfer/ );
     virtual ~QgsGPSConnection();
     /** Opens connection to device*/
     bool connect();
@@ -77,7 +77,7 @@ class QgsGPSConnection : QObject
     bool close();
 
     /** Sets the GPS source. The class takes ownership of the device class*/
-    void setSource( QIODevice* source /Transfer/ );
+    void setSource( QIODevice *source /Transfer/ );
 
     /** Returns the status. Possible state are not connected, connected, data received*/
     Status status() const;
@@ -86,8 +86,8 @@ class QgsGPSConnection : QObject
     QgsGPSInformation currentGPSInformation() const;
 
   signals:
-    void stateChanged( const QgsGPSInformation& info );
-    void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
+    void stateChanged( const QgsGPSInformation &info );
+    void nmeaSentenceReceived( const QString &substring );
 
   protected slots:
     /** Parse available data source content*/

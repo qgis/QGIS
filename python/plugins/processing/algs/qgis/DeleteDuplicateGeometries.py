@@ -26,11 +26,11 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class DeleteDuplicateGeometries(GeoAlgorithm):
@@ -58,18 +58,16 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         fields = layer.fields()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / len(features)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         geoms = dict()
         for current, f in enumerate(features):
             geoms[f.id()] = f.geometry()

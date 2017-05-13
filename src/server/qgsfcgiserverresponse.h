@@ -38,15 +38,17 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     void setHeader( const QString &key, const QString &value ) override;
 
-    void clearHeader( const QString &key ) override;
+    void removeHeader( const QString &key ) override;
 
-    QString getHeader( const QString &key ) const override;
+    QString header( const QString &key ) const override;
 
-    QList<QString> headerKeys() const override;
+    QMap<QString, QString> headers() const override { return mHeaders; }
 
     bool headersSent() const override;
 
-    void setReturnCode( int code ) override;
+    void setStatusCode( int code ) override;
+
+    int statusCode( ) const override { return mStatusCode; }
 
     void sendError( int code,  const QString &message ) override;
 
@@ -73,41 +75,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
     bool mFinished    = false;
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
-};
-
-/**
- * \ingroup server
- * QgsFcgiServerResquest
- * Class defining fcgi request
- */
-class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
-{
-  public:
-    QgsFcgiServerRequest();
-    ~QgsFcgiServerRequest();
-
-    virtual QByteArray data() const override;
-
-    /**
-     * Return true if an error occurred during initialization
-     */
-    bool hasError() const { return mHasError; }
-
-  private:
-    void readData();
-
-    // Log request info: print debug infos
-    // about the request
-    void printRequestInfos();
-
-
-    QByteArray mData;
-    bool       mHasError;
+    int mStatusCode = 0;
 };
 
 #endif
-
-
-
-
-

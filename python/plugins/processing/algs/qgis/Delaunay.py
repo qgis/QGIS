@@ -31,13 +31,20 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -69,23 +76,22 @@ class Delaunay(GeoAlgorithm):
                                     self.tr('Delaunay triangulation'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
-        fields = [QgsField('POINTA', QVariant.Double, '', 24, 15),
-                  QgsField('POINTB', QVariant.Double, '', 24, 15),
-                  QgsField('POINTC', QVariant.Double, '', 24, 15)]
+        fields = QgsFields()
+        fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))
+        fields.append(QgsField('POINTB', QVariant.Double, '', 24, 15))
+        fields.append(QgsField('POINTC', QVariant.Double, '', 24, 15))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         pts = []
         ptDict = {}
         ptNdx = -1
         c = voronoi.Context()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             if geom.isNull():

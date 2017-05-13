@@ -31,11 +31,12 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsSpatialIndex,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import dataobjects
 from processing.tools import vector
 
@@ -70,33 +71,33 @@ class SplitWithLines(GeoAlgorithm):
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split')))
 
-    def processAlgorithm(self, feedback):
-        layerA = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_A))
-        splitLayer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_B))
+    def processAlgorithm(self, context, feedback):
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
+        splitLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
 
         sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
         fieldList = layerA.fields()
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                                                                     QgsWkbTypes.multiType(layerA.wkbType()), layerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.multiType(layerA.wkbType()),
+                                                                     layerA.crs(), context)
 
         spatialIndex = QgsSpatialIndex()
         splitGeoms = {}
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([])
 
-        for aSplitFeature in vector.features(splitLayer, request):
+        for aSplitFeature in QgsProcessingUtils.getFeatures(splitLayer, context, request):
             splitGeoms[aSplitFeature.id()] = aSplitFeature.geometry()
             spatialIndex.insertFeature(aSplitFeature)
             # honor the case that user has selection on split layer and has setting "use selection"
 
         outFeat = QgsFeature()
-        features = vector.features(layerA)
+        features = QgsProcessingUtils.getFeatures(layerA, context)
 
-        if len(features) == 0:
+        if QgsProcessingUtils.featureCount(layerA, context) == 0:
             total = 100
         else:
-            total = 100.0 / float(len(features))
+            total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()
@@ -155,8 +156,7 @@ class SplitWithLines(GeoAlgorithm):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
-                                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                                           self.tr('Geometry exception while splitting'))
+                                    QgsMessageLog.logMessage(self.tr('Geometry exception while splitting'), self.tr('Processing'), QgsMessageLog.WARNING)
                                     result = 1
 
                                 # splitGeometry: If there are several intersections

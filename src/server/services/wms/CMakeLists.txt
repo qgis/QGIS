@@ -44,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ../../../core
   ../../../core/dxf
   ../../../core/geometry
+  ../../../core/metadata
   ../../../core/raster
   ../../../core/symbology-ng
   ../../../core/composer

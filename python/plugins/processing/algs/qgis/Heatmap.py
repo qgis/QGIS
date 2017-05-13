@@ -29,10 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest
+from qgis.core import (QgsFeatureRequest,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 from qgis.analysis import QgsKernelDensityEstimation
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -40,7 +41,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputRaster
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 from processing.algs.qgis.ui.HeatmapWidgets import HeatmapPixelSizeWidgetWrapper
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -130,9 +131,8 @@ class Heatmap(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         radius = self.getParameterValue(self.RADIUS)
         kernel_shape = self.getParameterValue(self.KERNEL)
@@ -171,12 +171,11 @@ class Heatmap(GeoAlgorithm):
 
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
-        features = vector.features(layer, request)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Error adding feature with ID {} to heatmap').format(f.id()))
+                QgsMessageLog.logMessage(self.tr('Error adding feature with ID {} to heatmap').format(f.id()), self.tr('Processing'), QgsMessageLog.CRITICAL)
 
             feedback.setProgress(int(current * total))
 

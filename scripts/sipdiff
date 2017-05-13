@@ -29,7 +29,7 @@ for file in $*; do
 
   if ! grep -Fxq "$d/$f.sip" python/auto_sip.blacklist; then
     echo -e "\033[0;31m$d/$f.sip is an automatically generated SIP file\033[0m"
-    echo -e "  g) \x1B[4mg\x1B[0menerate the SIP file \033[0;32m./sripts/sipify.pl $header > $d/$f.sip\033[0m"
+    echo -e "  g) \x1B[4mg\x1B[0menerate the SIP file \033[0;32m./scripts/sipify.pl $header > python/$d/$f.sip\033[0m"
     echo -e "  s) \x1B[4ms\x1B[0mhow the diff"
     SHOW=NO
     while read -n 1 n; do
@@ -37,7 +37,9 @@ for file in $*; do
       case $n in
         g)
           echo "Generating the SIP file ..."
-          ${DIR}/scripts/sipify.pl ${DIR}/$header > ${DIR}/python/$d/$f.sip
+          pushd ${DIR}
+          ./scripts/sipify.pl $header > python/$d/$f.sip
+          popd
           break
           ;;
         s)

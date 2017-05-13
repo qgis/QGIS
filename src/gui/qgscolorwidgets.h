@@ -19,6 +19,7 @@
 #include <QWidgetAction>
 #include <QWidget>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QColor;
 class QSpinBox;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param parent parent QWidget for the widget
      * \param component color component the widget alters
      */
-    QgsColorWidget( QWidget *parent = nullptr, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = Multiple );
 
     /** Returns the current color for the widget
      * \returns current widget color
@@ -200,7 +201,7 @@ class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
      * \param menu parent menu
      * \param parent parent widget
      */
-    QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = nullptr, QWidget *parent = nullptr );
+    QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /** Returns the color widget contained in the widget action.
      */
@@ -266,7 +267,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     /** Constructs a new color wheel widget.
      * \param parent parent QWidget for the widget
      */
-    QgsColorWheel( QWidget *parent = nullptr );
+    QgsColorWheel( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual ~QgsColorWheel();
 
@@ -359,7 +360,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * which vary along the horizontal and vertical axis are automatically assigned
      * based on this constant color component.
      */
-    QgsColorBox( QWidget *parent = nullptr, const ColorComponent component = Value );
+    QgsColorBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = Value );
 
     virtual ~QgsColorBox();
 
@@ -452,7 +453,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param component color component which varies along the ramp
      * \param orientation orientation for widget
      */
-    QgsColorRampWidget( QWidget *parent = nullptr,
+    QgsColorRampWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
 
@@ -555,7 +556,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      * \param parent parent QWidget for the widget
      * \param component color component which is controlled by the slider
      */
-    QgsColorSliderWidget( QWidget *parent = nullptr, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
     virtual void setComponent( const ColorComponent component ) override;
     virtual void setComponentValue( const int value ) override;
@@ -617,7 +618,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     /** Construct a new color line edit widget.
      * \param parent parent QWidget for the widget
      */
-    QgsColorTextWidget( QWidget *parent = nullptr );
+    QgsColorTextWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
 
@@ -675,7 +676,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     /** Construct a new color preview widget.
      * \param parent parent QWidget for the widget
      */
-    QgsColorPreviewWidget( QWidget *parent = nullptr );
+    QgsColorPreviewWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void paintEvent( QPaintEvent *event ) override;
     virtual QSize sizeHint() const override;

@@ -44,29 +44,32 @@ class QgsServerResponse
 
     /**
      * Clear header
-     * Undo a previous 'set_header' call
      */
-    virtual void clearHeader( const QString &key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
      */
-    virtual QString getHeader( const QString &key ) const = 0;
+    virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the response headers
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers() const = 0;
 
     /**
      * Return true if the headers have alredy been sent
      */
     virtual bool headersSent() const = 0;
 
-    /** Set the http return code
+    /** Return the http status code
+     */
+    virtual int statusCode( ) const = 0;
+
+    /** Set the http status code
      * @param code HTTP return code value
      */
-    virtual void setReturnCode( int code ) = 0;
+    virtual void setStatusCode( int code ) = 0;
 
     /**
      * Send error

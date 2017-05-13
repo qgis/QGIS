@@ -7,15 +7,15 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
     QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
     ~QgsBrightnessContrastFilter();
 
-    virtual QgsBrightnessContrastFilter * clone() const /Factory/;
+    virtual QgsBrightnessContrastFilter *clone() const /Factory/;
 
     int bandCount() const;
 
     Qgis::DataType dataType( int bandNo ) const;
 
-    bool setInput( QgsRasterInterface* input );
+    bool setInput( QgsRasterInterface *input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     void setBrightness( int brightness );
     int brightness() const;
@@ -23,8 +23,8 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
     void setContrast( int contrast );
     int contrast() const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXml( const QDomElement& filterElem );
+    void readXml( const QDomElement &filterElem );
 };

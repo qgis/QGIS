@@ -17,6 +17,7 @@ email                : jef at norbit dot de
 #define QGSGEOMETRYVALIDATOR_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QThread>
 #include "qgsgeometry.h"
 
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     void stop();
 
     //! Validate geometry and produce a list of geometry errors
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
+    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors SIP_OUT );
 
   signals:
     void errorFound( const QgsGeometry::Error & );

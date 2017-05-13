@@ -18,6 +18,8 @@
 #define QGSSQLSTATEMENT_H
 
 #include <QCoreApplication>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>
@@ -60,7 +62,7 @@ class CORE_EXPORT QgsSQLStatement
     /** Performs basic validity checks. Basically checking that columns referencing
      * a table, references a specified table. Returns true if the validation is
      * successful */
-    bool doBasicValidationChecks( QString &errorMsgOut ) const;
+    bool doBasicValidationChecks( QString &errorMsgOut SIP_OUT ) const;
 
     class Node;
 
@@ -163,13 +165,13 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     //! \note not available in Python bindings
-    static const char *BINARY_OPERATOR_TEXT[];
+    static const char *BINARY_OPERATOR_TEXT[] SIP_SKIP;
 
     //! \note not available in Python bindings
-    static const char *UNARY_OPERATOR_TEXT[];
+    static const char *UNARY_OPERATOR_TEXT[] SIP_SKIP;
 
     //! \note not available in Python bindings
-    static const char *JOIN_TYPE_TEXT[];
+    static const char *JOIN_TYPE_TEXT[] SIP_SKIP;
 
     //////
 

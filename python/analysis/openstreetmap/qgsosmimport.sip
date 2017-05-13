@@ -14,12 +14,12 @@ class QgsOSMXmlImport : public QObject
 #include <qgsosmimport.h>
 %End
   public:
-    explicit QgsOSMXmlImport( const QString& xmlFileName = QString(), const QString& dbFileName = QString() );
+    explicit QgsOSMXmlImport( const QString &xmlFileName = QString(), const QString &dbFileName = QString() );
 
-    void setInputXmlFileName( const QString& xmlFileName );
+    void setInputXmlFileName( const QString &xmlFileName );
     QString inputXmlFileName() const;
 
-    void setOutputDatabaseFileName( const QString& fileName );
+    void setOutputDatabaseFileName( const QString &fileName );
     QString outputDatabaseFileName() const;
 
     /**
@@ -40,14 +40,14 @@ class QgsOSMXmlImport : public QObject
     bool closeDatabase();
 
     //! @note not available in Python bindings
-    //void deleteStatement( sqlite3_stmt*& stmt );
+    //void deleteStatement( sqlite3_stmt* &stmt );
 
     bool createIndexes();
 
-    void readRoot( QXmlStreamReader& xml );
-    void readNode( QXmlStreamReader& xml );
-    void readWay( QXmlStreamReader& xml );
-    void readTag( bool way, qint64 id, QXmlStreamReader& xml );
+    void readRoot( QXmlStreamReader &xml );
+    void readNode( QXmlStreamReader &xml );
+    void readWay( QXmlStreamReader &xml );
+    void readTag( bool way, qint64 id, QXmlStreamReader &xml );
 
 };
 

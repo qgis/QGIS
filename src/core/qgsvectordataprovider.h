@@ -30,6 +30,7 @@ class QTextCodec;
 #include "qgsaggregatecalculator.h"
 #include "qgsmaplayerdependency.h"
 #include "qgsrelation.h"
+#include "qgsfeaturesink.h"
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -49,7 +50,7 @@ class QgsFeedback;
  *
  *
  */
-class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
+class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink
 {
     Q_OBJECT
 
@@ -145,7 +146,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * \since QGIS 2.4
      * \returns new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
-    virtual QgsAbstractFeatureSource *featureSource() const = 0;
+    virtual QgsAbstractFeatureSource *featureSource() const = 0 SIP_FACTORY;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -209,7 +210,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *
      * Default implementation simply iterates the features
      */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues SIP_OUT, int limit = -1 ) const;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -247,11 +248,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual void enumValues( int index, QStringList &enumList ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    /**
-     * Adds a list of features
-     * \returns true in case of success and false in case of failure
-     */
-    virtual bool addFeatures( QgsFeatureList &flist );
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
@@ -579,7 +576,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or nullptr if no conversion was necessary or possible
      */
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const;
+    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const SIP_FACTORY;
 
     /**
      * Set the list of native types supported by this provider.

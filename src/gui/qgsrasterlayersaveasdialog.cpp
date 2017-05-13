@@ -125,7 +125,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mTilesGroupBox->hide();
 
   mCrsSelector->setLayerCrs( mLayerCrs );
-  //default to layer CRS - see http://hub.qgis.org/issues/14209 for discussion
+  //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,

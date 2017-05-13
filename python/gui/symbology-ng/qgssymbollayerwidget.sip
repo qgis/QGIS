@@ -5,18 +5,18 @@ class QgsSymbolLayerWidget : QWidget
 %End
 
   public:
-    QgsSymbolLayerWidget( QWidget* parent /TransferThis/, const QgsVectorLayer* vl = 0 );
+    QgsSymbolLayerWidget( QWidget *parent /TransferThis/, const QgsVectorLayer *vl = 0 );
     virtual ~QgsSymbolLayerWidget();
 
-    virtual void setSymbolLayer( QgsSymbolLayer* layer ) = 0;
-    virtual QgsSymbolLayer* symbolLayer() = 0;
+    virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
+    virtual QgsSymbolLayer *symbolLayer() = 0;
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -27,10 +27,10 @@ class QgsSymbolLayerWidget : QWidget
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const;
+    const QgsVectorLayer *vectorLayer() const;
 
   protected:
-    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
     QgsExpressionContext createExpressionContext() const;
 
@@ -61,17 +61,17 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
     void penWidthChanged();
-    void colorChanged( const QColor& color );
+    void colorChanged( const QColor &color );
     void penStyleChanged();
     void offsetChanged();
     void on_mCustomCheckBox_stateChanged( int state );
@@ -95,18 +95,18 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
     ~QgsSimpleMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setColorStroke( const QColor& color );
-    void setColorFill( const QColor& color );
+    void setColorStroke( const QColor &color );
+    void setColorFill( const QColor &color );
     void setSize();
     void setAngle();
     void setOffset();
@@ -128,17 +128,17 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setColor( const QColor& color );
-    void setStrokeColor( const QColor& color );
+    void setColor( const QColor &color );
+    void setStrokeColor( const QColor &color );
     void setBrushStyle();
     void strokeWidthChanged();
     void strokeStyleChanged();
@@ -167,18 +167,18 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
      * @param vl associated vector layer
      * @param parent parent widget
      */
-    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
+    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsFilledMarkerSymbolLayerWidget();
 
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
      * @param vl associated vector layer
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
 };
 
@@ -191,17 +191,17 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include <qgssymbollayerwidget.h>
 %End
   public:
-    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setColor( const QColor& color );
-    void setColor2( const QColor& color );
+    void setColor( const QColor &color );
+    void setColor2( const QColor &color );
     void applyColorRamp();
     void setGradientType( int index );
     void setCoordinateMode( int index );
@@ -221,17 +221,17 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include <qgssymbollayerwidget.h>
 %End
   public:
-    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setColor( const QColor& color );
-    void setColor2( const QColor& color );
+    void setColor( const QColor &color );
+    void setColor2( const QColor &color );
     void colorModeChanged();
     void on_mSpinBlurRadius_valueChanged( int value );
     void on_mSpinMaxDistance_valueChanged( double value );
@@ -251,13 +251,13 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 #include <qgssymbollayerwidget.h>
 %End
   public:
-    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
 
@@ -281,26 +281,26 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
     ~QgsSvgMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setName( const QModelIndex& idx );
-    void populateIcons( const QModelIndex& idx );
+    void setName( const QModelIndex &idx );
+    void populateIcons( const QModelIndex &idx );
     void setSize();
     void setAngle();
     void setOffset();
     void on_mFileToolButton_clicked();
-    void on_mFileLineEdit_textEdited( const QString& text );
+    void on_mFileLineEdit_textEdited( const QString &text );
     void on_mFileLineEdit_editingFinished();
-    void on_mChangeColorButton_colorChanged( const QColor& color );
-    void on_mChangeStrokeColorButton_colorChanged( const QColor& color );
+    void on_mChangeColorButton_colorChanged( const QColor &color );
+    void on_mChangeStrokeColorButton_colorChanged( const QColor &color );
     void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mSizeUnitWidget_changed();
     void on_mStrokeWidthUnitWidget_changed();
@@ -312,7 +312,7 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 
     void populateList();
     //update gui for svg file (insert new path, update activation of gui elements for svg params)
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer* layer );
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
 };
 
 ///////////
@@ -324,13 +324,13 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
 };
 
@@ -343,13 +343,13 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   protected:
     void insertIcons();
@@ -370,11 +370,11 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 %End
   public:
 
-    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 };
 
 //////////
@@ -386,11 +386,11 @@ class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
 %End
 
   public:
-    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 };
 
 /////////
@@ -402,23 +402,23 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
     ~QgsFontMarkerSymbolLayerWidget();
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
-    void setFontFamily( const QFont& font );
-    void setColor( const QColor& color );
+    void setFontFamily( const QFont &font );
+    void setColor( const QColor &color );
 
     /** Set stroke color.
      * @note added in 2.16 */
-    void setColorStroke( const QColor& color );
+    void setColorStroke( const QColor &color );
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
@@ -440,13 +440,13 @@ class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
 %End
 
   public:
-    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 };
 
 
@@ -456,14 +456,14 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 #include <qgssymbollayerwidget.h>
 %End
   public:
-    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = nullptr );
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Will be registered as factory
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) /Factory/;
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer );
-    virtual QgsSymbolLayer* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+    virtual QgsSymbolLayer *symbolLayer();
 };

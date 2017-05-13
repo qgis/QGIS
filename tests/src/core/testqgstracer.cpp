@@ -68,7 +68,7 @@ static QgsVectorLayer *make_layer( const QStringList &wkts )
   Q_FOREACH ( const QString &wkt, wkts )
   {
     QgsFeature f( make_feature( wkt ) );
-    vl->addFeature( f, false );
+    vl->addFeature( f );
   }
   vl->commitChanges();
 

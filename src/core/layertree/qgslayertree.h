@@ -60,7 +60,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
      */
-    static inline QgsLayerTreeGroup *toGroup( QgsLayerTreeNode *node )
+    static inline QgsLayerTreeGroup *toGroup( QgsLayerTreeNode *node ) SIP_SKIP
     {
       return static_cast<QgsLayerTreeGroup *>( node );
     }
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
      */
-    static inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node )
+    static inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node ) SIP_SKIP
     {
       return static_cast<QgsLayerTreeLayer *>( node );
     }
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \since QGIS 2.4
      * \note Not available in Python bindings, because cast is automatic.
      */
-    static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node )
+    static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {
       return static_cast< const QgsLayerTreeLayer *>( node );
     }
@@ -91,11 +91,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * Create a new empty layer tree
      */
     QgsLayerTree();
-
-    /**
-     * Copy constructor
-     */
-    QgsLayerTree( const QgsLayerTree &other );
 
     /**
      * The order in which layers will be rendered on the canvas.
@@ -134,7 +129,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \since QGIS 3.0
      */
-    void setCustomLayerOrder( const QStringList &customLayerOrder );
+    void setCustomLayerOrder( const QStringList &customLayerOrder ) SIP_PYNAME( setCustomLayerOrderByIds );
 
     /**
      * The order in which layers will be rendered on the canvas.
@@ -227,6 +222,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     void nodeRemovedChildren();
 
   private:
+    //! Copy constructor \see clone()
+    QgsLayerTree( const QgsLayerTree &other );
     void addMissingLayers();
     QgsWeakMapLayerPointerList mCustomLayerOrder;
     bool mHasCustomLayerOrder = false;

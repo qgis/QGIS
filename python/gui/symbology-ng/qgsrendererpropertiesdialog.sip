@@ -13,7 +13,7 @@ class QgsRendererPropertiesDialog : QDialog
      * than shown as a dialog by itself
      * @param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer* layer, QgsStyle* style, bool embedded = false, QWidget* parent /TransferThis/ = nullptr );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsRendererPropertiesDialog();
 
@@ -22,7 +22,7 @@ class QgsRendererPropertiesDialog : QDialog
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -51,7 +51,7 @@ class QgsRendererPropertiesDialog : QDialog
      * @note If you are connected to this signal you should also connect
      * given panels showPanel signal as they can be nested.
      */
-    void showPanel( QgsPanelWidget* panel );
+    void showPanel( QgsPanelWidget *panel );
 
   public slots:
     //! called when user changes renderer type
@@ -73,7 +73,7 @@ class QgsRendererPropertiesDialog : QDialog
      *
      * @param panel The panel widget to open.
      */
-    void openPanel( QgsPanelWidget* panel );
+    void openPanel( QgsPanelWidget *panel );
 
   protected:
     /**
@@ -84,10 +84,10 @@ class QgsRendererPropertiesDialog : QDialog
      * @param widgets The list of widgets to check.
      * @param slot The slot to connect to the signals.
      */
-    void connectValueChanged( const QList<QWidget *>& widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 
 
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent *event );
 
 };

@@ -18,6 +18,7 @@
 #define QGSSYMBOLLAYERWIDGET_H
 
 #include "qgspropertyoverridebutton.h"
+#include "qgis.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
 #include <QWidget>
@@ -259,7 +260,7 @@ class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
      * \param vl associated vector layer
      * \param parent parent widget
      */
-    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Creates a new QgsFilledMarkerSymbolLayerWidget.
      * \param vl associated vector layer
@@ -725,7 +726,7 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
-    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Will be registered as factory

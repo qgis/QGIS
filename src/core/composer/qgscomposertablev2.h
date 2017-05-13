@@ -19,6 +19,8 @@
 #define QGSCOMPOSERTABLEV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgscomposermultiframe.h"
 #include <QFont>
 #include <QColor>
@@ -145,7 +147,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       LastRow //!< Style last row only
     };
 
-    QgsComposerTableV2( QgsComposition *composition, bool createUndoCommands );
+    QgsComposerTableV2( QgsComposition *composition SIP_TRANSFERTHIS, bool createUndoCommands );
     QgsComposerTableV2();
 
     virtual ~QgsComposerTableV2();
@@ -420,7 +422,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * is transferred to the table.
      * \see columns
      */
-    void setColumns( const QgsComposerTableColumns &columns );
+    void setColumns( const QgsComposerTableColumns &columns SIP_TRANSFER );
 
     /** Sets the cell style for a cell group.
      * \param group group to set style for
@@ -442,14 +444,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * and the string is the text to use for the column's header
      * \note not available in Python bindings
      */
-    virtual QMap<int, QString> headerLabels() const;
+    virtual QMap<int, QString> headerLabels() const SIP_SKIP;
 
     /** Fetches the contents used for the cells in the table.
      * \returns true if table contents were successfully retrieved.
      * \param contents QgsComposerTableContents to store retrieved row data in
      * \note not available in Python bindings
      */
-    virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
+    virtual bool getTableContents( QgsComposerTableContents &contents ) = 0 SIP_SKIP;
 
     /** Returns the current contents of the table. Excludes header cells.
      * \returns table contents
@@ -625,7 +627,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    void drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const;
+    void drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const SIP_SKIP;
 
     /** Recalculates and updates the size of the table and all table frames.
      */

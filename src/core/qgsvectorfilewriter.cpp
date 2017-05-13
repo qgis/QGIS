@@ -49,6 +49,7 @@
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <cpl_string.h>
 #include <gdal.h>
 
 QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
@@ -1222,7 +1223,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          MetaData(
                            QStringLiteral( "INTERLIS 2" ),
                            QObject::tr( "INTERLIS 2" ),
-                           QStringLiteral( "*.itf *.xml *.ili" ),
+                           QStringLiteral( "*.xtf *.xml *.ili" ),
                            QStringLiteral( "ili" ),
                            datasetOptions,
                            layerOptions
@@ -1816,6 +1817,22 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
 QString QgsVectorFileWriter::errorMessage()
 {
   return mErrorMessage;
+}
+
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature )
+{
+  return addFeature( feature, nullptr, QgsUnitTypes::DistanceMeters );
+}
+
+bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
+  }
+  return result;
 }
 
 bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
@@ -2726,6 +2743,40 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
   }
 
   return resultMap;
+}
+
+QString QgsVectorFileWriter::driverForExtension( const QString &extension )
+{
+  QString ext = extension.trimmed();
+  if ( ext.isEmpty() )
+    return QString();
+
+  if ( ext.startsWith( '.' ) )
+    ext.remove( 0, 1 );
+
+  GDALAllRegister();
+  int const drvCount = GDALGetDriverCount();
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    GDALDriverH drv = GDALGetDriver( i );
+    if ( drv )
+    {
+      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
+      {
+        QString drvName = GDALGetDriverShortName( drv );
+        QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+
+        Q_FOREACH ( const QString &driver, driverExtensions )
+        {
+          if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
+            return drvName;
+        }
+      }
+    }
+  }
+  return QString();
 }
 
 QString QgsVectorFileWriter::fileFilterString()

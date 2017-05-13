@@ -516,8 +516,9 @@ void QgsExpressionBuilderWidget::setExpressionText( const QString &expression )
 void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
-
-  loadExpressionContext();
+  updateFunctionTree();
+  loadFieldNames();
+  loadRecent( mRecentKey );
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
@@ -547,7 +548,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     {
       // no feature passed yet, try to get from layer
       QgsFeature f;
-      mLayer->getFeatures().nextFeature( f );
+      mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( f );
       mExpressionContext.setFeature( f );
     }
   }

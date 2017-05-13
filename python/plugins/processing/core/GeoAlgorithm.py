@@ -32,23 +32,22 @@ import copy
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingFeedback,
+from qgis.core import (QgsProcessingFeedback,
                        QgsSettings,
                        QgsProcessingAlgorithm,
                        QgsProject,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 
 from builtins import str
 from builtins import object
 from processing.gui.ParametersPanel import ParametersPanel
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 from processing.algs.help import shortHelp
 
 
@@ -98,12 +97,13 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             text = self._formatHelp(text)
         return text
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
         A GeoAlgorithmExecutionException should be raised in case
         something goes wrong.
+        :param context:
         """
         pass
 
@@ -173,7 +173,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # =========================================================
 
-    def execute(self, feedback=None, model=None):
+    def execute(self, context=None, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -186,6 +186,8 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
         if feedback is None:
             feedback = QgsProcessingFeedback()
+        if context is None:
+            context = dataobjects.createContext()
 
         self.model = model
         try:
@@ -193,24 +195,26 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             self.resolveOutputs()
             self.evaluateParameterValues()
             self.runPreExecutionScript(feedback)
-            self.processAlgorithm(feedback)
+            self.processAlgorithm(context, feedback)
             feedback.setProgress(100)
-            self.convertUnsupportedFormats(feedback)
+            self.convertUnsupportedFormats(context, feedback)
             self.runPostExecutionScript(feedback)
         except GeoAlgorithmExecutionException as gaee:
             lines = [self.tr('Error while executing algorithm')]
             lines.append(traceback.format_exc())
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
+            QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
             raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
         except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]
             lines.append(traceback.format_exc())
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
+            QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
             raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
-    def _checkParameterValuesBeforeExecuting(self):
+    def _checkParameterValuesBeforeExecuting(self, context=None):
+        if context is None:
+            context = dataobjects.createContext()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector,
                                   ParameterMultipleInput)):
@@ -220,7 +224,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     else:
                         inputlayers = [param.value]
                     for inputlayer in inputlayers:
-                        obj = dataobjects.getLayerFromString(inputlayer)
+                        obj = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if obj is None:
                             return "Wrong parameter value: " + param.value
         return self.checkParameterValuesBeforeExecuting()
@@ -249,33 +253,29 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     script += line
             exec(script, ns)
         except Exception as e:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   "Error in hook script: " + str(e))
+            QgsMessageLog.logMessage("Error in hook script: " + str(e), self.tr('Processing'), QgsMessageLog.WARNING)
             # A wrong script should not cause problems, so we swallow
             # all exceptions
             pass
 
-    def convertUnsupportedFormats(self, feedback):
+    def convertUnsupportedFormats(self, context, feedback):
         i = 0
         feedback.setProgressText(self.tr('Converting outputs'))
         for out in self.outputs:
             if isinstance(out, OutputVector):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     if layer is None:
                         # For the case of memory layer, if the
                         # getCompatible method has been called
                         continue
-                    writer = out.getVectorWriter(
-                        layer.fields(),
-                        layer.wkbType(), layer.crs()
-                    )
-                    features = vector.features(layer)
+                    writer = out.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addFeature(feature)
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     format = self.getFormatShortNameFromFilename(out.value)
                     orgFile = out.compatible
                     destFile = out.value
@@ -303,9 +303,9 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
-                    layer = dataobjects.getLayerFromString(out.compatible)
+                    layer = QgsProcessingUtils.mapLayerFromString(out.compatible, context)
                     writer = out.getTableWriter(layer.fields())
-                    features = vector.features(layer)
+                    features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
                         writer.addRecord(feature)
             feedback.setProgress(100 * i / float(len(self.outputs)))
@@ -338,6 +338,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             raise GeoAlgorithmExecutionException(str(e))
 
     def setOutputCRS(self):
+        context = dataobjects.createContext()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -351,7 +352,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                             if layer.source() == inputlayer:
                                 self.crs = layer.crs()
                                 return
-                        p = dataobjects.getLayerFromString(inputlayer)
+                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             self.crs = p.crs()
                             p = None
@@ -380,10 +381,12 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                                 break
                     param.setValue(";".join(inputlayers))
 
-    def checkInputCRS(self):
+    def checkInputCRS(self, context=None):
         """It checks that all input layers use the same CRS. If so,
         returns True. False otherwise.
         """
+        if context is None:
+            context = dataobjects.createContext()
         crsList = []
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
@@ -393,7 +396,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     else:
                         layers = [param.value]
                     for item in layers:
-                        crs = dataobjects.getLayerFromString(item).crs()
+                        crs = QgsProcessingUtils.mapLayerFromString(item, context).crs()
                         if crs not in crsList:
                             crsList.append(crs)
         return len(crsList) < 2

@@ -4,8 +4,7 @@ from builtins import range
 ##To_keep=number 1
 ##Biggest parts=output vector
 
-from processing.tools import dataobjects
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter
 
 To_keep = int(To_keep)
@@ -14,14 +13,14 @@ if To_keep < 1:
     To_keep = 1
 
 
-polyLayer = dataobjects.getLayerFromString(Polygons)
+polyLayer = QgsProcessingUtils.mapLayerFromString(Polygons, context)
 polyPrder = polyLayer.dataProvider()
 count = polyLayer.featureCount()
 writer = processing.VectorWriter(Results, None, polyPrder.fields(),
                                  QgsWkbTypes.MultiPolygon, polyPrder.crs())
 
 
-for n, feat in enumerate(processing.features(polyLayer)):
+for n, feat in enumerate(QgsProcessingUtils.getFeatures(polyLayer, context)):
     feedback.setProgress(int(100 * n / count))
     geom = feat.geometry()
     if geom.isMultipart():

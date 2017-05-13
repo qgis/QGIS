@@ -206,8 +206,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Set the extents of the map canvas
     void setExtent( const QgsRectangle &rect );
-    //! Remove all layers from the map and legend - reimplements same method from qgisappbase
-    void removeAllLayers();
 
     /** Open a raster or vector file; ignore other files.
       Used to process a commandline argument, FileOpen or Drop event.
@@ -393,6 +391,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveProject() { return mActionSaveProject; }
     QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
+    QAction *actionSaveMapAsPdf() { return mActionSaveMapAsPdf; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
     QAction *actionShowComposerManager() { return mActionShowComposerManager; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
@@ -592,10 +591,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! \since QGIS 2.1
     static QString normalizedMenuName( const QString &name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
-
-#ifdef Q_OS_WIN
-    static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
-#endif
 
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
 
@@ -1086,6 +1081,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void runScript( const QString &filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
+    //! Save the map view as a pdf - user is prompted for image name using a dialog
+    void saveMapAsPdf();
     //! Open a project
     void fileOpen();
     //! Create a new project

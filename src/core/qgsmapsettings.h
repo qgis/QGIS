@@ -17,6 +17,7 @@
 #define QGSMAPSETTINGS_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QImage>
 #include <QPointer>
@@ -212,7 +213,7 @@ class CORE_EXPORT QgsMapSettings
     // -- utility functions --
 
     //! \note not available in Python bindings
-    const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; }
+    const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; } SIP_SKIP
     QgsDatumTransformStore &datumTransformStore() { return mDatumTransformStore; }
 
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }

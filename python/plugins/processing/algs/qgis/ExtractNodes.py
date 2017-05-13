@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -66,20 +66,18 @@ class ExtractNodes(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         fields = layer.fields()
         fields.append(QgsField('node_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             input_geometry = f.geometry()
             if not input_geometry:

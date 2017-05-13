@@ -9,23 +9,23 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     virtual ~QgsHeatmapRenderer();
 
     //reimplemented methods
-    virtual QgsHeatmapRenderer* clone() const /Factory/;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-    virtual void stopRender( QgsRenderContext& context );
+    virtual QgsHeatmapRenderer *clone() const /Factory/;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual void stopRender( QgsRenderContext &context );
     //! @note symbolForFeature2 in python bindings
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
     //! @note symbol2 in python bindings
-    virtual QgsSymbolList symbols( QgsRenderContext& context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context );
     virtual QString dump() const;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
-    static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
-    virtual QDomElement save( QDomDocument& doc );
-    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    virtual QDomElement save( QDomDocument &doc );
+    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
-    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
+    virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 
     //heatmap specific methods
 
@@ -33,12 +33,12 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp *colorRamp() const;
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsColorRamp* ramp /Transfer/ );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 
     /** Returns the radius for the heatmap
      * @returns heatmap radius
@@ -76,14 +76,14 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      * @see radiusUnit
      * @see setRadiusMapUnitScale
      */
-    const QgsMapUnitScale& radiusMapUnitScale() const;
+    const QgsMapUnitScale &radiusMapUnitScale() const;
     /** Sets the map unit scale used for the heatmap's radius
      * @param scale map unit scale for heatmap's radius
      * @see setRadius
      * @see setRadiusUnit
      * @see radiusMapUnitScale
      */
-    void setRadiusMapUnitScale( const QgsMapUnitScale& scale );
+    void setRadiusMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the maximum value used for shading the heatmap.
      * @returns maximum value for heatmap shading. If 0, then maximum value will be automatically
@@ -121,6 +121,6 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      * @param expression point weight expression. If set to empty, all points are equally weighted.
      * @see weightExpression
      */
-    void setWeightExpression( const QString& expression );
+    void setWeightExpression( const QString &expression );
 
 };

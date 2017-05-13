@@ -15,7 +15,8 @@ class QgsRasterFileWriterTask : QgsTask
  QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
  task. This can be used to save a raster layer out to a file without blocking the
  QGIS interface.
- \see QgsVectorFileWriterTask
+.. seealso:: QgsVectorFileWriterTask
+.. seealso:: QgsVectorFileExporterTask
 .. versionadded:: 3.0
 %End
 
@@ -65,4 +66,3 @@ class QgsRasterFileWriterTask : QgsTask
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

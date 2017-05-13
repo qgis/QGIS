@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProcessingProvider : QObject
 {
 %Docstring
@@ -31,18 +30,18 @@ class QgsProcessingProvider : QObject
 
     virtual ~QgsProcessingProvider();
 
-//     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
+
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the provider.
- \see svgIconPath()
+.. seealso:: svgIconPath()
  :rtype: QIcon
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the provider's icon.
- \see icon()
+.. seealso:: icon()
  :rtype: str
 %End
 
@@ -51,7 +50,7 @@ class QgsProcessingProvider : QObject
  Returns the unique provider id, used for identifying the provider. This string
  should be a unique, short, character only string, eg "qgis" or "gdal". This
  string should not be localised.
- \see name()
+.. seealso:: name()
  :rtype: str
 %End
 
@@ -59,7 +58,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns the full provider name, which is used to describe the provider within the GUI.
  This string should be localised.
- \see id()
+.. seealso:: id()
  :rtype: str
 %End
 
@@ -67,7 +66,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
  missing external dependencies).
- \see isActive()
+.. seealso:: isActive()
  :rtype: bool
 %End
 
@@ -80,25 +79,25 @@ class QgsProcessingProvider : QObject
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
  Returns a list of the raster format file extensions supported by this provider.
- \see supportedOutputVectorLayerExtensions()
- \see supportedOutputTableExtensions()
+.. seealso:: supportedOutputVectorLayerExtensions()
+.. seealso:: supportedOutputTableExtensions()
  :rtype: list of str
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
  Returns a list of the vector format file extensions supported by this provider.
- \see supportedOutputRasterLayerExtensions()
- \see supportedOutputTableExtensions()
- \see supportsNonFileBasedOutput()
+.. seealso:: supportedOutputRasterLayerExtensions()
+.. seealso:: supportedOutputTableExtensions()
+.. seealso:: supportsNonFileBasedOutput()
  :rtype: list of str
 %End
 
     virtual QStringList supportedOutputTableExtensions() const;
 %Docstring
  Returns a list of the table format file extensions supported by this provider.
- \see supportedOutputRasterLayerExtensions()
- \see supportedOutputVectorLayerExtensions()
+.. seealso:: supportedOutputRasterLayerExtensions()
+.. seealso:: supportedOutputVectorLayerExtensions()
  :rtype: list of str
 %End
 
@@ -106,7 +105,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns true if the provider supports non-file based outputs (such as memory layers
  or direct database outputs).
- \see supportedOutputVectorLayerExtensions()
+.. seealso:: supportedOutputVectorLayerExtensions()
  :rtype: bool
 %End
 
@@ -118,14 +117,14 @@ class QgsProcessingProvider : QObject
  occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
  from any overloaded load() method to trigger an initial load of the provider's algorithms.
  :return: true if provider could be successfully loaded
- \see unload()
+.. seealso:: unload()
  :rtype: bool
 %End
 
     virtual void unload();
 %Docstring
  Unloads the provider. Any tear-down steps required by the provider should be implemented here.
- \see load()
+.. seealso:: load()
 %End
 
     void refreshAlgorithms();
@@ -136,7 +135,7 @@ class QgsProcessingProvider : QObject
     QList< const QgsProcessingAlgorithm * > algorithms() const;
 %Docstring
  Returns a list of algorithms supplied by this provider.
- \see algorithm()
+.. seealso:: algorithm()
  :rtype: list of const QgsProcessingAlgorithm
 %End
 
@@ -144,7 +143,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns the matching algorithm by ``name``, or a None if no matching
  algorithm is contained by this provider.
- \see algorithms()
+.. seealso:: algorithms()
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -154,7 +153,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Emitted when the provider has loaded (or refreshed) its list of available
  algorithms.
- \see refreshAlgorithms()
+.. seealso:: refreshAlgorithms()
 %End
 
   protected:
@@ -184,4 +183,3 @@ class QgsProcessingProvider : QObject
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

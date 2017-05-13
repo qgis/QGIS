@@ -17,20 +17,20 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTILINESTRINGV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsmulticurve.h"
 
 /** \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  * \since QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
     virtual QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
-    QgsMultiLineString *clone() const override;
+    QgsMultiLineString *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -42,11 +42,11 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
+    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
 
   protected:
 

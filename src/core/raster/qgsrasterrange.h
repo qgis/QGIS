@@ -19,6 +19,7 @@
 #define QGSRASTERRANGE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 
 class QgsRasterRange;
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsRasterRange
      *  \returns true if value is in at least one of ranges
      *  \note not available in Python bindings
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList );
+    static bool contains( double value, const QgsRasterRangeList &rangeList ) SIP_SKIP;
 
   private:
     double mMin;

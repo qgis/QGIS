@@ -27,17 +27,17 @@ class Qgs25DRenderer : QgsFeatureRenderer
      *
      * @param element XML information
      */
-    static QgsFeatureRenderer* create( QDomElement& element );
-    QDomElement save( QDomDocument& doc );
+    static QgsFeatureRenderer *create( QDomElement &element );
+    QDomElement save( QDomDocument &doc );
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields );
-    void stopRender( QgsRenderContext& context );
+    void startRender( QgsRenderContext &context, const QgsFields &fields );
+    void stopRender( QgsRenderContext &context );
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
-    QgsFeatureRenderer* clone() const;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+    QgsFeatureRenderer *clone() const;
 
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
-    virtual QgsSymbolList symbols( QgsRenderContext& context );
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+    virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     /**
      * Get the roof color
@@ -47,7 +47,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     /**
      * Set the roof color
      */
-    void setRoofColor( const QColor& roofColor );
+    void setRoofColor( const QColor &roofColor );
 
     /**
      * Get the wall color
@@ -57,7 +57,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     /**
      * Set the wall color
      */
-    void setWallColor( const QColor& wallColor );
+    void setWallColor( const QColor &wallColor );
 
     /**
      * Set wall shading enabled
@@ -77,7 +77,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
     /**
      * Set the shadow's color
      */
-    void setShadowColor( const QColor& shadowColor );
+    void setShadowColor( const QColor &shadowColor );
 
     /**
      * Get the shadow's spread distance in map units
@@ -93,7 +93,7 @@ class Qgs25DRenderer : QgsFeatureRenderer
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRenderer* renderer );
+    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer );
 
     /**
      * Is the shadow enabled

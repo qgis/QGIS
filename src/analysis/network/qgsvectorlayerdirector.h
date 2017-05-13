@@ -16,6 +16,8 @@
 #ifndef QGSVECTORLAYERDIRECTOR_H
 #define QGSVECTORLAYERDIRECTOR_H
 
+#include "qgis.h"
+
 #include "qgsgraphdirector.h"
 #include "qgis_analysis.h"
 
@@ -72,7 +74,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint > &additionalPoints,
-                    QVector< QgsPoint> &snappedPoints ) const override;
+                    QVector< QgsPoint> &snappedPoints SIP_OUT ) const override;
 
     QString name() const override;
 

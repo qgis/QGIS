@@ -30,14 +30,14 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -70,13 +70,13 @@ class VoronoiPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         buf = self.getParameterValue(self.BUFFER)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon,
+                                                                     layer.crs(), context)
 
         outFeat = QgsFeature()
         extent = layer.extent()
@@ -89,8 +89,8 @@ class VoronoiPolygons(GeoAlgorithm):
         ptDict = {}
         ptNdx = -1
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()
             point = geom.asPoint()

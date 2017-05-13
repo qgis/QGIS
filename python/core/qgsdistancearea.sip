@@ -9,7 +9,6 @@
 
 
 
-
 class QgsDistanceArea
 {
 %Docstring
@@ -46,7 +45,7 @@ Constructor
  Returns whether calculations will use the ellipsoid. Calculations will only use the
  ellipsoid if a valid ellipsoid() has been set.
 .. versionadded:: 2.14
- \see ellipsoid()
+.. seealso:: ellipsoid()
  :rtype: bool
 %End
 
@@ -54,13 +53,13 @@ Constructor
 %Docstring
  Sets source spatial reference system.
 .. versionadded:: 2.2
- \see sourceCrs()
+.. seealso:: sourceCrs()
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Returns the source spatial reference system.
- \see setSourceCrs()
+.. seealso:: setSourceCrs()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -70,8 +69,8 @@ Constructor
  retrieved using QgsEllipsoidUtils.acronyms().
  Calculations will only use the ellipsoid if a valid ellipsoid has been set.
  :return: true if ellipsoid was successfully set
- \see ellipsoid()
- \see willUseEllipsoid()
+.. seealso:: ellipsoid()
+.. seealso:: willUseEllipsoid()
  :rtype: bool
 %End
 
@@ -80,8 +79,8 @@ Constructor
  Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
  a valid ellipsoid been set.
  :return: true if ellipsoid was successfully set
- \see ellipsoid()
- \see willUseEllipsoid()
+.. seealso:: ellipsoid()
+.. seealso:: willUseEllipsoid()
  :rtype: bool
 %End
 
@@ -89,26 +88,26 @@ Constructor
 %Docstring
  Returns ellipsoid's acronym. Calculations will only use the
  ellipsoid if a valid ellipsoid has been set.
- \see setEllipsoid()
- \see willUseEllipsoid()
+.. seealso:: setEllipsoid()
+.. seealso:: willUseEllipsoid()
  :rtype: str
 %End
 
     double ellipsoidSemiMajor() const;
 %Docstring
  Returns the ellipsoid's semi major axis.
- \see ellipsoid()
- \see ellipsoidSemiMinor()
- \see ellipsoidInverseFlattening()
+.. seealso:: ellipsoid()
+.. seealso:: ellipsoidSemiMinor()
+.. seealso:: ellipsoidInverseFlattening()
  :rtype: float
 %End
 
     double ellipsoidSemiMinor() const;
 %Docstring
  Returns ellipsoid's semi minor axis.
- \see ellipsoid()
- \see ellipsoidSemiMajor()
- \see ellipsoidInverseFlattening()
+.. seealso:: ellipsoid()
+.. seealso:: ellipsoidSemiMajor()
+.. seealso:: ellipsoidInverseFlattening()
  :rtype: float
 %End
 
@@ -116,9 +115,9 @@ Constructor
 %Docstring
  Returns ellipsoid's inverse flattening.
  The inverse flattening is calculated with invf = a/(a-b).
- \see ellipsoid()
- \see ellipsoidSemiMajor()
- \see ellipsoidSemiMinor()
+.. seealso:: ellipsoid()
+.. seealso:: ellipsoidSemiMajor()
+.. seealso:: ellipsoidSemiMinor()
  :rtype: float
 %End
 
@@ -129,9 +128,9 @@ Constructor
  :return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
  returned area can be retrieved by calling areaUnits().
 .. versionadded:: 2.12
- \see measureLength()
- \see measurePerimeter()
- \see areaUnits()
+.. seealso:: measureLength()
+.. seealso:: measurePerimeter()
+.. seealso:: areaUnits()
  :rtype: float
 %End
 
@@ -142,9 +141,9 @@ Constructor
  :return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
  returned distance can be retrieved by calling lengthUnits().
 .. versionadded:: 2.12
- \see lengthUnits()
- \see measureArea()
- \see measurePerimeter()
+.. seealso:: lengthUnits()
+.. seealso:: measureArea()
+.. seealso:: measurePerimeter()
  :rtype: float
 %End
 
@@ -155,9 +154,9 @@ Constructor
  :return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
  returned perimeter can be retrieved by calling lengthUnits().
 .. versionadded:: 2.12
- \see lengthUnits()
- \see measureArea()
- \see measurePerimeter()
+.. seealso:: lengthUnits()
+.. seealso:: measureArea()
+.. seealso:: measurePerimeter()
  :rtype: float
 %End
 
@@ -166,7 +165,7 @@ Constructor
  Measures the length of a line with multiple segments.
  \param points list of points in line
  :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
- \see lengthUnits()
+.. seealso:: lengthUnits()
  :rtype: float
 %End
 
@@ -176,7 +175,7 @@ Constructor
  \param p1 start of line
  \param p2 end of line
  :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
- \see lengthUnits()
+.. seealso:: lengthUnits()
  :rtype: float
 %End
 
@@ -193,8 +192,8 @@ Constructor
  \param azimuth - azimuth in radians, clockwise from North
  \param projectedPoint calculated projected point
  :return: distance in mapUnits
- \see sourceCrs()
- \see computeSpheroidProject()
+.. seealso:: sourceCrs()
+.. seealso:: computeSpheroidProject()
  :rtype: float
 %End
 
@@ -202,7 +201,7 @@ Constructor
 %Docstring
  Returns the units of distance for length calculations made by this object.
 .. versionadded:: 2.14
- \see areaUnits()
+.. seealso:: areaUnits()
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -210,7 +209,7 @@ Constructor
 %Docstring
  Returns the units of area for areal calculations made by this object.
 .. versionadded:: 2.14
- \see lengthUnits()
+.. seealso:: lengthUnits()
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
@@ -236,7 +235,7 @@ Constructor
  kilometers
  :return: formatted distance string
 .. versionadded:: 2.16
- \see formatArea()
+.. seealso:: formatArea()
  :rtype: str
 %End
 
@@ -250,7 +249,7 @@ Constructor
  square kilometers
  :return: formatted area string
 .. versionadded:: 2.14
- \see formatDistance()
+.. seealso:: formatDistance()
  :rtype: str
 %End
 
@@ -262,7 +261,7 @@ Constructor
  was calculated by this class, ie that its unit of length is equal to lengthUnits().
  \param toUnits distance unit to convert measurement to
  :return: converted distance
- \see convertAreaMeasurement()
+.. seealso:: convertAreaMeasurement()
 .. versionadded:: 2.14
  :rtype: float
 %End
@@ -275,7 +274,7 @@ Constructor
  was calculated by this class, ie that its unit of area is equal to areaUnits().
  \param toUnits area unit to convert measurement to
  :return: converted area
- \see convertLengthMeasurement()
+.. seealso:: convertLengthMeasurement()
 .. versionadded:: 2.14
  :rtype: float
 %End
@@ -309,4 +308,3 @@ Constructor
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

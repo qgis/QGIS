@@ -4,7 +4,7 @@ class QgsComposerMultiFrameCommand : QUndoCommand
 #include <qgscomposermultiframecommand.h>
 %End
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
     ~QgsComposerMultiFrameCommand();
 
     void undo();
@@ -19,13 +19,13 @@ class QgsComposerMultiFrameCommand : QUndoCommand
     /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
-    const QgsComposerMultiFrame* multiFrame() const;
+    const QgsComposerMultiFrame *multiFrame() const;
 
   protected:
 
     QgsComposerMultiFrameCommand(); //forbidden
-    void saveState( QDomDocument& stateDoc );
-    void restoreState( QDomDocument& stateDoc );
+    void saveState( QDomDocument &stateDoc );
+    void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
 };
 
@@ -56,10 +56,10 @@ class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
       TableBackgroundColor,
     };
 
-    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
+    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame *multiFrame, const QString &text );
     ~QgsComposerMultiFrameMergeCommand();
 
-    bool mergeWith( const QUndoCommand * command );
+    bool mergeWith( const QUndoCommand *command );
     int id() const;
 
 };

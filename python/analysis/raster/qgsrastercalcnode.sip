@@ -42,19 +42,19 @@ class QgsRasterCalcNode
 
     QgsRasterCalcNode();
     QgsRasterCalcNode( double number );
-    QgsRasterCalcNode( QgsRasterMatrix* matrix );
-    QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
-    QgsRasterCalcNode( const QString& rasterName );
+    QgsRasterCalcNode( QgsRasterMatrix *matrix );
+    QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
     Type type() const;
 
     //set left node
-    void setLeft( QgsRasterCalcNode* left );
-    void setRight( QgsRasterCalcNode* right );
+    void setLeft( QgsRasterCalcNode *left );
+    void setRight( QgsRasterCalcNode *right );
 
     /** Calculates result (might be real matrix or single number)*/
-   // bool calculate( QMap<QString, QgsRasterCalculateInputMatrix*>& rasterData, QgsRasterMatrix& result ) const;
+   // bool calculate( QMap<QString, QgsRasterCalculateInputMatrix*> &rasterData, QgsRasterMatrix &result ) const;
 
     /** Calculates result of raster calculation (might be real matrix or single number).
      * @param rasterData input raster data references, map of raster name to raster data block
@@ -64,12 +64,12 @@ class QgsRasterCalcNode
      * @note added in QGIS 2.10
      * @note not available in Python bindings
      */
-    //bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
+    //bool calculate( QMap<QString, QgsRasterBlock* > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
 
-    static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg ) /Factory/;
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 
   private:
 
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 
 };

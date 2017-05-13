@@ -45,9 +45,9 @@ class QgsPropertyDefinition
 
     QgsPropertyDefinition();
 
-    QgsPropertyDefinition( const QString& name, const QString& description, StandardPropertyTemplate type );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
 
-    QgsPropertyDefinition( const QString& name, DataType dataTypes, const QString& description, const QString& helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText );
 
     QString name() const;
 
@@ -82,16 +82,16 @@ class QgsProperty
     QgsProperty();
     virtual ~QgsProperty();
 
-    static QgsProperty fromExpression( const QString& expression, bool isActive = true );
-    static QgsProperty fromField( const QString& fieldName, bool isActive = true );
-    static QgsProperty fromValue( const QVariant& value, bool isActive = true );
+    static QgsProperty fromExpression( const QString &expression, bool isActive = true );
+    static QgsProperty fromField( const QString &fieldName, bool isActive = true );
+    static QgsProperty fromValue( const QVariant &value, bool isActive = true );
 
-    QgsProperty( const QgsProperty& other );
+    QgsProperty( const QgsProperty &other );
 
     operator bool() const;
 
-    bool operator==( const QgsProperty& other ) const;
-    bool operator!=( const QgsProperty& other ) const;
+    bool operator==( const QgsProperty &other ) const;
+    bool operator!=( const QgsProperty &other ) const;
 
     Type propertyType() const;
 
@@ -99,43 +99,45 @@ class QgsProperty
 
     void setActive( bool active );
 
-    void setStaticValue( const QVariant& value );
+    void setStaticValue( const QVariant &value );
 
     QVariant staticValue() const;
 
-    void setField( const QString& field );
+    void setField( const QString &field );
 
     QString field() const;
 
-    void setExpressionString( const QString& expression );
+    void setExpressionString( const QString &expression );
 
     QString expressionString() const;
 
     virtual QString asExpression() const;
 
-    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
-    QVariant value( const QgsExpressionContext& context, const QVariant& defaultValue = QVariant(), bool* ok /Out/ = nullptr  ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok /Out/ = 0  ) const;
 
-    QString valueAsString( const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok /Out/ = nullptr ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;
 
-    QColor valueAsColor( const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok /Out/ = nullptr  ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = 0  ) const;
 
-    double valueAsDouble( const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok /Out/ = nullptr  ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = 0  ) const;
 
-    int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0, bool* ok /Out/ = nullptr ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = 0 ) const;
 
-    bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false, bool* ok /Out/ = nullptr ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = 0 ) const;
     QVariant toVariant() const;
     bool loadVariant( const QVariant &property );
 
-    void setTransformer( QgsPropertyTransformer* transformer /Transfer/ );
+    void setTransformer( QgsPropertyTransformer *transformer /Transfer/ );
 
-    const QgsPropertyTransformer* transformer() const;
+    const QgsPropertyTransformer *transformer() const;
 
     bool convertToTransformer();
+
+    operator QVariant() const;
 
 };
 

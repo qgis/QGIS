@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscolorramp.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Takes ownership of the shader
-    void setShader( QgsRasterShader *shader );
+    void setShader( QgsRasterShader *shader SIP_TRANSFER );
 
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }

@@ -25,9 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsVectorLayerImport,
+from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -35,7 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, postgis
+from processing.tools import postgis
 
 
 class ImportIntoPostGIS(GeoAlgorithm):
@@ -113,7 +114,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
                                            self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         db = postgis.GeoDB.from_name(connection)
 
@@ -127,7 +128,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(layerUri)
+        layer = QgsProcessingUtils.mapLayerFromString(layerUri, context)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:
@@ -163,12 +164,11 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if encoding:
             layer.setProviderEncoding(encoding)
 
-        (ret, errMsg) = QgsVectorLayerImport.importLayer(
+        (ret, errMsg) = QgsVectorLayerExporter.exportLayer(
             layer,
             uri.uri(),
             providerName,
             self.crs,
-            False,
             False,
             options,
         )

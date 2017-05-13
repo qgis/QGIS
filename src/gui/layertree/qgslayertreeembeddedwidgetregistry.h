@@ -17,6 +17,7 @@
 #define QGSLAYERTREEEMBEDDEDWIDGETREGISTRY_H
 
 #include <QMap>
+#include "qgis.h"
 #include <QWidget>
 #include "qgis_gui.h"
 
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
     //! Factory to create widgets. The returned widget is owned by the caller.
     //! The widgetIndex argument may be used to identify which widget is being
     //! created (useful when using multiple widgets from the same provider for one layer).
-    virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0;
+    virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 SIP_FACTORY;
 
     //! Whether it makes sense to use this widget for a particular layer
     virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
@@ -81,7 +82,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 
     /** Register a provider, takes ownership of the object.
      * Returns true on success, false if the provider is already registered. */
-    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider );
+    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider SIP_TRANSFER );
 
     /** Unregister a provider, the provider object is deleted.
      * Returns true on success, false if the provider was not registered. */

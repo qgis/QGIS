@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class EquivalentNumField(GeoAlgorithm):
@@ -64,21 +64,19 @@ class EquivalentNumField(GeoAlgorithm):
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
-        vlayer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(),
-                                        vlayer.crs())
+        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
         outFeat = QgsFeature()
         classes = {}
 
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(vlayer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()

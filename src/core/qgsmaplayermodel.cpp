@@ -284,12 +284,20 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       if ( layer )
       {
-        QString tooltip = "<b>" +
-                          ( layer->title().isEmpty() ? layer->shortName() : layer->title() ) + "</b>";
+        QStringList parts;
+        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
+        if ( title.isEmpty() )
+          title = layer->name();
+        title = "<b>" + title + "</b>";
+        if ( layer->crs().isValid() )
+          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
+
+        parts << title;
+
         if ( !layer->abstract().isEmpty() )
-          tooltip += "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
-        tooltip += "<br/><i>" + layer->publicSource() + "</i>";
-        return tooltip;
+          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+        parts << "<i>" + layer->publicSource() + "</i>";
+        return parts.join( "<br/>" );
       }
       return QVariant();
     }

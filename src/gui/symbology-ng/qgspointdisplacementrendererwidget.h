@@ -19,6 +19,7 @@
 #define QGSPOINTDISPLACEMENTRENDERERWIDGET_H
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
+#include "qgis.h"
 #include "qgsrendererwidget.h"
 #include "qgis_gui.h"
 
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
 {
     Q_OBJECT
   public:
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
     QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsPointDisplacementRendererWidget();
 

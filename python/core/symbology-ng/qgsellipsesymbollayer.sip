@@ -8,22 +8,22 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     QgsEllipseSymbolLayer();
     ~QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
-    void renderPoint( QPointF point, QgsSymbolRenderContext& context );
+    void renderPoint( QPointF point, QgsSymbolRenderContext &context );
     QString layerType() const;
-    void startRender( QgsSymbolRenderContext& context );
-    void stopRender( QgsSymbolRenderContext& context );
-    virtual QgsEllipseSymbolLayer* clone() const /Factory/;
+    void startRender( QgsSymbolRenderContext &context );
+    void stopRender( QgsSymbolRenderContext &context );
+    virtual QgsEllipseSymbolLayer *clone() const /Factory/;
     QgsStringMap properties() const;
 
-    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
-    void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
-    void setSymbolName( const QString& name );
+    void setSymbolName( const QString &name );
     QString symbolName() const;
 
     void setSymbolWidth( double w );
@@ -45,10 +45,10 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     void setStrokeWidth( double w );
     double strokeWidth() const;
 
-    void setFillColor( const QColor& c );
+    void setFillColor( const QColor &c );
     QColor fillColor() const;
 
-    void setStrokeColor( const QColor& c );
+    void setStrokeColor( const QColor &c );
     QColor strokeColor() const;
 
     /** Sets the units for the symbol's width.
@@ -64,8 +64,8 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit symbolWidthUnit() const;
 
-    void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& symbolWidthMapUnitScale() const;
+    void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &symbolWidthMapUnitScale() const;
 
     /** Sets the units for the symbol's height.
      * @param unit symbol units
@@ -80,8 +80,8 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 
-    void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& symbolHeightMapUnitScale() const;
+    void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &symbolHeightMapUnitScale() const;
 
     /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
@@ -94,14 +94,14 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
+    QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 };

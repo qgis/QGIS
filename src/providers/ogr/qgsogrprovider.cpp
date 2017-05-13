@@ -29,7 +29,7 @@ email                : sherman at mrcc.com
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -216,7 +216,7 @@ void QgsOgrProvider::repack()
 }
 
 
-QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -228,6 +228,7 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
   QString encoding;
   QString driverName = QStringLiteral( "ESRI Shapefile" );
   QStringList dsOptions, layerOptions;
+  QString layerName;
 
   if ( options )
   {
@@ -242,6 +243,9 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
 
     if ( options->contains( QStringLiteral( "layerOptions" ) ) )
       layerOptions << options->value( QStringLiteral( "layerOptions" ) ).toStringList();
+
+    if ( options->contains( QStringLiteral( "layerName" ) ) )
+      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
   }
 
   if ( oldToNewAttrIdxMap )
@@ -249,7 +253,35 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
   if ( errorMessage )
     errorMessage->clear();
 
-  if ( !overwrite )
+  QgsVectorFileWriter::ActionOnExistingFile action( QgsVectorFileWriter::CreateOrOverwriteFile );
+
+  bool update = false;
+  if ( options && options->contains( QStringLiteral( "update" ) ) )
+  {
+    update = options->value( QStringLiteral( "update" ) ).toBool();
+    if ( update )
+    {
+      if ( !overwrite && !layerName.isEmpty() )
+      {
+        OGRDataSourceH hDS = OGROpen( uri.toUtf8().constData(), TRUE, nullptr );
+        if ( hDS )
+        {
+          if ( OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() ) )
+          {
+            OGR_DS_Destroy( hDS );
+            if ( errorMessage )
+              *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
+                               .arg( uri ).arg( layerName );
+            return QgsVectorLayerExporter::ErrCreateDataSource;
+          }
+          OGR_DS_Destroy( hDS );
+        }
+      }
+      action = QgsVectorFileWriter::CreateOrOverwriteLayer;
+    }
+  }
+
+  if ( !overwrite && !update )
   {
     QFileInfo fi( uri );
     if ( fi.exists() )
@@ -257,13 +289,15 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
       if ( errorMessage )
         *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
                          .arg( uri );
-      return QgsVectorLayerImport::ErrCreateDataSource;
+      return QgsVectorLayerExporter::ErrCreateDataSource;
     }
   }
 
   QgsVectorFileWriter *writer = new QgsVectorFileWriter(
     uri, encoding, fields, wkbType,
-    srs, driverName, dsOptions, layerOptions );
+    srs, driverName, dsOptions, layerOptions, nullptr,
+    QgsVectorFileWriter::NoSymbology, nullptr,
+    layerName, action );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
@@ -272,20 +306,41 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer( const QStrin
       *errorMessage += writer->errorMessage();
 
     delete writer;
-    return ( QgsVectorLayerImport::ImportError ) error;
+    return ( QgsVectorLayerExporter::ExportError ) error;
   }
+
+  QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+  delete writer;
 
   if ( oldToNewAttrIdxMap )
   {
-    QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+    bool firstFieldIsFid = false;
+    if ( !layerName.isEmpty() )
+    {
+      OGRDataSourceH hDS = OGROpen( uri.toUtf8().constData(), TRUE, nullptr );
+      if ( hDS )
+      {
+        OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
+        if ( hLayer )
+        {
+          // Expose the OGR FID if it comes from a "real" column (typically GPKG)
+          // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
+          firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
+                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), OGR_L_GetFIDColumn( hLayer ) ) < 0 &&
+                            fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
+
+        }
+        OGR_DS_Destroy( hDS );
+      }
+    }
+
     for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
     {
-      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt );
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
     }
   }
 
-  delete writer;
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 static QString AnalyzeURI( QString const &uri,
@@ -1171,7 +1226,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-bool QgsOgrProvider::addFeature( QgsFeature &f )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
 {
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
@@ -1331,7 +1386,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeature( *it ) )
+    if ( !addFeaturePrivate( *it ) )
     {
       returnvalue = false;
     }
@@ -2225,8 +2280,8 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "Interlis 2" ) ) )
       {
-        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.itf *.xml *.ili" ) );
-        sExtensions << QStringLiteral( "itf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
+        sFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), QStringLiteral( "*.xtf *.xml *.ili" ) );
+        sExtensions << QStringLiteral( "xtf" ) << QStringLiteral( "xml" ) << QStringLiteral( "ili" );
       }
       else if ( driverName.startsWith( QLatin1String( "Ingres" ) ) )
       {
@@ -4178,7 +4233,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

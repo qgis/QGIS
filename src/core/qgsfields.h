@@ -16,6 +16,8 @@
 #ifndef QGSFIELDS_H
 #define QGSFIELDS_H
 
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsfield.h"
 
@@ -49,6 +51,8 @@ class CORE_EXPORT QgsFields
       OriginExpression //!< Field is calculated from an expression
     };
 
+#ifndef SIP_RUN
+
     typedef struct Field
     {
       Field()
@@ -71,6 +75,8 @@ class CORE_EXPORT QgsFields
       int originIndex;     //!< Index specific to the origin
     } Field;
 
+#endif
+
     /** Constructor for an empty field container
      */
     QgsFields();
@@ -81,47 +87,156 @@ class CORE_EXPORT QgsFields
 
     /** Assignment operator
      */
-    QgsFields &operator =( const QgsFields &other );
+    QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
     virtual ~QgsFields();
 
     //! Remove all fields
     void clear();
+
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+
     //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
     bool appendExpressionField( const QgsField &field, int originIndex );
+
     //! Remove a field with the given index
     void remove( int fieldIdx );
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->remove( a0 );
+    }
+    % End
+#endif
+
     //! Extend with fields from another QgsFields container
     void extend( const QgsFields &other );
 
     //! Check whether the container is empty
     bool isEmpty() const;
+
     //! Return number of items
     int count() const;
+
+#ifdef SIP_RUN
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->count();
+    % End
+#endif
+
     //! Return number of items
     int size() const;
+
     //! Return if a field index is valid
     //! \param i  Index of the field which needs to be checked
     //! \returns   True if the field exists
     bool exists( int i ) const;
 
+#ifndef SIP_RUN
     //! Get field at particular index (must be in range 0..N-1)
     QgsField operator[]( int i ) const;
+#endif
+
     //! Get field at particular index (must be in range 0..N-1)
-    QgsField &operator[]( int i );
+    QgsField &operator[]( int i ) SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->count() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      sipRes = new QgsField( sipCpp->operator[]( idx ) );
+    % End
+#endif
+
     //! Get field at particular index (must be in range 0..N-1)
-    QgsField at( int i ) const;
+    QgsField at( int i ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsField( sipCpp->at( a0 ) );
+    }
+    % End
+#endif
+
     //! Get field at particular index (must be in range 0..N-1)
-    QgsField field( int fieldIdx ) const;
+    QgsField field( int fieldIdx ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsField( sipCpp->field( a0 ) );
+    }
+    % End
+#endif
+
     //! Get field with matching name
-    QgsField field( const QString &name ) const;
+    QgsField field( const QString &name ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    int fieldIdx = sipCpp->indexFromName( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QgsField( sipCpp->field( *a0 ) );
+    }
+    % End
+#endif
 
     //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipCpp->fieldOrigin( a0 );
+    }
+    % End
+#endif
+
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = sipCpp->fieldOriginIndex( a0 );
+    }
+    % End
+#endif
 
     /**
      * Get the field index from the field name.
@@ -180,13 +295,41 @@ class CORE_EXPORT QgsFields
     /** Returns an icon corresponding to a field index, based on the field's type and source
      * \since QGIS 2.14
      */
-    QIcon iconForField( int fieldIdx ) const;
+    QIcon iconForField( int fieldIdx ) const SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipRes = new QIcon( sipCpp->iconForField( a0 ) );
+    }
+    % End
+#endif
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
     {
       return QVariant::fromValue( *this );
     }
+
+#ifdef SIP_RUN
+
+    void __setitem__( int key, const QgsField &field );
+    % MethodCode
+    int idx = ( int )sipConvertFromSequenceIndex( a0, sipCpp->count() );
+    if ( idx < 0 )
+      sipIsErr = 1;
+    else
+      ( *sipCpp )[idx] = *a1;
+    % End
+
+#endif
+
+#ifndef SIP_RUN
 
     ///@cond PRIVATE
 
@@ -315,6 +458,8 @@ class CORE_EXPORT QgsFields
      * \note not available in Python bindings
      */
     iterator end();
+
+#endif
 
   private:
 

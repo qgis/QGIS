@@ -82,8 +82,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
 
  :return: An iterator with all the referenced features
- \see getRelatedFeaturesRequest()
- \see getRelatedFeaturesFilter()
+.. seealso:: getRelatedFeaturesRequest()
+.. seealso:: getRelatedFeaturesFilter()
  :rtype: QgsFeatureIterator
 %End
 
@@ -95,8 +95,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
 
  :return: A request for all the referencing features
- \see getRelatedFeatures()
- \see getRelatedFeaturesFilter()
+.. seealso:: getRelatedFeatures()
+.. seealso:: getRelatedFeaturesFilter()
  :rtype: QgsFeatureRequest
 %End
 
@@ -107,8 +107,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
  :return: expression filter string for all the referencing features
 .. versionadded:: 2.16
- \see getRelatedFeatures()
- \see getRelatedFeaturesRequest()
+.. seealso:: getRelatedFeatures()
+.. seealso:: getRelatedFeaturesRequest()
  :rtype: str
 %End
 
@@ -152,7 +152,7 @@ class QgsRelation
 %Docstring
  Returns a human readable name for this relation. Mostly used as title for the children.
 
- \see id()
+.. seealso:: id()
 
  :return: A name
  :rtype: str
@@ -286,4 +286,3 @@ class QgsRelation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

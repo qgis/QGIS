@@ -20,6 +20,7 @@
 #define QGSSERVICEREGISTRY_H
 
 #include "qgsconfig.h"
+#include "qgis.h"
 
 #include <QHash>
 #include <QString>
@@ -74,7 +75,7 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * \param service a QgsServerResponse to be registered
      */
-    void registerService( QgsService *service );
+    void registerService( QgsService *service SIP_TRANSFER );
 
     /**
      * Unregister service from its name and version

@@ -40,8 +40,8 @@
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
+#include "qgsserverrequest.h"
 
-class QgsServerRequest;
 class QgsServerResponse;
 class QgsProject;
 
@@ -73,15 +73,6 @@ class SERVER_EXPORT QgsServer
      */
     void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
-    /** Handles the request from query string
-     * The query string is normally read from environment
-     * but can be also passed in args and in this case overrides the environment
-     * variable.
-     *
-     * \param queryString QString containing the query string
-     * \returns the response headers and body QPair of QByteArray
-     */
-    QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }

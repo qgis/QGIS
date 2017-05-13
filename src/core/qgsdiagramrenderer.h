@@ -16,6 +16,7 @@
 #define QGSDIAGRAMRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QColor>
 #include <QFont>
 #include <QList>
@@ -218,7 +219,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see renderer()
      * \since QGIS 2.16
      */
-    void setRenderer( QgsDiagramRenderer *diagramRenderer );
+    void setRenderer( QgsDiagramRenderer *diagramRenderer SIP_TRANSFER );
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
@@ -428,7 +429,7 @@ class CORE_EXPORT QgsDiagramSettings
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * \since QGIS 2.10
      */
-    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;
+    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
 };
 
@@ -466,7 +467,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Returns new instance that is equivalent to this one
      * \since QGIS 2.4 */
-    virtual QgsDiagramRenderer *clone() const = 0;
+    virtual QgsDiagramRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
     virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
@@ -487,7 +488,7 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
 
-    void setDiagram( QgsDiagram *d );
+    void setDiagram( QgsDiagram *d SIP_TRANSFER );
     QgsDiagram *diagram() const { return mDiagram; }
 
     //! Returns list with all diagram settings in the renderer
@@ -511,7 +512,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      * \since QGIS 2.10
      */
-    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;
+    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
     /** Returns true if renderer will show legend items for diagram attributes.
      * \since QGIS 2.16

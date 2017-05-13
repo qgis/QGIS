@@ -22,15 +22,15 @@ class QgsMapThemeCollection : QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer* l = nullptr );
+        MapThemeLayerRecord( QgsMapLayer *l = 0 );
 
-        bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
-        bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
+        bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
+        bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
 
-        QgsMapLayer* layer() const;
+        QgsMapLayer *layer() const;
 
 
-        void setLayer( QgsMapLayer* layer );
+        void setLayer( QgsMapLayer *layer );
 
 
         bool usingCurrentStyle;
@@ -49,18 +49,18 @@ class QgsMapThemeCollection : QObject
     {
       public:
 
-        bool operator==( const QgsMapThemeCollection::MapThemeRecord& other ) const;
-        bool operator!=( const QgsMapThemeCollection::MapThemeRecord& other ) const;
+        bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const;
+        bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const;
 
         //! Returns a list of records for all visible layer belonging to the theme.
         QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const;
 
         //! Sets layer records for the theme.
-        void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord>& records );
-        void removeLayerRecord( QgsMapLayer* layer );
+        void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord> &records );
+        void removeLayerRecord( QgsMapLayer *layer );
 
 
-        void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord& record );
+        void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
         //! Return set with only records for valid layers
         //! @note not available in python bindings
@@ -70,18 +70,18 @@ class QgsMapThemeCollection : QObject
     /**
      * Create map theme collection that handles themes of the given project.
      */
-    QgsMapThemeCollection( QgsProject* project );
+    QgsMapThemeCollection( QgsProject *project );
 
     /**
      * Returns whether a map theme with a matching name exists.
      */
-    bool hasMapTheme( const QString& name ) const;
+    bool hasMapTheme( const QString &name ) const;
 
     /**
      * Inserts a new map theme to the collection.
      * @see update()
      */
-    void insert( const QString& name, const MapThemeRecord& state );
+    void insert( const QString &name, const MapThemeRecord &state );
 
     /**
      * Updates a map theme within the collection.
@@ -89,12 +89,12 @@ class QgsMapThemeCollection : QObject
      * @param state map theme record to replace existing map theme
      * @see insert()
      */
-    void update( const QString& name, const MapThemeRecord& state );
+    void update( const QString &name, const MapThemeRecord &state );
 
     /**
      * Remove an existing map theme from collection.
      */
-    void removeMapTheme( const QString& name );
+    void removeMapTheme( const QString &name );
 
     //! Remove all map themes from the collection.
     void clear();

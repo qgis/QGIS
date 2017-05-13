@@ -19,6 +19,7 @@
 #define QGSPROPERTYASSISTANTWIDGET_H
 
 #include "qgspanelwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
 #include "ui_qgspropertycolorassistantwidget.h"
@@ -142,7 +143,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      * created symbols will be used instead.
      * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); } SIP_SKIP
 
     void setDockMode( bool dockMode ) override;
 

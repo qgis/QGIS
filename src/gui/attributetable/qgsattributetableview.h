@@ -17,6 +17,7 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
+#include "qgis.h"
 #include <QAction>
 
 #include "qgsfeature.h" // For QgsFeatureIds
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget *parent = nullptr );
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \brief setFeatureSelectionManager
      * \param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release

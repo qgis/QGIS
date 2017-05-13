@@ -45,6 +45,7 @@
         <file>icons/qgis-icon-60x60.png</file>
         <file>icons/qbrowser_icon.svg</file>
         <file>north_arrows/default.png</file>
+        <file>north_arrows/default.svg</file>
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
@@ -280,6 +281,7 @@
         <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionSharing.svg</file>
+        <file>themes/default/mActionSharingExport.svg</file>
         <file>themes/default/mActionSharingImport.svg</file>
         <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.svg</file>

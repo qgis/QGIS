@@ -14,16 +14,16 @@ class QgsBrowserTreeView: QTreeView
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
     ~QgsBrowserTreeView();
 
-    virtual void setModel( QAbstractItemModel* model );
-    virtual void showEvent( QShowEvent * e );
-    virtual void hideEvent( QHideEvent * e );
+    virtual void setModel( QAbstractItemModel *model );
+    virtual void showEvent( QShowEvent *e );
+    virtual void hideEvent( QHideEvent *e );
 
     // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex& index ) const;
+    bool hasExpandedDescendant( const QModelIndex &index ) const;
 
     // Set section where to store settings (because we have 2 browser dock widgets)
-    void setSettingsSection( const QString & section );
+    void setSettingsSection( const QString &section );
 
   protected slots:
-    virtual void rowsInserted( const QModelIndex & parentIndex, int start, int end );
+    virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end );
 };

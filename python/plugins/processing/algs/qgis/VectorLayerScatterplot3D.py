@@ -28,14 +28,14 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
 class VectorLayerScatterplot3D(GeoAlgorithm):
@@ -79,17 +79,16 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
 
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)
         zfieldname = self.getParameterValue(self.ZFIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
+        values = vector.values(layer, context, xfieldname, yfieldname, zfieldname)
 
         data = [go.Scatter3d(
                 x=values[xfieldname],

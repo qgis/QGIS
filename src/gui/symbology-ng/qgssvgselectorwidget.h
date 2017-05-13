@@ -18,6 +18,7 @@
 #define QGSSVGSELECTORWIDGET_H
 
 #include "ui_widget_svgselector.h"
+#include "qgis.h"
 
 #include "qgisgui.h"
 #include <QAbstractListModel>
@@ -172,13 +173,13 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
      * search paths will be shown.
      * \param parent parent object
      */
-    QgsSvgSelectorListModel( QObject *parent );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS );
 
     /** Constructor for creating a model for SVG files in a specific path.
      * \param parent parent object
      * \param path initial path, which is recursively searched
      */
-    QgsSvgSelectorListModel( QObject *parent, const QString &path );
+    QgsSvgSelectorListModel( QObject *parent SIP_TRANSFERTHIS, const QString &path );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -211,7 +212,7 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorGroupsModel( QObject *parent );
+    QgsSvgSelectorGroupsModel( QObject *parent SIP_TRANSFERTHIS );
     ~QgsSvgSelectorGroupsModel();
 
   private:
@@ -231,7 +232,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget *parent = nullptr );
+    QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsSvgSelectorWidget();
 
     static QgsSvgSelectorWidget *create( QWidget *parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }

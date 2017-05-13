@@ -17,6 +17,7 @@
 #define QGSCOMPOSERFRAME_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 
 class QgsComposition;
@@ -30,7 +31,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height );
+    QgsComposerFrame( QgsComposition *c SIP_TRANSFERTHIS, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height );
 
     /** Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).

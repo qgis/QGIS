@@ -30,13 +30,13 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsGeometry,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class GeometryByExpression(GeoAlgorithm):
@@ -84,9 +84,8 @@ class GeometryByExpression(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)
         wkb_type = None
@@ -102,10 +101,7 @@ class GeometryByExpression(GeoAlgorithm):
             wkb_type = QgsWkbTypes.addM(wkb_type)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                wkb_type,
-                layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), wkb_type, layer.crs(), context)
 
         expression = QgsExpression(self.getParameterValue(self.EXPRESSION))
         if expression.hasParserError():
@@ -117,8 +113,8 @@ class GeometryByExpression(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, input_feature in enumerate(features):
             output_feature = input_feature
 

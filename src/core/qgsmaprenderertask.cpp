@@ -18,8 +18,10 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmaprenderertask.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapsettingsutils.h"
 
+#include <QFile>
+#include <QTextStream>
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat )
   : QgsTask( tr( "Saving as image" ) )
@@ -47,6 +49,22 @@ void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
   }
 }
 
+void QgsMapRendererTask::addDecorations( QList< QgsMapDecoration * > decorations )
+{
+  mDecorations = decorations;
+}
+
+
+void QgsMapRendererTask::cancel()
+{
+  mJobMutex.lock();
+  if ( mJob )
+    mJob->cancelWithoutBlocking();
+  mJobMutex.unlock();
+
+  QgsTask::cancel();
+}
+
 bool QgsMapRendererTask::run()
 {
   QImage img;
@@ -63,6 +81,9 @@ bool QgsMapRendererTask::run()
       return false;
     }
 
+    img.setDotsPerMeterX( 1000 * mMapSettings.outputDpi() / 25.4 );
+    img.setDotsPerMeterY( 1000 * mMapSettings.outputDpi() / 25.4 );
+
     tempPainter.reset( new QPainter( &img ) );
     destPainter = tempPainter.get();
   }
@@ -70,14 +91,31 @@ bool QgsMapRendererTask::run()
   if ( !destPainter )
     return false;
 
-  QgsMapRendererCustomPainterJob r( mMapSettings, destPainter );
-  r.renderSynchronously();
+  mJobMutex.lock();
+  mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, destPainter ) );
+  mJobMutex.unlock();
+  mJob->renderSynchronously();
+
+  mJobMutex.lock();
+  mJob.reset( nullptr );
+  mJobMutex.unlock();
+
+  if ( isCanceled() )
+    return false;
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapSettings );
   context.setPainter( destPainter );
 
+  Q_FOREACH ( QgsMapDecoration *decoration, mDecorations )
+  {
+    decoration->render( mMapSettings, context );
+  }
+
   Q_FOREACH ( QgsAnnotation *annotation, mAnnotations )
   {
+    if ( isCanceled() )
+      return false;
+
     if ( !annotation || !annotation->isVisible() )
     {
       continue;
@@ -118,6 +156,23 @@ bool QgsMapRendererTask::run()
     {
       mError = ImageSaveFail;
       return false;
+    }
+
+    if ( mSaveWorldFile )
+    {
+      QFileInfo info  = QFileInfo( mFileName );
+
+      // build the world file name
+      QString outputSuffix = info.suffix();
+      QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
+                              + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
+      QFile worldFile( worldFileName );
+
+      if ( worldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) ) //don't use QIODevice::Text
+      {
+        QTextStream stream( &worldFile );
+        stream << QgsMapSettingsUtils::worldFileContent( mMapSettings );
+      }
     }
   }
 

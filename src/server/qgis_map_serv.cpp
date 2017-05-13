@@ -20,6 +20,7 @@
 #include "qgsconfig.h"
 #include "qgsserver.h"
 #include "qgsfcgiserverresponse.h"
+#include "qgsfcgiserverrequest.h"
 
 #include <fcgi_stdio.h>
 #include <cstdlib>

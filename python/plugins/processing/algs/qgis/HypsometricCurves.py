@@ -33,7 +33,8 @@ from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
                        QgsGeometry,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -81,10 +82,9 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.BOUNDARY_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
         step = self.getParameterValue(self.STEP)
         percentage = self.getParameterValue(self.USE_PERCENTAGE)
 
@@ -112,8 +112,8 @@ class HypsometricCurves(GeoAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, f in enumerate(features):
             geom = f.geometry()

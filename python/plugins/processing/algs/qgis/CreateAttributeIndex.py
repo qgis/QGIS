@@ -27,14 +27,13 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
 
 
 class CreateAttributeIndex(GeoAlgorithm):
@@ -66,9 +65,9 @@ class CreateAttributeIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(file_name)
+        layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
         field = self.getParameterValue(self.FIELD)
         provider = layer.dataProvider()
 

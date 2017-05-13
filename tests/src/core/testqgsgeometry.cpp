@@ -35,6 +35,9 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
+#include "qgscircle.h"
+#include "qgsellipse.h"
+#include "qgsregularpolygon.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -72,6 +75,9 @@ class TestQgsGeometry : public QObject
     void lineString(); //test QgsLineString
     void polygon(); //test QgsPolygonV2
     void triangle();
+    void circle();
+    void ellipse();
+    void regularPolygon();
     void compoundCurve(); //test QgsCompoundCurve
     void multiPoint();
     void multiLineString();
@@ -912,6 +918,18 @@ void TestQgsGeometry::point()
   QCOMPARE( p34.project( 1, 0, 0 ), QgsPointV2( QgsWkbTypes::PointZM, 1, 2, 3, 5 ) );
   QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
   QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
+
+  // inclination
+  QCOMPARE( QgsPointV2( 1, 2 ).inclination( QgsPointV2( 1, 2 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 90 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, -90 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 0 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 180 ) ), 180.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, -180 ) ), 180.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 720 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 45 ) ), 45.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 135 ) ), 135.0 );
 
 }
 
@@ -3488,6 +3506,14 @@ void TestQgsGeometry::triangle()
   QVERIFY( t3.exteriorRing() );
   QVERIFY( !t3.interiorRing( 0 ) );
 
+  // equality
+  QVERIFY( QgsTriangle() == QgsTriangle( ) ); // empty
+  QVERIFY( QgsTriangle() == QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) ) ); // empty
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) ) ==  QgsTriangle() ); // empty
+  QVERIFY( QgsTriangle() != QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) );
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) !=  QgsTriangle() );
+  QVERIFY( QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 10 ) ) !=  QgsTriangle( QgsPointV2( 0, 10 ), QgsPointV2( 5, 5 ), QgsPointV2( 0, 0 ) ) );
+
   // clone
   QgsTriangle *t4 = t3.clone();
   QCOMPARE( t3, *t4 );
@@ -3618,6 +3644,8 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 7.6158, t10.circumscribedRadius(), 0.0001 );
   QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.circumscribedCenter(), 0.0001 );
   QGSCOMPARENEAR( 3.4641, t9.circumscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.circumscribedCircle().center(), 0.0001 );
+  QGSCOMPARENEAR( 3.4641, t9.circumscribedCircle().radius(), 0.0001 );
 
   // inscribed circle
   QGSCOMPARENEARPOINT( QgsPointV2( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
@@ -3626,6 +3654,8 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 1.0701, t10.inscribedRadius(), 0.0001 );
   QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.inscribedCenter(), 0.0001 );
   QGSCOMPARENEAR( 1.7321, t9.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.inscribedCircle().center(), 0.0001 );
+  QGSCOMPARENEAR( 1.7321, t9.inscribedCircle().radius(), 0.0001 );
 
   // medians
   QVector<QgsLineString> med = t7.medians();
@@ -3733,6 +3763,629 @@ void TestQgsGeometry::triangle()
   // duplicate point
   pt1 = QgsPointV2( 0, 0 );
   QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+}
+
+void TestQgsGeometry::ellipse()
+{
+  //test constructors
+  QgsEllipse elp1;
+  QVERIFY( elp1.center() == QgsPointV2() );
+  QCOMPARE( elp1.semiMajorAxis(), 0.0 );
+  QCOMPARE( elp1.semiMinorAxis(), 0.0 );
+  QCOMPARE( elp1.azimuth(), 90.0 );
+  QVERIFY( elp1.isEmpty() );
+
+  QgsEllipse elp2( QgsPointV2( 5, 10 ), 3, 2 );
+  QVERIFY( elp2.center() == QgsPointV2( 5, 10 ) );
+  QCOMPARE( elp2.semiMajorAxis(), 3.0 );
+  QCOMPARE( elp2.semiMinorAxis(), 2.0 );
+  QCOMPARE( elp2.azimuth(), 90.0 );
+  QVERIFY( !elp2.isEmpty() );
+
+  QgsEllipse elp3( QgsPointV2( 5, 10 ), 3, 2, 45 );
+  QVERIFY( elp3.center() == QgsPointV2( 5, 10 ) );
+  QCOMPARE( elp3.semiMajorAxis(), 3.0 );
+  QCOMPARE( elp3.semiMinorAxis(), 2.0 );
+  QCOMPARE( elp3.azimuth(), 45.0 );
+  QVERIFY( !elp3.isEmpty() );
+
+  QgsEllipse elp4( QgsPointV2( 5, 10 ), 2, 3, 45 );
+  QVERIFY( elp4.center() == QgsPointV2( 5, 10 ) );
+  QCOMPARE( elp4.semiMajorAxis(), 3.0 );
+  QCOMPARE( elp4.semiMinorAxis(), 2.0 );
+  QCOMPARE( elp4.azimuth(), 135.0 );
+  QVERIFY( !elp4.isEmpty() );
+
+  //test toString
+  QCOMPARE( elp1.toString(), QString( "Empty" ) );
+  QCOMPARE( elp2.toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 90)" ) );
+  QCOMPARE( elp3.toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 45)" ) );
+  QCOMPARE( elp4.toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 135)" ) );
+
+  //test equality operator
+  QVERIFY( QgsEllipse() == QgsEllipse( QgsPointV2(), 0, 0, 90 ) );
+  QVERIFY( !( QgsEllipse() == QgsEllipse( QgsPointV2(), 0, 0, 0.0005 ) ) );
+  QVERIFY( elp2 == QgsEllipse( QgsPointV2( 5, 10 ), 2, 3, 0 ) );
+  QVERIFY( elp2 != elp3 );
+  QVERIFY( elp3 != elp4 );
+  QVERIFY( elp4 == QgsEllipse( QgsPointV2( 5, 10 ), 3, 2, 90 + 45 ) );
+
+  //test setter and getter
+  elp1.setAzimuth( 45 );
+  QCOMPARE( elp1.azimuth(), 45.0 );
+
+  elp1.setSemiMajorAxis( 50 );
+  QCOMPARE( elp1.semiMajorAxis(), 50.0 );
+
+  // axis_b > axis_a
+  elp1.setSemiMinorAxis( 70 );
+  QCOMPARE( elp1.semiMajorAxis(), 70.0 );
+  QCOMPARE( elp1.semiMinorAxis(), 50.0 );
+  // axis_b < axis_a
+  elp1.setSemiMinorAxis( 3 );
+  QCOMPARE( elp1.semiMinorAxis(), 3.0 );
+  QCOMPARE( elp1.semiMajorAxis(), 70.0 );
+
+  elp1.setSemiMajorAxis( 2 );
+  QCOMPARE( elp1.semiMinorAxis(), 2.0 );
+  QCOMPARE( elp1.semiMajorAxis(), 3.0 );
+
+  elp1.setCenter( QgsPointV2( 5, 10 ) );
+  QVERIFY( elp1.center() == QgsPointV2( 5, 10 ) );
+  QVERIFY( elp1.rcenter() == QgsPointV2( 5, 10 ) );
+  elp1.rcenter() = QgsPointV2( 25, 310 );
+  QVERIFY( elp1.center() == QgsPointV2( 25, 310 ) );
+
+  //test "alt" constructors
+  // fromExtent
+  QgsEllipse elp_alt = QgsEllipse( QgsPointV2( 2.5, 5 ), 2.5, 5 );
+  QVERIFY( QgsEllipse().fromExtent( QgsPointV2( 0, 0 ), QgsPointV2( 5, 10 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromExtent( QgsPointV2( 5, 10 ), QgsPointV2( 0, 0 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromExtent( QgsPointV2( 5, 0 ), QgsPointV2( 0, 10 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromExtent( QgsPointV2( -5, 0 ), QgsPointV2( 0, 10 ) ) != elp_alt );
+  // fromCenterPoint
+  QVERIFY( QgsEllipse().fromCenterPoint( QgsPointV2( 2.5, 5 ), QgsPointV2( 5, 10 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromCenterPoint( QgsPointV2( 2.5, 5 ), QgsPointV2( -0, 0 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromCenterPoint( QgsPointV2( 2.5, 5 ), QgsPointV2( 0, -10 ) ) != elp_alt );
+  // fromCenter2Points
+  QVERIFY( QgsEllipse().fromCenter2Points( QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 0 ), QgsPointV2( 7.5, 5 ) ) ==
+           QgsEllipse( QgsPointV2( 2.5, 5 ), 5, 5, 180 ) );
+  QVERIFY( QgsEllipse().fromCenter2Points( QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 7.5 ), QgsPointV2( 7.5, 5 ) ) != elp_alt ); //same ellipse with different azimuth
+  QVERIFY( QgsEllipse().fromCenter2Points( QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 2.5 ), QgsPointV2( 7.5, 5 ) ) != elp_alt ); //same ellipse with different azimuth
+  QVERIFY( QgsEllipse().fromCenter2Points( QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 0 ), QgsPointV2( 5, 5 ) ) == elp_alt );
+  QVERIFY( QgsEllipse().fromCenter2Points( QgsPointV2( 5, 10 ), QgsPointV2( 5, 10 ).project( 3, 45 ), QgsPointV2( 5, 10 ).project( 2, 90 + 45 ) ) ==
+           QgsEllipse( QgsPointV2( 5, 10 ), 3, 2, 45 ) );
+
+  // fromFoci
+  // horizontal
+  QgsEllipse elp_hor = QgsEllipse().fromFoci( QgsPointV2( -4, 0 ), QgsPointV2( 4, 0 ), QgsPointV2( 0, 4 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 90.0 ) == elp_hor );
+  QGSCOMPARENEARPOINT( QgsPointV2( 4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( -4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
+  elp_hor = QgsEllipse().fromFoci( QgsPointV2( 4, 0 ), QgsPointV2( -4, 0 ), QgsPointV2( 0, 4 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 270.0 ) == elp_hor );
+  QGSCOMPARENEARPOINT( QgsPointV2( -4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
+
+  // vertical
+  QgsEllipse elp_ver = QgsEllipse().fromFoci( QgsPointV2( 45, -15 ), QgsPointV2( 45, 10 ), QgsPointV2( 55, 0 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 45, -2.5 ), 16.084946, 10.123017725, 0.0 ) == elp_ver );
+  elp_ver = QgsEllipse().fromFoci( QgsPointV2( 45, 10 ), QgsPointV2( 45, -15 ), QgsPointV2( 55, 0 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 45, -2.5 ), 16.084946, 10.123017725, 180.0 ) == elp_ver );
+  QGSCOMPARENEARPOINT( QgsPointV2( 45, -15 ), elp_ver.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 45, 10 ), elp_ver.foci().at( 1 ), 1e-8 );
+  // oriented
+  // first quadrant
+  QgsEllipse elp_ori = QgsEllipse().fromFoci( QgsPointV2( 10, 10 ), QgsPointV2( 25, 20 ), QgsPointV2( 15, 20 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 17.5, 15.0 ), 10.5901699437, 5.55892970251, 90.0 - 33.690067526 ) == elp_ori );
+  QGSCOMPARENEARPOINT( QgsPointV2( 25, 20 ), elp_ori.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 10, 10 ), elp_ori.foci().at( 1 ), 1e-8 );
+  // second quadrant
+  elp_ori = QgsEllipse().fromFoci( QgsPointV2( 10, 10 ), QgsPointV2( 5, 20 ), QgsPointV2( 15, 20 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 7.5, 15.0 ), 10.5901699437, 8.99453719974, 360 - 26.56505117 ) == elp_ori );
+  QGSCOMPARENEARPOINT( QgsPointV2( 5, 20 ), elp_ori.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 10, 10 ), elp_ori.foci().at( 1 ), 1e-8 );
+  // third quadrant
+  elp_ori = QgsEllipse().fromFoci( QgsPointV2( 10, 10 ), QgsPointV2( 5, -5 ), QgsPointV2( 15, 20 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 7.5, 2.5 ), 19.0530819616, 17.3355107289893, 198.434948822922 ) == elp_ori );
+  QGSCOMPARENEARPOINT( QgsPointV2( 10, 10 ), elp_ori.foci().at( 1 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 5, -5 ), elp_ori.foci().at( 0 ), 1e-8 );
+  // fourth quadrant
+  elp_ori = QgsEllipse().fromFoci( QgsPointV2( 10, 10 ), QgsPointV2( 25, -5 ), QgsPointV2( 15, 20 ) );
+  QVERIFY( QgsEllipse( QgsPointV2( 17.5, 2.5 ), 19.0530819616, 15.82782146, 135 ) == elp_ori );
+  QGSCOMPARENEARPOINT( QgsPointV2( 25, -5 ), elp_ori.foci().at( 0 ), 1e-8 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 10, 10 ), elp_ori.foci().at( 1 ), 1e-8 );
+
+  // test quadrant
+  QgsEllipse elpq( QgsPointV2( 5, 10 ), 3, 2, 45 );
+  QVector<QgsPointV2> q = elpq.quadrant();
+  QGSCOMPARENEARPOINT( q.at( 0 ), QgsPointV2( 7.1213, 12.1213 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 3 ), QgsPointV2( 3.5858, 11.4142 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 2 ), QgsPointV2( 2.8787, 7.8787 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 1 ), QgsPointV2( 6.4142, 8.5858 ), 0.001 );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 90 );
+  q.clear();
+  q = elpq.quadrant();
+  QCOMPARE( q.at( 3 ), QgsPointV2( 0, 2 ) );
+  QCOMPARE( q.at( 0 ), QgsPointV2( 5, 0 ) );
+  QCOMPARE( q.at( 1 ), QgsPointV2( 0, -2 ) );
+  QCOMPARE( q.at( 2 ), QgsPointV2( -5, 0 ) );
+
+  elpq = QgsEllipse( QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 123, 321 ), 5, 2, 0 );
+  q.clear();
+  q = elpq.quadrant();
+  QCOMPARE( q.at( 0 ), QgsPointV2( QgsWkbTypes::PointZM, 0, 5, 123, 321 ) );
+  QCOMPARE( q.at( 3 ), QgsPointV2( QgsWkbTypes::PointZM, -2, 0, 123, 321 ) );
+  QCOMPARE( q.at( 2 ), QgsPointV2( QgsWkbTypes::PointZM, 0, -5, 123, 321 ) );
+  QCOMPARE( q.at( 1 ), QgsPointV2( QgsWkbTypes::PointZM, 2, 0, 123, 321 ) );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 2.5, 2, 315 );
+  q.clear();
+  q = elpq.quadrant();
+  QGSCOMPARENEARPOINT( q.at( 1 ), QgsPointV2( 1.4142, 1.4142 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 2 ), QgsPointV2( 1.7678, -1.7678 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 3 ), QgsPointV2( -1.4142, -1.4142 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 0 ), QgsPointV2( -1.7678, 1.7678 ), 0.001 );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2.5, 45 );
+  q.clear();
+  q = elpq.quadrant();
+  QGSCOMPARENEARPOINT( q.at( 3 ), QgsPointV2( -1.7678, 1.7678 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 0 ), QgsPointV2( 3.5355, 3.5355 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 1 ), QgsPointV2( 1.7678, -1.7678 ), 0.001 );
+  QGSCOMPARENEARPOINT( q.at( 2 ), QgsPointV2( -3.5355, -3.5355 ), 0.001 );
+
+  //test conversion
+  // points
+  QgsPointSequence pts;
+  pts = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).points( 4 );
+  q = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).quadrant();
+  QCOMPARE( pts.length(), 4 );
+  QGSCOMPARENEARPOINT( q.at( 0 ), pts.at( 0 ), 2 );
+  QGSCOMPARENEARPOINT( q.at( 1 ), pts.at( 1 ), 2 );
+  QGSCOMPARENEARPOINT( q.at( 2 ), pts.at( 2 ), 2 );
+  QGSCOMPARENEARPOINT( q.at( 3 ), pts.at( 3 ), 2 );
+  // linestring
+  QgsLineString *l = new QgsLineString();
+
+  l = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).toLineString( 4 );
+  QCOMPARE( l->numPoints(), 4 );
+  QgsPointSequence pts_l;
+  l->points( pts_l );
+  QCOMPARE( pts, pts_l );
+
+  // polygon
+  QgsPolygonV2 *p1 = new QgsPolygonV2();
+
+  p1 = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).toPolygon( 4 );
+  q = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).quadrant();
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 0 ) ), q.at( 0 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 1 ) ), q.at( 1 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 2 ) ), q.at( 2 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 3 ) ), q.at( 3 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 4 ) ), q.at( 0 ) );
+  QCOMPARE( 0, p1->numInteriorRings() );
+  QCOMPARE( 5, p1->exteriorRing()->numPoints() );
+
+  p1 = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 90 ).toPolygon( 4 );
+  q = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 90 ).quadrant();
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 0 ) ), q.at( 0 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 1 ) ), q.at( 1 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 2 ) ), q.at( 2 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 3 ) ), q.at( 3 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 4 ) ), q.at( 0 ) );
+  QCOMPARE( 0, p1->numInteriorRings() );
+  QCOMPARE( 5, p1->exteriorRing()->numPoints() );
+
+  p1 = elpq.toPolygon( 4 );
+  q = elpq.quadrant();
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 0 ) ), q.at( 0 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 1 ) ), q.at( 1 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 2 ) ), q.at( 2 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 3 ) ), q.at( 3 ) );
+  QCOMPARE( p1->vertexAt( QgsVertexId( 0, 0, 4 ) ), q.at( 0 ) );
+  QCOMPARE( 0, p1->numInteriorRings() );
+  QCOMPARE( 5, p1->exteriorRing()->numPoints() );
+
+  // oriented bounding box
+  QVERIFY( QgsEllipse().orientedBoundingBox()->isEmpty() );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2 );
+  QgsPolygonV2 *ombb = new QgsPolygonV2();
+  QgsLineString *ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 5, 2 ) << QgsPointV2( 5, -2 ) << QgsPointV2( -5, -2 ) << QgsPointV2( -5, 2 ) );
+  ombb->setExteriorRing( ext );
+  QCOMPARE( ombb->asWkt( 2 ), elpq.orientedBoundingBox()->asWkt( 2 ) );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2.5, 45 );
+  ombb = elpq.orientedBoundingBox();
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointV2( 1.7678, 5.3033 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPointV2( 5.3033, 1.7678 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPointV2( -1.7678, -5.3033 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPointV2( -5.3033, -1.7678 ), 0.0001 );
+
+  elpq = QgsEllipse( QgsPointV2( 0, 0 ), 5, 2.5, 315 );
+  ombb = elpq.orientedBoundingBox();
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPointV2( -5.3033, 1.7678 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPointV2( -1.7678, 5.3033 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPointV2( 5.3033, -1.7678 ), 0.0001 );
+  QGSCOMPARENEARPOINT( ombb->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPointV2( 1.7678, -5.3033 ), 0.0001 );
+
+  // bounding box
+  QCOMPARE( QgsEllipse().boundingBox(), QgsRectangle() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 2 ).boundingBox(), QgsEllipse( QgsPointV2( 0, 0 ), 5, 2 ).orientedBoundingBox()->boundingBox() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5 ).boundingBox(), QgsRectangle( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 5, 5, 60 ).boundingBox(), QgsRectangle( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 45 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -11.1803, -11.1803 ), QgsPoint( 11.1803, 11.1803 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 60 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -12.12436, -10.14889 ), QgsPoint( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 60 + 90 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -10.14889, -12.12436 ), QgsPoint( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 300 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -12.12436, -10.14889 ), QgsPoint( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 13, 9, 300 - 90 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPoint( -10.14889, -12.12436 ), QgsPoint( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
+
+  // focus
+  QCOMPARE( QgsEllipse().fromFoci( QgsPointV2( -4, 0 ), QgsPointV2( 4, 0 ), QgsPointV2( 0, 4 ) ).focusDistance(), 4.0 );
+  QGSCOMPARENEAR( QgsEllipse().fromFoci( QgsPointV2( 10, 10 ), QgsPointV2( 25, 20 ), QgsPointV2( 15, 20 ) ).focusDistance(), 9.01388, 0.0001 );
+
+  // eccentricity
+  QCOMPARE( QgsEllipse().fromFoci( QgsPointV2( -4, 0 ), QgsPointV2( 4, 0 ), QgsPointV2( 0, 4 ) ).eccentricity(), 0.7071067811865475 );
+  QCOMPARE( QgsEllipse( QgsPointV2( 0, 0 ), 3, 3 ).eccentricity(), 0.0 );
+  QVERIFY( std::isnan( QgsEllipse().eccentricity() ) );
+
+  // area
+  QGSCOMPARENEAR( 31.4159, QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 0 ).area(), 0.0001 );
+  // perimeter
+  QGSCOMPARENEAR( QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 45 ).perimeter(), QgsEllipse( QgsPointV2( 0, 0 ), 5, 2, 45 ).toPolygon( 10000 )->perimeter(), 0.001 );
+
+}
+
+void TestQgsGeometry::circle()
+{
+  //test constructors
+  QgsCircle circ1;
+  QVERIFY( circ1.center() == QgsPointV2() );
+  QCOMPARE( circ1.radius(), 0.0 );
+  QCOMPARE( circ1.azimuth(), 0.0 );
+  QVERIFY( circ1.isEmpty() );
+
+  QgsCircle circ2( QgsPointV2( 5, 10 ), 3 );
+  QVERIFY( circ2.center() == QgsPointV2( 5, 10 ) );
+  QCOMPARE( circ2.radius(), 3.0 );
+  QCOMPARE( circ2.azimuth(), 0.0 );
+  QVERIFY( !circ2.isEmpty() );
+
+  QgsCircle circ3( QgsPointV2( 5, 10 ), 3, 45 );
+  QVERIFY( circ3.center() == QgsPointV2( 5, 10 ) );
+  QCOMPARE( circ3.radius(), 3.0 );
+  QCOMPARE( circ3.azimuth(), 45.0 );
+  QVERIFY( !circ3.isEmpty() );
+
+  //test toString
+  QCOMPARE( circ1.toString(), QString( "Empty" ) );
+  QCOMPARE( circ2.toString(), QString( "Circle (Center: Point (5 10), Radius: 3, Azimuth: 0)" ) );
+  QCOMPARE( circ3.toString(), QString( "Circle (Center: Point (5 10), Radius: 3, Azimuth: 45)" ) );
+
+//test equality operator
+  QVERIFY( QgsCircle() == QgsCircle( QgsPointV2(), 0, 0 ) );
+  QVERIFY( !( QgsCircle() == QgsCircle( QgsPointV2(), 0, 0.0005 ) ) );
+  QVERIFY( circ2 == QgsCircle( QgsPointV2( 5, 10 ), 3, 0 ) );
+  QVERIFY( circ2 != circ3 );
+
+//test setter and getter
+  circ1.setAzimuth( 45 );
+  QCOMPARE( circ1.azimuth(), 45.0 );
+
+  circ1.setRadius( 50 );
+  QCOMPARE( circ1.radius(), 50.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 50.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 50.0 );
+
+  circ1.setSemiMajorAxis( 250 );
+  QCOMPARE( circ1.radius(), 250.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 250.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 250.0 );
+
+  circ1.setSemiMinorAxis( 8250 );
+  QCOMPARE( circ1.radius(), 8250.0 );
+  QCOMPARE( circ1.semiMajorAxis(), 8250.0 );
+  QCOMPARE( circ1.semiMinorAxis(), 8250.0 );
+
+  circ1.setCenter( QgsPointV2( 5, 10 ) );
+  QVERIFY( circ1.center() == QgsPointV2( 5, 10 ) );
+  QVERIFY( circ1.rcenter() == QgsPointV2( 5, 10 ) );
+  circ1.rcenter() = QgsPointV2( 25, 310 );
+  QVERIFY( circ1.center() == QgsPointV2( 25, 310 ) );
+
+//test "alt" constructors
+// by2Points
+  QVERIFY( QgsCircle().from2Points( QgsPointV2( -5, 0 ), QgsPointV2( 5, 0 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 10, 90 ) );
+  QVERIFY( QgsCircle().from2Points( QgsPointV2( 0, -5 ), QgsPointV2( 0, 5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 10, 0 ) );
+// byExtent
+  QVERIFY( QgsCircle().fromExtent( QgsPointV2( -5, -5 ), QgsPointV2( 5, 5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 5, 0 ) );
+  QVERIFY( QgsCircle().fromExtent( QgsPointV2( -7.5, -2.5 ), QgsPointV2( 2.5, 200.5 ) ) == QgsCircle() );
+// by3Points
+  QVERIFY( QgsCircle().from3Points( QgsPointV2( -5, 0 ), QgsPointV2( 5, 0 ), QgsPointV2( 0, 5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 5 ) );
+  QVERIFY( QgsCircle().from3Points( QgsPointV2( 5, 0 ), QgsPointV2( 6, 0 ), QgsPointV2( 7, 0 ) ) == QgsCircle() );
+// byCenterDiameter
+  QVERIFY( QgsCircle().fromCenterDiameter( QgsPointV2( 0, 0 ), 10 ) == QgsCircle( QgsPointV2( 0, 0 ), 5, 0 ) );
+  QVERIFY( QgsCircle().fromCenterDiameter( QgsPointV2( 2, 100 ), -10 ) == QgsCircle( QgsPointV2( 2, 100 ), 5, 0 ) );
+  QVERIFY( QgsCircle().fromCenterDiameter( QgsPointV2( 2, 100 ), -10, 45 ) == QgsCircle( QgsPointV2( 2, 100 ), 5, 45 ) );
+// byCenterPoint
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPointV2( 0, 0 ), QgsPointV2( 5, 0 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 5, 90 ) );
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 5, 0 ) );
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPointV2( 0, 0 ), QgsPointV2( 5 * cos( 45 * M_PI / 180.0 ), 5 * sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPointV2( 0, 0 ), 5, 45 ) );
+// by3Tangents
+// Tangents from triangle tri1( 0,0 ; 0,5 ), tri2( 0,0 ; 5,0 ), tri3( 5,0 ; 0,5 )
+  QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPointV2( 0, 0 ), QgsPointV2( 0, 1 ), QgsPointV2( 2, 0 ), QgsPointV2( 3, 0 ), QgsPointV2( 5, 0 ), QgsPointV2( 0, 5 ) );
+  QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPointV2( 1.4645, 1.4645 ), 0.0001 );
+  QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
+
+// test quadrant
+  QVector<QgsPointV2> quad = QgsCircle( QgsPointV2( 0, 0 ), 5 ).northQuadrant();
+  QVERIFY( quad.at( 0 ) == QgsPointV2( 0, 5 ) );
+  QVERIFY( quad.at( 1 ) == QgsPointV2( 5, 0 ) );
+  QVERIFY( quad.at( 2 ) == QgsPointV2( 0, -5 ) );
+  QVERIFY( quad.at( 3 ) == QgsPointV2( -5, 0 ) );
+
+  quad = QgsCircle( QgsPointV2( 0, 0 ), 5, 123 ).northQuadrant();
+  QVERIFY( quad.at( 0 ) == QgsPointV2( 0, 5 ) );
+  QVERIFY( quad.at( 1 ) == QgsPointV2( 5, 0 ) );
+  QVERIFY( quad.at( 2 ) == QgsPointV2( 0, -5 ) );
+  QVERIFY( quad.at( 3 ) == QgsPointV2( -5, 0 ) );
+
+  quad = QgsCircle( QgsPointV2( 0, 0 ), 5, 456 ).northQuadrant();
+  QVERIFY( quad.at( 0 ) == QgsPointV2( 0, 5 ) );
+  QVERIFY( quad.at( 1 ) == QgsPointV2( 5, 0 ) );
+  QVERIFY( quad.at( 2 ) == QgsPointV2( 0, -5 ) );
+  QVERIFY( quad.at( 3 ) == QgsPointV2( -5, 0 ) );
+
+  quad = QgsCircle( QgsPointV2( 0, 0 ), 5, -789l ).northQuadrant();
+  QVERIFY( quad.at( 0 ) == QgsPointV2( 0, 5 ) );
+  QVERIFY( quad.at( 1 ) == QgsPointV2( 5, 0 ) );
+  QVERIFY( quad.at( 2 ) == QgsPointV2( 0, -5 ) );
+  QVERIFY( quad.at( 3 ) == QgsPointV2( -5, 0 ) );
+
+
+//test conversion
+  QgsPointSequence ptsPol;
+  std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
+// polygon
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5 ).toPolygon( 4 ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( 0, 5 ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( 5, 0 ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( 0, -5 ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( -5, 0 ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( 0, 5 ) );
+
+// oriented
+//45
+  double val = 5 * sin( M_PI / 4 );
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 45 ).toPolygon( 4 ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( val, val ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( val, -val ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( -val, -val ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( -val, val ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( val, val ) );
+//135
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 135 ).toPolygon( 4 ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( val, -val ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( -val, -val ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( -val, val ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( val, val ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( val, -val ) );
+//225
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 225 ).toPolygon( 4 ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( -val, -val ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( -val, val ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( val, val ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( val, -val ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( -val, -val ) );
+//315
+  pol.reset( QgsCircle( QgsPointV2( 0, 0 ), 5, 315 ).toPolygon( 4 ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( -val, val ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( val, val ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( val, -val ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( -val, -val ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( -val, val ) );
+
+// circular arc
+  QCOMPARE( QgsCircle( QgsPointV2( 0, 0 ), 5 ).toCircularString()->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
+  QCOMPARE( QgsCircle( QgsPointV2( 0, 0 ), 5 ).toCircularString( true )->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 -0, 0 5)" ) );
+  QCOMPARE( QgsCircle( QgsPointV2( 0, 0 ), 5, 315 ).toCircularString()->asWkt( 2 ), QString( "CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)" ) );
+  QCOMPARE( QgsCircle( QgsPointV2( 0, 0 ), 5, 315 ).toCircularString( true )->asWkt( 2 ), QString( "CircularString (-3.54 3.54, 3.54 3.54, 3.54 -3.54, -3.54 -3.54, -3.54 3.54)" ) );
+
+// bounding box
+  QVERIFY( QgsRectangle( QgsPoint( -2.5, -2.5 ), QgsPoint( 2.5, 2.5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 2.5, 0 ).boundingBox() );
+  QVERIFY( QgsRectangle( QgsPoint( -2.5, -2.5 ), QgsPoint( 2.5, 2.5 ) ) == QgsCircle( QgsPointV2( 0, 0 ), 2.5, 45 ).boundingBox() );
+
+  // area
+  QGSCOMPARENEAR( 314.1593, QgsCircle( QgsPointV2( 0, 0 ), 10 ).area(), 0.0001 );
+  // perimeter
+  QGSCOMPARENEAR( 31.4159, QgsCircle( QgsPointV2( 0, 0 ), 5 ).perimeter(), 0.0001 );
+}
+
+void TestQgsGeometry::regularPolygon()
+{
+  // constructors
+  QgsRegularPolygon rp1 = QgsRegularPolygon();
+  QCOMPARE( rp1.center(), QgsPointV2() );
+  QCOMPARE( rp1.firstVertex(), QgsPointV2() );
+  QCOMPARE( rp1.numberSides(), 0 );
+  QCOMPARE( rp1.radius(), 0.0 );
+  QVERIFY( rp1.isEmpty() );
+
+  QgsRegularPolygon rp2;
+  QgsRegularPolygon( QgsPointV2(), 5, 0, 2, QgsRegularPolygon::InscribedCircle );
+  QVERIFY( rp2.isEmpty() );
+  QgsRegularPolygon( QgsPointV2(), 5, 0, 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+  QVERIFY( rp2.isEmpty() );
+
+  rp2 = QgsRegularPolygon( QgsPointV2(), 5, 0, 5, QgsRegularPolygon::InscribedCircle );
+  QVERIFY( !rp2.isEmpty() );
+  QCOMPARE( rp2.center(), QgsPointV2() );
+  QCOMPARE( rp2.firstVertex(), QgsPointV2( 0, 5 ) );
+  QCOMPARE( rp2.numberSides(), 5 );
+  QCOMPARE( rp2.radius(), 5.0 );
+  QGSCOMPARENEAR( rp2.apothem(), 4.0451, 10E-4 );
+  QVERIFY( rp2 ==  QgsRegularPolygon( QgsPointV2(), -5, 0, 5, QgsRegularPolygon::InscribedCircle ) );
+
+  QgsRegularPolygon rp3 = QgsRegularPolygon( QgsPointV2(), rp2.apothem(), 36.0, 5, QgsRegularPolygon::CircumscribedCircle );
+  QVERIFY( rp2 == rp3 );
+  QVERIFY( rp2 == QgsRegularPolygon( QgsPointV2(), -rp2.apothem(), 36.0, 5, QgsRegularPolygon::CircumscribedCircle ) );
+  QVERIFY( rp1 != rp3 );
+  QVERIFY( rp1 != QgsRegularPolygon( QgsPointV2( 5, 5 ), rp2.apothem(), 36.0, 5, QgsRegularPolygon::CircumscribedCircle ) );
+  QVERIFY( rp1 != QgsRegularPolygon( QgsPointV2( 0, 0 ), 5, 36.0, 5, QgsRegularPolygon::CircumscribedCircle ) );
+  QVERIFY( rp1 != QgsRegularPolygon( QgsPointV2( 0, 0 ), 5, 36.0, 5, QgsRegularPolygon::InscribedCircle ) );
+
+  QgsRegularPolygon rp4 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 5 ), 2, QgsRegularPolygon::InscribedCircle );
+  QVERIFY( rp4.isEmpty() );
+  rp4 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 5 ), 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+  QVERIFY( rp4.isEmpty() );
+  rp4 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 5 ), 5, QgsRegularPolygon::InscribedCircle );
+  QVERIFY( rp4 == rp2 );
+
+  QgsRegularPolygon rp5 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 0 ).project( rp2.apothem(), 36.0 ), 2, QgsRegularPolygon::CircumscribedCircle );
+  QVERIFY( rp5.isEmpty() );
+  rp5 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 0 ).project( rp2.apothem(), 36.0 ), 5, static_cast< QgsRegularPolygon::ConstructionOption >( 4 ) );
+  QVERIFY( rp5.isEmpty() );
+  rp5 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 0 ).project( rp2.apothem(), 36.0 ), 5, QgsRegularPolygon::CircumscribedCircle );
+  QVERIFY( rp5 == rp2 );
+
+  QgsRegularPolygon rp6 = QgsRegularPolygon( QgsPointV2( 0, 5 ), QgsPointV2( 0, 0 ).project( 5.0, 72 ), 5 );
+  QVERIFY( rp6 == rp2 );
+
+
+  // setters and getters
+  QgsRegularPolygon rp7 = QgsRegularPolygon();
+
+  rp7.setCenter( QgsPointV2( 5, 5 ) );
+  QVERIFY( rp7.isEmpty() );
+  QCOMPARE( rp7.center(), QgsPointV2( 5, 5 ) );
+
+  rp7.setNumberSides( 2 );
+  QVERIFY( rp7.isEmpty() );
+  QCOMPARE( rp7.numberSides(), 0 );
+  rp7.setNumberSides( 5 );
+  QVERIFY( rp7.isEmpty() );
+  QCOMPARE( rp7.numberSides(), 5 );
+  rp7.setNumberSides( 2 );
+  QVERIFY( rp7.isEmpty() );
+  QCOMPARE( rp7.numberSides(), 5 );
+  rp7.setNumberSides( 3 );
+  QVERIFY( rp7.isEmpty() );
+  QCOMPARE( rp7.numberSides(), 3 );
+
+  rp7.setRadius( -6 );
+  QVERIFY( !rp7.isEmpty() );
+  QCOMPARE( rp7.radius(), 6.0 );
+  QCOMPARE( rp7.firstVertex(), rp7.center().project( 6, 0 ) );
+
+  rp7.setFirstVertex( QgsPointV2( 4, 4 ) );
+  QCOMPARE( rp7.firstVertex(), QgsPointV2( 4, 4 ) );
+  QCOMPARE( rp7.radius(), rp7.center().distance3D( QgsPointV2( 4, 4 ) ) );
+
+  rp7 = QgsRegularPolygon( QgsPointV2(), QgsPointV2( 0, 5 ), 5, QgsRegularPolygon::InscribedCircle );
+  rp7.setCenter( QgsPointV2( 5, 5 ) );
+  QCOMPARE( rp7.radius(), 5.0 );
+  QCOMPARE( rp7.firstVertex(), QgsPointV2( 5, 10 ) );
+  rp7.setNumberSides( 3 );
+  QCOMPARE( rp7.radius(), 5.0 );
+  QCOMPARE( rp7.firstVertex(), QgsPointV2( 5, 10 ) );
+  rp7.setNumberSides( 2 );
+  QCOMPARE( rp7.radius(), 5.0 );
+  QCOMPARE( rp7.firstVertex(), QgsPointV2( 5, 10 ) );
+
+  // measures
+  QGSCOMPARENEAR( rp1.length(), 0.0, 10e-4 );
+  QGSCOMPARENEAR( rp1.area(), 0.0, 10e-4 );
+  QGSCOMPARENEAR( rp1.perimeter(), 0.0, 10e-4 );
+  QGSCOMPARENEAR( rp2.length(), 5.8779, 10e-4 );
+  QGSCOMPARENEAR( rp2.area(), 59.4410, 10e-4 );
+  QGSCOMPARENEAR( rp2.perimeter(), 29.3893, 10e-4 );
+  QCOMPARE( rp2.interiorAngle(), 108.0 );
+  QCOMPARE( rp2.centralAngle(), 72.0 );
+  QgsRegularPolygon rp8 = QgsRegularPolygon( QgsPointV2( 0, 0 ), QgsPointV2( 5, 0 ), 5 );
+  QGSCOMPARENEAR( rp8.area(), 43.0119, 10e-4 );
+  QCOMPARE( rp8.perimeter(), 25.0 );
+  QCOMPARE( rp8.length(), 5.0 );
+  QCOMPARE( rp8.interiorAngle(), 108.0 );
+  QCOMPARE( rp8.centralAngle(), 72.0 );
+  rp8.setNumberSides( 4 );
+  QCOMPARE( rp8.interiorAngle(), 90.0 );
+  QCOMPARE( rp8.centralAngle(), 90.0 );
+  rp8.setNumberSides( 3 );
+  QCOMPARE( rp8.interiorAngle(), 60.0 );
+  QCOMPARE( rp8.centralAngle(), 120.0 );
+
+
+  //test conversions
+  // circle
+  QVERIFY( QgsCircle( QgsPointV2( 0, 0 ), 5 ) == rp2.circumscribedCircle() );
+  QVERIFY( rp2.inscribedCircle() == QgsRegularPolygon( QgsPointV2( 0, 0 ), rp2.apothem(), 36.0, 5, QgsRegularPolygon::InscribedCircle ).circumscribedCircle() );
+
+  // triangle
+  QCOMPARE( QgsTriangle(), rp2.toTriangle() );
+  QCOMPARE( QgsTriangle(), QgsRegularPolygon().toTriangle() );
+  QgsRegularPolygon rp9 = QgsRegularPolygon( QgsPointV2( 0, 0 ), 5, 0, 3, QgsRegularPolygon::InscribedCircle );
+
+  QVERIFY( QgsCircle( QgsPointV2( 0, 0 ), 5 ) == rp9.toTriangle().circumscribedCircle() );
+
+  QgsRegularPolygon rp10 = QgsRegularPolygon( QgsPointV2( 0, 0 ), QgsPointV2( 0, 4 ), 4 );
+  QList<QgsTriangle> rp10_tri = rp10.triangulate();
+  QCOMPARE( rp10_tri.length(), ( int )rp10.numberSides() );
+  QVERIFY( rp10_tri.at( 0 ) == QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 4 ), rp10.center() ) );
+  QVERIFY( rp10_tri.at( 1 ) == QgsTriangle( QgsPointV2( 0, 4 ), QgsPointV2( 4, 4 ), rp10.center() ) );
+  QVERIFY( rp10_tri.at( 2 ) == QgsTriangle( QgsPointV2( 4, 4 ), QgsPointV2( 4, 0 ), rp10.center() ) );
+  QVERIFY( rp10_tri.at( 3 ) == QgsTriangle( QgsPointV2( 4, 0 ), QgsPointV2( 0, 0 ), rp10.center() ) );
+
+  // polygon
+  QgsPointSequence ptsPol;
+  std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
+  pol.reset( rp10.toPolygon( ) );
+  QCOMPARE( pol->numInteriorRings(), 0 );
+  QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
+
+  pol->exteriorRing()->points( ptsPol );
+  QCOMPARE( ptsPol.length(), 5 );
+  QVERIFY( ptsPol.at( 0 ) == QgsPointV2( 0, 0 ) );
+  QVERIFY( ptsPol.at( 1 ) == QgsPointV2( 0, 4 ) );
+  QVERIFY( ptsPol.at( 2 ) == QgsPointV2( 4, 4 ) );
+  QVERIFY( ptsPol.at( 3 ) == QgsPointV2( 4, 0 ) );
+  QVERIFY( ptsPol.at( 4 ) == QgsPointV2( 0, 0 ) );
+  ptsPol.pop_back();
+
+  std::unique_ptr< QgsLineString > l( new QgsLineString() );
+  l.reset( rp10.toLineString( ) );
+  QCOMPARE( l->numPoints(), 4 );
+  QgsPointSequence pts_l;
+  l->points( pts_l );
+  QCOMPARE( ptsPol, pts_l );
+
+  //test toString
+  QCOMPARE( rp1.toString(), QString( "Empty" ) );
+  QCOMPARE( rp2.toString(), QString( "RegularPolygon (Center: Point (0 0), First Vertex: Point (0 5), Radius: 5, Azimuth: 0)" ) );
 
 }
 
@@ -4551,7 +5204,7 @@ QString TestQgsGeometry::elemToString( const QDomElement &elem ) const
 void TestQgsGeometry::wkbInOut()
 {
   // Premature end of WKB
-  // See http://hub.qgis.org/issues/14182
+  // See https://issues.qgis.org/issues/14182
   const char *hexwkb = "0102000000EF0000000000000000000000000000000000000000000000000000000000000000000000";
   int size;
   unsigned char *wkb = hex2bytes( hexwkb, &size );

@@ -18,6 +18,7 @@
 #define QGSHISTOGRAMWIDGET_H
 
 #include "ui_qgshistogramwidgetbase.h"
+#include "qgis.h"
 
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
@@ -35,10 +36,7 @@ class HistogramItem;
 class QwtPlotHistogram;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 typedef QPointF QwtDoublePoint;
-#endif
-
 
 /** \ingroup gui
  * \class QgsHistogramWidget
@@ -59,7 +57,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \param layer source vector layer
      * \param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 
@@ -196,11 +194,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     void clearHistogram();
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#else
-    HistogramItem *createHistoItem( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-#endif
 
 };
 

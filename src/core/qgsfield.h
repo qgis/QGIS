@@ -22,8 +22,11 @@
 #include <QSharedDataPointer>
 #include "qgsfield_p.h"
 #include "qgis_core.h"
+#include "qgis.h"
 
+#ifndef SIP_RUN
 typedef QList<int> QgsAttributeList;
+#endif
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -85,7 +88,7 @@ class CORE_EXPORT QgsField
 
     /** Assignment operator
      */
-    QgsField &operator =( const QgsField &other );
+    QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
     virtual ~QgsField() = default;
 
@@ -247,6 +250,57 @@ class CORE_EXPORT QgsField
      * \returns   True if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
+#ifdef SIP_RUN
+    % MethodCode
+    PyObject *sipParseErr = NULL;
+
+    {
+      QVariant *a0;
+      int a0State = 0;
+      const QgsField *sipCpp;
+
+      if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
+      {
+        bool sipRes;
+
+        Py_BEGIN_ALLOW_THREADS
+        try
+        {
+          QgsDebugMsg( a0->toString() );
+          sipRes = sipCpp->convertCompatible( *a0 );
+          QgsDebugMsg( a0->toString() );
+        }
+        catch ( ... )
+        {
+          Py_BLOCK_THREADS
+
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          sipRaiseUnknownException();
+          return NULL;
+        }
+
+        Py_END_ALLOW_THREADS
+
+        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+        sipReleaseType( a0, sipType_QVariant, a0State );
+
+        if ( !sipRes )
+        {
+          PyErr_SetString( PyExc_ValueError,
+                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+          sipError = sipErrorFail;
+        }
+
+        return res;
+      }
+    }
+
+    // Raise an exception if the arguments couldn't be parsed.
+    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
+
+    return nullptr;
+    % End
+#endif
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const

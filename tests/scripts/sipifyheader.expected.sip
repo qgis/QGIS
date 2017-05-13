@@ -9,6 +9,14 @@
 
 
 
+%ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+%End
+
+
+
+
 
 
 
@@ -70,18 +78,24 @@ class QgsSipifyHeader : QtClass<QVariant>
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
 
+    enum OneLiner { Success, NoSuccess };
+
     struct Data
     {
       Data( QgsMapLayer *layer, Qstring name );
+
       QString mName;
       int mCount;
       QgsMapLayer *mLayer;
     };
 
+    static const int MONTHS;
+
     explicit QgsSipifyHeader();
 %Docstring
 A constructor with definition in header
 %End
+
     QgsSipifyHeader( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  A classic constructor with arguments
@@ -91,18 +105,25 @@ A constructor with definition in header
 %Docstring
 A constructor with no empty `()`
 %End
+
     QgsSipifyHeader( QList<Point> a, const Issues &b = Issues::weDontHaveIssues(), QgsClass *b = 0 );
 %Docstring
 A constructor with some special character types
 %End
-    {}
+
+    Constructor();
+    virtual ~Destructor();
+
+    Constructor( const QString &name,
+                 bool optional = false,
+                 const QVariant &defaultValue = QVariant() );
 
     QgsSipifyHeader();
 %Docstring
 Default constructor
 %End
 
-//     QgsSipifyHeader &operator=( const QgsSipifyHeader other );
+
     bool operator==( const QgsSipifyHeader other );
 %Docstring
 Comparison operator should be kept
@@ -187,10 +208,17 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
-    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl );
+    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
 %Docstring
  :rtype: bool
 %End
+
+
+    void multilineBodyAndDefinition( const QList<int,
+                                     QString> &list,
+                                     QgsVectorLayer *vl,
+                                     Some::Thing _part = -1 /*default =-1*/ );
+
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
 Removing function body with namespaced return value
@@ -203,8 +231,15 @@ Removing function body with virtual const reference
  :rtype: QgsLayerMetadata
 %End
 
+    bool myMultiLineBody();
+%Docstring
+Mulitline body
+ :rtype: bool
+%End
+
 
     virtual int overriddenProperty();
+
     virtual int overrideWithoutVirtual();
 
 
@@ -250,6 +285,59 @@ Removing function body with virtual const reference
 
     bool initializedMember;
 
+    struct PublicStruct
+    {
+      explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
+
+      bool isValid( const QgsAbstractGeometry *geom ) const;
+%Docstring
+ :rtype: bool
+%End
+
+      int part;
+      int ring;
+      int vertex;
+      VertexType type;
+    }
+
+    void combinedAnnotations() /Factory,PyName=otherName/;
+    void multiAnnotationArg( SomeClass **object /Out,TransferBack/, int &another /Out/ );
+
+    void simple(  );
+%Docstring
+remove argument
+%End
+    void method( );
+    void test( );
+    void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
+
+    void position(  );
+    void position(  bool keep );
+    void position( bool keep, bool keep );
+    void position( bool keep );
+
+    static SIP_PYLIST  changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
+
+    Whatever &operator[]( int i ) /Factory/;
+%MethodCode
+    ....
+%End
+
+    void ZshouldBeShown();
+
+    void methodCodeWithMultiLineDef();
+%MethodCode
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    {
+      multiLineDef( PyExc_ValueError,
+                    QString( "%1 is not nice" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
+    }
+    else
+    {
+      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+    }
+%End
+
   protected:
     bool thisShouldBeListed();
 %Docstring
@@ -262,9 +350,11 @@ Removing function body with virtual const reference
   public:
     void FallBackToPublic();
 
+  private:
+    void ShowThisPrivateOne() ;
 };
 
-class ClassWithPrivateInheritanceOnly
+class ClassWithPrivateInheritanceOnly /Abstract/
 {
 %Docstring
  Documentation goes here
@@ -295,6 +385,7 @@ class AbstractClass /Abstract/
 %Docstring
 A constructor
 %End
+
 };
 
 QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
@@ -308,4 +399,3 @@ QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<Qgs
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

@@ -18,7 +18,7 @@ class QgsFileDropEdit: QLineEdit
     void setFileOnly( bool isFileOnly );
 
     QString suffixFilter() const;
-    void setSuffixFilter( const QString& suffix );
+    void setSuffixFilter( const QString &suffix );
 
   protected:
 

@@ -45,7 +45,7 @@ class QgsServiceModule
      * @param registry QgsServiceRegistry
      */
     virtual void registerSelf( QgsServiceRegistry& registry,
-                               QgsServerInterface* serverIface = nullptr ) = 0;
+                               QgsServerInterface *serverIface = 0 ) = 0;
 };
 
 

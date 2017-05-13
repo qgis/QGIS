@@ -34,12 +34,13 @@ import importlib
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
 from qgis.core import (QgsRasterLayer,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.core.parameters import (getParameterFromString,
@@ -188,9 +189,7 @@ class Grass7Algorithm(GeoAlgorithm):
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    ProcessingLog.addToLog(
-                        ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line))
+                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     raise e
 
         self.addParameter(ParameterExtent(
@@ -220,6 +219,7 @@ class Grass7Algorithm(GeoAlgorithm):
             self.addParameter(param)
 
     def getDefaultCellsize(self):
+        context = dataobjects.createContext()
         cellsize = 0
         for param in self.parameters:
             if param.value:
@@ -227,7 +227,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     if isinstance(param.value, QgsRasterLayer):
                         layer = param.value
                     else:
-                        layer = dataobjects.getLayerFromString(param.value)
+                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
@@ -235,7 +235,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                     layers = param.value.split(';')
                     for layername in layers:
-                        layer = dataobjects.getLayerFromString(layername)
+                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum() -
@@ -247,7 +247,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -300,7 +300,7 @@ class Grass7Algorithm(GeoAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
 
         Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
 
@@ -508,16 +508,17 @@ class Grass7Algorithm(GeoAlgorithm):
                 self.outputCommands.append(command)
 
     def exportVectorLayer(self, orgFilename):
+        context = dataobjects.createContext()
 
         # TODO: improve this. We are now exporting if it is not a shapefile,
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
         if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = dataobjects.getLayerFromString(orgFilename, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 filename = dataobjects.exportVectorLayer(layer)
         else:
-            layer = dataobjects.getLayerFromString(orgFilename, False)
+            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
                 useSelection = \
                     ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -550,8 +551,9 @@ class Grass7Algorithm(GeoAlgorithm):
             Grass7Utils.projectionSet = True
 
     def setSessionProjectionFromLayer(self, layer, commands):
+        context = dataobjects.createContext()
         if not Grass7Utils.projectionSet:
-            qGisLayer = dataobjects.getLayerFromString(layer)
+            qGisLayer = QgsProcessingUtils.mapLayerFromString(layer, context)
             if qGisLayer:
                 proj4 = str(qGisLayer.crs().toProj4())
                 command = 'g.proj'

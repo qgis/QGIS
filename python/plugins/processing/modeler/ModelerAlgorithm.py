@@ -114,7 +114,7 @@ class Algorithm(object):
     @property
     def algorithm(self):
         if self._algInstance is None:
-            self._algInstance = QgsApplication.processingRegistry().algorithmById(self.consoleName).getCopy()
+            self._algInstance = QgsApplication.processingRegistry().algorithmById(self.consoleName)
         return self._algInstance
 
     def setName(self, model):
@@ -226,7 +226,7 @@ class ModelerAlgorithm(GeoAlgorithm):
     CANVAS_SIZE = 4000
 
     def getCopy(self):
-        newone = self
+        newone = ModelerAlgorithm()
 
         newone.algs = {}
         for algname, alg in self.algs.items():
@@ -490,7 +490,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             v = value
         return param.evaluateForModeler(v, self)
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         executed = []
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
@@ -512,7 +512,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip() +
                                                                                '=' + str(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
-                            alg.algorithm.execute(feedback, self)
+                            alg.algorithm.execute(context, feedback)
                             dt = time.time() - t0
 
                             # copy algorithm output value(s) back to model in case the algorithm modified those

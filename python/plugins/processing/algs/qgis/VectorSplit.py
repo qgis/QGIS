@@ -29,12 +29,13 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -65,16 +66,15 @@ class VectorSplit(GeoAlgorithm):
                                               self.tr('Unique ID field'), self.INPUT))
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         directory = self.getOutputValue(self.OUTPUT)
 
         mkdir(directory)
 
         fieldIndex = layer.fields().lookupField(fieldName)
-        uniqueValues = vector.uniqueValues(layer, fieldIndex)
+        uniqueValues = QgsProcessingUtils.uniqueValues(layer, fieldIndex, context)
         baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.fields()
@@ -86,8 +86,8 @@ class VectorSplit(GeoAlgorithm):
         for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
-            writer = vector.VectorWriter(fName, None, fields, geomType, crs)
-            for f in vector.features(layer):
+            writer, dest = QgsProcessingUtils.createFeatureSink(fName, None, fields, geomType, crs, context)
+            for f in QgsProcessingUtils.getFeatures(layer, context):
                 if f[fieldName] == i:
                     writer.addFeature(f)
             del writer

@@ -29,6 +29,7 @@
  * \class QgsBrowserWatcher
  * \note not available in Python bindings
 */
+#ifndef SIP_RUN
 class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
 {
     Q_OBJECT
@@ -44,6 +45,7 @@ class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem
   private:
     QgsDataItem *mItem = nullptr;
 };
+#endif
 
 /** \ingroup core
  * \class QgsBrowserModel
@@ -122,7 +124,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     //! \note not available in Python bindings
-    static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+    static QModelIndex findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly ) SIP_SKIP;
 
     void connectItem( QgsDataItem *item );
 

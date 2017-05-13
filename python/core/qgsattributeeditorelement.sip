@@ -59,6 +59,7 @@ class QgsAttributeEditorElement /Abstract/
  \param name
  \param parent
 %End
+
     virtual ~QgsAttributeEditorElement();
 
     QString name() const;
@@ -142,6 +143,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
  \param name   The name to show as title
  \param parent The parent. May be another container.
 %End
+
 
     virtual ~QgsAttributeEditorContainer();
 
@@ -254,6 +256,7 @@ class QgsAttributeEditorField : QgsAttributeEditorElement
  \param idx    The index of the field which should be embedded
  \param parent The parent of this widget (used as container)
 %End
+
     int idx() const;
 %Docstring
  Return the index of the field
@@ -284,6 +287,7 @@ class QgsAttributeEditorRelation : QgsAttributeEditorElement
  \param relationId   The id of the relation to embed
  \param parent       The parent (used as container)
 %End
+
     QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
  Creates a new element which embeds a relation.
@@ -292,6 +296,7 @@ class QgsAttributeEditorRelation : QgsAttributeEditorElement
  \param relation     The relation to embed
  \param parent       The parent (used as container)
 %End
+
     const QgsRelation &relation() const;
 %Docstring
  Get the id of the relation which shall be embedded
@@ -352,4 +357,3 @@ class QgsAttributeEditorRelation : QgsAttributeEditorElement
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

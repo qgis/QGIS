@@ -714,7 +714,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       else
       {
-        rasterProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        rasterProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( u.providerKey, u.uri ) );
         provider = rasterProvider;
       }
       existingNames = existingRasters;
@@ -729,7 +729,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       else
       {
-        vectorProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        vectorProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( u.providerKey, u.uri ) );
         provider = vectorProvider;
       }
       existingNames = existingVectors;

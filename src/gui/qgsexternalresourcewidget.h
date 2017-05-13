@@ -28,12 +28,31 @@ class QgsPixmapLabel;
 #include "qgis.h"
 
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip that for some reason
+// doesn't add this include to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsexternalresourcewidget.h>
+% End
+#endif
+
+
 /** \ingroup gui
  * Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  **/
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
+      sipType = sipType_QgsExternalResourceWidget;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
 
     Q_OBJECT
     Q_PROPERTY( bool fileWidgetVisible READ fileWidgetVisible WRITE setFileWidgetVisible )

@@ -21,10 +21,10 @@ class QgsOSMDatabase
 #include <qgsosmdatabase.h>
 %End
   public:
-    explicit QgsOSMDatabase( const QString& dbFileName = QString() );
+    explicit QgsOSMDatabase( const QString &dbFileName = QString() );
     ~QgsOSMDatabase();
 
-    void setFileName( const QString& dbFileName );
+    void setFileName( const QString &dbFileName );
     QString filename() const;
     bool isOpen() const;
 
@@ -59,27 +59,27 @@ class QgsOSMDatabase
     enum ExportType { Point, Polyline, Polygon };
     bool exportSpatiaLite( ExportType type, const QString& tableName,
                            const QStringList& tagKeys = QStringList(),
-                           const QStringList& noNullTagKeys = QStringList() );
+                           const QStringList &noNullTagKeys = QStringList() );
 
   protected:
     bool prepareStatements();
-    int runCountStatement( const char* sql ) const;
+    int runCountStatement( const char *sql ) const;
 
     /** @note not available in Python bindings
      */
-    //void deleteStatement( sqlite3_stmt*& stmt );
+    //void deleteStatement( sqlite3_stmt* &stmt );
 
-    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
-    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
-    bool createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys );
-    bool createSpatialIndex( const QString& tableName );
+    void exportSpatiaLiteNodes( const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
+    void exportSpatiaLiteWays( bool closed, const QString &tableName, const QStringList &tagKeys, const QStringList &notNullTagKeys = QStringList() );
+    bool createSpatialTable( const QString &tableName, const QString &geometryType, const QStringList &tagKeys );
+    bool createSpatialIndex( const QString &tableName );
 
     QString quotedIdentifier( QString id );
     QString quotedValue( QString value );
 
   private:
 
-    QgsOSMDatabase( const QgsOSMDatabase& rh );
+    QgsOSMDatabase( const QgsOSMDatabase &rh );
 };
 
 

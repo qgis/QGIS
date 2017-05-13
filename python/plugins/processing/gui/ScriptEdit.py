@@ -34,8 +34,6 @@ from qgis.core import QgsApplication, QgsSettings
 
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
-from processing.gui.LexerR import LexerR
-
 
 class ScriptEdit(QsciScintilla):
 
@@ -206,8 +204,5 @@ class ScriptEdit(QsciScintilla):
                     self.api.load(path)
                 self.api.prepare()
                 self.lexer.setAPIs(self.api)
-        elif self.lexerType == self.LEXER_R:
-            # R lexer
-            self.lexer = LexerR()
 
         self.setLexer(self.lexer)

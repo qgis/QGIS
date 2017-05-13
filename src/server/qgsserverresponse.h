@@ -20,6 +20,7 @@
 #define QGSSERVERRESPONSE_H
 
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 #include <QString>
 #include <QIODevice>
@@ -51,7 +52,7 @@ class SERVER_EXPORT QgsServerResponse
     /**
      *  Set Header entry
      *  Add Header entry to the response
-     *  Note that it is usually an error to set Header after writing data
+     *  Note that it is usually an error to set Header after data have been sent through the wire
      */
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 
@@ -59,17 +60,17 @@ class SERVER_EXPORT QgsServerResponse
      * Clear header
      * Undo a previous 'setHeader' call
      */
-    virtual void clearHeader( const QString &key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
      */
-    virtual QString getHeader( const QString &key ) const = 0;
+    virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the header value
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers( ) const = 0;
 
     /**
      * Return true if the headers have alredy been sent
@@ -77,10 +78,14 @@ class SERVER_EXPORT QgsServerResponse
     virtual bool headersSent() const = 0;
 
 
-    /** Set the http return code
-     * \param code HTTP return code value
+    /** Set the http status code
+     * \param code HTTP status code value
      */
-    virtual void setReturnCode( int code ) = 0;
+    virtual void setStatusCode( int code ) = 0;
+
+    /** Return the http status code
+     */
+    virtual int statusCode( ) const = 0;
 
     /**
      * Send error
@@ -113,11 +118,11 @@ class SERVER_EXPORT QgsServerResponse
      *
      * This is a convenient method that will write directly
      * to the underlying I/O device
-     * \returns the number of bytes written
+     * \returns the number of bytes written
      *
      *  \note not available in Python bindings
      */
-    virtual qint64 write( const char *data, qint64 maxsize );
+    virtual qint64 write( const char *data, qint64 maxsize ) SIP_SKIP;
 
     /**
      * Writes at most maxSize bytes of data
@@ -128,7 +133,7 @@ class SERVER_EXPORT QgsServerResponse
      *
      * \note not available in Python bindings
      */
-    virtual qint64 write( const char *data );
+    virtual qint64 write( const char *data ) SIP_SKIP;
 
     /**
      * Write server exception
@@ -162,7 +167,7 @@ class SERVER_EXPORT QgsServerResponse
      * Get the data written so far
      *
      * This is implementation dependent: some implementations may not
-     * give access to the underlyng and return an empty array.
+     * give access to the underlying and return an empty array.
      *
      * Note that each call to 'flush' may empty the buffer and in case
      * of streaming process you may get partial content

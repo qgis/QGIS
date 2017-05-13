@@ -17,6 +17,7 @@
 #define QGsLIMITEDRANDOMCOLORRAMPDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent = nullptr );
+    QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
@@ -98,7 +99,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent = nullptr );
+    QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()

@@ -16,12 +16,13 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <QString>
+
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
-
-#include <QString>
 
 class QgsMapToPixel;
 class QgsCurve;
@@ -34,8 +35,13 @@ class QDomDocument;
 class QDomElement;
 
 typedef QList< QgsPointV2 > QgsPointSequence;
+#ifndef SIP_RUN
 typedef QList< QgsPointSequence > QgsRingSequence;
 typedef QList< QgsRingSequence > QgsCoordinateSequence;
+#else
+typedef QList< QList< QgsPointV2 > > QgsRingSequence;
+typedef QList< QList< QList< QgsPointV2 > > > QgsCoordinateSequence;
+#endif
 
 /** \ingroup core
  * \class QgsAbstractGeometry
@@ -44,6 +50,39 @@ typedef QList< QgsRingSequence > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsPointV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsPointV2;
+    else if ( dynamic_cast<QgsLineString *>( sipCpp ) != NULL )
+      sipType = sipType_QgsLineString;
+    else if ( dynamic_cast<QgsCircularString *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCircularString;
+    else if ( dynamic_cast<QgsCompoundCurve *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCompoundCurve;
+    else if ( dynamic_cast<QgsTriangle *>( sipCpp ) != NULL )
+      sipType = sipType_QgsTriangle;
+    else if ( dynamic_cast<QgsPolygonV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsPolygonV2;
+    else if ( dynamic_cast<QgsCurvePolygon *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCurvePolygon;
+    else if ( dynamic_cast<QgsMultiPointV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMultiPointV2;
+    else if ( dynamic_cast<QgsMultiLineString *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMultiLineString;
+    else if ( dynamic_cast<QgsMultiPolygonV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMultiPolygonV2;
+    else if ( dynamic_cast<QgsMultiSurface *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMultiSurface;
+    else if ( dynamic_cast<QgsMultiCurve *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMultiCurve;
+    else if ( dynamic_cast<QgsGeometryCollection *>( sipCpp ) != NULL )
+      sipType = sipType_QgsGeometryCollection;
+    else
+      sipType = 0;
+    SIP_END
+#endif
   public:
 
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
@@ -60,7 +99,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometry *clone() const = 0;
+    virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
 
     /** Clears the geometry, ie reset it to a null geometry
      */
@@ -76,7 +115,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * 1 for a linestring and 2 for a polygon.
      */
     virtual int dimension() const = 0;
-    //virtual int coordDim() const { return mCoordDimension; }
 
     /** Returns a unique string representing the geometry type.
      * \see wkbType
@@ -106,22 +144,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     bool isMeasure() const;
 
-#if 0
-    virtual bool transform( const QgsCoordinateTransform &ct ) =  0;
-    virtual bool isEmpty() const = 0;
-    virtual bool isSimple() const = 0;
-    virtual bool isValid() const = 0;
-    virtual QgsMultiPointV2 *locateAlong() const = 0;
-    virtual QgsMultiCurve *locateBetween() const = 0;
-    virtual QgsRectangle envelope() const = 0;
-#endif
-
     /** Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * \returns boundary for geometry. May be null for some geometry types.
      * \since QGIS 3.0
      */
-    virtual QgsAbstractGeometry *boundary() const = 0;
+    virtual QgsAbstractGeometry *boundary() const = 0 SIP_FACTORY;
 
     //import
 
@@ -198,17 +226,14 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If false, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    virtual void transform( const QgsCoordinateTransform &ct,
+                            QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                             bool transformZ = false ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * \param t QTransform transformation
      */
     virtual void transform( const QTransform &t ) = 0;
-
-#if 0
-    virtual void clip( const QgsRectangle &rect ); //todo
-#endif
 
     /** Draws the geometry using the specified QPainter.
      * \param p destination QPainter
@@ -221,7 +246,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vertex container for found node
      * \returns false if at end
      */
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const = 0;
+    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
      * \returns coordinate sequence
@@ -245,7 +270,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const = 0;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+                                   QgsVertexId &vertexAfter SIP_OUT,
+                                   bool *leftOf SIP_OUT, double epsilon ) const = 0;
 
     //low-level editing
 
@@ -309,13 +336,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
     /** Returns the geometry converted to the more generic curve type.
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         \returns the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry *toCurveType() const { return 0; }
+    virtual QgsAbstractGeometry *toCurveType() const SIP_FACTORY { return 0; }
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the

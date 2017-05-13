@@ -34,12 +34,12 @@ class QgsRenderChecker
      */
     void setControlPathPrefix( const QString &name );
 
-    void setControlPathSuffix( const QString& name );
+    void setControlPathSuffix( const QString &name );
 
     /** Get an md5 hash that uniquely identifies an image */
-    QString imageToHash( const QString& imageFile );
+    QString imageToHash( const QString &imageFile );
 
-    void setRenderedImage( const QString& imageFileName );
+    void setRenderedImage( const QString &imageFileName );
 
     /**
      * The path of the rendered image can be retrieved through that method.
@@ -50,7 +50,7 @@ class QgsRenderChecker
     QString renderedImage();
 
     //! @note added in 2.4
-    void setMapSettings( const QgsMapSettings& mapSettings );
+    void setMapSettings( const QgsMapSettings &mapSettings );
 
     /** Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
@@ -77,7 +77,7 @@ class QgsRenderChecker
      * for that by providing a tolerance.
      * @note make sure to call setExpectedImage and setMapRenderer first
      */
-    bool runTest( const QString& testName, unsigned int mismatchCount = 0 );
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
     /**
      * Test using two arbitrary images (map renderer will not be used)
@@ -90,7 +90,7 @@ class QgsRenderChecker
      * @param renderedImageFile to optionally override the output filename
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( const QString& testName, unsigned int mismatchCount = 0, const QString& renderedImageFile = "" );
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = "" );
     /** Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render
@@ -98,12 +98,12 @@ class QgsRenderChecker
      * acceptable.
      * @return a bool indicating if the diff matched one of the anomaly files
      */
-    bool isKnownAnomaly( const QString& diffImageFile );
+    bool isKnownAnomaly( const QString &diffImageFile );
 
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackground( QImage* image );
+    static void drawBackground( QImage *image );
 
     /**
      * Returns the path to the expected image file
@@ -128,5 +128,5 @@ class QgsRenderChecker
      * @return buffered dash messages
      * @note not available in python bindings
      */
-    // const QVector<QgsDartMeasurement>& dartMeasurements() const;
+    // const QVector<QgsDartMeasurement> &dartMeasurements() const;
 };

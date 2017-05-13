@@ -21,6 +21,7 @@
 #include <QItemDelegate>
 #include <QFile>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QMimeData;
 class QgsPanelWidget;
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
     Q_OBJECT
 
   public:
-    QgsColorSwatchDelegate( QWidget *parent = nullptr );
+    QgsColorSwatchDelegate( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     bool editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index ) override;
@@ -73,7 +74,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * \param baseColor base color for color scheme
      * \param parent parent object
      */
-    explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent = nullptr );
+    explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -160,7 +161,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * \param context context string provided to color scheme
      * \param baseColor base color for color scheme
      */
-    QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme *scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
+    QgsColorSchemeList( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsColorScheme *scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.

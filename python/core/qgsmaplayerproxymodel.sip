@@ -85,13 +85,13 @@ Get the list of maplayer ids which are excluded from the list
 %Docstring
  Sets a list of data providers which should be excluded from the model.
 .. versionadded:: 3.0
- \see excludedProviders()
+.. seealso:: excludedProviders()
 %End
 
     QStringList excludedProviders() const;
 %Docstring
  Returns the list of data providers which are excluded from the model.
- \see setExcludedProviders()
+.. seealso:: setExcludedProviders()
 .. versionadded:: 3.0
  :rtype: list of str
 %End
@@ -113,4 +113,3 @@ QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

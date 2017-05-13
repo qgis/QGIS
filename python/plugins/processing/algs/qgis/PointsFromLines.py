@@ -35,8 +35,9 @@ from qgis.core import (QgsApplication,
                        QgsField,
                        QgsGeometry,
                        QgsPoint,
-                       QgsWkbTypes)
-from processing.tools import vector, raster, dataobjects
+                       QgsWkbTypes,
+                       QgsProcessingUtils)
+from processing.tools import raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
@@ -72,8 +73,8 @@ class PointsFromLines(GeoAlgorithm):
                                           self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points along line'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
@@ -86,8 +87,8 @@ class PointsFromLines(GeoAlgorithm):
         fields.append(QgsField('line_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point,
+                                                                           layer.crs(), context)
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -96,8 +97,8 @@ class PointsFromLines(GeoAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             if geom.isMultipart():

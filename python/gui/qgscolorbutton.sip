@@ -20,6 +20,13 @@ class QgsColorButton : QToolButton
 %TypeHeaderCode
 #include "qgscolorbutton.h"
 %End
+
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsColorButton *>( sipCpp ) )
+      sipType = sipType_QgsColorButton;
+    else
+      sipType = NULL;
+%End
   public:
 
     enum Behavior
@@ -43,7 +50,7 @@ class QgsColorButton : QToolButton
 %Docstring
  Return the currently selected color.
  :return: currently selected color
- \see setColor
+.. seealso:: setColor
  :rtype: QColor
 %End
 
@@ -52,7 +59,7 @@ class QgsColorButton : QToolButton
  Sets whether alpha modification (transparency) is permitted
  for the color. Defaults to false.
  \param allowAlpha set to true to allow alpha modification
- \see allowAlpha
+.. seealso:: allowAlpha
 %End
 
     bool allowAlpha() const;
@@ -60,7 +67,7 @@ class QgsColorButton : QToolButton
  Returns whether alpha modification (transparency) is permitted
  for the color.
  :return: true if alpha modification is allowed
- \see setAllowAlpha
+.. seealso:: setAllowAlpha
  :rtype: bool
 %End
 
@@ -68,14 +75,14 @@ class QgsColorButton : QToolButton
 %Docstring
  Set the title for the color chooser dialog window.
  \param title Title for the color chooser dialog
- \see colorDialogTitle
+.. seealso:: colorDialogTitle
 %End
 
     QString colorDialogTitle() const;
 %Docstring
  Returns the title for the color chooser dialog window.
  :return: title for the color chooser dialog
- \see setColorDialogTitle
+.. seealso:: setColorDialogTitle
  :rtype: str
 %End
 
@@ -83,7 +90,7 @@ class QgsColorButton : QToolButton
 %Docstring
  Returns whether the button accepts live updates from QColorDialog.
  :return: true if the button will be accepted immediately when the dialog's color changes
- \see setAcceptLiveUpdates
+.. seealso:: setAcceptLiveUpdates
  :rtype: bool
 %End
 
@@ -92,7 +99,7 @@ class QgsColorButton : QToolButton
  Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
  that are not undoable on QColorDialog cancel.
  \param accept set to true to enable live updates
- \see acceptLiveUpdates
+.. seealso:: acceptLiveUpdates
 %End
 
     void setShowMenu( const bool showMenu );
@@ -100,14 +107,14 @@ class QgsColorButton : QToolButton
  Sets whether the drop down menu should be shown for the button. The default behavior is to
  show the menu.
  \param showMenu set to false to hide the drop down menu
- \see showMenu
+.. seealso:: showMenu
 %End
 
     bool showMenu() const;
 %Docstring
  Returns whether the drop down menu is shown for the button.
  :return: true if drop down menu is shown
- \see setShowMenu
+.. seealso:: setShowMenu
  :rtype: bool
 %End
 
@@ -116,14 +123,14 @@ class QgsColorButton : QToolButton
  Sets the behavior for when the button is clicked. The default behavior is to show
  a color picker dialog.
  \param behavior behavior when button is clicked
- \see behavior
+.. seealso:: behavior
 %End
 
     Behavior behavior() const;
 %Docstring
  Returns the behavior for when the button is clicked.
  :return: behavior when button is clicked
- \see setBehavior
+.. seealso:: setBehavior
  :rtype: Behavior
 %End
 
@@ -133,7 +140,7 @@ class QgsColorButton : QToolButton
  "default color" option.
  \param color default color for the button. Set to an invalid QColor to disable the default color
  option.
- \see defaultColor
+.. seealso:: defaultColor
 %End
 
     QColor defaultColor() const;
@@ -142,7 +149,7 @@ class QgsColorButton : QToolButton
  "default color" option.
  :return: default color for the button. Returns an invalid QColor if the default color
  option is disabled.
- \see setDefaultColor
+.. seealso:: setDefaultColor
  :rtype: QColor
 %End
 
@@ -151,8 +158,8 @@ class QgsColorButton : QToolButton
  Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
  the "no color" option sets the color button's color to a totally transparent color.
  \param showNoColorOption set to true to show the no color option. This is disabled by default.
- \see showNoColor
- \see setNoColorString
+.. seealso:: showNoColor
+.. seealso:: setNoColorString
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -164,8 +171,8 @@ class QgsColorButton : QToolButton
  Returns whether the "no color" option is shown in the button's drop down menu. If selected,
  the "no color" option sets the color button's color to a totally transparent color.
  :return: true if the no color option is shown.
- \see setShowNoColor
- \see noColorString
+.. seealso:: setShowNoColor
+.. seealso:: noColorString
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -177,8 +184,8 @@ class QgsColorButton : QToolButton
 %Docstring
  Sets the string to use for the "no color" option in the button's drop down menu.
  \param noColorString string to use for the "no color" menu option
- \see noColorString
- \see setShowNoColor
+.. seealso:: noColorString
+.. seealso:: setShowNoColor
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -190,16 +197,16 @@ class QgsColorButton : QToolButton
  Sets whether a set to null (clear) option is shown in the button's drop down menu.
  \param showNull set to true to show a null option
 .. versionadded:: 2.16
- \see showNull()
- \see isNull()
+.. seealso:: showNull()
+.. seealso:: isNull()
 %End
 
     bool showNull() const;
 %Docstring
  Returns whether the set to null (clear) option is shown in the button's drop down menu.
 .. versionadded:: 2.16
- \see setShowNull()
- \see isNull()
+.. seealso:: setShowNull()
+.. seealso:: isNull()
  :rtype: bool
 %End
 
@@ -207,8 +214,8 @@ class QgsColorButton : QToolButton
 %Docstring
  Returns true if the current color is null.
 .. versionadded:: 2.16
- \see setShowNull()
- \see showNull()
+.. seealso:: setShowNull()
+.. seealso:: showNull()
  :rtype: bool
 %End
 
@@ -216,8 +223,8 @@ class QgsColorButton : QToolButton
 %Docstring
  Returns the string used for the "no color" option in the button's drop down menu.
  :return: string used for the "no color" menu option
- \see setNoColorString
- \see showNoColor
+.. seealso:: setNoColorString
+.. seealso:: showNoColor
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
@@ -231,7 +238,7 @@ class QgsColorButton : QToolButton
  grids shown in the button's drop down menu, to allow them to customise their display colors
  based on the context.
  \param context context string for the color button's color swatch grids
- \see context
+.. seealso:: context
 %End
 
     QString context() const;
@@ -240,7 +247,7 @@ class QgsColorButton : QToolButton
  grids shown in the button's drop down menu, to allow them to customise their display colors
  based on the context.
  :return: context string for the color button's color swatch grids
- \see setContext
+.. seealso:: setContext
  :rtype: str
 %End
 
@@ -250,7 +257,7 @@ class QgsColorButton : QToolButton
  that are shown in the button's drop down menu.
  \param registry color scheme registry for the button. Set to 0 to hide all color
  swatch grids from the button's drop down menu.
- \see colorSchemeRegistry
+.. seealso:: colorSchemeRegistry
 %End
 
     QgsColorSchemeRegistry *colorSchemeRegistry();
@@ -259,7 +266,7 @@ class QgsColorButton : QToolButton
  that are shown in the button's drop down menu.
  :return: color scheme registry for the button. If returned value is 0 then all color
  swatch grids are hidden from the button's drop down menu.
- \see setColorSchemeRegistry
+.. seealso:: setColorSchemeRegistry
  :rtype: QgsColorSchemeRegistry
 %End
 
@@ -270,7 +277,7 @@ class QgsColorButton : QToolButton
  Sets the current color for the button. Will emit a colorChanged signal if the color is different
  to the previous color.
  \param color new color for the button
- \see color
+.. seealso:: color
 %End
 
     void setButtonBackground( const QColor &color = QColor() );
@@ -286,14 +293,14 @@ class QgsColorButton : QToolButton
     void copyColor();
 %Docstring
  Copies the current color to the clipboard
- \see pasteColor
+.. seealso:: pasteColor
 %End
 
     void pasteColor();
 %Docstring
  Pastes a color from the clipboard to the color button. If clipboard does not contain a valid
  color or string representation of a color, then no change is applied.
- \see copyColor
+.. seealso:: copyColor
 %End
 
     void activatePicker();
@@ -308,22 +315,22 @@ class QgsColorButton : QToolButton
 
    If the color button is not set to show an alpha channel in the color
  dialog (see setColorDialogOptions) then the color will not be changed.
- \see setToNull()
+.. seealso:: setToNull()
 %End
 
     void setToDefaultColor();
 %Docstring
  Sets color to the button's default color, if set.
- \see setDefaultColor
- \see defaultColor
- \see setToNull()
+.. seealso:: setDefaultColor
+.. seealso:: defaultColor
+.. seealso:: setToNull()
 %End
 
     void setToNull();
 %Docstring
  Sets color to null.
- \see setToDefaultColor()
- \see setToNoColor()
+.. seealso:: setToDefaultColor()
+.. seealso:: setToNoColor()
 .. versionadded:: 2.16
 %End
 
@@ -340,8 +347,8 @@ class QgsColorButton : QToolButton
 %Docstring
  Emitted when the button is clicked, if the button's behavior is set to SignalOnly
  \param color button color
- \see setBehavior
- \see behavior
+.. seealso:: setBehavior
+.. seealso:: behavior
 %End
 
   protected:
@@ -412,4 +419,3 @@ class QgsColorButton : QToolButton
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

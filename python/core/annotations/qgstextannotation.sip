@@ -33,7 +33,7 @@ class QgsTextAnnotation: QgsAnnotation
 %Docstring
  Returns the text document which will be rendered
  within the annotation.
- \see setDocument()
+.. seealso:: setDocument()
  :rtype: QTextDocument
 %End
 
@@ -41,7 +41,7 @@ class QgsTextAnnotation: QgsAnnotation
 %Docstring
  Sets the text document which will be rendered
  within the annotation. Ownership is not transferred.
- \see document()
+.. seealso:: document()
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const;
@@ -67,4 +67,3 @@ class QgsTextAnnotation: QgsAnnotation
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

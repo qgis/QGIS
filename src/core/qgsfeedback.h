@@ -19,6 +19,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Base class for feedback objects to be used for cancelation of something running in a worker thread.
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     Q_OBJECT
   public:
     //! Construct a feedback object
-    QgsFeedback( QObject *parent = nullptr )
+    QgsFeedback( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
       , mCanceled( false )
     {}

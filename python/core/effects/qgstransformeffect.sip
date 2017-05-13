@@ -18,15 +18,15 @@ class QgsTransformEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsTransformEffect();
     virtual ~QgsTransformEffect();
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
-    virtual void readProperties( const QgsStringMap& props );
-    virtual QgsTransformEffect* clone() const /Factory/;
+    virtual void readProperties( const QgsStringMap &props );
+    virtual QgsTransformEffect *clone() const /Factory/;
 
     /** Sets the transform x translation.
      * @param translateX distance to translate along the x axis
@@ -89,7 +89,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @see setTranslateY
      * @see setTranslateUnit
      */
-    void setTranslateMapUnitScale( const QgsMapUnitScale& scale );
+    void setTranslateMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the map unit scale used for the transform translation.
      * @returns map unit scale for translation
@@ -98,7 +98,7 @@ class QgsTransformEffect : QgsPaintEffect
      * @see translateY
      * @see translateUnit
      */
-    const QgsMapUnitScale& translateMapUnitScale() const;
+    const QgsMapUnitScale &translateMapUnitScale() const;
 
     /** Sets the x axis scaling factor.
      * @param scaleX factor to scale x axis by, where 1.0 = no scaling
@@ -197,7 +197,7 @@ class QgsTransformEffect : QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context );
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
+    virtual void draw( QgsRenderContext &context );
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
 };

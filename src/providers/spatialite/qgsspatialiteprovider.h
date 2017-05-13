@@ -27,7 +27,7 @@ extern "C"
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsfields.h"
 #include <list>
 #include <queue>
@@ -56,7 +56,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
   public:
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

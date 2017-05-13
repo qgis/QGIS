@@ -17,6 +17,8 @@
 #define QGSFEATURELISTVIEW_H
 
 #include <QListView>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <qdebug.h>
 
 #include "qgsfeature.h" // For QgsFeatureIds
@@ -50,7 +52,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent = nullptr );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Returns the layer cache
@@ -116,7 +118,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * \brief setFeatureSelectionManager
      * \param featureSelectionManager We will take ownership
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
@@ -140,7 +142,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void displayExpressionChanged( const QString &expression );
 
     //! \note not available in Python bindings
-    void aboutToChangeEditSelection( bool &ok );
+    void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
 
   public slots:
 

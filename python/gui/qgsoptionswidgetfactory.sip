@@ -24,6 +24,7 @@ class QgsOptionsPageWidget : QWidget
 %Docstring
  Constructor for QgsOptionsPageWidget.
 %End
+
   public slots:
 
     virtual void apply() = 0;
@@ -36,9 +37,6 @@ class QgsOptionsPageWidget : QWidget
 
 class QgsOptionsWidgetFactory : QObject
 {
-%Docstring
-QGIS crashing when a plugin crashes/exits without deregistering a factory
-%End
 
 %TypeHeaderCode
 #include "qgsoptionswidgetfactory.h"
@@ -49,35 +47,37 @@ QGIS crashing when a plugin crashes/exits without deregistering a factory
 %Docstring
 Constructor
 %End
+
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon );
 %Docstring
 Constructor
 %End
+
     virtual QIcon icon() const;
 %Docstring
  The icon that will be shown in the UI for the panel.
  :return: A QIcon for the panel icon.
- \see setIcon()
+.. seealso:: setIcon()
  :rtype: QIcon
 %End
 
     void setIcon( const QIcon &icon );
 %Docstring
  Set the ``icon`` to show in the interface for the factory object.
- \see icon()
+.. seealso:: icon()
 %End
 
     virtual QString title() const;
 %Docstring
  The title of the panel.
- \see setTitle()
+.. seealso:: setTitle()
  :rtype: str
 %End
 
     void setTitle( const QString &title );
 %Docstring
  Set the ``title`` for the interface.
- \see title()
+.. seealso:: title()
 %End
 
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;
@@ -97,4 +97,3 @@ Constructor
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

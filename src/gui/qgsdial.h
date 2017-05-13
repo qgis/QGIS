@@ -18,6 +18,7 @@
 #include <QDial>
 #include <QVariant>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QPaintEvent;
 
@@ -28,7 +29,12 @@ class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
-    QgsDial( QWidget *parent = nullptr );
+
+    /**
+     * @brief QgsDial constructor for QgsDial
+     * @param parent parent object
+     */
+    QgsDial( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );

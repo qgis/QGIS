@@ -23,9 +23,12 @@
 #include "qgsannotation.h"
 #include "qgsannotationmanager.h"
 #include "qgsmapsettings.h"
+#include "qgsmapdecoration.h"
 #include "qgstaskmanager.h"
+#include "qgsmaprenderercustompainterjob.h"
 
 #include <QPainter>
+class QgsMapRendererCustomPainterJob;
 
 /**
  * \class QgsMapRendererTask
@@ -65,6 +68,18 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     void addAnnotations( QList< QgsAnnotation * > annotations );
 
+    /**
+     * Adds \a decorations to be rendered on the map.
+     */
+    void addDecorations( QList< QgsMapDecoration * > decorations );
+
+    /**
+     * Sets whether a world file will be created alongside an image file.
+     */
+    void setSaveWorldFile( bool save ) { mSaveWorldFile = save; }
+
+    void cancel() override;
+
   signals:
 
     /**
@@ -86,12 +101,17 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     QgsMapSettings mMapSettings;
 
+    QMutex mJobMutex;
+    std::unique_ptr< QgsMapRendererCustomPainterJob > mJob;
+
     QPainter *mPainter = nullptr;
 
     QString mFileName;
     QString mFileFormat;
+    bool mSaveWorldFile = false;
 
     QList< QgsAnnotation * > mAnnotations;
+    QList< QgsMapDecoration * > mDecorations;
 
     int mError = 0;
 };

@@ -97,17 +97,15 @@ class HistoryDialog(BASE, WIDGET):
 
     def fillTree(self):
         self.tree.clear()
-        elements = ProcessingLog.getLogEntries()
-        for category in list(elements.keys()):
-            groupItem = QTreeWidgetItem()
-            groupItem.setText(0, category)
-            groupItem.setIcon(0, self.groupIcon)
-            for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category ==
-                                        ProcessingLog.LOG_ALGORITHM)
-                item.setIcon(0, self.keyIcon)
-                groupItem.insertChild(0, item)
-            self.tree.addTopLevelItem(groupItem)
+        entries = ProcessingLog.getLogEntries()
+        groupItem = QTreeWidgetItem()
+        groupItem.setText(0, 'ALGORITHM')
+        groupItem.setIcon(0, self.groupIcon)
+        for entry in entries:
+            item = TreeLogEntryItem(entry, True)
+            item.setIcon(0, self.keyIcon)
+            groupItem.insertChild(0, item)
+        self.tree.addTopLevelItem(groupItem)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()

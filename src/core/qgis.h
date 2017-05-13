@@ -19,6 +19,7 @@
 #define QGIS_H
 
 #include <QEvent>
+#include "qgis_sip.h"
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
@@ -34,6 +35,8 @@
 
 #include "qgswkbtypes.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 
 /** \ingroup core
  * The Qgis class provides global constants for use throughout the application.
@@ -76,18 +79,6 @@ class CORE_EXPORT Qgis
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
-
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = ( QEvent::User + 1 ),
-
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
-    };
-
     /** Identify search radius in mm
      *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -127,6 +118,7 @@ class CORE_EXPORT Qgis
 // QLibrary
 #define cast_to_fptr(f) f
 
+
 /** \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
@@ -135,7 +127,7 @@ class CORE_EXPORT Qgis
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
+template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
 {
   public:
 
@@ -175,10 +167,13 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  * \note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object )
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
 {
   return QgsSignalBlocker<Object>( object );
 }
+
+//! Hash for QVariant
+uint qHash( const QVariant &variant );
 
 //! Returns a string representation of a double
 //! \param a double value
@@ -313,12 +308,6 @@ const long GEOCRS_ID = 3452;
 const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
-//! The length of the string "+proj="
-const int PROJ_PREFIX_LEN = 6;
-//! The length of the string "+ellps="
-const int ELLPS_PREFIX_LEN = 7;
-//! The length of the string "+lat_1="
-const int LAT_PREFIX_LEN = 7;
 
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
@@ -388,92 +377,4 @@ typedef unsigned long long qgssize;
 #define FALLTHROUGH
 #endif
 
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
- *
- * Example QgsVectorLayer::setDiagramRenderer
- */
-#define SIP_TRANSFER
 
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
- */
-#define SIP_TRANSFERBACK
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferThis
- */
-#define SIP_TRANSFERTHIS
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
- */
-#define SIP_OUT
-
-/*
- * Combination of
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
- * and
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
- */
-#define SIP_INOUT
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Factory
- */
-#define SIP_FACTORY
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-PyName
- */
-#define SIP_PYNAME(name)
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-KeepReference
- */
-#define SIP_KEEPREFERENCE
-
-/*
-  * discard line
-  */
-#define SIP_SKIP
-
-/*
-  * specify an alternative type for SIP methods
-  */
-#define SIP_PYTYPE(type)
-
-/*
-  * specify an alternative default value for SIP methods
-  */
-#define SIP_PYDEFAULTVALUE(value)
-
-/*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
- */
-#define SIP_RELEASEGIL
-
-/*
- * Will insert a `%Feature feature` directive in sip files
- */
-#define SIP_FEATURE(feature)
-
-/*
- * Will insert a `%If feature` directive in sip files
- */
-#define SIP_IF_FEATURE(feature)
-
-/*
- * Convert to subclass code
- */
-#define SIP_CONVERT_TO_SUBCLASS_CODE(code)
-
-/*
- * Will insert a `%End` directive in sip files
- */
-#define SIP_END
-
-/*
- * Class level annotation for abstract classes
- */
-#define SIP_ABSTRACT

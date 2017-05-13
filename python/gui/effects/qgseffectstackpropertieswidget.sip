@@ -21,19 +21,19 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
      * @param stack QgsEffectStack to modify in the widget
      * @param parent parent widget
      */
-    QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent /TransferThis/ = 0 );
+    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsEffectStackPropertiesWidget();
 
     /** Returns effect stack attached to the widget
      * @returns QgsEffectStack modified by the widget
      */
-    QgsEffectStack* stack();
+    QgsEffectStack *stack();
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture& picture );
+    void setPreviewPicture( const QPicture &picture );
 
   public slots:
 
@@ -64,7 +64,7 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
     /** Updates the effect stack when the currently selected effect changes properties.
      * @param newEffect new effect to replace existing effect at selected position within the stack.
      */
-    void changeEffect( QgsPaintEffect* newEffect );
+    void changeEffect( QgsPaintEffect *newEffect );
 
   protected:
 
@@ -75,7 +75,7 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
     /** Refreshes the widget to reflect the current state of a specified stack.
      * @param stack QgsEffectStack for widget
      */
-    void loadStack( QgsEffectStack* stack );
+    void loadStack( QgsEffectStack *stack );
 
     /** Enables or disables widgets depending on the selected effect within the stack.
      */
@@ -84,7 +84,7 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
     /** Returns the currently selected effect within the stack.
      * @note not available in python bindings
      */
-    //EffectItem* currentEffectItem();
+    //EffectItem *currentEffectItem();
 
     /** Moves the currently selected effect within the stack by a specified offset
      */
@@ -92,7 +92,7 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
 
     /** Sets the effect properties widget
      */
-    void setWidget( QWidget* widget );
+    void setWidget( QWidget *widget );
 
 };
 
@@ -121,18 +121,18 @@ class QgsEffectStackPropertiesDialog : QgsDialog
      * @param parent parent widget
      * @param f window flags
      */
-    QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &f = 0 );
     ~QgsEffectStackPropertiesDialog();
 
     /** Returns effect stack attached to the dialog
      * @returns QgsEffectStack modified by the dialog
      */
-    QgsEffectStack* stack();
+    QgsEffectStack *stack();
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture& picture );
+    void setPreviewPicture( const QPicture &picture );
 
 };
 
@@ -160,7 +160,7 @@ class QgsEffectStackCompactWidget : QgsPanelWidget
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
      */
-    QgsEffectStackCompactWidget( QWidget* parent /TransferThis/ = 0, QgsPaintEffect* effect = 0 );
+    QgsEffectStackCompactWidget( QWidget *parent /TransferThis/ = 0, QgsPaintEffect *effect = 0 );
     ~QgsEffectStackCompactWidget();
 
     /** Sets paint effect attached to the widget
@@ -169,18 +169,18 @@ class QgsEffectStackCompactWidget : QgsPanelWidget
      * stack consisting of the original effect
      * @see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect* effect );
+    void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns paint effect attached to the widget
      * @returns QgsPaintEffect modified by the widget
      * @see setPaintEffect
      */
-    QgsPaintEffect* paintEffect() const;
+    QgsPaintEffect *paintEffect() const;
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture& picture );
+    void setPreviewPicture( const QPicture &picture );
 
   signals:
 

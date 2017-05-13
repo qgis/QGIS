@@ -55,13 +55,13 @@ returns the list of excepted layers
 %Docstring
  Sets a list of data providers which should be excluded from the combobox.
 .. versionadded:: 3.0
- \see excludedProviders()
+.. seealso:: excludedProviders()
 %End
 
     QStringList excludedProviders() const;
 %Docstring
  Returns the list of data providers which are excluded from the combobox.
- \see setExcludedProviders()
+.. seealso:: setExcludedProviders()
 .. versionadded:: 3.0
  :rtype: list of str
 %End
@@ -69,14 +69,14 @@ returns the list of excepted layers
     void setAllowEmptyLayer( bool allowEmpty );
 %Docstring
  Sets whether an optional empty layer ("not set") option is shown in the combo box.
- \see allowEmptyLayer()
+.. seealso:: allowEmptyLayer()
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyLayer() const;
 %Docstring
  Returns true if the combo box allows the empty layer ("not set") choice.
- \see setAllowEmptyLayer()
+.. seealso:: setAllowEmptyLayer()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -84,14 +84,14 @@ returns the list of excepted layers
     void setShowCrs( bool showCrs );
 %Docstring
  Sets whether the CRS of layers is also included in the combo box text.
- \see showCrs()
+.. seealso:: showCrs()
 .. versionadded:: 3.0
 %End
 
     bool showCrs() const;
 %Docstring
  Returns true if the combo box shows the layer's CRS.
- \see setShowCrs()
+.. seealso:: setShowCrs()
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -101,14 +101,14 @@ returns the list of excepted layers
  Sets a list of additional (non map layer) items to include at the end of the combobox.
  These may represent additional layers such as layers which are not included in the map
  layer registry, or paths to layers which have not yet been loaded into QGIS.
- \see additionalItems()
+.. seealso:: additionalItems()
 .. versionadded:: 3.0
 %End
 
     QStringList additionalItems() const;
 %Docstring
  Return the list of additional (non map layer) items included at the end of the combo box.
- \see setAdditionalItems()
+.. seealso:: setAdditionalItems()
 .. versionadded:: 3.0
  :rtype: list of str
 %End
@@ -116,7 +116,7 @@ returns the list of excepted layers
     QgsMapLayer *currentLayer() const;
 %Docstring
  Returns the current layer selected in the combo box.
- \see layer
+.. seealso:: layer
  :rtype: QgsMapLayer
 %End
 
@@ -125,7 +125,7 @@ returns the list of excepted layers
  Return the layer currently shown at the specified index within the combo box.
  \param layerIndex position of layer to return
 .. versionadded:: 2.10
- \see currentLayer
+.. seealso:: currentLayer
  :rtype: QgsMapLayer
 %End
 
@@ -154,4 +154,3 @@ layerChanged this signal is emitted whenever the currently selected layer change
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

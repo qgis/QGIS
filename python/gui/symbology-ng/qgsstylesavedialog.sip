@@ -9,7 +9,7 @@ class QgsStyleSaveDialog : QDialog
      * @param parent parent widget
      * @param type the QgsStyle entity type being saved
      */
-    QgsStyleSaveDialog( QWidget* parent /TransferThis/ = NULL, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
+    QgsStyleSaveDialog( QWidget *parent /TransferThis/ = NULL, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 
     //! returns the text value of the name element
     QString name() const;

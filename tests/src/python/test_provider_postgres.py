@@ -20,7 +20,7 @@ import os
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsVectorLayerImport,
+    QgsVectorLayerExporter,
     QgsFeatureRequest,
     QgsFeature,
     QgsFieldConstraints,
@@ -211,7 +211,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         test_unique([f for f in vl.getFeatures()], 4)
 
-    # See http://hub.qgis.org/issues/14262
+    # See https://issues.qgis.org/issues/14262
     # TODO: accept multi-featured layers, and an array of values/fids
     def testSignedIdentifiers(self):
 
@@ -586,7 +586,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
-    # See http://hub.qgis.org/issues/15188
+    # See https://issues.qgis.org/issues/15188
     def testNumericPrecision(self):
         uri = 'point?field=f1:int'
         uri += '&field=f2:double(6,4)'
@@ -600,8 +600,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         lyr.dataProvider().addFeatures([f])
         uri = '%s table="qgis_test"."b18155" (g) key=\'f1\'' % (self.dbconn)
         self.execSQLCommand('DROP TABLE IF EXISTS qgis_test.b18155')
-        err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
-        self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+        err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                          'unexpected import error {0}'.format(err))
         lyr = QgsVectorLayer(uri, "y", "postgres")
         self.assertTrue(lyr.isValid())
@@ -610,7 +610,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['f2'], 123.456)
         self.assertEqual(f['f3'], '12345678.90123456789')
 
-    # See http://hub.qgis.org/issues/15226
+    # See https://issues.qgis.org/issues/15226
     def testImportKey(self):
         uri = 'point?field=f1:int'
         uri += '&field=F2:double(6,4)'
@@ -623,8 +623,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             uri = '%s table="qgis_test"."import_test" (g)' % self.dbconn
             if key is not None:
                 uri += ' key=\'%s\'' % key
-            err = QgsVectorLayerImport.importLayer(lyr, uri, "postgres", lyr.crs())
-            self.assertEqual(err[0], QgsVectorLayerImport.NoError,
+            err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
+            self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
                              'unexpected import error {0}'.format(err))
             olyr = QgsVectorLayer(uri, "y", "postgres")
             self.assertTrue(olyr.isValid())

@@ -444,7 +444,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent *e )
         QList<const QgsComposerMap *> mapItemList = composition()->composerMapItems();
         if ( !mapItemList.isEmpty() )
         {
-          newScaleBar->setComposerMap( mapItemList.at( 0 ) );
+          newScaleBar->setComposerMap( const_cast< QgsComposerMap *>( mapItemList.at( 0 ) ) );
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
 
@@ -2054,17 +2054,6 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   emit zoomLevelChanged();
   updateRulers();
   update();
-  //redraw cached map items
-  QList<QGraphicsItem *> itemList = composition()->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    QgsComposerMap *mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
-    if ( ( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
-    {
-      mypItem->updateCachedImage();
-    }
-  }
 }
 
 void QgsComposerView::setZoomLevel( double zoomLevel )

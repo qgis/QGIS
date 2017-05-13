@@ -54,7 +54,6 @@ class QgsEditorWidgetWrapper;
 class QgsExpressionFieldBuffer;
 class QgsFeatureRenderer;
 class QgsGeometry;
-class QgsGeometryCache;
 class QgsGeometryVertexIndex;
 class QgsMapToPixel;
 class QgsRectangle;
@@ -66,14 +65,13 @@ class QgsSymbol;
 class QgsVectorLayerJoinInfo;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
 class QgsPointV2;
 class QgsFeedback;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
-typedef QList<QgsPointV2> QgsPointSequence;
-
 
 
 /** \ingroup core
@@ -348,7 +346,7 @@ typedef QList<QgsPointV2> QgsPointSequence;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink
 {
     Q_OBJECT
 
@@ -608,7 +606,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns A list of QgsFeature
      *
      * \see    selectedFeatureIds()
-     * \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
+     * \see    getSelectedFeatures() which is more memory friendly when handling large selections
      */
     QgsFeatureList selectedFeatures() const;
 
@@ -623,7 +621,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see    selectedFeatureIds()
      * \see    selectedFeatures()
      */
-    QgsFeatureIterator selectedFeaturesIterator( QgsFeatureRequest request = QgsFeatureRequest() ) const;
+    QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 
     /**
      * Return reference to identifiers of selected features
@@ -809,11 +807,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
     /**
-     * Count features for symbols. Feature counts may be get by featureCount().
-     * \param showProgress show progress dialog
-     * \returns true if calculated, false if failed or was canceled by user
+     * Count features for symbols.
+     * The method will return immediately. You will need to connect to the
+     * symbolFeatureCountMapChanged() signal to be notified when the freshly updated
+     * feature counts are ready.
+     *
+     * \note If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
+     *       task and call waitForFinished().
+     *
+     * \since This is asynchroneous since QGIS 3.0
      */
-    bool countSymbolFeatures( bool showProgress = true );
+    bool countSymbolFeatures();
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -872,12 +876,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    /** Adds a feature
-        \param feature feature to add
-        \param alsoUpdateExtent If True, will also go to the effort of e.g. updating the extents.
-        \returns                    True in case of success and False in case of error
-     */
-    bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
+    bool addFeature( QgsFeature &feature ) override;
 
     /** Updates an existing feature. This method needs to query the datasource
         on every call. Consider using changeAttributeValue() or
@@ -1201,8 +1200,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    //! Insert a copy of the given features into the layer  (but does not commit it)
-    bool addFeatures( QgsFeatureList features, bool makeSelected = true );
+    bool addFeatures( QgsFeatureList &features ) override;
 
     //! Delete a feature from the layer (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );
@@ -1495,9 +1493,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QString htmlMetadata() const override;
 
-    //! \note not available in Python bindings
-    inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
-
     /** Set the simplification settings for fast rendering of features
      *  \since QGIS 2.2
      */
@@ -1715,7 +1710,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when a feature has been deleted.
      *
-     * If you do expensive operations in a slot connected to this, you should prever to use
+     * If you do expensive operations in a slot connected to this, you should prefer to use
      * featuresDeleted( const QgsFeatureIds& ).
      *
      * \param fid The id of the feature which has been deleted
@@ -1858,11 +1853,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void readOnlyChanged();
 
+    /**
+     * Emitted when the feature count for symbols on this layer has been recalculated.
+     *
+     * \since QGIS 3.0
+     */
+    void symbolFeatureCountMapChanged();
 
   private slots:
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
+    void onSymbolsCounted();
 
   protected:
     //! Set the extent
@@ -1895,7 +1897,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 #endif
 
   private:                       // Private attributes
-
     QgsConditionalLayerStyles *mConditionalStyles = nullptr;
 
     //! Pointer to data provider derived from the abastract base class QgsDataProvider
@@ -1979,9 +1980,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Annotation form for this layer
     QString mAnnotationForm;
 
-    //! cache for some vector layer data - currently only geometries for faster editing
-    QgsGeometryCache *mCache = nullptr;
-
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
@@ -2015,6 +2013,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsAttributeTableConfig mAttributeTableConfig;
 
     mutable QMutex mFeatureSourceConstructorMutex;
+
+    QgsVectorLayerFeatureCounter *mFeatureCounter = nullptr;
 
     friend class QgsVectorLayerFeatureSource;
 };

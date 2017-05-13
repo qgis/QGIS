@@ -46,7 +46,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      * \param map encoded properties string map
      * \returns new QgsBlurEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsBlurEffect();
 

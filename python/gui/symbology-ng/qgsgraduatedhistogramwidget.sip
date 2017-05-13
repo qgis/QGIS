@@ -25,7 +25,7 @@ class QgsGraduatedHistogramWidget : QWidget
      * The histogram will fetch the ranges from the renderer before every refresh.
      * @param renderer associated QgsGraduatedSymbolRenderer
      */
-    void setRenderer( QgsGraduatedSymbolRenderer* renderer );
+    void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 
   signals:
 

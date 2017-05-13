@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest, QgsProcessingUtils
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -48,7 +48,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterSelection
                                         )
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -149,11 +149,9 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.START_POINTS))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
+        startPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.START_POINTS), context)
         strategy = self.getParameterValue(self.STRATEGY)
         travelCost = self.getParameterValue(self.TRAVEL_COST)
 
@@ -176,16 +174,10 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         feat.setFields(fields)
 
         writerPoints = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.MultiPoint,
-                layer.crs())
+            self.OUTPUT_POINTS).getVectorWriter(fields, QgsWkbTypes.MultiPoint, layer.crs(), context)
 
         writerPolygons = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
+            self.OUTPUT_POLYGON).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         directionField = -1
         if directionFieldName is not None:
@@ -218,7 +210,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
         request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, request)
+        features = QgsProcessingUtils.getFeatures(startPoints, context, request)
         points = []
         for f in features:
             points.append(f.geometry().asPoint())

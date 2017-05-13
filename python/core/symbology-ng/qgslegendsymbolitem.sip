@@ -16,13 +16,13 @@ class QgsLegendSymbolItem
     QgsLegendSymbolItem();
     //! Construct item. Does not take ownership of symbol (makes internal clone)
     //! @note parentRuleKey added in 2.8
-    QgsLegendSymbolItem( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString& parentRuleKey = QString() );
+    QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
-    QgsLegendSymbolItem( const QgsLegendSymbolItem& other );
-    //QgsLegendSymbolItem& operator=( const QgsLegendSymbolItem& other );
+    QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
+    //QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
     //! Return associated symbol. May be null.
-    QgsSymbol* symbol() const;
+    QgsSymbol *symbol() const;
     //! Return text label
     QString label() const;
     //! Return unique identifier of the rule for identification of the item within renderer
@@ -31,7 +31,7 @@ class QgsLegendSymbolItem
     bool isCheckable() const;
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
-    QgsSymbol* legacyRuleKey() const;
+    QgsSymbol *legacyRuleKey() const;
 
     //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
@@ -50,7 +50,7 @@ class QgsLegendSymbolItem
     QString parentRuleKey() const;
 
     //! Set symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol* s /Transfer/ );
+    void setSymbol( QgsSymbol *s /Transfer/ );
 };
 
 

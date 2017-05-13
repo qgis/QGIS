@@ -19,6 +19,8 @@
 #define QGSCOMPOSERMAPOVERVIEW_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgscomposermapitem.h"
 #include <QString>
 #include <QObject>
@@ -54,7 +56,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * \see removeOverview
      */
-    void addOverview( QgsComposerMapOverview *overview );
+    void addOverview( QgsComposerMapOverview *overview SIP_TRANSFER );
 
     /** Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
      * \param overviewId id for the QgsComposerMapOverview to remove
@@ -181,7 +183,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * \param symbol fill symbol for overview
      * \see frameSymbol
      */
-    void setFrameSymbol( QgsFillSymbol *symbol );
+    void setFrameSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * \returns fill symbol for overview
@@ -194,7 +196,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * \see setFrameSymbol
      * \note not available in Python bindings
      */
-    const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
+    const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; } SIP_SKIP
 
     /** Retrieves the blending mode used for drawing the overview.
      * \returns blending mode for overview

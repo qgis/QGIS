@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class DropGeometry(GeoAlgorithm):
@@ -65,18 +66,15 @@ class DropGeometry(GeoAlgorithm):
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         writer = self.getOutputFromName(
-            self.OUTPUT_TABLE).getVectorWriter(
-                layer.fields(),
-                QgsWkbTypes.NoGeometry,
-                QgsCoordinateReferenceSystem())
+            self.OUTPUT_TABLE).getVectorWriter(layer.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(),
+                                               context)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = vector.features(layer, request)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, request)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
             writer.addFeature(input_feature)

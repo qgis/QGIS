@@ -19,15 +19,15 @@ class QgsAttributeFormInterface
 #include <qgsattributeforminterface.h>
 %End
   public:
-    explicit QgsAttributeFormInterface( QgsAttributeForm* form );
+    explicit QgsAttributeFormInterface( QgsAttributeForm *form );
 
-    virtual bool acceptChanges( const QgsFeature& feature );
+    virtual bool acceptChanges( const QgsFeature &feature );
 
     virtual void initForm();
 
     virtual void featureChanged();
 
-    QgsAttributeForm* form();
+    QgsAttributeForm *form();
 
-    const QgsFeature& feature();
+    const QgsFeature &feature();
 };

@@ -32,13 +32,14 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class OrientedMinimumBoundingBox(GeoAlgorithm):
@@ -71,9 +72,8 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         if byFeature and layer.geometryType() == QgsWkbTypes.PointGeometry and layer.featureCount() <= 2:
@@ -89,20 +89,19 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         fields.append(QgsField('width', QVariant.Double))
         fields.append(QgsField('height', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     QgsWkbTypes.Polygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 
         if byFeature:
-            self.featureOmbb(layer, writer, feedback)
+            self.featureOmbb(layer, context, writer, feedback)
         else:
-            self.layerOmmb(layer, writer, feedback)
+            self.layerOmmb(layer, context, writer, feedback)
 
         del writer
 
-    def layerOmmb(self, layer, writer, feedback):
+    def layerOmmb(self, layer, context, writer, feedback):
         req = QgsFeatureRequest().setSubsetOfAttributes([])
-        features = vector.features(layer, req)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context, req)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         newgeometry = QgsGeometry()
         first = True
         for current, inFeat in enumerate(features):
@@ -126,9 +125,9 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
                                    height])
             writer.addFeature(outFeat)
 
-    def featureOmbb(self, layer, writer, feedback):
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def featureOmbb(self, layer, context, writer, feedback):
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, angle, width, height = inFeat.geometry().orientedMinimumBoundingBox()

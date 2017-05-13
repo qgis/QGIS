@@ -31,10 +31,11 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields, QgsField, QgsFeature, QgsPoint, QgsWkbTypes,
-                       QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
+                       QgsGeometry, QgsSpatialIndex, QgsDistanceArea,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
@@ -80,21 +81,19 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         fieldName = self.getParameterValue(self.FIELD)
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         strategy = self.getParameterValue(self.STRATEGY)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         da = QgsDistanceArea()
 
-        features = vector.features(layer)
+        features = QgsProcessingUtils.getFeatures(layer, context)
         for current, f in enumerate(features):
             fGeom = f.geometry()
             bbox = fGeom.boundingBox()
@@ -138,9 +137,8 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                       self.tr('Can not generate requested number of random '
-                                               'points. Maximum number of attempts exceeded.'))
+                QgsMessageLog.logMessage(self.tr('Can not generate requested number of random '
+                                                 'points. Maximum number of attempts exceeded.'), self.tr('Processing'), QgsMessageLog.INFO)
 
             feedback.setProgress(0)
 

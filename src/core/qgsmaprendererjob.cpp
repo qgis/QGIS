@@ -226,8 +226,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
 
-  mGeometryCaches.clear();
-
   while ( li.hasPrevious() )
   {
     QgsMapLayer *ml = li.previous();
@@ -341,14 +339,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( hasStyleOverride )
       ml->styleManager()->restoreOverrideStyle();
 
-    if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
-    {
-      if ( QgsVectorLayerRenderer *vlr = dynamic_cast<QgsVectorLayerRenderer *>( job.renderer ) )
-      {
-        vlr->setGeometryCachePointer( &mGeometryCaches[ ml->id()] );
-      }
-    }
-
   } // while (li.hasPrevious())
 
   return layerJobs;
@@ -428,8 +418,6 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
 
 
   jobs.clear();
-
-  updateLayerGeometryCaches();
 }
 
 void QgsMapRendererJob::cleanupLabelJob( LabelRenderJob &job )

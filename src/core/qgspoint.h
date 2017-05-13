@@ -195,7 +195,7 @@ class CORE_EXPORT QgsPoint
     double distance( const QgsPoint &other ) const;
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPoint &other ) const;
@@ -261,6 +261,43 @@ class CORE_EXPORT QgsPoint
     //! Divides the coordinates in this point by a scalar quantity in place
     QgsPoint &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = "(" + QString::number( sipCpp->x() ) + "," + QString::number( sipCpp->y() ) + ")";
+    //QString str("(%f,%f)").arg(sipCpp->x()).arg(sipCpp->y());
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+
+    int __len__();
+    % MethodCode
+    sipRes = 2;
+    % End
+
+
+    SIP_PYOBJECT __getitem__( int );
+    % MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->x() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->y() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toAscii().constData() );
+    }
+    % End
+
+    long __hash__() const;
+    % MethodCode
+    sipRes = qHash( *sipCpp );
+    % End
+#endif
+
   private:
 
     //! x coordinate
@@ -274,7 +311,7 @@ class CORE_EXPORT QgsPoint
 }; // class QgsPoint
 
 
-inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
+inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 ) SIP_SKIP
 {
   if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
   { return true; }
@@ -282,14 +319,14 @@ inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
   { return false; }
 }
 
-inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p )
+inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p ) SIP_SKIP
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
   return os;
 }
 
-inline uint qHash( const QgsPoint &p )
+inline uint qHash( const QgsPoint &p ) SIP_SKIP
 {
   uint hash;
   uint h1 = qHash( static_cast< quint64 >( p.mX ) );
@@ -297,5 +334,6 @@ inline uint qHash( const QgsPoint &p )
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }
+
 
 #endif //QGSPOINT_H

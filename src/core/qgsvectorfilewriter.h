@@ -20,6 +20,7 @@
 #define QGSVECTORFILEWRITER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeedback.h"
 #include "qgssymbol.h"
@@ -40,7 +41,7 @@ class QgsFeatureIterator;
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
  2. create an instance of the class and issue calls to addFeature(...)
  */
-class CORE_EXPORT QgsVectorFileWriter
+class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 {
   public:
     enum OptionType
@@ -427,6 +428,37 @@ class CORE_EXPORT QgsVectorFileWriter
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
+    /** Create a new vector file writer.
+     * \param vectorFileName file name to write to
+     * \param fileEncoding encoding to use
+     * \param fields fields to write
+     * \param geometryType geometry type of output file
+     * \param srs spatial reference system of output file
+     * \param driverName OGR driver to use
+     * \param datasourceOptions list of OGR data source creation options
+     * \param layerOptions list of OGR layer creation options
+     * \param newFilename potentially modified file name (output parameter)
+     * \param symbologyExport symbology to export
+     * \param fieldValueConverter field value converter (added in QGIS 2.16)
+     * \param layerName layer name. If let empty, it will be derived from the filename (added in QGIS 3.0)
+     * \param action action on existing file (added in QGIS 3.0)
+     * \note not available in Python bindings
+     */
+    QgsVectorFileWriter( const QString &vectorFileName,
+                         const QString &fileEncoding,
+                         const QgsFields &fields,
+                         QgsWkbTypes::Type geometryType,
+                         const QgsCoordinateReferenceSystem &srs,
+                         const QString &driverName,
+                         const QStringList &datasourceOptions,
+                         const QStringList &layerOptions,
+                         QString *newFilename,
+                         SymbologyExport symbologyExport,
+                         FieldValueConverter *fieldValueConverter,
+                         const QString &layerName,
+                         ActionOnExistingFile action
+                       ) SIP_SKIP;
+
     //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter( const QgsVectorFileWriter &rh ) = delete;
     //! QgsVectorFileWriter cannot be copied.
@@ -451,6 +483,14 @@ class CORE_EXPORT QgsVectorFileWriter
      */
     static QMap< QString, QString> ogrDriverList();
 
+    /**
+     * Returns the OGR driver name for a specified file \a extension. E.g. the
+     * driver name for the ".shp" extension is "ESRI Shapefile".
+     * If no suitable drivers are found then an empty string is returned.
+     * \since QGIS 3.0
+     */
+    static QString driverForExtension( const QString &extension );
+
     //! Returns filter string that can be used for dialogs
     static QString fileFilterString();
 
@@ -466,11 +506,14 @@ class CORE_EXPORT QgsVectorFileWriter
     //! Retrieves error message
     QString errorMessage();
 
+    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features ) override;
+
     //! Add feature to the currently opened data source
-    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! \note not available in Python bindings
-    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
+    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter();
@@ -509,7 +552,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * Will drop M values and convert Z to 2.5D where required.
      * \note not available in Python bindings
      */
-    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type );
+    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type ) SIP_SKIP;
 
     /**
      * Return edition capabilities for an existing dataset name.
@@ -535,7 +578,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
   protected:
     //! \note not available in Python bindings
-    OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType );
+    OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
@@ -568,36 +611,6 @@ class CORE_EXPORT QgsVectorFileWriter
     FieldValueConverter *mFieldValueConverter = nullptr;
 
   private:
-
-    /** Create a new vector file writer.
-     * \param vectorFileName file name to write to
-     * \param fileEncoding encoding to use
-     * \param fields fields to write
-     * \param geometryType geometry type of output file
-     * \param srs spatial reference system of output file
-     * \param driverName OGR driver to use
-     * \param datasourceOptions list of OGR data source creation options
-     * \param layerOptions list of OGR layer creation options
-     * \param newFilename potentially modified file name (output parameter)
-     * \param symbologyExport symbology to export
-     * \param fieldValueConverter field value converter (added in QGIS 2.16)
-     * \param layerName layer name. If let empty, it will be derived from the filename (added in QGIS 3.0)
-     * \param action action on existing file (added in QGIS 3.0)
-     */
-    QgsVectorFileWriter( const QString &vectorFileName,
-                         const QString &fileEncoding,
-                         const QgsFields &fields,
-                         QgsWkbTypes::Type geometryType,
-                         const QgsCoordinateReferenceSystem &srs,
-                         const QString &driverName,
-                         const QStringList &datasourceOptions,
-                         const QStringList &layerOptions,
-                         QString *newFilename,
-                         SymbologyExport symbologyExport,
-                         FieldValueConverter *fieldValueConverter,
-                         const QString &layerName,
-                         ActionOnExistingFile action
-                       );
 
     void init( QString vectorFileName, QString fileEncoding, const QgsFields &fields,
                QgsWkbTypes::Type geometryType, QgsCoordinateReferenceSystem srs,

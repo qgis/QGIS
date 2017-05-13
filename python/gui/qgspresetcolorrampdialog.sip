@@ -16,7 +16,7 @@ class QgsPresetColorRampWidget : QgsPanelWidget
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 
     ~QgsPresetColorRampWidget();
 
@@ -29,7 +29,7 @@ class QgsPresetColorRampWidget : QgsPanelWidget
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsPresetSchemeColorRamp& ramp );
+    void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
   signals:
 
@@ -55,7 +55,7 @@ class QgsPresetColorRampDialog : QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -66,7 +66,7 @@ class QgsPresetColorRampDialog : QDialog
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsPresetSchemeColorRamp& ramp );
+    void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
   signals:
 

@@ -78,8 +78,8 @@ class ParameterTest(unittest.TestCase):
             if hasattr(param, 'getAsScriptCode'):
                 code = param.getAsScriptCode()
                 importedParam = paramClass.fromScriptCode(code)
-                self.assertEquals(param.optional, importedParam.optional)
-                self.assertEquals(param.default, importedParam.default, param)
+                self.assertEqual(param.optional, importedParam.optional)
+                self.assertEqual(param.default, importedParam.default, param)
 
 
 class ParameterBooleanTest(unittest.TestCase):
@@ -651,7 +651,7 @@ class ParameterExpressionTest(unittest.TestCase):
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterExpression)
         self.assertTrue(result.optional)
-        self.assertEquals(result.default, parameter.default)
+        self.assertEqual(result.default, parameter.default)
 
 
 class ParameterTableFieldTest(unittest.TestCase):

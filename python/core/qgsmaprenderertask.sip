@@ -47,6 +47,19 @@ class QgsMapRendererTask : QgsTask
  Adds ``annotations`` to be rendered on the map.
 %End
 
+    void addDecorations( QList< QgsMapDecoration * > decorations );
+%Docstring
+ Adds ``decorations`` to be rendered on the map.
+%End
+
+    void setSaveWorldFile( bool save );
+%Docstring
+ Sets whether a world file will be created alongside an image file.
+%End
+
+    virtual void cancel();
+
+
   signals:
 
     void renderingComplete();
@@ -73,4 +86,3 @@ class QgsMapRendererTask : QgsTask
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

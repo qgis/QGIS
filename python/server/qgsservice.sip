@@ -64,6 +64,6 @@ class QgsService
      * Execute the requests and set result in QgsServerRequest
      */
     virtual void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                                 const QgsProject* project ) = 0;
+                                 const QgsProject *project ) = 0;
 };
 

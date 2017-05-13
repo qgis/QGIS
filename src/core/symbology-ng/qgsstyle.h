@@ -17,6 +17,7 @@
 #define QGSSTYLEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QMap>
 #include <QMultiMap>
 #include <QString>
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \returns success status of the operation
      */
-    bool addSymbol( const QString &name, QgsSymbol *symbol, bool update = false );
+    bool addSymbol( const QString &name, QgsSymbol *symbol SIP_TRANSFER, bool update = false );
 
     /** Adds a color ramp to the style. Calling this method takes the ramp's ownership.
      *  \note Adding a color ramp with the name of existing one replaces it.
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param update set to true when the style DB has to be updated, by default it is false
      *  \returns success status of the operation
      */
-    bool addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool update = false );
+    bool addColorRamp( const QString &name, QgsColorRamp *colorRamp SIP_TRANSFER, bool update = false );
 
     /** Adds a new tag and returns the tag's id
      *
@@ -127,7 +128,7 @@ class CORE_EXPORT QgsStyle : public QObject
     /** Returns a new copy of the specified color ramp. The caller
      * takes responsibility for deleting the returned object.
      */
-    QgsColorRamp *colorRamp( const QString &name ) const;
+    QgsColorRamp *colorRamp( const QString &name ) const SIP_FACTORY;
 
     //! Returns count of color ramps
     int colorRampCount();
@@ -182,7 +183,7 @@ class CORE_EXPORT QgsStyle : public QObject
     bool renameSymbol( const QString &oldName, const QString &newName );
 
     //! Returns a NEW copy of symbol
-    QgsSymbol *symbol( const QString &name );
+    QgsSymbol *symbol( const QString &name ) SIP_FACTORY;
 
     //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsSymbol *symbolRef( const QString &name ) const;

@@ -19,6 +19,8 @@
 #define QGSDXFEXPORT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgis.h"
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
@@ -178,7 +180,7 @@ class CORE_EXPORT QgsDxfExport
      * \param i integer value
      * \note available in Python bindings as writeGroupInt
      */
-    void writeGroup( int code, int i );
+    void writeGroup( int code, int i ) SIP_PYNAME( writeGroupInt );
 
     /**
      * Write a group code with a floating point value
@@ -186,7 +188,7 @@ class CORE_EXPORT QgsDxfExport
      * \param d floating point value
      * \note available in Python bindings as writeGroupDouble
      */
-    void writeGroup( int code, double d );
+    void writeGroup( int code, double d ) SIP_PYNAME( writeGroupDouble );
 
     /**
      * Write a group code with a string value
@@ -202,7 +204,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeGroupPointV2
      * \since QGIS 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p );
+    void writeGroup( int code, const QgsPointV2 &p ) SIP_PYNAME( writeGroupPointV2 );
 
     /**
      * Write a group code with color value
@@ -256,7 +258,7 @@ class CORE_EXPORT QgsDxfExport
      * \note not available in Python bindings
      * \since QGIS 2.15
      */
-    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+    void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 ) SIP_SKIP;
 
     /**
      * Draw dxf filled polygon (HATCH)
@@ -267,7 +269,7 @@ class CORE_EXPORT QgsDxfExport
      * \note not available in Python bindings
      * \since QGIS 2.15
      */
-    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color );
+    void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
 
     //! Write line (as a polyline)
     //! \since QGIS 2.15
@@ -276,22 +278,22 @@ class CORE_EXPORT QgsDxfExport
     //! Write point
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt );
+    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt ) SIP_PYNAME( writePointV2 );
 
     //! Write filled circle (as hatch)
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius );
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
 
     //! Write circle (as polyline)
     //! \note available in Python bindings as writeCircleV2
     //! \since QGIS 2.15
-    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
+    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
 
     //! Write text (TEXT)
     //! \note available in Python bindings as writeTextV2
     //! \since QGIS 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color );
+    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
 
     //! Write mtext (MTEXT)
     //! \note available in Python bindings as writeMTextV2
@@ -317,7 +319,7 @@ class CORE_EXPORT QgsDxfExport
      * \param settings label settings
      * \note not available in Python bindings
      */
-    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings );
+    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP;
 
     /** Register name of layer for feature
      * \param layerId id of layer

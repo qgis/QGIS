@@ -36,7 +36,7 @@
 #include <QPushButton>
 #include <QWidget>
 
-QgsColorRampButton::QgsColorRampButton( QWidget *parent SIP_TRANSFERTHIS, const QString &dialogTitle )
+QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
   , mShowGradientOnly( false )
@@ -268,6 +268,13 @@ void QgsColorRampButton::prepareMenu()
     randomColorRampAction->setChecked( isRandomColorRamp() );
     mMenu->addAction( randomColorRampAction );
     connect( randomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::setRandomColorRamp );
+
+    if ( isRandomColorRamp() || dynamic_cast<QgsLimitedRandomColorRamp *>( mColorRamp ) )
+    {
+      QAction *shuffleRandomColorRampAction = new QAction( tr( "Shuffle random colors" ), this );
+      mMenu->addAction( shuffleRandomColorRampAction );
+      connect( shuffleRandomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::colorRampChanged );
+    }
   }
 
   mMenu->addSeparator();

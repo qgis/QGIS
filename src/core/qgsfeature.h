@@ -350,7 +350,7 @@ class CORE_EXPORT QgsFeature
      * \since QGIS 2.9
      * \see fields
      */
-    void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYDEFAULTVALUE( true ) );
+    void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 
     /** Returns the field map associated with the feature.
      * \see setFields
@@ -504,6 +504,8 @@ typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;
 #else
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 #endif
+
+#include "qgsgeometry.h"
 
 // key = feature id, value = changed geometry
 #ifndef SIP_RUN

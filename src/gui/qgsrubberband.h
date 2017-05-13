@@ -16,6 +16,7 @@
 #define QGSRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgis.h"
 #include "qgsgeometry.h"
 #include <QBrush>
 #include <QList>
@@ -72,13 +73,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
       /**
        * A diamond is used to highlight points (◇)
-       * @note added in QGIS 3.0
+       * \since QGIS 3.0
        */
       ICON_DIAMOND,
 
       /**
        * A diamond is used to highlight points (◆)
-       * @note added in QGIS 3.0
+       * \since QGIS 3.0
        */
       ICON_FULL_DIAMOND,
     };
@@ -88,7 +89,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  \param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  \param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
+    QgsRubberBand( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Sets the color for the rubberband

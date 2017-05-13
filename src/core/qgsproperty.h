@@ -16,6 +16,7 @@
 #define QGSPROPERTY_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsproperty_p.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
@@ -323,7 +324,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
@@ -337,7 +338,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a color.
@@ -351,7 +352,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
@@ -365,7 +366,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
@@ -379,7 +380,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
@@ -393,7 +394,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Saves this property to a QVariantMap, wrapped in a QVariant.
@@ -417,7 +418,7 @@ class CORE_EXPORT QgsProperty
      * existing transformer will be deleted. Set to null to remove an existing transformer.
      * \see transformer()
      */
-    void setTransformer( QgsPropertyTransformer *transformer );
+    void setTransformer( QgsPropertyTransformer *transformer SIP_TRANSFER );
 
     /**
      * Returns the existing transformer used for manipulating the calculated values for the property, if set.
@@ -433,6 +434,12 @@ class CORE_EXPORT QgsProperty
      */
     bool convertToTransformer();
 
+    //! Allows direct construction of QVariants from properties.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsPropertyPrivate> d;
@@ -444,5 +451,7 @@ class CORE_EXPORT QgsProperty
     QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
 
 };
+
+Q_DECLARE_METATYPE( QgsProperty )
 
 #endif // QGSPROPERTY_H

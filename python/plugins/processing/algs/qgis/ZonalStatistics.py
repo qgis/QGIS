@@ -38,7 +38,8 @@ from osgeo import gdal, ogr, osr
 from qgis.core import (QgsApplication,
                        QgsRectangle,
                        QgsGeometry,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -89,12 +90,13 @@ class ZonalStatistics(GeoAlgorithm):
                                            self.tr('Load whole raster in memory')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
+    def processAlgorithm(self, context, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
+            :param context:
         """
 
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
@@ -174,16 +176,16 @@ class ZonalStatistics(GeoAlgorithm):
             (idxMode, fields) = vector.findOrCreateField(layer, fields,
                                                          columnPrefix + 'mode', 21, 6)
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), layer.wkbType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields, layer.wkbType(),
+                                                                           layer.crs(), context)
 
         outFeat = QgsFeature()
 
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
 

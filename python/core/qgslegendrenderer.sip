@@ -16,7 +16,7 @@ class QgsLegendRenderer
 
   public:
     /** Construct legend renderer. The ownership of legend model does not change */
-    QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings );
+    QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings );
 
     /** Run the layout algorithm and determine the size required for legend */
     QSizeF minimumSize();
@@ -30,10 +30,10 @@ class QgsLegendRenderer
     /** Draw the legend with given painter. It will occupy the area reported in legendSize().
      *  Painter should be scaled beforehand so that units correspond to millimeters.
      */
-    void drawLegend( QPainter* painter );
+    void drawLegend( QPainter *painter );
 
 
-    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsLegendStyle::Style style );
-    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
+    static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
+    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
 
 };

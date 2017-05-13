@@ -18,13 +18,13 @@ class QgsDataItemProviderRegistry
     QList<QgsDataItemProvider*> providers() const;
 
     //! Add a provider implementation. Takes ownership of the object.
-    void addProvider( QgsDataItemProvider* provider /Transfer/ );
+    void addProvider( QgsDataItemProvider *provider /Transfer/ );
 
     //! Remove provider implementation from the list (provider object is deleted)
-    void removeProvider( QgsDataItemProvider* provider );
+    void removeProvider( QgsDataItemProvider *provider );
 
   private:
 
-    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
 
 };

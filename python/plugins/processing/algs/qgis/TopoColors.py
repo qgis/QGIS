@@ -36,7 +36,8 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointV2,
-                       NULL)
+                       NULL,
+                       QgsProcessingUtils)
 
 from qgis.PyQt.QtCore import (QVariant)
 
@@ -45,7 +46,7 @@ from processing.core.parameters import (ParameterVector,
                                         ParameterSelection,
                                         ParameterNumber)
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -92,9 +93,8 @@ class TopoColor(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         min_colors = self.getParameterValue(self.MIN_COLORS)
         balance_by = self.getParameterValue(self.BALANCE)
         min_distance = self.getParameterValue(self.MIN_DISTANCE)
@@ -103,12 +103,9 @@ class TopoColor(GeoAlgorithm):
         fields.append(QgsField('color_id', QVariant.Int))
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-            fields,
-            layer.wkbType(),
-            layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
 
-        features = {f.id(): f for f in vector.features(layer)}
+        features = {f.id(): f for f in QgsProcessingUtils.getFeatures(layer, context)}
 
         topology, id_graph = self.compute_graph(features, feedback, min_distance=min_distance)
         feature_colors = ColoringAlgorithm.balanced(features,

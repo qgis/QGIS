@@ -32,8 +32,6 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
 {
   mClosed = false;
-  mQuery = nullptr;
-  mFetchCount = 0;
 
   BuildStatement( request );
 
@@ -48,7 +46,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   }
 
   // create sql query
-  mQuery = new QSqlQuery( mDatabase );
+  mQuery.reset( new QSqlQuery( mDatabase ) );
 
   // start selection
   rewind();
@@ -428,7 +426,7 @@ bool QgsDb2FeatureIterator::close()
     {
       mQuery->finish();
     }
-    delete mQuery;
+    mQuery.reset();
   }
 
   if ( mDatabase.isOpen() )
@@ -447,15 +445,14 @@ bool QgsDb2FeatureIterator::close()
 QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
+  , mSRId( p->mSRId )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
   , mConnInfo( p->mConnInfo )
   , mSqlWhereClause( p->mSqlWhereClause )
-{
-  mSRId = p->mSRId;
-}
+{}
 
 QgsDb2FeatureSource::~QgsDb2FeatureSource()
 {

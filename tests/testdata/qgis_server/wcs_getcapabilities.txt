@@ -1,7 +1,7 @@
-
+Content-Length: 2506
 Content-Type: text/xml; charset=utf-8
 
-<WCS_Capabilities version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd" xmlns="http://www.opengis.net/wcs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" updateSequence="0" xmlns:gml="http://www.opengis.net/gml">
+<WCS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns="http://www.opengis.net/wcs" xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
  <Service>
   <name>WCS</name>
   <label>QGIS Server test</label>
@@ -22,14 +22,14 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Get>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
       <Post>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Post>
      </HTTP>
     </DCPType>
@@ -38,14 +38,14 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Get>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
       <Post>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Post>
      </HTTP>
     </DCPType>
@@ -54,14 +54,14 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Get>
      </HTTP>
     </DCPType>
     <DCPType>
      <HTTP>
       <Post>
-       <OnlineResource xlink:type="simple" xlink:href="?"/>
+       <OnlineResource xlink:type="simple" xlink:href="?MAP=tests/testdata/qgis_server_accesscontrol/project.qgs"/>
       </Post>
      </HTTP>
     </DCPType>

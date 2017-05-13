@@ -101,7 +101,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( this, &QDialog::rejected, this, &QgsOptions::rejectOptions );
 
   QStringList styles = QStyleFactory::keys();
-  cmbStyle->addItems( styles );
+  QStringList filteredStyles = styles;
+  for ( int i = filteredStyles.count() - 1; i >= 0; --i )
+  {
+    // filter out the broken adwaita styles - see note in main.cpp
+    if ( filteredStyles.at( i ).contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+    {
+      filteredStyles.removeAt( i );
+    }
+  }
+  if ( filteredStyles.isEmpty() )
+  {
+    //oops - none left!.. have to let user use a broken style
+    filteredStyles = styles;
+  }
+
+  cmbStyle->addItems( filteredStyles );
 
   QStringList themes = QgsApplication::uiThemes().keys();
   cmbUITheme->addItems( themes );
@@ -267,7 +282,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   //locations of the QGIS help
-  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "http://docs.qgis.org/$qgis_short_version/$qgis_locale/docs/user_manual/" ).toStringList();
   Q_FOREACH ( const QString &path, helpPathList )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
@@ -1748,9 +1763,10 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
 void QgsOptions::on_mBtnAddHelpPath_clicked()
 {
   QTreeWidgetItem *item = new QTreeWidgetItem();
-  item->setText( 0, QString() );
+  item->setText( 0, QStringLiteral( "HELP_LOCATION" ) );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mHelpPathTreeWidget->addTopLevelItem( item );
+  mHelpPathTreeWidget->setCurrentItem( item );
 }
 
 void QgsOptions::on_mBtnRemoveHelpPath_clicked()

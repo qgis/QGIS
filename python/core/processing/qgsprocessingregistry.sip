@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProcessingRegistry : QObject
 {
 %Docstring
@@ -33,7 +32,7 @@ class QgsProcessingRegistry : QObject
 
     ~QgsProcessingRegistry();
 
-//     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
+
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
  Get list of available providers.
@@ -48,7 +47,7 @@ class QgsProcessingRegistry : QObject
  in the registry).
  Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
  method to populate the provider with algorithms.
- \see removeProvider()
+.. seealso:: removeProvider()
  :rtype: bool
 %End
 
@@ -56,7 +55,7 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
- \see addProvider()
+.. seealso:: addProvider()
  :rtype: bool
 %End
 
@@ -64,7 +63,7 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
- \see addProvider()
+.. seealso:: addProvider()
  :rtype: bool
 %End
 
@@ -77,7 +76,7 @@ class QgsProcessingRegistry : QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring
  Returns a list of all available algorithms from registered providers.
- \see algorithmById()
+.. seealso:: algorithmById()
  :rtype: list of const QgsProcessingAlgorithm
 %End
 
@@ -85,7 +84,7 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Finds an algorithm by its ID. If no matching algorithm is found, a None
  is returned.
- \see algorithms()
+.. seealso:: algorithms()
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -114,4 +113,3 @@ Emitted when a provider is removed from the registry
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

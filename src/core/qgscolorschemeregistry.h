@@ -67,7 +67,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * \see populateFromInstance
      * \see removeColorScheme
      */
-    void addColorScheme( QgsColorScheme *scheme );
+    void addColorScheme( QgsColorScheme *scheme SIP_TRANSFER );
 
     /** Removes all matching color schemes from the registry
      * \param scheme color scheme to remove
@@ -87,11 +87,27 @@ class CORE_EXPORT QgsColorSchemeRegistry
      */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
+
     /** Return color schemes of a specific type
      * \param schemeList destination list for matching schemes
      * \note not available in Python bindings
      */
-    template<class T> void schemes( QList<T *> &schemeList );
+#ifndef SIP_RUN
+    template<class T> void schemes( QList<T *> &schemeList )
+    {
+      schemeList.clear();
+      QList<QgsColorScheme *> schemeInstanceList = schemes();
+      QList<QgsColorScheme *>::iterator schemeIt = schemeInstanceList.begin();
+      for ( ; schemeIt != schemeInstanceList.end(); ++schemeIt )
+      {
+        T *scheme = dynamic_cast<T *>( *schemeIt );
+        if ( scheme )
+        {
+          schemeList.push_back( scheme );
+        }
+      }
+    }
+#endif
 
   private:
 
@@ -99,19 +115,6 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
 };
 
-template<class T> void QgsColorSchemeRegistry::schemes( QList<T *> &schemeList )
-{
-  schemeList.clear();
-  QList<QgsColorScheme *> schemeInstanceList = schemes();
-  QList<QgsColorScheme *>::iterator schemeIt = schemeInstanceList.begin();
-  for ( ; schemeIt != schemeInstanceList.end(); ++schemeIt )
-  {
-    T *scheme = dynamic_cast<T *>( *schemeIt );
-    if ( scheme )
-    {
-      schemeList.push_back( scheme );
-    }
-  }
-}
+
 
 #endif

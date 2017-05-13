@@ -19,20 +19,20 @@ class QgsMapCanvasTracer : QgsTracer
 
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
-    explicit QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar = 0 );
+    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
     ~QgsMapCanvasTracer();
 
     //! Access to action that user may use to toggle tracing on/off. May be null if no action was associated
-    QAction* actionEnableTracing() const;
+    QAction *actionEnableTracing() const;
 
     //! Assign "enable tracing" checkable action to the tracer.
     //! The action is used to determine whether tracing is currently enabled by the user
-    void setActionEnableTracing( QAction* action );
+    void setActionEnableTracing( QAction *action );
 
     //! Retrieve instance of this class associated with given canvas (if any).
     //! The class keeps a simple registry of tracers associated with map canvas
     //! instances for easier access to the common tracer by various map tools
-    static QgsMapCanvasTracer* tracerForCanvas( QgsMapCanvas* canvas );
+    static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );
 
     //! Report a path finding error to the user
     void reportError( QgsTracer::PathError err, bool addingVertex );

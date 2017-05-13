@@ -28,16 +28,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsGeometry,
-                       QgsPoint,
-                       QgsWkbTypes,
-                       QgsApplication)
+from qgis.core import (QgsWkbTypes,
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -76,19 +75,17 @@ class DensifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Densified')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         vertices = self.getParameterValue(self.VERTICES)
 
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(),
-                                         layer.wkbType(), layer.crs())
+            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             feature = f
             if feature.hasGeometry():

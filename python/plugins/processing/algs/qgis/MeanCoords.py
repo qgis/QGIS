@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils, QgsFields
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -78,8 +78,8 @@ class MeanCoords(GeoAlgorithm):
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.POINTS))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
@@ -93,16 +93,15 @@ class MeanCoords(GeoAlgorithm):
         else:
             uniqueIndex = layer.fields().lookupField(uniqueField)
 
-        fieldList = [QgsField('MEAN_X', QVariant.Double, '', 24, 15),
-                     QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
-                     QgsField('UID', QVariant.String, '', 255)]
+        fieldList = QgsFields()
+        fieldList.append(QgsField('MEAN_X', QVariant.Double, '', 24, 15))
+        fieldList.append(QgsField('MEAN_Y', QVariant.Double, '', 24, 15))
+        fieldList.append(QgsField('UID', QVariant.String, '', 255))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fieldList, QgsWkbTypes.Point, layer.crs()
-        )
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.Point, layer.crs(), context)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         means = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

@@ -29,13 +29,18 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsMessageLog,
+                       QgsProcessingUtils)
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -74,20 +79,17 @@ class Intersection(GeoAlgorithm):
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
-    def processAlgorithm(self, feedback):
-        vlayerA = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
-        vlayerB = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT2))
+    def processAlgorithm(self, context, feedback):
+        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT2), context)
 
         geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
         fields = vector.combineVectorFields(vlayerA, vlayerB)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                                                                     geomType, vlayerA.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
         outFeat = QgsFeature()
-        index = vector.spatialindex(vlayerB)
-        selectionA = vector.features(vlayerA)
-        total = 100.0 / len(selectionA)
+        index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
+        selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
         for current, inFeatA in enumerate(selectionA):
             feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()
@@ -113,10 +115,10 @@ class Intersection(GeoAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isEmpty() or not int_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('GEOS geoprocessing error: One or '
+                                    'more input features have invalid '
+                                    'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
@@ -126,8 +128,9 @@ class Intersection(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                     except:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                        continue
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('Feature geometry error: One or more '
+                                    'output features ignored due to invalid '
+                                    'geometry.'))
 
         del writer

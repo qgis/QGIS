@@ -72,6 +72,8 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsPalettedRendererWidget::applyColorRamp );
 
+  mBandComboBox->setLayer( mRasterLayer );
+
   if ( mRasterLayer )
   {
     QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
@@ -79,18 +81,10 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
     {
       return;
     }
-
-    //fill available bands into combo box
-    int nBands = provider->bandCount();
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-    {
-      mBandComboBox->addItem( displayBandName( i ), i );
-    }
-
     setFromRenderer( mRasterLayer->renderer() );
-    connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   }
 
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterRendererWidget::widgetChanged );
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   connect( mDeleteEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::deleteEntry );
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
@@ -102,7 +96,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {
-    mButtonLoadFromLayer->setEnabled( !provider->colorTable( mBandComboBox->currentData().toInt() ).isEmpty() );
+    mButtonLoadFromLayer->setEnabled( !provider->colorTable( mBandComboBox->currentBand() ).isEmpty() );
   }
   else
   {
@@ -110,7 +104,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   }
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
-  connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPalettedRendererWidget::loadFromLayer );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsPalettedRendererWidget::loadFromLayer );
 }
 
 QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
@@ -125,7 +119,7 @@ QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
   QgsPalettedRasterRenderer::ClassData classes = mModel->classData();
-  int bandNumber = mBandComboBox->currentData().toInt();
+  int bandNumber = mBandComboBox->currentBand();
 
   QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
   if ( !btnColorRamp->isNull() )
@@ -406,7 +400,7 @@ void QgsPalettedRendererWidget::classify()
       return;
     }
 
-    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer,  mBandComboBox->currentData().toInt(), btnColorRamp->colorRamp() );
+    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
     mCalculatingProgressBar->show();
@@ -427,10 +421,10 @@ void QgsPalettedRendererWidget::loadFromLayer()
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {
-    QList<QgsColorRampShader::ColorRampItem> table = provider->colorTable( mBandComboBox->currentData().toInt() );
+    QList<QgsColorRampShader::ColorRampItem> table = provider->colorTable( mBandComboBox->currentBand() );
     if ( !table.isEmpty() )
     {
-      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
+      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentBand() ) );
       mModel->setClassData( classes );
       emit widgetChanged();
     }

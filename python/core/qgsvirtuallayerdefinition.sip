@@ -18,9 +18,9 @@ class QgsVirtualLayerDefinition
     {
       public:
         //! Constructor variant to build a live layer reference
-        SourceLayer( const QString& name, const QString& ref );
+        SourceLayer( const QString &name, const QString &ref );
         //! Constructor variant to build a layer with a provider and a source
-        SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding );
+        SourceLayer( const QString &name, const QString &source, const QString &provider, const QString &encoding );
 
         //! Is it a live layer or not ?
         bool isReferenced() const;
@@ -42,7 +42,7 @@ class QgsVirtualLayerDefinition
     };
 
     //! Constructor with an optional file path
-    QgsVirtualLayerDefinition( const QString& filePath = "" );
+    QgsVirtualLayerDefinition( const QString &filePath = "" );
 
     //! Constructor to build a definition from a QUrl
     //! The path part of the URL is extracted as well as the following optional keys:
@@ -56,7 +56,7 @@ class QgsVirtualLayerDefinition
     //! nogeometry                              is a flag to force the layer to be a non-geometry layer
     //! query=sql                               represents the SQL query. Must be URL-encoded
     //! field=column_name:[int|real|text]       represents a field with its name and its type
-    static QgsVirtualLayerDefinition fromUrl( const QUrl& url );
+    static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 
     //! Convert the definition into a QUrl
     QUrl toUrl() const;
@@ -65,36 +65,36 @@ class QgsVirtualLayerDefinition
     QString toString() const;
 
     //! Add a live layer source layer
-    void addSource( const QString& name, const QString& ref );
+    void addSource( const QString &name, const QString &ref );
 
     //! Add a layer with a source, a provider and an encoding
-    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = "" );
+    void addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding = "" );
 
     //! List of source layers
     typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
 
     //! Get access to the source layers
-    const SourceLayers& sourceLayers() const;
+    const SourceLayers &sourceLayers() const;
 
     //! Get the SQL query
     QString query() const;
     //! Set the SQL query
-    void setQuery( const QString& query );
+    void setQuery( const QString &query );
 
     //! Get the file path. May be empty
     QString filePath() const;
     //! Set the file path
-    void setFilePath( const QString& filePath );
+    void setFilePath( const QString &filePath );
 
     //! Get the name of the field with unique identifiers
     QString uid() const;
     //! Set the name of the field with unique identifiers
-    void setUid( const QString& uid );
+    void setUid( const QString &uid );
 
     //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const;
     //! Set the name of the geometry field
-    void setGeometryField( const QString& geometryField );
+    void setGeometryField( const QString &geometryField );
 
     //! Get the type of the geometry
     //! QgsWkbTypes::NoGeometry to hide any geometry
@@ -109,12 +109,12 @@ class QgsVirtualLayerDefinition
     void setGeometrySrid( long srid );
 
     //! Get field definitions
-    const QgsFields& fields() const;
+    const QgsFields &fields() const;
     //! Set field definitions
-    void setFields( const QgsFields& fields );
+    void setFields( const QgsFields &fields );
 
     //! Convenience method to test if a given source layer is part of the definition
-    bool hasSourceLayer( const QString& name ) const;
+    bool hasSourceLayer( const QString &name ) const;
 
     //! Convenience method to test whether the definition has referenced (live) layers
     bool hasReferencedLayers() const;

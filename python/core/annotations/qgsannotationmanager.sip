@@ -42,8 +42,8 @@ class QgsAnnotationManager : QObject
 %Docstring
  Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
  Returns true if the addition was successful, or false if the annotation could not be added.
- \see removeAnnotation()
- \see annotationAdded()
+.. seealso:: removeAnnotation()
+.. seealso:: annotationAdded()
  :rtype: bool
 %End
 
@@ -52,23 +52,23 @@ class QgsAnnotationManager : QObject
  Removes an annotation from the manager. The annotation is deleted.
  Returns true if the removal was successful, or false if the removal failed (eg as a result
  of removing an annotation which is not contained in the manager).
- \see addAnnotation()
- \see compositionRemoved()
- \see compositionAboutToBeRemoved()
- \see clear()
+.. seealso:: addAnnotation()
+.. seealso:: compositionRemoved()
+.. seealso:: compositionAboutToBeRemoved()
+.. seealso:: clear()
  :rtype: bool
 %End
 
     void clear();
 %Docstring
  Removes and deletes all annotations from the manager.
- \see removeAnnotation()
+.. seealso:: removeAnnotation()
 %End
 
     QList< QgsAnnotation * > annotations() const;
 %Docstring
  Returns a list of all annotations contained in the manager.
- \see cloneAnnotations()
+.. seealso:: cloneAnnotations()
  :rtype: list of QgsAnnotation
 %End
 
@@ -77,7 +77,7 @@ class QgsAnnotationManager : QObject
  Returns a list containing clones of all annotations contained
  in the manager. The caller takes responsibility for deleting
  all returned annotations.
- \see annotations()
+.. seealso:: annotations()
  :rtype: list of QgsAnnotation
 %End
 
@@ -85,14 +85,14 @@ class QgsAnnotationManager : QObject
 %Docstring
  Reads the manager's state from a DOM element, restoring all annotations
  present in the XML document.
- \see writeXml()
+.. seealso:: writeXml()
  :rtype: bool
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Returns a DOM element representing the state of the manager.
- \see readXml()
+.. seealso:: readXml()
  :rtype: QDomElement
 %End
 
@@ -122,4 +122,3 @@ Emitted when an annotation is about to be removed from the manager
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

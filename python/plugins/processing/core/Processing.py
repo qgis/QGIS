@@ -38,13 +38,13 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsProcessingUtils)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -55,7 +55,6 @@ from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
 from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider  # NOQA
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
 from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
@@ -131,7 +130,11 @@ class Processing(object):
             QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName),
                                      Processing.tr("Processing"))
             return
+        # hack - remove when getCopy is removed
+        provider = alg.provider()
         alg = alg.getCopy()
+        #hack pt2
+        alg.setProvider(provider)
 
         if len(args) == 1 and isinstance(args[0], dict):
             # Set params by name and try to run the alg even if not all parameter values are provided,
@@ -150,11 +153,10 @@ class Processing(object):
                 QgsMessageLog.logMessage(
                     Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
                     Processing.tr("Processing"))
-                ProcessingLog.addToLog(
-                    ProcessingLog.LOG_ERROR,
-                    Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                        alg.name(), value, name
-                    )
+                QgsMessageLog.logMessage(Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
+                    alg.name(), value, name
+                ), Processing.tr("Processing"),
+                    QgsMessageLog.CRITICAL
                 )
                 return
             # fill any missing parameters with default values if allowed
@@ -166,11 +168,6 @@ class Processing(object):
                         QgsMessageLog.logMessage(
                             Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
                             Processing.tr("Processing"))
-                        ProcessingLog.addToLog(
-                            ProcessingLog.LOG_ERROR,
-                            Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
-                                alg.name(), param.name)
-                        )
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
@@ -201,7 +198,13 @@ class Processing(object):
                         return
                     i = i + 1
 
-        msg = alg._checkParameterValuesBeforeExecuting()
+        context = None
+        if kwargs is not None and 'context' in list(kwargs.keys()):
+            context = kwargs["context"]
+        else:
+            context = dataobjects.createContext()
+
+        msg = alg._checkParameterValuesBeforeExecuting(context)
         if msg:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
@@ -209,7 +212,7 @@ class Processing(object):
                                      Processing.tr("Processing"))
             return
 
-        if not alg.checkInputCRS():
+        if not alg.checkInputCRS(context):
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
             QgsMessageLog.logMessage(
@@ -234,10 +237,10 @@ class Processing(object):
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
 
-        ret = execute(alg, feedback)
+        ret = execute(alg, context, feedback)
         if ret:
             if onFinish is not None:
-                onFinish(alg, feedback)
+                onFinish(alg, context, feedback)
         else:
             QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
                                      Processing.tr("Processing"))

@@ -37,7 +37,7 @@ class Qgis
     // Release name
     static const QString QGIS_RELEASE_NAME;
     // The development version
-    static const char* QGIS_DEV_VERSION;
+    static const char *QGIS_DEV_VERSION;
 
     // Enumerations
     //
@@ -63,18 +63,6 @@ class Qgis
           QImage::Format_ARGB32 */                      ARGB32,
       /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied,
-    };
-
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
-
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent,
-
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
     };
 
     /** Identify search radius in mm
@@ -112,7 +100,7 @@ class Qgis
  * @note added in version 2.9
  * @see permissiveToInt
  */
-double qgsPermissiveToDouble( QString string, bool& ok );
+double qgsPermissiveToDouble( QString string, bool &ok );
 
 /** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
@@ -122,18 +110,18 @@ double qgsPermissiveToDouble( QString string, bool& ok );
  * @note added in version 2.9
  * @see permissiveToDouble
  */
-int qgsPermissiveToInt( QString string, bool& ok );
+int qgsPermissiveToInt( QString string, bool &ok );
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantGreaterThan()
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantLessThan()
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt
@@ -151,12 +139,6 @@ const long GEOCRS_ID;
 const long GEO_EPSG_CRS_ID;
 /** Geographic coord sys from EPSG authority */
 const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
-const int PROJ_PREFIX_LEN;
-/** The length of the string "+ellps=" */
-const int ELLPS_PREFIX_LEN;
-/** The length of the string "+lat_1=" */
-const int LAT_PREFIX_LEN;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID;

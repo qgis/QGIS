@@ -13,13 +13,13 @@ class QgsAuthMethodConfig
      * @param method Textual key of the authentication method
      * @param version Version of the configuration (for updating previously saved configs later on)
      */
-    QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
+    QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
 
     /** Operator used to compare configs' equality */
-    bool operator==( const QgsAuthMethodConfig& other ) const;
+    bool operator==( const QgsAuthMethodConfig &other ) const;
 
     /** Operator used to compare configs' inequality */
-    bool operator!=( const QgsAuthMethodConfig& other ) const;
+    bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**
      * Get 'authcfg' 7-character alphanumeric ID of the config
@@ -27,20 +27,20 @@ class QgsAuthMethodConfig
      */
     const QString id() const;
     /** Set auth config ID */
-    void setId( const QString& id );
+    void setId( const QString &id );
 
     /** Get name of configuration */
     const QString name() const;
     /** Set name of configuration */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /** A URI to auto-select a config when connecting to a resource */
     const QString uri() const;
-    void setUri( const QString& uri );
+    void setUri( const QString &uri );
 
     /** Textual key of the associated authentication method */
     QString method() const;
-    void setMethod( const QString& method );
+    void setMethod( const QString &method );
 
     /** Get version of the configuration */
     int version() const;
@@ -62,7 +62,7 @@ class QgsAuthMethodConfig
      * Load existing extended configuration
      * @param configstr Configuration string to load
      */
-    void loadConfigString( const QString& configstr );
+    void loadConfigString( const QString &configstr );
 
     /** Get extended configuration, mapped to key/value pairs of QStrings */
     QgsStringMap configMap() const;
@@ -70,7 +70,7 @@ class QgsAuthMethodConfig
      * Set extended configuration map
      * @param map Map to set
      */
-    void setConfigMap( const QgsStringMap& map );
+    void setConfigMap( const QgsStringMap &map );
 
     /**
      * Set a single config value per key in the map
@@ -99,7 +99,7 @@ class QgsAuthMethodConfig
      * @param key Config key
      * @param defaultvalue Default value, if key not found
      */
-    QString config( const QString &key, const QString& defaultvalue = QString() ) const;
+    QString config( const QString &key, const QString &defaultvalue = QString() ) const;
 
     /**
      * Return a config's list of values
@@ -214,7 +214,7 @@ class QgsPkiConfigBundle
      */
     QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
                         const QSslCertificate& cert,
-                        const QSslKey& certkey );
+                        const QSslKey &certkey );
 
     /** Whether the bundle is valid */
     bool isValid();
@@ -222,17 +222,17 @@ class QgsPkiConfigBundle
     /** Authentication method configuration */
     const QgsAuthMethodConfig config() const;
     /** Set authentication method configuration */
-    void setConfig( const QgsAuthMethodConfig& config );
+    void setConfig( const QgsAuthMethodConfig &config );
 
     /** Client certificate object */
     const QSslCertificate clientCert() const;
     /** Set client certificate object */
-    void setClientCert( const QSslCertificate& cert );
+    void setClientCert( const QSslCertificate &cert );
 
     /** Private key object */
     const QSslKey clientCertKey() const;
     /** Set private key object */
-    void setClientCertKey( const QSslKey& certkey );
+    void setClientCertKey( const QSslKey &certkey );
 };
 
 
@@ -300,12 +300,12 @@ class QgsAuthConfigSslServer
     /** Server certificate object */
     const QSslCertificate sslCertificate() const;
     /** Set server certificate object */
-    void setSslCertificate( const QSslCertificate& cert );
+    void setSslCertificate( const QSslCertificate &cert );
 
     /** Server host:port string */
     const QString sslHostPort() const;
     /** Set server host:port string */
-    void setSslHostPort( const QString& hostport );
+    void setSslHostPort( const QString &hostport );
 
     /** SSL server protocol to use in connections */
     QSsl::SslProtocol sslProtocol() const;
@@ -317,7 +317,7 @@ class QgsAuthConfigSslServer
     /** SSL server errors (as enum list) to ignore in connections */
     const QList<QSslError::SslError> sslIgnoredErrorEnums() const;
     /** Set SSL server errors (as enum list) to ignore in connections */
-    void setSslIgnoredErrorEnums( const QList<QSslError::SslError>& errors );
+    void setSslIgnoredErrorEnums( const QList<QSslError::SslError> &errors );
 
     /** SSL client's peer verify mode to use in connections */
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const;
@@ -346,7 +346,7 @@ class QgsAuthConfigSslServer
     /** Configuration as a concatenated string */
     const QString configString() const;
     /** Load concatenated string into configuration, e.g. from auth database */
-    void loadConfigString( const QString& config = QString() );
+    void loadConfigString( const QString &config = QString() );
 
     /** Whether configuration is null (missing components) */
     bool isNull() const;

@@ -17,7 +17,7 @@ class QgsPaintEffectPropertiesWidget : QWidget
      * @param effect QgsPaintEffect to modify in the widget
      * @param parent parent widget
      */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent /TransferThis/ = NULL );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = NULL );
 
   public slots:
 
@@ -37,7 +37,7 @@ class QgsPaintEffectPropertiesWidget : QWidget
 
     /** Emitted when paint effect type changes
      */
-    void changeEffect( QgsPaintEffect* effect );
+    void changeEffect( QgsPaintEffect *effect );
 
 };
 

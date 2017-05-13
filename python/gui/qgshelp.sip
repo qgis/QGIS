@@ -29,12 +29,12 @@ class QgsHelp
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    static void openHelp( const QString& key );
+    static void openHelp( const QString &key );
 
     /** Returns URI of the help topic for the given key. If help topic
      * not found, URI of the builtin error page returned.
      * @param key key which identified help topic
      * @note added in QGIS 3.0
      */
-    static QUrl helpUrl( const QString& key );
+    static QUrl helpUrl( const QString &key );
 };

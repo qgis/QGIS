@@ -34,13 +34,14 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsPointV2)
+                       QgsPointV2,
+                       QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, raster
+from processing.tools import dataobjects, raster
 
 
 class PointsFromPolygons(GeoAlgorithm):
@@ -72,8 +73,8 @@ class PointsFromPolygons(GeoAlgorithm):
                                           self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_VECTOR))
+    def processAlgorithm(self, context, feedback):
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
@@ -86,8 +87,8 @@ class PointsFromPolygons(GeoAlgorithm):
         fields.append(QgsField('poly_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
-            fields.toList(), QgsWkbTypes.Point, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point,
+                                                                           layer.crs(), context)
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -96,8 +97,8 @@ class PointsFromPolygons(GeoAlgorithm):
         polyId = 0
         pointId = 0
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = QgsProcessingUtils.getFeatures(layer, context)
+        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
             geom = f.geometry()
             bbox = geom.boundingBox()

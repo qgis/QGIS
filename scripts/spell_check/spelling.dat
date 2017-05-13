@@ -180,7 +180,7 @@ acqures:acquires
 acquring:acquiring
 actaul:actual
 actaully:actually
-actived:activated
+actived:activated:*
 activete:activate
 activites:activities
 activly:actively
@@ -5831,7 +5831,7 @@ repetions:repetitions
 repid:rapid
 replacable:replaceable
 replacments:replacements
-replys:replies
+replys:replies:*
 reponse:response
 reponses:responses
 reponsibilities:responsibilities

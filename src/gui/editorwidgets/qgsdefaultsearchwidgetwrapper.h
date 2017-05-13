@@ -17,6 +17,7 @@
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 #include "qgsfilterlineedit.h"
 
 #include <QCheckBox>
@@ -30,15 +31,15 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     // QgsSearchWidgetWrapper interface
   public:
     QString expression() override;
     bool applyDirectly() override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 

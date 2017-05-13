@@ -51,9 +51,9 @@ class QgsMapToPixel
      * @param p Point to transform
      * @return QgsPoint in device coordinates
      */
-    QgsPoint transform( const QgsPoint& p ) const;
+    QgsPoint transform( const QgsPoint &p ) const;
 
-    void transform( QgsPoint* p ) const;
+    void transform( QgsPoint *p ) const;
 
     /**
      * Transform the point specified by x,y from map (world)
@@ -69,10 +69,10 @@ class QgsMapToPixel
      * given coordinates in place. Intended as a fast way to do the
      * transform.
      */
-    void transformInPlace( double& x, double& y ) const;
+    void transformInPlace( double &x, double &y ) const;
 
     // @note not available in python bindings
-    // void transformInPlace( qreal& x, qreal& y ) const;
+    // void transformInPlace( qreal &x, qreal &y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -81,7 +81,7 @@ class QgsMapToPixel
      * @note not available in python bindings
      */
     // template <class T>
-    // void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
+    // void transformInPlace( QVector<double> &x, QVector<double> &y ) const;
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 

@@ -16,8 +16,16 @@ email                : denis.rouzaud@gmail.com
 #ifndef SIPIFYHEADER_H
 #define SIPIFYHEADER_H
 
+
 #include "qgis_core.h"
 #include <QtClass>
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+% End
+#endif
 
 #include "sipifyheader.h"
 
@@ -25,6 +33,8 @@ email                : denis.rouzaud@gmail.com
 #include "qgis.h"
 
 class QgsForwardDeclaration;
+
+
 
 
 /***************************************************************************
@@ -106,6 +116,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 
+    enum OneLiner { Success, NoSuccess };
+
     /**
      * Docstring headers for structs are not supported by sip (as of 4.18) and
      * therefore this docstring must not to be copied to the sipfile.
@@ -121,6 +133,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       int mCount = 100;
       QgsMapLayer *mLayer = nullptr;
     };
+
+    static const int MONTHS = 60 * 60 * 24 * 30; // something
 
     //! A constructor with definition in header
     explicit QgsSipifyHeader()
@@ -143,6 +157,17 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       : mMember( nullptr )
     {}
 
+    Constructor() : mHasNamedNodes( false ) {}
+    virtual ~Destructor() { qDeleteAll( mList ); }
+
+    Constructor( const QString &name,
+                 bool optional = false,
+                 const QVariant &defaultValue = QVariant() )
+      : mName( name )
+      , mOptional( optional )
+      , mDefaultValue( defaultValue )
+    {}
+
     //! Default constructor
     QgsSipifyHeader() = default;
 
@@ -158,7 +183,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
                           QgsVectorLayer *vl,
                           QgsSnappingResult::SnappingType snap_to ) const;
 
-    // Adding SIP_SKIP at the end of a line will discard this MethodCode
+    // Adding SIP_SKIP at the end of a line will discard this line
     bool thisShouldBeSkipped() const SIP_SKIP;
 
     void nonAnnotatedMethodFollowingSkip();
@@ -200,12 +225,12 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void setDiagramRenderer( QgsDiagramRenderer *r SIP_TRANSFER );
 
-    void differentDefaultValue( bool defaultValue = true SIP_PYDEFAULTVALUE( false ), QWidget *parent = nullptr, QString msg = QString() SIP_PYDEFAULTVALUE( "hello" ) );
+    void differentDefaultValue( bool defaultValue = true SIP_PYARGDEFAULT( false ), QWidget *parent = nullptr, QString msg = QString() SIP_PYARGDEFAULT( "hello" ) );
 
     void differentType( QList<QgsFeatureId> SIP_PYTYPE( QList<qint64> ) & list );
 
     //! complex default value and type (i.e. containing commas) should be given as a string with single quotes
-    void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYDEFAULTVALUE( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
+    void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYARGDEFAULT( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
 
     inline int inlineKeyWordShouldNotAppear();
 
@@ -215,13 +240,44 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
-    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; }   // some comments
+    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ ) { doSomething; return true; }   // some comments
+
+    static inline QgsMapLayer *skippedMethodWithBody() SIP_SKIP
+    {
+      OhNoYouShouldnotHaveReadThis();
+      if ( ThisIsTrue() )
+      {
+        return false;
+      }
+    }
+
+    void multilineBodyAndDefinition( const QList<int,
+                                     QString> &list,
+                                     QgsVectorLayer *vl,
+                                     Some::Thing _part = -1 /*default =-1*/ )
+    {
+      doSomething;
+      return true;
+    }
 
     //! Removing function body with namespaced return value
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
 
     //! Removing function body with virtual const reference
     virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
+
+    //! Mulitline body
+    bool myMultiLineBody()
+    {
+      if ( isTrue() )
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
 
     bool deletedFunction() = delete; // some comments
 
@@ -250,6 +306,77 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
 
     bool initializedMember{ false };
 
+    struct CORE_EXPORT PublicStruct
+    {
+      explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
+        : part( _part )
+        , ring( _ring )
+        , vertex( _vertex )
+        , type( _type )
+      {}
+
+      bool isValid( const QgsAbstractGeometry *geom ) const
+      {
+        return ( part >= 0 && part < geom->partCount() ) &&
+               ( ring < geom->ringCount( part ) ) &&
+               ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
+      }
+
+      int part;
+      int ring;
+      int vertex;
+      VertexType type;
+    }
+
+    void combinedAnnotations() SIP_FACTORY SIP_PYNAME( otherName );
+    void multiAnnotationArg( SomeClass **object SIP_OUT SIP_TRANSFERBACK, int &another SIP_OUT );
+
+    //! remove argument
+    void simple( bool test SIP_PYARGREMOVE );
+    void method( bool myArg SIP_PYARGREMOVE =  test );
+    void test( QgsMapLayer *vl SIP_PYARGREMOVE = nullptr );
+    void avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+                             const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures SIP_PYARGREMOVE = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    void position( bool single_remove SIP_PYARGREMOVE );
+    void position( bool first_remove SIP_PYARGREMOVE, bool keep );
+    void position( bool keep, bool middle_remove SIP_PYARGREMOVE, bool keep );
+    void position( bool keep, bool last_remove SIP_PYARGREMOVE );
+
+    static void SIP_PYTYPE( SIP_PYLIST ) changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
+
+    //! Some comment
+    Whatever &operator[]( int i ) SIP_FACTORY;
+#ifdef SIP_RUN
+    % MethodCode
+    ....
+    % End
+#endif
+
+#if 0
+#if Whatever
+    void X();
+#else
+    void Y();
+#endif
+#else
+    void ZshouldBeShown();
+#endif
+
+    void methodCodeWithMultiLineDef();
+#ifdef SIP_RUN
+    % MethodCode
+    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
+    {
+      multiLineDef( PyExc_ValueError,
+                    QString( "%1 is not nice" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
+    }
+    else
+    {
+      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+    }
+    % End
+#endif
+
   protected:
     bool thisShouldBeListed();
 
@@ -272,6 +399,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     void PrivateAgain();
     /* Single line block comments shouldn't break the parser */
 
+    void ShowThisPrivateOne() SIP_FORCE;
+
     struct ProcessFeatureWrapper
     {
       QgsGeometrySnapper *instance = nullptr;
@@ -293,7 +422,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
  * \ingroup core
  * Documentation goes here
  */
-class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
+class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass SIP_ABSTRACT
 {
   public:
     //! A constructor with definition in header on several lines
@@ -304,7 +433,6 @@ class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
       doWhatYouLike();
       haveFun();
     }
-
 };
 
 /**

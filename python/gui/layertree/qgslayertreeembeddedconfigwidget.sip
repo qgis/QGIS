@@ -11,10 +11,10 @@ class QgsLayerTreeEmbeddedConfigWidget : public QWidget
 %End
 
   public:
-    QgsLayerTreeEmbeddedConfigWidget( QWidget* parent /TransferThis/ = nullptr );
+    QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
 
     //! Initialize widget with a map layer
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
 
     //! Store changes made in the widget to the layer
     void applyToLayer();

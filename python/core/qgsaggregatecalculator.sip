@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAggregateCalculator
 {
 %Docstring
@@ -58,15 +57,15 @@ class QgsAggregateCalculator
 %Docstring
  Optional filter for calculating aggregate over a subset of features, or an
  empty string to use all features.
- \see QgsAggregateCalculator.setFilter()
- \see QgsAggregateCalculator.filter()
+.. seealso:: QgsAggregateCalculator.setFilter()
+.. seealso:: QgsAggregateCalculator.filter()
 %End
 
       QString delimiter;
 %Docstring
  Delimiter to use for joining values with the StringConcatenate aggregate.
- \see QgsAggregateCalculator.setDelimiter()
- \see QgsAggregateCalculator.delimiter()
+.. seealso:: QgsAggregateCalculator.setDelimiter()
+.. seealso:: QgsAggregateCalculator.delimiter()
 %End
     };
 
@@ -92,13 +91,13 @@ class QgsAggregateCalculator
 %Docstring
  Sets a filter to limit the features used during the aggregate calculation.
  \param filterExpression expression for filtering features, or empty string to remove filter
- \see filter()
+.. seealso:: filter()
 %End
 
     QString filter() const;
 %Docstring
  Returns the filter which limits the features used during the aggregate calculation.
- \see setFilter()
+.. seealso:: setFilter()
  :rtype: str
 %End
 
@@ -106,13 +105,13 @@ class QgsAggregateCalculator
 %Docstring
  Sets the delimiter to use for joining values with the StringConcatenate aggregate.
  \param delimiter string delimiter
- \see delimiter()
+.. seealso:: delimiter()
 %End
 
     QString delimiter() const;
 %Docstring
  Returns the delimiter used for joining values with the StringConcatenate aggregate.
- \see setDelimiter()
+.. seealso:: setDelimiter()
  :rtype: str
 %End
 
@@ -148,4 +147,3 @@ class QgsAggregateCalculator
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
-

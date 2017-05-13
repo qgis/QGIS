@@ -17,6 +17,8 @@
 #define QGSSYMBOLSELECTORDIALOG_H
 
 #include <QDialog>
+#include "qgis_sip.h"
+#include "qgis.h"
 
 #include "ui_qgssymbolselectordialogbase.h"
 
@@ -144,7 +146,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void updateLockButton();
 
     //! \note not available in Python bindings
-    SymbolLayerItem *currentLayerItem();
+    SymbolLayerItem *currentLayerItem() SIP_SKIP;
 
     /**
      * The current symbol layer that is active in the interface.
@@ -247,7 +249,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
@@ -278,14 +280,14 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     void loadSymbol();
     //! \note not available in Python bindings
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
+    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
 
     void updateUi();
 
     void updateLockButton();
 
     //! \note not available in Python bindings
-    SymbolLayerItem *currentLayerItem();
+    SymbolLayerItem *currentLayerItem() SIP_SKIP;
     QgsSymbolLayer *currentLayer();
 
     void moveLayerByOffset( int offset );

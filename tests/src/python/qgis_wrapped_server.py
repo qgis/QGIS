@@ -45,13 +45,17 @@ __revision__ = '$Format:%H$'
 
 
 import os
+
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
+os.environ['QT_HASH_SEED'] = '1'
+
 import sys
 import signal
 import ssl
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from qgis.core import QgsApplication
-from qgis.server import QgsServer
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
 QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
@@ -82,17 +86,18 @@ if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
     class HTTPBasicFilter(QgsServerFilter):
 
         def responseComplete(self):
-            request = self.serverInterface().requestHandler()
-            if self.serverInterface().getEnv('HTTP_AUTHORIZATION'):
-                username, password = base64.b64decode(self.serverInterface().getEnv('HTTP_AUTHORIZATION')[6:]).split(b':')
+            handler = self.serverInterface().requestHandler()
+            auth = self.serverInterface().requestHandler().requestHeader('HTTP_AUTHORIZATION')
+            if auth:
+                username, password = base64.b64decode(auth[6:]).split(b':')
                 if (username.decode('utf-8') == os.environ.get('QGIS_SERVER_USERNAME', 'username') and
                         password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
                     return
             # No auth ...
-            request.clear()
-            request.setHeader('Status', '401 Authorization required')
-            request.setHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
-            request.appendBody(b'<h1>Authorization required</h1>')
+            handler.clear()
+            handler.setResponseHeader('Status', '401 Authorization required')
+            handler.setResponseHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
+            handler.appendBody(b'<h1>Authorization required</h1>')
 
     filter = HTTPBasicFilter(qgs_server.serverInterface())
     qgs_server.serverInterface().registerFilter(filter)
@@ -100,18 +105,16 @@ if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
 
 class Handler(BaseHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_GET(self, post_body=None):
         # CGI vars:
+        headers = {}
         for k, v in self.headers.items():
-            qgs_server.putenv('HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper(), v)
-        qgs_server.putenv('SERVER_PORT', str(self.server.server_port))
-        if https:
-            qgs_server.putenv('HTTPS', 'ON')
-        qgs_server.putenv('SERVER_NAME', self.server.server_name)
-        qgs_server.putenv('REQUEST_URI', self.path)
-        parsed_path = urllib.parse.urlparse(self.path)
-        headers, body = qgs_server.handleRequest(parsed_path.query)
-        headers_dict = dict(h.split(': ', 1) for h in headers.decode().split('\n') if h)
+            headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
+        request = QgsBufferServerRequest(self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
+        response = QgsBufferServerResponse()
+        qgs_server.handleRequest(request, response)
+
+        headers_dict = response.headers()
         try:
             self.send_response(int(headers_dict['Status'].split(' ')[0]))
         except:
@@ -119,16 +122,13 @@ class Handler(BaseHTTPRequestHandler):
         for k, v in headers_dict.items():
             self.send_header(k, v)
         self.end_headers()
-        self.wfile.write(body)
+        self.wfile.write(response.body())
         return
 
     def do_POST(self):
         content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len).decode()
-        request = post_body[1:post_body.find(' ')]
-        self.path = self.path + '&REQUEST_BODY=' + \
-            post_body.replace('&amp;', '') + '&REQUEST=' + request
-        return self.do_GET()
+        post_body = self.rfile.read(content_len)
+        return self.do_GET(post_body)
 
 
 if __name__ == '__main__':

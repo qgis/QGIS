@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
@@ -48,7 +49,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeView( QWidget *parent = nullptr );
+    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsLayerTreeView();
 
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewDefaultActions *defaultActions();
 
     //! Set provider for context menu. Takes ownership of the instance
-    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider );
+    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
     //! Return pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
@@ -149,7 +150,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
-    virtual QMenu *createContextMenu() = 0;
+    virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 
 

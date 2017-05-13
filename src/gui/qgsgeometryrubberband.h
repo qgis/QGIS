@@ -19,6 +19,7 @@
 #define QGSGEOMETRYRUBBERBAND_H
 
 #include "qgsmapcanvasitem.h"
+#include "qgis.h"
 #include <QBrush>
 #include <QPen>
 #include "qgis_gui.h"
@@ -71,7 +72,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     ~QgsGeometryRubberBand();
 
     //! Sets geometry (takes ownership). Geometry is expected to be in map coordinates
-    void setGeometry( QgsAbstractGeometry *geom );
+    void setGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
     //! Returns a pointer to the geometry
     const QgsAbstractGeometry *geometry() { return mGeometry; }
     //! Moves vertex to new position (in map coordinates)

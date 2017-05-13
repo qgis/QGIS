@@ -94,7 +94,7 @@ class CORE_EXPORT QgsSymbol
     virtual ~QgsSymbol();
 
     //! return new default symbol for specified geometry type
-    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType );
+    static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     SymbolType type() const { return mType; }
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSymbol
      * \param layer The symbol layer to add
      * \returns True if the layer is added, False if the index or the layer is bad
      */
-    bool insertSymbolLayer( int index, QgsSymbolLayer *layer );
+    bool insertSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /**
      * Append symbol layer at the end of the list
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSymbol
      * \param layer The layer to add
      * \returns True if the layer is added, False if the layer is bad
      */
-    bool appendSymbolLayer( QgsSymbolLayer *layer );
+    bool appendSymbolLayer( QgsSymbolLayer *layer SIP_TRANSFER );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
@@ -151,10 +151,10 @@ class CORE_EXPORT QgsSymbol
      * \param index The index of the layer to remove
      * \returns A pointer to the removed layer
      */
-    QgsSymbolLayer *takeSymbolLayer( int index );
+    QgsSymbolLayer *takeSymbolLayer( int index ) SIP_TRANSFERBACK;
 
     //! delete layer at specified index and set a new one
-    bool changeSymbolLayer( int index, QgsSymbolLayer *layer );
+    bool changeSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
     /** Begins the rendering process for the symbol. This must be called before renderFeature(),
      * and should be followed by a call to stopRender().
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsSymbol
      * Needs to be reimplemented by subclasses.
      * Ownership is transferred to the caller.
      */
-    virtual QgsSymbol *clone() const = 0;
+    virtual QgsSymbol *clone() const = 0 SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolRenderContext *symbolRenderContext();
 
   protected:
-    QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers ); // can't be instantiated
+    QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
 
     /**
      * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsSymbol
      * Retrieve a cloned list of all layers that make up this symbol.
      * Ownership is transferred to the caller.
      */
-    QgsSymbolLayerList cloneLayers() const;
+    QgsSymbolLayerList cloneLayers() const SIP_FACTORY;
 
     /**
      * Renders a context using a particular symbol layer without passing in a
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsSymbol
 
   private:
     //! Initialized in startRender, destroyed in stopRender
-    QgsSymbolRenderContext *mSymbolRenderContext = nullptr;
+    std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
     Q_DISABLE_COPY( QgsSymbol )
 
@@ -391,7 +391,6 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param mapUnitScale
      */
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
-    ~QgsSymbolRenderContext();
 
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; }
@@ -497,11 +496,11 @@ class CORE_EXPORT QgsSymbolRenderContext
      *
      * \param contextScope An expression scope for details about this symbol
      */
-    void setExpressionContextScope( QgsExpressionContextScope *contextScope );
+    void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
     QgsRenderContext &mRenderContext;
-    QgsExpressionContextScope *mExpressionContextScope = nullptr;
+    std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mAlpha;
@@ -532,9 +531,9 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
      */
-    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties );
+    static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
 
-    QgsMarkerSymbol( const QgsSymbolLayerList &layers = QgsSymbolLayerList() );
+    QgsMarkerSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
 
     /** Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
@@ -677,9 +676,9 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
-    static QgsLineSymbol *createSimple( const QgsStringMap &properties );
+    static QgsLineSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
 
-    QgsLineSymbol( const QgsSymbolLayerList &layers = QgsSymbolLayerList() );
+    QgsLineSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
 
     void setWidth( double width );
     double width() const;
@@ -719,9 +718,9 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbol *createSimple( const QgsStringMap &properties );
+    static QgsFillSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
 
-    QgsFillSymbol( const QgsSymbolLayerList &layers = QgsSymbolLayerList() );
+    QgsFillSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
     void setAngle( double angle );
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 

@@ -24,14 +24,13 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include <QDomDocument>
 
 #include "qgis_server.h"
 #include "qgswmsconfigparser.h"
 
 class QgsServerProjectParser;
 class QgsAccessControl;
-
-class QDomDocument;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {

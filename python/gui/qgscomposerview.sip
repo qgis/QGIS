@@ -60,7 +60,7 @@ class QgsComposerView : QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget* parent /TransferThis/ = 0, const char* name = 0, const Qt::WindowFlags& f = 0 );
+    QgsComposerView( QWidget *parent /TransferThis/ = 0, const char *name = 0, const Qt::WindowFlags &f = 0 );
 
     /** Add an item group containing the selected items*/
     void groupItems();
@@ -92,13 +92,13 @@ class QgsComposerView : QGraphicsView
     /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
      */
-    void setComposition( QgsComposition* c /KeepReference/ );
+    void setComposition( QgsComposition *c /KeepReference/ );
 
     /** Returns the composition or 0 in case of error*/
-    QgsComposition* composition();
+    QgsComposition *composition();
 
     /** Returns the composer main window*/
-    QMainWindow* composerWindow();
+    QMainWindow *composerWindow();
 
     void setPaintingEnabled( bool enabled );
     bool paintingEnabled() const;
@@ -106,8 +106,8 @@ class QgsComposerView : QGraphicsView
     /** Update rulers with current scene rect*/
     void updateRulers();
 
-    void setHorizontalRuler( QgsComposerRuler* r );
-    void setVerticalRuler( QgsComposerRuler* r );
+    void setHorizontalRuler( QgsComposerRuler *r );
+    void setVerticalRuler( QgsComposerRuler *r );
 
     /** Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
     void setZoomLevel( double zoomLevel );
@@ -133,30 +133,30 @@ class QgsComposerView : QGraphicsView
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
-    void setMapCanvas( QgsMapCanvas* canvas );
-    QgsMapCanvas* mapCanvas() const;
+    void setMapCanvas( QgsMapCanvas *canvas );
+    QgsMapCanvas *mapCanvas() const;
 
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
     void mouseMoveEvent( QMouseEvent* );
-    void mouseDoubleClickEvent( QMouseEvent* e );
+    void mouseDoubleClickEvent( QMouseEvent *e );
 
-    void keyPressEvent( QKeyEvent * e );
-    void keyReleaseEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent *e );
+    void keyReleaseEvent( QKeyEvent *e );
 
-    void wheelEvent( QWheelEvent* event );
+    void wheelEvent( QWheelEvent *event );
 
-    void paintEvent( QPaintEvent* event );
+    void paintEvent( QPaintEvent *event );
 
-    void hideEvent( QHideEvent* e );
-    void showEvent( QShowEvent* e );
+    void hideEvent( QHideEvent *e );
+    void showEvent( QShowEvent *e );
 
-    void resizeEvent( QResizeEvent* event );
+    void resizeEvent( QResizeEvent *event );
     void scrollContentsBy( int dx, int dy );
   signals:
     /** Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( QgsComposerItem* selected );
+    void selectedItemChanged( QgsComposerItem *selected );
     /** Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
     /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that

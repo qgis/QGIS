@@ -142,6 +142,29 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
   return _qgis_listQPointerToRaw( mDependentLayers );
 }
 
+bool QgsTask::waitForFinished( int timeout )
+{
+  QEventLoop loop;
+  bool rv = true;
+
+  connect( this, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
+  connect( this, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
+  QTimer timer;
+
+  if ( timeout != -1 )
+  {
+    timer.start( timeout );
+    connect( &timer, &QTimer::timeout, [&rv]() { rv = false; } );
+    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+  }
+
+  if ( status() == QgsTask::Complete || status() == QgsTask::Terminated )
+    return true;
+  loop.exec();
+
+  return rv;
+}
+
 void QgsTask::setDependentLayers( const QList< QgsMapLayer * > &dependentLayers )
 {
   mDependentLayers = _qgis_listRawToQPointer( dependentLayers );
