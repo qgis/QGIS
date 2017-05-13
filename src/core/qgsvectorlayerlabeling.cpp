@@ -19,11 +19,11 @@
 #include "qgsvectorlayer.h"
 
 
-QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element )
+QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.attribute( QStringLiteral( "type" ) ) == QLatin1String( "rule-based" ) )
   {
-    return QgsRuleBasedLabeling::create( element );
+    return QgsRuleBasedLabeling::create( element, context );
   }
   else
   {
@@ -45,8 +45,9 @@ QString QgsVectorLayerSimpleLabeling::type() const
   return QStringLiteral( "simple" );
 }
 
-QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument &doc ) const
+QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context );
   // all configuration is kept in layer custom properties (for compatibility)
   QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );

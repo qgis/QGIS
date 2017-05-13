@@ -762,6 +762,16 @@ all these item added events.
 - addComposerMap no longer takes a setDefaultPreviewStyle argument.
 - the mapsToRestore parameter has been removed from addItemsFromXml
 
+QgsConditionalLayerStyle      {#qgis_api_break_3_0_QgsConditionalLayerStyle}
+------------------------
+
+- readXml() and writeXml() require a new argument: a reference to QgsReadWriteContext
+
+QgsConditionalStyle      {#qgis_api_break_3_0_QgsConditionalStyle}
+-------------------
+
+- readXml() and writeXml() require a new argument: a reference to QgsReadWriteContext
+
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}
 ----------------------------
 
@@ -921,6 +931,8 @@ QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 - referencedFields() no longer takes a QgsFields argument.
 - renderDiagram() now takes an optional data defined overrides collection argument.
 - readXml(), _readXml(), writeXml(), _writeXml() do not take QgsVectorLayer as an argument anymore.
+- readXml(), _readXml(), writeXml(), _writeXml() require a new argument: a reference to QgsReadWriteContext
+
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}
@@ -1098,6 +1110,8 @@ QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 - originalSymbolsForFeature( QgsFeature& feat ) has been removed. The originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) method should be used instead (previously available as originalSymbolsForFeature2 in PyQGIS bindings).
 - copyPaintEffect() was removed. copyRendererData() should be used instead.
 - usedAttributes() now requires a QgsRenderContext argument.
+- save() expects QgsReadWriteContext reference as the last argument
+- static create() method in subclasses expects QgsReadWriteContext reference as the last argument
 
 
 QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
@@ -1417,6 +1431,9 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - asLayerDefinition(), fromLayerDefinition(), fromLayerDefinitionFile() were moved to QgsLayerDefinition class and renamed to exportLayerDefinitionLayers() resp. loadLayerDefinitionLayers()
 - loadNamedStyleFromDb() was renamed to loadNamedStyleFromDatabase()
 - readLayerXml() and writeLayerXml() expect QgsReadWriteContext reference as the last argument
+- readSymbology() and writeSymbology() expect QgsReadWriteContext reference as the last argument
+- readStyle() and writeStyle() expect QgsReadWriteContext reference as the last argument
+- readXml() and writeXml() expect QgsReadWriteContext reference as the last argument
 - the invalidTransformInput() slot was removed - calling this slot had no effect
 - metadata() was renamed to htmlMetadata()
 
@@ -1627,6 +1644,7 @@ dataDefinedValue(), dataDefinedEvaluate(), dataDefinedIsActive(),
 dataDefinedUseExpression(), dataDefinedProperties() and dataDefinedNames()
 members were removed. Use the QgsProperty framework through dataDefinedProperties()
 and setDataDefinedProperties() instead.
+- readXml() and writeXml() now expect a reference to QgsReadWriteContext.
 
 
 QgsPanelWidgetStack        {#qgis_api_break_3_0_QgsPanelWidgetStack}
@@ -1944,11 +1962,26 @@ QgsSvgCache        {#qgis_api_break_3_0_QgsSvgCache}
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::svgCache() to access an application-wide cache.
 - containsParamsV2() was removed. Use containsParamsV3() instead.
 - The rasterScaleFactor parameter was removed from all methods
+- svgAsImage(), svgAsPicture(), svgViewboxSize(), svgContent(), insertSvg(), cacheEntry() only accept absolute path to SVG file (relative paths will not be resolved).
 
 QgsSvgCacheEntry       {#qgis_api_break_3_0_QgsSvgCacheEntry}
 ----------------
 
 - The rasterScaleFactor member was removed.
+- The lookupKey member was removed.
+- The "file" member has been renamed to "path".
+- Constructor does not take lookup key as an optional last argument
+
+
+QgsSVGFillSymbolLayer    {#qgis_api_break_3_0_QgsSVGFillSymbolLayer}
+---------------------
+
+- The first argument of the constructor (svgFilePath) does not have default value anymore.
+
+QgsSvgMarkerSymbolLayer    {#qgis_api_break_3_0_QgsSvgMarkerSymbolLayer}
+-----------------------
+
+- The first argument of the constructor (path) does not have a default value anymore.
 
 QgsStyle (renamed from QgsStyleV2)        {#qgis_api_break_3_0_QgsStyle}
 ----------------------------------
@@ -2025,6 +2058,8 @@ QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break
 - pixelSizeScaleFactor() was removed. Use QgsRenderContext::convertToPainterUnits() instead.
 - mapUnitScaleFactor() was removed. Use QgsRenderContext::convertToMapUnits() instead.
 - estimateMaxSymbolBleed() now requires a QgsRenderContext argument (since the bleed depends on render context for non-pixel units)
+- loadSymbol(), saveSymbol(), loadSymbols(), saveSymbols(), loadSymbolLayer() now require a reference to QgsReadWriteContext
+- symbolNameToPath() and symbolPathToName() have been renamed to svgSymbolNameToPath() and svgSymbolPathToName() and they require reference to QgsPathResolver
 
 
 QgsSymbolSelectorWidget        {#qgis_api_break_3_0_QgsSymbolSelectorWidget}
@@ -2253,6 +2288,11 @@ optional property map passing down layer level properties to the SLD encoders. I
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - setScaleMethodToSymbol was removed. This is now handled using data defined scaling at a symbol layer level
 - usedAttributes is now a const method and returns QSet<QString> instead of QStringList
+
+QgsRendererAbstractMetadata   {#qgis_api_break_3_0_QgsRendererAbstractMetadata}
+---------------------------
+
+- createRenderer() now expects a reference to QgsReadWriteContext as the second argument
 
 
 Processing        {#qgis_api_break_3_0_Processing}

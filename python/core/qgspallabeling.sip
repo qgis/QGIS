@@ -426,12 +426,12 @@ class QgsPalLayerSettings
     /** Read settings from a DOM element
      * @note added in 2.12
      */
-    void readXml( QDomElement &elem );
+    void readXml( QDomElement& elem, const QgsReadWriteContext &context );
 
     /** Write settings into a DOM element
      * @note added in 2.12
      */
-    QDomElement writeXml( QDomDocument &doc );
+    QDomElement writeXml( QDomDocument& doc, const QgsReadWriteContext &context );
 
     QgsPropertyCollection &dataDefinedProperties();
 

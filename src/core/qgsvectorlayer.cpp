@@ -1782,7 +1782,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
     if ( !labelingElement.isNull() )
     {
-      QgsAbstractVectorLayerLabeling *l = QgsAbstractVectorLayerLabeling::create( labelingElement );
+      QgsAbstractVectorLayerLabeling *l = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
       setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
     }
 
@@ -2011,7 +2011,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
     if ( mLabeling )
     {
-      QDomElement labelingElement = mLabeling->save( doc );
+      QDomElement labelingElement = mLabeling->save( doc, context );
       node.appendChild( labelingElement );
     }
 

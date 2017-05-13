@@ -18,6 +18,8 @@
 #include "qgis.h"
 #include "qgstextrenderer_p.h"
 #include "qgsfontutils.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainting.h"
@@ -805,14 +807,12 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
   }
 }
 
-void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
+void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  // TODO: convert relative path to absolute
-
   QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
   d->enabled = backgroundElem.attribute( QStringLiteral( "shapeDraw" ), QStringLiteral( "0" ) ).toInt();
   d->type = static_cast< ShapeType >( backgroundElem.attribute( QStringLiteral( "shapeType" ), QString::number( ShapeRectangle ) ).toUInt() );
-  d->svgFile = backgroundElem.attribute( QStringLiteral( "shapeSVGFile" ) );
+  d->svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( backgroundElem.attribute( QStringLiteral( "shapeSVGFile" ) ), context.pathResolver() );
   d->sizeType = static_cast< SizeType >( backgroundElem.attribute( QStringLiteral( "shapeSizeType" ), QString::number( SizeBuffer ) ).toUInt() );
   d->size = QSizeF( backgroundElem.attribute( QStringLiteral( "shapeSizeX" ), QStringLiteral( "0" ) ).toDouble(),
                     backgroundElem.attribute( QStringLiteral( "shapeSizeY" ), QStringLiteral( "0" ) ).toDouble() );
@@ -924,14 +924,12 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
     setPaintEffect( nullptr );
 }
 
-QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc ) const
+QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  // TODO: convert absolute path to relative
-
   QDomElement backgroundElem = doc.createElement( QStringLiteral( "background" ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeDraw" ), d->enabled );
   backgroundElem.setAttribute( QStringLiteral( "shapeType" ), static_cast< unsigned int >( d->type ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeSVGFile" ), d->svgFile );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSVGFile" ), QgsSymbolLayerUtils::svgSymbolPathToName( d->svgFile, context.pathResolver() ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeType" ), static_cast< unsigned int >( d->sizeType ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeX" ), d->size.width() );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeY" ), d->size.height() );
@@ -1549,7 +1547,7 @@ void QgsTextFormat::writeToLayer( QgsVectorLayer *layer ) const
   mBackgroundSettings.writeToLayer( layer );
 }
 
-void QgsTextFormat::readXml( const QDomElement &elem )
+void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
@@ -1651,15 +1649,15 @@ void QgsTextFormat::readXml( const QDomElement &elem )
   }
   if ( textStyleElem.firstChildElement( QStringLiteral( "background" ) ).isNull() )
   {
-    mBackgroundSettings.readXml( elem );
+    mBackgroundSettings.readXml( elem, context );
   }
   else
   {
-    mBackgroundSettings.readXml( textStyleElem );
+    mBackgroundSettings.readXml( textStyleElem, context );
   }
 }
 
-QDomElement QgsTextFormat::writeXml( QDomDocument &doc ) const
+QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   // text style
   QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
@@ -1681,7 +1679,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc ) const
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
 
   textStyleElem.appendChild( mBufferSettings.writeXml( doc ) );
-  textStyleElem.appendChild( mBackgroundSettings.writeXml( doc ) );
+  textStyleElem.appendChild( mBackgroundSettings.writeXml( doc, context ) );
   textStyleElem.appendChild( mShadowSettings.writeXml( doc ) );
   return textStyleElem;
 }

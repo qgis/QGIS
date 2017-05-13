@@ -768,7 +768,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer *layer )
   layer->emitStyleChanged();
 }
 
-void QgsPalLayerSettings::readXml( QDomElement &elem )
+void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
 {
   enabled = true;
   drawLabels = true;
@@ -778,7 +778,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem )
   fieldName = textStyleElem.attribute( QStringLiteral( "fieldName" ) );
   isExpression = textStyleElem.attribute( QStringLiteral( "isExpression" ) ).toInt();
 
-  mFormat.readXml( elem );
+  mFormat.readXml( elem, context );
   previewBkgrdColor = QColor( textStyleElem.attribute( QStringLiteral( "previewBkgrdColor" ), QStringLiteral( "#ffffff" ) ) );
   substitutions.readXml( textStyleElem.firstChildElement( QStringLiteral( "substitutions" ) ) );
   useSubstitutions = textStyleElem.attribute( QStringLiteral( "useSubstitutions" ) ).toInt();
@@ -889,11 +889,11 @@ void QgsPalLayerSettings::readXml( QDomElement &elem )
 
 
 
-QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc )
+QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   // we assume (enabled == true && drawLabels == true) so those are not saved
 
-  QDomElement textStyleElem = mFormat.writeXml( doc );
+  QDomElement textStyleElem = mFormat.writeXml( doc, context );
 
   // text style
   textStyleElem.setAttribute( QStringLiteral( "fieldName" ), fieldName );

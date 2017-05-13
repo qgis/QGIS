@@ -151,7 +151,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
 
     bool enabled;
     QgsTextBackgroundSettings::ShapeType type;
-    QString svgFile;
+    QString svgFile;   //!< Absolute path to SVG file
     QgsTextBackgroundSettings::SizeType sizeType;
     QSizeF size;
     QgsUnitTypes::RenderUnit sizeUnits;
