@@ -8,7 +8,7 @@ except ImportError:
     from qgis.PyQt.QtWidgets import QDialogButtonBox
 
 
-from resource_sharing.gui.manage_dialog import ManageRepositoryDialog
+from ResourceSharing.gui.manage_dialog import ManageRepositoryDialog
 from test.utilities import test_repository_url
 
 

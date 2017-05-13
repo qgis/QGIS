@@ -6,7 +6,7 @@ try:
 except ImportError:
     from qgis.PyQt.QtCore import QSortFilterProxyModel
 
-from resource_sharing.config import COLLECTION_INSTALLED_STATUS
+from ResourceSharing.config import COLLECTION_INSTALLED_STATUS
 
 COLLECTION_NAME_ROLE = Qt.UserRole + 1
 COLLECTION_DESCRIPTION_ROLE = Qt.UserRole + 2

@@ -28,7 +28,7 @@ try:
 except ImportError:
     from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
 
-from resource_sharing.utilities import ui_path, qgis_version
+from ResourceSharing.utilities import ui_path, qgis_version
 
 FORM_CLASS, _ = uic.loadUiType(ui_path('manage_repository.ui'))
 

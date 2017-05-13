@@ -23,8 +23,8 @@ except ImportError:
     from qgis.PyQt.QtWidgets import QDialogButtonBox, QDialog
 
 
-from resource_sharing.gui.resource_sharing_dialog import ResourceSharingDialog
-from resource_sharing.config import (
+from ResourceSharing.gui.resource_sharing_dialog import ResourceSharingDialog
+from ResourceSharing.config import (
     COLLECTION_ALL_STATUS,
     COLLECTION_INSTALLED_STATUS)
 

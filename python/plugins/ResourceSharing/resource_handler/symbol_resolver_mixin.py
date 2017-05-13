@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from qgis.PyQt.QtCore import QFileInfo, QUrl, Qt, QFile
 from qgis.core import QgsApplication
 
-from resource_sharing.utilities import path_leaf
+from ResourceSharing.utilities import path_leaf
 
 
 class SymbolResolverMixin(object):

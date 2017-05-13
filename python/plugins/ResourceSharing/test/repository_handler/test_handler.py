@@ -1,7 +1,7 @@
 # coding=utf-8
 from qgis.testing import start_app, unittest
 
-from resource_sharing.repository_handler import (
+from ResourceSharing.repository_handler import (
     BaseRepositoryHandler,
     FileSystemHandler,
     GithubHandler,

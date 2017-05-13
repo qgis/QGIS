@@ -3,7 +3,7 @@ from qgis.testing import start_app, unittest
 import nose2
 
 from qgis.PyQt.QtCore import QUrl
-from resource_sharing.resource_handler.symbol_resolver_mixin import (
+from ResourceSharing.resource_handler.symbol_resolver_mixin import (
     resolve_path,
     fix_xml_node)
 from test.utilities import test_data_path

@@ -6,8 +6,8 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
 
-from resource_sharing.resource_handler.base import BaseResourceHandler
-from resource_sharing.utilities import qgis_version
+from ResourceSharing.resource_handler.base import BaseResourceHandler
+from ResourceSharing.utilities import qgis_version
 
 
 class ProcessingScriptHandler(BaseResourceHandler):

@@ -27,7 +27,7 @@ except ImportError:  # QGIS 3.x
         QgsLineSymbol,
         QgsMarkerSymbol)
 
-from resource_sharing.symbol_xml_extractor import SymbolXMLExtractor
+from ResourceSharing.symbol_xml_extractor import SymbolXMLExtractor
 from utilities import test_data_path
 
 

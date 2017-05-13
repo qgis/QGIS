@@ -1,0 +1,2 @@
+dulwich==0.13.0
+giturlparse.py

@@ -3,8 +3,8 @@ import os
 
 from six import add_metaclass
 
-from resource_sharing.utilities import local_collection_path
-from resource_sharing import config
+from ResourceSharing.utilities import local_collection_path
+from ResourceSharing import config
 
 
 class ResourceHandlerMeta(type):

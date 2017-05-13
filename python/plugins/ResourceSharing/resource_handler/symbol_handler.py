@@ -7,9 +7,9 @@ try:
 except ImportError:
     from qgis.core import QgsStyle
 
-from resource_sharing.resource_handler.base import BaseResourceHandler
-from resource_sharing.symbol_xml_extractor import SymbolXMLExtractor
-from resource_sharing.resource_handler.symbol_resolver_mixin import \
+from ResourceSharing.resource_handler.base import BaseResourceHandler
+from ResourceSharing.symbol_xml_extractor import SymbolXMLExtractor
+from ResourceSharing.resource_handler.symbol_resolver_mixin import \
     SymbolResolverMixin
 
 

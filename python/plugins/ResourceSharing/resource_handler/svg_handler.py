@@ -7,8 +7,8 @@ try:
 except ImportError:
     from qgis.core import QGis as Qgis
 
-from resource_sharing.resource_handler.base import BaseResourceHandler
-from resource_sharing.utilities import local_collection_path
+from ResourceSharing.resource_handler.base import BaseResourceHandler
+from ResourceSharing.utilities import local_collection_path
 
 
 class SVGResourceHandler(BaseResourceHandler):

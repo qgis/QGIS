@@ -1,5 +1,5 @@
 # coding=utf-8
-from resource_sharing.repository_handler.remote_git_handler import (
+from ResourceSharing.repository_handler.remote_git_handler import (
     RemoteGitHandler)
 
 

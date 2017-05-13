@@ -2,19 +2,16 @@ FILE(GLOB PY_FILES *.py)
 PLUGIN_INSTALL(ResourceSharing . ${PY_FILES} metadata.txt LICENSE.txt)
 
 FOREACH(dir
-processing
-resource_sharing
-resource_sharing/gui
-resource_sharing/gui/ui
-resource_sharing/repository_handler
-resource_sharing/resource_handler
+gui
+gui/ui
+repository_handler
+resource_handler
 resources
 resources/js
 resources/bootstrap
 resources/bootstrap/js
 resources/bootstrap/fonts
 resources/bootstrap/css
-resources/img
 resources/template)
   FILE(GLOB _items ${dir}/*)
   SET(_files)

@@ -29,40 +29,31 @@ from qgis.PyQt.QtGui import (
     QDesktopServices,
     QStandardItem,
     QStandardItemModel)
-try:
-    from qgis.PyQt.QtGui import (
-        QListWidgetItem,
-        QDialog,
-        QTreeWidgetItem,
-        QSizePolicy,
-        QMessageBox,
-        QProgressDialog,
-        QDialogButtonBox)
-except ImportError:
-    from qgis.PyQt.QtWidgets import (
-        QListWidgetItem,
-        QDialog,
-        QTreeWidgetItem,
-        QSizePolicy,
-        QMessageBox,
-        QProgressDialog,
-        QDialogButtonBox)
+from qgis.PyQt.QtWidgets import (
+    QListWidgetItem,
+    QDialog,
+    QTreeWidgetItem,
+    QSizePolicy,
+    QMessageBox,
+    QProgressDialog,
+    QDialogButtonBox)
 
 
 from qgis.gui import QgsMessageBar
+from qgis.core import QgsApplication
 
-from resource_sharing.gui.manage_dialog import ManageRepositoryDialog
-from resource_sharing.repository_manager import RepositoryManager
-from resource_sharing.collection_manager import (
+from ResourceSharing.gui.manage_dialog import ManageRepositoryDialog
+from ResourceSharing.repository_manager import RepositoryManager
+from ResourceSharing.collection_manager import (
     CollectionManager,
     CollectionInstaller)
-from resource_sharing.utilities import (
+from ResourceSharing.utilities import (
     resources_path,
     ui_path,
     repo_settings_group,
     local_collection_path,
     render_template)
-from resource_sharing.gui.custom_sort_filter_proxy import (
+from ResourceSharing.gui.custom_sort_filter_proxy import (
     CustomSortFilterProxyModel,
     COLLECTION_NAME_ROLE,
     COLLECTION_DESCRIPTION_ROLE,
@@ -70,10 +61,10 @@ from resource_sharing.gui.custom_sort_filter_proxy import (
     COLLECTION_TAGS_ROLE,
     COLLECTION_ID_ROLE,
     COLLECTION_STATUS_ROLE)
-from resource_sharing.config import (
+from ResourceSharing.config import (
     COLLECTION_ALL_STATUS,
     COLLECTION_INSTALLED_STATUS)
-from resource_sharing import config
+from ResourceSharing import config
 
 FORM_CLASS, _ = uic.loadUiType(ui_path('resource_sharing_dialog_base.ui'))
 
@@ -106,33 +97,20 @@ class ResourceSharingDialog(QDialog, FORM_CLASS):
 
         # Set QListWidgetItem
         # All
-        icon_all = QIcon()
-        icon_all.addFile(
-            resources_path('img', 'plugin.svg'),
-            QSize(),
-            QIcon.Normal,
-            QIcon.Off)
+        icon_all = QgsApplication.getThemeIcon('resource_sharing/plugin.svg')
         item_all = QListWidgetItem()
         item_all.setIcon(icon_all)
         item_all.setText(self.tr('All'))
         # Installed
-        icon_installed = QIcon()
-        icon_installed.addFile(
-            resources_path('img', 'plugin-installed.svg'),
-            QSize(),
-            QIcon.Normal,
-            QIcon.Off)
+        icon_installed = QgsApplication.getThemeIcon(
+            'resource_sharing/plugin-installed.svg')
         item_installed = QListWidgetItem()
         item_installed.setIcon(icon_installed)
         item_installed.setText(self.tr('Installed'))
         item_all.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
         # Settings
-        icon_settings = QIcon()
-        icon_settings.addFile(
-            resources_path('img', 'settings.svg'),
-            QSize(),
-            QIcon.Normal,
-            QIcon.Off)
+        icon_settings = QgsApplication.getThemeIcon(
+            'resource_sharing/settings.svg')
         item_settings = QListWidgetItem()
         item_settings.setIcon(icon_settings)
         item_settings.setText(self.tr('Settings'))

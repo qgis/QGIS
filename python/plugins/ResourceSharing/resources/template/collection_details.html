@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>{{ collection.name }}</title>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="file:///{{resources_path}}/bootstrap/css/bootstrap.css" type="text/css">
+    <!-- Javascript -->
+    <script src="file:///{{resources_path}}/js/jquery.js"></script>
+    <script src="file:///{{resources_path}}/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+      .panel {
+        border: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="panel panel-primary">
+
+      <div class="panel-heading">
+        <h2 class="panel-title">{{ collection.name }}</h2>
+      </div>
+
+      <div class="panel-body">
+        <blockquote>{{ collection.description }}</blockquote>
+        <table class="table">
+          <tr>
+            <td><b>URL</b></td><td>{{ collection.repository_url }}</td>
+          </tr>
+          <tr>
+            <td><b>Tags</b></td><td>{{ collection.tags }}</td>
+          </tr>
+          <tr>
+            <td><b>Author</b></td><td>{{ collection.author }}</td>
+          </tr>
+          <tr>
+            <td><b>E-mail</b></td><td>{{ collection.author_email }}</td>
+          </tr>
+          {% if collection.license and collection.license != None %}
+          <tr>
+            <td><b>License</b></td>
+            <td>{{ collection.license }}
+              {% if collection.license and collection.license_url != None %}
+              (read <a href="{{ collection.license_url}}">here</a>)
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+            {% if collection.license_url and collection.license_url != None %}
+            <tr>
+              <td><b>License File</b></td>
+              <td>
+                Read the license <a href="{{ collection.license_url}}">here</a>
+              </td>
+            </tr>
+            {% endif %}
+          {% endif %}
+
+        </table>
+
+         {% if collection.preview|length != 0 %}
+            <!-- Preview Images -->
+          <div id="preview-carousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+              {% for preview in collection.preview %}
+                {% if loop.index == 1 %}
+                  <li data-target="#preview-carousel"
+                      data-slide-to="{{ loop.index - 1 }}" class="active">
+                  </li>
+                {% else %}
+                  <li data-target="#preview-carousel"
+                          data-slide-to="{{ loop.index - 1 }}">
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner"  role="listbox">
+              {% for preview in collection.preview %}
+                {% if loop.index == 1 %}
+                  <div class="item active">
+                {% else %}
+                  <div class="item">
+                {% endif %}
+                  <img src="{{ preview }}">
+                </div>
+              {% endfor %}
+            </div> <!-- endof carouse-inner -->
+
+            <!-- Controls -->
+            <a class="left carousel-control" href="#preview-carousel" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#preview-carousel" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+
+          </div> <!-- endof preview-carousel -->
+        {% endif %}
+      </div>
+
+    </div> <!-- endof panel panel-primary -->
+  </body>
+</html>

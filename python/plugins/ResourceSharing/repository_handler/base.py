@@ -8,19 +8,14 @@ except:
 import logging
 
 from six import add_metaclass
-try:
-    from ConfigParser import SafeConfigParser
-    from urlparse import urlparse
-    from qgis.core import QGis as Qgis
-except ImportError:
-    from configparser import SafeConfigParser
-    from urllib.parse import urlparse
-    from qgis.core import Qgis
+from configparser import SafeConfigParser
+from urllib.parse import urlparse
+from qgis.core import Qgis
 
-from ext_libs.giturlparse import validate as git_validate
-from resource_sharing.config import COLLECTION_NOT_INSTALLED_STATUS
-from resource_sharing.exception import MetadataError
-from resource_sharing.version_compare import isCompatible
+from giturlparse import validate as git_validate
+from ResourceSharing.config import COLLECTION_NOT_INSTALLED_STATUS
+from ResourceSharing.exception import MetadataError
+from ResourceSharing.version_compare import isCompatible
 
 
 LOGGER = logging.getLogger('QGIS Resources Sharing')

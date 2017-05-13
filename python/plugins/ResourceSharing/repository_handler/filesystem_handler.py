@@ -11,8 +11,8 @@ except ImportError:
     from urllib.request import pathname2url
 
 
-from resource_sharing.repository_handler.base import BaseRepositoryHandler
-from resource_sharing.utilities import local_collection_path
+from ResourceSharing.repository_handler.base import BaseRepositoryHandler
+from ResourceSharing.utilities import local_collection_path
 
 
 LOGGER = logging.getLogger('QGIS Resources Sharing')

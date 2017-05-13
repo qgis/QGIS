@@ -7,7 +7,7 @@ import sys
 # append plugin folder to path
 sys.path.append(os.path.join(os.path.dirname(__file__), os.path.pardir))
 
-from resource_sharing.collection_manager import CollectionManager
+from ResourceSharing.collection_manager import CollectionManager
 
 
 class TestCollections(unittest.TestCase):

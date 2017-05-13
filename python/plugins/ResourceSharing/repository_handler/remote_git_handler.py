@@ -8,9 +8,9 @@ from qgis.core import QgsApplication
 
 from giturlparse import parse, validate
 from dulwich import porcelain
-from resource_sharing.repository_handler.base import BaseRepositoryHandler
-from resource_sharing.network_manager import NetworkManager
-from resource_sharing.utilities import local_collection_path
+from ResourceSharing.repository_handler.base import BaseRepositoryHandler
+from ResourceSharing.network_manager import NetworkManager
+from ResourceSharing.utilities import local_collection_path
 
 
 LOGGER = logging.getLogger('QGIS Resources Sharing')
@@ -87,7 +87,7 @@ class RemoteGitHandler(BaseRepositoryHandler):
         # Clone or pull the repositories first
         local_repo_dir = os.path.join(
             QgsApplication.qgisSettingsDirPath(),
-            'resource_sharing',
+            'ResourceSharing',
             'repositories',
             self.git_host, self.git_owner, self.git_repository
         )
