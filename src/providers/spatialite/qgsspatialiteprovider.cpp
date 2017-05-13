@@ -5586,7 +5586,8 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
-  if (dsUri.schema().isEmpty())
+  // Avoid sql-statement errors
+  if ( dsUri.schema().isEmpty() )
     return false;
 
   // trying to open the SQLite DB
@@ -5767,7 +5768,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
-  if (dsUri.schema().isEmpty())
+  // Avoid sql-statement errors
+  if ( dsUri.schema().isEmpty() )
     return false;
 
   // trying to open the SQLite DB

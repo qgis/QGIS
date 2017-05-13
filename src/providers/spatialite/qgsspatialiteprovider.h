@@ -203,7 +203,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void determineViewPrimaryKey();
 
     /**
-     * Checks for Triggers for writable SpatialView
+     * Check for Triggers for writable SpatialView
      *  - A SpatialView in only editable if a corresponding TRIGGER exists with an
      *  -> 'INSTEAD OF INSERT/UPDATE/DELETE' statement
      * \note
