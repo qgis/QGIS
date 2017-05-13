@@ -75,7 +75,8 @@ class Union(GeoAlgorithm):
         geomType = vlayerA.wkbType()
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields,
-                                                                      geomType, vlayerA.crs())
+                                                                      geomType,
+                                                                      vlayerA.crs())
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()
@@ -161,6 +162,10 @@ class Union(GeoAlgorithm):
                 if len(lstIntersectingB) != 0:
                     intB = QgsGeometry.unaryUnion(lstIntersectingB)
                     diff_geom = diff_geom.difference(intB)
+                    if diff_geom is None:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                               self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                        diff_geom = QgsGeometry()
                     if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
@@ -207,6 +212,10 @@ class Union(GeoAlgorithm):
             else:
                 intA = QgsGeometry.unaryUnion(lstIntersectingA)
                 res_geom = geom.difference(intA)
+                if res_geom is None:
+                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                           self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                    res_geom = QgsGeometry()
                 if res_geom.isGeosEmpty() or not res_geom.isGeosValid():
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                            self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
