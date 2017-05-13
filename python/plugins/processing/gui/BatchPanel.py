@@ -157,7 +157,7 @@ class BatchPanel(BASE, WIDGET):
                     if param.hidden:
                         continue
                     if param.name in params:
-                        value = params[param.name]
+                        value = params[param.name].strip('"')
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
@@ -166,7 +166,7 @@ class BatchPanel(BASE, WIDGET):
                     if out.hidden:
                         continue
                     if out.name in outputs:
-                        value = outputs[out.name]
+                        value = outputs[out.name].strip('"')
                         widget = self.tblParameters.cellWidget(row, column)
                         widget.setValue(value)
                     column += 1
