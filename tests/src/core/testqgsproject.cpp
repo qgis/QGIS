@@ -196,6 +196,8 @@ void TestQgsProject::testPathResolverSvg()
   svgFile.write( "<svg/>" );   // not a proper SVG, but good enough for this case
   svgFile.close();
 
+  QVERIFY( QFileInfo::exists( ourSvgPath ) );  // should exist now
+
   QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( "transport/transport_airport.svg", QgsPathResolver() );
 
   QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, "points 1", "ogr" );
