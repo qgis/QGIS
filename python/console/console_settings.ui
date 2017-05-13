@@ -35,7 +35,22 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="0" column="0" rowspan="2">
     <widget class="QListWidget" name="mOptionsListWidget">
      <property name="minimumSize">
       <size>
@@ -48,6 +63,9 @@
        <width>150</width>
        <height>16777215</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background: #5C5C5C; color: white;</string>
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -545,10 +563,6 @@
         </widget>
        </item>
       </layout>
-      <zorder>groupBox_2</zorder>
-      <zorder>groupBoxFontColor</zorder>
-      <zorder>groupBoxAutoCompletion</zorder>
-      <zorder>groupBox_4</zorder>
      </widget>
      <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout_6">
@@ -1192,7 +1206,7 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
