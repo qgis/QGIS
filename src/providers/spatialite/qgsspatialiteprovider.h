@@ -202,8 +202,21 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! For views, try to get primary key from a dedicated meta table
     void determineViewPrimaryKey();
 
-    //! Check if a table/view has any triggers.  Triggers can be used on views to make them editable.
-    bool hasTriggers();
+    /**
+     * Checks for Triggers for writable SpatialView
+     *  - A SpatialView in only editable if a corresponding TRIGGER exists with an
+     *  -> 'INSTEAD OF INSERT/UPDATE/DELETE' statement
+     * \note
+     *  Sets the mTrigger* members, which will be used to set the mEnabledCapabilities member properly
+     *  - this checks only that the Triggers exist, not if they work correctly.
+     * \return false if at least one INSERT, UPDATE or DELETE trigger was found, otherwise true
+     * \see mTriggerInsert
+     * \see mTriggerUpdate
+     * \see mTriggerDelete
+     * \see mEnabledCapabilities
+     * \since QGIS 3.0
+     */
+    bool checkViewTriggers();
 
     //! Check if a table has a row id (internal primary key)
     bool hasRowid();
@@ -240,6 +253,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool mReadOnly;
+    //! Flag indicating if the Capabilities SpatialView supports Inserting since QGIS 3.0
+    bool mTriggerInsert;
+    //! Flag indicating if the Capabilities SpatialView supports Updating since QGIS 3.0
+    bool mTriggerUpdate;
+    //! Flag indicating if the Capabilities SpatialView supports Deleting since QGIS 3.0
+    bool mTriggerDelete;
 
     //! DB full path
     QString mSqlitePath;

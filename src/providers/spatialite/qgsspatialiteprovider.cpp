@@ -437,6 +437,9 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   , mViewBased( false )
   , mVShapeBased( false )
   , mReadOnly( false )
+  , mTriggerInsert( false )
+  , mTriggerUpdate( false )
+  , mTriggerDelete( false )
   , mGeomType( QgsWkbTypes::Unknown )
   , mSqliteHandle( nullptr )
   , mSrid( -1 )
@@ -529,7 +532,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     return;
   }
   mEnabledCapabilities = mPrimaryKey.isEmpty() ? QgsVectorDataProvider::Capabilities() : ( QgsVectorDataProvider::SelectAtId );
-  if ( ( mTableBased || mViewBased ) &&  !mReadOnly )
+  if ( mTableBased )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
     mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
@@ -539,6 +542,26 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
     mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes;
     mEnabledCapabilities |= QgsVectorDataProvider::CreateAttributeIndex;
+  }
+  if ( mViewBased  &&  !mReadOnly )
+  {
+    // enabling editing for Spatialview when the corresponding TRIGGER exists
+    if ( mTriggerDelete )
+    {
+      mEnabledCapabilities |= QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::FastTruncate;
+    }
+    if ( mTriggerUpdate )
+    {
+      mEnabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+      mEnabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+    }
+    if ( mTriggerInsert )
+    {
+      mEnabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+      mEnabledCapabilities |= QgsVectorDataProvider::AddAttributes;
+      mEnabledCapabilities |= QgsVectorDataProvider::CreateAttributeIndex;
+    }
+    // qDebug() << QString( "-I-> QgsSpatiaLiteProvider::QgsSpatiaLiteProvider[%1] EnabledCapabilities[%2] %3" ).arg( QString("%1(%2)").arg(mTableName).arg(mGeometryColumn)).arg( mEnabledCapabilities ).arg(QString("Triggers[%1,%2,%3]").arg(mTriggerInsert).arg(mTriggerUpdate).arg(mTriggerDelete));
   }
 
   alreadyDone = false;
@@ -1086,22 +1109,52 @@ void QgsSpatiaLiteProvider::determineViewPrimaryKey()
   }
 }
 
-
-bool QgsSpatiaLiteProvider::hasTriggers()
+bool QgsSpatiaLiteProvider::checkViewTriggers()
 {
   int ret;
-  char **results = nullptr;
-  int rows;
-  int columns;
-  char *errMsg = nullptr;
+  bool isReadOnly = true;
+  sqlite3_stmt *stmt = nullptr;
   QString sql;
-
-  sql = QStringLiteral( "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name=%1" )
-        .arg( quotedIdentifier( mTableName ) );
-
-  ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
-  sqlite3_free_table( results );
-  return ( ret == SQLITE_OK && rows > 0 );
+  mTriggerInsert = false;
+  mTriggerUpdate = false;
+  mTriggerDelete = false;
+  QString sql_base = QStringLiteral( "(SELECT Exists(SELECT rootpage FROM  sqlite_master WHERE (type = 'trigger' AND tbl_name = '%1' AND (instr(upper(sql),'INSTEAD OF %2') > 0))))" );
+  sql = QStringLiteral( "SELECT " );
+  sql += sql_base.arg( mTableName ).arg( "INSERT" ) + ",";
+  sql += sql_base.arg( mTableName ).arg( "UPDATE" ) + ",";
+  sql += sql_base.arg( mTableName ).arg( "DELETE" );
+  ret = sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL );
+  if ( ret == SQLITE_OK )
+  {
+    while ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      if ( sqlite3_column_type( stmt, 0 ) != SQLITE_NULL )
+      {
+        if ( sqlite3_column_int( stmt, 0 ) == 1 )
+        {
+          mTriggerInsert = true;
+          isReadOnly = false;
+        }
+      }
+      if ( sqlite3_column_type( stmt, 1 ) != SQLITE_NULL )
+      {
+        if ( sqlite3_column_int( stmt, 1 ) == 1 )
+        {
+          mTriggerUpdate = true;
+          isReadOnly = false;
+        }
+      }
+      if ( sqlite3_column_type( stmt, 2 ) != SQLITE_NULL )
+      {
+        if ( sqlite3_column_int( stmt, 2 ) == 1 )
+        {
+          mTriggerDelete = true;
+          isReadOnly = false;
+        }
+      }
+    }
+  }
+  return isReadOnly;
 }
 
 bool QgsSpatiaLiteProvider::hasRowid()
@@ -4433,9 +4486,9 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
     if ( lyr->AuthInfos->IsReadOnly )
       mReadOnly = true;
   }
-  else if ( mViewBased )
+  if ( mViewBased )
   {
-    mReadOnly = !hasTriggers();
+    mReadOnly = checkViewTriggers();
   }
 
   if ( !mIsQuery )
@@ -4483,7 +4536,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       else if ( type == QLatin1String( "view" ) )
       {
         mViewBased = true;
-        mReadOnly = !hasTriggers();
+        mReadOnly = checkViewTriggers();
       }
       count++;
     }
@@ -4586,7 +4639,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     if ( ret == SQLITE_OK && rows == 1 )
     {
       mViewBased = true;
-      mReadOnly = !hasTriggers();
+      mReadOnly = checkViewTriggers();
       count++;
     }
     if ( errMsg )
@@ -5533,6 +5586,8 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
+  if (dsUri.schema().isEmpty())
+    return false;
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
@@ -5712,6 +5767,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
   QgsDebugMsg( "Database is: " + sqlitePath );
+  if (dsUri.schema().isEmpty())
+    return false;
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
