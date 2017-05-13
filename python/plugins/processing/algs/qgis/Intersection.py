@@ -36,6 +36,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -114,9 +115,10 @@ class Intersection(GeoAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isEmpty() or not int_geom.isGeosValid():
-                        QgsMessageLog.logMessage(self.tr('GEOS geoprocessing error: One or '
-                                                         'more input features have invalid '
-                                                         'geometry.'), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('GEOS geoprocessing error: One or '
+                                    'more input features have invalid '
+                                    'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
@@ -126,7 +128,9 @@ class Intersection(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                     except:
-                        QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'), self.tr('Processing'), QgsMessageLog.INFO)
-                        continue
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('Feature geometry error: One or more '
+                                    'output features ignored due to invalid '
+                                    'geometry.'))
 
         del writer
