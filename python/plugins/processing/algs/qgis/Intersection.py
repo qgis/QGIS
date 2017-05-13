@@ -92,11 +92,10 @@ class Intersection(GeoAlgorithm):
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
                     if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        break
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('GEOS geoprocessing error: One or '
+                                    'more input features have invalid '
+                                    'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
@@ -106,8 +105,8 @@ class Intersection(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                     except:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                        continue
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('Feature geometry error: One or more '
+                                    'output features ignored due to invalid geometry.'))
 
         del writer
