@@ -17,6 +17,7 @@
 #define QGSSYMBOLSELECTORDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgssymbolselectordialogbase.h"
 
@@ -247,7 +248,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button

@@ -5,12 +5,12 @@ class QgsNineCellFilter
 %End
   public:
     /** Constructor that takes input file, output file and output format (GDAL string)*/
-    QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
+    QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
     virtual ~QgsNineCellFilter();
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
-    int processRaster( QProgressDialog* p );
+    int processRaster( QProgressDialog *p );
 
     double cellSizeX() const;
     void setCellSizeX( double size );
@@ -29,5 +29,5 @@ class QgsNineCellFilter
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
     virtual float processNineCellWindow( float* x11, float* x21, float* x31,
                                          float* x12, float* x22, float* x32,
-                                         float* x13, float* x23, float* x33 ) = 0;
+                                         float *x13, float *x23, float *x33 ) = 0;
 };

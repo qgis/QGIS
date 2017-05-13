@@ -45,7 +45,7 @@ class QgsTask : QObject
      * @param description text description of task
      * @param flags task flags
      */
-    QgsTask( const QString& description = QString(), const Flags& flags = AllFlags );
+    QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 
     /**
      * Returns the flags associated with the task.
@@ -126,7 +126,7 @@ class QgsTask : QObject
     void addSubTask( QgsTask* subTask /Transfer/, const QgsTaskList& dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
-    void setDependentLayers( const QList<QgsMapLayer*>& dependentLayers );
+    void setDependentLayers( const QList<QgsMapLayer*> &dependentLayers );
 
     QList< QgsMapLayer* > dependentLayers() const;
 
@@ -235,7 +235,7 @@ class QgsTaskManager : QObject
     /** Constructor for QgsTaskManager.
      * @param parent parent QObject
      */
-    QgsTaskManager( QObject* parent /TransferThis/ = nullptr );
+    QgsTaskManager( QObject *parent /TransferThis/ = 0 );
 
     virtual ~QgsTaskManager();
 
@@ -247,10 +247,10 @@ class QgsTaskManager : QObject
       /**
        * Constructor for TaskDefinition. Ownership of the task is transferred to the definition.
        */
-      explicit TaskDefinition( QgsTask* task, QgsTaskList dependentTasks = QgsTaskList() );
+      explicit TaskDefinition( QgsTask *task, QgsTaskList dependentTasks = QgsTaskList() );
 
       //! Task
-      QgsTask* task;
+      QgsTask *task;
 
       /**
        * List of dependencies which must be completed before task can run. If any dependent tasks are
@@ -266,7 +266,7 @@ class QgsTaskManager : QObject
      * order of execution.
      * @returns unique task ID
      */
-    long addTask( QgsTask* task /Transfer/, int priority = 0 );
+    long addTask( QgsTask *task /Transfer/, int priority = 0 );
 
     /**
      * Adds a task to the manager, using a full task definition (including dependency
@@ -275,14 +275,14 @@ class QgsTaskManager : QObject
      * be used to control the run queue's order of execution.
      * @returns unique task ID
      */
-    long addTask( const TaskDefinition& task /Transfer/, int priority = 0 );
+    long addTask( const TaskDefinition &task /Transfer/, int priority = 0 );
 
 
     /** Returns the task with matching ID.
      * @param id task ID
      * @returns task if found, or nullptr
      */
-    QgsTask* task( long id ) const;
+    QgsTask *task( long id ) const;
 
     /** Returns all tasks tracked by the manager.
      */
@@ -295,7 +295,7 @@ class QgsTaskManager : QObject
      * @param task task to find
      * @returns task ID, or -1 if task not found
      */
-    long taskId( QgsTask* task ) const;
+    long taskId( QgsTask *task ) const;
 
     //! Instructs all tasks tracked by the manager to terminate.
     void cancelAll();
@@ -309,7 +309,7 @@ class QgsTaskManager : QObject
 
     QList< QgsMapLayer* > dependentLayers( long taskId ) const;
 
-    QList< QgsTask* > tasksDependentOnLayer( QgsMapLayer* layer ) const;
+    QList< QgsTask* > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 
     /** Returns a list of the active (queued or running) tasks.
      * @see countActiveTasks()

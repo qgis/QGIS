@@ -13,9 +13,9 @@ class QgsLegendModel : QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree* rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
 
-    QVariant data( const QModelIndex& index,  int role ) const;
+    QVariant data( const QModelIndex &index,  int role ) const;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };
@@ -32,17 +32,17 @@ class QgsComposerLegend : QgsComposerItem
 %End
 
   public:
-    QgsComposerLegend( QgsComposition* composition /TransferThis/);
+    QgsComposerLegend( QgsComposition *composition /TransferThis/);
     ~QgsComposerLegend();
 
     /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
-    QSizeF paintAndDetermineSize( QPainter* painter );
+    QSizeF paintAndDetermineSize( QPainter *painter );
 
     /** Sets item box to the whole content*/
     void adjustBoxSize();
@@ -62,7 +62,7 @@ class QgsComposerLegend : QgsComposerItem
     bool resizeToContents() const;
 
     //! @note added in 2.6
-    QgsLegendModel* model();
+    QgsLegendModel *model();
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -91,7 +91,7 @@ class QgsComposerLegend : QgsComposerItem
     bool legendFilterOutAtlas() const;
 
     //setters and getters
-    void setTitle( const QString& t );
+    void setTitle( const QString &t );
     QString title() const;
 
     /** Returns the alignment of the legend title
@@ -108,14 +108,14 @@ class QgsComposerLegend : QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle  &rstyle( QgsLegendStyle::Style s );
     /** Returns style */
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
-    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
     QFont styleFont( QgsLegendStyle::Style s ) const;
     /** Set style font */
-    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
+    void setStyleFont( QgsLegendStyle::Style s, const QFont &f );
 
     /** Set style margin*/
     void setStyleMargin( QgsLegendStyle::Style s, double margin );
@@ -140,7 +140,7 @@ class QgsComposerLegend : QgsComposerItem
     void setColumnSpace( double s );
 
     QColor fontColor() const;
-    void setFontColor( const QColor& c );
+    void setFontColor( const QColor &c );
 
     double symbolWidth() const;
     void setSymbolWidth( double w );
@@ -154,7 +154,7 @@ class QgsComposerLegend : QgsComposerItem
     double wmsLegendHeight() const;
     void setWmsLegendHeight( double h );
 
-    void setWrapChar( const QString& t );
+    void setWrapChar( const QString &t );
     QString wrapChar() const;
 
     int columnCount() const;
@@ -200,7 +200,7 @@ class QgsComposerLegend : QgsComposerItem
      * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setRasterStrokeColor( const QColor& color );
+    void setRasterStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
@@ -221,8 +221,8 @@ class QgsComposerLegend : QgsComposerItem
      */
     void setRasterStrokeWidth( double width );
 
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const;
+    void setComposerMap( const QgsComposerMap *map );
+    const QgsComposerMap *composerMap() const;
 
     /** Updates the model and all legend entries*/
     void updateLegend();
@@ -231,24 +231,24 @@ class QgsComposerLegend : QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     //Overridden to show legend title
     virtual QString displayName() const;
 
-    const QgsLegendSettings& legendSettings() const;
+    const QgsLegendSettings &legendSettings() const;
 
   public slots:
     /** Data changed*/
     void synchronizeWithModel();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
 };

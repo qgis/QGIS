@@ -104,10 +104,12 @@ class TestQgsProcessing: public QObject
     void removeProvider();
     void compatibleLayers();
     void normalizeLayerSource();
+    void mapLayers();
     void mapLayerFromString();
     void algorithm();
     void features();
     void uniqueValues();
+    void createIndex();
 
   private:
 
@@ -331,7 +333,7 @@ void TestQgsProcessing::normalizeLayerSource()
   QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers \"new\"\\test.shp" ), QString( "data/layers 'new'/test.shp" ) );
 }
 
-void TestQgsProcessing::mapLayerFromString()
+void TestQgsProcessing::mapLayers()
 {
   // test mapLayerFromProject
 
@@ -364,19 +366,84 @@ void TestQgsProcessing::mapLayerFromString()
   QCOMPARE( QgsProcessingUtils::mapLayerFromProject( r1->id(), &p ), r1 );
   QCOMPARE( QgsProcessingUtils::mapLayerFromProject( v1->id(), &p ), v1 );
 
-  // test mapLayerFromString
-  QgsMapLayer *l = QgsProcessingUtils::mapLayerFromString( raster2 );
+  // test loadMapLayerFromString
+  QgsMapLayer *l = QgsProcessingUtils::loadMapLayerFromString( raster2 );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::RasterLayer );
   delete l;
-  l = QgsProcessingUtils::mapLayerFromString( QString() );
+  l = QgsProcessingUtils::loadMapLayerFromString( QString() );
   QVERIFY( !l );
-  l = QgsProcessingUtils::mapLayerFromString( QStringLiteral( "so much room for activities!" ) );
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "so much room for activities!" ) );
   QVERIFY( !l );
-  l = QgsProcessingUtils::mapLayerFromString( testDataDir + "multipoint.shp" );
+  l = QgsProcessingUtils::loadMapLayerFromString( testDataDir + "multipoint.shp" );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   delete l;
+}
+
+void TestQgsProcessing::mapLayerFromString()
+{
+  // test mapLayerFromString
+
+  QgsProcessingContext c;
+  QgsProject p;
+
+  // add a bunch of layers to a project
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "tenbytenraster.asc";
+  QString raster2 = testDataDir + "landsat.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QVERIFY( r1->isValid() );
+  QFileInfo fi2( raster2 );
+  QgsRasterLayer *r2 = new QgsRasterLayer( fi2.filePath(), "ar2" );
+  QVERIFY( r2->isValid() );
+
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V4", "memory" );
+  QgsVectorLayer *v2 = new QgsVectorLayer( "Point", "v1", "memory" );
+  p.addMapLayers( QList<QgsMapLayer *>() << r1 << r2 << v1 << v2 );
+
+  // no project set yet
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QStringLiteral( "v1" ), c ) );
+
+  c.setProject( &p );
+
+  // layers from current project
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( QString(), c ) );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster1, c ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( raster2, c ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "R1", c ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "ar2", c ), r2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V4", c ), v1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v1", c ), v2 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( r1->id(), c ), r1 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( v1->id(), c ), v1 );
+
+  // check that layers in context temporary store are used
+  QgsVectorLayer *v5 = new QgsVectorLayer( "Polygon", "V5", "memory" );
+  QgsVectorLayer *v6 = new QgsVectorLayer( "Point", "v6", "memory" );
+  c.temporaryLayerStore().addMapLayers( QList<QgsMapLayer *>() << v5 << v6 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "V5", c ), v5 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( "v6", c ), v6 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( v5->id(), c ), v5 );
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( v6->id(), c ), v6 );
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
+
+  // if specified, check that layers can be loaded
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( "aaaaa", c ) );
+  QString newRaster = testDataDir + "requires_warped_vrt.tif";
+  // don't allow loading
+  QVERIFY( ! QgsProcessingUtils::mapLayerFromString( newRaster, c, false ) );
+  // allow loading
+  QgsMapLayer *loadedLayer = QgsProcessingUtils::mapLayerFromString( newRaster, c, true );
+  QVERIFY( loadedLayer->isValid() );
+  QCOMPARE( loadedLayer->type(), QgsMapLayer::RasterLayer );
+  // should now be in temporary store
+  QCOMPARE( c.temporaryLayerStore().mapLayer( loadedLayer->id() ), loadedLayer );
+
+  // since it's now in temporary store, should be accessible even if we deny loading new layers
+  QCOMPARE( QgsProcessingUtils::mapLayerFromString( newRaster, c, false ), loadedLayer );
 }
 
 void TestQgsProcessing::algorithm()
@@ -590,6 +657,43 @@ void TestQgsProcessing::uniqueValues()
   QVERIFY( vals.contains( QString( "B" ) ) );
 
   delete layer;
+}
+
+void TestQgsProcessing::createIndex()
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  for ( int i = 1; i < 6; ++i )
+  {
+    QgsFeature f( i );
+    f.setGeometry( QgsGeometry( new QgsPointV2( i, 2 ) ) );
+    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  }
+
+  QgsProcessingContext context;
+  // disable selected features check
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  QgsSpatialIndex index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
+  // selected features check, but none selected
+  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
+  // create selection
+  layer->selectByIds( QgsFeatureIds() << 4 << 5 );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
+
+  // selection but not using selection mode
+  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

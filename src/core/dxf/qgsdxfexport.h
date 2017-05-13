@@ -19,6 +19,7 @@
 #define QGSDXFEXPORT_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
@@ -178,7 +179,7 @@ class CORE_EXPORT QgsDxfExport
      * \param i integer value
      * \note available in Python bindings as writeGroupInt
      */
-    void writeGroup( int code, int i );
+    void writeGroup( int code, int i ) SIP_PYNAME( writeGroupInt );
 
     /**
      * Write a group code with a floating point value
@@ -186,7 +187,7 @@ class CORE_EXPORT QgsDxfExport
      * \param d floating point value
      * \note available in Python bindings as writeGroupDouble
      */
-    void writeGroup( int code, double d );
+    void writeGroup( int code, double d ) SIP_PYNAME( writeGroupDouble );
 
     /**
      * Write a group code with a string value
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeGroupPointV2
      * \since QGIS 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p );
+    void writeGroup( int code, const QgsPointV2 &p ) SIP_PYNAME( writeGroupPointV2 );
 
     /**
      * Write a group code with color value
@@ -276,22 +277,22 @@ class CORE_EXPORT QgsDxfExport
     //! Write point
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt );
+    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt ) SIP_PYNAME( writePointV2 );
 
     //! Write filled circle (as hatch)
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius );
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
 
     //! Write circle (as polyline)
     //! \note available in Python bindings as writeCircleV2
     //! \since QGIS 2.15
-    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
+    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
 
     //! Write text (TEXT)
     //! \note available in Python bindings as writeTextV2
     //! \since QGIS 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color );
+    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
 
     //! Write mtext (MTEXT)
     //! \note available in Python bindings as writeMTextV2

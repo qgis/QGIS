@@ -23,7 +23,7 @@ class QgsOWSSourceSelect : QDialog
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 
@@ -73,7 +73,7 @@ class QgsOWSSourceSelect : QDialog
   signals:
     void addRasterLayer( const QString & rasterLayerPath,
                          const QString & baseName,
-                         const QString & providerKey );
+                         const QString  &providerKey );
     void connectionsChanged();
 
   protected:
@@ -146,10 +146,10 @@ class QgsOWSSourceSelect : QDialog
     */
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( const QString& authId );
+    QString descriptionForAuthId( const QString &authId );
 
-    void addWmsListRow( const QDomElement& item, int row );
-    void addWmsListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement &item, int row );
+    void addWmsListItem( const QDomElement &el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 

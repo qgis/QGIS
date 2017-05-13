@@ -1,7 +1,6 @@
 core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
-core/qgsdataitem.sip
 core/qgsdataitemprovider.sip
 core/qgsdataitemproviderregistry.sip
 core/qgsdbfilterproxymodel.sip
@@ -13,10 +12,6 @@ core/qgsexpressioncontextgenerator.sip
 core/qgsfeaturefilterprovider.sip
 core/qgsfeatureiterator.sip
 core/qgsfeaturerequest.sip
-core/qgsfieldconstraints.sip
-core/qgsfields.sip
-core/qgsfieldformatterregistry.sip
-core/qgsfieldformatter.sip
 core/qgsgeometrysimplifier.sip
 core/qgsgeometryvalidator.sip
 core/qgsgml.sip
@@ -86,15 +81,12 @@ core/qgssimplifymethod.sip
 core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip
-core/qgsstatisticalsummary.sip
-core/qgsstringstatisticalsummary.sip
 core/qgsstringutils.sip
 core/qgstaskmanager.sip
 core/qgstolerance.sip
 core/qgstracer.sip
 core/qgstrackedvectorlayertools.sip
 core/qgsunittypes.sip
-core/qgsvector.sip
 core/qgsvectordataprovider.sip
 core/qgsvectorfilewriter.sip
 core/qgsvectorfilewritertask.sip
@@ -267,7 +259,6 @@ gui/qgsblendmodecombobox.sip
 gui/qgisinterface.sip
 gui/qgsactionmenu.sip
 gui/qgsadvanceddigitizingcanvasitem.sip
-gui/qgsadvanceddigitizingdockwidget.sip
 gui/qgsattributedialog.sip
 gui/qgsattributeeditorcontext.sip
 gui/qgsattributeform.sip
@@ -276,18 +267,12 @@ gui/qgsattributeforminterface.sip
 gui/qgsattributetypeloaddialog.sip
 gui/qgsbrowsertreeview.sip
 gui/qgsbusyindicatordialog.sip
-gui/qgscollapsiblegroupbox.sip
 gui/qgscodeeditor.sip
 gui/qgscodeeditorpython.sip
 gui/qgscodeeditorsql.sip
 gui/qgscodeeditorhtml.sip
 gui/qgscodeeditorcss.sip
 gui/qgscharacterselectdialog.sip
-gui/qgscolorbrewercolorrampdialog.sip
-gui/qgscolordialog.sip
-gui/qgscolorschemelist.sip
-gui/qgscolorswatchgrid.sip
-gui/qgscolorwidgets.sip
 gui/qgscomposerinterface.sip
 gui/qgscomposeritemcombobox.sip
 gui/qgscomposerruler.sip
@@ -316,7 +301,6 @@ gui/qgsformannotation.sip
 gui/qgsgeometryrubberband.sip
 gui/qgsgradientcolorrampdialog.sip
 gui/qgsgradientstopeditor.sip
-gui/qgsgroupwmsdatadialog.sip
 gui/qgshelp.sip
 gui/qgshighlight.sip
 gui/qgshistogramwidget.sip
@@ -523,7 +507,6 @@ analysis/interpolation/qgsidwinterpolator.sip
 analysis/interpolation/qgstininterpolator.sip
 analysis/openstreetmap/qgsosmbase.sip
 analysis/openstreetmap/qgsosmdatabase.sip
-analysis/openstreetmap/qgsosmdownload.sip
 analysis/openstreetmap/qgsosmimport.sip
 analysis/raster/qgsalignraster.sip
 analysis/raster/qgsderivativefilter.sip

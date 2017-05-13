@@ -113,6 +113,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def checkExtentCRS(self):
         unmatchingCRS = False
         hasExtent = False
+        context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for param in self.alg.parameters:
@@ -128,7 +129,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                 if layer.crs() != projectCRS:
                                     unmatchingCRS = True
 
-                        p = dataobjects.getLayerFromString(inputlayer)
+                        p = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
                         if p is not None:
                             if p.crs() != projectCRS:
                                 unmatchingCRS = True

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Constructor for QgsProjectionSelectionTreeWidget.
      */
-    QgsProjectionSelectionTreeWidget( QWidget *parent = nullptr );
+    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsProjectionSelectionTreeWidget();
 

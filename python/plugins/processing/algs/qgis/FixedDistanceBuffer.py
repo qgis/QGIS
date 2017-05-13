@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes
+from qgis.core import (QgsWkbTypes,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -96,7 +97,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)
         segments = int(self.getParameterValue(self.SEGMENTS))

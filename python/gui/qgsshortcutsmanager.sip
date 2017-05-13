@@ -14,7 +14,7 @@ class QgsShortcutsManager: QObject
   public:
 
     //! Return the singleton instance of the manager.
-    static QgsShortcutsManager* instance();
+    static QgsShortcutsManager *instance();
 
     /** Constructor for QgsShortcutsManager.
      * @param parent parent object
@@ -22,7 +22,7 @@ class QgsShortcutsManager: QObject
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */
-    QgsShortcutsManager( QObject *parent /TransferThis/ = nullptr, const QString& settingsRoot = "/shortcuts/" );
+    QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.
@@ -31,7 +31,7 @@ class QgsShortcutsManager: QObject
      * @see registerAllChildActions()
      * @see registerAllChildShortcuts()
      */
-    void registerAllChildren( QObject* object, bool recursive = false );
+    void registerAllChildren( QObject *object, bool recursive = false );
 
     /** Automatically registers all QActions which are children of the passed object.
      * @param object parent object containing actions to register
@@ -40,7 +40,7 @@ class QgsShortcutsManager: QObject
      * @see registerAllChildren()
      * @see registerAllChildShortcuts()
      */
-    void registerAllChildActions( QObject* object, bool recursive = false );
+    void registerAllChildActions( QObject *object, bool recursive = false );
 
     /** Automatically registers all QShortcuts which are children of the passed object.
      * @param object parent object containing shortcuts to register
@@ -49,7 +49,7 @@ class QgsShortcutsManager: QObject
      * @see registerAllChildren()
      * @see registerAllChildActions()
      */
-    void registerAllChildShortcuts( QObject* object, bool recursive = false );
+    void registerAllChildShortcuts( QObject *object, bool recursive = false );
 
     /** Registers an action with the manager so the shortcut can be configured in GUI.
      * @param action action to register. The action must have a unique text string for
@@ -60,7 +60,7 @@ class QgsShortcutsManager: QObject
      * @see unregisterAction()
      * @see registerAllChildActions()
      */
-    bool registerAction( QAction* action, const QString& defaultShortcut = QString() );
+    bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
 
     /** Registers a QShortcut with the manager so the shortcut can be configured in GUI.
     * @param shortcut QShortcut to register. The shortcut must have a unique QObject::objectName() for
@@ -70,7 +70,7 @@ class QgsShortcutsManager: QObject
     * @see registerAction()
     * @see registerAllChildShortcuts()
     */
-    bool registerShortcut( QShortcut* shortcut, const QString& defaultSequence = QString() );
+    bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString() );
 
     /** Removes an action from the manager.
      * @param action action to remove
@@ -79,7 +79,7 @@ class QgsShortcutsManager: QObject
      * @see registerAction()
      * @see unregisterShortcut()
      */
-    bool unregisterAction( QAction* action );
+    bool unregisterAction( QAction *action );
 
     /** Removes a shortcut from the manager.
      * @param shortcut shortcut to remove
@@ -88,7 +88,7 @@ class QgsShortcutsManager: QObject
      * @see registerShortcut()
      * @see unregisterAction()
      */
-    bool unregisterShortcut( QShortcut* shortcut );
+    bool unregisterShortcut( QShortcut *shortcut );
 
     /** Returns a list of all actions in the manager.
      * @see listShortcuts()
@@ -113,21 +113,21 @@ class QgsShortcutsManager: QObject
      * @param object QAction or QShortcut to return default key sequence for
      * @see defaultKeySequence()
      */
-    QString objectDefaultKeySequence( QObject* object ) const;
+    QString objectDefaultKeySequence( QObject *object ) const;
 
     /** Returns the default sequence for an action. An empty return string indicates
      * no default sequence.
      * @param action action to return default key sequence for
      * @see objectDefaultKeySequence()
      */
-    QString defaultKeySequence( QAction* action ) const;
+    QString defaultKeySequence( QAction *action ) const;
 
     /** Returns the default sequence for a shortcut. An empty return string indicates
      * no default sequence.
      * @param shortcut shortcut to return default key sequence for
      * @see objectDefaultKeySequence()
      */
-    QString defaultKeySequence( QShortcut* shortcut ) const;
+    QString defaultKeySequence( QShortcut *shortcut ) const;
 
     /** Modifies an action or shortcut's key sequence.
      * @param name name of action or shortcut to modify. Must match the action's QAction::text() or the
@@ -135,28 +135,28 @@ class QgsShortcutsManager: QObject
      * @param sequence new shortcut key sequence
      * @see setObjectKeySequence()
      */
-    bool setKeySequence( const QString& name, const QString& sequence );
+    bool setKeySequence( const QString &name, const QString &sequence );
 
     /** Modifies an object's (either a QAction or a QShortcut) key sequence.
      * @param object QAction or QShortcut to modify
      * @param sequence new shortcut key sequence
      * @see setKeySequence()
      */
-    bool setObjectKeySequence( QObject* object, const QString& sequence );
+    bool setObjectKeySequence( QObject *object, const QString &sequence );
 
     /** Modifies an action's key sequence.
      * @param action action to modify
      * @param sequence new shortcut key sequence
      * @see setObjectKeySequence()
      */
-    bool setKeySequence( QAction* action, const QString& sequence );
+    bool setKeySequence( QAction *action, const QString &sequence );
 
     /** Modifies a shortcuts's key sequence.
      * @param shortcut QShortcut to modify
      * @param sequence new shortcut key sequence
      * @see setObjectKeySequence()
      */
-    bool setKeySequence( QShortcut* shortcut, const QString& sequence );
+    bool setKeySequence( QShortcut *shortcut, const QString &sequence );
 
     /** Returns the object (QAction or QShortcut) matching the specified key sequence,
      * @param sequence key sequence to find
@@ -164,33 +164,33 @@ class QgsShortcutsManager: QObject
      * @see actionForSequence()
      * @see shortcutForSequence()
      */
-    QObject* objectForSequence( const QKeySequence& sequence ) const;
+    QObject *objectForSequence( const QKeySequence &sequence ) const;
 
     /** Returns the action which is associated for a shortcut sequence, or nullptr if no action is associated.
      * @param sequence shortcut key sequence
      * @see objectForSequence()
      * @see shortcutForSequence()
      */
-    QAction* actionForSequence( const QKeySequence& sequence ) const;
+    QAction *actionForSequence( const QKeySequence &sequence ) const;
 
     /** Returns the shortcut which is associated for a key sequence, or nullptr if no shortcut is associated.
      * @param sequence shortcut key sequence
      * @see objectForSequence()
      * @see actionForSequence()
      */
-    QShortcut* shortcutForSequence( const QKeySequence& sequence ) const;
+    QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /** Returns an action by its name, or nullptr if nothing found.
      * @param name action name. Must match QAction's text.
      * @see shortcutByName()
      */
-    QAction* actionByName( const QString& name ) const;
+    QAction *actionByName( const QString &name ) const;
 
     /** Returns a shortcut by its name, or nullptr if nothing found
      * @param name shortcut name. Must match QShortcut's QObject::objectName() property.
      * @see actionByName()
      */
-    QShortcut* shortcutByName( const QString& name ) const;
+    QShortcut *shortcutByName( const QString &name ) const;
 
     //! Returns the root settings path used to store shortcut customisation.
     QString settingsPath() const;

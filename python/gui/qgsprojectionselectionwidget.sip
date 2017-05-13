@@ -30,7 +30,7 @@ class QgsProjectionSelectionWidget : QWidget
      * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
-    QgsProjectionSelectionDialog* dialog();
+    QgsProjectionSelectionDialog *dialog();
 
     /** Returns the currently selected CRS for the widget
      * @returns current CRS
@@ -57,7 +57,7 @@ class QgsProjectionSelectionWidget : QWidget
      * by default and must be set visible by calling setOptionVisible().
      * @note added in QGIS 3.0
      */
-    void setNotSetText( const QString& text );
+    void setNotSetText( const QString &text );
 
   signals:
 
@@ -76,13 +76,13 @@ class QgsProjectionSelectionWidget : QWidget
     /** Sets the current CRS for the widget
      * @param crs new CRS
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
      * @param crs layer CRS
      */
-    void setLayerCrs( const QgsCoordinateReferenceSystem& crs );
+    void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Opens the dialog for selecting a new CRS
      */

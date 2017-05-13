@@ -18,6 +18,7 @@
 #define QGSGLOWEFFECT_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspainteffect.h"
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      * \see ramp
      * \see setColorType
      */
-    void setRamp( QgsColorRamp *ramp );
+    void setRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /** Returns the color ramp used for the glow. This only applies if the colorType()
      * is set to ColorRamp. The glow will utilize colors from the ramp.
@@ -239,7 +240,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsOuterGlowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsOuterGlowEffect();
 
@@ -269,7 +270,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
      * \param map encoded properties string map
      * \returns new QgsInnerGlowEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsInnerGlowEffect();
 

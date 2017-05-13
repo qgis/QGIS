@@ -56,9 +56,14 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! returns whether the draw decorations element is checked
     bool drawDecorations() const;
 
+    //! returns whether a world file will be created
+    bool saveWorldFile() const;
+
   private:
 
     void updateDpi( int dpi );
+    void updateOutputWidth( int width );
+    void updateOutputHeight( int height );
     void updateExtent( const QgsRectangle &extent );
     void updateScale( double scale );
     void updateOutputSize();

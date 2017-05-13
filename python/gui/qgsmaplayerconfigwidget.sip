@@ -17,7 +17,7 @@ public:
      * @note The widget is created each time the panel is selected in the dock.
      * Keep the loading light as possible for speed in the UI.
      */
-  QgsMapLayerConfigWidget(QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0);
+  QgsMapLayerConfigWidget(QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0);
 
 public slots:
 

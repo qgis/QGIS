@@ -80,7 +80,7 @@ class QgsPaintEffect
     };
 
     QgsPaintEffect();
-    QgsPaintEffect( const QgsPaintEffect& other );
+    QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
 
     /** Returns the effect type.
@@ -91,7 +91,7 @@ class QgsPaintEffect
     /** Duplicates an effect by creating a deep copy of the effect
      * @returns clone of paint effect
      */
-    virtual QgsPaintEffect* clone() const = 0 /Factory/;
+    virtual QgsPaintEffect *clone() const = 0 /Factory/;
 
     /** Returns the properties describing the paint effect encoded in a
      * string format.
@@ -106,7 +106,7 @@ class QgsPaintEffect
      * @param props effect properties encoded in a string map
      * @see properties
      */
-    virtual void readProperties( const QgsStringMap& props ) = 0;
+    virtual void readProperties( const QgsStringMap &props ) = 0;
 
     /** Saves the current state of the effect to a DOM element. The default
      * behavior is to save the properties string map returned by
@@ -116,21 +116,21 @@ class QgsPaintEffect
      * @returns true if save was successful
      * @see readProperties
      */
-    virtual bool saveProperties( QDomDocument& doc, QDomElement& element ) const;
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
 
     /** Restores the effect to the state described by a DOM element.
      * @param element DOM element describing an effect's state
      * @returns true if read was successful
      * @see saveProperties
      */
-    virtual bool readProperties( const QDomElement& element );
+    virtual bool readProperties( const QDomElement &element );
 
     /** Renders a picture using the effect.
      * @param picture source QPicture to render
      * @param context destination render context
      * @see begin
      */
-    virtual void render( QPicture& picture, QgsRenderContext& context );
+    virtual void render( QPicture &picture, QgsRenderContext &context );
 
     /** Begins intercepting paint operations to a render context. When the corresponding
      * @link end @endlink member is called all intercepted paint operations will be
@@ -139,14 +139,14 @@ class QgsPaintEffect
      * @see end
      * @see render
      */
-    virtual void begin( QgsRenderContext& context );
+    virtual void begin( QgsRenderContext &context );
 
     /** Ends interception of paint operations to a render context, and draws the result
      * to the render context after being modified by the effect.
      * @param context destination render context
      * @see begin
      */
-    virtual void end( QgsRenderContext& context );
+    virtual void end( QgsRenderContext &context );
 
     /** Returns whether the effect is enabled
      * @returns true if effect is enabled
@@ -182,7 +182,7 @@ class QgsPaintEffect
      * @param context destination render context
      * @see drawSource
      */
-    virtual void draw( QgsRenderContext& context ) = 0;
+    virtual void draw( QgsRenderContext &context ) = 0;
 
     /** Draws the source QPicture onto the specified painter. Handles scaling of the picture
      * to account for the destination painter's DPI.
@@ -190,7 +190,7 @@ class QgsPaintEffect
      * @see source
      * @see sourceAsImage
      */
-    void drawSource( QPainter& painter );
+    void drawSource( QPainter &painter );
 
     /** Returns the source QPicture. The @link draw @endlink member can utilize this when
      * drawing the effect.
@@ -198,7 +198,7 @@ class QgsPaintEffect
      * @see drawSource
      * @see sourceAsImage
      */
-    const QPicture* source() const;
+    const QPicture *source() const;
 
     /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
      * utilize this when drawing the effect. The image will be padded or cropped from the original
@@ -210,7 +210,7 @@ class QgsPaintEffect
      * @see imageOffset
      * @see boundingRect
      */
-    QImage* sourceAsImage( QgsRenderContext &context );
+    QImage *sourceAsImage( QgsRenderContext &context );
 
     /** Returns the offset which should be used when drawing the source image on to a destination
      * render context.
@@ -218,7 +218,7 @@ class QgsPaintEffect
      * @returns point offset for image top left corner
      * @see sourceAsImage
      */
-    QPointF imageOffset( const QgsRenderContext& context ) const;
+    QPointF imageOffset( const QgsRenderContext &context ) const;
 
     /** Returns the bounding rect required for drawing the effect. This method can be used
      * to expand the bounding rect of a source picture to account for offset or blurring
@@ -228,14 +228,14 @@ class QgsPaintEffect
      * @returns modified bounding rect
      * @see sourceAsImage
      */
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
     /** Applies a workaround to a QPainter to avoid an issue with incorrect scaling
      * when drawing QPictures. This may need to be called by derived classes prior
      * to rendering results onto a painter.
      * @param painter destination painter
      */
-    void fixQPictureDpi( QPainter* painter ) const;
+    void fixQPictureDpi( QPainter *painter ) const;
 
 };
 
@@ -266,12 +266,12 @@ class QgsDrawSourceEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsDrawSourceEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     virtual QString type() const;
-    virtual QgsDrawSourceEffect* clone() const /Factory/;
+    virtual QgsDrawSourceEffect *clone() const /Factory/;
     virtual QgsStringMap properties() const;
-    virtual void readProperties( const QgsStringMap& props );
+    virtual void readProperties( const QgsStringMap &props );
 
     /** Sets the transparency for the effect
      * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
@@ -303,7 +303,7 @@ class QgsDrawSourceEffect : QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context );
+    virtual void draw( QgsRenderContext &context );
 
 };
 
@@ -320,7 +320,7 @@ class QgsEffectPainter
      * @param renderContext the QgsRenderContext object
      * @note Added in QGIS 3.0
      */
-    QgsEffectPainter( QgsRenderContext& renderContext );
+    QgsEffectPainter( QgsRenderContext &renderContext );
 
     /**
      * QgsEffectPainter constructor alternative if no painter translation is needed
@@ -329,7 +329,7 @@ class QgsEffectPainter
      * @param effect the QgsPaintEffect object
      * @note Added in QGIS 3.0
      */
-    QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect );
+    QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect );
     ~QgsEffectPainter();
 
     /**
@@ -337,5 +337,5 @@ class QgsEffectPainter
      *
      * @param effect the QgsPaintEffect object
      */
-    void setEffect( QgsPaintEffect* effect );
+    void setEffect( QgsPaintEffect *effect );
 };

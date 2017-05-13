@@ -17,6 +17,7 @@
 #define QGSCOMPOSERHTML_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposermultiframe.h"
 #include "qgsfeature.h"
 #include <QUrl>
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
       ManualHtml //!< HTML content is manually set for the item
     };
 
-    QgsComposerHtml( QgsComposition *c, bool createUndoCommands );
+    QgsComposerHtml( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
     ~QgsComposerHtml();
 

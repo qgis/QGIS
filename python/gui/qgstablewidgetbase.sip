@@ -11,14 +11,14 @@ class QgsTableWidgetBase: public QWidget
     /**
      * Constructor.
      */
-    explicit QgsTableWidgetBase( QWidget* parent );
+    explicit QgsTableWidgetBase( QWidget *parent );
 
   protected:
     /**
      * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
      */
-    void init( QAbstractTableModel* model );
+    void init( QAbstractTableModel *model );
 
   signals:
     /**

@@ -15,24 +15,24 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsSimpleFillSymbolLayer* clone() const /Factory/;
+    virtual QgsSimpleFillSymbolLayer *clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
@@ -44,14 +44,14 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     QColor strokeColor() const;
     /** Set stroke color.
      * @note added in 2.1 */
-    void setStrokeColor( const QColor& color );
+    void setStrokeColor( const QColor &color );
 
     /** Get fill color.
      * @note added in 2.1 */
     QColor fillColor() const;
     /** Set fill color.
      * @note added in 2.1 */
-    void setFillColor( const QColor& color );
+    void setFillColor( const QColor &color );
 
     Qt::PenStyle strokeStyle() const;
     void setStrokeStyle( Qt::PenStyle strokeStyle );
@@ -76,8 +76,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 
     /** Sets the units for the fill's offset.
      * @param unit offset units
@@ -90,8 +90,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -99,12 +99,12 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const;
+    double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
-    QColor dxfColor( QgsSymbolRenderContext& context ) const;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    QColor dxfColor( QgsSymbolRenderContext &context ) const;
     Qt::PenStyle dxfPenStyle() const;
-    QColor dxfBrushColor( QgsSymbolRenderContext& context ) const;
+    QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
     Qt::BrushStyle dxfBrushStyle() const;
 };
 
@@ -153,23 +153,23 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsGradientFillSymbolLayer* clone() const /Factory/;
+    virtual QgsGradientFillSymbolLayer *clone() const /Factory/;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const;
+    double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     /** Type of gradient, e.g., linear or radial*/
     GradientType gradientType() const;
@@ -180,12 +180,12 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
     void setGradientColorType( GradientColorType gradientColorType );
 
     /** Color ramp used for the gradient fill, only used if the gradient color type is set to ColorRamp*/
-    QgsColorRamp* colorRamp();
-    void setColorRamp( QgsColorRamp* ramp );
+    QgsColorRamp *colorRamp();
+    void setColorRamp( QgsColorRamp *ramp );
 
     /** Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor*/
     QColor color2() const;
-    void setColor2( const QColor& color2 );
+    void setColor2( const QColor &color2 );
 
     /** Coordinate mode for gradient. Controls how the gradient stops are positioned.*/
     GradientCoordinateMode coordinateMode() const;
@@ -219,8 +219,8 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -251,23 +251,23 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsShapeburstFillSymbolLayer* clone() const /Factory/;
+    virtual QgsShapeburstFillSymbolLayer *clone() const /Factory/;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const;
+    double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     /** Sets the blur radius, which controls the amount of blurring applied to the fill.
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
@@ -330,8 +330,8 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      */
     QgsUnitTypes::RenderUnit distanceUnit() const;
 
-    void setDistanceMapUnitScale( const QgsMapUnitScale& scale );
-    const QgsMapUnitScale& distanceMapUnitScale() const;
+    void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
+    const QgsMapUnitScale &distanceMapUnitScale() const;
 
     /** Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
      * or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
@@ -360,14 +360,14 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      * @see setColorType
      * @see colorRamp
      */
-    void setColorRamp( QgsColorRamp* ramp );
+    void setColorRamp( QgsColorRamp *ramp );
     /** Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType::ColorRamp
      * @returns a QgsColorRamp color ramp
      * @note added in 2.3
      * @see setColorRamp
      * @see colorType
      */
-    QgsColorRamp* colorRamp();
+    QgsColorRamp *colorRamp();
 
     /** Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType::SimpleTwoColor.
      * @param color2 QColor to use for endpoint of gradient
@@ -375,7 +375,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      * @see setColorType
      * @see color2
      */
-    void setColor2( const QColor& color2 );
+    void setColor2( const QColor &color2 );
     /** Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType::SimpleTwoColor
      * @returns a QColor indicating the color of the endpoint of the gradient
      * @note added in 2.3
@@ -428,8 +428,8 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
      */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -448,10 +448,10 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
   public:
     QgsImageFillSymbolLayer();
     virtual ~QgsImageFillSymbolLayer();
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-    virtual QgsSymbol* subSymbol();
-    virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
+    virtual QgsSymbol *subSymbol();
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
@@ -464,30 +464,30 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
-    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
-    virtual QColor dxfColor( QgsSymbolRenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
   protected:
 
-    virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+    virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
   private:
 
-    QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer& other );
+    QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
 };
 
 /** \ingroup core
@@ -508,29 +508,29 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
       Viewport
     };
 
-    QgsRasterFillSymbolLayer( const QString& imageFilePath = QString() );
+    QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
     ~QgsRasterFillSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
     // implemented from base classes
     QString layerType() const;
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
-    void startRender( QgsSymbolRenderContext& context );
-    void stopRender( QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void startRender( QgsSymbolRenderContext &context );
+    void stopRender( QgsSymbolRenderContext &context );
     QgsStringMap properties() const;
-    virtual QgsRasterFillSymbolLayer* clone() const;
-    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
+    virtual QgsRasterFillSymbolLayer *clone() const;
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbol* subSymbol();
-    virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
+    virtual QgsSymbol *subSymbol();
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     /** Sets the path to the raster image used for the fill.
      * @param imagePath path to image file
      * @see imageFilePath
      */
-    void setImageFilePath( const QString& imagePath );
+    void setImageFilePath( const QString &imagePath );
     /** The path to the raster image used for the fill.
      * @returns path to image file
      * @see setImageFilePath
@@ -597,14 +597,14 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setOffset
      * @see setOffsetUnit
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     /** Returns the map unit scale for the fill's offset.
      * @returns map unit scale for offset
      * @see setOffsetMapUnitScale
      * @see offset
      * @see offsetUnit
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     /** Sets the width for scaling the image used in the fill. The image's height will also be
      * scaled to maintain the image's aspect ratio.
@@ -644,18 +644,18 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      * @see setWidth
      * @see setWidthUnit
      */
-    void setWidthMapUnitScale( const QgsMapUnitScale& scale );
+    void setWidthMapUnitScale( const QgsMapUnitScale &scale );
     /** Returns the map unit scale for the image's width.
      * @returns map unit scale for width
      * @see setWidthMapUnitScale
      * @see width
      * @see widthUnit
      */
-    const QgsMapUnitScale& widthMapUnitScale() const;
+    const QgsMapUnitScale &widthMapUnitScale() const;
 
   protected:
 
-    void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
 };
 
@@ -668,35 +668,35 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 %End
 
   public:
-    QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20, double rotation = 0.0 );
-    QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QString &svgFilePath = "", double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
-    void stopRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
+    void stopRender( QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsSVGFillSymbolLayer* clone() const /Factory/;
+    virtual QgsSVGFillSymbolLayer *clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
     //getters and setters
-    void setSvgFilePath( const QString& svgPath );
+    void setSvgFilePath( const QString &svgPath );
     QString svgFilePath() const;
     void setPatternWidth( double width );
     double patternWidth() const;
 
-    void setSvgFillColor( const QColor& c );
+    void setSvgFillColor( const QColor &c );
     QColor svgFillColor() const;
-    void setSvgStrokeColor( const QColor& c );
+    void setSvgStrokeColor( const QColor &c );
     QColor svgStrokeColor() const;
     void setSvgStrokeWidth( double w );
     double svgStrokeWidth() const;
@@ -712,8 +712,8 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit patternWidthUnit() const;
 
-    void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& patternWidthMapUnitScale() const;
+    void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &patternWidthMapUnitScale() const;
 
     /** Sets the units for the stroke width.
      * @param unit width units
@@ -726,8 +726,8 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
 
-    void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& svgStrokeWidthMapUnitScale() const;
+    void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -736,7 +736,7 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     QgsMapUnitScale mapUnitScale() const;
 
   protected:
-    void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 };
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
@@ -748,22 +748,22 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsLinePatternFillSymbolLayer* clone() const /Factory/;
+    virtual QgsLinePatternFillSymbolLayer *clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const;
+    double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
@@ -785,7 +785,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     double distance() const;
     void setLineWidth( double w );
     double lineWidth() const;
-    void setColor( const QColor& c );
+    void setColor( const QColor &c );
     QColor color() const;
     void setOffset( double offset );
     double offset() const;
@@ -803,8 +803,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit distanceUnit() const;
 
-    void setDistanceMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& distanceMapUnitScale() const;
+    void setDistanceMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &distanceMapUnitScale() const;
 
     /** Sets the units for the line's width.
      * @param unit width units
@@ -817,8 +817,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit lineWidthUnit() const;
 
-    void setLineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& lineWidthMapUnitScale() const;
+    void setLineWidthMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &lineWidthMapUnitScale() const;
 
     /** Sets the units for the line pattern's offset.
      * @param unit offset units
@@ -831,23 +831,23 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit offsetUnit() const;
 
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& offsetMapUnitScale() const;
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &offsetMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
-    QgsSymbol* subSymbol();
+    bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+    QgsSymbol *subSymbol();
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
   private:
 
-    QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer& other );
+    QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
 
 };
 
@@ -860,22 +860,22 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsPointPatternFillSymbolLayer* clone() const /Factory/;
+    virtual QgsPointPatternFillSymbolLayer *clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const;
+    double estimateMaxBleed( const QgsRenderContext &context ) const;
 
     //getters and setters
     double distanceX() const;
@@ -890,8 +890,8 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     double displacementY() const;
     void setDisplacementY( double d );
 
-    bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
-    virtual QgsSymbol* subSymbol();
+    bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+    virtual QgsSymbol *subSymbol();
 
     /** Sets the units for the horizontal distance between points in the pattern.
      * @param unit distance units
@@ -906,8 +906,8 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit distanceXUnit() const;
 
-    void setDistanceXMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& distanceXMapUnitScale() const;
+    void setDistanceXMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &distanceXMapUnitScale() const;
 
     /** Sets the units for the vertical distance between points in the pattern.
      * @param unit distance units
@@ -922,20 +922,20 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     */
     QgsUnitTypes::RenderUnit distanceYUnit() const;
 
-    void setDistanceYMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& distanceYMapUnitScale() const;
+    void setDistanceYMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &distanceYMapUnitScale() const;
 
     void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit displacementXUnit() const;
 
-    void setDisplacementXMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& displacementXMapUnitScale() const;
+    void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &displacementXMapUnitScale() const;
 
     void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit displacementYUnit() const;
 
-    void setDisplacementYMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& displacementYMapUnitScale() const;
+    void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale);
+    const QgsMapUnitScale &displacementYMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -943,17 +943,17 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    void setColor( const QColor& c );
+    void setColor( const QColor &c );
     virtual QColor color() const;
 
   protected:
-    void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+    void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
   private:
 
-    QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer& other );
+    QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer &other );
 };
 
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
@@ -968,30 +968,30 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 
     // implemented from base classes
 
     QString layerType() const;
 
-    void startRender( QgsSymbolRenderContext& context );
+    void startRender( QgsSymbolRenderContext &context );
 
-    void stopRender( QgsSymbolRenderContext& context );
+    void stopRender( QgsSymbolRenderContext &context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     QgsStringMap properties() const;
 
-    virtual QgsCentroidFillSymbolLayer* clone() const /Factory/;
+    virtual QgsCentroidFillSymbolLayer *clone() const /Factory/;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
     QColor color() const;
 
-    QgsSymbol* subSymbol();
-    bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
+    QgsSymbol *subSymbol();
+    bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -999,7 +999,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale(const QgsMapUnitScale &scale);
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;
@@ -1013,5 +1013,5 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
   private:
 
-    QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer& other );
+    QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 };

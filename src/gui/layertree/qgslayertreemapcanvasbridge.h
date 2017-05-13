@@ -17,6 +17,7 @@
 #define QGSLAYERTREEMAPCANVASBRIDGE_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     Q_OBJECT
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent SIP_TRANSFERTHIS = 0 );
 
     QgsLayerTree *rootGroup() const { return mRoot; }
     QgsMapCanvas *mapCanvas() const { return mCanvas; }

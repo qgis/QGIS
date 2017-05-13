@@ -17,6 +17,7 @@
 #define QGSSCALERANGEWIDGET_H
 
 #include <QGridLayout>
+#include "qgis.h"
 #include <QLabel>
 #include "qgis_gui.h"
 
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsScaleRangeWidget( QWidget *parent = nullptr );
+    explicit QgsScaleRangeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! set the map canvas which will be used for the current scale buttons
 

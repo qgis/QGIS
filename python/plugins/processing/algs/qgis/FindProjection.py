@@ -32,14 +32,14 @@ from qgis.core import (QgsApplication,
                        QgsGeometry,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform)
+                       QgsCoordinateTransform,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -83,8 +83,7 @@ class FindProjection(GeoAlgorithm):
                                   self.tr('Candidates')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')
         target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))

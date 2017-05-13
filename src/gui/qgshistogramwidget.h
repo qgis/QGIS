@@ -18,6 +18,7 @@
 #define QGSHISTOGRAMWIDGET_H
 
 #include "ui_qgshistogramwidgetbase.h"
+#include "qgis.h"
 
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
@@ -56,7 +57,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \param layer source vector layer
      * \param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 

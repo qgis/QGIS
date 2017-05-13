@@ -5,7 +5,7 @@ class QgsGridFileWriter
 %End
 
   public:
-    QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
+    QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
     /** Writes the grid file.
      @param showProgressDialog shows a dialog with the possibility to cancel

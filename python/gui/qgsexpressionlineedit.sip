@@ -22,12 +22,12 @@ class QgsExpressionLineEdit : QWidget
      * Constructor for QgsExpressionLineEdit.
      * @param parent parent widget
      */
-    explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = nullptr );
+    explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
         /** Sets the title used in the expression builder dialog
      * @param title dialog title
      * @see expressionDialogTitle()
      */
-    void setExpressionDialogTitle( const QString& title );
+    void setExpressionDialogTitle( const QString &title );
 
     /** Returns the title used for the expression dialog.
      * @see setExpressionDialogTitle()
@@ -49,7 +49,7 @@ class QgsExpressionLineEdit : QWidget
       * from the layer.
       * @param layer vector layer
       */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Returns the current expression shown in the widget.
      * @see setExpression()
@@ -60,7 +60,7 @@ class QgsExpressionLineEdit : QWidget
       * Returns true if the current expression is valid.
       * @param expressionError will be set to any generated error message if specified
       */
-    bool isValidExpression( QString *expressionError /Out/ = nullptr ) const;
+    bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -68,14 +68,14 @@ class QgsExpressionLineEdit : QWidget
      * @param generator A QgsExpressionContextGenerator class that will be used to
      *                  create an expression context when required.
      */
-    void registerExpressionContextGenerator( const QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
   signals:
 
     /** Emitted when the expression is changed.
      * @param expression new expression
      */
-    void expressionChanged( const QString& expression );
+    void expressionChanged( const QString &expression );
 
   public slots:
 
@@ -83,8 +83,8 @@ class QgsExpressionLineEdit : QWidget
      * @param expression expression string
      * @see expression()
      */
-    void setExpression( const QString& expression );
+    void setExpression( const QString &expression );
 
   protected:
-    void changeEvent( QEvent* event );
+    void changeEvent( QEvent *event );
 };

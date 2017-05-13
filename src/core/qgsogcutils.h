@@ -22,6 +22,7 @@ class QDomDocument;
 class QString;
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <list>
 #include <QVector>
 
@@ -126,7 +127,7 @@ class CORE_EXPORT QgsOgcUtils
     static QColor colorFromOgcFill( const QDomElement &fillElement );
 
     //! Parse XML with OGC filter into QGIS expression
-    static QgsExpression *expressionFromOgcFilter( const QDomElement &element );
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element ) SIP_FACTORY;
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)

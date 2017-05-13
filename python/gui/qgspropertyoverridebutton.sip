@@ -5,22 +5,22 @@ class QgsPropertyOverrideButton : QToolButton
 %End
   public:
 
-    QgsPropertyOverrideButton( QWidget* parent /TransferThis/ = nullptr,
-                            const QgsVectorLayer* layer = nullptr );
+    QgsPropertyOverrideButton( QWidget* parent /TransferThis/ = 0,
+                            const QgsVectorLayer *layer = 0 );
 
     void init( int propertyKey,
                const QgsProperty& property,
                const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer* layer = nullptr );
+               const QgsVectorLayer *layer = 0 );
 
     void init( int propertyKey,
                const QgsAbstractPropertyCollection& collection,
                const QgsPropertiesDefinition& definitions,
-               const QgsVectorLayer* layer = nullptr );
+               const QgsVectorLayer *layer = 0 );
 
     QgsProperty toProperty() const;
 
-    void setToProperty( const QgsProperty& property );
+    void setToProperty( const QgsProperty &property );
 
     int propertyKey() const;
 
@@ -32,15 +32,15 @@ class QgsPropertyOverrideButton : QToolButton
 
     QString usageInfo() const;
 
-    void setUsageInfo( const QString& info );
+    void setUsageInfo( const QString &info );
 
-    void setVectorLayer( const QgsVectorLayer* layer );
+    void setVectorLayer( const QgsVectorLayer *layer );
 
-    const QgsVectorLayer* vectorLayer() const;
+    const QgsVectorLayer *vectorLayer() const;
 
-    void registerCheckedWidget( QWidget* widget );
+    void registerCheckedWidget( QWidget *widget );
 
-    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
   public slots:
 

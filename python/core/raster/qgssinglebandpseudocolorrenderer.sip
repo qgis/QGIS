@@ -6,21 +6,21 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
   public:
 
     /** Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
+    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider *provider, int band, QgsRasterShader *shader /Transfer/ );
     ~QgsSingleBandPseudoColorRenderer();
-    virtual QgsSingleBandPseudoColorRenderer * clone() const /Factory/;
+    virtual QgsSingleBandPseudoColorRenderer  *clone() const /Factory/;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     /** Takes ownership of the shader*/
-    void setShader( QgsRasterShader* shader /Transfer/ );
+    void setShader( QgsRasterShader *shader /Transfer/ );
 
-    QgsRasterShader* shader();
+    QgsRasterShader *shader();
 
     //! @note available in python as constShader
-    const QgsRasterShader* shader() const /PyName=constShader/;
+    const QgsRasterShader *shader() const /PyName=constShader/;
 
     /** Creates a color ramp shader
      * @param colorRamp vector color ramp
@@ -30,11 +30,11 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
      * @param clip clip out of range values
      * @param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp* colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle& extent = QgsRectangle() );
+    void createShader( QgsColorRamp *colorRamp = 0, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
     QList<int> usesBands() const;
 
@@ -57,6 +57,6 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
   private:
 
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
-    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
+    const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer& );
 
 };

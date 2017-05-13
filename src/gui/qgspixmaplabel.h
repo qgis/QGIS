@@ -17,6 +17,7 @@
 #define QGSPIXMAPLABEL_H
 
 #include <QLabel>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -28,7 +29,7 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent = nullptr );
+    explicit QgsPixmapLabel( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Calculates the height for the given width.

@@ -18,6 +18,7 @@
 #define QGSAUTHIMPORTCERTDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "ui_qgsauthimportcertdialog.h"
 
 #include <QSslCertificate>
@@ -54,7 +55,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
      * \param filter Certificate type filter to apply to dialog
      * \param input Type of input(s) for certificates
      */
-    explicit QgsAuthImportCertDialog( QWidget *parent = nullptr,
+    explicit QgsAuthImportCertDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
                                       QgsAuthImportCertDialog::CertFilter filter = NoFilter,
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
 

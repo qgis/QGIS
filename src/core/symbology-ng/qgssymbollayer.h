@@ -24,6 +24,7 @@
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Shall be reimplemented by subclasses to create a deep copy of the instance.
      */
-    virtual QgsSymbolLayer *clone() const = 0;
+    virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
@@ -599,13 +600,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \param offsetY will be set to required vertical offset (in painter units)
      * \note available in Python as markerOffsetWithWidthAndHeight
      */
-    void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const;
+    void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const SIP_PYNAME( markerOffsetWithWidthAndHeight );
 
     //! \note available in Python bindings as markerOffset2
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
-                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
+                       const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const SIP_PYNAME( markerOffset2 );
 
     /** Adjusts a marker offset to account for rotation.
      * \param offset offset prior to rotation

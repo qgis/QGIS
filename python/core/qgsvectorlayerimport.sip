@@ -50,10 +50,10 @@ class QProgressDialog;
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem& destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage /Out/ = nullptr,
+                                    QString *errorMessage /Out/ = 0,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = nullptr,
-                                    QProgressDialog *progress = nullptr
+                                    QMap<QString, QVariant> *options = 0,
+                                    QProgressDialog *progress = 0
                                   );
 
     /** Constructor for QgsVectorLayerImport.
@@ -73,8 +73,8 @@ class QProgressDialog;
                           QgsWkbTypes::Type geometryType,
                           const QgsCoordinateReferenceSystem& crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = nullptr,
-                          QProgressDialog *progress = nullptr
+                          const QMap<QString, QVariant> *options = 0,
+                          QProgressDialog *progress = 0
                         );
 
     /** Checks whether there were any errors */
@@ -86,7 +86,7 @@ class QProgressDialog;
     int errorCount() const;
 
     /** Add feature to the new created layer */
-    bool addFeature( QgsFeature& feature );
+    bool addFeature( QgsFeature &feature );
 
     /** Close the new created layer */
     ~QgsVectorLayerImport();
@@ -100,5 +100,5 @@ class QProgressDialog;
 
   private:
 
-    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
+    QgsVectorLayerImport( const QgsVectorLayerImport &rh );
 };

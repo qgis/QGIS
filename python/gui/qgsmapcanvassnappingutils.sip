@@ -4,7 +4,7 @@ class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 #include <qgsmapcanvassnappingutils.h>
 %End
   public:
-    QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = 0 );
+    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 
   protected:
     virtual void prepareIndexStarting( int count );

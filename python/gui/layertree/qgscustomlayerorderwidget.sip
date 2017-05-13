@@ -15,5 +15,5 @@ class QgsCustomLayerOrderWidget : QWidget
 %End
 
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent /TransferThis/ = 0 );
 };

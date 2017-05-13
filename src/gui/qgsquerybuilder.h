@@ -15,6 +15,7 @@
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
 #include <map>
+#include "qgis.h"
 #include <vector>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -48,7 +49,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0,
                      Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();

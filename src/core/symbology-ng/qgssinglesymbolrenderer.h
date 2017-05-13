@@ -28,7 +28,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
-    QgsSingleSymbolRenderer( QgsSymbol *symbol );
+    QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     QgsSymbol *symbol() const;
-    void setSymbol( QgsSymbol *s );
+    void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
     virtual QString dump() const override;
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     //! creates a QgsSingleSymbolRenderer from an existing renderer.
     //! \since QGIS 2.5
     //! \returns a new renderer if the conversion was possible, otherwise 0.
-    static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   protected:
     std::unique_ptr<QgsSymbol> mSymbol;

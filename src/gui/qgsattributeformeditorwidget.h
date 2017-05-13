@@ -17,6 +17,7 @@
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QVariant>
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
@@ -57,7 +58,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * \param form parent attribute form
      */
     explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget,
-                                           QgsAttributeForm *form );
+                                           QgsAttributeForm *form SIP_TRANSFERTHIS );
 
     ~QgsAttributeFormEditorWidget();
 

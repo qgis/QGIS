@@ -39,7 +39,7 @@ from qgis.core import (QgsFeature,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -71,10 +71,8 @@ class SymmetricalDifference(GeoAlgorithm):
                                     self.tr('Symmetrical difference')))
 
     def processAlgorithm(self, context, feedback):
-        layerA = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
-        layerB = dataobjects.getLayerFromString(
-            self.getParameterValue(self.OVERLAY))
+        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.OVERLAY), context)
 
         geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)
@@ -83,8 +81,8 @@ class SymmetricalDifference(GeoAlgorithm):
         featB = QgsFeature()
         outFeat = QgsFeature()
 
-        indexA = vector.spatialindex(layerB)
-        indexB = vector.spatialindex(layerA)
+        indexA = QgsProcessingUtils.createSpatialIndex(layerB, context)
+        indexB = QgsProcessingUtils.createSpatialIndex(layerA, context)
 
         featuresA = QgsProcessingUtils.getFeatures(layerA, context)
         featuresB = QgsProcessingUtils.getFeatures(layerB, context)

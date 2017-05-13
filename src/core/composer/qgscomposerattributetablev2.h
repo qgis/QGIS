@@ -19,6 +19,7 @@
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposertablev2.h"
 #include "qgsvectorlayerref.h"
 
@@ -68,7 +69,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
       RelationChildren //!< Table shows attributes from related child features
     };
 
-    QgsComposerAttributeTableV2( QgsComposition *composition, bool createUndoCommands );
+    QgsComposerAttributeTableV2( QgsComposition *composition SIP_TRANSFERTHIS, bool createUndoCommands );
 
     virtual QString displayName() const override;
 

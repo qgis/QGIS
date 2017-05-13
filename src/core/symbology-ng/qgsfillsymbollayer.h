@@ -17,6 +17,7 @@
 #define QGSFILLSYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)
@@ -47,8 +48,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -344,7 +345,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -652,7 +653,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsRasterFillSymbolLayer( const QString &imageFilePath = QString() );
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     // implemented from base classes
     QString layerType() const override;
@@ -837,8 +838,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -944,8 +945,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsLinePatternFillSymbolLayer();
     ~QgsLinePatternFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
 
@@ -1078,8 +1079,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsPointPatternFillSymbolLayer();
     ~QgsPointPatternFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     QString layerType() const override;
 
@@ -1217,8 +1218,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 

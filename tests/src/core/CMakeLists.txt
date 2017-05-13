@@ -128,6 +128,7 @@ SET(TESTS
  testqgsmaprendererjob.cpp
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
+ testqgsmapsettingsutils.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp

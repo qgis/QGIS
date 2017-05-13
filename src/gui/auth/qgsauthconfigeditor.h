@@ -18,6 +18,7 @@
 #define QGSAUTHCONFIGEDITOR_H
 
 #include <QSqlTableModel>
+#include "qgis.h"
 #include <QWidget>
 
 #include "ui_qgsauthconfigeditor.h"
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
      * \param showUtilities Whether to show the widget's utilities button
      * \param relayMessages Whether to relay auth manager messages to internal message bar
      */
-    explicit QgsAuthConfigEditor( QWidget *parent = nullptr, bool showUtilities = true, bool relayMessages = true );
+    explicit QgsAuthConfigEditor( QWidget *parent SIP_TRANSFERTHIS = 0, bool showUtilities = true, bool relayMessages = true );
 
     //! Hide the widget's title, e.g. when embedding
     void toggleTitleVisibility( bool visible );

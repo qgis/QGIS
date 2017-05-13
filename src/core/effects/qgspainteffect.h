@@ -76,7 +76,7 @@ class CORE_EXPORT QgsPaintEffect
     /** Duplicates an effect by creating a deep copy of the effect
      * \returns clone of paint effect
      */
-    virtual QgsPaintEffect *clone() const = 0;
+    virtual QgsPaintEffect *clone() const = 0 SIP_FACTORY;
 
     /** Returns the properties describing the paint effect encoded in a
      * string format.
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
      * \param map encoded properties string map
      * \returns new QgsDrawSourceEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     virtual QString type() const override { return QStringLiteral( "drawSource" ); }
     virtual QgsDrawSourceEffect *clone() const override;

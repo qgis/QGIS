@@ -35,8 +35,8 @@ gtimeout ${TIMEOUT}s ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)
 
 rv=$?
 
-if [ $? -eq 124 ] ; then
-    echo '\033[0;33mBuild and test timeout. Please restart the build for useful results.\033[0m'
+if [ $rv -eq 124 ] ; then
+    printf '\n\n\033[0;33mBuild and test timeout. Please restart the build for meaningful results.\033[0m\n'
 fi
 
 exit $rv

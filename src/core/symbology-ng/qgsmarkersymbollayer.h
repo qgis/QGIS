@@ -17,6 +17,7 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
@@ -210,13 +211,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     /** Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
      * \param element XML element containing SLD definition of symbol
      * \returns new QgsSimpleMarkerSymbolLayer
      */
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // reimplemented from base classes
 
@@ -409,7 +410,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
      * \param properties a property map containing symbol properties (see properties())
      * \returns new QgsFilledMarkerSymbolLayer
      */
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -450,8 +451,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 
@@ -551,8 +552,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     // static stuff
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     // implemented from base classes
 

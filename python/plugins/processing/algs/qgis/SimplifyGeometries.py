@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -79,7 +79,7 @@ class SimplifyGeometries(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
         method = self.getParameterValue(self.METHOD)
 

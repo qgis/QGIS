@@ -5,8 +5,8 @@ class QgsComposerNodesItem: QgsComposerItem
 %End
   public:
 
-    QgsComposerNodesItem( const QString& mTagName, QgsComposition* c );
-    QgsComposerNodesItem( const QString& mTagName, const QPolygonF& polygon, QgsComposition* c );
+    QgsComposerNodesItem( const QString &mTagName, QgsComposition *c );
+    QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition *c );
     ~QgsComposerNodesItem();
 
     /** Add a node in current shape.
@@ -30,7 +30,7 @@ class QgsComposerNodesItem: QgsComposerItem
     bool moveNode( const int index, QPointF node );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Search the nearest node in shape within a maximal area. Returns the
      * index of the nearest node or -1.
@@ -52,7 +52,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Remove a node from the shape.
      * @param index of the node to delete
@@ -80,7 +80,7 @@ class QgsComposerNodesItem: QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
 
   protected:
 

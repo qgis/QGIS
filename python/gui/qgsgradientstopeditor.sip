@@ -17,13 +17,13 @@ class QgsGradientStopEditor : QWidget
      * @param parent parent widget
      * @param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget* parent /TransferThis/ = nullptr, QgsGradientColorRamp* ramp = nullptr );
+    QgsGradientStopEditor( QWidget *parent /TransferThis/ = 0, QgsGradientColorRamp *ramp = 0 );
 
     /** Sets the current ramp shown in the editor.
      * @param ramp color ramp
      * @see gradientRamp()
      */
-    void setGradientRamp( const QgsGradientColorRamp& ramp );
+    void setGradientRamp( const QgsGradientColorRamp &ramp );
 
     /** Returns the current ramp created by the editor.
      * @see setGradientRamp()
@@ -42,7 +42,7 @@ class QgsGradientStopEditor : QWidget
     QgsGradientStop selectedStop() const;
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
+    void paintEvent( QPaintEvent *event );
 
   public slots:
 
@@ -53,7 +53,7 @@ class QgsGradientStopEditor : QWidget
      * @see setColor1()
      * @see setColor2()
      */
-    void setSelectedStopColor( const QColor& color );
+    void setSelectedStopColor( const QColor &color );
 
     /** Sets the offset for the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be repositioned.
@@ -69,7 +69,7 @@ class QgsGradientStopEditor : QWidget
      * @see setSelectedStopColor()
      * @see setSelectedStopOffset()
      */
-    void setSelectedStopDetails( const QColor& color, double offset );
+    void setSelectedStopDetails( const QColor &color, double offset );
 
     /** Deletes the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be deleted.
@@ -81,14 +81,14 @@ class QgsGradientStopEditor : QWidget
      * @see setColor2()
      * @see setSelectedStopColor()
      */
-    void setColor1( const QColor& color );
+    void setColor1( const QColor &color );
 
     /** Sets the color for the last stop.
      * @param color new stop color
      * @see setColor1()
      * @see setSelectedStopColor()
      */
-    void setColor2( const QColor& color );
+    void setColor2( const QColor &color );
 
   signals:
 
@@ -98,17 +98,17 @@ class QgsGradientStopEditor : QWidget
     /** Emitted when the current selected stop changes.
      * @param stop details about newly selected stop
      */
-    void selectedStopChanged( const QgsGradientStop& stop );
+    void selectedStopChanged( const QgsGradientStop &stop );
 
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
-    virtual void mouseDoubleClickEvent( QMouseEvent * event );
-    virtual void keyPressEvent( QKeyEvent * event );
+    virtual void mouseDoubleClickEvent( QMouseEvent  *event );
+    virtual void keyPressEvent( QKeyEvent  *event );
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent  *e );
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e );

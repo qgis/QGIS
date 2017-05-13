@@ -17,6 +17,7 @@
 #define QGSSEARCHWIDGETWRAPPER_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QMap>
 #include <QVariant>
 
@@ -87,7 +88,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \param fieldIdx  The field which will be controlled
      * \param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns filter flags supported by the search widget.
      * \since QGIS 2.16

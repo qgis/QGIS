@@ -25,15 +25,15 @@ class QgsBlurEffect : QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsBlurEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 
     QgsBlurEffect();
     virtual ~QgsBlurEffect();
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
-    virtual void readProperties( const QgsStringMap& props );
-    virtual QgsBlurEffect* clone() const /Factory/;
+    virtual void readProperties( const QgsStringMap &props );
+    virtual QgsBlurEffect *clone() const /Factory/;
 
     /** Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
@@ -93,7 +93,7 @@ class QgsBlurEffect : QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context );
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
+    virtual void draw( QgsRenderContext &context );
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
 };

@@ -43,7 +43,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent /TransferThis/ = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 
     /**
      * Set the attribute table model that backs this model
@@ -52,7 +52,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      *
      * @note added in 2.0
      */
-    void setSourceModel( QgsAttributeTableModel* sourceModel );
+    void setSourceModel( QgsAttributeTableModel *sourceModel );
 
     /**
      * Changes the sort order of the features. If set to true, selected features
@@ -75,7 +75,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds &ids );
 
     /**
      * Get a list of currently filtered feature ids
@@ -124,7 +124,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      *
      * @return The feature id of the feature visible in the provided row
      */
-    QgsFeatureId rowToId( const QModelIndex& row );
+    QgsFeatureId rowToId( const QModelIndex &row );
 
     QModelIndex fidToIndex( QgsFeatureId fid );
 
@@ -132,11 +132,11 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
-    QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const;
+    QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
 
-    virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const;
+    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
-    virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const;
+    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
@@ -164,9 +164,9 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
     QString sortExpression() const;
 
     /** Returns the map canvas*/
-    QgsMapCanvas* mapCanvas() const;
+    QgsMapCanvas *mapCanvas() const;
 
-    virtual QVariant data( const QModelIndex& index, int role ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const;
 
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
@@ -183,7 +183,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      * in which order they are shown as well as if and where an action column
      * is shown.
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
   signals:
     /**

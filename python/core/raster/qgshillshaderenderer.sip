@@ -17,11 +17,11 @@ class QgsHillshadeRenderer : QgsRasterRenderer
      * @param lightAzimuth The azimuth of the light source
      * @param lightAltitude The altitude of the light source
      */
-    QgsHillshadeRenderer( QgsRasterInterface* input, int band, double lightAzimuth, double lightAngle );
+    QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle );
 
     ~QgsHillshadeRenderer();
 
-    virtual QgsHillshadeRenderer * clone() const /Factory/;
+    virtual QgsHillshadeRenderer  *clone() const /Factory/;
 
     /**
      * @brief Factory method to create a new renderer
@@ -29,11 +29,11 @@ class QgsHillshadeRenderer : QgsRasterRenderer
      * @param input The raster input interface.
      * @return A new QgsHillshadeRenderer.
      */
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
     QList<int> usesBands() const;
 

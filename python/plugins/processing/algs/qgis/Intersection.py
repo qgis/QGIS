@@ -39,7 +39,7 @@ from qgis.core import (QgsFeatureRequest,
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -79,16 +79,14 @@ class Intersection(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
     def processAlgorithm(self, context, feedback):
-        vlayerA = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
-        vlayerB = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT2))
+        vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT2), context)
 
         geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
         outFeat = QgsFeature()
-        index = vector.spatialindex(vlayerB)
+        index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
         selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
         total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
         for current, inFeatA in enumerate(selectionA):

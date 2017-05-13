@@ -17,7 +17,7 @@ class QgsAttributeDialog : QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /** Saves the size and position for the next time
      *  this dialog box will be used.
@@ -58,7 +58,7 @@ class QgsAttributeDialog : QDialog
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message );
+    void setEditCommandMessage( const QString &message );
 
     /**
      * Intercept window activate/deactive events to show/hide the highlighted feature.

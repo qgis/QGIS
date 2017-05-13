@@ -7,7 +7,7 @@ class QgsExpressionFieldBuffer
     class ExpressionField
     {
       ExpressionField();
-      ExpressionField( const QString& exp, const QgsField& fld );
+      ExpressionField( const QString &exp, const QgsField &fld );
     };
 
     QgsExpressionFieldBuffer();
@@ -18,7 +18,7 @@ class QgsExpressionFieldBuffer
      * @param exp expression to add
      * @param fld field to add
      */
-    void addExpression( const QString& exp, const QgsField& fld );
+    void addExpression( const QString &exp, const QgsField &fld );
 
     /**
      * Remove an expression from the buffer
@@ -35,7 +35,7 @@ class QgsExpressionFieldBuffer
      *
      * @note added in 3.0
      */
-    void renameExpression( int index, const QString& name );
+    void renameExpression( int index, const QString &name );
 
     /**
      * Changes the expression at a given index
@@ -45,24 +45,24 @@ class QgsExpressionFieldBuffer
      *
      * @note added in 2.9
      */
-    void updateExpression( int index, const QString& exp );
+    void updateExpression( int index, const QString &exp );
 
     /**
      * Saves expressions to xml under the layer node
      */
-    void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
     /**
      * Reads expressions from project file
      */
-    void readXml( const QDomNode& layer_node );
+    void readXml( const QDomNode &layer_node );
 
     /**
      * Adds fields with the expressions buffered in this object to a QgsFields object
      *
      * @param flds The fields to be updated
      */
-    void updateFields( QgsFields& flds );
+    void updateFields( QgsFields &flds );
 
     QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
 };

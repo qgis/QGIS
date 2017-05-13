@@ -6,11 +6,11 @@ class QgsPaperGrid : QGraphicsRectItem
 #include <qgspaperitem.h>
 %End
   public:
-    QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
+    QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition );
     ~QgsPaperGrid();
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 };
 
@@ -21,29 +21,29 @@ class QgsPaperItem : QgsComposerItem
 #include <qgspaperitem.h>
 %End
   public:
-    QgsPaperItem( QgsComposition* c /TransferThis/ );
-    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/ );
+    QgsPaperItem( QgsComposition *c /TransferThis/ );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition /TransferThis/ );
     ~QgsPaperItem();
 
     /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
     /** Stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is the Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
-    virtual void setSceneRect( const QRectF& rectangle );
+    virtual void setSceneRect( const QRectF &rectangle );
 
   private:
     QgsPaperItem();

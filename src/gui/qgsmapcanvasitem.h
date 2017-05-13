@@ -17,6 +17,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
+#include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
   protected:
 
     //! protected constructor: cannot be constructed directly
-    QgsMapCanvasItem( QgsMapCanvas *mapCanvas );
+    QgsMapCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     virtual ~QgsMapCanvasItem();
 

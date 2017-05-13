@@ -29,7 +29,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
      * @param colorRamp vector color ramp used to classify the color ramp shader
      * @returns new QgsColorRampShader
      */
-    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp* colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
     ~QgsColorRampShader();
 
@@ -42,14 +42,14 @@ class QgsColorRampShader : QgsRasterShaderFunction
       //! default constructor
       ColorRampItem();
       //! convenience constructor
-      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() );
+      ColorRampItem( double val, const QColor &col, const QString &lbl = QString() );
 
       QString label;
       double value;
       QColor color;
 
       // compare operator for sorting
-      bool operator<( const QgsColorRampShader::ColorRampItem& other ) const;
+      bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
     };
 
     /** \brief Get the custom colormap*/
@@ -62,25 +62,25 @@ class QgsColorRampShader : QgsRasterShaderFunction
      * @note added in QGIS 3.0
      * @see setSourceColorRamp()
      */
-    QgsColorRamp* sourceColorRamp() const /Factory/;
+    QgsColorRamp *sourceColorRamp() const /Factory/;
 
     /** Set the source color ramp
      * @note added in QGIS 3.0
      * @see sourceColorRamp()
      */
-    void setSourceColorRamp( QgsColorRamp* colorramp /Transfer/ );
+    void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );
 
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
 
     /** \brief Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& list ); //TODO: sort on set
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list );
 
     /** \brief Set the color ramp type*/
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( const QString& type );
+    void setColorRampType( const QString &type );
 
     /** Classify color ramp shader
      * @param classes number of classes
@@ -88,14 +88,14 @@ class QgsColorRampShader : QgsRasterShaderFunction
      * @param extent extent used in classification (only used in quantile mode)
      * @param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle& extent = QgsRectangle(), QgsRasterInterface* input = nullptr );
+    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
 
     /** Classify color ramp shader
      * @param band raster band used in classification (only used in quantile mode)
      * @param extent extent used in classification (only used in quantile mode)
      * @param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int band = -1, const QgsRectangle& extent = QgsRectangle(), QgsRasterInterface* input = nullptr ) /PyName=classifyColorRampV2/;
+    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
 
 
     /** \brief Generates and new RGB value based on one input value */
@@ -104,7 +104,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Generates and new RGB value based on original RGB value */
     bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode );

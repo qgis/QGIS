@@ -15,7 +15,7 @@ class QgsPasswordLineEdit : QLineEdit
     /** Constructor for QgsPasswordLineEdit.
      * @param parent parent widget
      */
-    QgsPasswordLineEdit( QWidget *parent = nullptr );
+    QgsPasswordLineEdit( QWidget *parent = 0 );
 
     /** Define if a lock icon shall be shown on the left of the widget
      * @param visible set to false to hide the lock icon

@@ -21,7 +21,7 @@ class QgsRasterShader
     /** \brief Return the minimum value for the raster shader */
     double minimumValue();
 
-    QgsRasterShaderFunction* rasterShaderFunction();
+    QgsRasterShaderFunction *rasterShaderFunction();
 
     /*
      *
@@ -44,11 +44,11 @@ class QgsRasterShader
     /** \brief Return the minimum value */
     void setMinimumValue( double );
 
-    void writeXml( QDomDocument& doc, QDomElement& parent ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
 
-    QgsRasterShader( const QgsRasterShader& rh );
+    QgsRasterShader( const QgsRasterShader &rh );
 };

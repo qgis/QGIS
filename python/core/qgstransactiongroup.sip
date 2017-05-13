@@ -29,7 +29,7 @@ class QgsTransactionGroup : QObject
      *
      * Will return true if it is compatible and has been added.
      */
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
 
     /**
      * Get the set of layers currently managed by this transaction group.
@@ -64,5 +64,5 @@ class QgsTransactionGroup : QObject
     /**
      * Will be emitted whenever there is a commit error
      */
-    void commitError( const QString& msg );
+    void commitError( const QString &msg );
 };

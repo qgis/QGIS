@@ -43,7 +43,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from math import sqrt
 
@@ -96,10 +96,8 @@ class HubDistanceLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        layerPoints = dataobjects.getLayerFromString(
-            self.getParameterValue(self.POINTS))
-        layerHubs = dataobjects.getLayerFromString(
-            self.getParameterValue(self.HUBS))
+        layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
+        layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         fieldName = self.getParameterValue(self.FIELD)
 
         units = self.UNITS[self.getParameterValue(self.UNIT)]
@@ -115,7 +113,7 @@ class HubDistanceLines(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, layerPoints.crs(),
                                                                      context)
 
-        index = vector.spatialindex(layerHubs)
+        index = QgsProcessingUtils.createSpatialIndex(layerHubs, context)
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(layerPoints.crs())

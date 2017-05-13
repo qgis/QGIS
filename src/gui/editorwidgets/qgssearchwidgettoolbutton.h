@@ -17,6 +17,7 @@
 #define QGSSEARCHWIDGETTOOLBUTTON_H
 
 #include "editorwidgets/core/qgssearchwidgetwrapper.h"
+#include "qgis.h"
 #include <QToolButton>
 #include "qgis_gui.h"
 
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     /** Constructor for QgsSearchWidgetToolButton.
      * \param parent parent object
      */
-    explicit QgsSearchWidgetToolButton( QWidget *parent = nullptr );
+    explicit QgsSearchWidgetToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Sets the available filter flags to show in the widget. Any active flags
      * (see activeFlags()) which are not present in the new available filter

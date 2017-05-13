@@ -40,7 +40,6 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class ExecuteSQL(GeoAlgorithm):
@@ -116,7 +115,7 @@ class ExecuteSQL(GeoAlgorithm):
         layerIdx = 1
         if layers:
             for layerSource in layers.split(';'):
-                layer = dataobjects.getLayerFromString(layerSource)
+                layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
                 if layer:
                     df.addSource('input{}'.format(layerIdx), layer.id())
                 layerIdx += 1

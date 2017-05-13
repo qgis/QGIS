@@ -35,7 +35,6 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -100,8 +99,7 @@ class CheckValidity(GeoAlgorithm):
             settings.setValue(settings_method_key, initial_method_setting)
 
     def doCheck(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         settings = QgsSettings()
         method = int(settings.value(settings_method_key, 1))

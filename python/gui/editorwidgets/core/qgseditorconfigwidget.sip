@@ -20,11 +20,11 @@ class QgsEditorConfigWidget : QWidget
 %End
 
   public:
-    explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ );
+    explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ );
     virtual QVariantMap config() = 0;
-    virtual void setConfig( const QVariantMap& config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
     int field();
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
     QgsExpressionContext createExpressionContext() const;
 
   signals:

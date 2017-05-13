@@ -16,6 +16,7 @@
 #define QGSEXPRESSIONCONTEXT_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QVariant>
 #include <QHash>
 #include <QString>
@@ -87,7 +88,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
 
     /** Returns a clone of the function.
      */
-    virtual QgsScopedExpressionFunction *clone() const = 0;
+    virtual QgsScopedExpressionFunction *clone() const = 0 SIP_FACTORY;
 
     virtual bool usesGeometry( const QgsExpression::NodeFunction *node ) const override;
 
@@ -249,7 +250,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * \param function function to insert. Ownership is transferred to the scope.
      * \see addVariable()
      */
-    void addFunction( const QString &name, QgsScopedExpressionFunction *function );
+    void addFunction( const QString &name, QgsScopedExpressionFunction *function SIP_TRANSFER );
 
     /**
      * Returns true if the scope has a feature associated with it.
@@ -473,7 +474,7 @@ class CORE_EXPORT QgsExpressionContext
      * context. Ownership of the scope is transferred to the stack.
      * \param scope expression context to append to context
      */
-    void appendScope( QgsExpressionContextScope *scope );
+    void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     /** Appends a list of scopes to the end of the context. This scopes will override
      * any matching variables or functions provided by existing scopes within the
@@ -492,7 +493,7 @@ class CORE_EXPORT QgsExpressionContext
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scope is transferred to the stack.
      */
-    QgsExpressionContext &operator<< ( QgsExpressionContextScope *scope );
+    QgsExpressionContext &operator<< ( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     /** Convenience function for setting a feature for the context. The feature
      * will be set within the last scope of the context, so will override any
@@ -620,7 +621,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, QGIS version numbers and variables specified through QGIS options.
      * \see setGlobalVariable()
      */
-    static QgsExpressionContextScope *globalScope();
+    static QgsExpressionContextScope *globalScope() SIP_FACTORY;
 
     /** Sets a global context variable. This variable will be contained within scopes retrieved via
      * globalScope().
@@ -644,7 +645,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param project What project to use
      * \see setProjectVariable()
      */
-    static QgsExpressionContextScope *projectScope( const QgsProject *project );
+    static QgsExpressionContextScope *projectScope( const QgsProject *project ) SIP_FACTORY;
 
     /** Sets a project context variable. This variable will be contained within scopes retrieved via
      * projectScope().
@@ -668,7 +669,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
      */
-    static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer );
+    static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer ) SIP_FACTORY;
 
     /** Creates a list of three scopes: global, layer's project and layer.
      * \since QGIS 3.0
@@ -697,7 +698,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapSettings object.
      * For instance, map scale and rotation.
      */
-    static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings );
+    static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) SIP_FACTORY;
 
     /**
      * Updates a symbol scope related to a QgsSymbol to an expression context.
@@ -711,7 +712,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, number of pages and page sizes.
      * \param composition source composition
      */
-    static QgsExpressionContextScope *compositionScope( const QgsComposition *composition );
+    static QgsExpressionContextScope *compositionScope( const QgsComposition *composition ) SIP_FACTORY;
 
     /** Sets a composition context variable. This variable will be contained within scopes retrieved via
      * compositionScope().
@@ -736,13 +737,13 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, current page name and number.
      * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas );
+    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
 
     /** Creates a new scope which contains variables and functions relating to a QgsComposerItem.
      * For instance, item size and position.
      * \param composerItem source composer item
      */
-    static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem );
+    static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) SIP_FACTORY;
 
     /** Sets a composer item context variable. This variable will be contained within scopes retrieved via
      * composerItemScope().

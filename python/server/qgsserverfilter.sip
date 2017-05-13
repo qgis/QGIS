@@ -42,11 +42,11 @@ class QgsServerFilter
      * QgsServerInterface passed to plugins constructors
      * and must be passed to QgsServerFilter instances.
      */
-    QgsServerFilter( QgsServerInterface* serverInterface );
+    QgsServerFilter( QgsServerInterface *serverInterface );
     /** Destructor */
     virtual ~QgsServerFilter();
     /** Return the QgsServerInterface instance*/
-    QgsServerInterface* serverInterface();
+    QgsServerInterface *serverInterface();
     /** Method called when the QgsRequestHandler is ready and populated with
     * parameters, just before entering the main switch for core services.*/
     virtual void requestReady();

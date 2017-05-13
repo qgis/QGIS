@@ -31,7 +31,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.tools import dataobjects, vector
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 
@@ -71,7 +70,7 @@ class StatisticsByCategories(GeoAlgorithm):
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 

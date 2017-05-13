@@ -5,10 +5,10 @@ class QgsLUDialog: QDialog
 %End
 
   public:
-    QgsLUDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsLUDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
     ~QgsLUDialog();
     QString lowerValue() const;
-    void setLowerValue( const QString& val );
+    void setLowerValue( const QString &val );
     QString upperValue() const;
-    void setUpperValue( const QString& val );
+    void setUpperValue( const QString &val );
 };

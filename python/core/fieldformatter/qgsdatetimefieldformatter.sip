@@ -23,7 +23,7 @@ class QgsDateTimeFieldFormatter : QgsFieldFormatter
 
     QString id() const;
 
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
     static QString defaultFormat( const QVariant::Type type );
 };

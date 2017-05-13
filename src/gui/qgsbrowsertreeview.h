@@ -17,6 +17,7 @@
 #define QGSBROWSERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 //class QgsBrowserModel;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent = nullptr );
+    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual void setModel( QAbstractItemModel *model ) override;
     virtual void showEvent( QShowEvent *e ) override;

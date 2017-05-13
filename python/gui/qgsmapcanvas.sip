@@ -113,7 +113,7 @@ class QgsMapCanvas : QGraphicsView
     void selectionChangedSlot();
 
     //! Save the convtents of the map canvas to disk as an image
-    void saveAsImage( const QString& fileName, QPixmap * QPixmap = 0, const QString& = "PNG" );
+    void saveAsImage( const QString &fileName, QPixmap  *QPixmap = 0, const QString& = "PNG" );
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
@@ -133,7 +133,7 @@ class QgsMapCanvas : QGraphicsView
     void writeProject( QDomDocument & );
 
     //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
+    void getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId );
 
     //! Sets the factor of magnification to apply to the map canvas. Indeed, we
     //! increase/decrease the DPI of the map settings according to this factor
@@ -196,16 +196,16 @@ class QgsMapCanvas : QGraphicsView
     void layersChanged();
 
     //! Emit key press event
-    void keyPressed( QKeyEvent * e );
+    void keyPressed( QKeyEvent  *e );
 
     //! Emit key release event
-    void keyReleased( QKeyEvent * e );
+    void keyReleased( QKeyEvent  *e );
 
-    void mapToolSet( QgsMapTool *newTool, QgsMapTool* oldTool );
+    void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
     // ### QGIS 3: remove the signal
     //! Emitted when selection in any layer gets changed
-    void selectionChanged( QgsMapLayer * layer );
+    void selectionChanged( QgsMapLayer  *layer );
 
     //! Emitted when zoom last status changed
     void zoomLastStatusChanged( bool );
@@ -219,7 +219,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emitted when the current layer is changed
     //! @note added in 2.8
-    void currentLayerChanged( QgsMapLayer* layer );
+    void currentLayerChanged( QgsMapLayer *layer );
 
     void layerStyleOverridesChanged();
     void themeChanged( const QString &theme );
@@ -228,37 +228,37 @@ class QgsMapCanvas : QGraphicsView
   protected:
 
     //! Overridden standard event to be gestures aware
-    bool event( QEvent * e );
+    bool event( QEvent  *e );
 
     //! Overridden key press event
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent  *e );
 
     //! Overridden key release event
-    void keyReleaseEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent  *e );
 
     //! Overridden mouse double click event
-    void mouseDoubleClickEvent( QMouseEvent * e );
+    void mouseDoubleClickEvent( QMouseEvent  *e );
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e );
+    void mouseMoveEvent( QMouseEvent  *e );
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e );
+    void mousePressEvent( QMouseEvent  *e );
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e );
+    void mouseReleaseEvent( QMouseEvent  *e );
 
     //! Overridden mouse wheel event
-    void wheelEvent( QWheelEvent * e );
+    void wheelEvent( QWheelEvent  *e );
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e );
+    void resizeEvent( QResizeEvent  *e );
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * e );
+    void paintEvent( QPaintEvent  *e );
 
     //! Overridden drag enter event
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent  *e );
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
@@ -270,5 +270,5 @@ class QgsMapCanvas : QGraphicsView
     void updateDatumTransformEntries();
 
   private:
-    void connectNotify( const char * signal );
+    void connectNotify( const char  *signal );
 }; // class QgsMapCanvas

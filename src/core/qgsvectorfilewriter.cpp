@@ -1222,7 +1222,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          MetaData(
                            QStringLiteral( "INTERLIS 2" ),
                            QObject::tr( "INTERLIS 2" ),
-                           QStringLiteral( "*.itf *.xml *.ili" ),
+                           QStringLiteral( "*.xtf *.xml *.ili" ),
                            QStringLiteral( "ili" ),
                            datasetOptions,
                            layerOptions

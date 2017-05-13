@@ -16,7 +16,7 @@ class QgsPanelWidgetStack: public QWidget
       * for added panels.
       * @param parent
       */
-    QgsPanelWidgetStack( QWidget* parent = nullptr );
+    QgsPanelWidgetStack( QWidget *parent = 0 );
 
     /**
      * Adds the main panel widget to the stack and selects it for the user
@@ -28,7 +28,7 @@ class QgsPanelWidgetStack: public QWidget
      * @see mainPanel()
      * @see takeMainPanel()
      */
-    void setMainPanel( QgsPanelWidget* panel );
+    void setMainPanel( QgsPanelWidget *panel );
 
     /**
      * The main panel widget that is set in the stack. The main widget can not be closed
@@ -36,7 +36,7 @@ class QgsPanelWidgetStack: public QWidget
      * @return The main QgsPanelWidget that is active in the stack.
      * @see setMainPanel()
      */
-    QgsPanelWidget* mainPanel();
+    QgsPanelWidget *mainPanel();
 
     /**
      * Removes the main panel widget from the stack and transfers ownsership to the
@@ -45,7 +45,7 @@ class QgsPanelWidgetStack: public QWidget
      * @see mainPanel()
      * @see setMainPanel()
      */
-    QgsPanelWidget* takeMainPanel();
+    QgsPanelWidget *takeMainPanel();
 
     /**
      * Clear the stack of all widgets. Unless the panels autoDelete is set to false
@@ -57,7 +57,7 @@ class QgsPanelWidgetStack: public QWidget
      * Returns the panel currently shown in the stack.
      * @note added in QGIS 3.0
      */
-    QgsPanelWidget* currentPanel();
+    QgsPanelWidget *currentPanel();
 
   public slots:
     /**
@@ -81,14 +81,14 @@ class QgsPanelWidgetStack: public QWidget
      * nested panels. Auto switches the the given panel for the user.
      * @param panel The panel to show.
      */
-    void showPanel( QgsPanelWidget* panel );
+    void showPanel( QgsPanelWidget *panel );
 
     /**
      * Closes the panel in the widget. Will also delete the widget.
      * This slot is normally auto connected to panelAccepted when a panel is shown.
      * @param panel The panel to close.
      */
-    void closePanel( QgsPanelWidget* panel );
+    void closePanel( QgsPanelWidget *panel );
 
   protected:
 

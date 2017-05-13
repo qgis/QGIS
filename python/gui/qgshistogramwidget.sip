@@ -20,7 +20,7 @@ class QgsHistogramWidget : QWidget
      * @param layer source vector layer
      * @param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer* layer = 0, const QString& fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *layer = 0, const QString &fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 
@@ -28,7 +28,7 @@ class QgsHistogramWidget : QWidget
      * @see setLayer
      * @see sourceFieldExp
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
 
     /** Returns the source field name or expression used to calculate values displayed
      * in the histogram.
@@ -44,7 +44,7 @@ class QgsHistogramWidget : QWidget
      * @see pen
      * @see setBrush
      */
-    void setPen( const QPen& pen );
+    void setPen( const QPen &pen );
 
     /** Returns the pen used when drawing histogram bars.
      * @see setPen
@@ -58,7 +58,7 @@ class QgsHistogramWidget : QWidget
      * @see brush
      * @see setPen
      */
-    void setBrush( const QBrush& brush );
+    void setBrush( const QBrush &brush );
 
     /** Returns the brush used when drawing histogram bars.
      * @see setBrush
@@ -71,7 +71,7 @@ class QgsHistogramWidget : QWidget
      * @param ranges graduated range list
      * @see graduatedRanges
      */
-    void setGraduatedRanges( const QgsRangeList& ranges );
+    void setGraduatedRanges( const QgsRangeList &ranges );
 
     /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
@@ -91,7 +91,7 @@ class QgsHistogramWidget : QWidget
      * @see xAxisTitle
      * @see setYAxisTitle
      */
-    void setXAxisTitle( const QString& title );
+    void setXAxisTitle( const QString &title );
 
     /** Returns the title for the histogram's y-axis.
      * @see setYAxisTitle
@@ -104,7 +104,7 @@ class QgsHistogramWidget : QWidget
      * @see yAxisTitle
      * @see setXAxisTitle
      */
-    void setYAxisTitle( const QString& title );
+    void setYAxisTitle( const QString &title );
 
   public slots:
 
@@ -121,13 +121,13 @@ class QgsHistogramWidget : QWidget
      * @param layer source vector layer
      * @see setSourceFieldExp
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Sets the source field or expression to use for values in the histogram.
      * @param fieldOrExp field name or expression string
      * @see setLayer
      */
-    void setSourceFieldExp( const QString& fieldOrExp );
+    void setSourceFieldExp( const QString &fieldOrExp );
 
   protected:
 
@@ -135,5 +135,5 @@ class QgsHistogramWidget : QWidget
      */
     virtual void drawHistogram();
 
-    virtual void paintEvent( QPaintEvent * event );
+    virtual void paintEvent( QPaintEvent  *event );
 };

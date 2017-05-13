@@ -44,7 +44,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
-    QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer = nullptr );
+    QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer SIP_TRANSFER = 0 );
 
     //! Direct copies are forbidden. Use clone() instead.
     QgsInvertedPolygonRenderer( const QgsInvertedPolygonRenderer & ) = delete;
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
     //! Creates a renderer out of an XML, for loading
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc ) override;
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
      */
-    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
 

@@ -18,6 +18,7 @@
 #define QGSAUTHCONFIGSELECT_H
 
 #include <QWidget>
+#include "qgis.h"
 
 #include "ui_qgsauthconfigselect.h"
 #include "qgsauthconfig.h"
@@ -39,7 +40,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
      * \param parent Parent widget
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
+    explicit QgsAuthConfigSelect( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &dataprovider = QString() );
 
     //! Set the authentication config id for the resource
     void setConfigId( const QString &authcfg );
@@ -114,7 +115,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
      * \param datauri URI QString with of without an authcfg=ID string
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigUriEdit( QWidget *parent = nullptr,
+    explicit QgsAuthConfigUriEdit( QWidget *parent SIP_TRANSFERTHIS = 0,
                                    const QString &datauri = QString(),
                                    const QString &dataprovider = QString() );
 

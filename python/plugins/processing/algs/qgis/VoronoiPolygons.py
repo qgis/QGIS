@@ -37,7 +37,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 from . import voronoi
 
@@ -71,7 +71,7 @@ class VoronoiPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         buf = self.getParameterValue(self.BUFFER)
 

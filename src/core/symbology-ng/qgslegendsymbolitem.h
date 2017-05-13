@@ -17,6 +17,7 @@
 #define QGSLEGENDSYMBOLITEMV2_H
 
 #include <QString>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
@@ -69,7 +70,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     QString parentRuleKey() const { return mParentKey; }
 
     //! Set symbol of the item. Takes ownership of symbol.
-    void setSymbol( QgsSymbol *s );
+    void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
   private:
     //! symbol. owned by the struct. can be null.

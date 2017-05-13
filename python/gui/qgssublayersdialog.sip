@@ -28,12 +28,12 @@ class QgsSublayersDialog : QDialog
     //! @note added in 2.16
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
-    QgsSublayersDialog( ProviderType providerType, const QString& name, QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& fl = 0 );
+    QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = 0 );
     ~QgsSublayersDialog();
 
     //! Populate the table with layers
     //! @note added in 2.16
-    void populateLayerTable( const QgsSublayersDialog::LayerDefinitionList& list );
+    void populateLayerTable( const QgsSublayersDialog::LayerDefinitionList &list );
 
     //! Returns list of selected layers
     //! @note added in 2.16

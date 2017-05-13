@@ -16,6 +16,7 @@
 #define QGSEXTENTGROUPBOX_H
 
 #include "qgscollapsiblegroupbox.h"
+#include "qgis.h"
 
 #include "ui_qgsextentgroupboxwidget.h"
 
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-    explicit QgsExtentGroupBox( QWidget *parent = nullptr );
+    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     enum ExtentState
     {

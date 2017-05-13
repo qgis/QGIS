@@ -42,16 +42,16 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
      * @param canvas         The map canvas on which the tool works
      * @param cadDockWidget  The cad dock widget which will be used to adjust mouse events
      */
-    explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
+    explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     ~QgsMapToolAdvancedDigitizing();
 
     //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasPressEvent( QgsMapMouseEvent* e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
     //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     /**
      * The capture mode
@@ -78,7 +78,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
      */
     virtual void deactivate();
 
-    QgsAdvancedDigitizingDockWidget* cadDockWidget() const;
+    QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
 
   protected:
     /**
@@ -89,7 +89,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasPressEvent( QgsMapMouseEvent* e );
+    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 
 
     /**
@@ -100,7 +100,7 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
 
 
     /**
@@ -111,5 +111,5 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
      *
      * @param e Mouse events prepared by the cad system
      */
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 };

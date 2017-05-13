@@ -16,6 +16,7 @@
 #define QGSSINGLESYMBOLRENDERERV2WIDGET_H
 
 #include "qgsrendererwidget.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsSingleSymbolRenderer;
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     Q_OBJECT
 
   public:
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsSingleSymbolRendererWidget();

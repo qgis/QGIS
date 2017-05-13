@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
 
 class AddTableField(GeoAlgorithm):
@@ -91,8 +90,7 @@ class AddTableField(GeoAlgorithm):
         fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         fields = layer.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',

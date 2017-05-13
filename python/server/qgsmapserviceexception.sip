@@ -33,7 +33,7 @@ class QgsMapServiceException
 #include <qgsmapserviceexception.h>
 %End
   public:
-    QgsMapServiceException( const QString& code, const QString& message );
+    QgsMapServiceException( const QString &code, const QString &message );
     QString code() const;
     QString message() const;
 

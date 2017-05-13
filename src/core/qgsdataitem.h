@@ -17,6 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
@@ -37,7 +38,7 @@ class QgsDataProvider;
 class QgsDataItem;
 class QgsAnimatedIcon;
 
-typedef QgsDataItem *dataItem_t( QString, QgsDataItem * );
+typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
 /** \ingroup core
  * Base class for all items in the model.
@@ -45,6 +46,28 @@ typedef QgsDataItem *dataItem_t( QString, QgsDataItem * );
 */
 class CORE_EXPORT QgsDataItem : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
+      sipType = sipType_QgsLayerItem;
+    else if ( qobject_cast<QgsErrorItem *>( sipCpp ) )
+      sipType = sipType_QgsErrorItem;
+    else if ( qobject_cast<QgsDirectoryItem *>( sipCpp ) )
+      sipType = sipType_QgsDirectoryItem;
+    else if ( qobject_cast<QgsFavoritesItem *>( sipCpp ) )
+      sipType = sipType_QgsFavoritesItem;
+    else if ( qobject_cast<QgsZipItem *>( sipCpp ) )
+      sipType = sipType_QgsZipItem;
+    else if ( qobject_cast<QgsDataCollectionItem *>( sipCpp ) )
+      sipType = sipType_QgsDataCollectionItem;
+    else if ( qobject_cast<QgsProjectItem *>( sipCpp ) )
+      sipType = sipType_QgsProjectItem;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_ENUMS( Type )
     Q_ENUMS( State )
@@ -60,7 +83,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     //! Create new data item.
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QString &name, const QString &path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
     virtual ~QgsDataItem();
 
     bool hasChildren();
@@ -69,7 +92,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /** Create children. Children are not expected to have parent set.
      * This method MUST BE THREAD SAFE. */
-    virtual QVector<QgsDataItem *> createChildren();
+    virtual QVector<QgsDataItem *> createChildren() SIP_FACTORY;
 
     enum State
     {
@@ -92,7 +115,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
      * \see deleteChildItem()
      */
-    virtual void addChildItem( QgsDataItem *child, bool refresh = false );
+    virtual void addChildItem( QgsDataItem *child SIP_TRANSFER, bool refresh = false );
 
     /** Removes and deletes a child item, emitting relevant signals to the model.
      * \param child child to remove. Item must exist as a current child.
@@ -104,13 +127,13 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \param child child to remove
      * \returns pointer to the removed item or null if no such item was found
      */
-    virtual QgsDataItem *removeChildItem( QgsDataItem *child );
+    virtual QgsDataItem *removeChildItem( QgsDataItem *child ) SIP_TRANSFERBACK;
 
     /** Returns true if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget *paramWidget() { return nullptr; }
+    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
     /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
@@ -383,7 +406,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString::null );
     ~QgsDataCollectionItem();
 
-    void addChild( QgsDataItem *item ) { mChildren.append( item ); }
+    void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
@@ -423,7 +446,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QString dirPath() const { return mDirPath; }
     virtual bool equal( const QgsDataItem *other ) override;
     virtual QIcon icon() override;
-    virtual QWidget *paramWidget() override;
+    virtual QWidget *paramWidget() override SIP_FACTORY;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
@@ -484,7 +507,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
-    QgsDirectoryParamWidget( const QString &path, QWidget *parent = nullptr );
+    QgsDirectoryParamWidget( const QString &path, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
@@ -549,7 +572,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList getZipFileList();
 
     //! \note not available via Python bindings
-    static QVector<dataItem_t *> sDataItemPtr;
+    static QVector<dataItem_t *> sDataItemPtr SIP_SKIP;
     static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString &uri ) { return qgsVsiPrefix( uri ); }
@@ -557,13 +580,13 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     /**
      * Creates a new data item from the specified path.
      */
-    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name );
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name ) SIP_FACTORY;
 
     /**
     * Creates a new data item from the specified path.
     * \note available in Python as itemFromFilePath
     */
-    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path );
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) SIP_FACTORY SIP_PYNAME( itemFromFilePath );
 
     static QIcon iconZip();
 

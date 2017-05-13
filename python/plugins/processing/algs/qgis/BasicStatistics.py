@@ -42,7 +42,6 @@ from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
-from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -122,8 +121,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_LAYER))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))
 

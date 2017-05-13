@@ -21,17 +21,17 @@ class QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
       ResizeFrameRightDown,
     };
 
-    QgsMapCanvasAnnotationItem( QgsAnnotation* annotation /Transfer/, QgsMapCanvas* mapCanvas /TransferThis/ );
+    QgsMapCanvasAnnotationItem( QgsAnnotation *annotation /Transfer/, QgsMapCanvas *mapCanvas /TransferThis/ );
     ~QgsMapCanvasAnnotationItem();
 
     //const QgsAnnotation* annotation() const { return mAnnotation; }
-    QgsAnnotation* annotation();
+    QgsAnnotation *annotation();
 
     void updatePosition();
 
     QRectF boundingRect() const;
 
-    void paint( QPainter * painter );
+    void paint( QPainter  *painter );
 
     /**
      * Returns the mouse move behavior for a given position in scene coordinates

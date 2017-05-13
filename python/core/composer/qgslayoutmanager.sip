@@ -6,11 +6,11 @@ class QgsLayoutManager : QObject
 %End
   public:
 
-    explicit QgsLayoutManager( QgsProject* project /TransferThis/ = 0 );
+    explicit QgsLayoutManager( QgsProject *project /TransferThis/ = 0 );
 
     ~QgsLayoutManager();
-    bool addComposition( QgsComposition* composition /Transfer/ );
-    bool removeComposition( QgsComposition* composition );
+    bool addComposition( QgsComposition *composition /Transfer/ );
+    bool removeComposition( QgsComposition *composition );
 
     void clear();
     QList< QgsComposition * > compositions() const;

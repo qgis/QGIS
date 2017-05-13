@@ -16,6 +16,7 @@
 #define QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgis.h"
 #include "qgsrendererwidget.h"
 #include <QStandardItem>
 #include <QProxyStyle>
@@ -85,7 +86,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 {
     Q_OBJECT
   public:
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();

@@ -12,14 +12,14 @@ class QgsAbstractGeometrySimplifier
     virtual ~QgsAbstractGeometrySimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const = 0;
+    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
 
     // MapToPixel simplification helper methods
   public:
     //! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-    static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol = 1.0f );
+    static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol = 1.0f );
     //! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-    static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol = 1.0f );
+    static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol = 1.0f );
 };
 
 /***************************************************************************/
@@ -39,5 +39,5 @@ class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
     virtual ~QgsTopologyPreservingSimplifier();
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const;
+    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
 };

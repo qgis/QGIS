@@ -11,12 +11,12 @@ class QgsKeyValueWidget : public QgsTableWidgetBase
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidget( QWidget* parent /TransferThis/ = 0 );
+    explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
 
     /**
      * Set the initial value of the widget.
      */
-    void setMap( const QVariantMap& map );
+    void setMap( const QVariantMap &map );
 
     /**
      * Get the edit value.

@@ -35,7 +35,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 
 class FixGeometry(GeoAlgorithm):
@@ -69,8 +69,7 @@ class FixGeometry(GeoAlgorithm):
                                     self.tr('Layer with fixed geometries')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         writer = self.getOutputFromName(
             self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.multiType(layer.wkbType()), layer.crs(), context)

@@ -116,22 +116,22 @@ class QgsAttributeTableModel : QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    QgsVectorLayer* layer() const;
+    QgsVectorLayer *layer() const;
 
     /**
      * Returns the layer cache this model uses as backend.
      */
-    QgsVectorLayerCache* layerCache() const;
+    QgsVectorLayerCache *layerCache() const;
 
     /**
      * Execute an action
      */
-    void executeAction( const QString& action, const QModelIndex &idx ) const;
+    void executeAction( const QString &action, const QModelIndex &idx ) const;
 
     /**
      * Execute a QgsMapLayerAction
      */
-    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
+    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
 
     /**
      * Return the feature attributes at given model index
@@ -154,7 +154,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @param expression The expression to cache
      */
-    void prefetchSortData( const QString& expression );
+    void prefetchSortData( const QString &expression );
 
     /**
      * The expression which was used to fill the sorting cache
@@ -168,12 +168,12 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @param request The request to use to fill this table model.
      */
-    void setRequest( const QgsFeatureRequest& request );
+    void setRequest( const QgsFeatureRequest &request );
 
     /**
      * Get the the feature request
      */
-    const QgsFeatureRequest& request() const;
+    const QgsFeatureRequest &request() const;
 
     /**
      * Sets the context in which this table is shown.
@@ -181,7 +181,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @param context The context
      */
-    void setEditorContext( const QgsAttributeEditorContext& context );
+    void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
      * Returns the context in which this table is shown.
@@ -189,7 +189,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @return The context
      */
-    const QgsAttributeEditorContext& editorContext() const;
+    const QgsAttributeEditorContext &editorContext() const;
 
     /**
      * Empty extra columns to announce from this model.
@@ -215,7 +215,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      * @param fieldName name of field whose conditional style has changed
      * @note added in QGIS 2.12
      */
-    void fieldConditionalStyleChanged( const QString& fieldName );
+    void fieldConditionalStyleChanged( const QString &fieldName );
 
   signals:
     /**

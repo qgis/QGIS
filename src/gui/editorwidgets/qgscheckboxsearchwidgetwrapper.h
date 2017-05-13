@@ -17,6 +17,7 @@
 #define QGSCHECKBOXSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
      * \param fieldIdx index of associated field
      * \param parent parent widget
      */
-    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /** Returns a variant representing the current state of the widget.
      * \note this will not be a boolean true or false value, it will instead

@@ -10,7 +10,7 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
 #include <qgsvaluerelationsearchwidgetwrapper.h>
 %End
   public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent /TransferThis/ = nullptr );
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
     bool applyDirectly();
     QString expression();
     bool valid() const;
@@ -25,8 +25,8 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget *createWidget( QWidget *parent );
+    void initWidget( QWidget *editor );
 
   protected slots:
     void onValueChanged();

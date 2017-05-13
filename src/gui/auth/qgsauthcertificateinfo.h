@@ -19,6 +19,7 @@
 #define QGSAUTHCERTIFICATEINFO_H
 
 #include <QFile>
+#include "qgis.h"
 
 #ifndef QT_NO_SSL
 #include <QtCrypto>
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
   public:
     explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
-                              QWidget *parent = nullptr,
+                              QWidget *parent SIP_TRANSFERTHIS = 0,
                               const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
@@ -152,7 +153,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      */
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,
-                                    QWidget *parent = nullptr,
+                                    QWidget *parent SIP_TRANSFERTHIS = 0,
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Get access to embedded info widget

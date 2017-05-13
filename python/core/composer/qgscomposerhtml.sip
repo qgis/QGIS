@@ -14,7 +14,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
       ManualHtml /*!< HTML content is manually set for the item*/
     };
 
-    QgsComposerHtml( QgsComposition* c /TransferThis/, bool createUndoCommands );
+    QgsComposerHtml( QgsComposition *c /TransferThis/, bool createUndoCommands );
 
     ~QgsComposerHtml();
 
@@ -43,7 +43,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see url
      * @see contentMode
      */
-    void setUrl( const QUrl& url );
+    void setUrl( const QUrl &url );
 
     /** Returns the URL of the content displayed in the item if the item is using
      * the QgsComposerHtml::Url mode.
@@ -63,7 +63,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setHtml( const QString& html );
+    void setHtml( const QString &html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
@@ -144,7 +144,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setUserStylesheet( const QString& stylesheet );
+    void setUserStylesheet( const QString &stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
@@ -173,10 +173,10 @@ class QgsComposerHtml: QgsComposerMultiFrame
 
     virtual QString displayName() const;
     QSizeF totalSize() const;
-    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
-    bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
-    void addFrame( QgsComposerFrame* frame /Transfer/, bool recalcFrameSizes = true );
+    void render( QPainter *p, const QRectF &renderExtent, const int frameIndex );
+    bool writeXml( QDomElement &elem, QDomDocument  &doc, bool ignoreFrames = false ) const;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
+    void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true );
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos );
 
@@ -189,12 +189,12 @@ class QgsComposerHtml: QgsComposerMultiFrame
      * @see setUrl
      * @see url
      */
-    void loadHtml( const bool useCache = false, const QgsExpressionContext* context = 0 );
+    void loadHtml( const bool useCache = false, const QgsExpressionContext *context = 0 );
 
     /** Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes();
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
 };

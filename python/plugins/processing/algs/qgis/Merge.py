@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFields
+from qgis.core import (QgsFields,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -70,7 +71,7 @@ class Merge(GeoAlgorithm):
         fields = QgsFields()
         totalFeatureCount = 0
         for layerSource in inLayers.split(';'):
-            layer = dataobjects.getLayerFromString(layerSource)
+            layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
@@ -88,7 +89,7 @@ class Merge(GeoAlgorithm):
                         if (dfield.type() != sfield.type()):
                             raise GeoAlgorithmExecutionException(
                                 self.tr('{} field in layer {} has different '
-                                        'data type than in other layers.'))
+                                        'data type than in other layers.'.format(sfield.name(), layerSource)))
 
                 if not found:
                     fields.append(sfield)

@@ -29,7 +29,7 @@ class QgsGraphBuilderInterface
      * @param topologyTolerance sqrt distance between source point as one graph vertex
      * @param ellipsoidID ellipsoid for edge measurement
      */
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
     //! Destructor
     virtual ~QgsGraphBuilderInterface();
@@ -44,7 +44,7 @@ class QgsGraphBuilderInterface
     double topologyTolerance();
 
     //! Returns measurement tool
-    QgsDistanceArea* distanceArea();
+    QgsDistanceArea *distanceArea();
 
     /**
      * Add vertex to the graph
@@ -63,5 +63,5 @@ class QgsGraphBuilderInterface
      * @param strategies optimization strategies
      * @note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
-    virtual void addEdge( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& strategies );
+    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &strategies );
 };

@@ -16,6 +16,7 @@
 #define QGSPROPERTYCOLLECTION_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QString>
 #include <QVariant>
 #include <QColor>
@@ -116,7 +117,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
+    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
@@ -132,7 +133,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
+    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -164,7 +165,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
+    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -180,7 +181,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
+    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
 
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
@@ -379,7 +380,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * from the newly added collection will take priority over any existing properties with the same name.
      * \param collection collection to append. Ownership is transferred to the stack.
      */
-    void appendCollection( QgsPropertyCollection *collection );
+    void appendCollection( QgsPropertyCollection *collection SIP_TRANSFER );
 
     /**
      * Returns the collection at the corresponding index from the stack.

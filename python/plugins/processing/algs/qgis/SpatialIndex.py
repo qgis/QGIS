@@ -28,13 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsApplication,
-                       QgsVectorDataProvider)
+                       QgsVectorDataProvider,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -67,7 +66,7 @@ class SpatialIndex(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(fileName)
+        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:

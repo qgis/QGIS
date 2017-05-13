@@ -11,12 +11,12 @@ class QgsListWidget : public QgsTableWidgetBase
     /**
      * Constructor.
      */
-    explicit QgsListWidget( QVariant::Type subType, QWidget* parent = nullptr );
+    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
 
     /**
      * Set the initial value of the widget.
      */
-    void setList( const QVariantList& list );
+    void setList( const QVariantList &list );
 
     /**
      * Get the edit value.

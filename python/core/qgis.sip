@@ -37,7 +37,7 @@ class Qgis
     // Release name
     static const QString QGIS_RELEASE_NAME;
     // The development version
-    static const char* QGIS_DEV_VERSION;
+    static const char *QGIS_DEV_VERSION;
 
     // Enumerations
     //
@@ -112,7 +112,7 @@ class Qgis
  * @note added in version 2.9
  * @see permissiveToInt
  */
-double qgsPermissiveToDouble( QString string, bool& ok );
+double qgsPermissiveToDouble( QString string, bool &ok );
 
 /** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
@@ -122,18 +122,18 @@ double qgsPermissiveToDouble( QString string, bool& ok );
  * @note added in version 2.9
  * @see permissiveToDouble
  */
-int qgsPermissiveToInt( QString string, bool& ok );
+int qgsPermissiveToInt( QString string, bool &ok );
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantGreaterThan()
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantLessThan()
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 /** Wkt string that represents a geographic coord sys
  * @note added to replace GEOWkt

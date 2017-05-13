@@ -16,6 +16,7 @@
 #define QGSFILEDROPEDIT_H
 
 #include <QLineEdit>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     Q_OBJECT
 
   public:
-    QgsFileDropEdit( QWidget *parent = nullptr );
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     bool isDirOnly() const { return mDirOnly; }
 

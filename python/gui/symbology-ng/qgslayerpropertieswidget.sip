@@ -5,14 +5,14 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 %End
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
 
    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -31,7 +31,7 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer *layer );
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 };

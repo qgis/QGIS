@@ -37,7 +37,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -76,8 +76,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()

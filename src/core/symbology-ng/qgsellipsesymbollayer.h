@@ -18,6 +18,7 @@
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsmarkersymbollayer.h"
 #include <QPainterPath>
 
@@ -30,8 +31,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
   public:
     QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
-    static QgsSymbolLayer *createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QString layerType() const override;

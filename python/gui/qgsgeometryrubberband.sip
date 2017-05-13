@@ -50,19 +50,19 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometry* geom /Transfer/ );
+    void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
     /** Returns a pointer to the geometry*/
-    const QgsAbstractGeometry* geometry();
+    const QgsAbstractGeometry *geometry();
     /** Moves vertex to new position (in map coordinates)*/
-    void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
+    void moveVertex( QgsVertexId id, const QgsPointV2 &newPos );
     /** Sets fill color for vertex markers*/
-    void setFillColor( const QColor& c );
+    void setFillColor( const QColor &c );
     /** Sets stroke color for vertex markers*/
-    void setStrokeColor( const QColor& c );
+    void setStrokeColor( const QColor &c );
     /** Sets stroke width*/
     void setStrokeWidth( int width );
     /** Sets pen style*/
@@ -73,5 +73,5 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
     void setIconType( IconType iconType );
 
   protected:
-    virtual void paint( QPainter* painter );
+    virtual void paint( QPainter *painter );
 };

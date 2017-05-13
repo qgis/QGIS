@@ -73,6 +73,11 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
      */
     void addDecorations( QList< QgsMapDecoration * > decorations );
 
+    /**
+     * Sets whether a world file will be created alongside an image file.
+     */
+    void setSaveWorldFile( bool save ) { mSaveWorldFile = save; }
+
     void cancel() override;
 
   signals:
@@ -103,6 +108,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     QString mFileName;
     QString mFileFormat;
+    bool mSaveWorldFile = false;
 
     QList< QgsAnnotation * > mAnnotations;
     QList< QgsMapDecoration * > mDecorations;

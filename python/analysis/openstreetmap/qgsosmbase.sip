@@ -55,7 +55,7 @@ class QgsOSMNode : QgsOSMElement
 %End
   public:
     QgsOSMNode();
-    QgsOSMNode( qint64 id, const QgsPoint& point );
+    QgsOSMNode( qint64 id, const QgsPoint &point );
 
     QgsPoint point() const;
 
@@ -76,7 +76,7 @@ class QgsOSMWay : QgsOSMElement
 %End
   public:
     QgsOSMWay();
-    QgsOSMWay( qint64 id, const QList<qint64>& nodes );
+    QgsOSMWay( qint64 id, const QList<qint64> &nodes );
 
     QList<qint64> nodes() const;
 
@@ -98,8 +98,8 @@ class QgsOSMTags
 
     int count() const;
     QList<QString> keys() const;
-    bool contains( const QString& k ) const;
-    void insert( const QString& k, const QString& v );
-    QString value( const QString& k ) const;
+    bool contains( const QString &k ) const;
+    void insert( const QString &k, const QString &v );
+    QString value( const QString &k ) const;
 
 };

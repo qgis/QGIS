@@ -17,6 +17,7 @@
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
 #include "qgsdialog.h"
+#include "qgis.h"
 #include <QWidget>
 #include <QStandardItemModel>
 #include <qgspanelwidget.h>
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
      * \param stack QgsEffectStack to modify in the widget
      * \param parent parent widget
      */
-    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent = nullptr );
+    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     ~QgsEffectStackPropertiesWidget();
 
@@ -198,7 +199,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
      */
-    QgsEffectStackCompactWidget( QWidget *parent = nullptr, QgsPaintEffect *effect = nullptr );
+    QgsEffectStackCompactWidget( QWidget *parent SIP_TRANSFERTHIS = 0, QgsPaintEffect *effect = nullptr );
     ~QgsEffectStackCompactWidget();
 
     /** Sets paint effect attached to the widget,

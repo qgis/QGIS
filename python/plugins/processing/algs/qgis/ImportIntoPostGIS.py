@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorLayerImport,
                        QgsSettings,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsProcessingUtils)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -35,7 +36,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
-from processing.tools import dataobjects, postgis
+from processing.tools import postgis
 
 
 class ImportIntoPostGIS(GeoAlgorithm):
@@ -127,7 +128,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getLayerFromString(layerUri)
+        layer = QgsProcessingUtils.mapLayerFromString(layerUri, context)
 
         table = self.getParameterValue(self.TABLENAME)
         if table:

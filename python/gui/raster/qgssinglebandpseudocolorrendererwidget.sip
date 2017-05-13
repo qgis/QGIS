@@ -6,14 +6,14 @@ class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
 
   public:
 
-    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
-    QgsRasterRenderer* renderer();
-    void setMapCanvas( QgsMapCanvas* canvas );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
+    QgsRasterRenderer *renderer();
+    void setMapCanvas( QgsMapCanvas *canvas );
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
     void doComputations();
 

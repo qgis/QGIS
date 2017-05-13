@@ -7,18 +7,18 @@ class QgsMapToolPan : QgsMapTool
 
   public:
     //! constructor
-    QgsMapToolPan( QgsMapCanvas* canvas );
+    QgsMapToolPan( QgsMapCanvas *canvas );
 
     virtual Flags flags() const;
 
     //! Mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
 };
 

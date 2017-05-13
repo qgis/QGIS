@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -95,16 +95,16 @@ class SelectByLocation(GeoAlgorithm):
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
-        inputLayer = dataobjects.getLayerFromString(filename)
+        inputLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
         filename2 = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getLayerFromString(filename2)
+        selectLayer = QgsProcessingUtils.mapLayerFromString(filename2, context)
         predicates = self.getParameterValue(self.PREDICATE)
         precision = self.getParameterValue(self.PRECISION)
 
         oldSelection = set(inputLayer.selectedFeatureIds())
         inputLayer.removeSelection()
-        index = vector.spatialindex(inputLayer)
+        index = QgsProcessingUtils.createSpatialIndex(inputLayer, context)
 
         if 'disjoint' in predicates:
             disjoinSet = []
@@ -117,7 +117,8 @@ class SelectByLocation(GeoAlgorithm):
         total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
-            bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)
+            bbox = geom.boundingBox()
+            bbox.grow(0.51 * precision)
             intersects = index.intersects(bbox)
 
             request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])

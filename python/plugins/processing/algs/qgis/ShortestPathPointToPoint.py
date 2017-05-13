@@ -31,7 +31,14 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsFields,
+                       QgsField,
+                       QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -151,8 +158,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
-        layer = dataobjects.getLayerFromString(
-            self.getParameterValue(self.INPUT_VECTOR))
+        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         endPoint = self.getParameterValue(self.END_POINT)
         strategy = self.getParameterValue(self.STRATEGY)

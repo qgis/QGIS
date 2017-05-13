@@ -19,6 +19,7 @@
 #define QGSCOMPOSERARROW_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
@@ -44,14 +45,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     /** Constructor
      * \param c parent composition
      */
-    QgsComposerArrow( QgsComposition *c );
+    QgsComposerArrow( QgsComposition *c SIP_TRANSFERTHIS );
 
     /** Constructor
      * \param startPoint start point for line
      * \param stopPoint end point for line
      * \param c parent composition
      */
-    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c );
+    QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c SIP_TRANSFERTHIS );
 
     ~QgsComposerArrow();
 
@@ -158,7 +159,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * \see lineSymbol
      * \since QGIS 2.5
      */
-    void setLineSymbol( QgsLineSymbol *symbol );
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * \returns line symbol

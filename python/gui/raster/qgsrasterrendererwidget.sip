@@ -4,13 +4,13 @@ class QgsRasterRendererWidget: QWidget
 #include <qgsrasterrendererwidget.h>
 %End
   public:
-    QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent );
+    QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
     virtual ~QgsRasterRendererWidget();
 
-    virtual QgsRasterRenderer* renderer() = 0 /Factory/;
+    virtual QgsRasterRenderer *renderer() = 0 /Factory/;
 
-    void setRasterLayer( QgsRasterLayer* layer );
-    const QgsRasterLayer* rasterLayer() const;
+    void setRasterLayer( QgsRasterLayer *layer );
+    const QgsRasterLayer *rasterLayer() const;
 
     /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent and other properties from the canvas.
@@ -18,24 +18,24 @@ class QgsRasterRendererWidget: QWidget
      * @see mapCanvas()
      * @note added in QGIS 2.16
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    virtual void setMapCanvas( QgsMapCanvas *canvas );
 
     /** Returns the map canvas associated with the widget.
      * @see setMapCanvas()
      * @see canvasExtent()
      * @note added in QGIS 2.16
      */
-    QgsMapCanvas* mapCanvas();
+    QgsMapCanvas *mapCanvas();
 
     virtual QString min( int index = 0 );
     virtual QString max( int index = 0 );
-    virtual void setMin( const QString& value, int index = 0 );
-    virtual void setMax( const QString& value, int index = 0 );
+    virtual void setMin( const QString &value, int index = 0 );
+    virtual void setMax( const QString &value, int index = 0 );
     virtual QString stdDev();
-    virtual void setStdDev( const QString& value );
+    virtual void setStdDev( const QString &value );
     virtual int selectedBand( int index = 0 );
     virtual void doComputations();
-    virtual QgsRasterMinMaxWidget* minMaxWidget();
+    virtual QgsRasterMinMaxWidget *minMaxWidget();
 
   signals:
     /**

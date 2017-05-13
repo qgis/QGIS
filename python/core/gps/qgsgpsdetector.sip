@@ -6,7 +6,7 @@ class QgsGPSDetector: QObject
 %End
 
   public:
-    QgsGPSDetector( const QString& portName );
+    QgsGPSDetector( const QString &portName );
     ~QgsGPSDetector();
 
     static QList< QPair<QString, QString> > availablePorts();

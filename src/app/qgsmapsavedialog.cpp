@@ -50,6 +50,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
   connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateDpi );
+  connect( mOutputWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateOutputWidth );
+  connect( mOutputHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsMapSaveDialog::updateOutputHeight );
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsMapSaveDialog::updateExtent );
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
 
@@ -62,6 +64,32 @@ void QgsMapSaveDialog::updateDpi( int dpi )
   mDpi = dpi;
 
   updateOutputSize();
+}
+
+void QgsMapSaveDialog::updateOutputWidth( int width )
+{
+  double scale = ( double )width / mSize.width();
+  double adjustment = ( ( mExtent.width() * scale ) - mExtent.width() ) / 2;
+
+  mExtent.setXMinimum( mExtent.xMinimum() - adjustment );
+  mExtent.setXMaximum( mExtent.xMaximum() + adjustment );
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+
+  mSize.setWidth( width );
+}
+
+void QgsMapSaveDialog::updateOutputHeight( int height )
+{
+  double scale = ( double )height / mSize.height();
+  double adjustment = ( ( mExtent.height() * scale ) - mExtent.height() ) / 2;
+
+  mExtent.setYMinimum( mExtent.yMinimum() - adjustment );
+  mExtent.setYMaximum( mExtent.yMaximum() + adjustment );
+
+  whileBlocking( mExtentGroupBox )->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
+
+  mSize.setHeight( height );
 }
 
 void QgsMapSaveDialog::updateExtent( const QgsRectangle &extent )
@@ -87,7 +115,8 @@ void QgsMapSaveDialog::updateScale( double scale )
 
 void QgsMapSaveDialog::updateOutputSize()
 {
-  mOutputSize->setText( tr( "Output size: %1 x %2 pixels" ).arg( mSize.width() ).arg( mSize.height() ) );
+  whileBlocking( mOutputWidthSpinBox )->setValue( mSize.width() );
+  whileBlocking( mOutputHeightSpinBox )->setValue( mSize.height() );
 }
 
 QgsRectangle QgsMapSaveDialog::extent() const
@@ -113,4 +142,9 @@ bool QgsMapSaveDialog::drawAnnotations() const
 bool QgsMapSaveDialog::drawDecorations() const
 {
   return mDrawDecorations->isChecked();
+}
+
+bool QgsMapSaveDialog::saveWorldFile() const
+{
+  return mSaveWorldFile->isChecked();
 }

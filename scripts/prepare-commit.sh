@@ -109,11 +109,11 @@ SIPIFYDIFF=sipify.$REV.diff
 >$SIPIFYDIFF
 for f in $MODIFIED; do
   # if cpp header
-  if [[ $f =~ ^src\/(core|gui|analysis)\/.*\.h$ ]]; then
+  if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
     # look if corresponding SIP file
     #echo $f
     sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
-    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis)\///; s/\.h$/.sip/' <<<$f )
+    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis|server)\///; s/\.h$/.sip/' <<<$f )
     if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
       #echo "in SIP"
       sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )

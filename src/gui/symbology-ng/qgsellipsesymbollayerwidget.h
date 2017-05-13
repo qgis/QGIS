@@ -16,6 +16,7 @@
 #define QGSELLIPSESYMBOLLAYERV2WIDGET_H
 
 #include "ui_widget_ellipse.h"
+#include "qgis.h"
 #include "qgssymbollayerwidget.h"
 #include "qgis_gui.h"
 
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) { return new QgsEllipseSymbolLayerWidget( vl ); }
 

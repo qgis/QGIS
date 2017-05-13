@@ -4,7 +4,7 @@ class QgsRasterNuller : QgsRasterInterface
 #include <qgsrasternuller.h>
 %End
   public:
-    QgsRasterNuller( QgsRasterInterface* input = 0 );
+    QgsRasterNuller( QgsRasterInterface *input = 0 );
     ~QgsRasterNuller();
 
     struct NoData
@@ -13,15 +13,15 @@ class QgsRasterNuller : QgsRasterInterface
       double max;
     };
 
-    virtual QgsRasterNuller * clone() const /Factory/;
+    virtual QgsRasterNuller  *clone() const /Factory/;
 
     int bandCount() const;
 
     Qgis::DataType dataType( int bandNo ) const;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
-    void setNoData( int bandNo, const QgsRasterRangeList& noData );
+    void setNoData( int bandNo, const QgsRasterRangeList &noData );
 
     QgsRasterRangeList noData( int bandNo ) const;
 

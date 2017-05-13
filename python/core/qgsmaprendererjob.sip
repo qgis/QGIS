@@ -6,7 +6,7 @@ class QgsMapRendererJob : QObject
 
   public:
 
-    QgsMapRendererJob( const QgsMapSettings& settings );
+    QgsMapRendererJob( const QgsMapSettings &settings );
 
     virtual ~QgsMapRendererJob();
 
@@ -29,7 +29,7 @@ class QgsMapRendererJob : QObject
     virtual bool usedCachedLabels() const = 0;
 
     //! Get pointer to internal labeling engine (in order to get access to the results)
-    virtual QgsLabelingResults* takeLabelingResults() = 0 /Transfer/;
+    virtual QgsLabelingResults *takeLabelingResults() = 0 /Transfer/;
 
     //! @note Added in QGIS 3.0
     //! Set the feature filter provider used by the QgsRenderContext of
@@ -41,11 +41,11 @@ class QgsMapRendererJob : QObject
     //! @note Added in QGIS 3.0
     //! Returns the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
-    const QgsFeatureFilterProvider* featureFilterProvider() const;
+    const QgsFeatureFilterProvider *featureFilterProvider() const;
 
     struct Error
     {
-      Error( const QString& lid, const QString& msg );
+      Error( const QString &lid, const QString &msg );
 
       QString layerID;
       QString message;
@@ -59,11 +59,11 @@ class QgsMapRendererJob : QObject
 
     //! Assign a cache to be used for reading and storing rendered images of individual layers.
     //! Does not take ownership of the object.
-    void setCache( QgsMapRendererCache* cache );
+    void setCache( QgsMapRendererCache *cache );
 
     //! Set which vector layers should be cached while rendering
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setRequestedGeometryCacheForLayers( const QStringList& layerIds );
+    void setRequestedGeometryCacheForLayers( const QStringList &layerIds );
 
     //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const;
@@ -73,7 +73,7 @@ class QgsMapRendererJob : QObject
      * @return A QgsMapSettings instance with render settings
      * @note added in 2.8
      */
-    const QgsMapSettings& mapSettings() const;
+    const QgsMapSettings &mapSettings() const;
 
   signals:
     /**
@@ -103,7 +103,7 @@ class QgsMapRendererQImageJob : QgsMapRendererJob
 %End
 
   public:
-    QgsMapRendererQImageJob( const QgsMapSettings& settings );
+    QgsMapRendererQImageJob( const QgsMapSettings &settings );
 
     //! Get a preview/resulting image
     virtual QImage renderedImage() = 0;

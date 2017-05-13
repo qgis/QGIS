@@ -22,6 +22,7 @@
 #define QGSPALLABELING_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -721,7 +722,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns prepared geometry
      * \since QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr ) SIP_FACTORY;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * \param geometry geometry to prepare

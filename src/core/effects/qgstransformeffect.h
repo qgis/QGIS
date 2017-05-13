@@ -41,7 +41,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * \param map encoded properties string map
      * \returns new QgsTransformEffect
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsTransformEffect();
 

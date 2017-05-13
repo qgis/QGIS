@@ -18,6 +18,7 @@
 #define QGSEFFECTSTACK_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgspainteffect.h"
 
 /** \ingroup core
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * \param map unused encoded properties string map
      * \returns new QgsEffectStack
      */
-    static QgsPaintEffect *create( const QgsStringMap &map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsEffectStack();
     QgsEffectStack( const QgsEffectStack &other );

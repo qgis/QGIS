@@ -14,7 +14,7 @@ class QgsAlignRaster
     {
     public:
       //! Construct raster info with a path to a raster file
-      RasterInfo( const QString& layerpath );
+      RasterInfo( const QString &layerpath );
       ~RasterInfo();
 
       //! Check whether the given path is a valid raster
@@ -42,7 +42,7 @@ class QgsAlignRaster
       double identify( double mx, double my );
 
       private:
-        RasterInfo( const QgsAlignRaster::RasterInfo& rh );
+        RasterInfo( const QgsAlignRaster::RasterInfo &rh );
 
     };
 
@@ -68,7 +68,7 @@ class QgsAlignRaster
     //! Definition of one raster layer for alignment
     struct Item
     {
-      Item( const QString& input, const QString& output );
+      Item( const QString &input, const QString &output );
 
       //! filename of the source raster
       QString inputFilename;
@@ -98,12 +98,12 @@ class QgsAlignRaster
     };
 
     //! Assign a progress handler instance. Does not take ownership. NULL can be passed.
-    void setProgressHandler( ProgressHandler* progressHandler );
+    void setProgressHandler( ProgressHandler *progressHandler );
     //! Get associated progress handler. May be NULL (default)
-    ProgressHandler* progressHandler() const;
+    ProgressHandler *progressHandler() const;
 
     //! Set list of rasters that will be aligned
-    void setRasters( const List& list );
+    void setRasters( const List &list );
     //! Get list of rasters that will be aligned
     List rasters() const;
 
@@ -118,7 +118,7 @@ class QgsAlignRaster
     QSizeF cellSize() const;
 
     //! Set the output CRS in WKT format
-    void setDestinationCrs( const QString& crsWkt );
+    void setDestinationCrs( const QString &crsWkt );
     //! Get the output CRS in WKT format
     QString destinationCrs() const;
 
@@ -127,7 +127,7 @@ class QgsAlignRaster
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null
-    void setClipExtent( const QgsRectangle& extent );
+    void setClipExtent( const QgsRectangle &extent );
     //! Get clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null
     QgsRectangle clipExtent() const;
@@ -141,10 +141,10 @@ class QgsAlignRaster
     //! to determine suitable defaults for cell size and grid offset.
     //!
     //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
-    bool setParametersFromRaster( const QgsAlignRaster::RasterInfo& rasterInfo, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+    bool setParametersFromRaster( const QgsAlignRaster::RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
     //! Overridden variant for convenience, taking filename instead RasterInfo object.
     //! See the other variant for details.
-    bool setParametersFromRaster( const QString& filename, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+    bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
     //! Determine destination extent from the input rasters and calculate derived values
     //! @return true on success, sets error on error (see errorMessage())
@@ -174,10 +174,10 @@ class QgsAlignRaster
   protected:
 
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)
-    bool createAndWarp( const Item& raster );
+    bool createAndWarp( const Item &raster );
 
     //! Determine suggested output of raster warp to a different CRS. Returns true on success
-    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+    static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = 0, QPointF *gridOffset = 0, QgsRectangle *rect = 0 );
 
 };
 

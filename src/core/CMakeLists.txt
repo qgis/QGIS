@@ -184,6 +184,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprenderersequentialjob.cpp
   qgsmaprenderertask.cpp
   qgsmapsettings.cpp
+  qgsmapsettingsutils.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
   qgsmapunitscale.cpp
@@ -751,6 +752,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayerrenderer.h
   qgsmaplayerstylemanager.h
   qgsmapsettings.h
+  qgsmapsettingsutils.h
   qgsmaptopixel.h
   qgsmaptopixelgeometrysimplifier.h
   qgsmapunitscale.h

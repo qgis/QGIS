@@ -12,7 +12,7 @@ class QgsVectorSimplifyMethod
     //! construct a default object
     QgsVectorSimplifyMethod();
     //! copy constructor
-    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
+    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod &rh );
 
     /** Simplification flags for fast rendering of features */
     enum SimplifyHint

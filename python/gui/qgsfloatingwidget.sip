@@ -31,20 +31,20 @@ class QgsFloatingWidget : QWidget
     /** Constructor for QgsFloatingWidget.
      * @param parent parent widget
      */
-    QgsFloatingWidget( QWidget* parent /TransferThis/ = nullptr );
+    QgsFloatingWidget( QWidget *parent /TransferThis/ = 0 );
 
     /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * @param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
      * @see anchorWidget()
      */
-    void setAnchorWidget( QWidget* widget );
+    void setAnchorWidget( QWidget *widget );
 
     /** Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * @see setAnchorWidget()
      */
-    QWidget* anchorWidget();
+    QWidget *anchorWidget();
 
     /** Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
      * fixed in the same relative position whenever the widget's parent is resized or moved.
@@ -76,7 +76,7 @@ class QgsFloatingWidget : QWidget
   signals:
 
     //! Emitted when the anchor widget changes
-    void anchorWidgetChanged( QWidget* widget );
+    void anchorWidgetChanged( QWidget *widget );
 
     //! Emitted when the anchor point changes
     void anchorPointChanged( AnchorPoint point );
@@ -85,7 +85,7 @@ class QgsFloatingWidget : QWidget
     void anchorWidgetPointChanged( AnchorPoint point );
 
   protected:
-    void showEvent( QShowEvent* e );
-    virtual void paintEvent( QPaintEvent* e );
+    void showEvent( QShowEvent *e );
+    virtual void paintEvent( QPaintEvent *e );
 
 };

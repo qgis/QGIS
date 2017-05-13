@@ -64,7 +64,7 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      * Returns the composer object property definitions.
      * @note added in QGIS 3.0
      */
-    static const QgsPropertiesDefinition& propertyDefinitions();
+    static const QgsPropertiesDefinition &propertyDefinitions();
 
     /** Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
@@ -79,13 +79,13 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
     /** Constructor
      * @param composition parent composition
      */
-    QgsComposerObject( QgsComposition* composition );
+    QgsComposerObject( QgsComposition *composition );
     virtual ~QgsComposerObject();
 
     /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
      */
-    const QgsComposition* composition() const;
+    const QgsComposition *composition() const;
 
     //! @note not available in python bindings
     // QgsComposition* composition() { return mComposition; }
@@ -94,32 +94,32 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    QgsPropertyCollection& dataDefinedProperties();
+    QgsPropertyCollection &dataDefinedProperties();
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
      * @note added in QGIS 3.0
      * @see setDataDefinedProperties()
      */
-    //const QgsPropertyCollection& dataDefinedProperties() const;
+    //const QgsPropertyCollection &dataDefinedProperties() const;
 
     /** Sets the objects's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
      * @note added in QGIS 3.0
      * @see dataDefinedProperties()
      */
-    void setDataDefinedProperties( const QgsPropertyCollection& collection );
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
 
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -178,7 +178,7 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
      */
-    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = 0 );
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext *context = 0 );
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the

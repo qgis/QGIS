@@ -9,6 +9,14 @@
 
 
 
+% ModuleHeaderCode
+#include <qgsnetworkspeedstrategy.h>
+#include <qgsnetworkdistancestrategy.h>
+%End
+
+
+
+
 
 
 
@@ -306,9 +314,9 @@ remove argument
     void position( bool keep );
 
     Whatever &operator[]( int i ) /Factory/;
-    %MethodCode
+%MethodCode
     ....
-    %End
+%End
 
     void ZshouldBeShown();
 
@@ -355,7 +363,6 @@ class ClassWithPrivateInheritanceOnly
 %Docstring
 A constructor with definition in header on several lines
 %End
-
 };
 
 

@@ -18,17 +18,17 @@ class QgsTracer : QObject
     //! Get layers used for tracing
     QList<QgsVectorLayer*> layers() const;
     //! Set layers used for tracing
-    void setLayers( const QList<QgsVectorLayer*>& layers );
+    void setLayers( const QList<QgsVectorLayer*> &layers );
 
     //! Get CRS used for tracing
     QgsCoordinateReferenceSystem destinationCrs() const;
     //! Set CRS used for tracing
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     //! Get extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const;
     //! Set extent to which graph's features will be limited (empty extent means no limit)
-    void setExtent( const QgsRectangle& extent );
+    void setExtent( const QgsRectangle &extent );
 
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
     int maxFeatureCount() const;
@@ -62,10 +62,10 @@ class QgsTracer : QObject
     //! Given two points, find the shortest path and return points on the way.
     //! The optional "error" argument may receive error code (PathError enum) if it is not null
     //! @return array of points - trace of linestrings of other features (empty array one error)
-    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2, QgsTracer::PathError* error /Out/ = nullptr );
+    QVector<QgsPoint> findShortestPath( const QgsPoint &p1, const QgsPoint &p2, QgsTracer::PathError *error /Out/ = 0 );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
-    bool isPointSnapped( const QgsPoint& pt );
+    bool isPointSnapped( const QgsPoint &pt );
 
   protected:
     //! Allows derived classes to setup the settings just before the tracer is initialized.

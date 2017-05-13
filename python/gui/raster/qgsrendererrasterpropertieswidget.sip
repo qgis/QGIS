@@ -5,7 +5,7 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 %End
 
   public:
-    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget* parent );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
     ~QgsRendererRasterPropertiesWidget();
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
@@ -13,12 +13,12 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Return the active render widget. Can be null.
      */
-    QgsRasterRendererWidget* currentRenderWidget();
+    QgsRasterRendererWidget *currentRenderWidget();
 
   signals:
 
@@ -39,5 +39,5 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
      * @brief Sync the widget to the given layer.
      * @param layer The layer to use for the widget
      */
-    void syncToLayer( QgsRasterLayer* layer );
+    void syncToLayer( QgsRasterLayer *layer );
 };
