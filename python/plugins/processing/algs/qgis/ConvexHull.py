@@ -31,7 +31,12 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -96,11 +101,11 @@ class ConvexHull(GeoAlgorithm):
                 f.setType(QVariant.String)
                 f.setLength(255)
 
-        fields = [QgsField('id', QVariant.Int, '', 20),
-                  f,
-                  QgsField('area', QVariant.Double, '', 20, 6),
-                  QgsField('perim', QVariant.Double, '', 20, 6)
-                  ]
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int, '', 20))
+        fields.append(f)
+        fields.append(QgsField('area', QVariant.Double, '', 20, 6))
+        fields.append(QgsField('perim', QVariant.Double, '', 20, 6))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 

@@ -34,7 +34,7 @@ class QgsExpressionBuilderDialog : QDialog
     void setExpressionContext( const QgsExpressionContext &context );
 
     /** Sets geometry calculator used in distance/area calculations. */
-    void setGeomCalculator( const QgsDistanceArea  &da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
   protected:
     /**

@@ -105,7 +105,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.mOutputFieldTypeComboBox.blockSignals(False)
         self.builder.loadRecent('fieldcalc')
 
-        self.initContext()
         self.updateLayer(self.cmbInputLayer.currentLayer())
 
     def initContext(self):
@@ -117,6 +116,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def updateLayer(self, layer):
         self.layer = layer
+
+        self.initContext()
         self.builder.setLayer(self.layer)
         self.builder.loadFieldNames()
         self.populateFields()

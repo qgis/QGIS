@@ -8,11 +8,11 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     /** Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider *provider, int band, QgsRasterShader *shader /Transfer/ );
     ~QgsSingleBandPseudoColorRenderer();
-    virtual QgsSingleBandPseudoColorRenderer  *clone() const /Factory/;
+    virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterDataProvider *provider ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
 
     /** Takes ownership of the shader*/
     void setShader( QgsRasterShader *shader /Transfer/ );

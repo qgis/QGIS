@@ -139,9 +139,9 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QSqlQuery query( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                   "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
-                   mQgisModel->database() );
+  QSqlQuery query( mQgisModel->database() );
+  query.prepare( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
+                 "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)" );
 
   QString projStr( QLatin1String( "" ) );
   if ( QgsProject::instance() )
@@ -345,7 +345,7 @@ void QgsBookmarks::exportToXml()
   doc.appendChild( root );
 
   int rowCount = mModel->rowCount();
-  int colCount = mModel->columnCount();
+  int colCount = mModel->columnCount() - 1;  // exclude virtual "In project" column
 
   QList<QString> headerList;
   headerList

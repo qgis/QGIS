@@ -137,6 +137,8 @@ class QgsProperty
 
     bool convertToTransformer();
 
+    operator QVariant() const;
+
 };
 
 

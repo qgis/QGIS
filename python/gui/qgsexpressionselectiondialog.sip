@@ -33,7 +33,7 @@ class QgsExpressionSelectionDialog : QDialog
     /**
      *Sets geometry calculator used in distance/area calculations.
      */
-    void setGeomCalculator( const QgsDistanceArea  &da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
     /** Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.

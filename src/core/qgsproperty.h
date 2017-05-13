@@ -434,6 +434,12 @@ class CORE_EXPORT QgsProperty
      */
     bool convertToTransformer();
 
+    //! Allows direct construction of QVariants from properties.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsPropertyPrivate> d;
@@ -445,5 +451,7 @@ class CORE_EXPORT QgsProperty
     QVariant propertyValue( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok = nullptr ) const;
 
 };
+
+Q_DECLARE_METATYPE( QgsProperty )
 
 #endif // QGSPROPERTY_H

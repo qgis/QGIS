@@ -17,6 +17,7 @@
 #define QGSSYMBOLLAYERREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgssymbol.h"
 
@@ -72,11 +73,11 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
-                            QgsSymbolLayerWidgetFunc pfWidget = nullptr )
-      : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( nullptr )
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr ) SIP_SKIP
+  : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( nullptr )
     {}
 
     //! \note not available in Python bindings
@@ -84,22 +85,22 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerCreateFromSldFunc pfCreateFromSld,
-                            QgsSymbolLayerWidgetFunc pfWidget = nullptr )
-      : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( pfCreateFromSld )
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr ) SIP_SKIP
+  : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; }
+    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
+    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; }
+    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }

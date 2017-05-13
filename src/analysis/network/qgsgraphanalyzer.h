@@ -17,6 +17,8 @@
 #define QGSGRAPHANALYZER_H
 
 #include <QVector>
+
+#include <qgis.h>
 #include "qgis_analysis.h"
 
 class QgsGraph;
@@ -38,7 +40,38 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
      * \param resultCost array of the paths costs
      */
-    static void dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
+    static void SIP_PYTYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
+
+#ifdef SIP_RUN
+    % MethodCode
+    QVector< int > treeResult;
+    QVector< double > costResult;
+    QgsGraphAnalyzer::dijkstra( a0, a1, a2, &treeResult, &costResult );
+
+    PyObject *l1 = PyList_New( treeResult.size() );
+    if ( l1 == NULL )
+    {
+      return NULL;
+    }
+    PyObject *l2 = PyList_New( costResult.size() );
+    if ( l2 == NULL )
+    {
+      return NULL;
+    }
+    int i;
+    for ( i = 0; i < costResult.size(); ++i )
+    {
+      PyObject *Int = PyLong_FromLong( treeResult[i] );
+      PyList_SET_ITEM( l1, i, Int );
+      PyObject *Float = PyFloat_FromDouble( costResult[i] );
+      PyList_SET_ITEM( l2, i, Float );
+    }
+
+    sipRes = PyTuple_New( 2 );
+    PyTuple_SET_ITEM( sipRes, 0, l1 );
+    PyTuple_SET_ITEM( sipRes, 1, l2 );
+    % End
+#endif
 
     /**
      * Returns shortest path tree with root-node in startVertexIdx

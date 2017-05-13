@@ -108,7 +108,7 @@ class QgsComposerLegend : QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsLegendStyle  &rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
     /** Returns style */
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
@@ -231,7 +231,7 @@ class QgsComposerLegend : QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag

@@ -471,6 +471,7 @@ Allows direct construction of QVariants from features.
 
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
+
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 
 

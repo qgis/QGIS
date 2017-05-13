@@ -63,7 +63,7 @@ class QgsProjectBadLayerHandler
      *
      * @note Added in QGIS 3.0
      */
-    DataType dataType( const QDomNode  &layerNode );
+    DataType dataType( const QDomNode &layerNode );
 
     /**
      * Return the data source for the given layer

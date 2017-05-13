@@ -17,8 +17,10 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
-#include "qgis_core.h"
 #include <QExplicitlySharedDataPointer>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 
 class QgsCoordinateTransformPrivate;

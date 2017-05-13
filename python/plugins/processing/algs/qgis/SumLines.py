@@ -83,7 +83,7 @@ class SumLines(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
                                                          countFieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(), polyLayer.wkbType(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, polyLayer.wkbType(),
                                                                      polyLayer.crs(), context)
 
         spatialIndex = QgsProcessingUtils.createSpatialIndex(lineLayer, context)

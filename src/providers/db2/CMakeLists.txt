@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth  
   ../../core/geometry
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ../../ui  

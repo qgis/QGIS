@@ -39,3 +39,7 @@ bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator )
   return result;
 }
 
+
+QgsProxyFeatureSink::QgsProxyFeatureSink( QgsFeatureSink *sink )
+  : mSink( sink )
+{}

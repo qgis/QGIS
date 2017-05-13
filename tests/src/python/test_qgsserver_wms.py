@@ -26,13 +26,10 @@ import urllib.request
 import urllib.parse
 import urllib.error
 
-from qgis.core import QgsRenderChecker
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 
 import osgeo.gdal  # NOQA
-import tempfile
-import base64
 
 from test_qgsserver import QgsServerTestBase
 
@@ -54,7 +51,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
         if extra is not None:
             query_string += extra
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         response = header + body
         reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
         self.store_reference(reference_path, response)
@@ -99,13 +96,42 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter')
 
+        # Test a filter with NO condition results
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' AND "utf8nameè" = \'no-results\''),
+                                 'wms_getfeatureinfo_filter_no_results')
+
+        # Test a filter with OR condition results
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "NAME" = \'three\''),
+                                 'wms_getfeatureinfo_filter_or')
+
+        # Test a filter with OR condition and UTF results
+        # Note that the layer name that contains utf-8 chars cannot be
+        # to upper case.
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
+                                 'wms_getfeatureinfo_filter_or_utf8')
+
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
         project = self.testdata_path + "test_project_inspire.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         response = header + body
         reference_path = self.testdata_path + request.lower() + '_inspire.txt'
         self.store_reference(reference_path, response)
@@ -136,7 +162,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic")
 
     def test_wms_getmap_transparent(self):
@@ -155,7 +181,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "TRANSPARENT": "TRUE"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Transparent")
 
     def test_wms_getmap_background(self):
@@ -174,7 +200,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "BGCOLOR": "green"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Background")
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -192,7 +218,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "BGCOLOR": "0x008000"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Background_Hex")
 
     def test_wms_getcapabilities_url(self):
@@ -206,7 +232,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
@@ -225,7 +251,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
@@ -244,7 +270,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
@@ -268,7 +294,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         }.items())])
 
         expected = self.strip_version_xmlns(b'<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Size error">The requested map size is too large</ServiceException>\n</ServiceExceptionReport>\n')
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
 
@@ -287,7 +313,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_LayerOrder")
 
     def test_wms_getmap_srs(self):
@@ -305,7 +331,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:4326"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SRS")
 
     def test_wms_getmap_style(self):
@@ -324,7 +350,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_StyleDefault")
 
         # custom style
@@ -342,7 +368,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_StyleCustom")
 
     def test_wms_getmap_filter(self):
@@ -361,7 +387,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FILTER": "Country:\"name\" = 'eurasia'"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter")
 
     def test_wms_getmap_selection(self):
@@ -380,7 +406,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "SELECTION": "Country: 4"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Selection")
 
     def test_wms_getmap_opacities(self):
@@ -399,7 +425,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "OPACITIES": "125, 50"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Opacities")
 
     def test_wms_getprint_basic(self):
@@ -417,7 +443,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Basic")
 
     @unittest.skip('Randomly failing to draw the map layer')
@@ -436,7 +462,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:4326"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_SRS")
 
     def test_wms_getprint_scale(self):
@@ -455,7 +481,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Scale")
 
     def test_wms_getprint_grid(self):
@@ -475,7 +501,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Grid")
 
     def test_wms_getprint_rotation(self):
@@ -494,7 +520,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Rotation")
 
     def test_wms_getprint_selection(self):
@@ -513,7 +539,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "SELECTION": "Country: 4"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Selection")
 
     def test_getLegendGraphics(self):
@@ -529,7 +555,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             'LAYER': 'testlayer%20èé',
         }
         qs = '?' + '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
-        h, r = self.server.handleRequest(qs)
+        h, r = self._execute_request(qs)
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
@@ -547,7 +573,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             'LAYERTITLE': 'TRUE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
         parms = {
@@ -562,7 +588,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             'LAYERTITLE': 'FALSE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
 
     def test_wms_GetLegendGraphic_Basic(self):
@@ -579,7 +605,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
 
     def test_wms_GetLegendGraphic_Transparent(self):
@@ -597,7 +623,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "TRANSPARENT": "TRUE"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Transparent")
 
     def test_wms_GetLegendGraphic_Background(self):
@@ -615,7 +641,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "BGCOLOR": "green"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background")
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -632,7 +658,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "BGCOLOR": "0x008000"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_Background_Hex")
 
     def test_wms_GetLegendGraphic_BoxSpace(self):
@@ -650,7 +676,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace")
 
     def test_wms_GetLegendGraphic_SymbolSpace(self):
@@ -668,7 +694,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSpace")
 
     def test_wms_GetLegendGraphic_IconLabelSpace(self):
@@ -686,7 +712,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_IconLabelSpace")
 
     def test_wms_GetLegendGraphic_SymbolSize(self):
@@ -705,7 +731,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:3857"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
 
     def test_wms_GetLegendGraphic_BBox(self):
@@ -723,7 +749,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "CRS": "EPSG:4326"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox")
 
     def test_wms_GetLegendGraphic_BBox2(self):
@@ -741,7 +767,7 @@ class TestQgsServerWMS(QgsServerTestBase):
             "SRS": "EPSG:4326"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
     # WCS tests
@@ -750,7 +776,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + 'wcs_' + request.lower() + '.txt'

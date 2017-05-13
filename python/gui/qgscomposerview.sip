@@ -142,8 +142,8 @@ class QgsComposerView : QGraphicsView
     void mouseMoveEvent( QMouseEvent* );
     void mouseDoubleClickEvent( QMouseEvent *e );
 
-    void keyPressEvent( QKeyEvent  *e );
-    void keyReleaseEvent( QKeyEvent  *e );
+    void keyPressEvent( QKeyEvent *e );
+    void keyReleaseEvent( QKeyEvent *e );
 
     void wheelEvent( QWheelEvent *event );
 

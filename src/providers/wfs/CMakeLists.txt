@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES (
   ../../core/auth
   ../../core/geometry
   ../../core/symbology-ng  # needed by qgsvectorfilewriter.h
+  ../../core/metadata
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui

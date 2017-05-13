@@ -94,7 +94,7 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag

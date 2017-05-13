@@ -20,6 +20,7 @@
 #define QGSLABELSEARCHTREE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 #include <QVector>
 #include <pointset.h>
@@ -49,19 +50,19 @@ class CORE_EXPORT QgsLabelSearchTree
      * \note not available in Python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void label( const QgsPoint &p, QList<QgsLabelPosition *> &posList ) const;
+    void label( const QgsPoint &p, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 
     /** Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * \note not available in Python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const;
+    void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const SIP_SKIP;
 
     /** Inserts label position. Does not take ownership of labelPos
      * \returns true in case of success
      * \note not available in Python bindings
      */
-    bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
+    bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() ) SIP_SKIP;
 
   private:
     // set as mutable because RTree template is not const-correct

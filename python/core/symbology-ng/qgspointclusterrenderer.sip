@@ -40,7 +40,7 @@ class QgsPointClusterRenderer : QgsPointDistanceRenderer
 
   private:
     QgsPointClusterRenderer( const QgsPointClusterRenderer & );
-    QgsPointClusterRenderer  &operator=( const QgsPointClusterRenderer & );
+    QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
 
     void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
 };

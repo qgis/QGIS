@@ -90,7 +90,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = QgsProviderRegistry.instance().selectWidget("WFS")
+        main_dialog = QgsProviderRegistry.instance().createSelectionWidget("WFS")
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)

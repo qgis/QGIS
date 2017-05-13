@@ -17,6 +17,7 @@
 #define QGSRULEBASEDRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgis.h"
@@ -151,7 +152,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         //! \note not available in Python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const;
+        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const SIP_SKIP;
 
         //! \since QGIS 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -272,7 +273,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         //! \note not available in Python bindings
-        void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels );
+        void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels ) SIP_SKIP;
 
         /**
          * Render a given feature, will recursively call subclasses and only render if the constraints apply.

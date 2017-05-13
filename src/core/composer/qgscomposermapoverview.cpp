@@ -311,11 +311,11 @@ void QgsComposerMapOverview::overviewExtentChanged()
     mComposerMap->refreshDataDefinedProperty( QgsComposerObject::MapScale );
 
     //must invalidate cache so that map gets redrawn
-    mComposerMap->cache();
+    mComposerMap->invalidateCache();
   }
 
   //repaint map so that overview gets updated
-  mComposerMap->update();
+  mComposerMap->updateItem();
 }
 
 

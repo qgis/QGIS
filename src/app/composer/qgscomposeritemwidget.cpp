@@ -230,12 +230,14 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
-  if ( cm )
+  if ( QgsComposerMap *cm = qobject_cast<QgsComposerMap *>( mItem ) )
   {
-    cm->cache();
+    cm->invalidateCache();
   }
-  mItem->update();
+  else
+  {
+    mItem->updateItem();
+  }
   mItem->endCommand();
 }
 
@@ -350,13 +352,14 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
-  if ( cm )
+  if ( QgsComposerMap *cm = qobject_cast<QgsComposerMap *>( mItem ) )
   {
-    cm->cache();
+    cm->invalidateCache();
   }
-
-  mItem->update();
+  else
+  {
+    mItem->updateItem();
+  }
   mItem->endCommand();
 }
 

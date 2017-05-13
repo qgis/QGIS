@@ -19,6 +19,7 @@
 
 //#include "ui_qgscomposermapbase.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
@@ -42,6 +43,7 @@ class QgsFillSymbol;
 class QgsLineSymbol;
 class QgsVectorLayer;
 class QgsAnnotation;
+class QgsMapRendererCustomPainterJob;
 
 /** \ingroup core
  *  \class QgsComposerMap
@@ -62,27 +64,25 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerMap; }
 
-    //! \brief Preview style
-    enum PreviewMode
-    {
-      Cache = 0,   // Use raster cache
-      Render,      // Render the map
-      Rectangle    // Display only rectangle
-    };
-
     /** Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode
     {
       Fixed,      //!< The current scale of the map is used for each feature of the atlas
-      Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
-                    the list of scales where the atlas feature is fully visible is chosen.
-                    \see QgsAtlasComposition::setPredefinedScales.
-                    \note This mode is only valid for polygon or line atlas coverage layers
-                */
-      Auto        /*!< The extent is adjusted so that each feature is fully visible.
-                    A margin is applied around the center \see setAtlasMargin
-                    \note This mode is only valid for polygon or line atlas coverage layers*/
+
+      /**
+       * A scale is chosen from the predefined scales. The smallest scale from
+       * the list of scales where the atlas feature is fully visible is chosen.
+       * \see QgsAtlasComposition::setPredefinedScales.
+       * \note This mode is only valid for polygon or line atlas coverage layers
+       */
+      Predefined,
+
+      /** The extent is adjusted so that each feature is fully visible.
+       * A margin is applied around the center \see setAtlasMargin
+       * \note This mode is only valid for polygon or line atlas coverage layers
+      */
+      Auto
     };
 
     /** \brief Draw to paint device
@@ -94,11 +94,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale = nullptr );
 
-    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
-
-    //! \brief Create cache image
-    void cache();
 
     /** Return map settings that would be used for drawing of the map
      *  \since QGIS 2.6 */
@@ -168,7 +164,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     const QgsRectangle *currentMapExtent() const;
 
     //! \note not available in Python bindings
-    QgsRectangle *currentMapExtent();
+    QgsRectangle *currentMapExtent() SIP_SKIP;
 
     /**
      * Returns coordinate reference system used for rendering the map.
@@ -201,9 +197,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
-
-    PreviewMode previewMode() const {return mPreviewMode;}
-    void setPreviewMode( PreviewMode m );
 
     /**
      * Getter for flag that determines if a stored layer set should be used
@@ -277,9 +270,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 2.16 */
     void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
-    // Set cache outdated
-    void setCacheUpdated( bool u = false );
-
     QgsRectangle extent() const {return mExtent;}
 
     //! Sets offset values to shift image (useful for live updates when moving item content)
@@ -352,8 +342,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * settings).
      */
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
-
-    void updateItem() override;
 
     /**
      * Sets whether annotations are drawn within the composer map.
@@ -474,13 +462,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
   public slots:
 
-    //! Forces an update of the cached map image
-    void updateCachedImage();
-
-    /** Updates the cached map image if the map is set to Render mode
-     * \see updateCachedImage
+    /**
+     * Forces a deferred update of the cached map image on next paint.
+     * \since QGIS 3.0
      */
-    void renderModeUpdateCachedImage();
+    void invalidateCache();
 
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
@@ -489,6 +475,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
   private slots:
     void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );
+
+    void painterJobFinished();
 
   private:
 
@@ -512,14 +500,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     // to manually tweak each atlas preview page without affecting the actual original map extent.
     QgsRectangle mAtlasFeatureExtent;
 
-    // Cache used in composer preview
-    QImage mCacheImage;
+    // We have two images used for rendering/storing cached map images.
+    // the first (mCacheFinalImage) is used ONLY for storing the most recent completed map render. It's always
+    // used when drawing map item previews. The second (mCacheRenderingImage) is used temporarily while
+    // rendering a new preview image in the background. If (and only if) the background render completes, then
+    // mCacheRenderingImage is pushed into mCacheFinalImage, and used from then on when drawing the item preview.
+    // This ensures that something is always shown in the map item, even while refreshing the preview image in the
+    // background
+    std::unique_ptr< QImage > mCacheFinalImage;
+    std::unique_ptr< QImage > mCacheRenderingImage;
 
-    // Is cache up to date
-    bool mCacheUpdated = false;
-
-    //! \brief Preview style
-    PreviewMode mPreviewMode = QgsComposerMap::Cache;
+    //! True if cached map image must be recreated
+    bool mCacheInvalidated = true;
 
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;
@@ -531,6 +523,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mXOffset = 0.0;
     //! Offset in y direction for showing map cache image
     double mYOffset = 0.0;
+
+    double mLastRenderedImageOffsetX = 0.0;
+    double mLastRenderedImageOffsetY = 0.0;
 
     //! Map rotation
     double mMapRotation = 0;
@@ -557,6 +552,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
+
+    //! \brief Create cache image
+    void recreateCachedImageInBackground();
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();
@@ -585,6 +583,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     AtlasScalingMode mAtlasScalingMode = Auto;
     //! Margin size for atlas driven extents (percentage of feature size) - when in auto scaling mode
     double mAtlasMargin = 0.10;
+
+    std::unique_ptr< QPainter > mPainter;
+    std::unique_ptr< QgsMapRendererCustomPainterJob > mPainterJob;
+    bool mPainterCancelWait = false;
 
     void init();
 

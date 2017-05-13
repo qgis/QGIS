@@ -18,6 +18,7 @@
 #define QGSAUTHIMPORTIDENTITYDIALOG_H
 
 #include <QDialog>
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "ui_qgsauthimportidentitydialog.h"
 
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     /** Get certificate/key bundle to be imported.
      * \note not available in Python bindings
      */
-    const QPair<QSslCertificate, QSslKey> certBundleToImport();
+    const QPair<QSslCertificate, QSslKey> certBundleToImport() SIP_SKIP;
 
     //! Get certificate/key bundle to be imported as a PKI bundle object
     const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }

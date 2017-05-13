@@ -58,8 +58,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
 
-    // inherited: bool operator==( const QgsTriangle& other ) const;
-    // inherited: bool operator!=( const QgsTriangle& other ) const;
+    bool operator==( const QgsTriangle &other ) const;
+    bool operator!=( const QgsTriangle &other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
     virtual QgsTriangle *clone() const override SIP_FACTORY;

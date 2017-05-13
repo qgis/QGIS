@@ -24,6 +24,7 @@
 
 #include <QVariant>
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 class QString;
@@ -175,6 +176,8 @@ class CORE_EXPORT QgsInterval
 
 Q_DECLARE_METATYPE( QgsInterval )
 
+#ifndef SIP_RUN
+
 /** Returns the interval between two datetimes.
  * \param datetime1 start datetime
  * \param datetime2 datetime to subtract, ie subtract datetime2 from datetime1
@@ -210,4 +213,6 @@ QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &inte
 //! Debug string representation of interval
 QDebug operator<<( QDebug dbg, const QgsInterval &interval );
 \
+#endif
+
 #endif // QGSINTERVAL_H

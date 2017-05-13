@@ -23,7 +23,7 @@
 
 
 /** A dialog for customising the properties of an exported image file.
- * /note added in QGIS 2.12
+ * \since QGIS 2.12
 */
 class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsComposerImageExportOptionsDialog
 {

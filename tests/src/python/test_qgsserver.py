@@ -38,7 +38,7 @@ import urllib.error
 import email
 
 from io import StringIO
-from qgis.server import QgsServer, QgsServerRequest
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
@@ -65,6 +65,7 @@ class QgsServerTestBase(unittest.TestCase):
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
+        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!")
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
@@ -180,6 +181,18 @@ class QgsServerTestBase(unittest.TestCase):
 
         self.assertTrue(test, message)
 
+    def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        headers = []
+        rh = response.headers()
+        rk = list(rh.keys())
+        rk.sort()
+        for k in rk:
+            headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
+        return b"\n".join(headers) + b"\n\n", bytes(response.body())
+
 
 class TestQgsServer(QgsServerTestBase):
     """Tests container"""
@@ -196,13 +209,25 @@ class TestQgsServer(QgsServerTestBase):
         """Segfaults?"""
         for i in range(10):
             locals()["s%s" % i] = QgsServer()
-            locals()["s%s" % i].handleRequest("")
+            locals()["rq%s" % i] = QgsBufferServerRequest("")
+            locals()["re%s" % i] = QgsBufferServerResponse()
+            locals()["s%s" % i].handleRequest(locals()["rq%s" % i], locals()["re%s" % i])
+
+    def test_requestHandler(self):
+        """Test request handler"""
+        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
+        request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
         """Using an empty query string (returns an XML exception)
         we are going to test if headers and body are returned correctly"""
         # Test as a whole
-        header, body = [_v for _v in self.server.handleRequest("")]
+        header, body = self._execute_request("")
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 54\nContent-Type: text/xml; charset=utf-8\n\n<ServerException>Project file error</ServerException>\n')
         self.assertEqual(response, expected)
@@ -212,7 +237,7 @@ class TestQgsServer(QgsServerTestBase):
         # Test response when project is specified but without service
         project = self.testdata_path + "test_project_wfs.qgs"
         qs = '?MAP=%s' % (urllib.parse.quote(project))
-        header, body = [_v for _v in self.server.handleRequest(qs)]
+        header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
         expected = self.strip_version_xmlns(b'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
@@ -229,7 +254,7 @@ class TestQgsServer(QgsServerTestBase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + 'wfs_' + request.lower() + '.txt'
@@ -252,7 +277,7 @@ class TestQgsServer(QgsServerTestBase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         self.result_compare(
             'wfs_getfeature_' + requestid + '.txt',
             "request %s failed.\n Query: %s" % (
@@ -284,7 +309,7 @@ class TestQgsServer(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         for item in str(r).split("\\n"):
             if "onlineResource" in item:
@@ -300,7 +325,7 @@ class TestQgsServer(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         for item in str(r).split("\\n"):
             if "onlineResource" in item:
@@ -316,7 +341,7 @@ class TestQgsServer(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         for item in str(r).split("\\n"):
             if "onlineResource" in item:
@@ -339,7 +364,7 @@ class TestQgsServer(QgsServerTestBase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP={}'.format(urllib.parse.quote(project))
-        header, body = self.server.handleRequest(query_string, requestMethod=QgsServerRequest.PostMethod, data=request)
+        header, body = self._execute_request(query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
 
         self.result_compare(
             'wfs_getfeature_{}.txt'.format(requestid),
@@ -379,7 +404,7 @@ class TestQgsServer(QgsServerTestBase):
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self.server.handleRequest(query_string)
+        header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + 'wcs_' + request.lower() + '.txt'
@@ -408,7 +433,7 @@ class TestQgsServer(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
@@ -427,7 +452,7 @@ class TestQgsServer(QgsServerTestBase):
             "STYLES": ""
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs))
+        r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):

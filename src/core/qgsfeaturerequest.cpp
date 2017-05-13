@@ -302,6 +302,22 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool
 {
 }
 
+QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression, bool ascending )
+  : mExpression( expression )
+  , mAscending( ascending )
+{
+  // postgres behavior: default for ASC: NULLS LAST, default for DESC: NULLS FIRST
+  mNullsFirst = !ascending;
+}
+
+QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst )
+  : mExpression( expression )
+  , mAscending( ascending )
+  , mNullsFirst( nullsfirst )
+{
+
+}
+
 bool QgsFeatureRequest::OrderByClause::ascending() const
 {
   return mAscending;
@@ -333,6 +349,11 @@ QString QgsFeatureRequest::OrderByClause::dump() const
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const
 {
   return mExpression;
+}
+
+bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
+{
+  return mExpression.prepare( context );
 }
 
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )

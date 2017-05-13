@@ -20,6 +20,8 @@
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 
+///@cond PRIVATE
+
 class QgsMemoryProvider;
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
@@ -71,5 +73,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     QgsExpression *mSubsetExpression = nullptr;
 
 };
+
+///@endcond PRIVATE
 
 #endif // QGSMEMORYFEATUREITERATOR_H

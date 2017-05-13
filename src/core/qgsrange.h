@@ -19,6 +19,7 @@
 #define QGSRANGE_H
 
 #include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_core.h"
 
 /**
@@ -38,7 +39,7 @@
  * \see QgsIntRange
  * \note not available in Python bindings
  */
-template <class T> class QgsRange
+template <class T> class QgsRange SIP_SKIP
 {
   public:
 
@@ -212,7 +213,7 @@ typedef QgsRange< int > QgsIntRange;
  * \see QgsDateRange
  * \note not available in Python bindings
  */
-template <class T> class QgsTemporalRange
+template <class T> class QgsTemporalRange SIP_SKIP
 {
   public:
 

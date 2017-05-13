@@ -7,7 +7,7 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
     QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
     ~QgsBrightnessContrastFilter();
 
-    virtual QgsBrightnessContrastFilter  *clone() const /Factory/;
+    virtual QgsBrightnessContrastFilter *clone() const /Factory/;
 
     int bandCount() const;
 

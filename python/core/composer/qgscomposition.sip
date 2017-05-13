@@ -520,7 +520,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
      * @returns QgsComposerModel for composition
      * @note this method was added in version 2.5
      */
-    QgsComposerModel  *itemsModel();
+    QgsComposerModel *itemsModel();
 
     /** Set a custom property for the composition.
      * @param key property key. If a property with the same key already exists it will be overwritten.

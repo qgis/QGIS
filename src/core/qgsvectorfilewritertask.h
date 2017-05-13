@@ -30,6 +30,7 @@
  * task. This can be used to save a vector layer out to a file without blocking the
  * QGIS interface.
  * \since QGIS 3.0
+ * \see QgsVectorLayerExporterTask
  * \see QgsRasterFileWriterTask
  */
 class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask

@@ -19,6 +19,7 @@
 #define QGSRASTERBLOCK_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <limits>
 #include <QImage>
 #include "qgis.h"
@@ -286,20 +287,20 @@ class CORE_EXPORT QgsRasterBlock
      *  \returns pointer to data
      *  \note not available in Python bindings
      */
-    char *bits( int row, int column );
+    char *bits( int row, int column ) SIP_SKIP;
 
     /** \brief Get pointer to data
      *  \param index data matrix index (long type in Python)
      *  \returns pointer to data
      *  \note not available in Python bindings
      */
-    char *bits( qgssize index );
+    char *bits( qgssize index ) SIP_SKIP;
 
     /** \brief Get pointer to data
      *  \returns pointer to data
      *  \note not available in Python bindings
      */
-    char *bits();
+    char *bits() SIP_SKIP;
 
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
@@ -314,7 +315,7 @@ class CORE_EXPORT QgsRasterBlock
      * \since QGIS 2.16
      * \note not available in Python bindings
      */
-    static QString printValue( float value );
+    static QString printValue( float value ) SIP_SKIP;
 
     /** \brief Convert data to different type.
      *  \param destDataType dest data type
@@ -331,10 +332,10 @@ class CORE_EXPORT QgsRasterBlock
     bool setImage( const QImage *image );
 
     //! \note not available in Python bindings
-    inline static double readValue( void *data, Qgis::DataType type, qgssize index );
+    inline static double readValue( void *data, Qgis::DataType type, qgssize index ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value );
+    inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value ) SIP_SKIP;
 
     void applyNoDataValues( const QgsRasterRangeList &rangeList );
 

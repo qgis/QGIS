@@ -19,6 +19,7 @@
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgscomposertablev2.h"
 #include "qgsvectorlayerref.h"
@@ -273,7 +274,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * if false, the attribute is sorted in descending order.
      * \note not available in Python bindings
      */
-    QList<QPair<int, bool> > sortAttributes() const;
+    QList<QPair<int, bool> > sortAttributes() const SIP_SKIP;
 
     /** Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
@@ -296,7 +297,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \returns true if attributes were successfully fetched
      * \note not available in Python bindings
      */
-    bool getTableContents( QgsComposerTableContents &contents ) override;
+    bool getTableContents( QgsComposerTableContents &contents ) override SIP_SKIP;
 
     virtual QgsExpressionContext createExpressionContext() const override;
 

@@ -122,6 +122,37 @@ class QgsProcessingUtils
  :rtype: list of QVariant
 %End
 
+
+    static void createFeatureSinkPython(
+      QgsFeatureSink **sink /Out,TransferBack/,
+      QString &destination /In,Out/,
+      const QString &encoding,
+      const QgsFields &fields,
+      QgsWkbTypes::Type geometryType,
+      const QgsCoordinateReferenceSystem &crs,
+      QgsProcessingContext &context ) /PyName=createFeatureSink/;
+%Docstring
+ Creates a feature sink ready for adding features. The ``destination`` specifies a destination
+ URI for the resultant layer. It may be updated in place to reflect the actual destination
+ for the layer.
+
+ Sink parameters such as desired ``encoding``, ``fields``, ``geometryType`` and ``crs`` must be specified.
+
+ If the ``encoding`` is not specified, the default encoding from the ``context`` will be used.
+
+ If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
+ temporary layer store.
+
+.. note::
+
+   this version of the createFeatureSink() function has an API designed around use from the
+ SIP bindings. c++ code should call the other createFeatureSink() version.
+.. note::
+
+   available in Python bindings as createFeatureSink()
+%End
+
+
 };
 
 

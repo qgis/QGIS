@@ -31,7 +31,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -72,9 +79,10 @@ class Delaunay(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
-        fields = [QgsField('POINTA', QVariant.Double, '', 24, 15),
-                  QgsField('POINTB', QVariant.Double, '', 24, 15),
-                  QgsField('POINTC', QVariant.Double, '', 24, 15)]
+        fields = QgsFields()
+        fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))
+        fields.append(QgsField('POINTB', QVariant.Double, '', 24, 15))
+        fields.append(QgsField('POINTC', QVariant.Double, '', 24, 15))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
 

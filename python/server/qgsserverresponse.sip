@@ -44,9 +44,8 @@ class QgsServerResponse
 
     /**
      * Clear header
-     * Undo a previous 'set_header' call
      */
-    virtual void clearHeader( const QString &key ) = 0;
+    virtual void removeHeader( const QString &key ) = 0;
 
     /**
      * Return the header value
@@ -54,9 +53,9 @@ class QgsServerResponse
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the list of all header keys
+     * Return the response headers
      */
-    virtual QList<QString> headerKeys() const = 0;
+    virtual QMap<QString, QString> headers() const = 0;
 
     /**
      * Return true if the headers have alredy been sent

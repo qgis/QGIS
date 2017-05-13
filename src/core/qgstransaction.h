@@ -24,6 +24,7 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QgsVectorDataProvider;
 class QgsVectorLayer;
@@ -49,53 +50,70 @@ class QgsVectorLayer;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
-class CORE_EXPORT QgsTransaction : public QObject
+class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
 
   public:
 
-    //! QgsTransaction cannot be copied.
-    QgsTransaction( const QgsTransaction &other ) = delete;
-    //! QgsTransaction cannot be copied.
-    const QgsTransaction &operator=( const QgsTransaction &other ) = delete;
-
-    //! Creates a transaction for the specified connection string and provider
+    /**
+     * Create a transaction for the specified connection string \a connString
+     * and provider with \a providerKey.
+     */
     static QgsTransaction *create( const QString &connString, const QString &providerKey ) SIP_FACTORY;
 
-    /** Creates a transaction which includes the specified layers. Connection string
-     *  and data provider are taken from the first layer */
+    /**
+     * Create a transaction which includes the layers specified with
+     * \a layerIds.
+     * All layers are expected to have the same connection string and data
+     * provider.
+     */
     static QgsTransaction *create( const QStringList &layerIds ) SIP_FACTORY;
 
     virtual ~QgsTransaction();
 
-    //! Add layer to the transaction. The layer must not be in edit mode.
+    /**
+     * Add the layer with \a layerId to the transaction. The layer must not be
+     * in edit mode and the connection string must match.
+     */
     bool addLayer( const QString &layerId );
 
-    //! Add layer to the transaction. The layer must not be in edit mode.
+    /**
+     * Add the \a layer to the transaction. The layer must not be
+     * in edit mode and the connection string must match.
+     */
     bool addLayer( QgsVectorLayer *layer );
 
-    /** Begin transaction
-     *  The statement timeout, in seconds, specifies how long an sql statement
-     *  is allowed to block QGIS before it is aborted. Statements can block,
-     *  depending on the provider, if multiple transactions are active and a
-     *  statement would produce a conflicting state. In these cases, the
-     *  statements block until the conflicting transaction is committed or
-     *  rolled back.
-     *  Some providers might not honour the statement timeout. */
+    /**
+     * Begin transaction
+     * The \a statementTimeout (in seconds) specifies how long an sql statement
+     * is allowed to block QGIS before it is aborted.
+     * Statements can block, if multiple transactions are active and a
+     * statement would produce a conflicting state. In these cases, the
+     * statements block until the conflicting transaction is committed or
+     * rolled back.
+     * Some providers might not honour the statement timeout.
+     */
     bool begin( QString &errorMsg SIP_OUT, int statementTimeout = 20 );
 
-    //! Commit transaction.
+    /**
+     * Commit transaction.
+     */
     bool commit( QString &errorMsg SIP_OUT );
 
-    //! Roll back transaction.
+    /**
+     * Roll back transaction.
+     */
     bool rollback( QString &errorMsg SIP_OUT );
 
-    //! Executes sql
+    /**
+     * Execute the \a sql string. The result must not be a tuple, so running a
+     * ``SELECT`` query will return an error.
+     */
     virtual bool executeSql( const QString &sql, QString &error SIP_OUT ) = 0;
 
     /**
-     * Checks if a the provider of a give layer supports transactions.
+     * Checks if a the provider of a given \a layer supports transactions.
      */
     static bool supportsTransaction( const QgsVectorLayer *layer );
 
@@ -106,13 +124,13 @@ class CORE_EXPORT QgsTransaction : public QObject
      */
     void afterRollback();
 
-  private slots:
-    void onLayersDeleted( const QStringList &layerids );
-
   protected:
-    QgsTransaction( const QString &connString );
+    QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
+
+  private slots:
+    void onLayersDeleted( const QStringList &layerids );
 
   private:
 

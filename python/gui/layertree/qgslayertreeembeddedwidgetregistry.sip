@@ -47,7 +47,7 @@ class QgsLayerTreeEmbeddedWidgetRegistry
 
   public:
 
-    /** Means of accessing canonical single instance  */
+    /** Means of accessing canonical single instance */
     static QgsLayerTreeEmbeddedWidgetRegistry *instance();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();

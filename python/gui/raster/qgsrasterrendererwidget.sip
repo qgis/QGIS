@@ -44,8 +44,4 @@ class QgsRasterRendererWidget: QWidget
      */
     void widgetChanged();
 
-
-  protected:
-    /** Returns a band name for display. First choice is color name, otherwise band number*/
-    QString displayBandName( int band ) const;
 };

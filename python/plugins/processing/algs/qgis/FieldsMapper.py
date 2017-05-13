@@ -29,6 +29,7 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsField,
+                       QgsFields,
                        QgsExpression,
                        QgsDistanceArea,
                        QgsProject,
@@ -115,7 +116,7 @@ class FieldsMapper(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         layer = QgsProcessingUtils.mapLayerFromString(layer, context)
-        fields = []
+        fields = QgsFields()
         expressions = []
 
         da = QgsDistanceArea()
@@ -125,10 +126,10 @@ class FieldsMapper(GeoAlgorithm):
         exp_context = layer.createExpressionContext()
 
         for field_def in mapping:
-            fields.append(QgsField(name=field_def['name'],
-                                   type=field_def['type'],
-                                   len=field_def['length'],
-                                   prec=field_def['precision']))
+            fields.append(QgsField(field_def['name'],
+                                   field_def['type'],
+                                   field_def['length'],
+                                   field_def['precision']))
 
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)

@@ -18,6 +18,7 @@
 #define NORMVECDECORATOR_H
 
 #include "TriDecorator.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
@@ -58,7 +59,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     /** This function behaves similar to the one above. Additionally, the numbers of the points are returned (ptn1, ptn2, ptn3) as well as the PointStates of the triangle points (state1, state2, state3)
       * \note not available in Python bindings
      */
-    bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 );
+    bool getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 ) SIP_SKIP;
     //! Returns the state of the point with the number 'pointno'
     PointState getState( int pointno ) const;
     //! Sets an interpolator

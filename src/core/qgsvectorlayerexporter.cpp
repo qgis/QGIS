@@ -1,6 +1,5 @@
 /***************************************************************************
-                          qgsvectorlayerimport.cpp
-                          vector layer importer
+                          qgsvectorlayerexporter.cpp
                              -------------------
     begin                : Thu Aug 25 2011
     copyright            : (C) 2011 by Giuseppe Sucameli
@@ -23,7 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsproviderregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgscsexception.h"
@@ -34,7 +33,7 @@
 
 #define FEATURE_BUFFER_SIZE 200
 
-typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
+typedef QgsVectorLayerExporter::ExportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type geometryType,
@@ -46,24 +45,22 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 );
 
 
-QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
+QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     const QString &providerKey,
     const QgsFields &fields,
     QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options,
-    QProgressDialog *progress )
+    const QMap<QString, QVariant> *options )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
-  , mProgress( progress )
 
 {
   mProvider = nullptr;
 
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
 
-  std::unique_ptr< QLibrary > myLib( pReg->providerLibrary( providerKey ) );
+  std::unique_ptr< QLibrary > myLib( pReg->createProviderLibrary( providerKey ) );
   if ( !myLib )
   {
     mError = ErrInvalidProvider;
@@ -82,7 +79,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   // create an empty layer
   QString errMsg;
   mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, options );
-  if ( hasError() )
+  if ( errorCode() )
   {
     mErrorMessage = errMsg;
     return;
@@ -111,7 +108,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
       uriUpdated += layerName;
     }
   }
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->provider( providerKey, uriUpdated ) );
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
@@ -127,7 +124,7 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   mError = NoError;
 }
 
-QgsVectorLayerImport::~QgsVectorLayerImport()
+QgsVectorLayerExporter::~QgsVectorLayerExporter()
 {
   flushBuffer();
 
@@ -135,17 +132,28 @@ QgsVectorLayerImport::~QgsVectorLayerImport()
     delete mProvider;
 }
 
-QgsVectorLayerImport::ImportError QgsVectorLayerImport::hasError()
+QgsVectorLayerExporter::ExportError QgsVectorLayerExporter::errorCode() const
 {
   return mError;
 }
 
-QString QgsVectorLayerImport::errorMessage()
+QString QgsVectorLayerExporter::errorMessage() const
 {
   return mErrorMessage;
 }
 
-bool QgsVectorLayerImport::addFeature( QgsFeature &feat )
+bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features )
+{
+  QgsFeatureList::iterator fIt = features.begin();
+  bool result = true;
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    result = result && addFeature( *fIt );
+  }
+  return result;
+}
+
+bool QgsVectorLayerExporter::addFeature( QgsFeature &feat )
 {
   QgsAttributes attrs = feat.attributes();
 
@@ -177,7 +185,7 @@ bool QgsVectorLayerImport::addFeature( QgsFeature &feat )
   return true;
 }
 
-bool QgsVectorLayerImport::flushBuffer()
+bool QgsVectorLayerExporter::flushBuffer()
 {
   if ( mFeatureBuffer.count() <= 0 )
     return true;
@@ -204,7 +212,7 @@ bool QgsVectorLayerImport::flushBuffer()
   return true;
 }
 
-bool QgsVectorLayerImport::createSpatialIndex()
+bool QgsVectorLayerExporter::createSpatialIndex()
 {
   if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
   {
@@ -216,16 +224,15 @@ bool QgsVectorLayerImport::createSpatialIndex()
   }
 }
 
-QgsVectorLayerImport::ImportError
-QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
-                                   const QString &uri,
-                                   const QString &providerKey,
-                                   const QgsCoordinateReferenceSystem &destCRS,
-                                   bool onlySelected,
-                                   QString *errorMessage,
-                                   bool skipAttributeCreation,
-                                   QMap<QString, QVariant> *options,
-                                   QProgressDialog *progress )
+QgsVectorLayerExporter::ExportError
+QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
+                                     const QString &uri,
+                                     const QString &providerKey,
+                                     const QgsCoordinateReferenceSystem &destCRS,
+                                     bool onlySelected,
+                                     QString *errorMessage,
+                                     QMap<QString, QVariant> *options,
+                                     QgsFeedback *feedback )
 {
   QgsCoordinateReferenceSystem outputCRS;
   QgsCoordinateTransform ct;
@@ -255,7 +262,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
     forceSinglePartGeom = options->take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
   }
 
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
+  QgsFields fields = layer->fields();
   QgsWkbTypes::Type wkbType = layer->wkbType();
 
   // Special handling for Shapefiles
@@ -296,11 +303,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
     }
   }
 
-  QgsVectorLayerImport *writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
+  QgsVectorLayerExporter *writer =
+    new QgsVectorLayerExporter( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
 
   // check whether file creation was successful
-  ImportError err = writer->hasError();
+  ExportError err = writer->errorCode();
   if ( err != NoError )
   {
     if ( errorMessage )
@@ -314,18 +321,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   QgsFeatureRequest req;
   if ( wkbType == QgsWkbTypes::NoGeometry )
     req.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( skipAttributeCreation )
-    req.setSubsetOfAttributes( QgsAttributeList() );
+  if ( onlySelected )
+    req.setFilterFids( layer->selectedFeatureIds() );
 
   QgsFeatureIterator fit = layer->getFeatures( req );
-
-  const QgsFeatureIds &ids = layer->selectedFeatureIds();
 
   // Create our transform
   if ( destCRS.isValid() )
@@ -335,16 +339,12 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
   if ( !ct.isValid() )
     shallTransform = false;
 
-  int n = 0;
+  long n = 0;
+  long approxTotal = onlySelected ? layer->selectedFeatureCount() : layer->featureCount();
 
   if ( errorMessage )
   {
     *errorMessage = QObject::tr( "Feature write errors:" );
-  }
-
-  if ( progress )
-  {
-    progress->setRange( 0, layer->featureCount() );
   }
 
   bool canceled = false;
@@ -352,12 +352,12 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
   // write all features
   while ( fit.nextFeature( fet ) )
   {
-    if ( progress && progress->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       canceled = true;
       if ( errorMessage )
       {
-        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+        *errorMessage += '\n' + QObject::tr( "Import was canceled at %1 of %2" ).arg( n ).arg( approxTotal );
       }
       break;
     }
@@ -370,9 +370,6 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
       }
       break;
     }
-
-    if ( onlySelected && !ids.contains( fet.id() ) )
-      continue;
 
     if ( shallTransform )
     {
@@ -398,29 +395,26 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
         return ErrProjection;
       }
     }
-    if ( skipAttributeCreation )
-    {
-      fet.initAttributes( 0 );
-    }
     if ( !writer->addFeature( fet ) )
     {
-      if ( writer->hasError() && errorMessage )
+      if ( writer->errorCode() && errorMessage )
       {
         *errorMessage += '\n' + writer->errorMessage();
       }
     }
     n++;
 
-    if ( progress )
+    if ( feedback )
     {
-      progress->setValue( n );
+      feedback->setProgress( 100.0 * static_cast< double >( n ) / approxTotal );
     }
+
   }
 
   // flush the buffer to be sure that all features are written
   if ( !writer->flushBuffer() )
   {
-    if ( writer->hasError() && errorMessage )
+    if ( writer->errorCode() && errorMessage )
     {
       *errorMessage += '\n' + writer->errorMessage();
     }
@@ -429,7 +423,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
 
   if ( !writer->createSpatialIndex() )
   {
-    if ( writer->hasError() && errorMessage )
+    if ( writer->errorCode() && errorMessage )
     {
       *errorMessage += '\n' + writer->errorMessage();
     }
@@ -455,4 +449,61 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer *layer,
     return ErrFeatureWriteFailed;
 
   return NoError;
+}
+
+
+//
+// QgsVectorLayerExporterTask
+//
+
+QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+  : QgsTask( tr( "Exporting %1" ).arg( layer->name() ), QgsTask::CanCancel )
+  , mLayer( layer )
+  , mDestUri( uri )
+  , mDestProviderKey( providerKey )
+  , mDestCrs( destinationCrs )
+  , mOptions( options ? * options : QMap<QString, QVariant>() )
+  , mOwnedFeedback( new QgsFeedback() )
+{
+  if ( mLayer )
+    setDependentLayers( QList< QgsMapLayer * >() << mLayer );
+}
+
+QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+{
+  std::unique_ptr< QgsVectorLayerExporterTask > newTask( new QgsVectorLayerExporterTask( layer, uri, providerKey, destinationCrs, options ) );
+  newTask->mOwnsLayer = true;
+  return newTask.release();
+}
+
+void QgsVectorLayerExporterTask::cancel()
+{
+  mOwnedFeedback->cancel();
+  QgsTask::cancel();
+}
+
+bool QgsVectorLayerExporterTask::run()
+{
+  if ( !mLayer )
+    return false;
+
+  connect( mOwnedFeedback.get(), &QgsFeedback::progressChanged, this, &QgsVectorLayerExporterTask::setProgress );
+
+
+  mError = QgsVectorLayerExporter::exportLayer(
+             mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
+             &mOptions, mOwnedFeedback.get() );
+
+  if ( mOwnsLayer )
+    delete mLayer;
+
+  return mError == QgsVectorLayerExporter::NoError;
+}
+
+void QgsVectorLayerExporterTask::finished( bool result )
+{
+  if ( result )
+    emit exportComplete();
+  else
+    emit errorOccurred( mError, mErrorMessage );
 }

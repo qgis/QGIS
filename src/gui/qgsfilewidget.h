@@ -33,6 +33,17 @@ class QgsFilterLineEdit;
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
+      sipType = sipType_QgsFileWidget;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
     Q_OBJECT
     Q_PROPERTY( bool fileWidgetButtonVisible READ fileWidgetButtonVisible WRITE setFileWidgetButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )

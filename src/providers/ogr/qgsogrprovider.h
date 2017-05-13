@@ -23,10 +23,10 @@ email                : sherman at mrcc.com
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 class QgsField;
-class QgsVectorLayerImport;
+class QgsVectorLayerExporter;
 
 class QgsOgrFeatureIterator;
 
@@ -43,7 +43,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
   public:
 
     //! Convert a vector layer to a vector file
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -225,7 +225,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     mutable QStringList mSubLayerList;
 
-    bool addFeature( QgsFeature &f ) override;
+    bool addFeaturePrivate( QgsFeature &f );
     //! Deletes one feature
     bool deleteFeature( QgsFeatureId id );
 

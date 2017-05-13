@@ -21,7 +21,7 @@ class QgsAttributeTableDelegate : QItemDelegate
     void paint(
       QPainter * painter,
       const QStyleOptionViewItem & option,
-      const QModelIndex  &index ) const;
+      const QModelIndex &index ) const;
 
     /**
      * Sets data from editor back to model. Overloads default method

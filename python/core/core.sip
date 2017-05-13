@@ -92,6 +92,7 @@
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip
 %Include qgsmaplayerrenderer.sip
+%Include qgsmaplayerstore.sip
 %Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
@@ -164,7 +165,8 @@
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
-%Include qgsvectorlayerimport.sip
+%Include qgsvectorlayerexporter.sip
+%Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerjoininfo.sip
 %Include qgsvectorlayertools.sip
@@ -176,7 +178,6 @@
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
 %Include qgsfeaturestore.sip
-%Include qgsgeometrycache.sip
 %Include qgslayerdefinition.sip
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
@@ -276,12 +277,17 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include metadata/qgslayermetadata.sip
+%Include metadata/qgslayermetadatavalidator.sip
+
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip
 %Include processing/qgsprocessingutils.sip
+
+%Include providers/memory/qgsmemoryproviderutils.sip
 
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
@@ -388,6 +394,7 @@
 %Include geometry/qgspointv2.sip
 %Include geometry/qgspolygon.sip
 %Include geometry/qgsrectangle.sip
+%Include geometry/qgsregularpolygon.sip
 %Include geometry/qgssurface.sip
 %Include geometry/qgstriangle.sip
 %Include geometry/qgswkbtypes.sip

@@ -145,7 +145,7 @@ class ExecuteSQL(GeoAlgorithm):
         if not vLayer.isValid():
             raise GeoAlgorithmExecutionException(vLayer.dataProvider().error().message())
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields().toList(),
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(vLayer.fields(),
                                                                            vLayer.wkbType() if geometry_type != 1 else 1,
                                                                            vLayer.crs(), context)
 

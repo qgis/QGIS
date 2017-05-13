@@ -37,7 +37,8 @@ from qgis.core import (QgsRectangle,
                        QgsGeometry,
                        QgsPointV2,
                        QgsLineString,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsFields)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
@@ -118,13 +119,13 @@ class GridLine(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
-        fields = [QgsField('left', QVariant.Double, '', 24, 16),
-                  QgsField('top', QVariant.Double, '', 24, 16),
-                  QgsField('right', QVariant.Double, '', 24, 16),
-                  QgsField('bottom', QVariant.Double, '', 24, 16),
-                  QgsField('id', QVariant.Int, '', 10, 0),
-                  QgsField('coord', QVariant.Double, '', 24, 15)
-                  ]
+        fields = QgsFields()
+        fields.append(QgsField('left', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('top', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('right', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('bottom', QVariant.Double, '', 24, 16))
+        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        fields.append(QgsField('coord', QVariant.Double, '', 24, 15))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, crs, context)
 

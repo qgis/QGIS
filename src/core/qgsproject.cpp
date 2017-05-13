@@ -46,6 +46,7 @@
 #include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgslayoutmanager.h"
+#include "qgsmaplayerstore.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -322,6 +323,7 @@ void removeKey_( const QString &scope,
 
 QgsProject::QgsProject( QObject *parent )
   : QObject( parent )
+  , mLayerStore( new QgsMapLayerStore( this ) )
   , mBadLayerHandler( new QgsProjectBadLayerHandler() )
   , mSnappingConfig( this )
   , mRelationManager( new QgsRelationManager( this ) )
@@ -343,17 +345,31 @@ QgsProject::QgsProject( QObject *parent )
   connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
   connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
   connect( this, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *> & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
+
+  // proxy map layer store signals to this
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QStringList & )>( &QgsMapLayerStore::layersWillBeRemoved ),
+           this, static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ) );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QList<QgsMapLayer *> & )>( &QgsMapLayerStore::layersWillBeRemoved ),
+           this, static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> & )>( &QgsProject::layersWillBeRemoved ) );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QString & )>( &QgsMapLayerStore::layerWillBeRemoved ),
+           this, static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ) );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( QgsMapLayer * )>( &QgsMapLayerStore::layerWillBeRemoved ),
+           this, static_cast<void ( QgsProject::* )( QgsMapLayer * )>( &QgsProject::layerWillBeRemoved ) );
+  connect( mLayerStore.get(), static_cast<void ( QgsMapLayerStore::* )( const QStringList & )>( &QgsMapLayerStore::layersRemoved ), this, &QgsProject::layersRemoved );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this, &QgsProject::layerRemoved );
+  connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
 }
 
 
 QgsProject::~QgsProject()
 {
+  clear();
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
-
-  removeAllMapLayers();
 }
 
 
@@ -487,6 +503,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
+  removeAllMapLayers();
   setDirty( false );
 }
 
@@ -884,7 +901,8 @@ bool QgsProject::read()
 
   // Resolve references to other vector layers
   // Needs to be done here once all dependent layers are loaded
-  for ( QMap<QString, QgsMapLayer *>::iterator it = mMapLayers.begin(); it != mMapLayers.end(); it++ )
+  QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); it++ )
   {
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       vl->resolveReferences( this );
@@ -1047,6 +1065,16 @@ void QgsProject::setLabelingEngineSettings( const QgsLabelingEngineSettings &set
 const QgsLabelingEngineSettings &QgsProject::labelingEngineSettings() const
 {
   return *mLabelingEngineSettings;
+}
+
+QgsMapLayerStore *QgsProject::layerStore()
+{
+  return mLayerStore.get();
+}
+
+const QgsMapLayerStore *QgsProject::layerStore() const
+{
+  return mLayerStore.get();
 }
 
 QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
@@ -2066,31 +2094,23 @@ QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGrou
 
 
 //
-// QgsMapLayerRegistry methods
+// QgsMapLayerStore methods
 //
 
 
 int QgsProject::count() const
 {
-  return mMapLayers.size();
+  return mLayerStore->count();
 }
 
 QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
-  return mMapLayers.value( layerId );
+  return mLayerStore->mapLayer( layerId );
 }
 
 QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
-  QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer *layer, mMapLayers )
-  {
-    if ( layer->name() == layerName )
-    {
-      myResultList << layer;
-    }
-  }
-  return myResultList;
+  return mLayerStore->mapLayersByName( layerName );
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(
@@ -2098,31 +2118,9 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   bool addToLegend,
   bool takeOwnership )
 {
-  QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer *myLayer, layers )
-  {
-    if ( !myLayer || !myLayer->isValid() )
-    {
-      QgsDebugMsg( "Cannot add invalid layers" );
-      continue;
-    }
-    //check the layer is not already registered!
-    if ( !mMapLayers.contains( myLayer->id() ) )
-    {
-      mMapLayers[myLayer->id()] = myLayer;
-      myResultList << mMapLayers[myLayer->id()];
-      if ( takeOwnership )
-      {
-        myLayer->setParent( this );
-      }
-      connect( myLayer, &QObject::destroyed, this, &QgsProject::onMapLayerDeleted );
-      emit layerWasAdded( myLayer );
-    }
-  }
+  QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
   if ( !myResultList.isEmpty() )
   {
-    emit layersAdded( myResultList );
-
     if ( addToLegend )
       emit legendLayersAdded( myResultList );
   }
@@ -2141,116 +2139,47 @@ QgsProject::addMapLayer( QgsMapLayer *layer,
 
 void QgsProject::removeMapLayers( const QStringList &layerIds )
 {
-  QList<QgsMapLayer *> layers;
-  Q_FOREACH ( const QString &myId, layerIds )
-  {
-    layers << mMapLayers.value( myId );
-  }
-
-  removeMapLayers( layers );
+  mLayerStore->removeMapLayers( layerIds );
 }
 
 void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
-  if ( layers.isEmpty() )
-    return;
-
-  QStringList layerIds;
-  QList<QgsMapLayer *> layerList;
-
-  Q_FOREACH ( QgsMapLayer *layer, layers )
-  {
-    // check layer and the registry contains it
-    if ( layer && mMapLayers.contains( layer->id() ) )
-    {
-      layerIds << layer->id();
-      layerList << layer;
-    }
-  }
-
-  if ( layerIds.isEmpty() )
-    return;
-
-  emit layersWillBeRemoved( layerIds );
-  emit layersWillBeRemoved( layerList );
-
-  Q_FOREACH ( QgsMapLayer *lyr, layerList )
-  {
-    QString myId( lyr->id() );
-    emit layerWillBeRemoved( myId );
-    emit layerWillBeRemoved( lyr );
-    mMapLayers.remove( myId );
-    if ( lyr->parent() == this )
-    {
-      delete lyr;
-    }
-    emit layerRemoved( myId );
-  }
-
-  emit layersRemoved( layerIds );
+  mLayerStore->removeMapLayers( layers );
 }
 
 void QgsProject::removeMapLayer( const QString &layerId )
 {
-  removeMapLayers( QList<QgsMapLayer *>() << mMapLayers.value( layerId ) );
+  mLayerStore->removeMapLayer( layerId );
 }
 
 void QgsProject::removeMapLayer( QgsMapLayer *layer )
 {
-  if ( layer )
-    removeMapLayers( QList<QgsMapLayer *>() << layer );
+  mLayerStore->removeMapLayer( layer );
 }
 
 QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
 {
-  if ( !layer )
-    return nullptr;
-
-  if ( mMapLayers.contains( layer->id() ) )
-  {
-    emit layersWillBeRemoved( QStringList() << layer->id() );
-    emit layersWillBeRemoved( QList<QgsMapLayer *>() << layer );
-    emit layerWillBeRemoved( layer->id() );
-    emit layerWillBeRemoved( layer );
-
-    mMapLayers.remove( layer->id() );
-    layer->setParent( nullptr );
-    emit layerRemoved( layer->id() );
-    emit layersRemoved( QStringList() << layer->id() );
-    return layer;
-  }
-  return nullptr; //don't return layer - it wasn't owned and accordingly we aren't transferring ownership
+  return mLayerStore->takeMapLayer( layer );
 }
 
 void QgsProject::removeAllMapLayers()
 {
-  emit removeAll();
-  // now let all observers know to clear themselves,
-  // and then consequently any of their map legends
-  removeMapLayers( mMapLayers.keys() );
-  mMapLayers.clear();
+  mLayerStore->removeAllMapLayers();
 }
 
 void QgsProject::reloadAllLayers()
 {
-  Q_FOREACH ( QgsMapLayer *layer, mMapLayers )
+  QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin();
+  for ( ; it != layers.constEnd(); ++it )
   {
-    layer->reload();
-  }
-}
-
-void QgsProject::onMapLayerDeleted( QObject *obj )
-{
-  QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );
-
-  if ( !id.isNull() )
-  {
-    QgsDebugMsg( QString( "Map layer deleted without unregistering! %1" ).arg( id ) );
-    mMapLayers.remove( id );
+    it.value()->reload();
   }
 }
 
 QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
 {
-  return mMapLayers;
+  return mLayerStore->mapLayers();
 }
+
+

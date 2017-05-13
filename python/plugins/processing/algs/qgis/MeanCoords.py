@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils, QgsFields
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -93,9 +93,10 @@ class MeanCoords(GeoAlgorithm):
         else:
             uniqueIndex = layer.fields().lookupField(uniqueField)
 
-        fieldList = [QgsField('MEAN_X', QVariant.Double, '', 24, 15),
-                     QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
-                     QgsField('UID', QVariant.String, '', 255)]
+        fieldList = QgsFields()
+        fieldList.append(QgsField('MEAN_X', QVariant.Double, '', 24, 15))
+        fieldList.append(QgsField('MEAN_Y', QVariant.Double, '', 24, 15))
+        fieldList.append(QgsField('UID', QVariant.String, '', 255))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.Point, layer.crs(), context)
 

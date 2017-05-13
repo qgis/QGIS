@@ -17,9 +17,9 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
-    void rangesDoubleClicked( const QModelIndex  &idx );
-    void rangesClicked( const QModelIndex  &idx );
-    void changeCurrentValue( QStandardItem  *item );
+    void rangesDoubleClicked( const QModelIndex &idx );
+    void rangesClicked( const QModelIndex &idx );
+    void changeCurrentValue( QStandardItem *item );
 
     /** Adds a class manually to the classification*/
     void addClass();

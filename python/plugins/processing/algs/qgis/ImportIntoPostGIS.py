@@ -25,7 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsVectorLayerImport,
+from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -164,12 +164,11 @@ class ImportIntoPostGIS(GeoAlgorithm):
         if encoding:
             layer.setProviderEncoding(encoding)
 
-        (ret, errMsg) = QgsVectorLayerImport.importLayer(
+        (ret, errMsg) = QgsVectorLayerExporter.exportLayer(
             layer,
             uri.uri(),
             providerName,
             self.crs,
-            False,
             False,
             options,
         )

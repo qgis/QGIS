@@ -17,6 +17,7 @@
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
 #include "qgsdialog.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QWidget>
 #include <QStandardItemModel>
@@ -122,7 +123,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     /** Returns the currently selected effect within the stack.
      * \note not available in Python bindings
      */
-    EffectItem *currentEffectItem();
+    EffectItem *currentEffectItem() SIP_SKIP;
 
     /** Moves the currently selected effect within the stack by a specified offset
      */

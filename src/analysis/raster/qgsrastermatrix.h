@@ -19,6 +19,7 @@
 #define QGSRASTERMATRIX_H
 
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 
 /** \ingroup analysis
  * \class QgsRasterMatrix
@@ -71,10 +72,10 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     //! Returns data array (but not ownership)
     //! \note not available in Python bindings
-    double *data() { return mData; }
+    double *data() { return mData; } SIP_SKIP
     //! Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
     //! \note not available in Python bindings
-    double *takeData();
+    double *takeData() SIP_SKIP;
 
     void setData( int cols, int rows, double *data, double nodataValue );
 

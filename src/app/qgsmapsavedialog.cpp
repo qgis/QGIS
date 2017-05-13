@@ -22,6 +22,8 @@
 #include "qgsdecorationitem.h"
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
+#include "qgsmapsettingsutils.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
 #include <QSpinBox>
@@ -29,22 +31,28 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations, DialogType type )
   : QDialog( parent )
-  , mExtent( mapCanvas->mapSettings().visibleExtent() )
-  , mDpi( mapCanvas->mapSettings().outputDpi() )
-  , mSize( mapCanvas->mapSettings().outputSize() )
+  , mDialogType( type )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
+  // Use unrotated visible extent to insure output size and scale matches canvas
+  QgsMapSettings ms = mMapCanvas->mapSettings();
+  ms.setRotation( 0 );
+  mExtent = ms.visibleExtent();
+  mDpi = ms.outputDpi();
+  mSize = ms.outputSize();
+
   mResolutionSpinBox->setValue( qt_defaultDpiX() );
 
-  mExtentGroupBox->setOutputCrs( mapCanvas->mapSettings().destinationCrs() );
-  mExtentGroupBox->setCurrentExtent( mExtent, mapCanvas->mapSettings().destinationCrs() );
+  mExtentGroupBox->setOutputCrs( ms.destinationCrs() );
+  mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
 
-  mScaleWidget->setScale( 1 / mapCanvas->mapSettings().scale() );
-  mScaleWidget->setMapCanvas( mapCanvas );
+  mScaleWidget->setScale( 1 / ms.scale() );
+  mScaleWidget->setMapCanvas( mMapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
@@ -56,6 +64,32 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   connect( mScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsMapSaveDialog::updateScale );
 
   updateOutputSize();
+
+  if ( mDialogType == QgsMapSaveDialog::Pdf )
+  {
+    mSaveWorldFile->setVisible( false );
+
+    QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
+    if ( !layers.isEmpty() )
+    {
+      // Limit number of items to avoid extreme dialog height
+      if ( layers.count() >= 10 )
+      {
+        layers = layers.mid( 0, 9 );
+        layers << QChar( 0x2026 );
+      }
+      mInfo->setText( tr( "The following layer(s) use advanced effects:\n%1\nRasterizing map is recommended for proper rendering." ).arg(
+                        QChar( 0x2022 ) + QString( " " ) + layers.join( QString( "\n" ) + QChar( 0x2022 ) + QString( " " ) ) ) );
+      mSaveAsRaster->setChecked( true );
+    }
+    else
+    {
+      mSaveAsRaster->setChecked( false );
+    }
+    mSaveAsRaster->setVisible( true );
+
+    this->setWindowTitle( tr( "Save map as PDF" ) );
+  }
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -147,4 +181,34 @@ bool QgsMapSaveDialog::drawDecorations() const
 bool QgsMapSaveDialog::saveWorldFile() const
 {
   return mSaveWorldFile->isChecked();
+}
+
+bool QgsMapSaveDialog::saveAsRaster() const
+{
+  return mSaveAsRaster->isChecked();
+}
+
+void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
+{
+  QgsSettings settings;
+
+  if ( mDialogType == QgsMapSaveDialog::Pdf )
+  {
+    mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialising when saving as PDF
+  }
+  else
+  {
+    mapSettings.setFlag( QgsMapSettings::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  }
+  mapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  mapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
+  mapSettings.setFlag( QgsMapSettings::DrawSelection, true );
+
+  mapSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
+  mapSettings.setExtent( extent() );
+  mapSettings.setOutputSize( size() );
+  mapSettings.setOutputDpi( dpi() );
+  mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
+  mapSettings.setRotation( mMapCanvas->rotation() );
+  mapSettings.setLayers( mMapCanvas->layers() );
 }

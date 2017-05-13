@@ -87,7 +87,7 @@ class OffsetLine(GeoAlgorithm):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), QgsWkbTypes.LineString, layer.crs(), context)
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.LineString, layer.crs(), context)
 
         distance = self.getParameterValue(self.DISTANCE)
         segments = int(self.getParameterValue(self.SEGMENTS))

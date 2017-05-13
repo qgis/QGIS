@@ -21,7 +21,7 @@ class QgsConfigureShortcutsDialog: QDialog
     ~QgsConfigureShortcutsDialog();
 
   protected:
-    void keyPressEvent( QKeyEvent  *event );
-    void keyReleaseEvent( QKeyEvent  *event );
+    void keyPressEvent( QKeyEvent *event );
+    void keyReleaseEvent( QKeyEvent *event );
 
 };

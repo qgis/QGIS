@@ -18,6 +18,7 @@
 #define QGSRASTERHISTOGRAMWIDGET_H
 
 #include "ui_qgsrasterhistogramwidgetbase.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 
 #include "qgsmaplayerconfigwidget.h"
@@ -84,7 +85,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     /** Called when a selection has been made using the plot picker (for qwt5 only).
       \note not available in Python bindings
       */
-    void histoPickerSelectedQwt5( QwtDoublePoint );
+    void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;
     //! Various actions that are stored in btnHistoActions.
     void histoActionTriggered( QAction * );
     //! Draw the min/max markers on the histogram plot.

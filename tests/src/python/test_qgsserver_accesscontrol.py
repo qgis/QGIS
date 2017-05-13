@@ -23,7 +23,7 @@ from qgis.testing import unittest
 from utilities import unitTestDataPath
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
-from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest
+from qgis.server import QgsServer, QgsAccessControlFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsRenderChecker, QgsApplication
 from qgis.PyQt.QtCore import QSize
 import tempfile
@@ -161,11 +161,26 @@ class RestrictedAccessControl(QgsAccessControlFilter):
 class TestQgsServerAccessControl(unittest.TestCase):
 
     @classmethod
+    def _execute_request(cls, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
+        if data is not None:
+            data = data.encode('utf-8')
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        cls._server.handleRequest(request, response)
+        headers = []
+        rh = response.headers()
+        rk = list(rh.keys())
+        rk.sort()
+        for k in rk:
+            headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
+        return b"\n".join(headers) + b"\n\n", bytes(response.body())
+
+    @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         cls._app = QgsApplication([], False)
         cls._server = QgsServer()
-        cls._server.handleRequest("")
+        cls._execute_request("")
         cls._server_iface = cls._server.serverInterface()
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
@@ -1375,7 +1390,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
     def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrol._active = restricted
         qs = "?" + query_string if query_string is not None else ''
-        result = self._result(self._server.handleRequest(qs, **kwargs))
+        result = self._result(self._execute_request(qs, **kwargs))
         return result
 
     def _result(self, data):
@@ -1432,14 +1447,16 @@ class TestQgsServerAccessControl(unittest.TestCase):
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
             message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
-                report, encoded_rendered_file.strip(), tempfile.gettempdir(), image
+                report, encoded_rendered_file.strip().decode('utf8'), tempfile.gettempdir(), image
             )
 
-        with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-            encoded_diff_file = base64.b64encode(diff_file.read())
-            message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
-                encoded_diff_file.strip(), tempfile.gettempdir(), image
-            )
+        # If the failure is in image sizes the diff file will not exists.
+        if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
+            with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
+                encoded_diff_file = base64.b64encode(diff_file.read())
+                message += "\nDiff:\necho '%s' | base64 -d > %s/%s_result_diff.png" % (
+                    encoded_diff_file.strip().decode('utf8'), tempfile.gettempdir(), image
+                )
 
         self.assertTrue(test, message)
 

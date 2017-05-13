@@ -48,3 +48,4 @@ PyQgsDBManagerGpkg
 PyQgsFileDownloader
 PyQgsSettings
 PyQgsConsole
+PyQgsAuthManagerPasswordOWSTest 

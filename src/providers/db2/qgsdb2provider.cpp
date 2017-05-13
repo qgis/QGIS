@@ -931,7 +931,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist )
   bool first = true;
 
 // Get the first geometry and its wkbType as when we are doing drag/drop,
-// the wkbType is not passed to the DB2 provider from QgsVectorLayerImport
+// the wkbType is not passed to the DB2 provider from QgsVectorLayerExporter
 // Can't figure out how to resolved "unreferenced" wkbType compile message
 // Don't really do anything with it at this point
 #if 0
@@ -1244,7 +1244,7 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString &uri,
+QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
     const QgsCoordinateReferenceSystem &srs,
@@ -1270,7 +1270,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   {
     if ( errorMessage )
       *errorMessage = errMsg;
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   // Get the SRS name using srid, needed to register the spatial column
@@ -1323,7 +1323,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   // a multi-type, the insert will fail if the actual data is a single-type
   // due to type mismatch.
   // We could potentially defer adding the spatial column until addFeatures is
-  // called the first time, but QgsVectorLayerImport doesn't pass the CRS/srid
+  // called the first time, but QgsVectorLayerExporter doesn't pass the CRS/srid
   // information to the DB2 provider and we need this information to register
   // the spatial column.
   // This hack is problematic because the drag/drop will fail if the
@@ -1395,7 +1395,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
         {
           *errorMessage = lastError;
         }
-        return QgsVectorLayerImport::ErrCreateLayer;
+        return QgsVectorLayerExporter::ErrCreateLayer;
       }
     }
   }
@@ -1435,7 +1435,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
         {
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
         }
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       if ( oldToNewAttrIdxMap )
@@ -1475,7 +1475,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
       {
         *errorMessage = lastError;
       }
-      return QgsVectorLayerImport::ErrCreateLayer;
+      return QgsVectorLayerExporter::ErrCreateLayer;
     }
 
 
@@ -1553,7 +1553,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
   }
   QgsDebugMsg( "successfully created empty layer" );
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
 QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
@@ -1724,7 +1724,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 }
 
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,

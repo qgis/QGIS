@@ -422,6 +422,8 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
+    QgsMapLayerStore *layerStore();
+
     int count() const;
 
     QgsMapLayer *mapLayer( const QString &layerId ) const;
@@ -444,7 +446,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *>& layers /Transfer/,
                                        bool addToLegend = true );
 
-    QgsMapLayer *addMapLayer( QgsMapLayer  *layer /Transfer/, bool addToLegend = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/, bool addToLegend = true );
 
     void removeMapLayers( const QStringList &layerIds );
 

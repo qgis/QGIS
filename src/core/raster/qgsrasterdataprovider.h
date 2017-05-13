@@ -24,6 +24,7 @@
 #define QGSRASTERDATAPROVIDER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <cmath>
 
 #include <QDateTime>
@@ -231,7 +232,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note Parameter visibleExtent added in QGIS 2.8
      * \note Not available in Python bindings
      */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr )
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) SIP_SKIP
     {
       Q_UNUSED( scale );
       Q_UNUSED( forceRefresh );
@@ -471,13 +472,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Read block of data
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
+    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
     { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** Read block of data using give extent and size
      * \note not available in Python bindings
      */
-    virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr )
+    virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }
 
     //! Returns true if user no data contains value
@@ -487,7 +488,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void copyBaseSettings( const QgsRasterDataProvider &other );
 
     //! \note not available in Python bindings
-    static QStringList cStringList2Q_( char **stringList );
+    static QStringList cStringList2Q_( char **stringList ) SIP_SKIP;
 
     static QString makeTableCell( const QString &value );
     static QString makeTableCells( const QStringList &values );

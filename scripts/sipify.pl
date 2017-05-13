@@ -10,7 +10,7 @@ use constant PUBLIC => 2;
 
 # read arguments
 my $debug = 0;
-GetOptions ("debug" => \$debug) or die("Error in command line arguments\n");
+die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 sub processDoxygenLine
@@ -22,8 +22,8 @@ sub processDoxygenLine
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
-	# replace \returns with :return:
-	$line =~ s/\\return(s)?/:return:/g;
+    # replace \returns with :return:
+    $line =~ s/\\return(s)?/:return:/g;
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
@@ -96,7 +96,8 @@ sub remove_constructor_or_body {
     # https://regex101.com/r/ZaP3tC/3
     do {no warnings 'uninitialized';
         if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
-             || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/ ){
+             || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
+             || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
             if ($line !~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/){
@@ -125,6 +126,55 @@ sub remove_constructor_or_body {
             $line = $newline;
         }
     };
+}
+
+sub fix_annotations(){
+  # printed annotations
+  $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
+  $line =~ s/\bSIP_ARRAY\b/\/Array\//;
+  $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
+  $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
+  $line =~ s/\bSIP_IN\b/\/In\//g;
+  $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
+  $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
+  $line =~ s/\bSIP_OUT\b/\/Out\//g;
+  $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+  $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
+  $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
+  $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+
+  $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+
+  # combine multiple annotations
+  # https://regex101.com/r/uvCt4M/3
+  do {no warnings 'uninitialized';
+      $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+      (! $3) or dbg_info("combine multiple annotations -- works only for 2");
+  };
+
+  # unprinted annotations
+  $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+  $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+  # remove argument
+  if ($line =~ m/SIP_PYARGREMOVE/){
+      dbg_info("remove arg");
+      if ( $MULTILINE_DEFINITION == 1 ){
+          my $prev_line = pop(@output) =~ s/\n$//r;
+          # update multi line status
+          my $parenthesis_balance = 0;
+          $parenthesis_balance += $prev_line =~ tr/\(//;
+          $parenthesis_balance -= $prev_line =~ tr/\)//;
+          if ($parenthesis_balance == 1){
+             $MULTILINE_DEFINITION = 0;
+          }
+          # concat with above line to bring previous commas
+          $line =~ s/^\s+//;
+          $line = "$prev_line $line\n";
+      }
+      # see https://regex101.com/r/5iNptO/4
+      $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+  }
+  $line =~ s/SIP_FORCE//;
 }
 
 
@@ -343,7 +393,7 @@ while ($line_idx < $line_count){
         dbg_info("going private");
         next;
     }
-    elsif ( $line =~ m/^\s*(public)( slots)?:.*$/ ){
+    elsif ( $line =~ m/^\s*(public( slots)?|signals):.*$/ ){
         dbg_info("going public");
         $ACCESS[$#ACCESS] = PUBLIC;
         $comment = '';
@@ -388,7 +438,8 @@ while ($line_idx < $line_count){
     }
 
     # class declaration started
-    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?\s+(\w+)(\s*\:.*)?(\s*SIP_ABSTRACT)?$/ ){
+    # https://regex101.com/r/6FWntP/2
+    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT)?\s+(\w+)(\s*\:\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
         dbg_info("class definition started => private");
         push @ACCESS, PRIVATE;
         push @global_bracket_nesting_index, 0;
@@ -401,12 +452,14 @@ while ($line_idx < $line_count){
         if ($4){
             my $m = $4;
             $m =~ s/public //g;
-            $m =~ s/,?\s*private \w+(::\w+)?//;
+            $m =~ s/[,:]?\s*private \w+(::\w+)?//;
             $m =~ s/(\s*:)?\s*$//;
             $line .= $m;
         }
-        if ($5) {
-            $line .= ' /Abstract/';
+        if (defined $+{annot})
+        {
+            $line .= "$+{annot}";
+            fix_annotations();
         }
 
         $line .= "\n{\n";
@@ -464,6 +517,10 @@ while ($line_idx < $line_count){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
+
+    # remove static const value assignment
+    # https://regex101.com/r/DyWkgn/1
+    $line =~ s/^(\s*static const \w+(<([\w()<>, ]|::)+>)? \w+) = .*;\s*(\/\/.*)?$/$1;/;
 
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
@@ -555,52 +612,10 @@ while ($line_idx < $line_count){
     # remove export macro from struct definition
     $line =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
-    # printed annotations
-    $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
-    $line =~ s/\bSIP_OUT\b/\/Out\//g;
-    $line =~ s/\bSIP_IN\b/\/In\//g;
-    $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
-    $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
-    $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
-    $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
-    $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
-    $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
-    $line =~ s/\bSIP_ARRAY\b/\/Array\//;
-    $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
-    $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
-
-    # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/1
-    do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\/\s*;(\s*(\/\/.*)?)$/\/$1,$3\/$5;/;
-        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
-    };
-
-    # unprinted annotations
-    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYARGTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
-    $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
-    # remove argument
-    if ($line =~ m/SIP_PYARGREMOVE/){
-        if ( $MULTILINE_DEFINITION == 1 ){
-            my $prev_line = pop(@output) =~ s/\n$//r;
-            # update multi line status
-            my $parenthesis_balance = 0;
-            $parenthesis_balance += $prev_line =~ tr/\(//;
-            $parenthesis_balance -= $prev_line =~ tr/\)//;
-            if ($parenthesis_balance == 1){
-               $MULTILINE_DEFINITION = 0;
-            }
-            # concat with above line to bring previous commas
-            $line =~ s/^\s+//;
-            $line = "$prev_line $line\n";
-        }
-        # see https://regex101.com/r/5iNptO/4
-        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)? [\w&*]+ SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
-    }
-    $line =~ s/SIP_FORCE//;
+    fix_annotations();
 
     # fix astyle placing space after % character
-    $line =~ s/\s*% (MappedType|TypeCode|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;
+    $line =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End)/%$1/;
     $line =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     push @output, dbg("NOR")."$line\n";
@@ -662,8 +677,8 @@ while ($line_idx < $line_count){
     elsif ( $line =~ m/\/\// ||
             $line =~ m/\s*typedef / ||
             $line =~ m/\s*struct / ||
-             $line =~ m/operator\[\]\(/ ||
-             $line =~ m/^\s*% \w+(.*)?$/ ){
+            $line =~ m/operator\[\]\(/ ||
+            $line =~ m/^\s*%\w+(.*)?$/ ){
         dbg_info('skipping comment');
         $comment = '';
         $return_type = '';

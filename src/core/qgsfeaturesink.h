@@ -58,4 +58,41 @@ class CORE_EXPORT QgsFeatureSink
 
 };
 
+
+/**
+ * \class QgsProxyFeatureSink
+ * \ingroup core
+ * A simple feature sink which proxies feature addition on to another feature sink.
+ *
+ * This class is designed to allow factory methods which always return new QgsFeatureSink
+ * objects. Since it is not always possible to create an entirely new QgsFeatureSink
+ * (e.g. if the feature sink is a layer's data provider), a new QgsProxyFeatureSink
+ * can instead be returned which forwards features on to the destination sink. The
+ * proxy sink can be safely deleted without affecting the destination sink.
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
+{
+  public:
+
+    /**
+     * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
+     */
+    QgsProxyFeatureSink( QgsFeatureSink *sink );
+    bool addFeature( QgsFeature &feature ) override { return mSink->addFeature( feature ); }
+    bool addFeatures( QgsFeatureList &features ) override { return mSink->addFeatures( features ); }
+    bool addFeatures( QgsFeatureIterator &iterator ) override { return mSink->addFeatures( iterator ); }
+
+    /**
+     * Returns the destination QgsFeatureSink which the proxy will forward features to.
+     */
+    QgsFeatureSink *destinationSink() { return mSink; }
+
+  private:
+
+    QgsFeatureSink *mSink;
+};
+
+
 #endif // QGSFEATURESINK_H

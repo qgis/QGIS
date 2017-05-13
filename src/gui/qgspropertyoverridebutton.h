@@ -16,6 +16,7 @@
 #define QGSPROPERTYOVERRIDEBUTTON_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include <QDialog>
 #include <QFlags>
 #include <QMap>
@@ -161,7 +162,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; }
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; } SIP_SKIP
 
   public slots:
 

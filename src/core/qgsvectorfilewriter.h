@@ -20,6 +20,7 @@
 #define QGSVECTORFILEWRITER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsfeedback.h"
 #include "qgssymbol.h"
@@ -456,7 +457,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          FieldValueConverter *fieldValueConverter,
                          const QString &layerName,
                          ActionOnExistingFile action
-                       );
+                       ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
     QgsVectorFileWriter( const QgsVectorFileWriter &rh ) = delete;
@@ -482,6 +483,14 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static QMap< QString, QString> ogrDriverList();
 
+    /**
+     * Returns the OGR driver name for a specified file \a extension. E.g. the
+     * driver name for the ".shp" extension is "ESRI Shapefile".
+     * If no suitable drivers are found then an empty string is returned.
+     * \since QGIS 3.0
+     */
+    static QString driverForExtension( const QString &extension );
+
     //! Returns filter string that can be used for dialogs
     static QString fileFilterString();
 
@@ -504,7 +513,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! \note not available in Python bindings
-    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
+    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter();
@@ -543,7 +552,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * Will drop M values and convert Z to 2.5D where required.
      * \note not available in Python bindings
      */
-    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type );
+    static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type ) SIP_SKIP;
 
     /**
      * Return edition capabilities for an existing dataset name.
@@ -569,7 +578,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
   protected:
     //! \note not available in Python bindings
-    OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType );
+    OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;

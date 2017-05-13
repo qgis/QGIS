@@ -37,9 +37,19 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
 #endif
 
   HANDLE process = GetCurrentProcess();
-  // TOOD Pull symbols from symbol server.
   SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
-  SymInitialize( process, NULL, TRUE );
+
+  PCSTR paths;
+  if ( QgsStackTrace::mSymbolPaths.isEmpty() )
+  {
+    paths = NULL;
+  }
+  else
+  {
+    paths = QgsStackTrace::mSymbolPaths.toStdString().c_str();
+  }
+
+  BOOL success = SymInitialize( process, paths, TRUE );
 
   // StackWalk64() may modify context record passed to it, so we will
   // use a copy.
@@ -121,10 +131,19 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *Exc
   qgsFree( symbol );
   qgsFree( line );
   qgsFree( module );
+  SymCleanup( process );
   return stack;
 
 }
-#endif
+
+QString QgsStackTrace::mSymbolPaths;
+
+void QgsStackTrace::setSymbolPath( QString symbolPaths )
+{
+  mSymbolPaths = symbolPaths;
+}
+
+#endif // Q_OS_WIN
 
 #ifdef Q_OS_LINUX
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )

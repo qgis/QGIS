@@ -43,11 +43,11 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     void setHeader( const QString &key, const QString &value ) override {  mResponse.setHeader( key, value ); }
 
-    void clearHeader( const QString &key ) override { mResponse.clearHeader( key ); }
+    void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
     QString header( const QString &key ) const override { return mResponse.header( key ); }
 
-    QList<QString> headerKeys() const override { return mResponse.headerKeys(); }
+    QMap<QString, QString> headers() const override { return mResponse.headers( ); }
 
     bool headersSent() const override { return mResponse.headersSent(); }
 

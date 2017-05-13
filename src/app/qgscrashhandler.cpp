@@ -39,7 +39,7 @@ void QgsCrashHandler::showCrashDialog( const QgsStackLines &stack )
   QgsCrashDialog dlg( QApplication::activeWindow() );
   QgsCrashReport report;
   report.setStackTrace( stack );
-  dlg.setBugReport( report.toString() );
+  dlg.setBugReport( report.toHtml() );
   if ( dlg.exec() )
   {
     restartApplication();

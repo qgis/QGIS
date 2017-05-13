@@ -43,11 +43,11 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
   public:
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString  &uri );
+    QgsRasterDataProvider( const QString &uri );
 
     virtual ~QgsRasterDataProvider();
 
-    virtual QgsRasterInterface  *clone() const = 0;
+    virtual QgsRasterInterface *clone() const = 0;
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface *input );
@@ -129,7 +129,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
      * \note visibleExtent parameter added in 2.8 (no available in python bindings)
      */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle  *visibleExtent = 0 );
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = 0 );
 
     /**
      * \brief Get an image downloader for the raster legend
@@ -194,8 +194,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint  &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
-    virtual QgsRasterIdentifyResult identify(const QgsPoint  &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
+    virtual QgsRasterIdentifyResult identify(const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -306,7 +306,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * @note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList  &configOptions, const QString  &fileFormat );
+        const QStringList &configOptions, const QString &fileFormat );
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
@@ -333,7 +333,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Read block of data using give extent and size
      * @note not available in python bindings
      */
-    //virtual void readBlock( int bandNo, QgsRectangle  const  &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = 0 );
+    //virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = 0 );
 
     /** Returns true if user no data contains value */
     bool userNoDataValuesContains( int bandNo, double value ) const;
@@ -344,8 +344,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     //! @note not available in Python bindings
     //static QStringList cStringList2Q_( char * *stringList );
 
-    static QString makeTableCell( const QString  &value );
-    static QString makeTableCells( const QStringList  &values );
+    static QString makeTableCell( const QString &value );
+    static QString makeTableCells( const QStringList &values );
 
     /** Source no data value is available and is set to be used or internal no data
      *  is available. Used internally only  */
