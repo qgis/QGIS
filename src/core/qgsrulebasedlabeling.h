@@ -239,6 +239,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Create a rule from an XML definition
          * \param ruleElem  The XML rule element
+         * \param context reading context
          * \returns A new rule
          */
         static Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context );

@@ -213,6 +213,10 @@ void TestQgsProject::testPathResolverSvg()
   project.addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 << layer3 );
   project.write( projectFilename );
 
+  // make sure the path resolver works with relative paths (enabled by default)
+  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), dir.path() + "/a.txt" );
+  QCOMPARE( project.pathResolver().writePath( dir.path() + "/a.txt" ), QString( "./a.txt" ) );
+
   // check that the saved paths are relative
 
   // key = layer name, value = svg path
