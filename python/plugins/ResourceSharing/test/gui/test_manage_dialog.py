@@ -37,5 +37,6 @@ class ManageDialogTest(unittest.TestCase):
             self.dialog.buttonBox.button(QDialogButtonBox.Ok).isEnabled(),
             True)
 
+
 if __name__ == "__main__":
     nose2.main()

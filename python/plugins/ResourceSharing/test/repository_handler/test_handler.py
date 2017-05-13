@@ -129,5 +129,6 @@ class TestRemoteGitHandler(unittest.TestCase):
         expected_metadata_url = 'https://bitbucket.org/akbargumbira/qgis-style-repo-dummy/raw/master/metadata.ini'
         self.assertEqual(remote_repo.metadata_url, expected_metadata_url)
 
+
 if __name__ == '__main__':
     unittest.main()

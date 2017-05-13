@@ -15,7 +15,7 @@ from qgis.core import Qgis
 from giturlparse import validate as git_validate
 from ResourceSharing.config import COLLECTION_NOT_INSTALLED_STATUS
 from ResourceSharing.exception import MetadataError
-from ResourceSharing.version_compare import isCompatible
+from qgis.version_compare import isCompatible
 
 
 LOGGER = logging.getLogger('QGIS Resources Sharing')
