@@ -708,7 +708,8 @@ class ExpressionContextScopePopper
 {
   public:
 
-    ExpressionContextScopePopper() = default;
+    ExpressionContextScopePopper() : context( nullptr )
+    {}
 
     ~ExpressionContextScopePopper()
     {
@@ -716,7 +717,7 @@ class ExpressionContextScopePopper
         context->popScope();
     }
 
-    QgsExpressionContext *context = nullptr;
+    QgsExpressionContext *context;
 };
 ///@endcond PRIVATE
 
@@ -1154,10 +1155,10 @@ QgsMarkerSymbolV2::QgsMarkerSymbolV2( const QgsSymbolLayerV2List& layers )
     mLayers.append( new QgsSimpleMarkerSymbolLayerV2() );
 }
 
-void QgsMarkerSymbolV2::setAngle( double ang )
+void QgsMarkerSymbolV2::setAngle( double angle0 )
 {
   double origAngle = angle();
-  double angleDiff = ang - origAngle;
+  double angleDiff = angle0 - origAngle;
   Q_FOREACH ( QgsSymbolLayerV2* layer, mLayers )
   {
     QgsMarkerSymbolLayerV2* markerLayer = dynamic_cast<QgsMarkerSymbolLayerV2*>( layer );
