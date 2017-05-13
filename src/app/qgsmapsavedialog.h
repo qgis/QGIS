@@ -68,6 +68,9 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! returns whether the map will be rasterized
     bool saveAsRaster() const;
 
+    //! configure a map settings object
+    void applyMapSettings( QgsMapSettings &mapSettings );
+
   private:
 
     void updateDpi( int dpi );
@@ -77,6 +80,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     void updateScale( double scale );
     void updateOutputSize();
 
+    DialogType mDialogType;
+    QgsMapCanvas *mMapCanvas;
     QgsRectangle mExtent;
     int mDpi;
     QSize mSize;

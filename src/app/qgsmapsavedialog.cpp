@@ -23,6 +23,7 @@
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
 #include <QSpinBox>
@@ -32,11 +33,13 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QString &activeDecorations, DialogType type )
   : QDialog( parent )
+  , mDialogType( type )
+  , mMapCanvas( mapCanvas )
 {
   setupUi( this );
 
   // Use unrotated visible extent to insure output size and scale matches canvas
-  QgsMapSettings ms = mapCanvas->mapSettings();
+  QgsMapSettings ms = mMapCanvas->mapSettings();
   ms.setRotation( 0 );
   mExtent = ms.visibleExtent();
   mDpi = ms.outputDpi();
@@ -49,7 +52,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mExtentGroupBox->setOutputExtentFromCurrent();
 
   mScaleWidget->setScale( 1 / ms.scale() );
-  mScaleWidget->setMapCanvas( mapCanvas );
+  mScaleWidget->setMapCanvas( mMapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
@@ -62,11 +65,11 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
   updateOutputSize();
 
-  if ( type == QgsMapSaveDialog::Pdf )
+  if ( mDialogType == QgsMapSaveDialog::Pdf )
   {
     mSaveWorldFile->setVisible( false );
 
-    QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mapCanvas->mapSettings() );
+    QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
     if ( !layers.isEmpty() )
     {
       // Limit number of items to avoid extreme dialog height
@@ -183,4 +186,29 @@ bool QgsMapSaveDialog::saveWorldFile() const
 bool QgsMapSaveDialog::saveAsRaster() const
 {
   return mSaveAsRaster->isChecked();
+}
+
+void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
+{
+  QgsSettings settings;
+
+  if ( mDialogType == QgsMapSaveDialog::Pdf )
+  {
+    mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialising when saving as PDF
+  }
+  else
+  {
+    mapSettings.setFlag( QgsMapSettings::Antialiasing, settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  }
+  mapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
+  mapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
+  mapSettings.setFlag( QgsMapSettings::DrawSelection, true );
+
+  mapSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
+  mapSettings.setExtent( extent() );
+  mapSettings.setOutputSize( size() );
+  mapSettings.setOutputDpi( dpi() );
+  mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
+  mapSettings.setRotation( mMapCanvas->rotation() );
+  mapSettings.setLayers( mMapCanvas->layers() );
 }
