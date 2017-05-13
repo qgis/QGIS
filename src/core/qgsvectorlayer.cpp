@@ -1834,6 +1834,14 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     QDomElement linearDiagramElem = node.firstChildElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
     if ( !linearDiagramElem.isNull() )
     {
+      if ( linearDiagramElem.hasAttribute( QStringLiteral( "classificationAttribute" ) ) )
+      {
+        // fix project from before QGIS 3.0
+        int idx = linearDiagramElem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
+        if ( idx >= 0 && idx < mFields.count() )
+          linearDiagramElem.setAttribute( "classificationField", mFields.at( idx ).name() );
+      }
+
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
       mDiagramRenderer->readXml( linearDiagramElem, context );
     }
@@ -1843,6 +1851,42 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
       QDomElement diagramSettingsElem = node.firstChildElement( QStringLiteral( "DiagramLayerSettings" ) );
       if ( !diagramSettingsElem.isNull() )
       {
+        bool oldXPos = diagramSettingsElem.hasAttribute( QStringLiteral( "xPosColumn" ) );
+        bool oldYPos = diagramSettingsElem.hasAttribute( QStringLiteral( "yPosColumn" ) );
+        bool oldShow = diagramSettingsElem.hasAttribute( QStringLiteral( "showColumn" ) );
+        if ( oldXPos || oldYPos || oldShow )
+        {
+          // fix project from before QGIS 3.0
+          QgsPropertyCollection ddp;
+          if ( oldXPos )
+          {
+            int xPosColumn = diagramSettingsElem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+            if ( xPosColumn >= 0 && xPosColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::PositionX, QgsProperty::fromField( mFields.at( xPosColumn ).name(), true ) );
+          }
+          if ( oldYPos )
+          {
+            int yPosColumn = diagramSettingsElem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+            if ( yPosColumn >= 0 && yPosColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::PositionY, QgsProperty::fromField( mFields.at( yPosColumn ).name(), true ) );
+          }
+          if ( oldShow )
+          {
+            int showColumn = diagramSettingsElem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+            if ( showColumn >= 0 && showColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
+          }
+          QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( "properties" );
+          QgsPropertiesDefinition defs = QgsPropertiesDefinition
+          {
+            { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+            { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+            { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+          };
+          ddp.writeXml( propertiesElem, defs );
+          diagramSettingsElem.appendChild( propertiesElem );
+        }
+
         delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
         mDiagramLayerSettings->readXml( diagramSettingsElem );

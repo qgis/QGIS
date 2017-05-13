@@ -55,6 +55,11 @@ const QgsPropertiesDefinition &QgsDiagramLayerSettings::propertyDefinitions()
   return sPropertyDefinitions;
 }
 
+QgsDiagramLayerSettings::QgsDiagramLayerSettings()
+{
+  initPropertyDefinitions();
+}
+
 QgsDiagramLayerSettings::QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh )
   : mCt( rh.mCt )
   , mPlacement( rh.mPlacement )

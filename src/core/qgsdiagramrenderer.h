@@ -106,7 +106,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Constructor for QgsDiagramLayerSettings.
      */
-    QgsDiagramLayerSettings() = default;
+    QgsDiagramLayerSettings();
 
     //! Copy constructor
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
