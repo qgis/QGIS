@@ -243,6 +243,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     double azimuth( const QgsPointV2 &other ) const;
 
+    /**
+     * Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+     * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
+     * \since QGIS 3.0
+     */
+    double inclination( const QgsPointV2 &other ) const;
+
     /** Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
      * M value is preserved.

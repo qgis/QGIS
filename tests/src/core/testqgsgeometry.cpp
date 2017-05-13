@@ -919,6 +919,18 @@ void TestQgsGeometry::point()
   QCOMPARE( p34.project( 5, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
   QCOMPARE( p34.project( 5, 450, 450 ), QgsPointV2( QgsWkbTypes::PointZM, 6, 2, 2, 5 ) );
 
+  // inclination
+  QCOMPARE( QgsPointV2( 1, 2 ).inclination( QgsPointV2( 1, 2 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 1, 2, 0 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 90 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, -90 ) ), 90.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 0 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 180 ) ), 180.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, -180 ) ), 180.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 720 ) ), 0.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 45 ) ), 45.0 );
+  QCOMPARE( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 135 ) ), 135.0 );
+
 }
 
 void TestQgsGeometry::lineString()
