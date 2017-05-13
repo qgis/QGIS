@@ -3640,9 +3640,6 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( QString path, const QgsPathRes
   if ( !QFileInfo::exists( path ) )
     return path;
 
-  // keep original path for path resolver as its path does not have to be cannonical either
-  QString origPath = path;
-
   path = QFileInfo( path ).canonicalFilePath();
 
   QStringList svgPaths = QgsApplication::svgPaths();
@@ -3663,7 +3660,7 @@ QString QgsSymbolLayerUtils::svgSymbolPathToName( QString path, const QgsPathRes
   if ( isInSvgPaths )
     return path;
 
-  return pathResolver.writePath( origPath );
+  return pathResolver.writePath( path );
 }
 
 

@@ -112,6 +112,9 @@ void TestQgsProject::testPathResolver()
   QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "./file1.txt" ), QString( "./file1.txt" ) );
+
+  // TODO: test non-canonical paths - there are inconsistencies in the implementation
+  // e.g. base filename "/home/qgis/../test.qgs" resolving "/home/qgis/../file1.txt" back and forth
 }
 
 static void _useRendererWithSvgSymbol( QgsVectorLayer *layer, const QString &path )
@@ -186,10 +189,12 @@ void TestQgsProject::testPathResolverSvg()
 
   QTemporaryDir dir;
   QVERIFY( dir.isValid() );
+  // on mac the returned path was not canonical and the resolver failed to convert paths properly
+  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
 
-  QString projectFilename = dir.path() + "/project.qgs";
-  QString ourSvgPath = dir.path() + "/valid.svg";
-  QString invalidSvgPath = dir.path() + "/invalid.svg";
+  QString projectFilename = dirPath + "/project.qgs";
+  QString ourSvgPath = dirPath + "/valid.svg";
+  QString invalidSvgPath = dirPath + "/invalid.svg";
 
   QFile svgFile( ourSvgPath );
   QVERIFY( svgFile.open( QIODevice::WriteOnly ) );
@@ -216,8 +221,8 @@ void TestQgsProject::testPathResolverSvg()
   project.write( projectFilename );
 
   // make sure the path resolver works with relative paths (enabled by default)
-  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), dir.path() + "/a.txt" );
-  QCOMPARE( project.pathResolver().writePath( dir.path() + "/a.txt" ), QString( "./a.txt" ) );
+  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), dirPath + "/a.txt" );
+  QCOMPARE( project.pathResolver().writePath( dirPath + "/a.txt" ), QString( "./a.txt" ) );
 
   // check that the saved paths are relative
 
