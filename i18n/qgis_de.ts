@@ -6962,11 +6962,6 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <translation>Nicht erfasste Fehler bei der Ausführung von Algorithmus</translation>
     </message>
     <message>
-        <source>
-See log for more details</source>
-        <translation type="obsolete">Die Logdatei enthält mehr Details</translation>
-    </message>
-    <message>
         <source>Converting outputs</source>
         <translation>Konvertierung der Ausgabe</translation>
     </message>
