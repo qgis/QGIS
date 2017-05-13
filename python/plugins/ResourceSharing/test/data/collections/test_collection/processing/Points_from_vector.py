@@ -9,9 +9,9 @@ vector = processing.getObject(Input_vector)
 raster = processing.getObject(Input_raster)
 
 geometryType = vector.geometryType()
-if geometryType == QGis.Point:
+if geometryType == Qgis.Point:
     processing.runalg('qgis:saveselectedfeatures', vector, Output_layer)
-elif geometryType == QGis.Line:
+elif geometryType == Qgis.Line:
     processing.runalg('qgis:generatepointspixelcentroidsalongline', raster, vector, Output_layer)
-elif geometryType == QGis.Polygon:
+elif geometryType == Qgis.Polygon:
     processing.runalg('qgis:generatepointspixelcentroidsinsidepolygons', raster, vector, Output_layer)

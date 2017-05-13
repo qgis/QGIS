@@ -22,13 +22,10 @@
 from qgis.PyQt import uic
 from qgis.PyQt.Qt import QSize
 from qgis.PyQt.QtCore import (
-    Qt, QSettings, pyqtSlot, QRegExp, QUrl, QThread)
+    Qt, pyqtSlot, QRegExp, QUrl, QThread)
 
-from qgis.PyQt.QtGui import (
-    QIcon,
-    QDesktopServices,
-    QStandardItem,
-    QStandardItemModel)
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+
 from qgis.PyQt.QtWidgets import (
     QListWidgetItem,
     QDialog,
@@ -40,7 +37,7 @@ from qgis.PyQt.QtWidgets import (
 
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from ResourceSharing.gui.manage_dialog import ManageRepositoryDialog
 from ResourceSharing.repository_manager import RepositoryManager
@@ -262,7 +259,7 @@ class ResourceSharingDialog(QDialog, FORM_CLASS):
             return
 
         # Check if it's the approved online dir repository
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(repo_settings_group())
         if settings.value(repo_name + '/url') in \
                 self.repository_manager._online_directories.values():

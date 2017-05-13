@@ -1,11 +1,7 @@
 # coding=utf-8
 import os
 
-from qgis.PyQt.QtCore import QSettings
-try:
-    from qgis.core import Qgis
-except ImportError:
-    from qgis.core import QGis as Qgis
+from qgis.core import Qgis, QgsSettings
 
 from ResourceSharing.resource_handler.base import BaseResourceHandler
 from ResourceSharing.utilities import local_collection_path
@@ -22,7 +18,7 @@ class SVGResourceHandler(BaseResourceHandler):
     @classmethod
     def svg_search_paths(cls):
         """Return a list of SVG paths read from settings"""
-        settings = QSettings()
+        settings = QgsSettings()
         search_paths_str = settings.value('svg/searchPathsForSVG')
 
         # QGIS 3: it's already a list!
@@ -39,7 +35,7 @@ class SVGResourceHandler(BaseResourceHandler):
     @classmethod
     def set_svg_search_paths(cls, paths):
         """Set a list of SVG paths read from settings"""
-        settings = QSettings()
+        settings = QgsSettings()
 
         if Qgis.QGIS_VERSION_INT < 29900:
             settings.setValue('svg/searchPathsForSVG', '|'.join(paths))

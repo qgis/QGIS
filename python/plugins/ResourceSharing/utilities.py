@@ -3,10 +3,7 @@ import os
 import ntpath
 
 from qgis.PyQt.QtCore import QDir
-try:
-    from qgis.core import QgsApplication, QGis as Qgis
-except ImportError:
-    from qgis.core import QgsApplication, Qgis
+from qgis.core import QgsApplication, Qgis
 
 from ResourceSharing import config
 import jinja2
@@ -48,7 +45,7 @@ def ui_path(*args):
 
 def repo_settings_group():
     """Get the settings group for Resource Sharing Dialog."""
-    return '/ResourceSharing/repository'
+    return 'ResourceSharing/repository'
 
 
 def repositories_cache_path():
