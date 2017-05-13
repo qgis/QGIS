@@ -95,10 +95,14 @@ class Intersection(GeoAlgorithm):
                     continue
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Input layer A contains NULL geometries. Please check "Ignore NULL geometries" if you want to run this algorithm anyway.'))
+                        self.tr('Input layer A contains NULL geometries. '
+                                'Please check "Ignore NULL geometries" '
+                                'if you want to run this algorithm anyway.'))
             if not geom.isGeosValid():
                 raise GeoAlgorithmExecutionException(
-                    self.tr('Input layer A contains invalid geometries (Feature {}). Unable to complete intersection algorithm.'.format(inFeatA.id())))
+                    self.tr('Input layer A contains invalid geometries '
+                            '(feature {}). Unable to complete intersection '
+                            'algorithm.'.format(inFeatA.id())))
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
             for inFeatB in vlayerB.getFeatures(QgsFeatureRequest().setFilterFids(intersects)):
@@ -108,10 +112,14 @@ class Intersection(GeoAlgorithm):
                         continue
                     else:
                         raise GeoAlgorithmExecutionException(
-                            self.tr('Input layer B contains NULL geometries. Please check "Ignore NULL geometries" if you want to run this algorithm anyway.'))
+                            self.tr('Input layer B contains NULL geometries. '
+                                    'Please check "Ignore NULL geometries" '
+                                    'if you want to run this algorithm anyway.'))
                 if not geom.isGeosValid():
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Input layer B contains invalid geometries (Feature {}). Unable to complete intersection algorithm.'.format(inFeatB.id())))
+                        self.tr('Input layer B contains invalid geometries '
+                                '(feature {}). Unable to complete intersection '
+                                'algorithm.'.format(inFeatB.id())))
 
                 if geom.intersects(tmpGeom):
                     atMapB = inFeatB.attributes()
@@ -126,10 +134,10 @@ class Intersection(GeoAlgorithm):
                                 int_geom = QgsGeometry(diff_geom)
 
                     if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('GEOS geoprocessing error: One or '
+                                    'more input features have invalid '
+                                    'geometry.'))
                     try:
                         if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                             outFeat.setGeometry(int_geom)
@@ -139,8 +147,9 @@ class Intersection(GeoAlgorithm):
                             outFeat.setAttributes(attrs)
                             writer.addFeature(outFeat)
                     except:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                        continue
+                        raise GeoAlgorithmExecutionException(
+                            self.tr('Feature geometry error: one or '
+                                    'more output features ignored due '
+                                    'to invalid geometry.'))
 
         del writer
