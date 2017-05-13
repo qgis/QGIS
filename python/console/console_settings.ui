@@ -67,6 +67,9 @@
      <property name="styleSheet">
       <string notr="true">background: #5C5C5C; color: white;</string>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
@@ -165,6 +168,12 @@
            </property>
            <item row="0" column="0">
             <widget class="QgsCollapsibleGroupBox" name="groupBoxFontColor">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
               <string>Font and Colors</string>
              </property>
@@ -653,6 +662,12 @@
            </item>
            <item row="2" column="0">
             <widget class="QgsCollapsibleGroupBox" name="groupBoxFontColorEditor">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title">
               <string>Font and Colors</string>
              </property>
