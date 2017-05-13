@@ -256,8 +256,6 @@ void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QStrin
   if ( svgFileName.isEmpty() )
     return;
 
-  // TODO: make sure svgFileName is absolute path
-
   QSvgRenderer r;
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
                                  1.0 );
@@ -425,18 +423,26 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
 
 bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
+  QgsPathResolver pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
+  // absolute paths to relative
+  QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, pathResolver );
+  QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, pathResolver );
+
   QDomElement composerArrowElem = doc.createElement( QStringLiteral( "ComposerArrow" ) );
   composerArrowElem.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
   composerArrowElem.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
   composerArrowElem.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadStrokeColor ) );
   composerArrowElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mArrowHeadStrokeWidth ) );
   composerArrowElem.setAttribute( QStringLiteral( "markerMode" ), mMarkerMode );
-  composerArrowElem.setAttribute( QStringLiteral( "startMarkerFile" ), mStartMarkerFile );
-  composerArrowElem.setAttribute( QStringLiteral( "endMarkerFile" ), mEndMarkerFile );
+  composerArrowElem.setAttribute( QStringLiteral( "startMarkerFile" ), startMarkerPath );
+  composerArrowElem.setAttribute( QStringLiteral( "endMarkerFile" ), endMarkerPath );
   composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviorVersion" ), QString::number( mBoundsBehavior ) );
-
-  QgsReadWriteContext context;
-  context.setPathResolver( mComposition->project()->pathResolver() );
 
   QDomElement styleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
   QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc, context );
@@ -461,18 +467,25 @@ bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
 bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
+  QgsPathResolver pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
   mArrowHeadWidth = itemElem.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
   mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mArrowHeadStrokeWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
-  setStartMarker( itemElem.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) ) );
-  setEndMarker( itemElem.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) ) );
+  // relative paths to absolute
+  QString startMarkerPath = itemElem.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) );
+  QString endMarkerPath = itemElem.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) );
+  setStartMarker( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, pathResolver ) );
+  setEndMarker( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, pathResolver ) );
   mMarkerMode = QgsComposerArrow::MarkerMode( itemElem.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
   //if bounds behavior version is not set, default to 2.2 behavior
   mBoundsBehavior = itemElem.attribute( QStringLiteral( "boundsBehaviorVersion" ), QStringLiteral( "22" ) ).toInt();
-
-  QgsReadWriteContext context;
-  context.setPathResolver( mComposition->project()->pathResolver() );
 
   //arrow style
   QDomElement styleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
