@@ -45,14 +45,14 @@ class QgsComposerModel : QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     QVariant data( const QModelIndex &index, int role ) const;
-    Qt::ItemFlags flags( const QModelIndex  &index ) const;
-    bool setData( const QModelIndex  &index, const QVariant  &value, int role );
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    bool setData( const QModelIndex &index, const QVariant &value, int role );
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     Qt::DropActions supportedDropActions() const;
     virtual QStringList mimeTypes() const;
     virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-    bool removeRows( int row, int count, const QModelIndex  &parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
     /** Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5
@@ -282,7 +282,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
     QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex  &source_parent ) const;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 };

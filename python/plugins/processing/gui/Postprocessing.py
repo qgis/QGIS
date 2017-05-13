@@ -61,11 +61,10 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             continue
         if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
             try:
-                if hasattr(out, "layer") and out.layer is not None:
-                    out.layer.setName(out.description)
-                    QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(out.layer))
-                    # temporary hack to work around mutable outputs
-                    out.layer = None
+                layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
+                if layer:
+                    layer.setName(out.description)
+                    QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
                 else:
                     if ProcessingConfig.getSetting(
                             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):

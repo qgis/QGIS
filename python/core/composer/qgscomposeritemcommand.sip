@@ -119,6 +119,6 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
     QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
     ~QgsComposerMergeCommand();
 
-    bool mergeWith( const QUndoCommand  *command );
+    bool mergeWith( const QUndoCommand *command );
     int id() const;
 };

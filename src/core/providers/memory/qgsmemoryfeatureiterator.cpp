@@ -21,7 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 
-
+///@cond PRIVATE
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
@@ -223,3 +223,5 @@ QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest 
 {
   return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) );
 }
+
+///@endcond PRIVATE

@@ -24,6 +24,7 @@
 
 class QToolButton;
 
+
 /** \class QgsFilterLineEdit
  * \ingroup gui
  * QLineEdit subclass with built in support for clearing the widget's value and
@@ -35,6 +36,16 @@ class QToolButton;
  **/
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFilterLineEdit *>( sipCpp ) )
+      sipType = sipType_QgsFilterLineEdit;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_ENUMS( ClearMode )
     Q_PROPERTY( ClearMode clearMode READ clearMode WRITE setClearMode )
@@ -225,7 +236,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
  * of clicks, but override clearValue() and let Qgs(Double)SpinBox handle the clearing
  * themselves.
  */
-class QgsSpinBoxLineEdit : public QgsFilterLineEdit
+class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
 {
     Q_OBJECT
 

@@ -19,7 +19,12 @@ from qgis.core import (QgsFeatureStore,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint)
+                       QgsPoint,
+                       QgsField,
+                       QgsFields,
+                       QgsCoordinateReferenceSystem,
+                       QgsProxyFeatureSink)
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 start_app()
 
@@ -61,6 +66,35 @@ class TestQgsFeatureSink(unittest.TestCase):
         self.assertTrue(store.addFeatures(layer.getFeatures()))
         vals = [f['fldint'] for f in store.features()]
         self.assertEqual(vals, [123, 457, 888, -1, 0])
+
+    def testProxyFeatureSink(self):
+        fields = QgsFields()
+        fields.append(QgsField('fldtxt', QVariant.String))
+        fields.append(QgsField('fldint', QVariant.Int))
+
+        store = QgsFeatureStore(fields, QgsCoordinateReferenceSystem())
+        proxy = QgsProxyFeatureSink(store)
+        self.assertEqual(proxy.destinationSink(), store)
+
+        self.assertEqual(len(store), 0)
+
+        f = QgsFeature()
+        f.setAttributes(["test", 123])
+        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+        proxy.addFeature(f)
+        self.assertEqual(len(store), 1)
+        self.assertEqual(store.features()[0]['fldtxt'], 'test')
+
+        f2 = QgsFeature()
+        f2.setAttributes(["test2", 457])
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(200, 200)))
+        f3 = QgsFeature()
+        f3.setAttributes(["test3", 888])
+        f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(300, 200)))
+        proxy.addFeatures([f2, f3])
+        self.assertEqual(len(store), 3)
+        self.assertEqual(store.features()[1]['fldtxt'], 'test2')
+        self.assertEqual(store.features()[2]['fldtxt'], 'test3')
 
 
 if __name__ == '__main__':

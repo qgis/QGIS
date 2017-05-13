@@ -68,7 +68,7 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 
     QgsAttributeList mAttributes;
     QString mSqlQuery;
-    QgsFeatureId mFid;
+    QgsFeatureId mFid = 0;
 
 };
 

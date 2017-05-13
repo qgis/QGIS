@@ -21,13 +21,13 @@ class QgsRubberBand: QgsMapCanvasItem
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
     ~QgsRubberBand();
 
-    void setColor( const QColor  &color );
+    void setColor( const QColor &color );
 
-    void setFillColor( const QColor  &color );
+    void setFillColor( const QColor &color );
 
     QColor fillColor() const;
 
-    void setStrokeColor( const QColor  &color );
+    void setStrokeColor( const QColor &color );
 
     QColor strokeColor() const;
 
@@ -53,7 +53,7 @@ class QgsRubberBand: QgsMapCanvasItem
 
     void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
-    void addPoint( const QgsPoint  &p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPoint &p, bool doUpdate = true, int geometryIndex = 0 );
 
     void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 
@@ -61,7 +61,7 @@ class QgsRubberBand: QgsMapCanvasItem
 
     void removeLastPoint( int geometryIndex = 0, bool doUpdate = true );
 
-    void movePoint( const QgsPoint  &p, int geometryIndex = 0 );
+    void movePoint( const QgsPoint &p, int geometryIndex = 0 );
 
     void movePoint( int index, const QgsPoint &p, int geometryIndex = 0 );
 

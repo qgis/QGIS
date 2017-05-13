@@ -22,7 +22,7 @@
 #include "qgspostgresconn.h"
 #include "qgspgsourceselect.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 class QgsPGRootItem;
 class QgsPGConnectionItem;

@@ -120,7 +120,7 @@ class QgsMapTool : QObject
     /** Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  @note added in 2.3 */
-    static double searchRadiusMU( QgsMapCanvas  *canvas );
+    static double searchRadiusMU( QgsMapCanvas *canvas );
 
   signals:
     //! emit a message

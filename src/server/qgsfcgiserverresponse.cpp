@@ -41,7 +41,7 @@ QgsFcgiServerResponse::~QgsFcgiServerResponse()
 {
 }
 
-void QgsFcgiServerResponse::clearHeader( const QString &key )
+void QgsFcgiServerResponse::removeHeader( const QString &key )
 {
   mHeaders.remove( key );
 }
@@ -54,11 +54,6 @@ void QgsFcgiServerResponse::setHeader( const QString &key, const QString &value 
 QString QgsFcgiServerResponse::header( const QString &key ) const
 {
   return mHeaders.value( key );
-}
-
-QList<QString> QgsFcgiServerResponse::headerKeys() const
-{
-  return mHeaders.keys();
 }
 
 bool QgsFcgiServerResponse::headersSent() const

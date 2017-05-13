@@ -19,6 +19,7 @@
 #define QGSMAPCANVAS_H
 
 #include "qgsconfig.h"
+#include "qgis_sip.h"
 
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
@@ -464,7 +465,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \see setExpressionContextScope()
      * \note not available in Python bindings
      */
-    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
+    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
 
     /** Sets the segmentation tolerance applied when rendering curved geometries
     \param tolerance the segmentation tolerance*/

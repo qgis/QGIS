@@ -39,6 +39,7 @@ class SERVER_EXPORT QgsServerRequest
   public:
 
     typedef QMap<QString, QString> Parameters;
+    typedef QMap<QString, QString> Headers;
 
     /**
      * HTTP Method (or equivalent) used for the request
@@ -59,16 +60,18 @@ class SERVER_EXPORT QgsServerRequest
      *
      * \param url the url string
      * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QString &url, Method method = GetMethod );
+    QgsServerRequest( const QString &url, Method method = GetMethod, const Headers &headers = Headers( ) );
 
     /**
      * Constructor
      *
      * \param url QUrl
      * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QUrl &url, Method method = GetMethod );
+    QgsServerRequest( const QUrl &url, Method method = GetMethod, const Headers &headers = Headers( ) );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
@@ -97,7 +100,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Get a parameter value
      */
-    QString getParameter( const QString &key ) const;
+    QString parameter( const QString &key ) const;
 
     /**
      * Remove a parameter
@@ -105,16 +108,37 @@ class SERVER_EXPORT QgsServerRequest
     void removeParameter( const QString &key );
 
     /**
+     * Return the header value
+     * @param name of the header
+     * @return the header value or an empty string
+     */
+    QString header( const QString &name ) const;
+
+    /**
+     * Set an header
+     * @param name
+     * @param value
+     */
+    void setHeader( const QString &name, const QString &value );
+
+    /**
+     * Return the header map
+     * @return the headers map
+     */
+    QMap<QString, QString> headers( ) const;
+
+    /**
+    * Remove an header
+    * @param name
+    */
+    void removeHeader( const QString &name );
+
+    /**
      * Return post/put data
      * Check for QByteArray::isNull() to check if data
      * is available.
      */
     virtual QByteArray data() const;
-
-    /**
-     * \returns the value of the header field for that request
-     */
-    virtual QString getHeader( const QString &name ) const;
 
     /**
      * Set the request url
@@ -134,7 +158,8 @@ class SERVER_EXPORT QgsServerRequest
     // Use QMap here because it will be faster for small
     // number of elements
     mutable bool mDecoded;
-    mutable QMap<QString, QString> mParams;
+    mutable Parameters mParams;
+    mutable Headers mHeaders;
 };
 
 #endif

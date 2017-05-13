@@ -16,7 +16,7 @@ class QgsComposerItemGroup: QgsComposerItem
     /** Removes the items but does not delete them*/
     void removeItems();
     /** Draw outline and ev. selection handles*/
-    void paint( QPainter  *painter, const QStyleOptionGraphicsItem  *option, QWidget  *widget = 0 );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     /** Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF &rectangle );
@@ -28,7 +28,7 @@ class QgsComposerItemGroup: QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc is the Dom document
        */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag

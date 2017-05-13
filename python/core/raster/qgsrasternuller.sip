@@ -13,7 +13,7 @@ class QgsRasterNuller : QgsRasterInterface
       double max;
     };
 
-    virtual QgsRasterNuller  *clone() const /Factory/;
+    virtual QgsRasterNuller *clone() const /Factory/;
 
     int bandCount() const;
 

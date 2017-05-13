@@ -282,7 +282,7 @@ namespace QgsWfs
 
       if ( onlyOneLayer )
       {
-        requestPrecision = QgsServerProjectUtils::wfsLayerPrecision( vlayer->id(), *project );
+        requestPrecision = QgsServerProjectUtils::wfsLayerPrecision( *project, vlayer->id() );
       }
 
       if ( onlyOneLayer && !featureRequest.filterRect().isEmpty() )
@@ -295,7 +295,7 @@ namespace QgsWfs
         featureRequest.setLimit( aRequest.maxFeatures + aRequest.startIndex - sentFeatures );
       }
       // specific layer precision
-      int layerPrecision = QgsServerProjectUtils::wfsLayerPrecision( vlayer->id(), *project );
+      int layerPrecision = QgsServerProjectUtils::wfsLayerPrecision( *project, vlayer->id() );
       // specific layer crs
       QgsCoordinateReferenceSystem layerCrs = vlayer->crs();
       //excluded attributes for this layer

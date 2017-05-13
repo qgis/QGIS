@@ -24,6 +24,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 
+class QMenu;
 class QgsBrowserModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
@@ -61,6 +62,14 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
   private:
 
+    //! Enumeration of supported statistics types
+    enum DataType
+    {
+      Numeric,  //!< Numeric fields: int, double, etc
+      String,  //!< String fields
+      DateTime  //!< Date and DateTime fields
+    };
+
     QgsVectorLayer *mLayer = nullptr;
 
     QMap< int, QAction * > mStatsActions;
@@ -74,6 +83,13 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void addRow( int row, const QString &name, const QString &value, bool showValue );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    void refreshStatisticsMenu();
+    DataType fieldType( const QString &fieldName );
+
+    QMenu *mStatisticsMenu = nullptr;
+    DataType mFieldType;
+    DataType mPreviousFieldType;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

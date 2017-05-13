@@ -356,6 +356,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsMapCanvas *mMapCanvas = nullptr;
 
     friend class TestQgsDualView;
+    friend class TestQgsAttributeTable;
 };
 
 /** \ingroup gui

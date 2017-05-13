@@ -21,7 +21,7 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 
     ~QgsHillshadeRenderer();
 
-    virtual QgsHillshadeRenderer  *clone() const /Factory/;
+    virtual QgsHillshadeRenderer *clone() const /Factory/;
 
     /**
      * @brief Factory method to create a new renderer
@@ -31,7 +31,7 @@ class QgsHillshadeRenderer : QgsRasterRenderer
      */
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle  &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

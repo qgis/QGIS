@@ -82,7 +82,7 @@ class DensifyGeometries(GeoAlgorithm):
         isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
 
         writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(), layer.wkbType(), layer.crs(), context)
+            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)

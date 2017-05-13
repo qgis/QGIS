@@ -499,7 +499,9 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/metadata
   ../core/layertree
+  ../core/providers/memory
   ../core/raster
   ../core/scalebar
   ../core/symbology-ng

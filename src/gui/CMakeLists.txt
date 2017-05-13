@@ -1,6 +1,7 @@
 SET(QGIS_GUI_SRCS
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
+  raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
@@ -460,6 +461,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
+  raster/qgsrasterbandcombobox.h
   raster/qgsrasterhistogramwidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
@@ -747,10 +749,13 @@ INCLUDE_DIRECTORIES(
   ../core/fieldformatter
   ../core/geometry
   ../core/layertree
+  ../core/metadata
+  ../core/providers/memory
   ../core/raster
   ../core/scalebar
   ../core/symbology-ng
   ../core/effects
+  ../core/metadata
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )

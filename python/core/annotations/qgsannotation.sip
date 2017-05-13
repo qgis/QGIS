@@ -56,7 +56,7 @@ class QgsAnnotation : QObject
 
     void render( QgsRenderContext &context ) const;
 
-    virtual void writeXml( QDomElement &elem, QDomDocument  &doc ) const = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
 
     void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );

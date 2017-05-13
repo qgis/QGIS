@@ -19,6 +19,8 @@
 #ifndef QGSBUFFERSERVERRESPONSE_H
 #define QGSBUFFERSERVERRESPONSE_H
 
+#include "qgis_server.h"
+#include "qgis.h"
 #include "qgsserverresponse.h"
 
 #include <QBuffer>
@@ -30,39 +32,101 @@
  * \class QgsBufferServerResponse
  * Class defining buffered response
  */
-class QgsBufferServerResponse: public QgsServerResponse
+class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 {
   public:
 
     QgsBufferServerResponse();
     ~QgsBufferServerResponse();
 
+
+    /**
+     *  Set Header entry
+     *  Add Header entry to the response
+     *  Note that it is usually an error to set Header after data have been sent through the wire
+     */
     void setHeader( const QString &key, const QString &value ) override;
 
-    void clearHeader( const QString &key ) override;
+    /**
+     * Clear header
+     * Undo a previous 'setHeader' call
+     */
+    void removeHeader( const QString &key ) override;
 
+    /**
+     * Return the header value
+     */
     QString header( const QString &key ) const override;
 
-    QList<QString> headerKeys() const override;
+    /**
+     * Return all the headers
+     */
+    QMap<QString, QString> headers() const override { return mHeaders; }
 
+    /**
+     * Return true if the headers have alredy been sent
+     */
     bool headersSent() const override;
 
+    /** Set the http status code
+     * \param code HTTP status code value
+     */
     void setStatusCode( int code ) override;
 
-    int statusCode( ) const override { return mReturnCode; }
+    /** Return the http status code
+     */
+    int statusCode( ) const override { return mStatusCode; }
 
+    /**
+     * Send error
+     * This method delegates error handling at the server level. This is different
+     * from calling setReturnCode() which let you return a specific response body.
+     * Calling sendError() will end the transaction and any attempt to write data
+     * or set headers will be an error.
+     * \param code HHTP return code value
+     * \param message An informative error message
+     */
     void sendError( int code,  const QString &message ) override;
 
+    /**
+     * Return the underlying QIODevice
+     */
     QIODevice *io() override;
 
+    /**
+     * Finish the response,  ending the transaction
+     */
     void finish() override;
 
+    /**
+     * Flushes the current output buffer to the network
+     *
+     * 'flush()' may be called multiple times. For HTTP transactions
+     * headers will be written on the first call to 'flush()'.
+     */
     void flush() override;
 
+    /**
+     * Reset all headers and content for this response
+     */
     void clear() override;
 
+    /**
+     * Get the data written so far
+     *
+     * This is implementation dependent: some implementations may not
+     * give access to the underlying and return an empty array.
+     *
+     * Note that each call to 'flush' may empty the buffer and in case
+     * of streaming process you may get partial content
+     */
     QByteArray data() const override;
 
+    /**
+     * Truncate data
+     *
+     * Clear internal buffer
+     */
     void truncate() override;
 
     /**
@@ -70,19 +134,16 @@ class QgsBufferServerResponse: public QgsServerResponse
      */
     QByteArray body() const { return mBody; }
 
-    /**
-     * Return header's map
-     */
-    QMap<QString, QString> headers() const { return mHeaders; }
-
 
   private:
+
+    QgsBufferServerResponse( const QgsBufferServerResponse & ) SIP_FORCE;
     QMap<QString, QString> mHeaders;
     QBuffer                mBuffer;
     QByteArray             mBody;
     bool                   mFinished = false;
     bool                   mHeadersSent = false;
-    int                    mReturnCode = 200;
+    int                    mStatusCode = 200;
 };
 
 #endif

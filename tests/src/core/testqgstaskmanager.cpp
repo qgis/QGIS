@@ -56,11 +56,13 @@ class ProgressReportingTask : public QgsTask
     ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc ), finished( false ), terminated( false ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
-    void finish() { finished = true; }
-    void terminate() { terminated = true; }
 
     bool finished;
     bool terminated;
+
+  public slots:
+    void finish() { finished = true; }
+    void terminate() { terminated = true; }
 
   protected:
 
@@ -198,6 +200,7 @@ class TestQgsTaskManager : public QObject
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
+    void waitForFinished();
     void progressChanged();
     void statusChanged();
     void allTasksFinished();
@@ -652,6 +655,46 @@ void TestQgsTaskManager::taskId()
   QCOMPARE( manager.taskId( task3 ), -1L );
 
   delete task3;
+}
+
+void TestQgsTaskManager::waitForFinished()
+{
+  QgsTaskManager manager;
+  QEventLoop loop;
+
+  ProgressReportingTask *finishedTask = new ProgressReportingTask();
+  connect( finishedTask, &ProgressReportingTask::begun, &loop, &QEventLoop::quit );
+  manager.addTask( finishedTask );
+  if ( finishedTask->status() != QgsTask::Running )
+    loop.exec();
+
+  QTimer timer;
+  connect( &timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish );
+  timer.start( 100 );
+  QCOMPARE( finishedTask->waitForFinished(), true );
+  QCOMPARE( finishedTask->status(), QgsTask::Complete );
+
+  ProgressReportingTask *failedTask = new ProgressReportingTask();
+  connect( failedTask, &ProgressReportingTask::begun, &loop, &QEventLoop::quit );
+  manager.addTask( failedTask );
+  if ( failedTask->status() != QgsTask::Running )
+    loop.exec();
+
+  connect( &timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate );
+  timer.start( 100 );
+  QCOMPARE( failedTask->waitForFinished(), true );
+  QCOMPARE( failedTask->status(), QgsTask::Terminated );
+
+  ProgressReportingTask *timeoutTooShortTask = new ProgressReportingTask();
+  connect( timeoutTooShortTask, &ProgressReportingTask::begun, &loop, &QEventLoop::quit );
+  manager.addTask( timeoutTooShortTask );
+  if ( timeoutTooShortTask->status() != QgsTask::Running )
+    loop.exec();
+
+  connect( &timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish );
+  timer.start( 1000 );
+  QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
+  QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
 }
 
 void TestQgsTaskManager::progressChanged()

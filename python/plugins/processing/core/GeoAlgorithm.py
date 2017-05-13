@@ -212,8 +212,9 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
             raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
-    def _checkParameterValuesBeforeExecuting(self):
-        context = dataobjects.createContext()
+    def _checkParameterValuesBeforeExecuting(self, context=None):
+        if context is None:
+            context = dataobjects.createContext()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector,
                                   ParameterMultipleInput)):
@@ -380,11 +381,12 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                                 break
                     param.setValue(";".join(inputlayers))
 
-    def checkInputCRS(self):
+    def checkInputCRS(self, context=None):
         """It checks that all input layers use the same CRS. If so,
         returns True. False otherwise.
         """
-        context = dataobjects.createContext()
+        if context is None:
+            context = dataobjects.createContext()
         crsList = []
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):

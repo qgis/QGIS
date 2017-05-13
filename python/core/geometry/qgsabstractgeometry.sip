@@ -130,7 +130,6 @@ class QgsAbstractGeometry
  :rtype: bool
 %End
 
-
     virtual QgsAbstractGeometry *boundary() const = 0 /Factory/;
 %Docstring
  Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
@@ -236,7 +235,6 @@ class QgsAbstractGeometry
  Transforms the geometry using a QTransform object
  \param t QTransform transformation
 %End
-
 
     virtual void draw( QPainter &p ) const = 0;
 %Docstring

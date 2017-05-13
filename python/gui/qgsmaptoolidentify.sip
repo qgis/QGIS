@@ -27,11 +27,11 @@ class QgsMapToolIdentify : QgsMapTool
     {
       IdentifyResult();
 
-      IdentifyResult( QgsMapLayer  *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
+      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
 
-      IdentifyResult( QgsMapLayer  *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes );
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes );
 
-      IdentifyResult( QgsMapLayer  *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
 
       QgsMapLayer *mLayer;
       QString mLabel;
@@ -43,20 +43,20 @@ class QgsMapToolIdentify : QgsMapTool
     };
 
     //! constructor
-    QgsMapToolIdentify( QgsMapCanvas  *canvas );
+    QgsMapToolIdentify( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolIdentify();
 
     virtual Flags flags() const;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent  *e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent  *e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent  *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
     virtual void activate();
 

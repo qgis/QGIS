@@ -30,6 +30,7 @@
 #include "qgsmaplayercomboboxplugin.h"
 #include "qgsprojectionselectionwidgetplugin.h"
 #include "qgspropertyoverridebuttonplugin.h"
+#include "qgsrasterbandcomboboxplugin.h"
 #include "qgsrelationeditorwidgetplugin.h"
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
@@ -54,6 +55,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
   mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
   mWidgets.append( new QgsPropertyOverrideButtonPlugin( this ) );
+  mWidgets.append( new QgsRasterBandComboBoxPlugin( this ) );
   mWidgets.append( new QgsRelationEditorWidgetPlugin( this ) );
   mWidgets.append( new QgsRelationReferenceWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleRangeWidgetPlugin( this ) );

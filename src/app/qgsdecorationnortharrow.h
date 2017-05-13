@@ -54,6 +54,11 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //  static const double DEG2RAD;
     static const double TOL;
 
+    //! The north arrow fill color
+    QColor mColor;
+    //! The north arrow outline color
+    QColor mOutlineColor;
+
     // The amount of rotation for the north arrow
     int mRotationInt;
 

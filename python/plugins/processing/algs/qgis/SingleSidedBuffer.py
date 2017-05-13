@@ -97,7 +97,7 @@ class SingleSidedBuffer(GeoAlgorithm):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields().toList(), QgsWkbTypes.Polygon, layer.crs(), context)
+            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
 
         distance = self.getParameterValue(self.DISTANCE)
         segments = int(self.getParameterValue(self.SEGMENTS))

@@ -22,6 +22,7 @@ class QDomDocument;
 class QString;
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <list>
 #include <QVector>
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsOgcUtils
     /** GML version
      *  \note not available in Python bindings
      */
-    typedef enum
+    typedef enum SIP_SKIP
     {
       GML_2_1_2,
       GML_3_1_0,
@@ -139,7 +140,7 @@ class CORE_EXPORT QgsOgcUtils
     /** OGC filter version
      * \note not available in Python bindings
      */
-    typedef enum
+    typedef enum SIP_SKIP
     {
       FILTER_OGC_1_0,
       FILTER_OGC_1_1,
@@ -161,7 +162,7 @@ class CORE_EXPORT QgsOgcUtils
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = nullptr );
+        QString *errorMessage = nullptr ) SIP_SKIP;
 
     /** Creates an OGC expression XML element.
      * \returns valid OGC expression QDomElement on success,
@@ -227,7 +228,7 @@ class CORE_EXPORT QgsOgcUtils
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
-        QString *errorMessage = nullptr );
+        QString *errorMessage = nullptr ) SIP_SKIP;
 
   private:
 

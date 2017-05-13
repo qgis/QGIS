@@ -87,16 +87,18 @@ class ConcaveHull(GeoAlgorithm):
 
         # Delaunay triangulation from input point layer
         feedback.setProgressText(self.tr('Creating Delaunay triangles...'))
-        delone_triangles = processing.run("qgis:delaunaytriangulation", layer, None)['OUTPUT']
+        delone_triangles = processing.run("qgis:delaunaytriangulation", layer, None, context=context)['OUTPUT']
         delaunay_layer = QgsProcessingUtils.mapLayerFromString(delone_triangles, context)
 
         # Get max edge length from Delaunay triangles
         feedback.setProgressText(self.tr('Computing edges max length...'))
-        features = delaunay_layer.getFeatures()
-        if len(features) == 0:
+
+        features = QgsProcessingUtils.getFeatures(delaunay_layer, context)
+        count = QgsProcessingUtils.featureCount(delaunay_layer, context)
+        if count == 0:
             raise GeoAlgorithmExecutionException(self.tr('No Delaunay triangles created.'))
 
-        counter = 50. / len(features)
+        counter = 50. / count
         lengths = []
         edges = {}
         for feat in features:
@@ -126,15 +128,15 @@ class ConcaveHull(GeoAlgorithm):
 
         # Dissolve all Delaunay triangles
         feedback.setProgressText(self.tr('Dissolving Delaunay triangles...'))
-        dissolved = processing.run("qgis:dissolve", delaunay_layer,
-                                   True, None, None)['OUTPUT']
+        dissolved = processing.run("qgis:dissolve", delaunay_layer.id(),
+                                   True, None, None, context=context)['OUTPUT']
         dissolved_layer = QgsProcessingUtils.mapLayerFromString(dissolved, context)
 
         # Save result
         feedback.setProgressText(self.tr('Saving data...'))
         feat = QgsFeature()
-        dissolved_layer.getFeatures(QgsFeatureRequest().setFilterFid(0)).nextFeature(feat)
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), QgsWkbTypes.Polygon,
+        QgsProcessingUtils.getFeatures(dissolved_layer, context).nextFeature(feat)
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon,
                                                                      layer.crs(), context)
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():

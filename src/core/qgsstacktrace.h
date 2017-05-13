@@ -29,7 +29,7 @@
 * displaying additional debug information when things go wrong.
 *
 * \note Not available in python
-* \note Added in QGIS 3.0
+* \since QGIS 3.0
 */
 class CORE_EXPORT QgsStackTrace
 {
@@ -64,9 +64,15 @@ class CORE_EXPORT QgsStackTrace
     /**
      * Return a demangled stack backtrace of the caller function.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace( struct _EXCEPTION_POINTERS *ExceptionInfo );
+
+    /**
+     * Set the paths to load the PDB symbols from on Windows.
+     * @param paths The path, or series of paths separated by a semicolon (;), that is used to search for symbol files.
+     */
+    static void setSymbolPath( QString searchPath );
 #endif
 
 #ifdef Q_OS_LINUX
@@ -74,13 +80,14 @@ class CORE_EXPORT QgsStackTrace
     /**
     * Return a demangled stack backtrace of the caller function.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QVector<QgsStackTrace::StackLine> trace( unsigned int maxFrames = 63 );
 #endif
 
   private:
     QgsStackTrace();
+    static QString mSymbolPaths;
 
 };
 

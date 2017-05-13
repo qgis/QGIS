@@ -20,6 +20,7 @@
 #ifndef QGSOWSSOURCESELECT_H
 #define QGSOWSSOURCESELECT_H
 #include "ui_qgsowssourceselectbase.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgisgui.h"
@@ -188,7 +189,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
                                    QMap<int, QgsTreeWidgetItem *> &items,
                                    int &layerAndStyleCount,
                                    const QMap<int, int> &layerParents,
-                                   const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY;
+                                   const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY SIP_SKIP;
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString &authId );

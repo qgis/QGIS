@@ -49,7 +49,6 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
-#include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
@@ -72,6 +71,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
+#include "qgsvectorlayerfeaturecounter.h"
 #include "qgspointv2.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
@@ -84,6 +84,7 @@
 #include "qgsfeedback.h"
 #include "qgsxmlutils.h"
 #include "qgsunittypes.h"
+#include "qgstaskmanager.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -127,6 +128,7 @@ typedef bool deleteStyleById_t(
   QString &errCause
 );
 
+
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
@@ -142,7 +144,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mLayerTransparency( 0 )
   , mVertexMarkerOnlyForSelection( false )
-  , mCache( new QgsGeometryCache() )
   , mEditBuffer( nullptr )
   , mJoinBuffer( nullptr )
   , mExpressionFieldBuffer( nullptr )
@@ -190,7 +191,6 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mEditBuffer;
   delete mJoinBuffer;
   delete mExpressionFieldBuffer;
-  delete mCache;
   delete mLabeling;
   delete mDiagramLayerSettings;
   delete mDiagramRenderer;
@@ -677,7 +677,7 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     QProgressDialog *mDialog = nullptr;
 };
 
-bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
+bool QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted )
     return true;
@@ -700,103 +700,15 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     return false;
   }
 
-  QgsLegendSymbolList symbolList = mRenderer->legendSymbolItems();
-  QgsLegendSymbolList::const_iterator symbolIt = symbolList.constBegin();
-
-  for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
+  if ( !mFeatureCounter )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+    mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
+
+    QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
 
-  long nFeatures = featureCount();
-
-  QWidget *mainWindow = nullptr;
-  Q_FOREACH ( QWidget *widget, qApp->topLevelWidgets() )
-  {
-    if ( widget->objectName() == QLatin1String( "QgisApp" ) )
-    {
-      mainWindow = widget;
-      break;
-    }
-  }
-
-  QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures, mainWindow );
-  progressDialog.setWindowTitle( tr( "QGIS" ) );
-  progressDialog.setWindowModality( Qt::WindowModal );
-  if ( showProgress )
-  {
-    // Properly initialize to 0 as recommended in doc so that the evaluation
-    // of the total time properly works
-    progressDialog.setValue( 0 );
-  }
-  int featuresCounted = 0;
-
-  // Renderer (rule based) may depend on context scale, with scale is ignored if 0
-  QgsRenderContext renderContext;
-  renderContext.setRendererScale( 0 );
-  renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( this ) );
-
-  QgsFeatureRequest request;
-  if ( !mRenderer->filterNeedsGeometry() )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  request.setSubsetOfAttributes( mRenderer->usedAttributes( renderContext ), mFields );
-  QgsFeatureIterator fit = getFeatures( request );
-  QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures interruptionCheck( &progressDialog );
-  if ( showProgress )
-  {
-    fit.setInterruptionChecker( &interruptionCheck );
-  }
-
-  mRenderer->startRender( renderContext, fields() );
-
-  QgsFeature f;
-  QTime time;
-  time.start();
-  while ( fit.nextFeature( f ) )
-  {
-    renderContext.expressionContext().setFeature( f );
-    QSet<QString> featureKeyList = mRenderer->legendKeysForFeature( f, renderContext );
-    Q_FOREACH ( const QString &key, featureKeyList )
-    {
-      mSymbolFeatureCountMap[key] += 1;
-    }
-    ++featuresCounted;
-
-    if ( showProgress )
-    {
-      // Refresh progress every 50 features or second
-      if ( ( featuresCounted % 50 == 0 ) || time.elapsed() > 1000 )
-      {
-        time.restart();
-        if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-        {
-          progressDialog.setMaximum( 0 );
-        }
-        progressDialog.setValue( featuresCounted );
-      }
-      // So that we get a chance of hitting the Abort button
-#ifdef Q_OS_LINUX
-      // For some reason on Windows hasPendingEvents() always return true,
-      // but one iteration is actually enough on Windows to get good interactivity
-      // whereas on Linux we must allow for far more iterations.
-      // For safety limit the number of iterations
-      int nIters = 0;
-      while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
-#endif
-      {
-        QCoreApplication::processEvents();
-      }
-      if ( progressDialog.wasCanceled() )
-      {
-        mSymbolFeatureCountMap.clear();
-        mRenderer->stopRender( renderContext );
-        return false;
-      }
-    }
-  }
-  mRenderer->stopRender( renderContext );
-  progressDialog.setValue( nFeatures );
-  mSymbolFeatureCounted = true;
   return true;
 }
 
@@ -1492,7 +1404,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   delete mDataProvider;
-  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
+  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, mDataSource ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
@@ -2438,11 +2350,6 @@ bool QgsVectorLayer::commitChanges()
     QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QStringLiteral( "\n  " ) ) ) );
   }
 
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
-
   updateFields();
   mDataProvider->updateExtents();
 
@@ -2489,11 +2396,6 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
     undoStack()->clear();
   }
   emit editingStopped();
-
-  if ( mCache )
-  {
-    mCache->deleteCachedGeometries();
-  }
 
   if ( rollbackExtent )
     updateExtents();
@@ -3996,6 +3898,16 @@ void QgsVectorLayer::onRelationsLoaded()
   mEditFormConfig.onRelationsLoaded();
 }
 
+void QgsVectorLayer::onSymbolsCounted()
+{
+  if ( mFeatureCounter )
+  {
+    mSymbolFeatureCountMap = mFeatureCounter->symbolFeatureCountMap();
+    mSymbolFeatureCounted = true;
+    emit symbolFeatureCountMapChanged();
+  }
+}
+
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
   return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
@@ -4003,7 +3915,7 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4022,7 +3934,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
 
 QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4041,7 +3953,7 @@ QString QgsVectorLayer::getStyleFromDatabase( const QString &styleId, QString &m
 
 bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &msgError )
 {
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4062,7 +3974,7 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
 {
 
   QString sldStyle, qmlStyle;
-  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
   if ( !myLib )
   {
     msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
@@ -4107,7 +4019,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   QgsDataSourceUri dsUri( theURI );
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->providerLibrary( mProviderKey ) );
+    std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
     if ( myLib )
     {
       loadStyle_t *loadStyleExternalMethod = reinterpret_cast< loadStyle_t * >( cast_to_fptr( myLib->resolve( "loadStyle" ) ) );

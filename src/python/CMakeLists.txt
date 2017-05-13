@@ -3,6 +3,7 @@ SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 INCLUDE_DIRECTORIES(
   ../core
   ../core/geometry
+  ../core/metadata
   ../core/raster
   ../gui
   ${CMAKE_BINARY_DIR}/src/core

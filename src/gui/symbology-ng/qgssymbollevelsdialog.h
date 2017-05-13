@@ -16,6 +16,7 @@
 #define QGSSYMBOLLEVELSDIALOG_H
 
 #include <QDialog>
+#include "qgis_sip.h"
 #include <QList>
 #include <QItemDelegate>
 
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     Q_OBJECT
   public:
     //! \note not available in Python bindings
-    QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent = nullptr );
+    QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent = nullptr ) SIP_SKIP;
 
     ~QgsSymbolLevelsDialog();
 
@@ -48,9 +49,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
 
   protected:
     //! \note not available in Python bindings
-    void populateTable();
+    void populateTable() SIP_SKIP;
     //! \note not available in Python bindings
-    void setDefaultLevels();
+    void setDefaultLevels() SIP_SKIP;
 
   protected:
     //! maximal number of layers from all symbols

@@ -30,6 +30,8 @@
 
 %Include qgsserverrequest.sip
 %Include qgsserverresponse.sip
+%Include qgsbufferserverresponse.sip
+%Include qgsbufferserverrequest.sip
 %Include qgsserverexception.sip
 %Include qgsservice.sip
 %Include qgsservicemodule.sip

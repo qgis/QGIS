@@ -29,6 +29,7 @@
 #include <QString>
 #include <QStringList>
 #include <QStyle>
+#include <QStyleFactory>
 #include <QDesktopWidget>
 #include <QTranslator>
 #include <QImageReader>
@@ -469,6 +470,12 @@ int main( int argc, char *argv[] )
 #endif
 
 #ifdef Q_OS_WIN
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
+    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
+    QgsStackTrace::setSymbolPath( symbolPath );
+  }
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
@@ -957,13 +964,31 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString style = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
-  if ( !style.isNull() )
+  QString presetStyle = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
+  QString activeStyleName = presetStyle;
+  if ( activeStyleName.isEmpty() ) // not set, using default style
   {
-    QApplication::setStyle( style );
+    //not set, check default
+    activeStyleName = QApplication::style()->metaObject()->className() ;
+  }
+  if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
+  {
+    //never allow Adwaita themes - the Qt variants of these are VERY broken
+    //for apps like QGIS. E.g. oversized controls like spinbox widgets prevent actually showing
+    //any content in these widgets, leaving a very bad impression of QGIS
+
+    //note... we only do this if there's a known good style available (fusion), as SOME
+    //style choices can cause Qt apps to crash...
+    if ( QStyleFactory::keys().contains( QStringLiteral( "fusion" ), Qt::CaseInsensitive ) )
+    {
+      presetStyle = QStringLiteral( "fusion" );
+    }
+  }
+  if ( !presetStyle.isEmpty() )
+  {
+    QApplication::setStyle( presetStyle );
     mySettings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
-
   /* Translation file for QGIS.
    */
   QString i18nPath = QgsApplication::i18nPath();

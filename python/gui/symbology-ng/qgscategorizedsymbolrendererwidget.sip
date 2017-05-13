@@ -25,7 +25,7 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
   public slots:
     void changeCategorizedSymbol();
     void categoryColumnChanged( const QString &field );
-    void categoriesDoubleClicked( const QModelIndex  &idx );
+    void categoriesDoubleClicked( const QModelIndex &idx );
     void addCategory();
     void addCategories();
     void applyColorRamp();

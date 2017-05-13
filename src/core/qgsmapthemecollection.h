@@ -17,6 +17,7 @@
 #define QGSMAPTHEMECOLLECTION_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QMap>
 #include <QObject>
 #include <QPointer>
@@ -123,7 +124,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         //! Return set with only records for valid layers
         //! \note not available in Python bindings
-        QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const;
+        QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.

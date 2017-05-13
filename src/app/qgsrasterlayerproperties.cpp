@@ -325,20 +325,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   //transparency band
   if ( provider )
   {
-    cboxTransparencyBand->addItem( tr( "None" ), -1 );
-    int nBands = provider->bandCount();
-    QString bandName;
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-    {
-      bandName = provider->generateBandName( i );
-
-      QString colorInterp = provider->colorInterpretationName( i );
-      if ( colorInterp != QLatin1String( "Undefined" ) )
-      {
-        bandName.append( QStringLiteral( " (%1)" ).arg( colorInterp ) );
-      }
-      cboxTransparencyBand->addItem( bandName, i );
-    }
+    cboxTransparencyBand->setShowNotSetOption( true, tr( "None" ) );
+    cboxTransparencyBand->setLayer( mRasterLayer );
 
 // Alpha band is set in sync()
 #if 0
@@ -667,15 +655,7 @@ void QgsRasterLayerProperties::sync()
     //update the transparency percentage label
     sliderTransparency_valueChanged( ( 1.0 - renderer->opacity() ) * 255 );
 
-    int myIndex = renderer->alphaBand();
-    if ( -1 != myIndex )
-    {
-      cboxTransparencyBand->setCurrentIndex( myIndex );
-    }
-    else
-    {
-      cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findText( TRSTRING_NOT_SET ) );
-    }
+    cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
   //add current NoDataValue to NoDataValue line edit
@@ -888,7 +868,7 @@ void QgsRasterLayerProperties::apply()
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
-    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentData().toInt() );
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->currentBand() );
 
     //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
     QgsRasterTransparency *rasterTransparency = new QgsRasterTransparency();

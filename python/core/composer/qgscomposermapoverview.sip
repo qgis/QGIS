@@ -131,7 +131,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
      * @param doc DOM document
      * @see readXML
      */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag

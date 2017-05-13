@@ -58,6 +58,22 @@ Constructor
     virtual bool addFeatures( QgsFeatureList &features );
 
 
+    int count() const;
+%Docstring
+ Returns the number of features contained in the store.
+ :rtype: int
+%End
+
+
+    int __len__() const;
+%Docstring
+ Returns the number of features contained in the store.
+ :rtype: int
+%End
+%MethodCode
+    sipRes = sipCpp->count();
+%End
+
     QgsFeatureList features() const;
 %Docstring
  Returns the list of features contained in the store.

@@ -154,7 +154,7 @@ class QgsComposerArrow: QgsComposerItem
      * @param elem is DOM element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement &elem, QDomDocument  &doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets state from DOM document
      * @param itemElem is DOM node corresponding to item tag

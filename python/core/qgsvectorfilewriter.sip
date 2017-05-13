@@ -278,7 +278,7 @@ class QgsVectorFileWriter : QgsFeatureSink
         /** Layer name. If let empty, it will be derived from the filename */
         QString layerName;
 
-        /** Action on existing file  */
+        /** Action on existing file */
         QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
 
         /** Encoding to use */
@@ -364,6 +364,8 @@ class QgsVectorFileWriter : QgsFeatureSink
      * supported formats of the same OGR driver
      */
     static QMap< QString, QString> ogrDriverList();
+
+    static QString driverForExtension( const QString &extension );
 
     /** Returns filter string that can be used for dialogs*/
     static QString fileFilterString();

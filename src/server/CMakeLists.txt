@@ -118,6 +118,7 @@ INCLUDE_DIRECTORIES(
   ../core/auth
   ../core/dxf
   ../core/geometry
+  ../core/metadata
   ../core/raster
   ../core/symbology-ng
   ../core/composer

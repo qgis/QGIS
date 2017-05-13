@@ -73,7 +73,7 @@ class QgsOWSSourceSelect : QDialog
   signals:
     void addRasterLayer( const QString & rasterLayerPath,
                          const QString & baseName,
-                         const QString  &providerKey );
+                         const QString &providerKey );
     void connectionsChanged();
 
   protected:

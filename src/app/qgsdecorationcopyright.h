@@ -54,8 +54,10 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     QFont mQFont;
     //! This is the string that will be used for the copyright label
     QString mLabelQString;
+
     //! This is the color for the copyright label
-    QColor mLabelQColor;
+    QColor mColor;
+
     //! enable or disable use of position percentage for placement
     int mMarginHorizontal;
     int mMarginVertical;

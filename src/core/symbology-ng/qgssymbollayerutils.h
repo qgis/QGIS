@@ -18,6 +18,7 @@
 #define QGSSYMBOLLAYERUTILS_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QMap>
 #include <Qt>
 #include <QtCore>
@@ -211,7 +212,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element )
+    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element ) SIP_SKIP
     {
       QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element );
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
@@ -264,7 +265,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void lineToSld( QDomDocument &doc, QDomElement &element,
                            Qt::PenStyle penStyle, const QColor &color, double width = -1,
                            const Qt::PenJoinStyle *penJoinStyle = nullptr, const Qt::PenCapStyle *penCapStyle = nullptr,
-                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 );
+                           const QVector<qreal> *customDashPattern = nullptr, double dashOffset = 0.0 ) SIP_SKIP;
     static bool lineFromSld( QDomElement &element,
                              Qt::PenStyle &penStyle, QColor &color, double &width,
                              Qt::PenJoinStyle *penJoinStyle = nullptr, Qt::PenCapStyle *penCapStyle = nullptr,

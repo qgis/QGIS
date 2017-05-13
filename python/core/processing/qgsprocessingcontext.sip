@@ -75,11 +75,11 @@ class QgsProcessingContext
  Sets the expression ``context``.
 %End
 
-    QgsProject &temporaryLayerStore();
+    QgsMapLayerStore *temporaryLayerStore();
 %Docstring
- Returns a reference to the project used for storing temporary layers during
+ Returns a reference to the layer store used for storing temporary layers during
  algorithm execution.
- :rtype: QgsProject
+ :rtype: QgsMapLayerStore
 %End
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
@@ -118,9 +118,23 @@ class QgsProcessingContext
 %End
 
 
+    QString defaultEncoding() const;
+%Docstring
+ Returns the default encoding to use for newly created files.
+.. seealso:: setDefaultEncoding()
+ :rtype: str
+%End
+
+    void setDefaultEncoding( const QString &encoding );
+%Docstring
+ Sets the default ``encoding`` to use for newly created files.
+.. seealso:: defaultEncoding()
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
+
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 
 

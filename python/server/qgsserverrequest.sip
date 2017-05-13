@@ -30,6 +30,9 @@ class QgsServerRequest
 %End
   public:
 
+    typedef QMap<QString, QString> Parameters;
+    typedef QMap<QString, QString> Headers;
+
     enum Method
     {
       HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
@@ -48,21 +51,55 @@ class QgsServerRequest
      */
     QgsServerRequest( const QString &url, Method method );
 
+
     /**
      * Constructor
      *
-     * @param url QUrl
-     * @param method the request method (default to GetMethod)
+     * \param url the url string
+     * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QUrl &url, Method method = GetMethod );
+    QgsServerRequest( const QString &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+
+    /**
+     * Constructor
+     *
+     * \param url QUrl
+     * \param method the request method
+     * \param headers
+     */
+    QgsServerRequest( const QUrl &url, Method method = GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers( ) );
+
 
     //! destructor
     virtual ~QgsServerRequest();
 
+
     /**
-     * @return the value of the header field for that request
+     * Return the header value
+     * @param name of the header
+     * @return the header value or an empty string
      */
-    virtual QString getHeader( const QString &name ) const;
+    QString header( const QString &name ) const;
+
+    /**
+     * Set an header
+     * @param name
+     * @param value
+     */
+    void setHeader( const QString &name, const QString &value );
+
+    /**
+     * Return the header map
+     * @return the headers map
+     */
+    QMap<QString, QString> headers( ) const;
+
+    /**
+     * Remove an header
+     * @param name
+     */
+    void removeHeader( const QString &name );
 
     /**
      * @return the request url
@@ -87,7 +124,7 @@ class QgsServerRequest
     /**
      * Get a parameter value
      */
-    QString getParameter( const QString &key ) const;
+    QString parameter( const QString& key ) const;
 
     /**
      * Remove a parameter

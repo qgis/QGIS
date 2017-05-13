@@ -19,6 +19,7 @@
 #define QGSTASKMANAGER_H
 
 #include <QObject>
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <QMap>
 #include <QFuture>
@@ -168,7 +169,7 @@ class CORE_EXPORT QgsTask : public QObject
      * Subtasks can be nested, ie a subtask can legally be a parent task itself with
      * its own set of subtasks.
      */
-    void addSubTask( QgsTask *subTask, const QgsTaskList &dependencies = QgsTaskList(),
+    void addSubTask( QgsTask *subTask SIP_TRANSFER, const QgsTaskList &dependencies = QgsTaskList(),
                      SubTaskDependency subTaskDependency = SubTaskIndependent );
 
     /**
@@ -184,6 +185,17 @@ class CORE_EXPORT QgsTask : public QObject
      * \see setDependentLayers()
      */
     QList< QgsMapLayer * > dependentLayers() const;
+
+    /**
+     * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
+     * If the \a timeout is ``-1`` the thread will be blocked forever.
+     * In case of a timeout, the task will still be running.
+     * In case the task already is finished, the method will return immediately while
+     * returning ``true``.
+     *
+     * The result will be false if the wait timed out and true in any other case.
+     */
+    bool waitForFinished( int timeout = 30000 );
 
   signals:
 
@@ -427,7 +439,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     //! Returns the set of task IDs on which a task is dependent
     //! \note not available in Python bindings
-    QSet< long > dependencies( long taskId ) const;
+    QSet< long > dependencies( long taskId ) const SIP_SKIP;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.

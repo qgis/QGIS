@@ -19,6 +19,7 @@
 #define QGSRASTERDRAWER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QMap>
 
 class QPainter;
@@ -56,7 +57,7 @@ class CORE_EXPORT QgsRasterDrawer
      * \param mapToPixel map to device coordinate transformation info
      * \note not available in Python bindings
      */
-    void drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *mapToPixel = nullptr ) const;
+    void drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *mapToPixel = nullptr ) const SIP_SKIP;
 
   private:
     QgsRasterIterator *mIterator = nullptr;

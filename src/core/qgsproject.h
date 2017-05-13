@@ -22,6 +22,7 @@
 #define QGSPROJECT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include <memory>
 #include <QHash>
@@ -38,6 +39,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerstore.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -332,7 +334,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                              bool saveFlag = true );
+                              bool saveFlag = true ) SIP_SKIP;
 
     /** Create layer group instance defined in an arbitrary project file.
      * \since QGIS 2.4
@@ -459,7 +461,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \note Not available in Python bindings
      */
-    QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
+    QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
@@ -528,6 +530,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     // Functionality from QgsMapLayerRegistry
     //
 
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    QgsMapLayerStore *layerStore();
+
+    /**
+     * Returns a pointer to the project's internal layer store.
+     * /since QGIS 3.0
+     */
+    SIP_SKIP const QgsMapLayerStore *layerStore() const;
+
     //! Returns the number of registered layers.
     int count() const;
 
@@ -564,20 +578,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \see mapLayers()
      */
-    template <typename T>
+    template <typename T> SIP_SKIP
     QVector<T> layers() const
     {
-      QVector<T> layers;
-      QMap<QString, QgsMapLayer *>::const_iterator layerIt = mMapLayers.constBegin();
-      for ( ; layerIt != mMapLayers.constEnd(); ++layerIt )
-      {
-        T tLayer = qobject_cast<T>( layerIt.value() );
-        if ( tLayer )
-        {
-          layers << tLayer;
-        }
-      }
-      return layers;
+      return mLayerStore->layers<T>();
     }
 
     /**
@@ -968,8 +972,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
     void cleanTransactionGroups( bool force = false );
 
-    void onMapLayerDeleted( QObject *obj );
-
   private:
 
     static QgsProject *sProject;
@@ -985,24 +987,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Set error message from read/write operation
      * \note not available in Python bindings
      */
-    void setError( const QString &errorMessage );
+    void setError( const QString &errorMessage ) SIP_SKIP;
 
     /** Clear error message
      * \note not available in Python bindings
      */
-    void clearError();
+    void clearError() SIP_SKIP;
 
     //! Creates layer and adds it to maplayer registry
     //! \note not available in Python bindings
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes );
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group );
+    void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group ) SIP_SKIP;
 
     //! \note not available in Python bindings
-    void loadEmbeddedNodes( QgsLayerTreeGroup *group );
+    void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
-    QMap<QString, QgsMapLayer *> mMapLayers;
+    std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
 

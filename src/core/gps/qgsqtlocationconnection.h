@@ -19,6 +19,7 @@
 #define QGSQTLOCATIONCONNECTION_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>
@@ -62,12 +63,12 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     /** Called when the number of satellites in view is updated.
       * \note not available in Python bindings on android
       */
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
+    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites ) SIP_SKIP;
 
     /** Called when the number of satellites in use is updated.
       * \note not available in Python bindings on android
       */
-    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
+    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites ) SIP_SKIP;
 
   private:
     void startGPS();

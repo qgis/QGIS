@@ -612,6 +612,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                 clazz = getattr(module, className)
                 instance = clazz()
                 for k, v in list(values.items()):
+                    # upgrade old model files
+                    if k == 'group':
+                        k = '_group'
+                    elif k == 'name':
+                        instance.__dict__['_name'] = v
+                        k = 'modeler_name'
+                        if not issubclass(clazz, GeoAlgorithm):
+                            instance.__dict__['name'] = v
                     instance.__dict__[k] = v
                 return instance
             except KeyError:

@@ -505,6 +505,8 @@ typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 #endif
 
+#include "qgsgeometry.h"
+
 // key = feature id, value = changed geometry
 #ifndef SIP_RUN
 typedef QMap<QgsFeatureId, QgsGeometry> QgsGeometryMap;

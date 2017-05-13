@@ -30,7 +30,7 @@ class QgsRasterMinMaxWidget: QWidget
      */
     QgsMapCanvas *mapCanvas();
 
-    void setBands( const QList<int>  &bands );
+    void setBands( const QList<int> &bands );
     /** Return the extent selected by the user.
         Either an empty extent for 'full' or the current visible extent. */
     QgsRectangle extent();

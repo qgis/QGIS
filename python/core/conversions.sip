@@ -84,7 +84,7 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<TYPE>  *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<TYPE> *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
@@ -161,7 +161,7 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<QVector<TYPE> >  *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<QVector<TYPE> > *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
@@ -237,7 +237,7 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QList<TYPE>  *t = reinterpret_cast< QList<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QList<TYPE> *t = reinterpret_cast< QList<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
@@ -312,7 +312,7 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QList<QgsPointV2>  *t = reinterpret_cast< QList<QgsPointV2> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QList<QgsPointV2> *t = reinterpret_cast< QList<QgsPointV2> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
@@ -1220,7 +1220,7 @@ template<double, TYPE2>
     {
 
       const double t1 = i.key();
-      TYPE2  *t2 = &i.value();
+      TYPE2 *t2 = &i.value();
       PyObject *t1obj = PyFloat_FromDouble(t1);
       PyObject *t2obj = sipConvertFromType(t2, sipType_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL) {
@@ -1337,7 +1337,7 @@ template<int, TYPE2*>
     {
 
       const int t1 = i.key();
-      TYPE2  *t2 = i.value();
+      TYPE2 *t2 = i.value();
       PyObject *t1obj = PyLong_FromSize_t(t1);
       PyObject *t2obj = sipConvertFromType(t2, sipType_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL)

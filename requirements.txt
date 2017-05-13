@@ -1,0 +1,4 @@
+psycopg2
+numpy
+pyyaml
+future

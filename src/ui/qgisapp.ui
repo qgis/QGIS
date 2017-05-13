@@ -50,6 +50,7 @@
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
+    <addaction name="mActionSaveMapAsPdf"/>
     <addaction name="mActionDxfExport"/>
     <addaction name="mActionDwgImport"/>
     <addaction name="separator"/>
@@ -640,7 +641,16 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Save as &amp;Image...</string>
+    <string>Save Map as &amp;Image...</string>
+   </property>
+  </action>
+  <action name="mActionSaveMapAsPdf">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Map as &amp;PDF...</string>
    </property>
   </action>
   <action name="mActionNewMapCanvas">

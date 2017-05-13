@@ -58,8 +58,12 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     //! Style of scale bar. An index and the translated text
     int mStyleIndex;
     QStringList mStyleLabels;
+
     //! The scale bar color
     QColor mColor;
+    //! The scale bar otuline color
+    QColor mOutlineColor;
+
     //! Margin percentage values
     int mMarginHorizontal;
     int mMarginVertical;

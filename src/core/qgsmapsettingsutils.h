@@ -32,6 +32,11 @@ class CORE_EXPORT QgsMapSettingsUtils
 
   public:
 
+    /** Checks whether any of the layers attached to a map settings object contain advanced effects
+     * \param mapSettings map settings
+     */
+    static const QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings );
+
     /** Creates the content of a world file.
      * \param mapSettings map settings
      * \note Uses 17 places of precision for all numbers output

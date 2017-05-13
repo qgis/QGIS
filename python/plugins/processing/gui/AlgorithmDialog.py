@@ -146,6 +146,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def accept(self):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
+        context = dataobjects.createContext()
+
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
             self.setParamValues()
@@ -169,7 +171,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg._checkParameterValuesBeforeExecuting()
+            msg = self.alg._checkParameterValuesBeforeExecuting(context)
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -198,8 +200,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             self.setInfo(
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
-
-            context = dataobjects.createContext()
 
             if self.iterateParam:
                 if executeIterating(self.alg, self.iterateParam, context, self.feedback):

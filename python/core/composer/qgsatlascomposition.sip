@@ -174,7 +174,7 @@ public:
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
      * @returns true if feature was successfully prepared
      */
-    bool prepareForFeature( const QgsFeature  *feat );
+    bool prepareForFeature( const QgsFeature *feat );
 
     /** Returns the current filename. Must be called after prepareForFeature() */
     QString currentFilename() const;

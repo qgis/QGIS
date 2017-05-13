@@ -5,6 +5,7 @@
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../core/raster
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}

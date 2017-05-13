@@ -20,7 +20,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsfields.h"
 
 #include <QStringList>
@@ -126,7 +126,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,

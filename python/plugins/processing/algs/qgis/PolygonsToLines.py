@@ -68,7 +68,7 @@ class PolygonsToLines(GeoAlgorithm):
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields().toList(), QgsWkbTypes.LineString,
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.LineString,
                                                                      layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)

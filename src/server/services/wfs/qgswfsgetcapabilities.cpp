@@ -68,79 +68,17 @@ namespace QgsWfs
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "updateSequence" ), QStringLiteral( "0" ) );
     doc.appendChild( wfsCapabilitiesElement );
 
-    //configParser->serviceCapabilities( wfsCapabilitiesElement, doc );
-    //INSERT Service
+    //wfs:Service
     wfsCapabilitiesElement.appendChild( getServiceElement( doc, project ) );
 
-    //wfs:Capability element
-    QDomElement capabilityElement = doc.createElement( QStringLiteral( "Capability" )/*wfs:Capability*/ );
-    wfsCapabilitiesElement.appendChild( capabilityElement );
-
-    //wfs:Request element
-    QDomElement requestElement = doc.createElement( QStringLiteral( "Request" )/*wfs:Request*/ );
-    capabilityElement.appendChild( requestElement );
-    //wfs:GetCapabilities
-    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "GetCapabilities" )/*wfs:GetCapabilities*/ );
-    requestElement.appendChild( getCapabilitiesElement );
-
-    QDomElement dcpTypeElement = doc.createElement( QStringLiteral( "DCPType" )/*wfs:DCPType*/ );
-    getCapabilitiesElement.appendChild( dcpTypeElement );
-    QDomElement httpElement = doc.createElement( QStringLiteral( "HTTP" )/*wfs:HTTP*/ );
-    dcpTypeElement.appendChild( httpElement );
-
-    //Prepare url
-    QString hrefString = serviceUrl( request, project );
-
-    //only Get supported for the moment
-    QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wfs:Get*/ );
-    httpElement.appendChild( getElement );
-    getElement.setAttribute( QStringLiteral( "onlineResource" ), hrefString );
-    QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
-    getCapabilitiesElement.appendChild( getCapabilitiesDhcTypePostElement );
-
-    //wfs:DescribeFeatureType
-    QDomElement describeFeatureTypeElement = doc.createElement( QStringLiteral( "DescribeFeatureType" )/*wfs:DescribeFeatureType*/ );
-    requestElement.appendChild( describeFeatureTypeElement );
-    QDomElement schemaDescriptionLanguageElement = doc.createElement( QStringLiteral( "SchemaDescriptionLanguage" )/*wfs:SchemaDescriptionLanguage*/ );
-    describeFeatureTypeElement.appendChild( schemaDescriptionLanguageElement );
-    QDomElement xmlSchemaElement = doc.createElement( QStringLiteral( "XMLSCHEMA" )/*wfs:XMLSCHEMA*/ );
-    schemaDescriptionLanguageElement.appendChild( xmlSchemaElement );
-    QDomElement describeFeatureTypeDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypeElement );
-    QDomElement describeFeatureTypeDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    describeFeatureTypeDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
-    describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypePostElement );
-
-    //wfs:GetFeature
-    QDomElement getFeatureElement = doc.createElement( QStringLiteral( "GetFeature" )/*wfs:GetFeature*/ );
-    requestElement.appendChild( getFeatureElement );
-    QDomElement getFeatureFormatElement = doc.createElement( QStringLiteral( "ResultFormat" ) );/*wfs:ResultFormat*/
-    getFeatureElement.appendChild( getFeatureFormatElement );
-    QDomElement gmlFormatElement = doc.createElement( QStringLiteral( "GML2" ) );/*wfs:GML2*/
-    getFeatureFormatElement.appendChild( gmlFormatElement );
-    QDomElement gml3FormatElement = doc.createElement( QStringLiteral( "GML3" ) );/*wfs:GML3*/
-    getFeatureFormatElement.appendChild( gml3FormatElement );
-    QDomElement geojsonFormatElement = doc.createElement( QStringLiteral( "GeoJSON" ) );/*wfs:GeoJSON*/
-    getFeatureFormatElement.appendChild( geojsonFormatElement );
-    QDomElement getFeatureDhcTypeGetElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    getFeatureElement.appendChild( getFeatureDhcTypeGetElement );
-    QDomElement getFeatureDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    getFeatureDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
-    getFeatureElement.appendChild( getFeatureDhcTypePostElement );
-
-    //wfs:Transaction
-    QDomElement transactionElement = doc.createElement( QStringLiteral( "Transaction" )/*wfs:Transaction*/ );
-    requestElement.appendChild( transactionElement );
-    QDomElement transactionDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-    transactionDhcTypeElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
-    transactionElement.appendChild( transactionDhcTypeElement );
+    //wfs:Capability
+    wfsCapabilitiesElement.appendChild( getCapabilityElement( doc, project, request ) );
 
     //wfs:FeatureTypeList
     wfsCapabilitiesElement.appendChild( getFeatureTypeListElement( doc, serverIface, project ) );
 
     /*
-     * Adding ogc:Filter_Capabilities in capabilityElement
+     * Adding ogc:Filter_Capabilities in wfsCapabilitiesElement
      */
     //ogc:Filter_Capabilities element
     QDomElement filterCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Filter_Capabilities" )/*ogc:Filter_Capabilities*/ );
@@ -236,6 +174,74 @@ namespace QgsWfs
 
     return serviceElem;
 
+  }
+
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request )
+  {
+    //wfs:Capability element
+    QDomElement capabilityElement = doc.createElement( QStringLiteral( "Capability" )/*wfs:Capability*/ );
+
+    //wfs:Request element
+    QDomElement requestElement = doc.createElement( QStringLiteral( "Request" )/*wfs:Request*/ );
+    capabilityElement.appendChild( requestElement );
+    //wfs:GetCapabilities
+    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "GetCapabilities" )/*wfs:GetCapabilities*/ );
+    requestElement.appendChild( getCapabilitiesElement );
+
+    QDomElement dcpTypeElement = doc.createElement( QStringLiteral( "DCPType" )/*wfs:DCPType*/ );
+    getCapabilitiesElement.appendChild( dcpTypeElement );
+    QDomElement httpElement = doc.createElement( QStringLiteral( "HTTP" )/*wfs:HTTP*/ );
+    dcpTypeElement.appendChild( httpElement );
+
+    //Prepare url
+    QString hrefString = serviceUrl( request, project );
+
+    //only Get supported for the moment
+    QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wfs:Get*/ );
+    httpElement.appendChild( getElement );
+    getElement.setAttribute( QStringLiteral( "onlineResource" ), hrefString );
+    QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
+    getCapabilitiesElement.appendChild( getCapabilitiesDhcTypePostElement );
+
+    //wfs:DescribeFeatureType
+    QDomElement describeFeatureTypeElement = doc.createElement( QStringLiteral( "DescribeFeatureType" )/*wfs:DescribeFeatureType*/ );
+    requestElement.appendChild( describeFeatureTypeElement );
+    QDomElement schemaDescriptionLanguageElement = doc.createElement( QStringLiteral( "SchemaDescriptionLanguage" )/*wfs:SchemaDescriptionLanguage*/ );
+    describeFeatureTypeElement.appendChild( schemaDescriptionLanguageElement );
+    QDomElement xmlSchemaElement = doc.createElement( QStringLiteral( "XMLSCHEMA" )/*wfs:XMLSCHEMA*/ );
+    schemaDescriptionLanguageElement.appendChild( xmlSchemaElement );
+    QDomElement describeFeatureTypeDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypeElement );
+    QDomElement describeFeatureTypeDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    describeFeatureTypeDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
+    describeFeatureTypeElement.appendChild( describeFeatureTypeDhcTypePostElement );
+
+    //wfs:GetFeature
+    QDomElement getFeatureElement = doc.createElement( QStringLiteral( "GetFeature" )/*wfs:GetFeature*/ );
+    requestElement.appendChild( getFeatureElement );
+    QDomElement getFeatureFormatElement = doc.createElement( QStringLiteral( "ResultFormat" ) );/*wfs:ResultFormat*/
+    getFeatureElement.appendChild( getFeatureFormatElement );
+    QDomElement gmlFormatElement = doc.createElement( QStringLiteral( "GML2" ) );/*wfs:GML2*/
+    getFeatureFormatElement.appendChild( gmlFormatElement );
+    QDomElement gml3FormatElement = doc.createElement( QStringLiteral( "GML3" ) );/*wfs:GML3*/
+    getFeatureFormatElement.appendChild( gml3FormatElement );
+    QDomElement geojsonFormatElement = doc.createElement( QStringLiteral( "GeoJSON" ) );/*wfs:GeoJSON*/
+    getFeatureFormatElement.appendChild( geojsonFormatElement );
+    QDomElement getFeatureDhcTypeGetElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    getFeatureElement.appendChild( getFeatureDhcTypeGetElement );
+    QDomElement getFeatureDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    getFeatureDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
+    getFeatureElement.appendChild( getFeatureDhcTypePostElement );
+
+    //wfs:Transaction
+    QDomElement transactionElement = doc.createElement( QStringLiteral( "Transaction" )/*wfs:Transaction*/ );
+    requestElement.appendChild( transactionElement );
+    QDomElement transactionDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    transactionDhcTypeElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
+    transactionElement.appendChild( transactionDhcTypeElement );
+
+    return capabilityElement;
   }
 
   QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )

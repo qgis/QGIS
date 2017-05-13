@@ -372,14 +372,14 @@ class QgsFeatureRenderer
     /** @note this function is used to convert old sizeScale expressions to symbol
      * level DataDefined size
      */
-    static void convertSymbolSizeScale( QgsSymbol  *symbol, QgsSymbol::ScaleMethod method, const QString  &field );
+    static void convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field );
     /** @note this function is used to convert old rotations expressions to symbol
      * level DataDefined angle
      */
-    static void convertSymbolRotation( QgsSymbol  *symbol, const QString  &field );
+    static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 
   private:
     QgsFeatureRenderer( const QgsFeatureRenderer & );
-    QgsFeatureRenderer  &operator=( const QgsFeatureRenderer & );
+    QgsFeatureRenderer &operator=( const QgsFeatureRenderer & );
 
 };

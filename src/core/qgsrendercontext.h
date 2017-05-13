@@ -19,6 +19,7 @@
 #define QGSRENDERCONTEXT_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <memory>
 
@@ -148,7 +149,7 @@ class CORE_EXPORT QgsRenderContext
 
     //! Get access to new labeling engine (may be nullptr)
     //! \note not available in Python bindings
-    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; }
+    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     QColor selectionColor() const { return mSelectionColor; }
 
@@ -198,7 +199,7 @@ class CORE_EXPORT QgsRenderContext
 
     //! Assign new labeling engine
     //! \note not available in Python bindings
-    void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; }
+    void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -239,7 +240,7 @@ class CORE_EXPORT QgsRenderContext
      * \since QGIS 2.12
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
+    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
     //! Returns pointer to the unsegmentized geometry
     const QgsAbstractGeometry *geometry() const { return mGeometry; }

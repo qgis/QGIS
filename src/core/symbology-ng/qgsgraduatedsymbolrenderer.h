@@ -16,6 +16,7 @@
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
@@ -350,7 +351,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString legendKeyForValue( double value ) const;
 
     //! \note not available in Python bindings
-    static const char *graduatedMethodStr( GraduatedMethod method );
+    static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
 
   private:
 

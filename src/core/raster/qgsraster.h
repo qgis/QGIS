@@ -19,6 +19,7 @@
 #define QGSRASTER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QString>
 
 #include "qgis.h"
@@ -122,7 +123,7 @@ class CORE_EXPORT QgsRaster
      * \param dataType
      * \since QGIS 2.16
      *  \note not available in Python bindings */
-    static bool isRepresentableValue( double value, Qgis::DataType dataType );
+    static bool isRepresentableValue( double value, Qgis::DataType dataType ) SIP_SKIP;
 
     /** Get value representable by given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.

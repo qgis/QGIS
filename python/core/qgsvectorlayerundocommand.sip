@@ -17,7 +17,6 @@ class QgsVectorLayerUndoCommand : QUndoCommand
 
     //! Returns the layer associated with the undo command
     QgsVectorLayer *layer();
-    QgsGeometryCache *cache();
 
     virtual int id() const;
     virtual bool mergeWith( QUndoCommand * );

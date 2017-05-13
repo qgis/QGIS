@@ -52,7 +52,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXML
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument  &doc, bool ignoreFrames = false ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.

@@ -21,6 +21,7 @@ SET (DTEXT_MOC_HDRS
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/geometry
+  ../../core/metadata
   ../../gui
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

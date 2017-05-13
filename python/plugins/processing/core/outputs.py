@@ -35,7 +35,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
-from processing.tools.vector import createVectorWriter, TableWriter, NOGEOMETRY_EXTENSIONS
+from processing.tools.vector import TableWriter, NOGEOMETRY_EXTENSIONS
 from processing.tools import dataobjects
 
 from qgis.core import (QgsExpressionContext,
@@ -44,7 +44,8 @@ from qgis.core import (QgsExpressionContext,
                        QgsExpressionContextScope,
                        QgsProject,
                        QgsSettings,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsProcessingUtils)
 
 
 def _expressionContext(alg):
@@ -360,7 +361,7 @@ class OutputVector(Output):
                 self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
             return self.compatible
 
-    def getVectorWriter(self, fields, geomType, crs, context, options=None):
+    def getVectorWriter(self, fields, geomType, crs, context):
         """Returns a suitable writer to which features can be added as
         a result of the algorithm. Use this to transparently handle
         output values instead of creating your own method.
@@ -384,8 +385,7 @@ class OutputVector(Output):
             settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
-        w, w_dest, w_layer = createVectorWriter(self.value, self.encoding, fields, geomType, crs, context, options)
-        self.layer = w_layer
+        w, w_dest = QgsProcessingUtils.createFeatureSink(self.value, self.encoding, fields, geomType, crs, context)
         self.value = w_dest
         return w
 

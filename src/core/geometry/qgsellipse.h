@@ -176,11 +176,10 @@ class CORE_EXPORT QgsEllipse
      */
     virtual QVector<QgsPointV2> quadrant() const;
 
-    /** Returns a list of points into \a pts, with segmentation from \a segments.
-     * \param pts List of points returned.
+    /** Returns a list of points with segmentation from \a segments.
      * \param segments Number of segments used to segment geometry.
      */
-    virtual void points( QgsPointSequence &pts, unsigned int segments = 36 ) const;
+    virtual QgsPointSequence points( unsigned int segments = 36 ) const;
 
     /** Returns a segmented polygon.
      * \param segments Number of segments used to segment geometry.

@@ -90,10 +90,10 @@ class CORE_EXPORT QgsProcessingContext
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /**
-     * Returns a reference to the project used for storing temporary layers during
+     * Returns a reference to the layer store used for storing temporary layers during
      * algorithm execution.
      */
-    QgsProject &temporaryLayerStore() { return tempProject; }
+    QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.
@@ -142,20 +142,34 @@ class CORE_EXPORT QgsProcessingContext
      */
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
+    /**
+     * Returns the default encoding to use for newly created files.
+     * \see setDefaultEncoding()
+     */
+    QString defaultEncoding() const { return mDefaultEncoding; }
+
+    /**
+     * Sets the default \a encoding to use for newly created files.
+     * \see defaultEncoding()
+     */
+    void setDefaultEncoding( const QString &encoding ) { mDefaultEncoding = encoding; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
     QPointer< QgsProject > mProject;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
-    QgsProject tempProject;
+    QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    QString mDefaultEncoding;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
 };
+
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 
 #endif // QGSPROCESSINGPARAMETERS_H

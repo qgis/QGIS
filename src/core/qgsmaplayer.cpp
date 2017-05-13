@@ -506,6 +506,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
 
   readCustomProperties( layerElement );
 
+  mMetadata.readFromLayer( this );
+
   return true;
 } // bool QgsMapLayer::readLayerXML
 
@@ -1619,6 +1621,13 @@ QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
   emit repaintRequested( deferredUpdate );
+}
+
+void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
+{
+  mMetadata = metadata;
+  mMetadata.saveToLayer( this );
+  emit metadataChanged();
 }
 
 QString QgsMapLayer::htmlMetadata() const

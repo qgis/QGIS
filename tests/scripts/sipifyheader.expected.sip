@@ -9,7 +9,7 @@
 
 
 
-% ModuleHeaderCode
+%ModuleHeaderCode
 #include <qgsnetworkspeedstrategy.h>
 #include <qgsnetworkdistancestrategy.h>
 %End
@@ -88,6 +88,8 @@ class QgsSipifyHeader : QtClass<QVariant>
       int mCount;
       QgsMapLayer *mLayer;
     };
+
+    static const int MONTHS;
 
     explicit QgsSipifyHeader();
 %Docstring
@@ -299,6 +301,7 @@ Mulitline body
     }
 
     void combinedAnnotations() /Factory,PyName=otherName/;
+    void multiAnnotationArg( SomeClass **object /Out,TransferBack/, int &another /Out/ );
 
     void simple(  );
 %Docstring
@@ -312,6 +315,8 @@ remove argument
     void position(  bool keep );
     void position( bool keep, bool keep );
     void position( bool keep );
+
+    static SIP_PYLIST  changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
 
     Whatever &operator[]( int i ) /Factory/;
 %MethodCode
@@ -349,7 +354,7 @@ remove argument
     void ShowThisPrivateOne() ;
 };
 
-class ClassWithPrivateInheritanceOnly
+class ClassWithPrivateInheritanceOnly /Abstract/
 {
 %Docstring
  Documentation goes here

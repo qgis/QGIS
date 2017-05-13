@@ -15,11 +15,13 @@
 #include "qgslogger.h"
 #include "qgshelp.h"
 #include "qgssettings.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QSvgRenderer>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )
@@ -33,8 +35,6 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
 
-  // rotation
-  rotatePixmap( mDeco.mRotationInt );
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
   spinAngle->setValue( mDeco.mRotationInt );
@@ -55,6 +55,21 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
+
+  pbnChangeColor->setAllowAlpha( true );
+  pbnChangeColor->setColor( mDeco.mColor );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select north arrow fill color" ) );
+
+  pbnChangeOutlineColor->setAllowAlpha( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select north arrow outline color" ) );
+
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
+
+  drawNorthArrow();
 }
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
@@ -87,11 +102,15 @@ void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int spinAngle )
 
 void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int rotationValue )
 {
-  rotatePixmap( rotationValue );
+  Q_UNUSED( rotationValue );
+
+  drawNorthArrow();
 }
 
 void QgsDecorationNorthArrowDialog::apply()
 {
+  mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.mRotationInt = sliderRotation->value();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
@@ -102,32 +121,38 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
+void QgsDecorationNorthArrowDialog::drawNorthArrow()
 {
-  QPixmap myQPixmap;
-  QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
-// QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
-  if ( myQPixmap.load( myFileNameQString ) )
+  int rotation = spinAngle->value();
+
+  QSize size( 64, 64 );
+  QSvgRenderer svg;
+
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), pbnChangeColor->color(), pbnChangeOutlineColor->color(), 1.0, 1.0 );
+  svg.load( svgContent );
+
+  if ( svg.isValid() )
   {
-    QPixmap  myPainterPixmap( myQPixmap.height(), myQPixmap.width() );
+    QPixmap  myPainterPixmap( size.height(), size.width() );
     myPainterPixmap.fill();
+
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
 
     myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = myQPixmap.width() / 2.0;
-    double centerYDouble = myQPixmap.height() / 2.0;
+    double centerXDouble = size.width() / 2.0;
+    double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( rotationInt );
+    myQPainter.rotate( rotation );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * rotationInt;
+    double myRadiansDouble = ( PI / 180 ) * rotation;
     int xShift = static_cast<int>( (
                                      ( centerXDouble * cos( myRadiansDouble ) ) +
                                      ( centerYDouble * sin( myRadiansDouble ) )
@@ -138,7 +163,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
                                    ) - centerYDouble );
 
     //draw the pixmap in the proper position
-    myQPainter.drawPixmap( xShift, yShift, myQPixmap );
+    myQPainter.translate( xShift, yShift );
+    svg.render( &myQPainter, QRectF( 0, 0, size.width(), size.height() ) );
 
     //unrotate the canvas again
     myQPainter.restore();
@@ -168,5 +194,5 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
 void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *resizeEvent )
 {
   Q_UNUSED( resizeEvent );
-  rotatePixmap( sliderRotation->value() );
+  drawNorthArrow();
 }

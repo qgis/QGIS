@@ -84,12 +84,17 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
             feature = None
             if context:
                 feature = context.feature()
+
             try:
                 if self.expandargs:
                     values.append(feature)
                     values.append(parent)
+                    if inspect.getargspec(self.function).args[-1] == 'context':
+                        values.append(context)
                     return self.function(*values)
                 else:
+                    if inspect.getargspec(self.function).args[-1] == 'context':
+                        self.function(values, feature, parent, context)
                     return self.function(values, feature, parent)
             except Exception as ex:
                 parent.setEvalErrorString(str(ex))
@@ -113,6 +118,8 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
         args = inspect.getargspec(function).args
         number = len(args)
         arg_count = number - 2
+        if args[-1] == 'context':
+            arg_count -= 1
         expandargs = True
 
     register = kwargs.get('register', True)
