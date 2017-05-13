@@ -74,12 +74,12 @@ class TestPyQgsSpatialiteProviderGeneral(unittest.TestCase):
         vl_positions = QgsVectorLayer(u'dbname={} table={} ({})'.format(datasource, "positions", "wsg84_center"), u'SpatialView_writable', u'spatialite')
         # vl_positions = QgsVectorLayer(u'dbname={} '.format(datasource), u'SpatialView_writable', u'spatialite')
         self.assertTrue(vl_positions.isValid())
-        trigger_spatialview_insert=0;
-        trigger_spatialview_update=0;
-        trigger_spatialview_delete=0;
-        spatialview_selectatid=0;
-        spatialview_changegeonetries=0;
-        count_fields=len(vl_positions.fields())
+        trigger_spatialview_insert = 0
+        trigger_spatialview_update = 0
+        trigger_spatialview_delete = 0
+        spatialview_selectatid = 0
+        spatialview_changegeonetries = 0
+        count_fields = len(vl_positions.fields())
         if count_fields == 5:
             f = next(vl_positions.getFeatures())
             self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Point)
@@ -89,7 +89,7 @@ class TestPyQgsSpatialiteProviderGeneral(unittest.TestCase):
             self.assertEqual(got, [(u'Brandenburger Tor', u'Pariser Platz', QDate(1791, 8, 6).toString("yyyy-MM-dd"))])
             del vl_positions
             vl_positions_1925 = QgsVectorLayer(u'dbname={} table={} ({})'.format(datasource, "positions_1925", "wsg84_center"), u'SpatialView_writable', u'spatialite')
-            count_fields=len(vl_positions_1925.fields())
+            count_fields = len(vl_positions_1925.fields())
             self.assertTrue(vl_positions_1925.isValid())
             self.assertEqual(vl_positions_1925.featureCount(), 3)
             if count_fields == 5:
@@ -99,33 +99,33 @@ class TestPyQgsSpatialiteProviderGeneral(unittest.TestCase):
                 self.assertEqual(got, [(u'Ampelanlage', u'Potsdamer Platz, Verkehrsinsel', QDate(1924, 10, 24).toString("yyyy-MM-dd"))])
                 caps = vl_positions_1925.dataProvider().capabilities()
                 if caps & QgsVectorDataProvider.AddFeatures:
-                    trigger_spatialview_insert=1;
+                    trigger_spatialview_insert = 1
 
             vl_positions_1955 = QgsVectorLayer(u'dbname={} table={} ({})'.format(datasource, "positions_1955", "wsg84_center"), u'SpatialView_writable', u'spatialite')
             self.assertTrue(vl_positions_1955.isValid())
             self.assertEqual(vl_positions_1955.featureCount(), 2)
-            count_fields=len(vl_positions_1955.fields())
+            count_fields = len(vl_positions_1955.fields())
             if count_fields == 5:
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1955.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 4"))]
                 self.assertEqual(got, [(u'Siegessäule', u'Große Stern', QDate(1939, 1, 1).toString("yyyy-MM-dd"))])
                 caps = vl_positions_1955.dataProvider().capabilities()
                 if caps & QgsVectorDataProvider.ChangeAttributeValues:
-                    trigger_spatialview_update=1;
+                    trigger_spatialview_update = 1
 
             vl_positions_1999 = QgsVectorLayer(u'dbname={} table={} ({})'.format(datasource, "positions_1999", "wsg84_center"), u'SpatialView_writable', u'spatialite')
             self.assertTrue(vl_positions_1999.isValid())
             self.assertEqual(vl_positions_1999.featureCount(), 3)
-            count_fields=len(vl_positions_1999.fields())
+            count_fields = len(vl_positions_1999.fields())
             if count_fields == 5:
                 got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions_1999.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 5"))]
                 self.assertEqual(got, [(u'Ampelanlage', u'Potsdamer Platz', QDate(1998, 10, 2).toString("yyyy-MM-dd"))])
                 caps = vl_positions_1999.dataProvider().capabilities()
                 if caps & QgsVectorDataProvider.DeleteFeatures:
-                    trigger_spatialview_delete=1;
+                    trigger_spatialview_delete = 1
                 if caps & QgsVectorDataProvider.SelectAtId:
-                    spatialview_selectatid=1;
+                    spatialview_selectatid = 1
                 if caps & QgsVectorDataProvider.ChangeGeometries:
-                    spatialview_changegeonetries=1;
+                    spatialview_changegeonetries = 1
 
         if (trigger_spatialview_insert and trigger_spatialview_update and trigger_spatialview_delete):
             # print('-I-> Can SpatialView({1}) SelectAtId[{0}] ChangeGeometries[{2}]'.format('positions_1999',spatialview_selectatid,spatialview_changegeonetries))
@@ -160,6 +160,7 @@ class TestPyQgsSpatialiteProviderGeneral(unittest.TestCase):
             del vl_positions_1925
             del vl_positions_1955
             del vl_positions_1999
+
 
 if __name__ == '__main__':
     unittest.main()
