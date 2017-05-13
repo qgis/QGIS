@@ -5807,13 +5807,7 @@ void QgisApp::saveMapAsImage()
   if ( fileNameAndFilter.first != QLatin1String( "" ) )
   {
     QgsMapSettings ms = QgsMapSettings();
-    ms.setDestinationCrs( QgsProject::instance()->crs() );
-    ms.setExtent( dlg.extent() );
-    ms.setOutputSize( dlg.size() );
-    ms.setOutputDpi( dlg.dpi() );
-    ms.setBackgroundColor( mMapCanvas->canvasColor() );
-    ms.setRotation( mMapCanvas->rotation() );
-    ms.setLayers( mMapCanvas->layers() );
+    dlg.applyMapSettings( ms );
 
     QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileNameAndFilter.first, fileNameAndFilter.second );
 
@@ -5881,19 +5875,7 @@ void QgisApp::saveMapAsPdf()
   if ( !fileName.isEmpty() )
   {
     QgsMapSettings ms = QgsMapSettings();
-
-    ms.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
-    ms.setFlag( QgsMapSettings::Antialiasing, true );
-    ms.setFlag( QgsMapSettings::DrawEditingInfo, false );
-    ms.setFlag( QgsMapSettings::DrawSelection, false );
-
-    ms.setDestinationCrs( QgsProject::instance()->crs() );
-    ms.setExtent( dlg.extent() );
-    ms.setOutputSize( dlg.size() );
-    ms.setOutputDpi( dlg.dpi() );
-    ms.setBackgroundColor( mMapCanvas->canvasColor() );
-    ms.setRotation( mMapCanvas->rotation() );
-    ms.setLayers( mMapCanvas->layers() );
+    dlg.applyMapSettings( ms );
 
     QPrinter *printer = new QPrinter();
     printer->setOutputFileName( fileName );
