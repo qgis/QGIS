@@ -1307,17 +1307,6 @@ Delete a feature from the layer (but does not commit it)
  :rtype: bool
 %End
 
-    QString annotationForm() const;
-%Docstring
-Get annotation form
- :rtype: str
-%End
-
-    void setAnnotationForm( const QString &ui );
-%Docstring
-Set annotation form for layer
-%End
-
     QList<QgsRelation> referencingRelations( int idx ) const;
 %Docstring
  Get relations, where the foreign key is on this layer
