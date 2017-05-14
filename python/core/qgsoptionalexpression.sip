@@ -1,14 +1,3 @@
-/************************************************************************
- * This file has been generated automatically from                      *
- *                                                                      *
- * src/core/qgsoptionalexpression.h                                     *
- *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
- ************************************************************************/
-
-
-
-
 class QgsOptionalExpression
 {
 %Docstring
@@ -44,6 +33,53 @@ class QgsOptionalExpression
  Construct an optional expression with the provided expression and enabled state.
 %End
 
+
+    /**
+     * Compare this QgsOptionalExpression to another one.
+     *
+     * This will compare the enabled flag and call the == operator
+     * of the contained class.
+     *
+     * @note Added in QGIS 3.0
+     */
+    int operator== ( const QgsOptionalExpression &other ) const;
+%MethodCode
+      sipRes = *sipCpp == *a0;
+%End        %End
+
+    int __bool__() const;      +    QgsOptionalExpression( const QgsExpression &expression, bool enabled );
+%MethodCode        +%Docstring
+      sipRes = sipCpp->enabled();      + Construct an optional expression with the provided expression and enabled state.
+%End        %End
+
+    /**
+     * Check if this optional is enabled
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool enabled() const;
+
+    /**
+     * Set if this optional is enabled
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setEnabled( bool enabled );
+
+    /**
+     * Access the payload data
+     *
+     * @note Added in QGIS 3.0
+     */
+    QgsExpression data() const;
+
+    /**
+     * Set the payload data
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setData( const QgsExpression &data );
+
     void writeXml( QDomElement &element );
 %Docstring
  Save the optional expression to the provided QDomElement.
@@ -61,11 +97,3 @@ class QgsOptionalExpression
 .. versionadded:: 2.18
 %End
 };
-
-/************************************************************************
- * This file has been generated automatically from                      *
- *                                                                      *
- * src/core/qgsoptionalexpression.h                                     *
- *                                                                      *
- * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
- ************************************************************************/
