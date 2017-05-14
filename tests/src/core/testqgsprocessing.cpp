@@ -62,6 +62,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // parameterDefinition should be case insensitive
       QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 0 ) );
       QVERIFY( !parameterDefinition( "invalid" ) );
+
+      QCOMPARE( countVisibleParameters(), 1 );
+      QgsProcessingParameterBoolean *p3 = new QgsProcessingParameterBoolean( "p3" );
+      QVERIFY( addParameter( p3 ) );
+      QCOMPARE( countVisibleParameters(), 2 );
+      QgsProcessingParameterBoolean *p4 = new QgsProcessingParameterBoolean( "p4" );
+      p4->setFlags( QgsProcessingParameterDefinition::FlagHidden );
+      QVERIFY( addParameter( p4 ) );
+      QCOMPARE( countVisibleParameters(), 2 );
     }
 
 };
