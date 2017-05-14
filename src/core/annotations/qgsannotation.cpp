@@ -145,6 +145,16 @@ void QgsAnnotation::setMapLayer( QgsMapLayer *layer )
   emit mapLayerChanged();
 }
 
+void QgsAnnotation::setAssociatedFeature( const QgsFeature &feature )
+{
+  mFeature = feature;
+}
+
+QSizeF QgsAnnotation::minimumFrameSize() const
+{
+  return QSizeF( 0, 0 );
+}
+
 void QgsAnnotation::updateBalloon()
 {
   //first test if the point is in the frame. In that case we don't need a balloon.

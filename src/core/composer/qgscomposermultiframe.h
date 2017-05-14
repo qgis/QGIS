@@ -78,7 +78,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \see minFrameSize
      * \see recalculateFrameRects
      */
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
+    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 
     /** Returns the minimum size for a frames, if desired. If the minimum
      * size changes, the sizes of all frames can be recalculated by calling
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * \see fixedFrameSize
      * \see recalculateFrameRects
      */
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const { Q_UNUSED( frameIndex ); return QSizeF( 0, 0 ); }
+    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
     /** Renders a portion of the multiframe's content into a painter.
      * \param painter destination painter
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * to and before the specified yPos
      * \since QGIS 2.3
      */
-    virtual double findNearbyPageBreak( double yPos ) { return yPos; }
+    virtual double findNearbyPageBreak( double yPos );
 
     /** Removes a frame from the multiframe. This method automatically removes the frame from the
      * composition.

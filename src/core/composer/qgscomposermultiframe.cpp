@@ -41,6 +41,21 @@ QgsComposerMultiFrame::~QgsComposerMultiFrame()
   deleteFrames();
 }
 
+QSizeF QgsComposerMultiFrame::fixedFrameSize( const int frameIndex ) const
+{
+  Q_UNUSED( frameIndex ); return QSizeF( 0, 0 );
+}
+
+QSizeF QgsComposerMultiFrame::minFrameSize( const int frameIndex ) const
+{
+  Q_UNUSED( frameIndex ); return QSizeF( 0, 0 );
+}
+
+double QgsComposerMultiFrame::findNearbyPageBreak( double yPos )
+{
+  return yPos;
+}
+
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 {
   if ( mode != mResizeMode )

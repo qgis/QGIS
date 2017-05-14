@@ -69,7 +69,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     /** Returns the compiled expression string for use by the provider.
      */
-    virtual QString result() { return mResult; }
+    virtual QString result();
 
   protected:
 

@@ -97,6 +97,24 @@ QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType tole
   return curveToLine( tolerance, toleranceType );
 }
 
+int QgsCurve::vertexCount( int part, int ring ) const
+{
+  Q_UNUSED( part );
+  Q_UNUSED( ring );
+  return numPoints();
+}
+
+int QgsCurve::ringCount( int part ) const
+{
+  Q_UNUSED( part );
+  return numPoints() > 0 ? 1 : 0;
+}
+
+int QgsCurve::partCount() const
+{
+  return numPoints() > 0 ? 1 : 0;
+}
+
 QgsPointV2 QgsCurve::vertexAt( QgsVertexId id ) const
 {
   QgsPointV2 v;
@@ -124,5 +142,12 @@ QPolygonF QgsCurve::asQPolygonF() const
     points << QPointF( xAt( i ), yAt( i ) );
   }
   return points;
+}
+
+void QgsCurve::clearCache() const
+{
+  mBoundingBox = QgsRectangle();
+  mCoordinateSequence.clear();
+  QgsAbstractGeometry::clearCache();
 }
 
