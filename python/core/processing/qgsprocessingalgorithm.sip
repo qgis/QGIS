@@ -128,6 +128,13 @@ class QgsProcessingAlgorithm
  :rtype: QgsProcessingParameterDefinition
 %End
 
+    int countVisibleParameters() const;
+%Docstring
+ Returns the number of visible (non-hidden) parameters defined by this
+ algorithm.
+ :rtype: int
+%End
+
     virtual QVariantMap run( const QVariantMap &parameters,
                              QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 %Docstring

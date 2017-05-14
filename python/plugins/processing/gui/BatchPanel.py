@@ -102,7 +102,7 @@ class BatchPanel(BASE, WIDGET):
             nOutputs = 0
 
         self.tblParameters.setColumnCount(
-            self.alg.getVisibleParametersCount() + nOutputs)
+            self.alg.countVisibleParameters() + nOutputs)
 
         # Table headers
         column = 0

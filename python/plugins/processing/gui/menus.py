@@ -210,7 +210,7 @@ def _executeAlgorithm(alg):
     alg.setProvider(provider)
 
     context = dataobjects.createContext()
-    if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
+    if (alg.countVisibleParameters() + alg.getVisibleOutputsCount()) > 0:
         dlg = alg.getCustomParametersDialog()
         if not dlg:
             dlg = AlgorithmDialog(alg)

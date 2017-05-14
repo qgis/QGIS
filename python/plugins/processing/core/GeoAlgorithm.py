@@ -430,15 +430,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 i += 1
         return i
 
-    def getVisibleParametersCount(self):
-        """Returns the number of non-hidden parameters.
-        """
-        i = 0
-        for param in self.parameters:
-            if not param.hidden:
-                i += 1
-        return i
-
     def getHTMLOutputsCount(self):
         """Returns the number of HTML outputs.
         """

@@ -275,7 +275,7 @@ class ProcessingToolbox(BASE, WIDGET):
             alg = alg.getCopy()
             alg.setProvider(provider)
 
-            if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
+            if (alg.countVisibleParameters() + alg.getVisibleOutputsCount()) > 0:
                 dlg = alg.getCustomParametersDialog()
                 if not dlg:
                     dlg = AlgorithmDialog(alg)

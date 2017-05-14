@@ -170,7 +170,7 @@ class Processing(object):
                             Processing.tr("Processing"))
                         return
         else:
-            if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
+            if len(args) != alg.countVisibleParameters() + alg.getVisibleOutputsCount():
                 # fix_print_with_import
                 print('Error: Wrong number of parameters')
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'),
