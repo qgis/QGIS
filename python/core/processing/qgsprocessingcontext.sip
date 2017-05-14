@@ -64,11 +64,12 @@ class QgsProcessingContext
 .. seealso:: project()
 %End
 
-    QgsExpressionContext expressionContext() const;
+    QgsExpressionContext &expressionContext();
 %Docstring
  Returns the expression context.
  :rtype: QgsExpressionContext
 %End
+
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
@@ -81,6 +82,7 @@ class QgsProcessingContext
  algorithm execution.
  :rtype: QgsMapLayerStore
 %End
+
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring

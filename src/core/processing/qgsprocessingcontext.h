@@ -82,7 +82,12 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the expression context.
      */
-    QgsExpressionContext expressionContext() const { return mExpressionContext; }
+    QgsExpressionContext &expressionContext() { return mExpressionContext; }
+
+    /**
+     * Returns the expression context.
+     */
+    SIP_SKIP const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
     /**
      * Sets the expression \a context.
@@ -94,6 +99,13 @@ class CORE_EXPORT QgsProcessingContext
      * algorithm execution.
      */
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
+
+    /**
+     * Returns a map of output values stored in the context. These are grouped with the map keys
+     * matching the algorithm name for multi-algorithm models.
+     * \note not available in Python bindings
+     */
+    SIP_SKIP QMap<QString, QVariantMap> &outputMap() { return mOutputMap; }
 
     /**
      * Returns the behavior used for checking invalid geometries in input layers.
@@ -160,6 +172,7 @@ class CORE_EXPORT QgsProcessingContext
     QPointer< QgsProject > mProject;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
+    QMap< QString, QVariantMap > mOutputMap;
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;

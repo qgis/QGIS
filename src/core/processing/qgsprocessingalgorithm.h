@@ -19,11 +19,15 @@
 #define QGSPROCESSINGALGORITHM_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+#include "qgsprocessingparameters.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
 
 class QgsProcessingProvider;
+class QgsProcessingContext;
+class QgsProcessingFeedback;
 
 /**
  * \class QgsProcessingAlgorithm
@@ -50,7 +54,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QgsProcessingAlgorithm() = default;
 
-    virtual ~QgsProcessingAlgorithm() = default;
+    virtual ~QgsProcessingAlgorithm();
 
     //! Algorithms cannot be copied
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
@@ -124,9 +128,153 @@ class CORE_EXPORT QgsProcessingAlgorithm
     //TEMPORARY - remove when algorithms are no longer copied in python code
     void setProvider( QgsProcessingProvider *provider );
 
+    /**
+     * Returns an ordered list of parameter definitions utilized by the algorithm.
+     * \see addParameter()
+     * \see parameterDefinition()
+     */
+    QgsProcessingParameterDefinitions parameterDefinitions() const { return mParameters; }
+
+    /**
+     * Returns a matching parameter by \a name. Matching is done in a case-insensitive
+     * manner.
+     * \see parameterDefinitions()
+     */
+    const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;
+
+    /**
+     * Runs the algorithm using the specified \a parameters. Algorithms should implement
+     * their custom processing logic here.
+     *
+     * The \a context argument specifies the context in which the algorithm is being run.
+     *
+     * Algorithm progress should be reported using the supplied \a feedback object. Additionally,
+     * well-behaved algorithms should periodically check \a feedback to determine whether the
+     * algorithm should be canceled and exited early.
+     *
+     * \returns A map of algorithm outputs. These may be output layer references, or calculated
+     * values such as statistical calculations.
+     */
+    virtual QVariantMap run( const QVariantMap &parameters,
+                             QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+
+  protected:
+
+    /**
+     * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
+     * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
+     * as a result of a duplicate name).
+     */
+    bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
+
+    /**
+     * Evaluates the parameter with matching \a name to a static string value.
+     */
+    QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to an expression.
+     */
+    QString parameterAsExpression( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a static double value.
+     */
+    double parameterAsDouble( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a static integer value.
+     */
+    int parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a enum value.
+     */
+    int parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to list of enum values.
+     */
+    QList<int> parameterAsEnums( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a static boolean value.
+     */
+    bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a map layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     */
+    QgsMapLayer *parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a raster layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     */
+    QgsRasterLayer *parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a vector layer.
+     *
+     * Layers will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context. In either case, callers do not
+     * need to handle deletion of the returned layer.
+     */
+    QgsVectorLayer *parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a coordinate reference system.
+     */
+    QgsCoordinateReferenceSystem parameterAsCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a rectangular extent.
+     */
+    QgsRectangle parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a point.
+     */
+    QgsPoint parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a file/folder name.
+     */
+    QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a matrix/table of values.
+     * Tables are collapsed to a 1 dimensional list.
+     */
+    QVariantList parameterAsMatrix( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a list of map layers.
+     */
+    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a range of values.
+     */
+    QList<double> parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a list of fields.
+     */
+    QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
+    QgsProcessingParameterDefinitions mParameters;
 
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;

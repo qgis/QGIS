@@ -87,7 +87,9 @@ SET(QGIS_CORE_SRCS
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
+  processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
+  processing/qgsprocessingparameters.cpp
   processing/qgsprocessingprovider.cpp
   processing/qgsprocessingregistry.cpp
   processing/qgsprocessingutils.cpp
@@ -873,8 +875,10 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
+  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
 
   providers/memory/qgsmemoryfeatureiterator.h
