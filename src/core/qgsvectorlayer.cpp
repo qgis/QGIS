@@ -1589,13 +1589,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   // process the attribute actions
   mActions->readXml( layerNode );
 
-  QDomNode annotationFormNode = layerNode.namedItem( QStringLiteral( "annotationform" ) );
-  if ( !annotationFormNode.isNull() )
-  {
-    QDomElement e = annotationFormNode.toElement();
-    mAnnotationForm = QgsProject::instance()->readPath( e.text() );
-  }
-
   mAttributeAliasMap.clear();
   QDomNode aliasesNode = layerNode.namedItem( QStringLiteral( "aliases" ) );
   if ( !aliasesNode.isNull() )
@@ -1926,11 +1919,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
     ++index;
   }
-
-  QDomElement afField = doc.createElement( QStringLiteral( "annotationform" ) );
-  QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
-  afField.appendChild( afText );
-  node.appendChild( afField );
 
   //attribute aliases
   QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
@@ -2634,11 +2622,6 @@ bool QgsVectorLayer::isModified() const
 {
   emit beforeModifiedCheck();
   return mEditBuffer && mEditBuffer->isModified();
-}
-
-void QgsVectorLayer::setAnnotationForm( const QString &ui )
-{
-  mAnnotationForm = ui;
 }
 
 void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
