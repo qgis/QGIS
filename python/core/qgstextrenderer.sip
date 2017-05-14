@@ -182,16 +182,8 @@ class QgsTextBufferSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
@@ -676,16 +668,8 @@ class QgsTextBackgroundSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
@@ -976,16 +960,8 @@ class QgsTextShadowSettings
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem );
@@ -1239,16 +1215,8 @@ class QgsTextFormat
 
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
- Reads settings from a layer's custom properties.
+ Reads settings from a layer's custom properties (for QGIS 2.x projects).
  \param layer source vector layer
-.. seealso:: writeToLayer()
-%End
-
-    void writeToLayer( QgsVectorLayer *layer ) const;
-%Docstring
- Writes settings to a layer's custom properties.
- \param layer target vector layer
-.. seealso:: readFromLayer()
 %End
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

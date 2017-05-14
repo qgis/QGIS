@@ -399,13 +399,6 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 }
 
 
-QgsPalLayerSettings QgsPalLayerSettings::fromLayer( QgsVectorLayer *layer )
-{
-  QgsPalLayerSettings settings;
-  settings.readFromLayer( layer );
-  return settings;
-}
-
 const QgsPropertiesDefinition &QgsPalLayerSettings::propertyDefinitions()
 {
   initPropertyDefinitions();
@@ -524,7 +517,7 @@ void QgsPalLayerSettings::readOldDataDefinedPropertyMap( QgsVectorLayer *layer, 
   }
 }
 
-void QgsPalLayerSettings::readFromLayer( QgsVectorLayer *layer )
+void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 {
   if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() != QLatin1String( "pal" ) )
   {
@@ -678,6 +671,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer *layer )
   }
 }
 
+#if 0
 void QgsPalLayerSettings::writeToLayer( QgsVectorLayer *layer )
 {
   // this is a mark that labeling information is present
@@ -767,6 +761,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer *layer )
   layer->setCustomProperty( QStringLiteral( "labeling/ddProperties" ), ddProps );
   layer->emitStyleChanged();
 }
+#endif
 
 void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -2764,14 +2759,7 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 
 bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
 {
-  // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
-  bool enabled = false;
-  if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) )
-    enabled = layer->labelsEnabled() || layer->diagramsEnabled();
-  else if ( layer->labeling()->type() == QLatin1String( "rule-based" ) )
-    return true;
-
-  return enabled;
+  return layer->labelsEnabled() || layer->diagramsEnabled();
 }
 
 

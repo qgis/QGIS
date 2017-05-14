@@ -40,8 +40,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Convenience constructor to initialize the provider from given vector layer
     explicit QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
                                           const QString &providerId,
-                                          bool withFeatureLoop = true,
-                                          const QgsPalLayerSettings *settings = nullptr,
+                                          bool withFeatureLoop,
+                                          const QgsPalLayerSettings *settings,
                                           const QString &layerName = QString() );
 
     ~QgsVectorLayerLabelProvider();

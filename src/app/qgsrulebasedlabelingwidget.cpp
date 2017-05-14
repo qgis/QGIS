@@ -106,14 +106,6 @@ QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
   delete mRootRule;
 }
 
-void QgsRuleBasedLabelingWidget::writeSettingsToLayer()
-{
-  // also clear old-style labeling config
-  mLayer->removeCustomProperty( QStringLiteral( "labeling" ) );
-
-  mLayer->setLabeling( new QgsRuleBasedLabeling( mRootRule->clone() ) );
-}
-
 void QgsRuleBasedLabelingWidget::addRule()
 {
 
@@ -627,7 +619,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
     mSettings = new QgsPalLayerSettings;
   }
 
-  mLabelingGui = new QgsLabelingGui( nullptr, mMapCanvas, mSettings, this );
+  mLabelingGui = new QgsLabelingGui( nullptr, mMapCanvas, *mSettings, this );
   mLabelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mLabelingGui );

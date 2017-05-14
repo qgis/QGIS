@@ -28,10 +28,9 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings *settings, QWidget *parent );
+    QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent );
 
     QgsPalLayerSettings layerSettings();
-    void writeSettingsToLayer();
 
     enum LabelMode
     {
@@ -46,8 +45,6 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
   public slots:
 
-    void apply();
-
     void updateUi();
 
   protected:
@@ -56,7 +53,7 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    const QgsPalLayerSettings *mSettings = nullptr;
+    const QgsPalLayerSettings &mSettings;
     QgsPropertyCollection mDataDefinedProperties;
     LabelMode mMode;
 

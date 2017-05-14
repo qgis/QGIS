@@ -56,7 +56,7 @@ void QgsLabelingGui::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings *layerSettings, QWidget *parent )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling )
   , mLayer( layer )
   , mSettings( layerSettings )
@@ -92,11 +92,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLayer = layer;
 
   // load labeling settings from layer
-  QgsPalLayerSettings lyr;
-  if ( mSettings )
-    lyr = *mSettings;
-  else
-    lyr.readFromLayer( mLayer );
+  const QgsPalLayerSettings &lyr = mSettings;
 
   // show/hide options based upon geometry type
   chkMergeLines->setVisible( mLayer->geometryType() == QgsWkbTypes::LineGeometry );
@@ -286,24 +282,6 @@ void QgsLabelingGui::blockInitSignals( bool block )
   mPlacePointBtnGrp->blockSignals( block );
   mPlaceLineBtnGrp->blockSignals( block );
   mPlacePolygonBtnGrp->blockSignals( block );
-}
-
-void QgsLabelingGui::apply()
-{
-  writeSettingsToLayer();
-  mFontMissingLabel->setVisible( false );
-  QgisApp::instance()->markDirty();
-  // trigger refresh
-  mLayer->triggerRepaint();
-}
-
-void QgsLabelingGui::writeSettingsToLayer()
-{
-  mLayer->setLabeling( new QgsVectorLayerSimpleLabeling );
-
-  // all configuration is still in layer's custom properties
-  QgsPalLayerSettings settings = layerSettings();
-  settings.writeToLayer( mLayer );
 }
 
 void QgsLabelingGui::setLabelMode( LabelMode mode )
