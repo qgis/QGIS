@@ -1734,7 +1734,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     mFieldWidgetSetups[fieldName] = setup;
   }
 
-  mEditFormConfig.readXml( layerNode );
+  mEditFormConfig.readXml( layerNode, context );
 
   mAttributeTableConfig.readXml( layerNode );
 
@@ -2008,7 +2008,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   // add attribute actions
   mActions->writeXml( node );
   mAttributeTableConfig.writeXml( node );
-  mEditFormConfig.writeXml( node );
+  mEditFormConfig.writeXml( node, context );
   mConditionalStyles->writeXml( node, doc, context );
 
   // save expression fields
