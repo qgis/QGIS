@@ -150,11 +150,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   title( QgsProject::instance()->title() );
   mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
 
-  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [=] {
+  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
+  {
     QFileInfo fi( QgsProject::instance()->fileName() );
     QString folder = fi.path();
-    QDesktopServices::openUrl(QUrl::fromLocalFile( folder ));
-   });
+    QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+  } );
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
