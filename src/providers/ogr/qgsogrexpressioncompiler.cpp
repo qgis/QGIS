@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsogrexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsogrprovider.h"
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source )
@@ -45,13 +46,13 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   return QgsSqlExpressionCompiler::compile( exp );
 }
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator *>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
         case QgsExpressionNodeBinaryOperator::boILike:
         case QgsExpressionNodeBinaryOperator::boNotILike:

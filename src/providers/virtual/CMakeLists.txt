@@ -28,14 +28,21 @@ SET(QGIS_VLAYER_PROVIDER_SRCS
 )
 
 INCLUDE_DIRECTORIES(
-  .
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
+
+  ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h
 )
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
@@ -43,14 +50,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES(
-  ../../core
-  ../../gui
-  ../../gui/auth
-  ../../ui
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 ADD_LIBRARY(virtuallayerprovider MODULE

@@ -91,18 +91,18 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \param enabled set to true to enable drawing of the item
      * \see enabled
      */
-    virtual void setEnabled( const bool enabled ) { mEnabled = enabled; }
+    virtual void setEnabled( const bool enabled );
 
     /** Returns whether the item will be drawn
      * \returns true if item will be drawn on the map
      * \see setEnabled
      */
-    virtual bool enabled() const { return mEnabled; }
+    virtual bool enabled() const;
 
     /** Returns true if the item is drawn using advanced effects, such as blend modes.
      * \returns true if item uses advanced effects
      */
-    virtual bool usesAdvancedEffects() const { return false; }
+    virtual bool usesAdvancedEffects() const;
 
   protected:
 

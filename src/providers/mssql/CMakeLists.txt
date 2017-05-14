@@ -27,12 +27,15 @@ SET(MSSQL_HDRS
 QT5_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
-  .
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
@@ -40,10 +43,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES(
-  ../../gui
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 
