@@ -11513,7 +11513,7 @@ void QgisApp::addRasterLayer()
   QString e;//only for parameter correctness
   QString title = tr( "Open a GDAL Supported Raster Data Source" );
   QgsGuiUtils::openFilesRememberingFilter( QStringLiteral( "lastRasterFileFilter" ), mRasterFileFilter, selectedFiles, e,
-                                       title );
+      title );
 
   if ( selectedFiles.isEmpty() )
   {
