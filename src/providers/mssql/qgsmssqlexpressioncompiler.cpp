@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields,
@@ -24,9 +25,9 @@ QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *s
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
 {
-  if ( node->nodeType() == QgsExpression::ntBinaryOperator )
+  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator *>( node ) );
+    const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
     QString op1, op2;
 
     Result result1 = compileNode( bin->opLeft(), op1 );
@@ -36,14 +37,14 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 
     switch ( bin->op() )
     {
-      case QgsExpression::boPow:
+      case QgsExpressionNodeBinaryOperator::boPow:
         result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 
-      case QgsExpression::boRegexp:
+      case QgsExpressionNodeBinaryOperator::boRegexp:
         return Fail; //not supported, regexp syntax is too different to Qt
 
-      case QgsExpression::boConcat:
+      case QgsExpressionNodeBinaryOperator::boConcat:
         result = QStringLiteral( "%1 + %2" ).arg( op1, op2 );
         return result1 == Partial || result2 == Partial ? Partial : Complete;
 

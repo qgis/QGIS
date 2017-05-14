@@ -16,6 +16,7 @@
 #include "qgsexpressionbuilderwidget.h"
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
 #include "qgsmessageviewer.h"
 #include "qgsapplication.h"
 #include "qgspythonrunner.h"
@@ -476,7 +477,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpression::Function *func = QgsExpression::Functions()[i];
+    QgsExpressionFunction *func = QgsExpression::Functions()[i];
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;
@@ -596,7 +597,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList contextFunctions = mExpressionContext.functionNames();
   Q_FOREACH ( const QString &functionName, contextFunctions )
   {
-    QgsExpression::Function *func = mExpressionContext.function( functionName );
+    QgsExpressionFunction *func = mExpressionContext.function( functionName );
     QString name = func->name();
     if ( name.startsWith( '_' ) ) // do not display private functions
       continue;

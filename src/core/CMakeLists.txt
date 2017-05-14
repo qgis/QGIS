@@ -87,6 +87,11 @@ SET(QGIS_CORE_SRCS
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
 
+  expression/qgsexpression.cpp
+  expression/qgsexpressionnode.cpp
+  expression/qgsexpressionnodeimpl.cpp
+  expression/qgsexpressionfunction.cpp
+
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingparameters.cpp
@@ -146,7 +151,6 @@ SET(QGIS_CORE_SRCS
   qgseditformconfig.cpp
   qgsellipsoidutils.cpp
   qgserror.cpp
-  qgsexpression.cpp
   qgsexpressioncontext.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
@@ -697,6 +701,11 @@ SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
 
+  expression/qgsexpression.h
+  expression/qgsexpressionnode.h
+  expression/qgsexpressionnodeimpl.h
+  expression/qgsexpressionfunction.h
+
   qgis.h
   qgis_sip.h
   qgsaction.h
@@ -736,7 +745,6 @@ SET(QGIS_CORE_HDRS
   qgsellipsoidutils.h
   qgserror.h
   qgsexception.h
-  qgsexpression.h
   qgsexpressioncontext.h
   qgsexpressioncontextgenerator.h
   qgsexpressionfieldbuffer.h
@@ -1019,6 +1027,7 @@ INCLUDE_DIRECTORIES(
   composer
   dxf
   effects
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
   layertree

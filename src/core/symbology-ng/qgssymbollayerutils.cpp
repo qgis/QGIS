@@ -20,6 +20,7 @@
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
 #include "qgsexpression.h"
+#include "qgsexpressionnode.h"
 #include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
@@ -3768,10 +3769,10 @@ QgsExpression *QgsSymbolLayerUtils::fieldOrExpressionToExpression( const QString
 
 QString QgsSymbolLayerUtils::fieldOrExpressionFromExpression( QgsExpression *expression )
 {
-  const QgsExpression::Node *n = expression->rootNode();
+  const QgsExpressionNode *n = expression->rootNode();
 
-  if ( n && n->nodeType() == QgsExpression::ntColumnRef )
-    return static_cast<const QgsExpression::NodeColumnRef *>( n )->name();
+  if ( n && n->nodeType() == QgsExpressionNode::ntColumnRef )
+    return static_cast<const QgsExpressionNodeColumnRef *>( n )->name();
 
   return expression->expression();
 }

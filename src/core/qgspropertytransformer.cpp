@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -251,17 +252,17 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpression::NodeFunction *f = dynamic_cast<const QgsExpression::NodeFunction *>( e.rootNode() );
+  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 
-  QList<QgsExpression::Node *> args = f->args()->list();
+  QList<QgsExpressionNode *> args = f->args()->list();
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
   if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
   {
-    f = dynamic_cast<const QgsExpression::NodeFunction *>( args[0] );
+    f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
     nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
@@ -298,9 +299,9 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
     return nullptr;
   }
 
-  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpression::NodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
   }
   else
   {
@@ -485,17 +486,17 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpression::NodeFunction *f = dynamic_cast<const QgsExpression::NodeFunction *>( e.rootNode() );
+  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 
-  QList<QgsExpression::Node *> args = f->args()->list();
+  QList<QgsExpressionNode *> args = f->args()->list();
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
   if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
   {
-    f = dynamic_cast<const QgsExpression::NodeFunction *>( args[0] );
+    f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
     nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
@@ -540,9 +541,9 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
     return nullptr;
   }
 
-  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpression::NodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
   }
   else
   {

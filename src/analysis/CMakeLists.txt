@@ -158,11 +158,12 @@ SET(QGIS_ANALYSIS_HDRS
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation

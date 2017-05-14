@@ -46,6 +46,7 @@
 #include "qgscurve.h"
 #include "qgsdatasourceuri.h"
 #include "qgsexpressionfieldbuffer.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
@@ -2610,7 +2611,7 @@ QString QgsVectorLayer::displayField() const
   QgsExpression exp( mDisplayExpression );
   if ( exp.isField() )
   {
-    return static_cast<const QgsExpression::NodeColumnRef *>( exp.rootNode() )->name();
+    return static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name();
   }
 
   return QString();
