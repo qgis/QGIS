@@ -40,7 +40,6 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
 
   public slots:
     void setLayer( QgsMapLayer *layer );
-    void setDockMode( bool enabled );
     //! save config to layer
     void writeSettingsToLayer();
 
@@ -64,9 +63,8 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QgsMapCanvas *mCanvas = nullptr;
 
     QWidget *mWidget = nullptr;
-    QgsLabelingGui *mLabelGui = nullptr;
+    std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
-    QgsPalLayerSettings mOldPalSettings;
 };
 
 #endif // QGSLABELINGWIDGET_H

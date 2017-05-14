@@ -1031,17 +1031,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     int addTopologicalPoints( const QgsPoint &p );
 
-    /** Access to labeling configuration.
-     * \since QGIS 2.12
-     * \note not available in Python bindings
+    /** Access to labeling configuration. May be null if labeling is not used.
+     * \since QGIS 3.0
      */
-    const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
+    const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; }
 
     /** Set labeling configuration. Takes ownership of the object.
-     * \since QGIS 2.12
-     * \note not available in Python bindings
+     * \since QGIS 3.0
      */
-    void setLabeling( QgsAbstractVectorLayerLabeling *labeling )  SIP_SKIP;
+    void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
     //! Returns true if the provider is in editing mode
     virtual bool isEditable() const override;
@@ -1895,6 +1893,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
+
+    //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
+    QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
 #ifdef SIP_RUN
     QgsVectorLayer( const QgsVectorLayer &rhs );

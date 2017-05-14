@@ -34,10 +34,8 @@ class QgsRuleBasedLabelProvider;
 
 /** \ingroup core
  * \class QgsRuleBasedLabeling
- * \note not available in Python bindings
- * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+ * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
@@ -48,14 +46,13 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     /**
      * \ingroup core
      * \class QgsRuleBasedLabeling::Rule
-     * \note not available in Python bindings
-     * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
+     * \since QGIS 3.0
      */
     class CORE_EXPORT Rule
     {
       public:
         //! takes ownership of settings
-        Rule( QgsPalLayerSettings *settings, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
+        Rule( QgsPalLayerSettings *settings SIP_TRANSFER, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
         //! Rules cannot be copied.
@@ -134,7 +131,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         QString ruleKey() const { return mRuleKey; }
 
         //! set new settings (or NULL). Deletes old settings if any.
-        void setSettings( QgsPalLayerSettings *settings );
+        void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER );
 
         /**
          * Set the minimum denominator for which this rule shall apply.
@@ -196,7 +193,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns A list of rules
          */
-        RuleList &children() { return mChildren; }
+        RuleList &children() SIP_SKIP { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
@@ -210,7 +207,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns Parent rule
          */
-        const Rule *parent() const { return mParent; }
+        const Rule *parent() const SIP_SKIP { return mParent; }
 
         /**
          * The parent rule
@@ -220,10 +217,10 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         Rule *parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule *rule );
+        void appendChild( Rule *rule SIP_TRANSFER );
 
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule *rule );
+        void insertChild( int i, Rule *rule SIP_TRANSFER );
 
         //! delete child rule
         void removeChildAt( int i );
@@ -232,7 +229,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         const Rule *findRuleByKey( const QString &key ) const;
 
         //! clone this rule, return new instance
-        Rule *clone() const;
+        Rule *clone() const SIP_FACTORY;
 
         // load / save
 
@@ -242,7 +239,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \param context reading context
          * \returns A new rule
          */
-        static Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context );
+        static Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
         //! store labeling info to XML element
         QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -250,16 +247,16 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // evaluation
 
         //! add providers
-        void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider );
+        void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
         //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
-        void subProviderIds( QStringList &list ) const;
+        void subProviderIds( QStringList &list ) const SIP_SKIP;
 
         //! call prepare() on sub-providers and populate attributeNames
-        void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders );
+        void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
         //! register individual features
-        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry = nullptr );
+        RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry = nullptr ) SIP_SKIP;
 
         /**
          * Returns true if this rule or any of its children requires advanced composition effects
@@ -267,7 +264,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         bool requiresAdvancedEffects() const;
 
-      protected:
+      private:
 
         /**
          * Check if a given feature shall be labelled by this rule
@@ -296,7 +293,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          */
         void updateElseRules();
 
-      protected:
+      private:
         Rule *mParent; // parent rule (NULL only for root rule)
         QgsPalLayerSettings *mSettings = nullptr;
         int mScaleMinDenom, mScaleMaxDenom;
@@ -315,30 +312,30 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
 
     //! Constructs the labeling from given tree of rules (takes ownership)
-    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root );
-    //! Copy constructor
-    QgsRuleBasedLabeling( const QgsRuleBasedLabeling &other );
+    explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
     ~QgsRuleBasedLabeling();
 
     Rule *rootRule() { return mRootRule; }
-    const Rule *rootRule() const { return mRootRule; }
+    const Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
+    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     // implementation of parent interface
 
     virtual QString type() const override;
+    virtual QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
+    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QStringList subProviders() const override;
-    virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;
-    bool requiresAdvancedEffects( QgsVectorLayer *layer ) const override;
+    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    bool requiresAdvancedEffects() const override;
 
   protected:
     Rule *mRootRule = nullptr;
 };
 
+#ifndef SIP_RUN
 
 /** \ingroup core
  * \class QgsRuleBasedLabelProvider
@@ -365,10 +362,11 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
   protected:
     //! owned copy
-    QgsRuleBasedLabeling mRules;
+    std::unique_ptr<QgsRuleBasedLabeling> mRules;
     //! label providers are owned by labeling engine
     QgsRuleBasedLabeling::RuleToProviderMap mSubProviders;
 };
 
+#endif
 
 #endif // QGSRULEBASEDLABELING_H

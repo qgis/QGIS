@@ -63,6 +63,7 @@ core/qgsrange.sip
 core/qgsrelationmanager.sip
 core/qgsrenderchecker.sip
 core/qgsrendercontext.sip
+core/qgsrulebasedlabeling.sip
 core/qgsrunprocess.sip
 core/qgsruntimeprofiler.sip
 core/qgsscalecalculator.sip

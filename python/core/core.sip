@@ -141,6 +141,7 @@
 %Include qgsrelationmanager.sip
 %Include qgsrenderchecker.sip
 %Include qgsrendercontext.sip
+%Include qgsrulebasedlabeling.sip
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
@@ -170,6 +171,7 @@
 %Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerjoininfo.sip
+%Include qgsvectorlayerlabeling.sip
 %Include qgsvectorlayertools.sip
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerutils.sip

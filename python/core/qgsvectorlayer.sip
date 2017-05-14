@@ -1045,7 +1045,18 @@ changeGeometry() instead.
  :rtype: int
 %End
 
+    const QgsAbstractVectorLayerLabeling *labeling() const;
+%Docstring
+ Access to labeling configuration. May be null if labeling is not used.
+.. versionadded:: 3.0
+ :rtype: QgsAbstractVectorLayerLabeling
+%End
 
+    void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );
+%Docstring
+ Set labeling configuration. Takes ownership of the object.
+.. versionadded:: 3.0
+%End
 
     virtual bool isEditable() const;
 %Docstring

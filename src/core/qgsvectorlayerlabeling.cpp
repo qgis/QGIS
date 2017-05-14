@@ -21,23 +21,30 @@
 
 QgsAbstractVectorLayerLabeling *QgsAbstractVectorLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  if ( element.attribute( QStringLiteral( "type" ) ) == QLatin1String( "rule-based" ) )
+  QString type = element.attribute( QStringLiteral( "type" ) );
+  if ( type == QLatin1String( "rule-based" ) )
   {
     return QgsRuleBasedLabeling::create( element, context );
   }
+  else if ( type == QLatin1String( "simple" ) )
+  {
+    return QgsVectorLayerSimpleLabeling::create( element, context );
+  }
   else
   {
-    // default
-    return new QgsVectorLayerSimpleLabeling;
+    return nullptr;
   }
 }
 
 QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLayer *layer ) const
 {
-  if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) && layer->labelsEnabled() )
-    return new QgsVectorLayerLabelProvider( layer, QString(), false );
+  return new QgsVectorLayerLabelProvider( layer, QString(), false, mSettings.get() );
+}
 
-  return nullptr;
+QgsVectorLayerSimpleLabeling::QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings )
+  : mSettings( new QgsPalLayerSettings( settings ) )
+{
+
 }
 
 QString QgsVectorLayerSimpleLabeling::type() const
@@ -45,24 +52,39 @@ QString QgsVectorLayerSimpleLabeling::type() const
   return QStringLiteral( "simple" );
 }
 
+QgsAbstractVectorLayerLabeling *QgsVectorLayerSimpleLabeling::clone() const
+{
+  return new QgsVectorLayerSimpleLabeling( *mSettings );
+}
+
 QDomElement QgsVectorLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  Q_UNUSED( context );
-  // all configuration is kept in layer custom properties (for compatibility)
   QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );
+  elem.appendChild( mSettings->writeXml( doc, context ) );
   return elem;
 }
 
-QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( QgsVectorLayer *layer, const QString &providerId ) const
+QgsPalLayerSettings QgsVectorLayerSimpleLabeling::settings( const QString &providerId ) const
 {
-  if ( providerId.isEmpty() )
-    return QgsPalLayerSettings::fromLayer( layer );
-  else
-    return QgsPalLayerSettings();
+  Q_UNUSED( providerId );
+  return *mSettings;
 }
 
-bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects( QgsVectorLayer *layer ) const
+bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 {
-  return settings( layer ).format().containsAdvancedEffects();
+  return mSettings->format().containsAdvancedEffects();
+}
+
+QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+{
+  QgsPalLayerSettings *settings = nullptr;
+  QDomElement settingsElem = element.firstChildElement( QStringLiteral( "settings" ) );
+  if ( !settingsElem.isNull() )
+  {
+    settings = new QgsPalLayerSettings;
+    settings->readXml( settingsElem, context );
+  }
+
+  return new QgsVectorLayerSimpleLabeling( *settings );
 }

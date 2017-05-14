@@ -82,7 +82,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
 
   blockElementSignals( true );
 
-  QgsPalLayerSettings layerSettings = vlayer->labeling()->settings( vlayer, providerId );
+  QgsPalLayerSettings layerSettings = vlayer->labeling()->settings( providerId );
 
   //get label field and fill line edit
   if ( layerSettings.isExpression && !labelText.isNull() )
@@ -93,7 +93,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   }
   else
   {
-    QString labelFieldName = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
+    QString labelFieldName = layerSettings.fieldName;
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fields().lookupField( labelFieldName );
