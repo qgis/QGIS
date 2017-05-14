@@ -70,6 +70,12 @@ class CORE_EXPORT QgsLabelSearchTree
     mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
     QList< QgsLabelPosition * > mOwnedPositions;
 
+#ifdef SIP_RUN
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh );
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh );
+#endif
 };
 
 #endif // QGSLABELTREE_H
