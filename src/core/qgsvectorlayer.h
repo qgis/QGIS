@@ -819,7 +819,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \note If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
      *       task and call waitForFinished().
      *
-     * \since This is asynchroneous since QGIS 3.0
+     * \since This is asynchronous since QGIS 3.0
      */
     bool countSymbolFeatures();
 
