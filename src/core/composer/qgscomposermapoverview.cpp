@@ -22,6 +22,8 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgscomposerutils.h"
 #include "qgscsexception.h"
 
@@ -180,7 +182,10 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
-  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc, context );
   overviewFrameElem.appendChild( frameStyleElem );
 
   bool ok = QgsComposerMapItem::writeXml( overviewFrameElem, doc );
@@ -203,11 +208,14 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context );
   }
   return ok;
 }

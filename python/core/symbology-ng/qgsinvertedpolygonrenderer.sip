@@ -74,13 +74,13 @@ class QgsInvertedPolygonRenderer : QgsFeatureRenderer
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Creates a renderer out of an XML, for loading*/
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
     /** Creates an XML representation of the renderer. Used for saving purpose
      * @param doc the XML document where to create the XML subtree
      * @returns the created XML subtree
      */
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
     const QgsFeatureRenderer *embeddedRenderer() const;

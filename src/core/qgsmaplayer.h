@@ -40,7 +40,7 @@ class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
-class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsProject;
 
 class QDomDocument;
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        \param layerElement The Dom element corresponding to ``maplayer'' tag
-       \param pathResolver object for conversion between relative and absolute paths
+       \param context writing context (e.g. for conversion between relative and absolute paths)
        \note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -407,12 +407,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        \returns true if successful
      */
-    bool readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver );
+    bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
 
     /** Stores state in Dom node
      * \param layerElement is a Dom element corresponding to ``maplayer'' tag
      * \param document is a the dom document being written
-     * \param pathResolver object for conversion between relative and absolute paths
+     * \param context reading context (e.g. for conversion between relative and absolute paths)
      * \note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \returns true if successful
      */
-    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const;
+    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
@@ -579,36 +579,40 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Read the symbology for the current layer from the Dom node supplied.
      * \param node node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      */
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
 
     /** Read the style for the current layer from the Dom node supplied.
      * \param node node that will contain the style definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
+     * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
      * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
     /** Write the symbology for the layer into the docment provided.
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      */
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
 
     /** Write just the style information for the layer into the document
      *  \param node the node that will have the style element added to it.
      *  \param doc the document that will have the QDomNode added.
      *  \param errorMessage reference to string that will be updated with any error messages
+     *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
      *  \since QGIS 2.16
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
     //! Return pointer to layer's undo stack
     QUndoStack *undoStack();
@@ -915,12 +919,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Called by readLayerXML(), used by children to read state specific to them from
      *  project files.
      */
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 
     /** Called by writeLayerXML(), used by children to write state specific to them to
      *  project files.
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 
     /** Read custom properties from project file.

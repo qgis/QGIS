@@ -1279,7 +1279,7 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
-bool QgsVectorLayer::readXml( const QDomNode &layer_node )
+bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 
@@ -1332,7 +1332,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node )
   updateFields();
 
   QString errorMsg;
-  if ( !readSymbology( layer_node, errorMsg ) )
+  if ( !readSymbology( layer_node, errorMsg, context ) )
   {
     return false;
   }
@@ -1486,7 +1486,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
 
 /* virtual */
 bool QgsVectorLayer::writeXml( QDomNode &layer_node,
-                               QDomDocument &document ) const
+                               QDomDocument &document,
+                               const QgsReadWriteContext &context ) const
 {
   // first get the layer element so that we can append the type attribute
 
@@ -1547,7 +1548,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
   // renderer specific settings
   QString errorMsg;
-  return writeSymbology( layer_node, document, errorMsg );
+  return writeSymbology( layer_node, document, errorMsg, context );
 } // bool QgsVectorLayer::writeXml
 
 
@@ -1557,7 +1558,7 @@ void QgsVectorLayer::resolveReferences( QgsProject *project )
 }
 
 
-bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage )
+bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context )
 {
   if ( !mExpressionFieldBuffer )
     mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -1565,7 +1566,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   updateFields();
 
-  readStyle( layerNode, errorMessage );
+  readStyle( layerNode, errorMessage, context );
 
   mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
   mMapTipTemplate = layerNode.namedItem( QStringLiteral( "mapTip" ) ).toElement().text();
@@ -1737,7 +1738,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   mAttributeTableConfig.readXml( layerNode );
 
-  mConditionalStyles->readXml( layerNode );
+  mConditionalStyles->readXml( layerNode, context );
 
   readCustomProperties( layerNode, QStringLiteral( "variable" ) );
 
@@ -1750,7 +1751,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   return true;
 }
 
-bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
@@ -1761,7 +1762,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
     if ( !rendererElement.isNull() )
     {
-      QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement );
+      QgsFeatureRenderer *r = QgsFeatureRenderer::load( rendererElement, context );
       if ( r )
       {
         setRenderer( r );
@@ -1781,7 +1782,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
     if ( !labelingElement.isNull() )
     {
-      QgsAbstractVectorLayerLabeling *l = QgsAbstractVectorLayerLabeling::create( labelingElement );
+      QgsAbstractVectorLayerLabeling *l = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
       setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
     }
 
@@ -1828,13 +1829,21 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
     if ( !singleCatDiagramElem.isNull() )
     {
       mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXml( singleCatDiagramElem, this );
+      mDiagramRenderer->readXml( singleCatDiagramElem, context );
     }
     QDomElement linearDiagramElem = node.firstChildElement( QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) );
     if ( !linearDiagramElem.isNull() )
     {
+      if ( linearDiagramElem.hasAttribute( QStringLiteral( "classificationAttribute" ) ) )
+      {
+        // fix project from before QGIS 3.0
+        int idx = linearDiagramElem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
+        if ( idx >= 0 && idx < mFields.count() )
+          linearDiagramElem.setAttribute( "classificationField", mFields.at( idx ).name() );
+      }
+
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXml( linearDiagramElem, this );
+      mDiagramRenderer->readXml( linearDiagramElem, context );
     }
 
     if ( mDiagramRenderer )
@@ -1842,18 +1851,54 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage )
       QDomElement diagramSettingsElem = node.firstChildElement( QStringLiteral( "DiagramLayerSettings" ) );
       if ( !diagramSettingsElem.isNull() )
       {
+        bool oldXPos = diagramSettingsElem.hasAttribute( QStringLiteral( "xPosColumn" ) );
+        bool oldYPos = diagramSettingsElem.hasAttribute( QStringLiteral( "yPosColumn" ) );
+        bool oldShow = diagramSettingsElem.hasAttribute( QStringLiteral( "showColumn" ) );
+        if ( oldXPos || oldYPos || oldShow )
+        {
+          // fix project from before QGIS 3.0
+          QgsPropertyCollection ddp;
+          if ( oldXPos )
+          {
+            int xPosColumn = diagramSettingsElem.attribute( QStringLiteral( "xPosColumn" ) ).toInt();
+            if ( xPosColumn >= 0 && xPosColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::PositionX, QgsProperty::fromField( mFields.at( xPosColumn ).name(), true ) );
+          }
+          if ( oldYPos )
+          {
+            int yPosColumn = diagramSettingsElem.attribute( QStringLiteral( "yPosColumn" ) ).toInt();
+            if ( yPosColumn >= 0 && yPosColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::PositionY, QgsProperty::fromField( mFields.at( yPosColumn ).name(), true ) );
+          }
+          if ( oldShow )
+          {
+            int showColumn = diagramSettingsElem.attribute( QStringLiteral( "showColumn" ) ).toInt();
+            if ( showColumn >= 0 && showColumn < mFields.count() )
+              ddp.setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
+          }
+          QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( "properties" );
+          QgsPropertiesDefinition defs = QgsPropertiesDefinition
+          {
+            { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+            { QgsDiagramLayerSettings::PositionY, QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+            { QgsDiagramLayerSettings::Show, QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean ) },
+          };
+          ddp.writeXml( propertiesElem, defs );
+          diagramSettingsElem.appendChild( propertiesElem );
+        }
+
         delete mDiagramLayerSettings;
         mDiagramLayerSettings = new QgsDiagramLayerSettings();
-        mDiagramLayerSettings->readXml( diagramSettingsElem, this );
+        mDiagramLayerSettings->readXml( diagramSettingsElem );
       }
     }
   }
   return result;
 }
 
-bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
-  ( void )writeStyle( node, doc, errorMessage );
+  ( void )writeStyle( node, doc, errorMessage, context );
 
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
   node.appendChild( fieldConfigurationElement );
@@ -1964,7 +2009,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   mActions->writeXml( node );
   mAttributeTableConfig.writeXml( node );
   mEditFormConfig.writeXml( node );
-  mConditionalStyles->writeXml( node, doc );
+  mConditionalStyles->writeXml( node, doc, context );
 
   // save expression fields
   if ( !mExpressionFieldBuffer )
@@ -1994,7 +2039,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   return true;
 }
 
-bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = node.toElement();
 
@@ -2004,13 +2049,13 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
   {
     if ( mRenderer )
     {
-      QDomElement rendererElement = mRenderer->save( doc );
+      QDomElement rendererElement = mRenderer->save( doc, context );
       node.appendChild( rendererElement );
     }
 
     if ( mLabeling )
     {
-      QDomElement labelingElement = mLabeling->save( doc );
+      QDomElement labelingElement = mLabeling->save( doc, context );
       node.appendChild( labelingElement );
     }
 
@@ -2044,9 +2089,9 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
     if ( mDiagramRenderer )
     {
-      mDiagramRenderer->writeXml( mapLayerNode, doc, this );
+      mDiagramRenderer->writeXml( mapLayerNode, doc, context );
       if ( mDiagramLayerSettings )
-        mDiagramLayerSettings->writeXml( mapLayerNode, doc, this );
+        mDiagramLayerSettings->writeXml( mapLayerNode, doc );
     }
   }
   return true;

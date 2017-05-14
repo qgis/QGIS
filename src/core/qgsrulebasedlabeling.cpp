@@ -193,14 +193,14 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
   return newrule;
 }
 
-QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem )
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem, const QgsReadWriteContext &context )
 {
   QgsPalLayerSettings *settings = nullptr;
   QDomElement settingsElem = ruleElem.firstChildElement( QStringLiteral( "settings" ) );
   if ( !settingsElem.isNull() )
   {
     settings = new QgsPalLayerSettings;
-    settings->readXml( settingsElem );
+    settings->readXml( settingsElem, context );
   }
 
   QString filterExp = ruleElem.attribute( QStringLiteral( "filter" ) );
@@ -218,7 +218,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
   QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
-    Rule *childRule = create( childRuleElem );
+    Rule *childRule = create( childRuleElem, context );
     if ( childRule )
     {
       rule->appendChild( childRule );
@@ -233,13 +233,13 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElemen
   return rule;
 }
 
-QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc ) const
+QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement ruleElem = doc.createElement( QStringLiteral( "rule" ) );
 
   if ( mSettings )
   {
-    ruleElem.appendChild( mSettings->writeXml( doc ) );
+    ruleElem.appendChild( mSettings->writeXml( doc, context ) );
   }
   if ( !mFilterExp.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
@@ -256,7 +256,7 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc ) const
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
     Rule *rule = *it;
-    ruleElem.appendChild( rule->save( doc ) );
+    ruleElem.appendChild( rule->save( doc, context ) );
   }
   return ruleElem;
 }
@@ -401,11 +401,11 @@ QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
 }
 
 
-QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element )
+QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 
-  Rule *root = Rule::create( rulesElem );
+  Rule *root = Rule::create( rulesElem, context );
   if ( !root )
     return nullptr;
 
@@ -418,12 +418,12 @@ QString QgsRuleBasedLabeling::type() const
   return QStringLiteral( "rule-based" );
 }
 
-QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc ) const
+QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "rule-based" ) );
 
-  QDomElement rulesElem = mRootRule->save( doc );
+  QDomElement rulesElem = mRootRule->save( doc, context );
   rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
   elem.appendChild( rulesElem );
 

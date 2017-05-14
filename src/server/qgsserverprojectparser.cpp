@@ -25,6 +25,7 @@
 #include "qgsmslayercache.h"
 #include "qgspathresolver.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
@@ -274,7 +275,10 @@ QgsMapLayer *QgsServerProjectParser::createLayerFromElement( const QDomElement &
       QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement &, QString & ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement &, QString & ) ) );
     }
 
-    layer->readLayerXml( const_cast<QDomElement &>( elem ), QgsProject::instance()->pathResolver() ); //should be changed to const in QgsMapLayer
+    QgsReadWriteContext context;
+    context.setPathResolver( QgsProject::instance()->pathResolver() );
+
+    layer->readLayerXml( const_cast<QDomElement &>( elem ), context ); //should be changed to const in QgsMapLayer
     //layer->setLayerName( layerName( elem ) );
 
     if ( !layer->isValid() )

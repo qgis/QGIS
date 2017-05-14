@@ -25,6 +25,7 @@
 #include "qgis.h"
 
 class QgsFeatureRenderer;
+class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsStyle;
 class QgsRendererWidget;
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0 SIP_FACTORY;
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererAbstractMetadata::LayerTypes )
 
 
-typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement & );
+typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & );
 typedef QgsRendererWidget *( *QgsRendererWidgetFunc )( QgsVectorLayer *, QgsStyle *, QgsFeatureRenderer * );
 typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, QgsWkbTypes::GeometryType geomType );
 
@@ -141,7 +142,8 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 
     virtual ~QgsRendererMetadata() = default;
 
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) override { return mCreateFunc ? mCreateFunc( elem ) : nullptr; }
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override
+    { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override

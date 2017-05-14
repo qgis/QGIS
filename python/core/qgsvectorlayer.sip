@@ -685,7 +685,7 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    virtual bool readXml( const QDomNode &layer_node );
+    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 %Docstring
  Reads vector layer specific state from project file Dom node.
 .. note::
@@ -694,7 +694,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write vector layer specific state to project file Dom node.
 .. note::
@@ -765,44 +765,48 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage );
+    virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
  Read the symbology for the current layer from the Dom node supplied.
  \param layerNode node that will contain the symbology definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
  Read the style for the current layer from the Dom node supplied.
  \param node node that will contain the style definition for this layer.
  \param errorMessage reference to string that will be updated with any error messages
+ \param context reading context (used for transform from relative to absolute paths)
  :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write the symbology for the layer into the docment provided.
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
  :rtype: bool
 %End
 
-    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write just the style information for the layer into the document
   \param node the node that will have the style element added to it.
   \param doc the document that will have the QDomNode added.
   \param errorMessage reference to string that will be updated with any error messages
+  \param context writing context (used for transform from absolute to relative paths)
   :return: true in case of success.
  :rtype: bool
 %End

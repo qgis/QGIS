@@ -42,6 +42,7 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsLineSymbolLayer,
                        QgsMarkerLineSymbolLayer,
                        QgsMarkerSymbolLayer,
+                       QgsReadWriteContext,
                        QgsPointPatternFillSymbolLayer,
                        QgsSimpleFillSymbolLayer,
                        QgsSimpleLineSymbolLayer,
@@ -323,9 +324,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         symbol.changeSymbolLayer(0, layer)
 
         doc = QDomDocument("testdoc")
-        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc)
+        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc, QgsReadWriteContext())
 
-        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem)
+        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
         restored_layer = restored_symbol.symbolLayer(0)
         self.assertFalse(restored_layer.enabled())
         self.assertTrue(restored_layer.isLocked())
@@ -846,7 +847,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mSymbolLayer = QgsSVGFillSymbolLayer.createFromSld(
             mDoc.elementsByTagName('PolygonSymbolizer').item(0).toElement())
 
-        mExpectedValue = type(QgsSVGFillSymbolLayer())
+        mExpectedValue = type(QgsSVGFillSymbolLayer(""))
         mValue = type(mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
@@ -1058,7 +1059,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mFile.close()
         mSymbolLayer = QgsSvgMarkerSymbolLayer.createFromSld(mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
 
-        mExpectedValue = type(QgsSvgMarkerSymbolLayer())
+        mExpectedValue = type(QgsSvgMarkerSymbolLayer(""))
         mValue = type(mSymbolLayer)
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage

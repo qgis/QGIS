@@ -27,6 +27,7 @@
 #include "qgspluginlayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
@@ -49,10 +50,13 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
   QFileInfo fileinfo( file );
   QDir::setCurrent( fileinfo.absoluteDir().path() );
 
-  return loadLayerDefinition( doc, project, rootGroup, errorMessage, QgsPathResolver( path ) );
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( path ) );
+
+  return loadLayerDefinition( doc, project, rootGroup, errorMessage, context );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
 
@@ -141,7 +145,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     loadInLegend = false;
   }
 
-  QList<QgsMapLayer *> layers = QgsLayerDefinition::loadLayerDefinitionLayers( doc, pathResolver );
+  QList<QgsMapLayer *> layers = QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
 
   project->addMapLayers( layers, loadInLegend );
 
@@ -180,8 +184,11 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
     return false;
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( path ) );
+
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
-  if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, QgsPathResolver( path ) ) )
+  if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, context ) )
     return false;
 
   QTextStream qlayerstream( &file );
@@ -189,7 +196,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   return true;
 }
 
-bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage, const QgsPathResolver &pathResolver )
+bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode *> &selectedTreeNodes, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
   QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
@@ -208,14 +215,14 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
   {
     QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
-    layer->layer()->writeLayerXml( layerelm, doc, pathResolver );
+    layer->layer()->writeLayerXml( layerelm, doc, context );
     layerselm.appendChild( layerelm );
   }
   qgiselm.appendChild( layerselm );
   return true;
 }
 
-QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsPathResolver &pathResolver )
+QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMapLayer *> &layers, const QgsReadWriteContext &context )
 {
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   QDomElement qgiselm = doc.createElement( QStringLiteral( "qlr" ) );
@@ -224,14 +231,14 @@ QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMap
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
-    layer->writeLayerXml( layerelm, doc, pathResolver );
+    layer->writeLayerXml( layerelm, doc, context );
     layerselm.appendChild( layerelm );
   }
   qgiselm.appendChild( layerselm );
   return doc;
 }
 
-QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, const QgsPathResolver &pathResolver )
+QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context )
 {
   QList<QgsMapLayer *> layers;
   QDomNodeList layernodes = document.elementsByTagName( QStringLiteral( "maplayer" ) );
@@ -261,7 +268,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
     if ( !layer )
       continue;
 
-    if ( layer->readLayerXml( layerElem, pathResolver ) )
+    if ( layer->readLayerXml( layerElem, context ) )
     {
       layers << layer;
     }
@@ -285,7 +292,9 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
     return QList<QgsMapLayer *>();
   }
 
-  return QgsLayerDefinition::loadLayerDefinitionLayers( doc, QgsPathResolver( qlrfile ) );
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsPathResolver( qlrfile ) );
+  return QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
 }
 
 

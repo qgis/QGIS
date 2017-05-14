@@ -170,10 +170,10 @@ class QgsFeatureRenderer
     void setUsingSymbolLevels( bool usingSymbolLevels );
 
     //! create a renderer from XML element
-    static QgsFeatureRenderer *load( QDomElement &symbologyElem ) /Factory/;
+    static QgsFeatureRenderer* load( QDomElement& symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
     //! @note added in 2.8

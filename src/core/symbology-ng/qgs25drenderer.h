@@ -33,9 +33,10 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * Create a new 2.5D renderer from XML
      *
      * \param element XML information
+     * \param context reading context
      */
-    static QgsFeatureRenderer *create( QDomElement &element );
-    QDomElement save( QDomDocument &doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context );
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;

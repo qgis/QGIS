@@ -18,10 +18,10 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context );
     virtual QString dump() const;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
-    virtual QDomElement save( QDomDocument &doc );
-    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
+    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included

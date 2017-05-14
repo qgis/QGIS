@@ -50,8 +50,8 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
-    virtual QDomElement save( QDomDocument &doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;

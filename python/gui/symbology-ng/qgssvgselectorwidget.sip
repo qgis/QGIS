@@ -33,20 +33,9 @@ class QgsSvgSelectorWidget : QWidget
     QgsSvgSelectorWidget( QWidget *parent /TransferThis/ = 0 );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget *create( QWidget *parent = 0 ) /Factory/;
-
     QString currentSvgPath() const;
-    QString currentSvgPathToName() const;
-
-    QTreeView *groupsTreeView();
-    QListView *imagesListView();
-    QLineEdit *filePathLineEdit();
-    QPushButton *filePathButton();
-    QCheckBox *relativePathCheckbox();
-    QLayout *selectorLayout();
 
   public slots:
-    /** Accepts absolute and relative paths */
     void setSvgPath( const QString &svgPath );
 
   signals:
@@ -66,12 +55,6 @@ class QgsSvgSelectorDialog : QDialog
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
-
-    //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout *layout();
-
-    //! Returns the button box
-    QDialogButtonBox *buttonBox();
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector();

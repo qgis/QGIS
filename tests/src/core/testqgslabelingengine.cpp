@@ -19,6 +19,7 @@
 #include <qgslabelingengine.h>
 #include <qgsproject.h>
 #include <qgsmaprenderersequentialjob.h>
+#include <qgsreadwritecontext.h>
 #include <qgsrulebasedlabeling.h>
 #include <qgsvectorlayer.h>
 #include <qgsvectorlayerdiagramprovider.h>
@@ -254,15 +255,15 @@ void TestQgsLabelingEngine::testRuleBased()
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
-  QDomElement e = vl->labeling()->save( doc );
+  QDomElement e = vl->labeling()->save( doc, QgsReadWriteContext() );
   doc.appendChild( e );
   // read saved rules
   doc2.setContent( doc.toString() );
   QDomElement e2 = doc2.documentElement();
-  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2 );
+  QgsRuleBasedLabeling *rl2 = QgsRuleBasedLabeling::create( e2, QgsReadWriteContext() );
   QVERIFY( rl2 );
   // check that another save will keep the data the same
-  QDomElement e3 = rl2->save( doc3 );
+  QDomElement e3 = rl2->save( doc3, QgsReadWriteContext() );
   doc3.appendChild( e3 );
   QCOMPARE( doc.toString(), doc3.toString() );
 

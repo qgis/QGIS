@@ -202,7 +202,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see readXml()
      * \see _writeXml()
      */
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const = 0;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     /**
      * Restores the annotation's state from a DOM element. Derived classes should
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see writeXml()
      * \see _readXml()
      */
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) = 0;
+    virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Sets the symbol that is drawn at the annotation's map position. Ownership
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see writeXml()
      * \see _readXml()
      */
-    void _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
+    void _writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Reads common annotation properties from a DOM element.
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see readXml()
      * \see _writeXml()
      */
-    void _readXml( const QDomElement &annotationElem, const QDomDocument &doc );
+    void _readXml( const QDomElement &annotationElem, const QgsReadWriteContext &context );
 
     /**
      * Copies common annotation properties to the \a targe

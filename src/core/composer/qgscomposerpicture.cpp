@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
+#include "qgspathresolver.h"
 #include "qgsproperty.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
@@ -367,7 +368,7 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
-      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), fillColor, strokeColor, strokeWidth,
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
                                      1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
@@ -741,7 +742,17 @@ bool QgsComposerPicture::writeXml( QDomElement &elem, QDomDocument &doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), mComposition->project()->writePath( mSourcePath ) );
+  QString imagePath = mSourcePath;
+  if ( mComposition )
+  {
+    // convert from absolute path to relative. For SVG we also need to consider system SVG paths
+    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
+    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+      imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
+    else
+      imagePath = pathResolver.writePath( imagePath );
+  }
+  composerPictureElem.setAttribute( QStringLiteral( "file" ), imagePath );
   composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
@@ -812,8 +823,17 @@ bool QgsComposerPicture::readXml( const QDomElement &itemElem, const QDomDocumen
     mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
-  mSourcePath = mComposition ? mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) )
-                : itemElem.attribute( QStringLiteral( "file" ) );
+  QString imagePath = itemElem.attribute( QStringLiteral( "file" ) );
+  if ( mComposition )
+  {
+    // convert from relative path to absolute. For SVG we also need to consider system SVG paths
+    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
+    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+      imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
+    else
+      imagePath = pathResolver.readPath( imagePath );
+  }
+  mSourcePath = imagePath;
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )

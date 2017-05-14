@@ -668,12 +668,13 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 %End
 
   public:
-    QgsSVGFillSymbolLayer( const QString &svgFilePath = "", double width = 20, double rotation = 0.0 );
-    QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QString& svgFilePath, double width = 20, double rotation = 0.0 );
+    QgsSVGFillSymbolLayer( const QByteArray& svgData, double width = 20, double rotation = 0.0 );
     ~QgsSVGFillSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-    static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
+    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+    static QgsSymbolLayer* createFromSld( QDomElement &element ) /Factory/;
+    static void resolvePaths( QgsStringMap& properties, const QgsPathResolver& pathResolver, bool saving );
 
     // implemented from base classes
 

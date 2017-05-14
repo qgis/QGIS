@@ -239,12 +239,13 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Create a rule from an XML definition
          * \param ruleElem  The XML rule element
+         * \param context reading context
          * \returns A new rule
          */
-        static Rule *create( const QDomElement &ruleElem );
+        static Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context );
 
         //! store labeling info to XML element
-        QDomElement save( QDomDocument &doc ) const;
+        QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
         // evaluation
 
@@ -323,12 +324,12 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     const Rule *rootRule() const { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling *create( const QDomElement &element );
+    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 
     // implementation of parent interface
 
     virtual QString type() const override;
-    virtual QDomElement save( QDomDocument &doc ) const override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;

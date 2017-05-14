@@ -19,6 +19,7 @@
 #include <qgsrulebasedrenderer.h>
 
 #include <qgsapplication.h>
+#include <qgsreadwritecontext.h>
 #include <qgssymbol.h>
 #include <qgsvectorlayer.h>
 
@@ -47,7 +48,7 @@ class TestQgsRuleBasedRenderer: public QObject
       xml2domElement( QStringLiteral( "rulebasedrenderer_simple.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
-      QgsRuleBasedRenderer *r = static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem ) );
+      QgsRuleBasedRenderer *r = static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) );
       QVERIFY( r );
       check_tree_valid( r->rootRule() );
       delete r;
@@ -59,7 +60,7 @@ class TestQgsRuleBasedRenderer: public QObject
       xml2domElement( QStringLiteral( "rulebasedrenderer_invalid.xml" ), doc );
       QDomElement elem = doc.documentElement();
 
-      std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem ) ) );
+      std::shared_ptr<QgsRuleBasedRenderer> r( static_cast<QgsRuleBasedRenderer *>( QgsRuleBasedRenderer::create( elem, QgsReadWriteContext() ) ) );
       QVERIFY( !r );
     }
 

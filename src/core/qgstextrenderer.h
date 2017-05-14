@@ -27,6 +27,7 @@
 #include <QPicture>
 #include <QDomElement>
 
+class QgsReadWriteContext;
 class QgsTextBufferSettingsPrivate;
 class QgsTextBackgroundSettingsPrivate;
 class QgsTextShadowSettingsPrivate;
@@ -284,14 +285,14 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setType( ShapeType type );
 
-    /** Returns the path to the background SVG file, if set.
+    /** Returns the absolute path to the background SVG file, if set.
      * \see setSvgFile()
      */
     QString svgFile() const;
 
     /** Sets the path to the background SVG file. This is only used if type() is set to
-     * QgsTextBackgroundSettings::ShapeSVG.
-     * \param file SVG file path
+     * QgsTextBackgroundSettings::ShapeSVG. The path must be absolute.
+     * \param file Absolute SVG file path
      * \see svgFile()
      */
     void setSvgFile( const QString &file );
@@ -605,12 +606,12 @@ class CORE_EXPORT QgsTextBackgroundSettings
     /** Read settings from a DOM element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /** Write settings into a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
   private:
 
@@ -1087,12 +1088,12 @@ class CORE_EXPORT QgsTextFormat
     /** Read settings from a DOM element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     /** Write settings into a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /** Returns true if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.

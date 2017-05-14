@@ -24,6 +24,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsVectorLayer,
                        QgsTextRenderer,
                        QgsMapSettings,
+                       QgsReadWriteContext,
                        QgsRenderContext,
                        QgsRectangle,
                        QgsRenderChecker,
@@ -202,11 +203,11 @@ class PyQgsTextRenderer(unittest.TestCase):
         """test saving and restoring state of a background to xml"""
         doc = QDomDocument("testdoc")
         s = self.createBackgroundSettings()
-        elem = s.writeXml(doc)
+        elem = s.writeXml(doc, QgsReadWriteContext())
         parent = doc.createElement("settings")
         parent.appendChild(elem)
         t = QgsTextBackgroundSettings()
-        t.readXml(parent)
+        t.readXml(parent, QgsReadWriteContext())
         self.checkBackgroundSettings(t)
 
     def createShadowSettings(self):
@@ -352,11 +353,11 @@ class PyQgsTextRenderer(unittest.TestCase):
         """test saving and restoring state of a shadow to xml"""
         doc = QDomDocument("testdoc")
         s = self.createFormatSettings()
-        elem = s.writeXml(doc)
+        elem = s.writeXml(doc, QgsReadWriteContext())
         parent = doc.createElement("settings")
         parent.appendChild(elem)
         t = QgsTextFormat()
-        t.readXml(parent)
+        t.readXml(parent, QgsReadWriteContext())
         self.checkTextFormat(t)
 
     def containsAdvancedEffects(self):
@@ -404,17 +405,17 @@ class PyQgsTextRenderer(unittest.TestCase):
     def testFontFoundFromXml(self):
         doc = QDomDocument("testdoc")
         f = QgsTextFormat()
-        elem = f.writeXml(doc)
+        elem = f.writeXml(doc, QgsReadWriteContext())
         elem.setAttribute('fontFamily', 'asdfasdfsadf')
         parent = doc.createElement("parent")
         parent.appendChild(elem)
 
-        f.readXml(parent)
+        f.readXml(parent, QgsReadWriteContext())
         self.assertFalse(f.fontFound())
 
         font = getTestFont()
         elem.setAttribute('fontFamily', font.family())
-        f.readXml(parent)
+        f.readXml(parent, QgsReadWriteContext())
         self.assertTrue(f.fontFound())
 
     def imageCheck(self, name, reference_image, image):

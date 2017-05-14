@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgssymbolselectordialog.h"
 #include "qgslogger.h"
+#include "qgsreadwritecontext.h"
 #include "qstring.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgspanelwidget.h"
@@ -1069,7 +1070,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "renderer" ) ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
 
@@ -1140,7 +1141,7 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     QDomElement symbolsElem = rootElem.firstChildElement( QStringLiteral( "symbols" ) );
     if ( symbolsElem.isNull() )
       continue;
-    QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+    QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, QgsReadWriteContext() );
     QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
     if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
       _labeling2rendererRules( ruleElem );

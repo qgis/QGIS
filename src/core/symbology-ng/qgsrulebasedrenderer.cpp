@@ -951,7 +951,7 @@ QgsSymbolList QgsRuleBasedRenderer::symbols( QgsRenderContext &context )
   return mRootRule->symbols( context );
 }
 
-QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc )
+QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "RuleRenderer" ) );
@@ -964,7 +964,7 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc )
   rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
   rendererElem.appendChild( rulesElem );
 
-  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
+  QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
   rendererElem.appendChild( symbolsElem );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
@@ -1032,14 +1032,14 @@ QgsLegendSymbolListV2 QgsRuleBasedRenderer::legendSymbolItemsV2() const
 }
 
 
-QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element )
+QgsFeatureRenderer *QgsRuleBasedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   // load symbols
   QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
   if ( symbolsElem.isNull() )
     return nullptr;
 
-  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
 
   QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 

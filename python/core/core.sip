@@ -136,6 +136,7 @@
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
 %Include qgsrange.sip
+%Include qgsreadwritecontext.sip
 %Include qgsrelation.sip
 %Include qgsrelationmanager.sip
 %Include qgsrenderchecker.sip

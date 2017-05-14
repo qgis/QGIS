@@ -28,9 +28,11 @@
 #include "qgsmaptopixel.h"
 #include "qgsmapsettingsutils.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
@@ -1246,6 +1248,9 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     updateToolTip();
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
   if ( !extentNodeList.isEmpty() )
@@ -1393,7 +1398,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     }
     else
     {
-      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem );
+      lineSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridSymbolElem, context );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1438,7 +1443,7 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !overviewFrameSymbolElem.isNull() )
     {
-      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem );
+      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem, context );
       mapOverview->setFrameSymbol( fillSymbol );
     }
     mOverviewStack->addOverview( mapOverview );

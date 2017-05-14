@@ -48,11 +48,12 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     /** Creates a null renderer from XML element.
      * \param element DOM element
+     * \param context reading context
      * \returns new null symbol renderer
      */
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
      * \param renderer renderer to convert from

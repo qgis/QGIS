@@ -115,7 +115,7 @@ QString QgsFeatureRenderer::dump() const
   return QStringLiteral( "UNKNOWN RENDERER\n" );
 }
 
-QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
+QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   // <renderer-v2 type=""> ... </renderer-v2>
 
@@ -129,7 +129,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
   if ( !m )
     return nullptr;
 
-  QgsFeatureRenderer *r = m->createRenderer( element );
+  QgsFeatureRenderer *r = m->createRenderer( element, context );
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
@@ -150,8 +150,9 @@ QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
   return r;
 }
 
-QDomElement QgsFeatureRenderer::save( QDomDocument &doc )
+QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );

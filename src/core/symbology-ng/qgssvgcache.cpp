@@ -37,7 +37,7 @@
 #include <QNetworkRequest>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry()
-  : file( QString() )
+  : path( QString() )
   , size( 0.0 )
   , strokeWidth( 0 )
   , widthScaleFactor( 1.0 )
@@ -50,9 +50,8 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &f, double s, double ow, double wsf, const QColor &fi, const QColor &ou, const QString &lk )
-  : file( f )
-  , lookupKey( lk.isEmpty() ? f : lk )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou )
+  : path( p )
   , size( s )
   , strokeWidth( ow )
   , widthScaleFactor( wsf )
@@ -74,7 +73,7 @@ QgsSvgCacheEntry::~QgsSvgCacheEntry()
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry &other ) const
 {
-  return other.file == file && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
+  return other.path == path && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
          && other.fill == fill && other.stroke == stroke;
 }
 
@@ -152,12 +151,12 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
   return *( currentEntry->image );
 }
 
-QPicture QgsSvgCache::svgAsPicture( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                     double widthScaleFactor, bool forceVectorOutput )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
 
   //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
@@ -170,36 +169,33 @@ QPicture QgsSvgCache::svgAsPicture( const QString &file, double size, const QCol
   return *( currentEntry->picture );
 }
 
-QByteArray QgsSvgCache::svgContent( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                                     double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
 
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor )
+QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
 
   return currentEntry->viewboxSize;
 }
 
-QgsSvgCacheEntry *QgsSvgCache::insertSVG( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+QgsSvgCacheEntry *QgsSvgCache::insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
     double widthScaleFactor )
 {
-  // The file may be relative path (e.g. if path is data defined)
-  QString path = QgsSymbolLayerUtils::symbolNameToPath( file );
-
-  QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, file );
+  QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke );
 
   replaceParamsAndCacheSvg( entry );
 
-  mEntryLookup.insert( file, entry );
+  mEntryLookup.insert( path, entry );
 
   //insert to most recent place in entry list
   if ( !mMostRecentEntry ) //inserting first entry
@@ -287,7 +283,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry )
   }
 
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( getImageData( entry->file ) ) )
+  if ( !svgDoc.setContent( getImageData( entry->path ) ) )
   {
     return;
   }
@@ -561,12 +557,12 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
+QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
     double widthScaleFactor )
 {
   //search entries in mEntryLookup
   QgsSvgCacheEntry *currentEntry = nullptr;
-  QList<QgsSvgCacheEntry *> entries = mEntryLookup.values( file );
+  QList<QgsSvgCacheEntry *> entries = mEntryLookup.values( path );
 
   QList<QgsSvgCacheEntry *>::iterator entryIt = entries.begin();
   for ( ; entryIt != entries.end(); ++entryIt )
@@ -584,7 +580,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &file, double size, con
   //cache and replace params in svg content
   if ( !currentEntry )
   {
-    currentEntry = insertSVG( file, size, fill, stroke, strokeWidth, widthScaleFactor );
+    currentEntry = insertSvg( path, size, fill, stroke, strokeWidth, widthScaleFactor );
   }
   else
   {
@@ -889,7 +885,7 @@ void QgsSvgCache::printEntryList()
   while ( entry )
   {
     QgsDebugMsg( "***Entry:" );
-    QgsDebugMsg( "File:" + entry->file );
+    QgsDebugMsg( "File:" + entry->path );
     QgsDebugMsg( "Size:" + QString::number( entry->size ) );
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
     entry = entry->nextEntry;
@@ -910,7 +906,7 @@ void QgsSvgCache::trimToMaximumSize()
     entry = entry->nextEntry;
 
     takeEntryFromList( bkEntry );
-    mEntryLookup.remove( bkEntry->lookupKey, bkEntry );
+    mEntryLookup.remove( bkEntry->path, bkEntry );
     mTotalSize -= bkEntry->dataSize();
     delete bkEntry;
   }

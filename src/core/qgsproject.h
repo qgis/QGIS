@@ -996,7 +996,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Creates layer and adds it to maplayer registry
     //! \note not available in Python bindings
-    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes ) SIP_SKIP;
+    bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group ) SIP_SKIP;

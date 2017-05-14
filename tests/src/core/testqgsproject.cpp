@@ -17,10 +17,13 @@
 #include <QObject>
 
 #include "qgsapplication.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
-#include "qgsunittypes.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgssettings.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
 
 
 class TestQgsProject : public QObject
@@ -34,6 +37,7 @@ class TestQgsProject : public QObject
 
     void testReadPath();
     void testPathResolver();
+    void testPathResolverSvg();
     void testProjectUnits();
     void variablesChanged();
 };
@@ -55,12 +59,16 @@ void TestQgsProject::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 
 void TestQgsProject::cleanupTestCase()
 {
   // Runs once after all tests are run
+  QgsApplication::exitQgis();
 }
 
 void TestQgsProject::testReadPath()
@@ -104,7 +112,157 @@ void TestQgsProject::testPathResolver()
   QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "./file1.txt" ), QString( "./file1.txt" ) );
+
+  // TODO: test non-canonical paths - there are inconsistencies in the implementation
+  // e.g. base filename "/home/qgis/../test.qgs" resolving "/home/qgis/../file1.txt" back and forth
 }
+
+static void _useRendererWithSvgSymbol( QgsVectorLayer *layer, const QString &path )
+{
+  QgsSvgMarkerSymbolLayer *sl = new QgsSvgMarkerSymbolLayer( path );
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << sl );
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( markerSymbol );
+  layer->setRenderer( renderer );
+}
+
+static QString _getLayerSvgMarkerPath( const QgsProject &prj, const QString &layerName )
+{
+  QList<QgsMapLayer *> layers = prj.mapLayersByName( layerName );
+  Q_ASSERT( layers.count() == 1 );
+  Q_ASSERT( layers[0]->type() == QgsMapLayer::VectorLayer );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layers[0] );
+  Q_ASSERT( layer->renderer() );
+  Q_ASSERT( layer->renderer()->type() == "singleSymbol" );
+  QgsSingleSymbolRenderer *r = static_cast<QgsSingleSymbolRenderer *>( layer->renderer() );
+  QgsSymbol *s = r->symbol();
+  Q_ASSERT( s && s->symbolLayerCount() == 1 );
+  Q_ASSERT( s->symbolLayer( 0 )->layerType() == "SvgMarker" );
+  QgsSvgMarkerSymbolLayer *sl = static_cast<QgsSvgMarkerSymbolLayer *>( s->symbolLayer( 0 ) );
+  return sl->path();
+}
+
+static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFilename )
+{
+  QHash<QString, QString> projectFileSvgPaths;   // key = layer name, value = svg path
+
+  QDomDocument doc;
+  QFile projectFile( projectFilename );
+  bool res = projectFile.open( QIODevice::ReadOnly );
+  Q_ASSERT( res );
+  res = doc.setContent( &projectFile );
+  Q_ASSERT( res );
+  projectFile.close();
+
+  QDomElement docElem = doc.documentElement();
+  QDomElement layersElem = docElem.firstChildElement( "projectlayers" );
+  QDomElement layerElem = layersElem.firstChildElement();
+  while ( !layerElem.isNull() )
+  {
+    QString layerName = layerElem.firstChildElement( "layername" ).text();
+    QString svgPath;
+    QDomElement symbolElem = layerElem.firstChildElement( "renderer-v2" ).firstChildElement( "symbols" ).firstChildElement( "symbol" ).firstChildElement( "layer" );
+    QDomElement propElem = symbolElem.firstChildElement( "prop" );
+    while ( !propElem.isNull() )
+    {
+      if ( propElem.attribute( "k" ) == "name" )
+      {
+        svgPath = propElem.attribute( "v" );
+        break;
+      }
+      propElem = propElem.nextSiblingElement( "prop" );
+    }
+    projectFileSvgPaths[layerName] = svgPath;
+    layerElem = layerElem.nextSiblingElement();
+  }
+  return projectFileSvgPaths;
+}
+
+void TestQgsProject::testPathResolverSvg()
+{
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString layerPath = dataDir + "/points.shp";
+
+  // build a project with 3 layers, each having a simple renderer with SVG marker
+  // - existing SVG file in project dir
+  // - existing SVG file in QGIS dir
+  // - non-exsiting SVG file
+
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  // on mac the returned path was not canonical and the resolver failed to convert paths properly
+  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+
+  QString projectFilename = dirPath + "/project.qgs";
+  QString ourSvgPath = dirPath + "/valid.svg";
+  QString invalidSvgPath = dirPath + "/invalid.svg";
+
+  QFile svgFile( ourSvgPath );
+  QVERIFY( svgFile.open( QIODevice::WriteOnly ) );
+  svgFile.write( "<svg/>" );   // not a proper SVG, but good enough for this case
+  svgFile.close();
+
+  QVERIFY( QFileInfo::exists( ourSvgPath ) );  // should exist now
+
+  QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( "transport/transport_airport.svg", QgsPathResolver() );
+
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, "points 1", "ogr" );
+  _useRendererWithSvgSymbol( layer1, ourSvgPath );
+
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, "points 2", "ogr" );
+  _useRendererWithSvgSymbol( layer2, invalidSvgPath );
+
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, "points 3", "ogr" );
+  _useRendererWithSvgSymbol( layer3, librarySvgPath );
+
+  QVERIFY( layer1->isValid() );
+
+  QgsProject project;
+  project.addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 << layer3 );
+  project.write( projectFilename );
+
+  // make sure the path resolver works with relative paths (enabled by default)
+  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), dirPath + "/a.txt" );
+  QCOMPARE( project.pathResolver().writePath( dirPath + "/a.txt" ), QString( "./a.txt" ) );
+
+  // check that the saved paths are relative
+
+  // key = layer name, value = svg path
+  QHash<QString, QString> projectFileSvgPaths = _parseSvgPathsForLayers( projectFilename );
+
+  QCOMPARE( projectFileSvgPaths.count(), 3 );
+  QCOMPARE( projectFileSvgPaths["points 1"], QString( "./valid.svg" ) ); // relative path to project
+  QCOMPARE( projectFileSvgPaths["points 2"], invalidSvgPath );  // full path to non-existent file (not sure why - but that's how it works now)
+  QCOMPARE( projectFileSvgPaths["points 3"], QString( "transport/transport_airport.svg" ) );  // relative path to library
+
+  // load project again, check that the paths are absolute
+  QgsProject projectLoaded;
+  projectLoaded.read( projectFilename );
+  QString svg1 = _getLayerSvgMarkerPath( projectLoaded, "points 1" );
+  QString svg2 = _getLayerSvgMarkerPath( projectLoaded, "points 2" );
+  QString svg3 = _getLayerSvgMarkerPath( projectLoaded, "points 3" );
+  QCOMPARE( svg1, ourSvgPath );
+  QCOMPARE( svg2, invalidSvgPath );
+  QCOMPARE( svg3, librarySvgPath );
+
+  //
+  // now let's use these layers in embedded in another project...
+  //
+
+  QList<QDomNode> brokenNodes;
+  QgsProject projectMaster;
+  QVERIFY( projectMaster.createEmbeddedLayer( layer1->id(), projectFilename, brokenNodes ) );
+  QVERIFY( projectMaster.createEmbeddedLayer( layer2->id(), projectFilename, brokenNodes ) );
+  QVERIFY( projectMaster.createEmbeddedLayer( layer3->id(), projectFilename, brokenNodes ) );
+
+  QString svg1x = _getLayerSvgMarkerPath( projectMaster, "points 1" );
+  QString svg2x = _getLayerSvgMarkerPath( projectLoaded, "points 2" );
+  QString svg3x = _getLayerSvgMarkerPath( projectLoaded, "points 3" );
+  QCOMPARE( svg1x, ourSvgPath );
+  QCOMPARE( svg2x, invalidSvgPath );
+  QCOMPARE( svg3x, librarySvgPath );
+
+}
+
 
 void TestQgsProject::testProjectUnits()
 {
