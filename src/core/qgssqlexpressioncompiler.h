@@ -17,8 +17,10 @@
 #define QGSSQLEXPRESSIONCOMPILER_H
 
 #include "qgis_core.h"
-#include "qgsexpression.h"
 #include "qgsfields.h"
+
+class QgsExpression;
+class QgsExpressionNode;
 
 /** \ingroup core
  * \class QgsSqlExpressionCompiler

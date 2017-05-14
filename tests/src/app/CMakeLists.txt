@@ -1,31 +1,34 @@
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/auth
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/composer
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/geometry
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/metadata
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
-  ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets/core
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/attributetable
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/raster
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/ui
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/python
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_SOURCE_DIR}/src/test
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_BINARY_DIR}/src/ui
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}

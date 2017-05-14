@@ -23,7 +23,7 @@ QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *s
 
 }
 
-QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
   {

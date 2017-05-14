@@ -35,21 +35,22 @@ QT5_ADD_RESOURCES(GPS_RCC_SRCS ${GPS_RCCS})
 ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS} ${GPS_UIS_H})
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ../../core/gps
-  ../../gui
-  ..
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/plugins
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${EXPAT_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
+  ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(gpsimporterplugin
