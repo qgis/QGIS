@@ -98,6 +98,8 @@ class CORE_EXPORT QgsMapToPixel
     //! \note not available in Python bindings
     void transformInPlace( float &x, float &y ) const SIP_SKIP;
 
+#ifndef SIP_RUN
+
     /**
      * Transform device coordinates to map coordinates. Modifies the
      * given coordinates in place. Intended as a fast way to do the
@@ -111,6 +113,7 @@ class CORE_EXPORT QgsMapToPixel
       for ( int i = 0; i < x.size(); ++i )
         transformInPlace( x[i], y[i] );
     }
+#endif
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 

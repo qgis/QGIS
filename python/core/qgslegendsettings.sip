@@ -1,176 +1,278 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendsettings.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * @brief The QgsLegendSettings class stores the appearance and layout settings
- * for legend drawing with QgsLegendRenderer. The content of the legend is given
- * in QgsLegendModel class.
- *
- * @note added in 2.6
- */
+
+
+
+
+
 class QgsLegendSettings
 {
-%TypeHeaderCode
-#include <qgslegendsettings.h>
+%Docstring
+ The QgsLegendSettings class stores the appearance and layout settings
+ for legend drawing with QgsLegendRenderer. The content of the legend is given
+ in QgsLegendModel class.
+
+.. versionadded:: 2.6
 %End
 
+%TypeHeaderCode
+#include "qgslegendsettings.h"
+%End
   public:
     QgsLegendSettings();
 
     void setTitle( const QString &t );
     QString title() const;
+%Docstring
+ :rtype: str
+%End
 
-    /** Returns the alignment of the legend title
-     * @returns Qt::AlignmentFlag for the legend title
-     * @see setTitleAlignment
-     */
     Qt::AlignmentFlag titleAlignment() const;
-    /** Sets the alignment of the legend title
-     * @param alignment Text alignment for drawing the legend title
-     * @see titleAlignment
-     */
-    void setTitleAlignment( Qt::AlignmentFlag alignment );
+%Docstring
+ Returns the alignment of the legend title
+ :return: Qt.AlignmentFlag for the legend title
+.. seealso:: setTitleAlignment
+ :rtype: Qt.AlignmentFlag
+%End
 
-    /** Returns reference to modifiable style */
-    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
-    /** Returns style */
+    void setTitleAlignment( Qt::AlignmentFlag alignment );
+%Docstring
+ Sets the alignment of the legend title
+ \param alignment Text alignment for drawing the legend title
+.. seealso:: titleAlignment
+%End
+
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+%Docstring
+Returns style
+ :rtype: QgsLegendStyle
+%End
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
     double boxSpace() const;
+%Docstring
+ :rtype: float
+%End
     void setBoxSpace( double s );
 
     void setWrapChar( const QString &t );
     QString wrapChar() const;
+%Docstring
+ :rtype: str
+%End
 
     double columnSpace() const;
+%Docstring
+ :rtype: float
+%End
     void setColumnSpace( double s );
 
     int columnCount() const;
+%Docstring
+ :rtype: int
+%End
     void setColumnCount( int c );
 
     bool splitLayer() const;
+%Docstring
+ :rtype: bool
+%End
     void setSplitLayer( bool s );
 
     bool equalColumnWidth() const;
+%Docstring
+ :rtype: bool
+%End
     void setEqualColumnWidth( bool s );
 
     QColor fontColor() const;
+%Docstring
+ :rtype: QColor
+%End
     void setFontColor( const QColor &c );
 
     QSizeF symbolSize() const;
+%Docstring
+ :rtype: QSizeF
+%End
     void setSymbolSize( QSizeF s );
 
-    /** Returns whether a stroke will be drawn around raster symbol items.
-     * @see setDrawRasterStroke()
-     * @see rasterStrokeColor()
-     * @see rasterStrokeWidth()
-     * @note added in QGIS 2.12
-     */
     bool drawRasterStroke() const;
+%Docstring
+ Returns whether a stroke will be drawn around raster symbol items.
+.. seealso:: setDrawRasterStroke()
+.. seealso:: rasterStrokeColor()
+.. seealso:: rasterStrokeWidth()
+.. versionadded:: 2.12
+ :rtype: bool
+%End
 
-    /** Sets whether a stroke will be drawn around raster symbol items.
-     * @param enabled set to true to draw borders
-     * @see drawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @see setRasterStrokeWidth()
-     * @note added in QGIS 2.12
-     */
     void setDrawRasterStroke( bool enabled );
+%Docstring
+ Sets whether a stroke will be drawn around raster symbol items.
+ \param enabled set to true to draw borders
+.. seealso:: drawRasterStroke()
+.. seealso:: setRasterStrokeColor()
+.. seealso:: setRasterStrokeWidth()
+.. versionadded:: 2.12
+%End
 
-    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeColor()
-     * @see drawRasterStroke()
-     * @see rasterStrokeWidth()
-     * @note added in QGIS 2.12
-     */
     QColor rasterStrokeColor() const;
+%Docstring
+ Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+ only drawn if drawRasterStroke() is true.
+.. seealso:: setRasterStrokeColor()
+.. seealso:: drawRasterStroke()
+.. seealso:: rasterStrokeWidth()
+.. versionadded:: 2.12
+ :rtype: QColor
+%End
 
-    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
-     * @param color stroke color
-     * @see rasterStrokeColor()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeWidth()
-     * @note added in QGIS 2.12
-     */
     void setRasterStrokeColor( const QColor &color );
+%Docstring
+ Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+ only drawn if drawRasterStroke() is true.
+ \param color stroke color
+.. seealso:: rasterStrokeColor()
+.. seealso:: setDrawRasterStroke()
+.. seealso:: setRasterStrokeWidth()
+.. versionadded:: 2.12
+%End
 
-    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
-     * @see setRasterStrokeWidth()
-     * @see drawRasterStroke()
-     * @see rasterStrokeColor()
-     * @note added in QGIS 2.12
-     */
     double rasterStrokeWidth() const;
+%Docstring
+ Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+ only drawn if drawRasterStroke() is true.
+.. seealso:: setRasterStrokeWidth()
+.. seealso:: drawRasterStroke()
+.. seealso:: rasterStrokeColor()
+.. versionadded:: 2.12
+ :rtype: float
+%End
 
-    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
-     * only drawn if drawRasterStroke() is true.
-     * @param width stroke width in millimeters
-     * @see rasterStrokeWidth()
-     * @see setDrawRasterStroke()
-     * @see setRasterStrokeColor()
-     * @note added in QGIS 2.12
-     */
     void setRasterStrokeWidth( double width );
+%Docstring
+ Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+ only drawn if drawRasterStroke() is true.
+ \param width stroke width in millimeters
+.. seealso:: rasterStrokeWidth()
+.. seealso:: setDrawRasterStroke()
+.. seealso:: setRasterStrokeColor()
+.. versionadded:: 2.12
+%End
 
     QSizeF wmsLegendSize() const;
+%Docstring
+ :rtype: QSizeF
+%End
     void setWmsLegendSize( QSizeF s );
 
     double lineSpacing() const;
+%Docstring
+ :rtype: float
+%End
     void setLineSpacing( double s );
 
     double mmPerMapUnit() const;
+%Docstring
+ :rtype: float
+%End
     void setMmPerMapUnit( double mmPerMapUnit );
 
     bool useAdvancedEffects() const;
+%Docstring
+ :rtype: bool
+%End
     void setUseAdvancedEffects( bool use );
 
     double mapScale() const;
+%Docstring
+ :rtype: float
+%End
     void setMapScale( double scale );
 
     int dpi() const;
+%Docstring
+ :rtype: int
+%End
     void setDpi( int dpi );
 
-    // utility functions
 
-    /** Splits a string using the wrap char taking into account handling empty
-     * wrap char which means no wrapping
-     */
     QStringList splitStringForWrapping( const QString &stringToSplt ) const;
+%Docstring
+ Splits a string using the wrap char taking into account handling empty
+ wrap char which means no wrapping
+ :rtype: list of str
+%End
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to
-     * pixel, scaling of font and painter to work around the Qt font bug)
-     */
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
+%Docstring
+ Draws Text. Takes care about all the composer specific issues (calculation to
+ pixel, scaling of font and painter to work around the Qt font bug)
+%End
 
-    /** Like the above, but with a rectangle for multiline text
-     * @param p painter to use
-     * @param rect rectangle to draw into
-     * @param text text to draw
-     * @param font font to use
-     * @param halignment optional horizontal alignment
-     * @param valignment optional vertical alignment
-     * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
-     */
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
+%Docstring
+ Like the above, but with a rectangle for multiline text
+ \param p painter to use
+ \param rect rectangle to draw into
+ \param text text to draw
+ \param font font to use
+ \param halignment optional horizontal alignment
+ \param valignment optional vertical alignment
+ \param flags allows for passing Qt.TextFlags to control appearance of rendered text
+%End
 
-    /** Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE */
     QFont scaledFontPixelSize( const QFont &font ) const;
+%Docstring
+Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
+ :rtype: QFont
+%End
 
-    /** Calculates font to from point size to pixel size */
     double pixelFontSize( double pointSize ) const;
+%Docstring
+Calculates font to from point size to pixel size
+ :rtype: float
+%End
 
-    /** Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
     double textWidthMillimeters( const QFont &font, const QString &text ) const;
+%Docstring
+Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+ :rtype: float
+%End
 
-    /** Returns the font height of a character in millimeters */
     double fontHeightCharacterMM( const QFont &font, QChar c ) const;
+%Docstring
+Returns the font height of a character in millimeters
+ :rtype: float
+%End
 
-    /** Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
     double fontAscentMillimeters( const QFont &font ) const;
+%Docstring
+Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+ :rtype: float
+%End
 
-    /** Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE */
     double fontDescentMillimeters( const QFont &font ) const;
+%Docstring
+Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
+ :rtype: float
+%End
 
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgslegendsettings.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

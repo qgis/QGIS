@@ -34,7 +34,7 @@
 class CORE_EXPORT QgsExpressionFieldBuffer
 {
   public:
-    typedef struct ExpressionField
+    struct ExpressionField
     {
       ExpressionField( const QString &exp, const QgsField &fld )
         : cachedExpression( exp )
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
 
       QgsExpression cachedExpression;
       QgsField field;
-    } ExpressionField;
+    };
 
     QgsExpressionFieldBuffer();
 

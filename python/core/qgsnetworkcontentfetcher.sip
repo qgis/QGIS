@@ -1,43 +1,68 @@
-/**
-  \class QgsNetworkContentFetcher
-  \ingroup core
-  \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
-  and converting the content to standard formats. Url redirects are automatically
-  handled.
-  \since 2.5
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcher.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 
 class QgsNetworkContentFetcher : QObject
 {
-%TypeHeaderCode
-#include <qgsnetworkcontentfetcher.h>
+%Docstring
+ HTTP network content fetcher. A simple method for fetching remote HTTP content
+and converting the content to standard formats. Url redirects are automatically
+handled.
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgsnetworkcontentfetcher.h"
+%End
   public:
     QgsNetworkContentFetcher();
 
     virtual ~QgsNetworkContentFetcher();
 
-    /** Fetches content from a remote URL and handles redirects. The finished()
-     * signal will be emitted when content has been fetched.
-     * @param url URL to fetch
-     */
     void fetchContent( const QUrl &url );
+%Docstring
+ Fetches content from a remote URL and handles redirects. The finished()
+ signal will be emitted when content has been fetched.
+ \param url URL to fetch
+%End
 
-    /** Returns a reference to the network reply
-     * @returns QNetworkReply for fetched URL content
-     */
     QNetworkReply *reply();
+%Docstring
+ Returns a reference to the network reply
+ :return: QNetworkReply for fetched URL content
+ :rtype: QNetworkReply
+%End
 
-    /** Returns the fetched content as a string
-     * @returns string containing network content
-     */
     QString contentAsString() const;
+%Docstring
+ Returns the fetched content as a string
+ :return: string containing network content
+ :rtype: str
+%End
 
   signals:
 
-    /** Emitted when content has loaded
-     */
     void finished();
+%Docstring
+ Emitted when content has loaded
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcher.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
