@@ -85,6 +85,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       , mDestinationProjection( nullptr )
       , mSourceDatumTransform( other.mSourceDatumTransform )
       , mDestinationDatumTransform( other.mDestinationDatumTransform )
+        // important - don't copy mOwnerThread!
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
       initialize();
@@ -348,6 +349,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     int mSourceDatumTransform;
     int mDestinationDatumTransform;
+
+#ifdef QGISDEBUG
+    //! Owner thread - used during debugging to ensure QgsCoordinateTransform::detachForThread() is called
+    QThread *mOwnerThread = nullptr;
+#endif
 
     void setFinder()
     {

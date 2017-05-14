@@ -30,6 +30,7 @@
 #include <QPolygonF>
 #include <QStringList>
 #include <QVector>
+#include <QThread>
 
 extern "C"
 {
@@ -449,6 +450,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
+
   // Refuse to transform the points if the srs's are invalid
   if ( !d->mSourceCRS.isValid() )
   {
@@ -471,6 +473,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #endif
 
   // use proj4 to do the transform
+
+#ifdef QGISDEBUG
+  // thread safety check - if this fails, you haven't called detachForThread()!
+  if ( !d->mOwnerThread )
+    d->mOwnerThread = QThread::currentThread();
+  else
+    Q_ASSERT( QThread::currentThread() == d->mOwnerThread );
+#endif
 
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
