@@ -479,7 +479,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   if ( !d->mOwnerThread )
     d->mOwnerThread = QThread::currentThread();
   else
-    Q_ASSERT( QThread::currentThread() == d->mOwnerThread );
+    Q_ASSERT_X( QThread::currentThread() == d->mOwnerThread, "transformCoords", "Using `QgsCoordinateTransform` in background thread without calling `detachForThread()`" );
 #endif
 
   // if the source/destination projection is lat/long, convert the points to radians
