@@ -143,6 +143,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;
 
     /**
+     * Returns the number of visible (non-hidden) parameters defined by this
+     * algorithm.
+     */
+    int countVisibleParameters() const;
+
+    /**
      * Runs the algorithm using the specified \a parameters. Algorithms should implement
      * their custom processing logic here.
      *

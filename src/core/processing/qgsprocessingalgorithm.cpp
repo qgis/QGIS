@@ -87,6 +87,17 @@ const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinit
   return nullptr;
 }
 
+int QgsProcessingAlgorithm::countVisibleParameters() const
+{
+  int count = 0;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( !( def->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
+      count++;
+  }
+  return count;
+}
+
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsString( parameterDefinition( name ), parameters, name, context );
