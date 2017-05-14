@@ -30,6 +30,11 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compile( const QgsExp
     return Fail;
 }
 
+QString QgsSqlExpressionCompiler::result()
+{
+  return mResult;
+}
+
 QString QgsSqlExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   QString quoted = identifier;

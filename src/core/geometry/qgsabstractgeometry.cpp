@@ -122,6 +122,10 @@ QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
   return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
+void QgsAbstractGeometry::clearCache() const
+{
+}
+
 int QgsAbstractGeometry::nCoordinates() const
 {
   int nCoords = 0;
@@ -135,6 +139,21 @@ int QgsAbstractGeometry::nCoordinates() const
   }
 
   return nCoords;
+}
+
+double QgsAbstractGeometry::length() const
+{
+  return 0.0;
+}
+
+double QgsAbstractGeometry::perimeter() const
+{
+  return 0.0;
+}
+
+double QgsAbstractGeometry::area() const
+{
+  return 0.0;
 }
 
 QString QgsAbstractGeometry::wktTypeStr() const
@@ -237,11 +256,21 @@ bool QgsAbstractGeometry::isEmpty() const
   return !nextVertex( vId, vertex );
 }
 
+bool QgsAbstractGeometry::hasCurvedSegments() const
+{
+  return false;
+}
+
 
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );
   return clone();
+}
+
+QgsAbstractGeometry *QgsAbstractGeometry::toCurveType() const
+{
+  return 0;
 }
 

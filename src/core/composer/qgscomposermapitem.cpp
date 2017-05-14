@@ -52,6 +52,36 @@ void QgsComposerMapItem::setComposerMap( QgsComposerMap *map )
   mComposerMap = map;
 }
 
+const QgsComposerMap *QgsComposerMapItem::composerMap() const
+{
+  return mComposerMap;
+}
+
+void QgsComposerMapItem::setName( const QString &name )
+{
+  mName = name;
+}
+
+QString QgsComposerMapItem::name() const
+{
+  return mName;
+}
+
+void QgsComposerMapItem::setEnabled( const bool enabled )
+{
+  mEnabled = enabled;
+}
+
+bool QgsComposerMapItem::enabled() const
+{
+  return mEnabled;
+}
+
+bool QgsComposerMapItem::usesAdvancedEffects() const
+{
+  return false;
+}
+
 //
 // QgsComposerMapItemStack
 //

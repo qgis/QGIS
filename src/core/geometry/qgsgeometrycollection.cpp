@@ -160,6 +160,11 @@ int QgsGeometryCollection::dimension() const
   return maxDim;
 }
 
+QString QgsGeometryCollection::geometryType() const
+{
+  return QStringLiteral( "GeometryCollection" );
+}
+
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   Q_FOREACH ( QgsAbstractGeometry *g, mGeometries )
@@ -351,6 +356,13 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
     bbox.combineExtentWith( geomBox );
   }
   return bbox;
+}
+
+void QgsGeometryCollection::clearCache() const
+{
+  mBoundingBox = QgsRectangle();
+  mCoordinateSequence.clear();
+  QgsAbstractGeometry::clearCache();
 }
 
 QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
@@ -617,6 +629,16 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
   return geom->vertexAngle( vertex );
 }
 
+int QgsGeometryCollection::vertexCount( int part, int ring ) const
+{
+  return mGeometries[part]->vertexCount( 0, ring );
+}
+
+int QgsGeometryCollection::ringCount( int part ) const
+{
+  return mGeometries[part]->ringCount();
+}
+
 bool QgsGeometryCollection::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
@@ -674,4 +696,9 @@ bool QgsGeometryCollection::dropMValue()
   }
   clearCache();
   return true;
+}
+
+bool QgsGeometryCollection::wktOmitChildType() const
+{
+  return false;
 }

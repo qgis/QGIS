@@ -252,7 +252,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Sets the feature associated with the annotation.
      * \see associatedFeature()
      */
-    virtual void setAssociatedFeature( const QgsFeature &feature ) { mFeature = feature; }
+    virtual void setAssociatedFeature( const QgsFeature &feature );
 
   signals:
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * Returns the minimum frame size for the annotation. Subclasses should implement this if they
      * cannot be resized smaller than a certain minimum size.
      */
-    virtual QSizeF minimumFrameSize() const { return QSizeF( 0, 0 ); }
+    virtual QSizeF minimumFrameSize() const;
 
     /**
      * Writes common annotation properties to a DOM element.

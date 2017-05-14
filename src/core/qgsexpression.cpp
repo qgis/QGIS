@@ -4891,6 +4891,11 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 ///////////////////////////////////////////////
 // nodes
 
+QgsExpression::NodeList::~NodeList()
+{
+  qDeleteAll( mList );
+}
+
 void QgsExpression::NodeList::append( QgsExpression::NamedNode *node )
 {
   mList.append( node->node );
@@ -4954,6 +4959,11 @@ QVariant QgsExpression::NodeUnaryOperator::evalNode( QgsExpression *parent, cons
   return QVariant();
 }
 
+QgsExpression::NodeType QgsExpression::NodeUnaryOperator::nodeType() const
+{
+  return ntUnaryOperator;
+}
+
 bool QgsExpression::NodeUnaryOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   return mOperand->prepare( parent, context );
@@ -4972,6 +4982,11 @@ QSet<QString> QgsExpression::NodeUnaryOperator::referencedColumns() const
 QSet<QString> QgsExpression::NodeUnaryOperator::referencedVariables() const
 {
   return mOperand->referencedVariables();
+}
+
+bool QgsExpression::NodeUnaryOperator::needsGeometry() const
+{
+  return mOperand->needsGeometry();
 }
 
 QgsExpression::Node *QgsExpression::NodeUnaryOperator::clone() const
@@ -5412,6 +5427,11 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
   }
 }
 
+QgsExpression::NodeType QgsExpression::NodeBinaryOperator::nodeType() const
+{
+  return ntBinaryOperator;
+}
+
 bool QgsExpression::NodeBinaryOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool resL = mOpLeft->prepare( parent, context );
@@ -5611,6 +5631,16 @@ QVariant QgsExpression::NodeInOperator::evalNode( QgsExpression *parent, const Q
     return mNotIn ? TVL_True : TVL_False;
 }
 
+QgsExpression::NodeInOperator::~NodeInOperator()
+{
+  delete mNode; delete mList;
+}
+
+QgsExpression::NodeType QgsExpression::NodeInOperator::nodeType() const
+{
+  return ntInOperator;
+}
+
 bool QgsExpression::NodeInOperator::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = mNode->prepare( parent, context );
@@ -5723,6 +5753,16 @@ QgsExpression::NodeFunction::NodeFunction( int fnIndex, QgsExpression::NodeList 
 
     delete args;
   }
+}
+
+QgsExpression::NodeFunction::~NodeFunction()
+{
+  delete mArgs;
+}
+
+QgsExpression::NodeType QgsExpression::NodeFunction::nodeType() const
+{
+  return ntFunction;
 }
 
 bool QgsExpression::NodeFunction::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
@@ -5902,6 +5942,11 @@ QVariant QgsExpression::NodeLiteral::evalNode( QgsExpression *parent, const QgsE
   return mValue;
 }
 
+QgsExpression::NodeType QgsExpression::NodeLiteral::nodeType() const
+{
+  return ntLiteral;
+}
+
 bool QgsExpression::NodeLiteral::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( parent );
@@ -5938,6 +5983,11 @@ QSet<QString> QgsExpression::NodeLiteral::referencedColumns() const
 QSet<QString> QgsExpression::NodeLiteral::referencedVariables() const
 {
   return QSet<QString>();
+}
+
+bool QgsExpression::NodeLiteral::needsGeometry() const
+{
+  return false;
 }
 
 QgsExpression::Node *QgsExpression::NodeLiteral::clone() const
@@ -5982,6 +6032,11 @@ QVariant QgsExpression::NodeColumnRef::evalNode( QgsExpression *parent, const Qg
   return QVariant( '[' + mName + ']' );
 }
 
+QgsExpression::NodeType QgsExpression::NodeColumnRef::nodeType() const
+{
+  return ntColumnRef;
+}
+
 bool QgsExpression::NodeColumnRef::prepareNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   if ( !context || !context->hasVariable( QgsExpressionContext::EXPR_FIELDS ) )
@@ -6017,6 +6072,11 @@ QSet<QString> QgsExpression::NodeColumnRef::referencedVariables() const
   return QSet<QString>();
 }
 
+bool QgsExpression::NodeColumnRef::needsGeometry() const
+{
+  return false;
+}
+
 QgsExpression::Node *QgsExpression::NodeColumnRef::clone() const
 {
   NodeColumnRef *copy = new NodeColumnRef( mName );
@@ -6037,6 +6097,17 @@ QgsExpression::NodeCondition::NodeCondition( QgsExpression::WhenThenList *condit
   : mConditions( *conditions )
   , mElseExp( elseExp )
 { delete conditions; }
+
+QgsExpression::NodeCondition::~NodeCondition()
+{
+  delete mElseExp;
+  qDeleteAll( mConditions );
+}
+
+QgsExpression::NodeType QgsExpression::NodeCondition::nodeType() const
+{
+  return ntCondition;
+}
 
 QVariant QgsExpression::NodeCondition::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
@@ -6530,6 +6601,11 @@ bool QgsExpression::Function::usesGeometry( const QgsExpression::NodeFunction *n
   return true;
 }
 
+QStringList QgsExpression::Function::aliases() const
+{
+  return QStringList();
+}
+
 bool QgsExpression::Function::isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   Q_UNUSED( parent )
@@ -6552,9 +6628,19 @@ QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction *no
   return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
 }
 
+bool QgsExpression::Function::isDeprecated() const
+{
+  return mGroups.isEmpty() ? false : mGroups.contains( QStringLiteral( "deprecated" ) );
+}
+
 bool QgsExpression::Function::operator==( const QgsExpression::Function &other ) const
 {
   return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
+}
+
+bool QgsExpression::Function::handlesNull() const
+{
+  return mHandlesNull;
 }
 
 QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params,
@@ -6573,6 +6659,11 @@ QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsE
   , mUsesGeometryFunc( usesGeometry )
   , mReferencedColumnsFunc( referencedColumns )
 {
+}
+
+QStringList QgsExpression::StaticFunction::aliases() const
+{
+  return mAliases;
 }
 
 bool QgsExpression::StaticFunction::usesGeometry( const NodeFunction *node ) const
