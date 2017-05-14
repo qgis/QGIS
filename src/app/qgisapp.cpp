@@ -5890,8 +5890,10 @@ void QgisApp::saveMapAsPdf()
     printer->setOutputFileName( fileName );
     printer->setOutputFormat( QPrinter::PdfFormat );
     printer->setOrientation( QPrinter::Portrait );
-    printer->setPaperSize( dlg.size(), QPrinter::DevicePixel );
-    printer->setPageMargins( 0, 0, 0, 0, QPrinter::DevicePixel );
+    // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
+    printer->setPaperSize( dlg.size()  * 25.4 / dlg.dpi(), QPrinter::Millimeter );
+    printer->setPageMargins( 0, 0, 0, 0, QPrinter::Millimeter );
+    printer->setResolution( dlg.dpi() );
 
     QPainter *p = new QPainter();
     QImage *image = nullptr;
@@ -5914,7 +5916,6 @@ void QgisApp::saveMapAsPdf()
     }
     else
     {
-      printer->setResolution( dlg.dpi() );
       p->begin( printer );
     }
 
