@@ -40,6 +40,7 @@
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"
+#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -271,7 +272,7 @@ bool QgsServer::init( )
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
 

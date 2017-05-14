@@ -12,7 +12,7 @@ class QgsSearchQueryBuilder : QDialog
   public:
     //! Constructor - takes pointer to vector layer as a parameter
     QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent /TransferThis/ = 0,
-                           const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
+                           const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsSearchQueryBuilder();
 

@@ -63,6 +63,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <table>
 <caption id="renamed_classes">Renamed classes</caption>
 <tr><th>API 2.x<th>API 3.X
+<tr><td>QgisGui<td>QgsGuiUtils
 <tr><td>QgsAttributeAction<td>QgsActionManager
 <tr><td>QgsAbstractGeometryV2<td>QgsAbstractGeometry
 <tr><td>QgsCategorizedSymbolRendererV2<td>QgsCategorizedSymbolRenderer
@@ -1011,7 +1012,7 @@ QgsEditFormConfig        {#qgis_api_break_3_0_QgsEditFormConfig}
 
 - Does no longer inherit QObject
 - widgetType() and widgetConfig() now reflect only the user configured values.
-QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
+QgsEditorWidgetRegistry::findBest() must be used instead.
 - widgetConfig(), setWidgetType(), setWidgetConfig() and removeWidgetConfig() now only take a string as first parameter. Access by index has been removed.
 - widgetType() has been removed in favor of QgsVectorLayer::editorWidgetSetup()
 - expression(), setExpression(), expressionDescription() and setExpressionDescription()
@@ -1213,6 +1214,7 @@ plugins calling this method will need to be updated.
 QgsEditorWidgetRegistry        {#qgis_api_break_3_0_QgsEditorWidgetRegistry}
 -----------------------
 
+- The instance() singleton was removed. Use QgsGui::editorWidgetRegistry() instead.
 - The signature of isFieldSupported() has been changed to return an unsigned
   integer (how good it supports the given field) and is now const.
 
@@ -1305,6 +1307,12 @@ QgsLayerPropertiesWidget        {#qgis_api_break_3_0_QgsLayerPropertiesWidget}
 ------------------------
 
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
+
+
+QgsLayerTreeEmbeddedWidgetRegistry        {#qgis_api_break_3_0_QgsLayerTreeEmbeddedWidgetRegistry}
+----------------------------------
+
+- QgsLayerTreeEmbeddedWidgetRegistry::instance() has been removed. Use QgsGui::layerTreeEmbeddedWidgetRegistry() instead.
 
 
 QgsLayerTreeGroup        {#qgis_api_break_3_0_QgsLayerTreeGroup}
@@ -1437,6 +1445,13 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - readXml() and writeXml() expect QgsReadWriteContext reference as the last argument
 - the invalidTransformInput() slot was removed - calling this slot had no effect
 - metadata() was renamed to htmlMetadata()
+
+
+QgsMapLayerActionRegistry        {#qgis_api_break_3_0_QgsMapLayerActionRegistry}
+-------------------------
+
+- This class is no longer a singleton and instance() has been removed. Instead use QgsGui::mapLayerActionRegistry().
+
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
@@ -1822,10 +1837,10 @@ QgsRenderChecker        {#qgis_api_break_3_0_QgsRenderChecker}
 setExcludeAttributesWms()
 - excludeAttributesWFS() and setExcludeAttributesWFS() have been renamed to excludeAttributesWfs() and
 setExcludeAttributesWfs()
-- editorWidgetV2() and editorWidgetV2Config() have been removed and QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
+- editorWidgetV2() and editorWidgetV2Config() have been removed and QgsEditorWidgetRegistry::findBest() must be used instead.
 - setEditorWidgetV2(), setEditorWidgetV2Config() have been removed and their equivalent in editFormConfig() must be used instead.
 - setCheckedState() is removed. Use `editFormConfig()->setWidgetConfig()` instead.
-- valueMap(), valueRelation(), dateFormat(), widgetSize() have been removed. Use QgsEditorWidgetRegistry::instance()->findBest().config() instead.
+- valueMap(), valueRelation(), dateFormat(), widgetSize() have been removed. Use QgsEditorWidgetRegistry::findBest().config() instead.
 
 
 QgsRenderContext        {#qgis_api_break_3_0_QgsRenderContext}
@@ -1909,6 +1924,10 @@ QgsServer       {#qgis_api_break_3_0_QgsServer}
 -  QgsServer::handleRequest( const QString &urlstr ) has been removed in favour of the new
 -  QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response ) has been added
 
+QgsShortcutsManager       {#qgis_api_break_3_0_QgsShortcutsManager}
+-------------------
+
+-  QgsShortcutsManager::instance() was removed. Use QgsGui::shortcutsManager() instead.
 
 
 QgsSimpleMarkerSymbolLayer        {#qgis_api_break_3_0_QgsSimpleMarkerSymbolLayer}

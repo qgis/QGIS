@@ -17,7 +17,7 @@
 #ifndef QGSMESSAGEBAR_H
 #define QGSMESSAGEBAR_H
 
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include "qgis.h"
 
 #include <QString>

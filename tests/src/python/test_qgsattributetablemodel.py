@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.gui import (
     QgsAttributeTableModel,
-    QgsEditorWidgetRegistry
+    QgsGui
 )
 from qgis.core import (
     QgsFeature,
@@ -35,7 +35,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
 
     def setUp(self):
         self.layer = self.createLayer()

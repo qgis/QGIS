@@ -21,7 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
 #include <qgis.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include <qgsvirtuallayerdefinition.h>
 
 class QgsVectorLayer;
@@ -33,7 +33,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
     void on_buttonBox_accepted();

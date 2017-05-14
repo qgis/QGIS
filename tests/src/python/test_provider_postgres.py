@@ -30,7 +30,7 @@ from qgis.core import (
     QgsSettings,
     QgsTransactionGroup
 )
-from qgis.gui import QgsEditorWidgetRegistry
+from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -55,7 +55,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
-        QgsEditorWidgetRegistry.instance().initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
         cls.con = psycopg2.connect(cls.dbconn)
 
     @classmethod
@@ -379,13 +379,13 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(setup1.type(), "FooEdit")
         self.assertEqual(setup1.config(), {"param1": "value1", "param2": "2"})
 
-        best1 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld1")
+        best1 = QgsGui.editorWidgetRegistry().findBest(vl, "fld1")
         self.assertEqual(best1.type(), "FooEdit")
         self.assertEqual(best1.config(), setup1.config())
 
         self.assertTrue(fields.field("fld2").editorWidgetSetup().isNull())
 
-        best2 = QgsEditorWidgetRegistry.instance().findBest(vl, "fld2")
+        best2 = QgsGui.editorWidgetRegistry().findBest(vl, "fld2")
         self.assertEqual(best2.type(), "TextEdit")
 
     def testHstore(self):

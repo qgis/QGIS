@@ -20,7 +20,7 @@
 #define QGSDB2SOURCESELECT_H
 
 #include "ui_qgsdbsourceselectbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"
@@ -97,7 +97,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     static void deleteConnection( const QString &key );
 
     //! Constructor
-    QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
 
     ~QgsDb2SourceSelect();
     //! Populate the connection list combo box

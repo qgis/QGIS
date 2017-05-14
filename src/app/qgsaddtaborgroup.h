@@ -20,7 +20,7 @@
 #define QGSADDTABORGROUP
 
 #include "ui_qgsaddtaborgroupbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis_app.h"
 
 class QTreeWidgetItem;

@@ -27,6 +27,7 @@
 #include "qgsfieldformatter.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 
 #include <QTableWidgetItem>
 #include <QFile>
@@ -46,7 +47,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   setupUi( this );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
-  QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsEditorWidgetRegistry::instance()->factories() );
+  QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
   while ( it.hasNext() )
   {
     it.next();
@@ -160,7 +161,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
   }
   else
   {
-    QgsEditorConfigWidget *cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( type, mLayer, mFieldIdx, this );
+    QgsEditorConfigWidget *cfgWdg = QgsGui::editorWidgetRegistry()->createConfigWidget( type, mLayer, mFieldIdx, this );
 
     if ( cfgWdg )
     {

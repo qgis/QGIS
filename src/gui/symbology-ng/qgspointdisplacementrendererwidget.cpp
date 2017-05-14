@@ -23,7 +23,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -240,7 +240,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   }
 
   bool ok;
-  QFont newFont = QgisGui::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
+  QFont newFont = QgsGuiUtils::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );

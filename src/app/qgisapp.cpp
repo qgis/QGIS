@@ -170,7 +170,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsformannotation.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshtmlannotation.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
@@ -278,6 +278,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaprenderertask.h"
 #include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
+#include "qgsgui.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -924,7 +925,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   // Init the editor widget types
-  QgsEditorWidgetRegistry::initEditors( mMapCanvas, mInfoBar );
+  QgsGui::editorWidgetRegistry()->initEditors( mMapCanvas, mInfoBar );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
@@ -941,7 +942,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
 
-  connect( QgsMapLayerActionRegistry::instance(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
+  connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgisApp::refreshActionFeatureAction );
 
   // set application's caption
   QString caption = tr( "QGIS - %1 ('%2')" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME );
@@ -1159,7 +1160,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
 
   // supposedly all actions have been added, now register them to the shortcut manager
-  QgsShortcutsManager::instance()->registerAllChildren( this );
+  QgsGui::shortcutsManager()->registerAllChildren( this );
 
   QgsProviderRegistry::instance()->registerGuis( this );
 
@@ -5065,7 +5066,7 @@ void QgisApp::newMemoryLayer()
 
 void QgisApp::newSpatialiteLayer()
 {
-  QgsNewSpatialiteLayerDialog spatialiteDialog( this, QgisGui::ModalDialogFlags, defaultCrsForNewLayers() );
+  QgsNewSpatialiteLayerDialog spatialiteDialog( this, QgsGuiUtils::ModalDialogFlags, defaultCrsForNewLayers() );
   spatialiteDialog.exec();
 }
 
@@ -5804,7 +5805,7 @@ void QgisApp::saveMapAsImage()
   if ( !dlg.exec() )
     return;
 
-  QPair< QString, QString> fileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( fileNameAndFilter.first != QLatin1String( "" ) )
   {
     QgsMapSettings ms = QgsMapSettings();
@@ -6287,7 +6288,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   if ( qgsAction.isValid() )
   {
     vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), qgsAction.id() );
-    QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
+    QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, nullptr );
 
     mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( qgsAction.name() ) );
 
@@ -6302,7 +6303,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     QgsMapLayerAction *mapLayerAction = qobject_cast<QgsMapLayerAction *>( action );
     if ( mapLayerAction )
     {
-      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, mapLayerAction );
+      QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, mapLayerAction );
 
       if ( !mapLayerAction->text().isEmpty() )
         mActionFeatureAction->setToolTip( tr( "Run feature action<br><b>%1</b>" ).arg( mapLayerAction->text() ) );
@@ -6312,7 +6313,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
     }
     else
     {
-      QgsMapLayerActionRegistry::instance()->setDefaultActionForLayer( vlayer, nullptr );
+      QgsGui::mapLayerActionRegistry()->setDefaultActionForLayer( vlayer, nullptr );
     }
   }
 }
@@ -6339,7 +6340,7 @@ void QgisApp::refreshFeatureActions()
   }
 
   //add actions registered in QgsMapLayerActionRegistry
-  QList<QgsMapLayerAction *> registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
   if ( !actions.isEmpty() && registeredActions.size() > 0 )
   {
     //add a separator between user defined and standard actions
@@ -6349,7 +6350,7 @@ void QgisApp::refreshFeatureActions()
   for ( int i = 0; i < registeredActions.size(); i++ )
   {
     mFeatureActionMenu->addAction( registeredActions.at( i ) );
-    if ( registeredActions.at( i ) == QgsMapLayerActionRegistry::instance()->defaultActionForLayer( vlayer ) )
+    if ( registeredActions.at( i ) == QgsGui::mapLayerActionRegistry()->defaultActionForLayer( vlayer ) )
     {
       mFeatureActionMenu->setActiveAction( registeredActions.at( i ) );
     }
@@ -6810,7 +6811,7 @@ QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant &value )
   {
     return value;
   }
-  const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mLayer, mLayer->fields().field( idx ).name() );
+  const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mLayer->fields().field( idx ).name() );
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   return fieldFormatter->representValue( mLayer, idx, setup.config(), QVariant(), value );
 }
@@ -7295,7 +7296,7 @@ void QgisApp::setupLayoutManagerConnections()
       QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
       if ( action )
       {
-        QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+        QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
         delete action;
         mAtlasFeatureActions.remove( c );
       }
@@ -7308,7 +7309,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enable
   QgsMapLayerAction *action = mAtlasFeatureActions.value( composition );
   if ( action )
   {
-    QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+    QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
     delete action;
     action = nullptr;
     mAtlasFeatureActions.remove( composition );
@@ -7320,7 +7321,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enable
                                     this, composition->atlasComposition().coverageLayer(), QgsMapLayerAction::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
     mAtlasFeatureActions.insert( composition, action );
-    QgsMapLayerActionRegistry::instance()->addMapLayerAction( action );
+    QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
     connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, composition]( QgsMapLayer * layer, const QgsFeature & feat )
     {
       setCompositionAtlasFeature( composition, layer, feat );
@@ -9502,7 +9503,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     if ( f )
       factories << f;
   }
-  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgisGui::ModalDialogFlags, factories ) );
+  std::unique_ptr< QgsOptions > optionsDialog( new QgsOptions( parent, QgsGuiUtils::ModalDialogFlags, factories ) );
   if ( !currentPage.isEmpty() )
   {
     optionsDialog->setCurrentPage( currentPage );
@@ -11159,7 +11160,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
-    bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+    bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
     bool isSpatial = vlayer->isSpatial();
 
     mActionLocalHistogramStretch->setEnabled( false );
@@ -11457,7 +11458,7 @@ void QgisApp::refreshActionFeatureAction()
   if ( !vlayer )
     return;
 
-  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).isEmpty();
+  bool layerHasActions = !vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() || !QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty();
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 
@@ -11511,8 +11512,8 @@ void QgisApp::addRasterLayer()
   QStringList selectedFiles;
   QString e;//only for parameter correctness
   QString title = tr( "Open a GDAL Supported Raster Data Source" );
-  QgisGui::openFilesRememberingFilter( QStringLiteral( "lastRasterFileFilter" ), mRasterFileFilter, selectedFiles, e,
-                                       title );
+  QgsGuiUtils::openFilesRememberingFilter( QStringLiteral( "lastRasterFileFilter" ), mRasterFileFilter, selectedFiles, e,
+      title );
 
   if ( selectedFiles.isEmpty() )
   {

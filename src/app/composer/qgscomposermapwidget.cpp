@@ -36,7 +36,7 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgscsexception.h"
 
 #include <QMessageBox>

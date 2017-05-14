@@ -30,7 +30,7 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-    explicit CustomActionRegistry( QObject *parent );
+    CustomActionRegistry();
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }
 };

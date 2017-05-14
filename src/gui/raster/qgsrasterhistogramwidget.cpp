@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
@@ -627,7 +627,7 @@ void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
   if ( !mpPlot )
     return;
 
-  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  QPair< QString, QString> myFileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
   if ( myInfo.baseName() != QLatin1String( "" ) )
   {

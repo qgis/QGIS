@@ -18,7 +18,7 @@
 #define qgsnewvectorlayerdialog_H
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 
 #include "qgis.h"
@@ -39,7 +39,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      */
     static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
-    QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;

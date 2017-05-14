@@ -15,7 +15,7 @@ class QgsGroupWmsDataDialog: QDialog
 #include "qgsgroupwmsdatadialog.h"
 %End
   public:
-    QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
 %End

@@ -13,9 +13,6 @@ class QgsShortcutsManager: QObject
 
   public:
 
-    //! Return the singleton instance of the manager.
-    static QgsShortcutsManager *instance();
-
     /** Constructor for QgsShortcutsManager.
      * @param parent parent object
      * @param settingsRoot root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave

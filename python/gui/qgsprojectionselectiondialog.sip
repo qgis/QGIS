@@ -9,7 +9,7 @@ class QgsProjectionSelectionDialog : QDialog //, private Ui::QgsGenericProjectio
      * Constructor
      */
     QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0,
-                                  const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
+                                  const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Destructor
     ~QgsProjectionSelectionDialog();

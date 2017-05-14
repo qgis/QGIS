@@ -21,7 +21,7 @@
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
 
@@ -42,7 +42,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsProjectProperties();

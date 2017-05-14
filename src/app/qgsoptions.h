@@ -20,7 +20,7 @@
 
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgisapp.h"
 #include "qgshelp.h"
 
@@ -48,7 +48,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * \param modal true for modal dialog
      * \param optionsFactories factories for additional option pages
      */
-    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                 const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
     ~QgsOptions();

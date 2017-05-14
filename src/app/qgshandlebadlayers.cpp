@@ -19,7 +19,7 @@
 #include "qgisapp.h"
 #include "qgsauthconfigselect.h"
 #include "qgsdataprovider.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
@@ -275,7 +275,7 @@ void QgsHandleBadLayers::browseClicked()
     QString enc;
     QString title = tr( "Select file to replace '%1'" ).arg( fn );
 
-    QgisGui::openFilesRememberingFilter( memoryQualifier, fileFilter, selectedFiles, enc, title );
+    QgsGuiUtils::openFilesRememberingFilter( memoryQualifier, fileFilter, selectedFiles, enc, title );
     if ( selectedFiles.size() != 1 )
     {
       QMessageBox::information( this, title, tr( "Please select exactly one file." ) );

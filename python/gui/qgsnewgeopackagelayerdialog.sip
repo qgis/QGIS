@@ -7,7 +7,7 @@ class QgsNewGeoPackageLayerDialog : QDialog
 
   public:
     /** Constructor */
-    QgsNewGeoPackageLayerDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgisGui::ModalDialogFlags );
+    QgsNewGeoPackageLayerDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsNewGeoPackageLayerDialog();
 

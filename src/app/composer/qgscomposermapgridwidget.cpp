@@ -1166,7 +1166,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFontButton_clicked()
   }
 
   bool ok;
-  QFont newFont = QgisGui::getFont( ok, mComposerMapGrid->annotationFont() );
+  QFont newFont = QgsGuiUtils::getFont( ok, mComposerMapGrid->annotationFont() );
   if ( ok )
   {
     mComposerMap->beginCommand( tr( "Annotation font changed" ) );

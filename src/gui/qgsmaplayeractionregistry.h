@@ -103,15 +103,24 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
 /** \ingroup gui
-* This class tracks map layer actions
+* This class tracks map layer actions.
+*
+* QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+* QgsGui::mapLayerActionRegistry().
 */
 class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 {
     Q_OBJECT
 
   public:
-    //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerActionRegistry *instance();
+
+    /**
+     * Constructor for QgsMapLayerActionRegistry.
+     *
+     * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+     * QgsGui::mapLayerActionRegistry().
+     */
+    QgsMapLayerActionRegistry( QObject *parent = nullptr );
 
     //! Adds a map layer action to the registry
     void addMapLayerAction( QgsMapLayerAction *action );
@@ -128,8 +137,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 
   protected:
-    //! protected constructor
-    QgsMapLayerActionRegistry( QObject *parent = nullptr );
 
     QList< QgsMapLayerAction * > mMapLayerActionList;
 
@@ -138,8 +145,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     void changed();
 
   private:
-
-    static QgsMapLayerActionRegistry *sInstance;
 
     QMap< QgsMapLayer *, QgsMapLayerAction * > mDefaultLayerActionMap;
 

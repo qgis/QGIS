@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayeractionregistry.h"
-
+#include "qgsgui.h"
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon )
   : QAction( icon, name, parent )
@@ -49,7 +49,7 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 QgsMapLayerAction::~QgsMapLayerAction()
 {
   //remove action from registry
-  QgsMapLayerActionRegistry::instance()->removeMapLayerAction( this );
+  QgsGui::mapLayerActionRegistry()->removeMapLayerAction( this );
 }
 
 bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
@@ -88,19 +88,6 @@ void QgsMapLayerAction::triggerForFeature( QgsMapLayer *layer, const QgsFeature 
 void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer )
 {
   emit triggeredForLayer( layer );
-}
-
-//
-// Static calls to enforce singleton behavior
-//
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::sInstance = nullptr;
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
-{
-  if ( !sInstance )
-  {
-    sInstance = new QgsMapLayerActionRegistry();
-  }
-  return sInstance;
 }
 
 //

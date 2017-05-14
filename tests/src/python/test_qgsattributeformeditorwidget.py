@@ -18,7 +18,7 @@ from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsAttributeFormEditorWidget,
                       QgsDefaultSearchWidgetWrapper,
                       QgsAttributeForm,
-                      QgsEditorWidgetRegistry
+                      QgsGui
                       )
 from qgis.core import (QgsVectorLayer)
 from qgis.PyQt.QtWidgets import QWidget, QDateTimeEdit
@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import start_app, unittest
 
 start_app()
-QgsEditorWidgetRegistry.instance().initEditors()
+QgsGui.editorWidgetRegistry().initEditors()
 
 
 class PyQgsAttributeFormEditorWidget(unittest.TestCase):

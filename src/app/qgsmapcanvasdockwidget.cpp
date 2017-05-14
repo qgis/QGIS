@@ -497,8 +497,8 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( mRotationWidget, 1, 1 );
 
   QgsSettings settings;
-  int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
-  int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
+  int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
   int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   mMagnifierWidget = new QgsDoubleSpinBox();

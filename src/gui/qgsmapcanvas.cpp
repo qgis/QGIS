@@ -233,8 +233,8 @@ QgsMapCanvas::~QgsMapCanvas()
 void QgsMapCanvas::setMagnificationFactor( double factor )
 {
   // do not go higher or lower than min max magnification ratio
-  double magnifierMin = QgisGui::CANVAS_MAGNIFICATION_MIN;
-  double magnifierMax = QgisGui::CANVAS_MAGNIFICATION_MAX;
+  double magnifierMin = QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  double magnifierMax = QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
   factor = qBound( magnifierMin, factor, magnifierMax );
 
   // the magnifier widget is in integer percent

@@ -23,7 +23,7 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

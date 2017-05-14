@@ -46,6 +46,7 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -482,7 +483,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   }
 
   //get valid QgsMapLayerActions for this layer
-  QList< QgsMapLayerAction * > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+  QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
   QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Feature" ) );
 
   if ( !vlayer->fields().isEmpty() || !actions.isEmpty() || !registeredActions.isEmpty() )
@@ -535,7 +536,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       break;
 
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fields[i].name() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields[i].name() );
     if ( setup.type() == QLatin1String( "Hidden" ) )
     {
       continue;
@@ -603,7 +604,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       continue;
 
     QString value = fields.at( i ).displayString( attrs.at( i ) );
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fields.at( i ).name() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields.at( i ).name() );
     QString value2 = representValue( vlayer, setup, fields.at( i ).name(), value );
 
     tblResults->setRowCount( j + 1 );
@@ -710,7 +711,7 @@ QString QgsIdentifyResultsDialog::representValue( QgsVectorLayer *vlayer, const 
   QVariant cache;
   QMap<QString, QVariant> &layerCaches = mWidgetCaches[vlayer->id()];
 
-  QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( setup.type() );
+  QgsEditorWidgetFactory *factory = QgsGui::editorWidgetRegistry()->factory( setup.type() );
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
   int idx = vlayer->fields().lookupField( fieldName );
@@ -1095,7 +1096,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
   if ( featItem && vlayer )
   {
     //get valid QgsMapLayerActions for this layer
-    QList< QgsMapLayerAction * > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
+    QList< QgsMapLayerAction * > registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
 
     if ( !registeredActions.isEmpty() )
     {
@@ -1542,7 +1543,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
 
         if ( item->data( 0, Qt::UserRole + 1 ).toInt() == idx )
         {
-          const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( vlayer, fld.name() );
+          const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fld.name() );
           value = representValue( vlayer, setup, fld.name(), val );
 
           QgsTreeWidgetItem *treeItem = static_cast< QgsTreeWidgetItem * >( item );

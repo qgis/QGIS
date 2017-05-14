@@ -28,7 +28,7 @@
 #include "featuresource/qgsglobefeatureoptions.h"
 
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 #include <qgscrscache.h>
 #include <qgslogger.h>
 #include <qgsapplication.h>
@@ -262,7 +262,7 @@ GlobePlugin::~GlobePlugin() {}
 void GlobePlugin::initGui()
 {
 
-  mSettingsDialog = new QgsGlobePluginDialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  mSettingsDialog = new QgsGlobePluginDialog( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   connect( mSettingsDialog, SIGNAL( settingsApplied() ), this, SLOT( applySettings() ) );
 
   mActionToggleGlobe = new QAction( QIcon( ":/globe/globe.png" ), tr( "Launch Globe" ), this );
