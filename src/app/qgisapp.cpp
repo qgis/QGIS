@@ -206,6 +206,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsnative.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsoptions.h"
@@ -1198,12 +1199,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     double time = ( *it ).second;
     QgsDebugMsg( QString( " - %1 - %2" ).arg( name ).arg( time ) );
   }
-#endif
-
-#ifdef Q_OS_MAC
-  mNative = new QgsMacNative();
-#else
-  mNative = new QgsNative();
 #endif
 
 } // QgisApp ctor
@@ -6125,7 +6120,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-  mNative->currentAppActivateIgnoringOtherApps();
+  QgsGui::nativePlatformInterface()->currentAppActivateIgnoringOtherApps();
 }
 
 void QgisApp::addWindow( QAction *action )
