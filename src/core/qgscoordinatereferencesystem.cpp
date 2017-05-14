@@ -1099,16 +1099,20 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
   // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
   // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
   // so better detect it now.
-  projPJ proj = pj_init_plus( proj4String.trimmed().toLatin1().constData() );
+  projCtx pContext = pj_ctx_alloc();
+
+  projPJ proj = pj_init_plus_ctx( pContext, proj4String.trimmed().toLatin1().constData() );
   if ( !proj )
   {
-    QgsDebugMsgLevel( "proj.4 string rejected by pj_init_plus()", 4 );
+    QgsDebugMsgLevel( "proj.4 string rejected by pj_init_plus_ctx()", 4 );
     d->mIsValid = false;
   }
   else
   {
     pj_free( proj );
   }
+  pj_ctx_free( pContext );
+
   d->mWkt.clear();
   setMapUnits();
 }
@@ -2020,6 +2024,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                sqlite3_errmsg( database ) );
   }
 
+  projCtx pContext = pj_ctx_alloc();
+
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
   sql = QStringLiteral( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated AND NOT noupdate" );
   if ( sqlite3_prepare( database, sql.toLatin1(), sql.size(), &select, &tail ) == SQLITE_OK )
@@ -2031,11 +2037,11 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       const char *params    = reinterpret_cast< const char * >( sqlite3_column_text( select, 2 ) );
 
       QString input = QStringLiteral( "+init=%1:%2" ).arg( QString( auth_name ).toLower(), auth_id );
-      projPJ pj = pj_init_plus( input.toLatin1() );
+      projPJ pj = pj_init_plus_ctx( pContext, input.toLatin1() );
       if ( !pj )
       {
         input = QStringLiteral( "+init=%1:%2" ).arg( QString( auth_name ).toUpper(), auth_id );
-        pj = pj_init_plus( input.toLatin1() );
+        pj = pj_init_plus_ctx( pContext, input.toLatin1() );
       }
 
       if ( pj )
@@ -2098,6 +2104,8 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
   sqlite3_finalize( select );
 #endif
+
+  pj_ctx_free( pContext );
 
 
   if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )

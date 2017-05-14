@@ -72,6 +72,14 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  :rtype: bool
 %End
 
+    void detachForThread();
+%Docstring
+ Detaches the coordinate transform, making it safe for use in a new thread.
+ \warning This MUST be called for all QgsCoordinateTransform objects which
+ will be performing transformations in a new thread!
+.. versionadded:: 3.0
+%End
+
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
  Sets the source coordinate reference system.

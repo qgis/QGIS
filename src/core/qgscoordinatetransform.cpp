@@ -559,6 +559,11 @@ bool QgsCoordinateTransform::isValid() const
   return d->mIsValid;
 }
 
+void QgsCoordinateTransform::detachForThread()
+{
+  d.detach();
+}
+
 bool QgsCoordinateTransform::isShortCircuited() const
 {
   return !d->mIsValid || d->mShortCircuit;

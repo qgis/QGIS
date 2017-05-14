@@ -84,6 +84,14 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isValid() const;
 
     /**
+     * Detaches the coordinate transform, making it safe for use in a new thread.
+     * \warning This MUST be called for all QgsCoordinateTransform objects which
+     * will be performing transformations in a new thread!
+     * \since QGIS 3.0
+     */
+    void detachForThread();
+
+    /**
      * Sets the source coordinate reference system.
      * \param crs CRS to transform coordinates from
      * \see sourceCrs()
