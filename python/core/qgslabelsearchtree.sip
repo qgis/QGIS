@@ -32,6 +32,10 @@ Removes and deletes all the entries
 
 
 
+  private:
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh );
+    //! QgsLabelSearchTree cannot be copied.
 };
 
 /************************************************************************
