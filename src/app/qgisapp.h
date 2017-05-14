@@ -139,8 +139,6 @@ class QgsDiagramProperties;
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
-#include "qgsnative.h"
-
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
 
@@ -1968,8 +1966,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QStackedWidget *mCentralContainer = nullptr;
 
     QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
-
-    QgsNative *mNative = nullptr;
 
     int mProjOpen;
 

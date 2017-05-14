@@ -17,10 +17,6 @@
 
 #include "qgsnative.h"
 
-QgsNative::QgsNative()
-{
-}
-
 void QgsNative::currentAppActivateIgnoringOtherApps()
 {
 }

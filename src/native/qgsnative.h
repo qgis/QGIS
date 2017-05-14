@@ -21,18 +21,20 @@
 #include "qgis_native.h"
 
 /**
+ * \class QgsNative
+ * \ingroup native
  * Base class for implementing methods for native system calls that
  * are implemented in subclasses to provide platform abstraction.
+ * \since QGIS 3.0
  */
 class NATIVE_EXPORT QgsNative
 {
   public:
-    QgsNative();
+
+    virtual ~QgsNative() = default;
 
     /**
-     * Bring QGIS to front. Default implementation does nothing.
-     *
-     * @note Added in QGIS 3.0
+     * Brings the QGIS app to front. The default implementation does nothing.
      */
     virtual void currentAppActivateIgnoringOtherApps();
 };
