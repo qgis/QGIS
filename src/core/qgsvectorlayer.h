@@ -1247,12 +1247,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool rollBack( bool deleteBuffer = true );
 
-    //! Get annotation form
-    QString annotationForm() const { return mAnnotationForm; }
-
-    //! Set annotation form for layer
-    void setAnnotationForm( const QString &ui );
-
     /**
      * Get relations, where the foreign key is on this layer
      *
@@ -1980,9 +1974,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mVertexMarkerOnlyForSelection;
 
     QStringList mCommitErrors;
-
-    //! Annotation form for this layer
-    QString mAnnotationForm;
 
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
