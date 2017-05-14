@@ -42,7 +42,7 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     virtual bool isActive() const override;
 
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults *takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;

@@ -37,6 +37,7 @@ class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsFeatureFilterProvider;
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /** \ingroup core
@@ -83,6 +84,7 @@ struct LabelRenderJob
 };
 
 ///@endcond PRIVATE
+#endif
 
 /** \ingroup core
  * Abstract base class for map rendering implementations.

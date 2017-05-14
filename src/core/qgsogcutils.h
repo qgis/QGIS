@@ -47,15 +47,15 @@ class CORE_EXPORT QgsOgcUtils
 {
   public:
 
-    /** GML version
-     *  \note not available in Python bindings
+    /**
+     *GML version
      */
-    typedef enum SIP_SKIP
+    enum GMLVersion
     {
       GML_2_1_2,
       GML_3_1_0,
       GML_3_2_1,
-    } GMLVersion;
+    };
 
     /** Static method that creates geometry from GML
      \param xmlString xml representation of the geometry. GML elements are expected to be
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsOgcUtils
         \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
-                                      GMLVersion gmlVersion,
+                                      QgsOgcUtils::GMLVersion gmlVersion,
                                       const QString &srsName,
                                       bool invertAxisOrientation,
                                       const QString &gmlIdBase,
@@ -138,14 +138,13 @@ class CORE_EXPORT QgsOgcUtils
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** OGC filter version
-     * \note not available in Python bindings
      */
-    typedef enum SIP_SKIP
+    enum FilterVersion
     {
       FILTER_OGC_1_0,
       FILTER_OGC_1_1,
       FILTER_FES_2_0
-    } FilterVersion;
+    };
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
@@ -156,7 +155,7 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QString &geometryName,
         const QString &srsName,
@@ -176,13 +175,15 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QString &geometryName,
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
         QString *errorMessage = nullptr );
+
+#ifndef SIP_RUN
 
     /** \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
@@ -202,6 +203,7 @@ class CORE_EXPORT QgsOgcUtils
         //! SRS name
         QString mSRSName;
     };
+#endif
 
     /** Creates OGC filter XML element from the WHERE and JOIN clauses of a SQL
      * statement. Supports minimum standard filter
@@ -222,7 +224,7 @@ class CORE_EXPORT QgsOgcUtils
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,
-        GMLVersion gmlVersion,
+        QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
         const QList<LayerProperties> &layerProperties,
         bool honourAxisOrientation,
@@ -291,6 +293,8 @@ class CORE_EXPORT QgsOgcUtils
     //! handles \verbatim <PropertyIsNull> \endverbatim tag
     static QgsExpression::NodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
 };
+
+#ifndef SIP_RUN
 
 /** \ingroup core
  * Internal use by QgsOgcUtils
@@ -397,5 +401,6 @@ class QgsOgcUtilsSQLStatementToFilter
                          QString &srsName,
                          bool &axisInversion );
 };
+#endif // #ifndef SIP_RUN
 
 #endif // QGSOGCUTILS_H

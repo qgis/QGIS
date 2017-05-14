@@ -1,165 +1,205 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaptopixel.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup core
-  * Perform transforms between map coordinates and device coordinates.
-  *
-  * This class can convert device coordinates to map coordinates and vice versa.
-  */
+
+
+
 class QgsMapToPixel
 {
-%TypeHeaderCode
-#include <qgsmaptopixel.h>
+%Docstring
+ Perform transforms between map coordinates and device coordinates.
+
+ This class can convert device coordinates to map coordinates and vice versa.
 %End
 
+%TypeHeaderCode
+#include "qgsmaptopixel.h"
+%End
   public:
 
-    /**
-     * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param centerX X coordinate of map center, in geographical units
-     * @param centerY Y coordinate of map center, in geographical units
-     * @param widthPixels Output width, in pixels
-     * @param heightPixels Output height, in pixels
-     * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
-     */
     QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
+%Docstring
+ Constructor
+ \param mapUnitsPerPixel Map units per pixel
+ \param centerX X coordinate of map center, in geographical units
+ \param centerY Y coordinate of map center, in geographical units
+ \param widthPixels Output width, in pixels
+ \param heightPixels Output height, in pixels
+ \param rotation clockwise rotation in degrees
+.. versionadded:: 2.8
+%End
 
-    /**
-     * Constructor
-     * @param mapUnitsPerPixel Map units per pixel
-     */
     QgsMapToPixel( double mapUnitsPerPixel );
+%Docstring
+ Constructor
+ \param mapUnitsPerPixel Map units per pixel
+%End
 
-    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
-     * @param scale map scale
-     * @param dpi screen DPI
-     * @param mapUnits map units
-     * @returns matching QgsMapToPixel
-     * @note added in QGIS 3.0
-     */
     static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+%Docstring
+ Returns a new QgsMapToPixel created using a specified scale and distance unit.
+ \param scale map scale
+ \param dpi screen DPI
+ \param mapUnits map units
+ :return: matching QgsMapToPixel
+.. versionadded:: 3.0
+ :rtype: QgsMapToPixel
+%End
 
-    /**
-     * Constructor
-     *
-     * Use setParameters to fill
-     */
     QgsMapToPixel();
+%Docstring
+ Constructor
 
-    /**
-     * Transform the point from map (world) coordinates to device coordinates
-     * @param p Point to transform
-     * @return QgsPoint in device coordinates
-     */
+ Use setParameters to fill
+%End
+
     QgsPoint transform( const QgsPoint &p ) const;
+%Docstring
+ Transform the point from map (world) coordinates to device coordinates
+ \param p Point to transform
+ :return: QgsPoint in device coordinates
+ :rtype: QgsPoint
+%End
 
     void transform( QgsPoint *p ) const;
 
-    /**
-     * Transform the point specified by x,y from map (world)
-     * coordinates to device coordinates
-     * @param x x cordinate o point to transform
-     * @param y y coordinate of point to transform
-     * @return QgsPoint in device coordinates
-     */
-    QgsPoint transform( double x, double y ) const;
+    QgsPoint transform( qreal x, qreal y ) const;
+%Docstring
+ Transform the point specified by x,y from map (world)
+ coordinates to device coordinates
+ \param x x cordinate o point to transform
+ \param y y coordinate of point to transform
+ :return: QgsPoint in device coordinates
+ :rtype: QgsPoint
+%End
 
-    /**
-     * Transform device coordinates to map coordinates. Modifies the
-     * given coordinates in place. Intended as a fast way to do the
-     * transform.
-     */
     void transformInPlace( double &x, double &y ) const;
+%Docstring
+ Transform device coordinates to map coordinates. Modifies the
+ given coordinates in place. Intended as a fast way to do the
+ transform.
+%End
 
-    // @note not available in python bindings
-    // void transformInPlace( qreal &x, qreal &y ) const;
 
-    /**
-     * Transform device coordinates to map coordinates. Modifies the
-     * given coordinates in place. Intended as a fast way to do the
-     * transform.
-     * @note not available in python bindings
-     */
-    // template <class T>
-    // void transformInPlace( QVector<double> &x, QVector<double> &y ) const;
 
     QgsPoint toMapCoordinates( int x, int y ) const;
+%Docstring
+ :rtype: QgsPoint
+%End
 
-    //! Transform device coordinates to map (world) coordinates
     QgsPoint toMapCoordinatesF( double x, double y ) const;
+%Docstring
+Transform device coordinates to map (world) coordinates
+ :rtype: QgsPoint
+%End
 
-    /**
-     * Transform device coordinates to map (world) coordinates
-     * @param p Point to be converted to map cooordinates
-     * @return QgsPoint in map coorndiates
-     */
     QgsPoint toMapCoordinates( QPoint p ) const;
+%Docstring
+ Transform device coordinates to map (world) coordinates
+ \param p Point to be converted to map cooordinates
+ :return: QgsPoint in map coorndiates
+ :rtype: QgsPoint
+%End
 
     QgsPoint toMapPoint( double x, double y ) const;
+%Docstring
+ :rtype: QgsPoint
+%End
 
-    /**
-     * Set map units per pixel
-     * @param mapUnitsPerPixel Map units per pixel
-     */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
+%Docstring
+ Set map units per pixel
+ \param mapUnitsPerPixel Map units per pixel
+%End
 
-    //! Return current map units per pixel
     double mapUnitsPerPixel() const;
+%Docstring
+Return current map units per pixel
+ :rtype: float
+%End
 
-    /**
-     * Return current map width in pixels
-     * The information is only known if setRotation was used
-     * @note added in 2.8
-     */
     int mapWidth() const;
+%Docstring
+ Return current map width in pixels
+ The information is only known if setRotation was used
+.. versionadded:: 2.8
+ :rtype: int
+%End
 
-    /**
-     * Return current map height in pixels
-     * @note added in 2.8
-     */
     int mapHeight() const;
+%Docstring
+ Return current map height in pixels
+.. versionadded:: 2.8
+ :rtype: int
+%End
 
-    /**
-     * Set map rotation in degrees (clockwise)
-     * @param degrees clockwise rotation in degrees
-     * @param cx X ordinate of map center in geographical units
-     * @param cy Y ordinate of map center in geographical units
-     * @note added in 2.8
-     */
     void setMapRotation( double degrees, double cx, double cy );
+%Docstring
+ Set map rotation in degrees (clockwise)
+ \param degrees clockwise rotation in degrees
+ \param cx X ordinate of map center in geographical units
+ \param cy Y ordinate of map center in geographical units
+.. versionadded:: 2.8
+%End
 
-    /**
-     * Return current map rotation in degrees
-     * @note added in 2.8
-     */
     double mapRotation() const;
+%Docstring
+ Return current map rotation in degrees
+.. versionadded:: 2.8
+ :rtype: float
+%End
 
-    /**
-     * Set parameters for use in transforming coordinates
-     * @param mapUnitsPerPixel Map units per pixel
-     * @param centerX X coordinate of map center, in geographical units
-     * @param centerY Y coordinate of map center, in geographical units
-     * @param widthPixels Output width, in pixels
-     * @param heightPixels Output height, in pixels
-     * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
-     */
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
+%Docstring
+ Set parameters for use in transforming coordinates
+ \param mapUnitsPerPixel Map units per pixel
+ \param centerX X coordinate of map center, in geographical units
+ \param centerY Y coordinate of map center, in geographical units
+ \param widthPixels Output width, in pixels
+ \param heightPixels Output height, in pixels
+ \param rotation clockwise rotation in degrees
+.. versionadded:: 2.8
+%End
 
-    //! String representation of the parameters used in the transform
     QString showParameters() const;
+%Docstring
+String representation of the parameters used in the transform
+ :rtype: str
+%End
 
     QTransform transform() const;
+%Docstring
+ :rtype: QTransform
+%End
 
-    /** Returns the center x-coordinate for the transform.
-     * @see yCenter()
-     * @note added in QGIS 3.0
-     */
     double xCenter() const;
+%Docstring
+ Returns the center x-coordinate for the transform.
+.. seealso:: yCenter()
+.. versionadded:: 3.0
+ :rtype: float
+%End
 
-    /** Returns the center y-coordinate for the transform.
-     * @see xCenter()
-     * @note added in QGIS 3.0
-     */
     double yCenter() const;
+%Docstring
+ Returns the center y-coordinate for the transform.
+.. seealso:: xCenter()
+.. versionadded:: 3.0
+ :rtype: float
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaptopixel.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

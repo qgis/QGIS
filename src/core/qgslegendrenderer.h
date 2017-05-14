@@ -66,6 +66,8 @@ class CORE_EXPORT QgsLegendRenderer
 
   private:
 
+#ifndef SIP_RUN
+
     /** Nucleon is either group title, layer title or layer child item.
      *  E.g. layer title nucleon is just title, it does not
      *  include all layer subitems, the same with groups.
@@ -146,6 +148,7 @@ class CORE_EXPORT QgsLegendRenderer
 
     QSizeF mLegendSize;
 
+#endif
 };
 
 #endif // QGSLEGENDRENDERER_H

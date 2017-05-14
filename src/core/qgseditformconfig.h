@@ -59,14 +59,14 @@ class CORE_EXPORT QgsEditFormConfig
     struct TabData
     {
       TabData() {}
-      TabData( const QString &name, const QList<QString> &fields, const QList<GroupData> &groups )
+      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
         : mName( name )
         , mFields( fields )
         , mGroups( groups )
       {}
       QString mName;
       QList<QString> mFields;
-      QList<GroupData> mGroups;
+      QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
     /**
