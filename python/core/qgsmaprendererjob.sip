@@ -112,7 +112,7 @@ each LayerRenderJob.
       QString message;
     };
 
-    typedef QList<Error> Errors;
+    typedef QList<QgsMapRendererJob::Error> Errors;
 
     Errors errors() const;
 %Docstring
