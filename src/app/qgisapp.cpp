@@ -5899,10 +5899,14 @@ void QgisApp::saveMapAsPdf()
 
         return;
       }
+
+      image->setDotsPerMeterX( 1000 * dlg.dpi() / 25.4 );
+      image->setDotsPerMeterY( 1000 * dlg.dpi() / 25.4 );
       p->begin( image );
     }
     else
     {
+      printer->setResolution( dlg.dpi() );
       p->begin( printer );
     }
 
