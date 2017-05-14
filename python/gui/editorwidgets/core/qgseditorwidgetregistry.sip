@@ -13,7 +13,10 @@
 class QgsEditorWidgetRegistry : QObject
 {
 %Docstring
- This class manages all known edit widget factories
+ This class manages all known edit widget factories.
+
+ QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
+ QgsGui.editorWidgetRegistry().
 %End
 
 %TypeHeaderCode
@@ -21,7 +24,13 @@ class QgsEditorWidgetRegistry : QObject
 %End
   public:
 
-    static void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );
+    QgsEditorWidgetRegistry();
+%Docstring
+ Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
+ QgsGui.editorWidgetRegistry().
+%End
+
+    void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );
 %Docstring
  Registers all the default widgets.
  Only call this once on startup of an application.
@@ -161,9 +170,6 @@ class QgsEditorWidgetRegistry : QObject
 
  \param plugin The plugin (ownership is transferred)
 %End
-
-  protected:
-    QgsEditorWidgetRegistry();
 
 };
 
