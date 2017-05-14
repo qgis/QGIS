@@ -36,6 +36,10 @@ class QgsDartMeasurement
 
     static const QString typeToString( QgsDartMeasurement::Type type );
 %Docstring
+ Convert a QgsDartMeasurement.Type enum to a string that is understood
+ by the system.
+
+.. versionadded:: 2.
  :rtype: str
 %End
 
