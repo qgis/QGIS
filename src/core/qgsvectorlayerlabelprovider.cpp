@@ -36,7 +36,7 @@ using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings::fromLayer( layer ) )
+  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( layer->geometryType() )
   , mRenderer( layer->renderer() )
   , mFields( layer->fields() )

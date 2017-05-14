@@ -16,10 +16,10 @@
 
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
-  : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop )
-  , mRules( rules )
+  : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )
 {
-  mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
+  mRules.reset( rules.clone() );
+  mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
 QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
@@ -38,14 +38,14 @@ bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext &context, QSet<Q
     provider->setEngine( mEngine );
 
   // populate sub-providers
-  mRules.rootRule()->prepare( context, attributeNames, mSubProviders );
+  mRules->rootRule()->prepare( context, attributeNames, mSubProviders );
   return true;
 }
 
 void QgsRuleBasedLabelProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
 {
   // will register the feature to relevant sub-providers
-  mRules.rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
+  mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
 }
 
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
@@ -378,21 +378,22 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
 QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root )
   : mRootRule( root )
 {
-
 }
 
-QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling &other )
+QgsRuleBasedLabeling *QgsRuleBasedLabeling::clone() const
 {
-  mRootRule = other.mRootRule->clone();
+  Rule *rootRule = mRootRule->clone();
 
   // normally with clone() the individual rules get new keys (UUID), but here we want to keep
   // the tree of rules intact, so that other components that may use the rule keys work nicely (e.g. map themes)
-  mRootRule->setRuleKey( other.mRootRule->ruleKey() );
-  RuleList origDescendants = other.mRootRule->descendants();
-  RuleList clonedDescendants = mRootRule->descendants();
+  rootRule->setRuleKey( mRootRule->ruleKey() );
+  RuleList origDescendants = mRootRule->descendants();
+  RuleList clonedDescendants = rootRule->descendants();
   Q_ASSERT( origDescendants.count() == clonedDescendants.count() );
   for ( int i = 0; i < origDescendants.count(); ++i )
     clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
+
+  return new QgsRuleBasedLabeling( rootRule );
 }
 
 QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
@@ -442,9 +443,8 @@ QStringList QgsRuleBasedLabeling::subProviders() const
   return lst;
 }
 
-QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer *layer, const QString &providerId ) const
+QgsPalLayerSettings QgsRuleBasedLabeling::settings( const QString &providerId ) const
 {
-  Q_UNUSED( layer );
   const Rule *rule = mRootRule->findRuleByKey( providerId );
   if ( rule && rule->settings() )
     return *rule->settings();
@@ -452,7 +452,7 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer *layer, const
   return QgsPalLayerSettings();
 }
 
-bool QgsRuleBasedLabeling::requiresAdvancedEffects( QgsVectorLayer * ) const
+bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
 {
   return mRootRule->requiresAdvancedEffects();
 }

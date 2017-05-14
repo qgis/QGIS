@@ -63,6 +63,7 @@ static QColor _readColor( QgsVectorLayer *layer, const QString &property, const 
   return QColor( r, g, b, a );
 }
 
+#if 0
 static void _writeColor( QgsVectorLayer *layer, const QString &property, const QColor &color, bool withAlpha = true )
 {
   layer->setCustomProperty( property + 'R', color.red() );
@@ -71,6 +72,7 @@ static void _writeColor( QgsVectorLayer *layer, const QString &property, const Q
   if ( withAlpha )
     layer->setCustomProperty( property + 'A', color.alpha() );
 }
+#endif
 
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
@@ -263,6 +265,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     setPaintEffect( nullptr );
 }
 
+#if 0
 void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), d->enabled );
@@ -290,6 +293,7 @@ void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
     layer->removeCustomProperty( QStringLiteral( "labeling/bufferEffect" ) );
   }
 }
+#endif
 
 void QgsTextBufferSettings::readXml( const QDomElement &elem )
 {
@@ -762,6 +766,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     setPaintEffect( nullptr );
 }
 
+#if 0
 void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/shapeDraw" ), d->enabled );
@@ -806,6 +811,7 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
     layer->removeCustomProperty( QStringLiteral( "labeling/shapeEffect" ) );
   }
 }
+#endif
 
 void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
@@ -1197,6 +1203,7 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
+#if 0
 void QgsTextShadowSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/shadowDraw" ), d->enabled );
@@ -1215,6 +1222,7 @@ void QgsTextShadowSettings::writeToLayer( QgsVectorLayer *layer ) const
   _writeColor( layer, QStringLiteral( "labeling/shadowColor" ), d->color, false );
   layer->setCustomProperty( QStringLiteral( "labeling/shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
+#endif
 
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
@@ -1522,6 +1530,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   mBackgroundSettings.readFromLayer( layer );
 }
 
+#if 0
 void QgsTextFormat::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), d->textFont.family() );
@@ -1546,6 +1555,7 @@ void QgsTextFormat::writeToLayer( QgsVectorLayer *layer ) const
   mShadowSettings.writeToLayer( layer );
   mBackgroundSettings.writeToLayer( layer );
 }
+#endif
 
 void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {

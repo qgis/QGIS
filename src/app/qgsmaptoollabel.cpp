@@ -157,7 +157,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
       return QLatin1String( "" );
     }
 
-    QString labelField = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
+    QString labelField = labelSettings.fieldName;
     if ( !labelField.isEmpty() )
     {
       int labelFieldId = vlayer->fields().lookupField( labelField );
@@ -476,7 +476,7 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol
 
   Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
   {
-    if ( labelIsRotatable( vlayer, vlayer->labeling()->settings( vlayer, providerId ), rotationCol ) )
+    if ( labelIsRotatable( vlayer, vlayer->labeling()->settings( providerId ), rotationCol ) )
       return true;
   }
 
@@ -597,7 +597,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCo
 
   Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
   {
-    if ( labelMoveable( vlayer, vlayer->labeling()->settings( vlayer, providerId ), xCol, yCol ) )
+    if ( labelMoveable( vlayer, vlayer->labeling()->settings( providerId ), xCol, yCol ) )
       return true;
   }
 
@@ -631,7 +631,7 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
   Q_FOREACH ( const QString &providerId, vlayer->labeling()->subProviders() )
   {
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
-                        vlayer->labeling()->settings( vlayer, providerId ) );
+                        vlayer->labeling()->settings( providerId ) );
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol != -1 )
       return true;
@@ -693,7 +693,7 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( pos.layerID ) );
   if ( layer && layer->labeling() )
   {
-    settings = layer->labeling()->settings( layer, pos.providerID );
+    settings = layer->labeling()->settings( pos.providerID );
 
     if ( p.isDiagram )
       valid = layer->diagramsEnabled();

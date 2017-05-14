@@ -1645,6 +1645,7 @@ QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 - labelsWithinRect() was removed. Use takeResults() and methods of QgsLabelingResults instead.
 - isStoredWithProject() and setStoredWithProject() had no effect and were removed.
 - staticWillUseLayer(QString) was removed. Use the variant with QgsVectorLayer argument.
+- readFromLayer() and writeToLayer() have been removed. Labeling is read/written in QgsAbstractVectorLayerLabeling and its subclasses.
 
 
 QgsPalLayerSettings        {#qgis_api_break_3_0_QgsPalLayerSettings}
@@ -1661,6 +1662,7 @@ dataDefinedUseExpression(), dataDefinedProperties() and dataDefinedNames()
 members were removed. Use the QgsProperty framework through dataDefinedProperties()
 and setDataDefinedProperties() instead.
 - readXml() and writeXml() now expect a reference to QgsReadWriteContext.
+- fromLayer() has been reoved. Labeling is read/written in QgsAbstractVectorLayerLabeling and its subclasses.
 
 
 QgsPanelWidgetStack        {#qgis_api_break_3_0_QgsPanelWidgetStack}

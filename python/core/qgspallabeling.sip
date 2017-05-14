@@ -34,9 +34,6 @@ class QgsPalLayerSettings
     QgsPalLayerSettings( const QgsPalLayerSettings &s );
     ~QgsPalLayerSettings();
 
-    //! @note added in 2.4
-    static QgsPalLayerSettings fromLayer( QgsVectorLayer *layer );
-
     /** Placement modes which determine how label candidates are generated for a feature.
      */
     //TODO QGIS 3.0 - move to QgsLabelingEngine
@@ -419,9 +416,6 @@ class QgsPalLayerSettings
      * in Python bindings.
      */
     void registerFeature( QgsFeature &f, QgsRenderContext &context );
-
-    void readFromLayer( QgsVectorLayer *layer );
-    void writeToLayer( QgsVectorLayer *layer );
 
     /** Read settings from a DOM element
      * @note added in 2.12

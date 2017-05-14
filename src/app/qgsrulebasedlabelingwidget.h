@@ -85,8 +85,8 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
     QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     ~QgsRuleBasedLabelingWidget();
 
-    //! save config to layer
-    void writeSettingsToLayer();
+    //! Gives access to the internal root of the rule tree
+    const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
 
   signals:
     void widgetChanged();

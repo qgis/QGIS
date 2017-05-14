@@ -139,7 +139,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mReadOnly( false )
   , mWkbType( QgsWkbTypes::Unknown )
   , mRenderer( nullptr )
-  , mLabeling( new QgsVectorLayerSimpleLabeling )
+  , mLabeling( nullptr )
   , mLabelFontNotFoundNotified( false )
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mLayerTransparency( 0 )
@@ -605,16 +605,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  if ( !mLabeling )
-    return false;
-
-  // for simple labeling the mode can be "no labels" - so we need to check
-  // in properties whether we are really enabled or not
-  if ( mLabeling->type() == QLatin1String( "simple" ) )
-    return customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool();
-
-  // for other labeling implementations we always assume that labeling is enabled
-  return true;
+  return mLabeling != nullptr;
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
@@ -1772,12 +1763,20 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
       setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
     }
 
+    // read labeling definition
     QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
-    if ( !labelingElement.isNull() )
+    QgsAbstractVectorLayerLabeling *labeling = nullptr;
+    if ( labelingElement.isNull() ||
+         ( labelingElement.attribute( "type" ) == "simple" && labelingElement.firstChildElement( QStringLiteral( "settings" ) ).isNull() ) )
     {
-      QgsAbstractVectorLayerLabeling *l = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
-      setLabeling( l ? l : new QgsVectorLayerSimpleLabeling );
+      // support for pre-QGIS 3 labeling configurations written in custom properties
+      labeling = readLabelingFromCustomProperties();
     }
+    else
+    {
+      labeling = QgsAbstractVectorLayerLabeling::create( labelingElement, context );
+    }
+    setLabeling( labeling );
 
     // get and set the blend mode if it exists
     QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -2054,7 +2053,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     mapLayerNode.setAttribute( QStringLiteral( "simplifyLocal" ), mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
     mapLayerNode.setAttribute( QStringLiteral( "simplifyMaxScale" ), QString::number( mSimplifyMethod.maximumScale() ) );
 
-    //save customproperties (for labeling ng)
+    //save customproperties
     writeCustomProperties( node, doc );
 
     // add the blend mode field
@@ -4230,4 +4229,22 @@ QgsEditorWidgetSetup QgsVectorLayer::editorWidgetSetup( int index ) const
     return QgsEditorWidgetSetup();
 
   return mFields.at( index ).editorWidgetSetup();
+}
+
+QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties()
+{
+  QgsAbstractVectorLayerLabeling *labeling = nullptr;
+  if ( customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) &&
+       customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() == true )
+  {
+    // try to load from custom properties
+    QgsPalLayerSettings settings;
+    settings.readFromLayerCustomProperties( this );
+    labeling = new QgsVectorLayerSimpleLabeling( settings );
+  }
+
+  // also clear old-style labeling config
+  removeCustomProperty( QStringLiteral( "labeling" ) );
+
+  return labeling;
 }

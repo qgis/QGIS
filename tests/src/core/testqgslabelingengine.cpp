@@ -53,7 +53,7 @@ class TestQgsLabelingEngine : public QObject
 
     QString mReport;
 
-    void setDefaultLabelParams( QgsVectorLayer *layer );
+    void setDefaultLabelParams( QgsPalLayerSettings &settings );
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
 };
@@ -95,14 +95,14 @@ void TestQgsLabelingEngine::cleanup()
   vl = 0;
 }
 
-void TestQgsLabelingEngine::setDefaultLabelParams( QgsVectorLayer *layer )
+void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
 {
-  layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), 12 );
-  layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), "Bold" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorR" ), "200" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorG" ), "0" );
-  layer->setCustomProperty( QStringLiteral( "labeling/textColorB" ), "200" );
+  QgsTextFormat format;
+  QFont font( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family(), 12 );
+  QgsFontUtils::updateFontViaStyle( font, QgsFontUtils::translateNamedStyle( "Bold" ) );
+  format.setFont( font );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
 }
 
 void TestQgsLabelingEngine::testBasic()
@@ -126,14 +126,14 @@ void TestQgsLabelingEngine::testBasic()
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &p );
 
-  vl->setCustomProperty( QStringLiteral( "labeling" ), "pal" );
-  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), true );
-  vl->setCustomProperty( QStringLiteral( "labeling/fieldName" ), "Class" );
-  setDefaultLabelParams( vl );
+  QgsPalLayerSettings settings;
+  settings.enabled = true;
+  settings.fieldName = "Class";
+  setDefaultLabelParams( settings );
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
-  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString() ) );
+  engine.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
   //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
   engine.run( context );
 
@@ -148,7 +148,7 @@ void TestQgsLabelingEngine::testBasic()
   job.waitForFinished();
   QImage img2 = job.renderedImage();
 
-  vl->setCustomProperty( QStringLiteral( "labeling/enabled" ), false );
+  vl->setLabeling( nullptr );
 
   QVERIFY( imageCheck( "labeling_basic", img2, 20 ) );
 }
@@ -245,7 +245,7 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
-  setDefaultLabelParams( vl );
+  //setDefaultLabelParams( vl );
 
   QgsMapRendererSequentialJob job( mapSettings );
   job.start();
@@ -267,7 +267,7 @@ void TestQgsLabelingEngine::testRuleBased()
   doc3.appendChild( e3 );
   QCOMPARE( doc.toString(), doc3.toString() );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling );
+  vl->setLabeling( nullptr );
 
   delete rl2;
 

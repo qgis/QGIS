@@ -137,9 +137,6 @@ class CORE_EXPORT QgsPalLayerSettings
     //! copy operator - only copies the permanent members
     QgsPalLayerSettings &operator=( const QgsPalLayerSettings &s );
 
-    //! \since QGIS 2.4
-    static QgsPalLayerSettings fromLayer( QgsVectorLayer *layer );
-
     /** Placement modes which determine how label candidates are generated for a feature.
      */
     //TODO QGIS 3.0 - move to QgsLabelingEngine
@@ -525,9 +522,6 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     void registerFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature = nullptr, QgsGeometry *obstacleGeometry = nullptr );
 
-    void readFromLayer( QgsVectorLayer *layer );
-    void writeToLayer( QgsVectorLayer *layer );
-
     /** Read settings from a DOM element
      * \since QGIS 2.12
      */
@@ -585,6 +579,13 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
 
   private:
+
+    friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
+
+    /** Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
+     * \since QGIS 3.0
+     */
+    void readFromLayerCustomProperties( QgsVectorLayer *layer );
 
     /**
      * Reads data defined properties from a QGIS 2.x project.

@@ -172,17 +172,10 @@ class CORE_EXPORT QgsTextBufferSettings
      */
     void setBlendMode( QPainter::CompositionMode mode );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
@@ -591,17 +584,10 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
@@ -842,17 +828,10 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     void setBlendMode( QPainter::CompositionMode mode );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
@@ -1073,17 +1052,10 @@ class CORE_EXPORT QgsTextFormat
      */
     void setLineHeight( double height );
 
-    /** Reads settings from a layer's custom properties.
+    /** Reads settings from a layer's custom properties (for QGIS 2.x projects).
      * \param layer source vector layer
-     * \see writeToLayer()
      */
     void readFromLayer( QgsVectorLayer *layer );
-
-    /** Writes settings to a layer's custom properties.
-     * \param layer target vector layer
-     * \see readFromLayer()
-     */
-    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * \see writeXml()
