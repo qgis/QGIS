@@ -3,6 +3,7 @@ core/qgsexception.sip
 core/qgis.sip
 core/qgsexpressioncontext.sip
 core/qgsfeaturerequest.sip
+core/qgsmargins.sip
 core/qgsoptionalexpression.sip
 core/qgspaintenginehack.sip
 core/qgspainting.sip
