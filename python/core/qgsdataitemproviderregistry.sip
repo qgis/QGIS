@@ -48,6 +48,8 @@ Add a provider implementation. Takes ownership of the object.
 Remove provider implementation from the list (provider object is deleted)
 %End
 
+  private:
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
 };
 
 /************************************************************************

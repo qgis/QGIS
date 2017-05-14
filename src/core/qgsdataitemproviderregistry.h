@@ -55,6 +55,9 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     void removeProvider( QgsDataItemProvider *provider );
 
   private:
+#ifdef SIP_RUN
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
+#endif
 
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider *> mProviders;
