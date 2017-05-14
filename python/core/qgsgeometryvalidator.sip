@@ -1,23 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryvalidator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsGeometryValidator : QThread
 {
-%TypeHeaderCode
-#include <qgsgeometryvalidator.h>
-%End
 
+%TypeHeaderCode
+#include "qgsgeometryvalidator.h"
+%End
   public:
-    //! Constructor
     QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0 );
+%Docstring
+Constructor
+%End
     ~QgsGeometryValidator();
 
-    void run();
+    virtual void run();
+
     void stop();
 
-    /** Validate geometry and produce a list of geometry errors */
     static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors /Out/ );
+%Docstring
+Validate geometry and produce a list of geometry errors
+%End
 
   signals:
-    void errorFound( const QgsGeometry::Error& );
+    void errorFound( const QgsGeometry::Error & );
 
   public slots:
-    void addError( const QgsGeometry::Error& );
-};
+    void addError( const QgsGeometry::Error & );
+
+}; // class QgsGeometryValidator
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgeometryvalidator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -168,6 +168,8 @@ class CORE_EXPORT QgsMargins
     double mBottom = 0.0;
 };
 
+#ifndef SIP_RUN
+
 /**
  * Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
  */
@@ -319,5 +321,6 @@ inline QgsMargins operator-( const QgsMargins &margins )
 }
 
 Q_DECLARE_TYPEINFO( QgsMargins, Q_MOVABLE_TYPE );
+#endif
 
 #endif // QGSMARGINS_H

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsDartMeasurement
 
     void send() const;
 
-    static const QString typeToString( Type type );
+    static const QString typeToString( QgsDartMeasurement::Type type );
 
   private:
     QString mName;

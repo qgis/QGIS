@@ -1,49 +1,96 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmimedatautils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsMimeDataUtils
 {
+
 %TypeHeaderCode
-#include <qgsmimedatautils.h>
+#include "qgsmimedatautils.h"
 %End
   public:
 
     struct Uri
     {
-      //! Constructs invalid URI
       Uri();
-      //! Constructs URI from encoded data
+%Docstring
+Constructs invalid URI
+%End
       explicit Uri( QString &encData );
+%Docstring
+Constructs URI from encoded data
+%End
 
-      //! Returns whether the object contains valid data
-      //! @note added in 3.0
       bool isValid() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
 
-      //! Returns encoded representation of the object
       QString data() const;
+%Docstring
+Returns encoded representation of the object
+ :rtype: str
+%End
 
-      //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
       QString layerType;
-      //! For "vector" / "raster" type: provider id.
-      //! For "plugin" type: plugin layer type name.
-      //! For "custom" type: key of its QgsCustomDropHandler
+%Docstring
+Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
+%End
       QString providerKey;
-      //! Human readable name to be used e.g. in layer tree
+%Docstring
+For "custom" type: key of its QgsCustomDropHandler
+%End
       QString name;
-      //! Identifier of the data source recognized by its providerKey
+%Docstring
+Human readable name to be used e.g. in layer tree
+%End
       QString uri;
+%Docstring
+Identifier of the data source recognized by its providerKey
+%End
       QStringList supportedCrs;
       QStringList supportedFormats;
     };
-    typedef QList<QgsMimeDataUtils::Uri> UriList;
+    typedef QList<Uri> UriList;
 
     static QMimeData *encodeUriList( const UriList &layers );
+%Docstring
+ :rtype: QMimeData
+%End
 
     static bool isUriList( const QMimeData *data );
+%Docstring
+ :rtype: bool
+%End
 
     static UriList decodeUriList( const QMimeData *data );
+%Docstring
+ :rtype: UriList
+%End
 
-    /**
-     * Returns encoded URI list from a list of layer tree nodes.
-     * @note added in QGIS 3.0
-     */
-    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode*> &nodes );
+    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
+%Docstring
+ Returns encoded URI list from a list of layer tree nodes.
+.. versionadded:: 3.0
+ :rtype: QByteArray
+%End
 
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmimedatautils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
