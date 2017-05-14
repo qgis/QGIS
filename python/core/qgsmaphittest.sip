@@ -24,12 +24,12 @@ class QgsMapHitTest
   public:
     typedef QMap<QString, QString> LayerFilterExpression;
 
-    QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const LayerFilterExpression &layerFilterExpression = LayerFilterExpression() );
+    QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
 \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
 %End
 
-    QgsMapHitTest( const QgsMapSettings &settings, const LayerFilterExpression &layerFilterExpression );
+    QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
 %Docstring
 Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
 %End
@@ -58,16 +58,6 @@ Runs the map hit test
 .. seealso:: symbolVisible()
  :rtype: bool
 %End
-
-  protected:
-
-
-
-
-
-
-
-
 
 };
 

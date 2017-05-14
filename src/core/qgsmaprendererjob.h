@@ -177,7 +177,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
       QString message;
     };
 
-    typedef QList<Error> Errors;
+    typedef QList<QgsMapRendererJob::Error> Errors;
 
     //! List of errors that happened during the rendering job - available when the rendering has been finished
     Errors errors() const;
