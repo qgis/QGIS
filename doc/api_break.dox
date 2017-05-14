@@ -1018,6 +1018,7 @@ QgsEditorWidgetRegistry::instance()->findBest() must be used instead.
 have been removed. Use QgsVectorLayer.setConstraintExpression()/constraintExpression(),
 or QgsField.constraintExpression()/QgsField.constraintDescription() instead.
 - notNull() and setNotNull() have been removed. Use QgsVectorLayer.setFieldConstraint()/fieldConstraints(), or QgsField.constraints() instead.
+- readXml() and writeXml() now also expect a reference to QgsReadWriteContext object.
 
 QgsEditorWidgetWrapper        {#qgis_api_break_3_0_QgsEditorWidgetWrapper}
 ----------------------

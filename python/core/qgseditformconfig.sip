@@ -197,13 +197,13 @@ class QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode &node );
+    void readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
     /**
      * Write XML information
      * Serialize on project save
      */
-    void writeXml( QDomNode &node ) const;
+    void writeXml( QDomNode &node, const QgsReadWriteContext &context ) const;
 
     /**
      * Deserialize drag and drop designer elements.

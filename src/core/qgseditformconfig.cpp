@@ -14,7 +14,9 @@
  ***************************************************************************/
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
 
@@ -255,14 +257,14 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
   d->mSuppressForm = s;
 }
 
-void QgsEditFormConfig::readXml( const QDomNode &node )
+void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   d.detach();
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    d->mUiFormPath = QgsProject::instance()->readPath( e.text() );
+    d->mUiFormPath = context.pathResolver().readPath( e.text() );
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
@@ -299,7 +301,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node )
   QDomNode editFormInitFilePathNode = node.namedItem( QStringLiteral( "editforminitfilepath" ) );
   if ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() )
   {
-    setInitFilePath( QgsProject::instance()->readPath( editFormInitFilePathNode.toElement().text() ) );
+    setInitFilePath( context.pathResolver().readPath( editFormInitFilePathNode.toElement().text() ) );
   }
 
   QDomNode fFSuppNode = node.namedItem( QStringLiteral( "featformsuppress" ) );
@@ -357,12 +359,12 @@ void QgsEditFormConfig::readXml( const QDomNode &node )
   }
 }
 
-void QgsEditFormConfig::writeXml( QDomNode &node ) const
+void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
   QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
-  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( uiForm() ) );
+  QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
@@ -376,7 +378,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node ) const
   node.appendChild( eficsField );
 
   QDomElement efifpField  = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
-  efifpField.appendChild( doc.createTextNode( QgsProject::instance()->writePath( initFilePath() ) ) );
+  efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
   QDomElement eficField  = doc.createElement( QStringLiteral( "editforminitcode" ) );
