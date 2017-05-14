@@ -84,9 +84,9 @@ class QgsExpressionFieldBuffer
  \param flds The fields to be updated
 %End
 
-    QList<ExpressionField> expressions() const;
+    QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
 %Docstring
- :rtype: list of ExpressionField
+ :rtype: list of QgsExpressionFieldBuffer.ExpressionField
 %End
 
 };
