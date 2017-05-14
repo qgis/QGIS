@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMimeDataUtils
       QStringList supportedCrs;
       QStringList supportedFormats;
     };
-    typedef QList<Uri> UriList;
+    typedef QList<QgsMimeDataUtils::Uri> UriList;
 
     static QMimeData *encodeUriList( const UriList &layers );
 
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMimeDataUtils
 
 };
 
-Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList );
+Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList )
 
 #endif // QGSMIMEDATAUTILS_H
 

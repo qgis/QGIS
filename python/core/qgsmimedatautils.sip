@@ -59,7 +59,7 @@ Identifier of the data source recognized by its providerKey
       QStringList supportedCrs;
       QStringList supportedFormats;
     };
-    typedef QList<Uri> UriList;
+    typedef QList<QgsMimeDataUtils::Uri> UriList;
 
     static QMimeData *encodeUriList( const UriList &layers );
 %Docstring
