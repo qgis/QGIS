@@ -760,6 +760,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   }
 
   QgsCoordinateTransform inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  inverseCt.detachForThread(); //needed? can we optimise this?
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 

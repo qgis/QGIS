@@ -31,6 +31,7 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
   }
   if ( mLayer )
     setDependentLayers( QList< QgsMapLayer * >() << mLayer );
+  mOptions.ct.detachForThread();
 }
 
 void QgsVectorFileWriterTask::cancel()

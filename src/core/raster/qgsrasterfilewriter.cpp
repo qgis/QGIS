@@ -228,6 +228,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
+        ct.detachForThread();
         srcExtent = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProvider->extent().contains( srcExtent ) )

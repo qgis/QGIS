@@ -107,6 +107,7 @@ void QgsDiagramLayerSettings::setRenderer( QgsDiagramRenderer *diagramRenderer )
 void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransform &transform )
 {
   mCt = transform;
+  mCt.detachForThread();
 }
 
 void QgsDiagramLayerSettings::readXml( const QDomElement &elem )
