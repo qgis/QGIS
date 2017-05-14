@@ -352,22 +352,22 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied
-    bool readSymbology( const QDomNode &node, QString &errorMessage ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Reads layer specific state from project file Dom node
-    bool readXml( const QDomNode &layer_node ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     //! \brief Write the symbology for the layer into the docment provided
-    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write the style for the layer into the docment provided
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write layer specific state to project file Dom node
-    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values

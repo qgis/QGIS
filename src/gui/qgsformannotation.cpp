@@ -143,21 +143,21 @@ QSizeF QgsFormAnnotation::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
   formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
-  _writeXml( formAnnotationElem, doc );
+  _writeXml( formAnnotationElem, doc, context );
   elem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, context );
   }
   // upgrade old layer
   if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )

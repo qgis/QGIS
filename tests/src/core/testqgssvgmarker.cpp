@@ -25,6 +25,7 @@
 #include <qgsmaplayer.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
+#include <qgspathresolver.h>
 #include <qgsproviderregistry.h>
 #include <qgsproject.h>
 #include <qgssymbol.h>
@@ -98,8 +99,10 @@ void TestQgsSvgMarkerSymbol::initTestCase()
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
+  QString defaultSvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/crosses/Star1.svg" ), QgsPathResolver() );
+
   //setup symbol
-  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayer();
+  mSvgMarkerLayer = new QgsSvgMarkerSymbolLayer( defaultSvgPath );
   mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mSvgMarkerLayer );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
@@ -131,7 +134,9 @@ void TestQgsSvgMarkerSymbol::svgMarkerSymbol()
 {
   mReport += QLatin1String( "<h2>SVG marker symbol layer test</h2>\n" );
 
-  mSvgMarkerLayer->setPath( QStringLiteral( "/transport/transport_airport.svg" ) );
+  QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/transport/transport_airport.svg" ), QgsPathResolver() );
+
+  mSvgMarkerLayer->setPath( svgPath );
   mSvgMarkerLayer->setStrokeColor( Qt::black );
   mSvgMarkerLayer->setColor( Qt::blue );
   mSvgMarkerLayer->setSize( 10 );

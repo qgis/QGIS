@@ -6,23 +6,11 @@ class QgsSvgCacheEntry
 
   public:
     QgsSvgCacheEntry();
-    /** Constructor.
-     * @param file Absolute path to SVG file (relative paths are not resolved).
-     * @param size
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
-     */
-    QgsSvgCacheEntry( const QString &file, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke, const QString &lookupKey = QString() );
+    QgsSvgCacheEntry( const QString& path, double size, double strokeWidth, double widthScaleFactor, const QColor& fill, const QColor& stroke );
     ~QgsSvgCacheEntry();
 
     //! Absolute path to SVG file
-    QString file;
-    //! Lookup key used by QgsSvgCache's hashtable (relative or absolute path). Needed for removal from the hashtable
-    QString lookupKey;
+    QString path;
     double size; //size in pixels (cast to int for QImage)
     double strokeWidth;
     double widthScaleFactor;
@@ -68,43 +56,13 @@ class QgsSvgCache : QObject
 
     ~QgsSvgCache();
 
-    /** Get SVG as QImage.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
-     * @param fitsInCache
-     */
-    QImage svgAsImage( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
-                              double widthScaleFactor, bool &fitsInCache );
-    /** Get SVG  as QPicture&.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
-     * @param forceVectorOutput
-     */
-    QPicture svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QImage svgAsImage( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+                              double widthScaleFactor, bool& fitsInCache );
+
+    QPicture svgAsPicture( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                   double widthScaleFactor, bool forceVectorOutput = false );
 
-    /** Calculates the viewbox size of a (possibly cached) SVG file.
-     * @param file Absolute or relative path to SVG file.
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
-     * @returns viewbox size set in SVG file
-     * @note added in QGIS 2.14
-     */
-    QSizeF svgViewboxSize( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QSizeF svgViewboxSize( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                            double widthScaleFactor );
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
@@ -143,7 +101,7 @@ class QgsSvgCache : QObject
     QByteArray getImageData( const QString &path ) const;
 
     /** Get SVG content*/
-    QByteArray svgContent( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QByteArray svgContent( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                   double widthScaleFactor );
 
   signals:
@@ -152,24 +110,14 @@ class QgsSvgCache : QObject
 
   protected:
 
-    /** Creates new cache entry and returns pointer to it
-     * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerUtils::symbolNameToPath() in SVG paths.
-     * in settings svg/searchPathsForSVG
-     * @param size size of cached image
-     * @param fill color of fill
-     * @param stroke color of stroke
-     * @param strokeWidth width of stroke
-     * @param widthScaleFactor width scale factor
-     * @param rasterScaleFactor raster scale factor
-     */
-    QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QgsSvgCacheEntry* insertSvg( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                  double widthScaleFactor );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     /** Returns entry from cache or creates a new entry if it does not exist already*/
-    QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
+    QgsSvgCacheEntry* cacheEntry( const QString& path, double size, const QColor& fill, const QColor& stroke, double strokeWidth,
                                   double widthScaleFactor );
 
     /** Removes the least used items until the maximum size is under the limit*/

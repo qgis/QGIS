@@ -194,21 +194,21 @@ class QgsRasterLayer : QgsMapLayer
 
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
-    bool readSymbology( const QDomNode &node, QString &errorMessage );
+    bool readSymbology( const QDomNode& node, QString& errorMessage, const QgsReadWriteContext &context );
 
     /** \brief Read the style information for the current layer from the Dom node supplied */
-    bool readStyle(const QDomNode &node, QString &errorMessage);
+    bool readStyle(const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
     /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( const QDomNode &layer_node );
+    bool readXml( const QDomNode& layer_node, const QgsReadWriteContext &context );
 
     /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument &doc, QString &errorMessage ) const;
+    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage, const QgsReadWriteContext &context ) const;
 
     /** \brief Write the style for the layer into the docment provided */
-    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage) const;
+    bool writeStyle(QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const;
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc, const QgsReadWriteContext &context ) const;
 };
 

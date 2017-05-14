@@ -230,6 +230,7 @@ SET(QGIS_CORE_SRCS
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgspythonrunner.cpp
+  qgsreadwritecontext.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
   qgsrenderchecker.cpp
@@ -795,6 +796,7 @@ SET(QGIS_CORE_HDRS
   qgsproviderregistry.h
   qgspythonrunner.h
   qgsrange.h
+  qgsreadwritecontext.h
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsruntimeprofiler.h

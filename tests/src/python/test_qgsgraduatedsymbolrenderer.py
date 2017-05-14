@@ -24,6 +24,7 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
+                       QgsReadWriteContext,
                        QgsRenderContext
                        )
 from qgis.PyQt.QtCore import Qt
@@ -372,8 +373,8 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         # Check save and reload from Dom works
 
         doc = QDomDocument()
-        element = renderer.save(doc)
-        renderer2 = QgsGraduatedSymbolRenderer.create(element)
+        element = renderer.save(doc, QgsReadWriteContext())
+        renderer2 = QgsGraduatedSymbolRenderer.create(element, QgsReadWriteContext())
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),

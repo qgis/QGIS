@@ -42,7 +42,7 @@ class QgsRendererAbstractMetadata
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) = 0 /Factory/;
+    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem, const QgsReadWriteContext &context ) = 0 /Factory/;
     /** Return new instance of settings widget for the renderer. Returns NULL on error.
      *
      * The \a oldRenderer argument may refer to previously used renderer (or it is null).
@@ -70,9 +70,9 @@ class QgsRendererMetadata : QgsRendererAbstractMetadata
 #include <qgsrendererregistry.h>
 %End
   public:
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem ) /Factory/;
-    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
+    virtual QgsFeatureRenderer* createRenderer( QDomElement& elem, const QgsReadWriteContext &context ) /Factory/;
+    virtual QgsRendererWidget* createRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer ) /Factory/;
+    virtual QgsFeatureRenderer* createRendererFromSld( QDomElement& elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
     // QgsRendererCreateFunc createFunction() const;
     // QgsRendererWidgetFunc widgetFunction() const;

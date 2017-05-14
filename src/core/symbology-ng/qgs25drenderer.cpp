@@ -110,27 +110,27 @@ Qgs25DRenderer::Qgs25DRenderer()
   setOrderByEnabled( true );
 }
 
-QDomElement Qgs25DRenderer::save( QDomDocument &doc )
+QDomElement Qgs25DRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
 
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "25dRenderer" ) );
 
-  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc );
+  QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "symbol" ), mSymbol.get(), doc, context );
 
   rendererElem.appendChild( symbolElem );
 
   return rendererElem;
 }
 
-QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element )
+QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   Qgs25DRenderer *renderer = new Qgs25DRenderer();
 
   QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
   if ( symbols.size() )
   {
-    renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement() ) );
+    renderer->mSymbol.reset( QgsSymbolLayerUtils::loadSymbol( symbols.at( 0 ).toElement(), context ) );
   }
 
   return renderer;

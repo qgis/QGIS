@@ -60,8 +60,8 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QString sourceFile() const { return mHtmlFile; }
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;
 
     void setAssociatedFeature( const QgsFeature &feature ) override;
 

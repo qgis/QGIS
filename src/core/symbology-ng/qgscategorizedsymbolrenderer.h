@@ -128,9 +128,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;

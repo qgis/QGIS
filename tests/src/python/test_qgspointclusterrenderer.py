@@ -38,6 +38,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapUnitScale,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
+                       QgsReadWriteContext,
                        QgsPointDisplacementRenderer,
                        QgsMapSettings,
                        QgsProperty,
@@ -114,8 +115,8 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         r = QgsPointClusterRenderer()
         self._setProperties(r)
         doc = QDomDocument("testdoc")
-        elem = r.save(doc)
-        c = QgsPointClusterRenderer.create(elem)
+        elem = r.save(doc, QgsReadWriteContext())
+        c = QgsPointClusterRenderer.create(elem, QgsReadWriteContext())
         self._checkProperties(c)
 
     def testConvert(self):

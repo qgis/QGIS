@@ -70,24 +70,24 @@ void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   mDocument->drawContents( painter, clipRect );
 }
 
-void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement annotationElem = doc.createElement( QStringLiteral( "TextAnnotationItem" ) );
   if ( mDocument )
   {
     annotationElem.setAttribute( QStringLiteral( "document" ), mDocument->toHtml() );
   }
-  _writeXml( annotationElem, doc );
+  _writeXml( annotationElem, doc, context );
   elem.appendChild( annotationElem );
 }
 
-void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mDocument.reset( new QTextDocument );
   mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, context );
   }
 }

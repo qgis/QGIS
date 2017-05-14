@@ -37,7 +37,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FilledMarker" ), QObject::tr( "Filled marker" ), QgsSymbol::Marker,
                       QgsFilledMarkerSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SvgMarker" ), QObject::tr( "SVG marker" ), QgsSymbol::Marker,
-                      QgsSvgMarkerSymbolLayer::create, QgsSvgMarkerSymbolLayer::createFromSld ) );
+                      QgsSvgMarkerSymbolLayer::create, QgsSvgMarkerSymbolLayer::createFromSld, QgsSvgMarkerSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "FontMarker" ), QObject::tr( "Font marker" ), QgsSymbol::Marker,
                       QgsFontMarkerSymbolLayer::create, QgsFontMarkerSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "EllipseMarker" ), QObject::tr( "Ellipse marker" ), QgsSymbol::Marker,
@@ -54,7 +54,7 @@ QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "RasterFill" ), QObject::tr( "Raster image fill" ), QgsSymbol::Fill,
                       QgsRasterFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "SVGFill" ), QObject::tr( "SVG fill" ), QgsSymbol::Fill,
-                      QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld ) );
+                      QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld, QgsSVGFillSymbolLayer::resolvePaths ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "CentroidFill" ), QObject::tr( "Centroid fill" ), QgsSymbol::Fill,
                       QgsCentroidFillSymbolLayer::create, QgsCentroidFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerMetadata( QStringLiteral( "LinePatternFill" ), QObject::tr( "Line pattern fill" ), QgsSymbol::Fill,
@@ -121,6 +121,14 @@ QgsSymbolLayer *QgsSymbolLayerRegistry::createSymbolLayerFromSld( const QString 
     return nullptr;
 
   return mMetadata[name]->createSymbolLayerFromSld( element );
+}
+
+void QgsSymbolLayerRegistry::resolvePaths( const QString &name, QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
+{
+  if ( !mMetadata.contains( name ) )
+    return;
+
+  mMetadata[name]->resolvePaths( properties, pathResolver, saving );
 }
 
 QStringList QgsSymbolLayerRegistry::symbolLayersForType( QgsSymbol::SymbolType type )

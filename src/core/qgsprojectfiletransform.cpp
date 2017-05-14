@@ -20,6 +20,7 @@
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QTextStream>
@@ -473,6 +474,9 @@ void QgsProjectFileTransform::transform1800to1900()
     return;
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+
   QDomNodeList layerItemList = mDom.elementsByTagName( QStringLiteral( "rasterproperties" ) );
   for ( int i = 0; i < layerItemList.size(); ++i )
   {
@@ -483,7 +487,7 @@ void QgsProjectFileTransform::transform1800to1900()
     QgsRasterLayer rasterLayer;
     // TODO: We have to use more data from project file to read the layer it correctly,
     // OTOH, we should not read it until it was converted
-    rasterLayer.readLayerXml( layerNode.toElement(), QgsProject::instance()->pathResolver() );
+    rasterLayer.readLayerXml( layerNode.toElement(), context );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
 

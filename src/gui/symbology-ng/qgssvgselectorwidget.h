@@ -235,20 +235,10 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsSvgSelectorWidget();
 
-    static QgsSvgSelectorWidget *create( QWidget *parent = nullptr ) { return new QgsSvgSelectorWidget( parent ); }
-
     QString currentSvgPath() const;
-    QString currentSvgPathToName() const;
-
-    QTreeView *groupsTreeView() { return mGroupsTreeView; }
-    QListView *imagesListView() { return mImagesListView; }
-    QLineEdit *filePathLineEdit() { return mFileLineEdit; }
-    QPushButton *filePathButton() { return mFilePushButton; }
-    QCheckBox *relativePathCheckbox() { return mRelativePathChkBx; }
-    QLayout *selectorLayout() { return this->layout(); }
 
   public slots:
-    //! Accepts absolute and relative paths
+    //! Accepts absolute paths
     void setSvgPath( const QString &svgPath );
 
   signals:
@@ -267,7 +257,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void on_mFileLineEdit_textChanged( const QString &text );
 
   private:
-    QString mCurrentSvgPath; // always stored as absolute path
+    QString mCurrentSvgPath; //!< Always stored as absolute path
 
 };
 
@@ -286,12 +276,6 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();
-
-    //! Returns the central layout. Widgets added to it must have this dialog as parent
-    QVBoxLayout *layout() { return mLayout; }
-
-    //! Returns the button box
-    QDialogButtonBox *buttonBox() { return mButtonBox; }
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

@@ -232,6 +232,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterprojector.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
@@ -8701,8 +8702,8 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *de
     rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
-    srcLayer->writeSymbology( rootNode, doc, errorMsg );
-    destLayer->readSymbology( rootNode, errorMsg );
+    srcLayer->writeSymbology( rootNode, doc, errorMsg, QgsReadWriteContext() );
+    destLayer->readSymbology( rootNode, errorMsg, QgsReadWriteContext() );
   }
 }
 

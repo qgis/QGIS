@@ -131,7 +131,7 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext &context )
   }
 }
 
-QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbologyElem )
+QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbologyElem, const QgsReadWriteContext &context )
 {
   QgsPointDisplacementRenderer *r = new QgsPointDisplacementRenderer();
   r->setLabelAttributeName( symbologyElem.attribute( QStringLiteral( "labelAttributeName" ) ) );
@@ -155,14 +155,14 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( QStringLiteral( "renderer-v2" ) );
   if ( !embeddedRendererElem.isNull() )
   {
-    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem ) );
+    r->setEmbeddedRenderer( QgsFeatureRenderer::load( embeddedRendererElem, context ) );
   }
 
   //center symbol
   QDomElement centerSymbolElem = symbologyElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !centerSymbolElem.isNull() )
   {
-    r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem ) );
+    r->setCenterSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( centerSymbolElem, context ) );
   }
   return r;
 }
@@ -172,7 +172,7 @@ QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
   return mCenterSymbol.get();
 }
 
-QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc )
+QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
   rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
@@ -191,12 +191,12 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc )
 
   if ( mRenderer )
   {
-    QDomElement embeddedRendererElem = mRenderer->save( doc );
+    QDomElement embeddedRendererElem = mRenderer->save( doc, context );
     rendererElement.appendChild( embeddedRendererElem );
   }
   if ( mCenterSymbol )
   {
-    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc );
+    QDomElement centerSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "centerSymbol" ), mCenterSymbol.get(), doc, context );
     rendererElement.appendChild( centerSymbolElem );
   }
 

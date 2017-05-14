@@ -20,6 +20,7 @@
 
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrulebasedlabelingwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
@@ -75,8 +76,8 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
   if ( mLayer->labeling() )
   {
     QDomDocument doc;
-    QDomElement oldSettings = mLayer->labeling()->save( doc );
-    mOldSettings.reset( QgsAbstractVectorLayerLabeling::create( oldSettings ) );
+    QDomElement oldSettings = mLayer->labeling()->save( doc, QgsReadWriteContext() );
+    mOldSettings.reset( QgsAbstractVectorLayerLabeling::create( oldSettings, QgsReadWriteContext() ) );
     mOldPalSettings.readFromLayer( mLayer );
   }
   else

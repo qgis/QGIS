@@ -301,6 +301,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     QImage mImage;
     QSvgRenderer mSVG;
+    //! Absolute path to the image (may be also HTTP URL)
     QString mSourcePath;
     Mode mMode;
 

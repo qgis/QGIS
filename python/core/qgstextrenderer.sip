@@ -304,7 +304,7 @@ class QgsTextBackgroundSettings
 
     QString svgFile() const;
 %Docstring
- Returns the path to the background SVG file, if set.
+ Returns the absolute path to the background SVG file, if set.
 .. seealso:: setSvgFile()
  :rtype: str
 %End
@@ -312,8 +312,8 @@ class QgsTextBackgroundSettings
     void setSvgFile( const QString &file );
 %Docstring
  Sets the path to the background SVG file. This is only used if type() is set to
- QgsTextBackgroundSettings.ShapeSVG.
- \param file SVG file path
+ QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
+ \param file Absolute SVG file path
 .. seealso:: svgFile()
 %End
 
@@ -688,13 +688,13 @@ class QgsTextBackgroundSettings
 .. seealso:: readFromLayer()
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
  Read settings from a DOM element.
 .. seealso:: writeXml()
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write settings into a DOM element.
 .. seealso:: readXml()
@@ -1251,13 +1251,13 @@ class QgsTextFormat
 .. seealso:: readFromLayer()
 %End
 
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
  Read settings from a DOM element.
 .. seealso:: writeXml()
 %End
 
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write settings into a DOM element.
 .. seealso:: readXml()

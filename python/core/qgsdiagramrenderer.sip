@@ -199,9 +199,9 @@ class QgsDiagramLayerSettings
      */
     void setShowAllDiagrams( bool showAllDiagrams );
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
-    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    void readXml( const QDomElement& elem );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc ) const;
+    bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
@@ -294,8 +294,8 @@ class QgsDiagramSettings
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement& elem );
+    void writeXml( QDomElement& rendererElem, QDomDocument& doc ) const;
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -365,8 +365,8 @@ class QgsDiagramRenderer
     /** Returns list with all diagram settings in the renderer*/
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
 
-    virtual void readXml( const QDomElement &elem, const QgsVectorLayer *layer ) = 0;
-    virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const = 0;
+    virtual void readXml( const QDomElement& elem, const QgsReadWriteContext &context ) = 0;
+    virtual void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsReadWriteContext &context ) const = 0;
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
@@ -442,8 +442,8 @@ class QgsDiagramRenderer
     static int dpiPaintDevice( const QPainter* );
 
     //read / write diagram
-    void _readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void _readXml( const QDomElement& elem, const QgsReadWriteContext &context );
+    void _writeXml( QDomElement& rendererElem, QDomDocument& doc, const QgsReadWriteContext &context ) const;
 };
 
 /** Renders the diagrams for all features with the same settings*/
@@ -467,8 +467,8 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 
     QList<QgsDiagramSettings> diagramSettings() const;
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement& elem, const QgsReadWriteContext &context );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsReadWriteContext &context ) const;
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
@@ -533,8 +533,8 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
     bool classificationAttributeIsExpression() const;
     void setClassificationAttributeIsExpression( bool isExpression );
 
-    void readXml( const QDomElement &elem, const QgsVectorLayer *layer );
-    void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsVectorLayer *layer ) const;
+    void readXml( const QDomElement& elem, const QgsReadWriteContext &context );
+    void writeXml( QDomElement& layerElem, QDomDocument& doc, const QgsReadWriteContext &context ) const;
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 

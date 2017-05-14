@@ -31,6 +31,8 @@
 #include "qgscolorramp.h"
 
 class QgsExpression;
+class QgsPathResolver;
+class QgsReadWriteContext;
 class QgsSymbolLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
@@ -202,19 +204,21 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Attempts to load a symbol from a DOM element
      * \param element DOM element representing symbol
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element ) SIP_FACTORY;
+    static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * \param element DOM element representing symbol
+     * \param context object to transform relative to absolute paths
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element ) SIP_SKIP
+    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
-      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element );
+      QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
 
       if ( symbolCastToType )
@@ -229,8 +233,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
       }
     }
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element ) SIP_FACTORY;
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc );
+    //! Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
+    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a symbol definition to XML
+    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
@@ -344,8 +350,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement &element ) SIP_FACTORY;
-    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc );
+    //! Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
+    static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    //! Writes a collection of symbols to XML with specified tagName for the top-level element
+    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
@@ -498,14 +506,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( const QString &directory );
 
-    /** Get symbol's path from its name.
+    /** Get SVG symbol's path from its name.
      *  If the name is not absolute path the file is searched in SVG paths specified
      *  in settings svg/searchPathsForSVG.
      */
-    static QString symbolNameToPath( QString name );
+    static QString svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver );
 
-    //! Get symbols's name from its path
-    static QString symbolPathToName( QString path );
+    //! Get SVG symbols's name from its path
+    static QString svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver );
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );

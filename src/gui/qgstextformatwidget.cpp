@@ -23,6 +23,8 @@
 #include "qgssvgselectorwidget.h"
 #include "qgssubstitutionlistwidget.h"
 #include "qgspallabeling.h" // for enum values
+#include "qgspathresolver.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
@@ -1243,8 +1245,8 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
     mShapeSVGPathLineEdit->setText( svgPath );
   }
 
-  QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( svgPath );
-  bool validSVG = !resolvedPath.isNull();
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
+  bool validSVG = QFileInfo::exists( resolvedPath );
 
   // draw red text for path field if invalid (path can't be resolved)
   mShapeSVGPathLineEdit->setStyleSheet( QString( !validSVG ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );

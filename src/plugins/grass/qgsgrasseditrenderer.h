@@ -52,9 +52,9 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
     void setLineRenderer( QgsFeatureRenderer *renderer );
     void setMarkerRenderer( QgsFeatureRenderer *renderer );
 
-    virtual QDomElement save( QDomDocument &doc ) override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    static QgsFeatureRenderer *create( QDomElement &element );
+    static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context );
 
   protected:
     QgsFeatureRenderer *mLineRenderer = nullptr;

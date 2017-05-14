@@ -38,10 +38,10 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     //! create renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &element ) /Factory/;
+    static QgsFeatureRenderer* create( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument &doc );
+    virtual QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );

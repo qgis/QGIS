@@ -52,13 +52,13 @@ class QgsConditionalLayerStyles
  :rtype: list of QgsConditionalStyle
 %End
 
-    bool readXml( const QDomNode &node );
+    bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 %Docstring
  Reads field ui properties specific state from Dom node.
  :rtype: bool
 %End
 
-    bool writeXml( QDomNode &node, QDomDocument &doc ) const;
+    bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write field ui properties specific state from Dom node.
  :rtype: bool
@@ -244,13 +244,13 @@ class QgsConditionalStyle
  :rtype: QgsConditionalStyle
 %End
 
-    bool readXml( const QDomNode &node );
+    bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 %Docstring
  Reads vector conditional style specific state from layer Dom node.
  :rtype: bool
 %End
 
-    bool writeXml( QDomNode &node, QDomDocument &doc ) const;
+    bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Write vector conditional style specific state from layer Dom node.
  :rtype: bool

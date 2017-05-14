@@ -46,11 +46,11 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     QgsPointDisplacementRenderer *clone() const override;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    QDomElement save( QDomDocument &doc ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer *create( QDomElement &symbologyElem ) SIP_FACTORY;
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /** Sets the line width for the displacement group circle.
      * \param width line width in mm

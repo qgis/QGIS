@@ -158,7 +158,7 @@ class QgsSymbolLayerUtils
      * @param element DOM element representing symbol
      * @returns decoded symbol, if possible
      */
-    static QgsSymbol *loadSymbol( const QDomElement &element ) /Factory/;
+    static QgsSymbol* loadSymbol( const QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
 
     /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
@@ -166,10 +166,10 @@ class QgsSymbolLayerUtils
      * @returns decoded symbol cast to specified type, if possible
      * @note not available in python bindings
      */
-    //template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element );
+    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element, const QgsReadWriteContext &context );
 
-    static QgsSymbolLayer *loadSymbolLayer( QDomElement &element ) /Factory/;
-    static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc );
+    static QgsSymbolLayer* loadSymbolLayer( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    static QDomElement saveSymbol( const QString& symbolName, QgsSymbol* symbol, QDomDocument& doc, const QgsReadWriteContext &context );
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
@@ -277,8 +277,8 @@ class QgsSymbolLayerUtils
     static QgsStringMap parseProperties( QDomElement &element );
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
-    static QgsSymbolMap loadSymbols( QDomElement &element ) /Factory/;
-    static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc );
+    static QgsSymbolMap loadSymbols( QDomElement& element, const QgsReadWriteContext &context ) /Factory/;
+    static QDomElement saveSymbols( QgsSymbolMap& symbols, const QString& tagName, QDomDocument& doc, const QgsReadWriteContext &context );
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
 
@@ -404,14 +404,9 @@ class QgsSymbolLayerUtils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( const QString &directory );
 
-    /** Get symbol's path from its name.
-     *  If the name is not absolute path the file is searched in SVG paths specified
-     *  in settings svg/searchPathsForSVG.
-     */
-    static QString symbolNameToPath( QString name );
+    static QString svgSymbolNameToPath( QString name, const QgsPathResolver& pathResolver );
 
-    //! Get symbols's name from its path
-    static QString symbolPathToName( QString path );
+    static QString svgSymbolPathToName( QString path, const QgsPathResolver& pathResolver );
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );

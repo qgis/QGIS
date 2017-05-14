@@ -566,7 +566,7 @@ QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
   return lst;
 }
 
-QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element )
+QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
   QDomElement symbolsElem = element.firstChildElement( QStringLiteral( "symbols" ) );
   if ( symbolsElem.isNull() )
@@ -576,7 +576,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element )
   if ( catsElem.isNull() )
     return nullptr;
 
-  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem );
+  QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
   QgsCategoryList cats;
 
   QDomElement catElem = catsElem.firstChildElement();
@@ -608,7 +608,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element )
   QDomElement sourceSymbolElem = element.firstChildElement( QStringLiteral( "source-symbol" ) );
   if ( !sourceSymbolElem.isNull() )
   {
-    QgsSymbolMap sourceSymbolMap = QgsSymbolLayerUtils::loadSymbols( sourceSymbolElem );
+    QgsSymbolMap sourceSymbolMap = QgsSymbolLayerUtils::loadSymbols( sourceSymbolElem, context );
     if ( sourceSymbolMap.contains( QStringLiteral( "0" ) ) )
     {
       r->setSourceSymbol( sourceSymbolMap.take( QStringLiteral( "0" ) ) );
@@ -657,7 +657,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element )
   return r;
 }
 
-QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc )
+QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "categorizedSymbol" ) );
@@ -689,7 +689,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc )
     rendererElem.appendChild( catsElem );
 
     // save symbols
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, context );
     rendererElem.appendChild( symbolsElem );
 
   }
@@ -699,7 +699,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc )
   {
     QgsSymbolMap sourceSymbols;
     sourceSymbols.insert( QStringLiteral( "0" ), mSourceSymbol.get() );
-    QDomElement sourceSymbolElem = QgsSymbolLayerUtils::saveSymbols( sourceSymbols, QStringLiteral( "source-symbol" ), doc );
+    QDomElement sourceSymbolElem = QgsSymbolLayerUtils::saveSymbols( sourceSymbols, QStringLiteral( "source-symbol" ), doc, context );
     rendererElem.appendChild( sourceSymbolElem );
   }
 

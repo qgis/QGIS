@@ -38,7 +38,9 @@
 #include "qgsmapsettings.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -823,7 +825,10 @@ bool QgsComposition::writeXml( QDomElement &composerElem, QDomDocument &doc )
   compositionElem.setAttribute( QStringLiteral( "paperHeight" ), QString::number( mPageHeight ) );
   compositionElem.setAttribute( QStringLiteral( "numPages" ), mPages.size() );
 
-  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol, doc );
+  QgsReadWriteContext context;
+  context.setPathResolver( mProject->pathResolver() );
+
+  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol, doc, context );
   compositionElem.appendChild( pageStyleElem );
 
   //snapping
@@ -930,11 +935,14 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
   emit paperSizeChanged();
   int numPages = compositionElem.attribute( QStringLiteral( "numPages" ), QStringLiteral( "1" ) ).toInt();
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mProject->pathResolver() );
+
   QDomElement pageStyleSymbolElem = compositionElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !pageStyleSymbolElem.isNull() )
   {
     delete mPageStyleSymbol;
-    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem );
+    mPageStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, context );
   }
 
   if ( widthConversionOk && heightConversionOk )

@@ -1808,9 +1808,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QgsStringMap &properties )
   }
   if ( properties.contains( QStringLiteral( "svgFile" ) ) )
   {
-    QString svgName = properties[QStringLiteral( "svgFile" )];
-    QString savePath = QgsSymbolLayerUtils::symbolNameToPath( svgName );
-    svgFilePath = ( savePath.isEmpty() ? svgName : savePath );
+    svgFilePath = properties[QStringLiteral( "svgFile" )];
   }
   if ( properties.contains( QStringLiteral( "angle" ) ) )
   {
@@ -1899,6 +1897,18 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::create( const QgsStringMap &properties )
   return symbolLayer;
 }
 
+void QgsSVGFillSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "svgFile" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = QgsSymbolLayerUtils::svgSymbolPathToName( it.value(), pathResolver );
+    else
+      it.value() = QgsSymbolLayerUtils::svgSymbolNameToPath( it.value(), pathResolver );
+  }
+}
+
 QString QgsSVGFillSymbolLayer::layerType() const
 {
   return QStringLiteral( "SVGFill" );
@@ -1984,7 +1994,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   QgsStringMap map;
   if ( !mSvgFilePath.isEmpty() )
   {
-    map.insert( QStringLiteral( "svgFile" ), QgsSymbolLayerUtils::symbolPathToName( mSvgFilePath ) );
+    map.insert( QStringLiteral( "svgFile" ), mSvgFilePath );
   }
   else
   {

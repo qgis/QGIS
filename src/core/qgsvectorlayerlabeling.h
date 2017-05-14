@@ -24,6 +24,7 @@ class QDomDocument;
 class QDomElement;
 
 class QgsPalLayerSettings;
+class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
 
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const = 0;
 
     //! Return labeling configuration as XML element
-    virtual QDomElement save( QDomDocument &doc ) const = 0;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
     //! Get list of sub-providers within the layer's labeling.
     virtual QStringList subProviders() const { return QStringList( QString() ); }
@@ -67,7 +68,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     // static stuff
 
     //! Try to create instance of an implementation based on the XML data
-    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element );
+    static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 };
 
 /** \ingroup core
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
 
     virtual QString type() const override;
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override;
-    virtual QDomElement save( QDomDocument &doc ) const override;
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsPalLayerSettings settings( QgsVectorLayer *layer, const QString &providerId = QString() ) const override;
     bool requiresAdvancedEffects( QgsVectorLayer *layer ) const override;
 };

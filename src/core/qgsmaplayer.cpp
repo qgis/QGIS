@@ -42,6 +42,7 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -152,7 +153,7 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context )
 {
   bool layerError;
 
@@ -179,23 +180,22 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
   }
 
   // TODO: this should go to providers
-  // see also QgsProject::createEmbeddedLayer
   if ( provider == QLatin1String( "spatialite" ) )
   {
     QgsDataSourceUri uri( mDataSource );
-    uri.setDatabase( pathResolver.readPath( uri.database() ) );
+    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
     mDataSource = uri.uri();
   }
   else if ( provider == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = mDataSource.split( '|' );
-    theURIParts[0] = pathResolver.readPath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "|" ) );
   }
   else if ( provider == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = mDataSource.split( '?' );
-    theURIParts[0] = pathResolver.readPath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "?" ) );
   }
   else if ( provider == QLatin1String( "delimitedtext" ) )
@@ -209,7 +209,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
       urlSource.setPath( file.path() );
     }
 
-    QUrl urlDest = QUrl::fromLocalFile( pathResolver.readPath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
   }
@@ -307,7 +307,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "NETCDF:\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -321,7 +321,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 2 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 3 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 3 );
           handled = true;
         }
       }
@@ -335,7 +335,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF5:\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -346,14 +346,14 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
         QRegExp r( "([^:]+):([^:]+):(.+)" );
         if ( r.exactMatch( mDataSource ) )
         {
-          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + pathResolver.readPath( r.cap( 3 ) );
+          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().readPath( r.cap( 3 ) );
           handled = true;
         }
       }
     }
 
     if ( !handled )
-      mDataSource = pathResolver.readPath( mDataSource );
+      mDataSource = context.pathResolver().readPath( mDataSource );
   }
 
   // Set the CRS from project file, asking the user if necessary.
@@ -378,7 +378,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
   // now let the children grab what they need from the Dom node.
-  layerError = !readXml( layerElement );
+  layerError = !readXml( layerElement, context );
 
   // overwrite CRS with what we read from project file before the raster/vector
   // file reading functions changed it. They will if projections is specified in the file.
@@ -512,9 +512,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode &layer_node )
+bool QgsMapLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   Q_UNUSED( layer_node );
+  Q_UNUSED( context );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -522,7 +523,7 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node )
 
 
 
-bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const
+bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
@@ -554,26 +555,26 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( vlayer && vlayer->providerType() == QLatin1String( "spatialite" ) )
   {
     QgsDataSourceUri uri( src );
-    QString database = pathResolver.writePath( uri.database() );
+    QString database = context.pathResolver().writePath( uri.database() );
     uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
     src = uri.uri();
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = pathResolver.writePath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
     src = theURIParts.join( QStringLiteral( "|" ) );
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = pathResolver.writePath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
     src = theURIParts.join( QStringLiteral( "?" ) );
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( pathResolver.writePath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     src = QString::fromAscii( urlDest.toEncoded() );
   }
@@ -602,7 +603,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 1 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "NETCDF:\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 2 );
+            src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
             handled = true;
           }
         }
@@ -616,7 +617,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 2 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 3 );
+            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 3 );
             handled = true;
           }
         }
@@ -630,7 +631,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 1 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF5:\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 2 );
+            src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
             handled = true;
           }
         }
@@ -641,7 +642,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
           QRegExp r( "([^:]+):([^:]+):(.+)" );
           if ( r.exactMatch( src ) )
           {
-            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + pathResolver.writePath( r.cap( 3 ) );
+            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().writePath( r.cap( 3 ) );
             handled = true;
           }
         }
@@ -649,7 +650,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     }
 
     if ( !handled )
-      src = pathResolver.writePath( src );
+      src = context.pathResolver().writePath( src );
   }
 
   QDomText dataSourceText = document.createTextNode( src );
@@ -783,15 +784,16 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   writeCustomProperties( layerElement, document );
 
-  return writeXml( layerElement, document );
+  return writeXml( layerElement, document, context );
 
 } // bool QgsMapLayer::writeXml
 
 
-bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( document );
+  Q_UNUSED( context );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -1168,7 +1170,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   }
 #endif
 
-  return readSymbology( myRoot, myErrorMessage );
+  return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
@@ -1193,7 +1195,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   myRootNode.appendChild( transparencyLevelIntElement );
 #endif
 
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
   {
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
@@ -1540,18 +1542,20 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( context );
   return false;
 }
 
-bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( node );
   Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( context );
   return false;
 }
 
