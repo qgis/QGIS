@@ -405,7 +405,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Selected Layer(s)" ), this, SLOT( addSelectedLayers() ) );
+    menu->addAction( tr( "Add Selected Layer(s) to Canvas" ), this, SLOT( addSelectedLayers() ) );
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
