@@ -49,7 +49,6 @@
 %Include qgseditorwidgetsetup.sip
 %Include qgsellipsoidutils.sip
 %Include qgserror.sip
-%Include qgsexpression.sip
 %Include qgsexpressioncontext.sip
 %Include qgsexpressioncontextgenerator.sip
 %Include qgsfeature.sip
@@ -403,3 +402,8 @@
 %Include geometry/qgstriangle.sip
 %Include geometry/qgswkbtypes.sip
 %Include geometry/qgswkbptr.sip
+
+%Include expression/qgsexpression.sip
+%Include expression/qgsexpressionnodeimpl.sip
+%Include expression/qgsexpressionnode.sip
+%Include expression/qgsexpressionfunction.sip

@@ -42,7 +42,7 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
 
   protected:
 
-    virtual Result compileNode( const QgsExpression::Node *node, QString &str ) override;
+    virtual Result compileNode( const QgsExpressionNode *node, QString &str ) override;
     virtual QString quotedIdentifier( const QString &identifier ) override;
     virtual QString quotedValue( const QVariant &value, bool &ok ) override;
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const override;

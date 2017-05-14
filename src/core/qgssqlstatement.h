@@ -650,7 +650,7 @@ class CORE_EXPORT QgsSQLStatement
       public:
         //! Constructor
         NodeSelect( const QList<NodeTableDef *> &tableList, const QList<NodeSelectedColumn *> &columns, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
-        virtual ~NodeSelect() { qDeleteAll( mTableList ); qDeleteAll( mColumns ); qDeleteAll( mJoins ); delete mWhere; qDeleteAll( mOrderBy ); }
+        virtual ~NodeSelect();
 
         //! Set joins
         void setJoins( const QList<NodeJoin *> &joins ) { qDeleteAll( mJoins ); mJoins = joins; }

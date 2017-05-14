@@ -141,18 +141,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the layer's data provider.
      */
-    virtual QgsDataProvider *dataProvider() { return nullptr; }
+    virtual QgsDataProvider *dataProvider();
 
     /**
      * Returns the layer's data provider in a const-correct manner
      * \note not available in Python bindings
      */
-    virtual const QgsDataProvider *dataProvider() const SIP_SKIP { return nullptr; }
+    virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
 
     /** Returns the original name of the layer.
      * \returns the original layer name
      */
-    QString originalName() const { return mLayerOrigName; }
+    QString originalName() const;
 
     /** Sets the short name of the layer
      *  used by QGIS Server to identify the layer.
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
      * \since QGIS 2.16
      */
-    virtual bool isSpatial() const { return true; }
+    virtual bool isSpatial() const;
 
     /** Sets state from Dom document
        \param layerElement The Dom element corresponding to ``maplayer'' tag
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  for which layer cannot work and thus is not valid. It is not last error
      *  after accessing data by draw() etc.
      */
-    virtual QgsError error() const { return mError; }
+    virtual QgsError error() const;
 
     /** Returns the layer's spatial reference system.
     \since QGIS 1.4
@@ -762,7 +762,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setMetadata()
      * \see metadataChanged()
      */
-    virtual const QgsLayerMetadata &metadata() const { return mMetadata; }
+    virtual const QgsLayerMetadata &metadata() const;
 
     /**
      * Sets the layer's \a metadata store.
@@ -779,7 +779,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString htmlMetadata() const;
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const { return QDateTime() ; }
+    virtual QDateTime timestamp() const;
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
@@ -1032,7 +1032,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.
      */
-    virtual bool isReadOnly() const { return true; }
+    virtual bool isReadOnly() const;
 
     /** Layer's spatial reference system.
         private to make sure setCrs must be used and crsChanged() is emitted */

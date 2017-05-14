@@ -17,6 +17,7 @@
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -190,7 +191,7 @@ bool QgsExpressionContextScope::hasFunction( const QString &name ) const
   return mFunctions.contains( name );
 }
 
-QgsExpression::Function *QgsExpressionContextScope::function( const QString &name ) const
+QgsExpressionFunction *QgsExpressionContextScope::function( const QString &name ) const
 {
   return mFunctions.contains( name ) ? mFunctions.value( name ) : nullptr;
 }
@@ -423,7 +424,7 @@ QStringList QgsExpressionContext::functionNames() const
   return result;
 }
 
-QgsExpression::Function *QgsExpressionContext::function( const QString &name ) const
+QgsExpressionFunction *QgsExpressionContext::function( const QString &name ) const
 {
   //iterate through stack backwards, so that higher priority variables take precedence
   QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
@@ -638,7 +639,7 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 {
   public:
     GetComposerItemVariables( const QgsComposition *c )
-      : QgsScopedExpressionFunction( QStringLiteral( "item_variables" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "Composition" ) )
+      : QgsScopedExpressionFunction( QStringLiteral( "item_variables" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "Composition" ) )
       , mComposition( c )
     {}
 
@@ -673,7 +674,7 @@ class GetLayerVisibility : public QgsScopedExpressionFunction
 {
   public:
     GetLayerVisibility( const QList<QgsMapLayer *> &layers )
-      : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpression::ParameterList() << QgsExpression::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
+      : QgsScopedExpressionFunction( QStringLiteral( "is_layer_visible" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "General" ) )
       , mLayers( layers )
     {}
 
@@ -1081,19 +1082,19 @@ void QgsExpressionContextUtils::registerContextFunctions()
   QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>() ) );
 }
 
-bool QgsScopedExpressionFunction::usesGeometry( const QgsExpression::NodeFunction *node ) const
+bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const
 {
   Q_UNUSED( node )
   return mUsesGeometry;
 }
 
-QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpression::NodeFunction *node ) const
+QSet<QString> QgsScopedExpressionFunction::referencedColumns( const QgsExpressionNodeFunction *node ) const
 {
   Q_UNUSED( node )
   return mReferencedColumns;
 }
 
-bool QgsScopedExpressionFunction::isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
+bool QgsScopedExpressionFunction::isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const
 {
   return allParamsStatic( node, parent, context );
 }

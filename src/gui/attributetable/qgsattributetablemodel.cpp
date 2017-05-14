@@ -34,6 +34,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsgui.h"
+#include "qgsexpressionnodeimpl.h"
+
 #include <QVariant>
 
 #include <limits>
@@ -803,7 +805,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString )
 
   if ( mSortCacheExpression.isField() )
   {
-    QString fieldName = static_cast<const QgsExpression::NodeColumnRef *>( mSortCacheExpression.rootNode() )->name();
+    QString fieldName = static_cast<const QgsExpressionNodeColumnRef *>( mSortCacheExpression.rootNode() )->name();
     mSortFieldIndex = mLayerCache->layer()->fields().lookupField( fieldName );
   }
 

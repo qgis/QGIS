@@ -9,7 +9,7 @@
 
 
 
-class QgsScopedExpressionFunction : QgsExpression::Function
+class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring
  Expression function for use within a QgsExpressionContextScope. This differs from a
@@ -39,7 +39,7 @@ class QgsScopedExpressionFunction : QgsExpression::Function
 %End
 
     QgsScopedExpressionFunction( const QString &fnname,
-                                 const QgsExpression::ParameterList &params,
+                                 const QgsExpressionFunction::ParameterList &params,
                                  const QString &group,
                                  const QString &helpText = QString(),
                                  bool usesGeometry = false,
@@ -61,11 +61,11 @@ class QgsScopedExpressionFunction : QgsExpression::Function
  :rtype: QgsScopedExpressionFunction
 %End
 
-    virtual bool usesGeometry( const QgsExpression::NodeFunction *node ) const;
+    virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const;
 
-    virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const;
+    virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const;
 
-    virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+    virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 };
 
@@ -240,7 +240,7 @@ A static variable can be cached for the lifetime of a context
  :rtype: bool
 %End
 
-    QgsExpression::Function *function( const QString &name ) const;
+    QgsExpressionFunction *function( const QString &name ) const;
 %Docstring
  Retrieves a function from the scope.
  \param name function name
@@ -248,7 +248,7 @@ A static variable can be cached for the lifetime of a context
 .. seealso:: hasFunction()
 .. seealso:: functionNames()
 .. seealso:: variable()
- :rtype: QgsExpression.Function
+ :rtype: QgsExpressionFunction
 %End
 
     QStringList functionNames() const;
@@ -492,7 +492,7 @@ class QgsExpressionContext
  :rtype: list of str
 %End
 
-    QgsExpression::Function *function( const QString &name ) const;
+    QgsExpressionFunction *function( const QString &name ) const;
 %Docstring
  Fetches a matching function from the context. The function will be fetched
  from the last scope contained within the context which has a matching
@@ -500,7 +500,7 @@ class QgsExpressionContext
  \param name function name
  :return: function if contained by the context, otherwise null.
 .. seealso:: hasFunction
- :rtype: QgsExpression.Function
+ :rtype: QgsExpressionFunction
 %End
 
     int scopeCount() const;

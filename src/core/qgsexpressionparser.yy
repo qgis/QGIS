@@ -17,7 +17,10 @@
 #include <qglobal.h>
 #include <QList>
 #include <cstdlib>
-#include "qgsexpression.h"
+#include "expression/qgsexpression.h"
+#include "expression/qgsexpressionnode.h"
+#include "expression/qgsexpressionnodeimpl.h"
+#include "expression/qgsexpressionfunction.h"
 
 #ifdef _MSC_VER
 #  pragma warning( disable: 4065 )  // switch statement contains 'default' but no 'case' labels
@@ -41,7 +44,7 @@ extern YY_BUFFER_STATE exp__scan_string(const char* buffer, yyscan_t scanner);
 /** returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
     (interface function to be called from QgsExpression)
   */
-QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg);
+QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg);
 
 /** error handler for bison */
 void exp_error(expression_parser_context* parser_ctx, const char* msg);
@@ -54,7 +57,7 @@ struct expression_parser_context
   // varible where the parser error will be stored
   QString errorMsg;
   // root node of the expression
-  QgsExpression::Node* rootNode;
+  QgsExpressionNode* rootNode;
 };
 
 #define scanner parser_ctx->flex_scanner
@@ -62,7 +65,7 @@ struct expression_parser_context
 // we want verbose error messages
 #define YYERROR_VERBOSE 1
 
-#define BINOP(x, y, z)  new QgsExpression::NodeBinaryOperator(x, y, z)
+#define BINOP(x, y, z)  new QgsExpressionNodeBinaryOperator(x, y, z)
 
 %}
 
@@ -75,17 +78,17 @@ struct expression_parser_context
 
 %union
 {
-  QgsExpression::Node* node;
-  QgsExpression::NodeList* nodelist;
-  QgsExpression::NamedNode* namednode;
+  QgsExpressionNode* node;
+  QgsExpressionNode::NodeList* nodelist;
+  QgsExpressionNode::NamedNode* namednode;
   double numberFloat;
   int    numberInt;
   bool   boolVal;
   QString* text;
-  QgsExpression::BinaryOperator b_op;
-  QgsExpression::UnaryOperator u_op;
-  QgsExpression::WhenThen* whenthen;
-  QgsExpression::WhenThenList* whenthenlist;
+  QgsExpressionNodeBinaryOperator::BinaryOperator b_op;
+  QgsExpressionNodeUnaryOperator::UnaryOperator u_op;
+  QgsExpressionNodeCondition::WhenThen* whenthen;
+  QgsExpressionNodeCondition::WhenThenList* whenthenlist;
 }
 
 %start root
@@ -180,7 +183,7 @@ expression:
     | expression MOD expression       { $$ = BINOP($2, $1, $3); }
     | expression POW expression       { $$ = BINOP($2, $1, $3); }
     | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
-    | NOT expression                  { $$ = new QgsExpression::NodeUnaryOperator($1, $2); }
+    | NOT expression                  { $$ = new QgsExpressionNodeUnaryOperator($1, $2); }
     | '(' expression ')'              { $$ = $2; }
     | FUNCTION '(' exp_list ')'
         {
@@ -195,7 +198,7 @@ expression:
             YYERROR;
           }
           QString paramError;
-          if ( !QgsExpression::NodeFunction::validateParams( fnIndex, $3, paramError ) )
+          if ( !QgsExpressionNodeFunction::validateParams( fnIndex, $3, paramError ) )
           {
             exp_error( parser_ctx, paramError.toLocal8Bit().constData() );
             delete $3;
@@ -209,7 +212,7 @@ expression:
             delete $3;
             YYERROR;
           }
-          $$ = new QgsExpression::NodeFunction(fnIndex, $3);
+          $$ = new QgsExpressionNodeFunction(fnIndex, $3);
         }
 
     | FUNCTION '(' ')'
@@ -230,20 +233,20 @@ expression:
             exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;
           }
-          $$ = new QgsExpression::NodeFunction(fnIndex, new QgsExpression::NodeList());
+          $$ = new QgsExpressionNodeFunction(fnIndex, new QgsExpressionNode::NodeList());
         }
 
-    | expression IN '(' exp_list ')'     { $$ = new QgsExpression::NodeInOperator($1, $4, false);  }
-    | expression NOT IN '(' exp_list ')' { $$ = new QgsExpression::NodeInOperator($1, $5, true); }
+    | expression IN '(' exp_list ')'     { $$ = new QgsExpressionNodeInOperator($1, $4, false);  }
+    | expression NOT IN '(' exp_list ')' { $$ = new QgsExpressionNodeInOperator($1, $5, true); }
 
     | PLUS expression %prec UMINUS { $$ = $2; }
-    | MINUS expression %prec UMINUS { $$ = new QgsExpression::NodeUnaryOperator( QgsExpression::uoMinus, $2); }
+    | MINUS expression %prec UMINUS { $$ = new QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::uoMinus, $2); }
 
-    | CASE when_then_clauses END      { $$ = new QgsExpression::NodeCondition($2); }
-    | CASE when_then_clauses ELSE expression END  { $$ = new QgsExpression::NodeCondition($2,$4); }
+    | CASE when_then_clauses END      { $$ = new QgsExpressionNodeCondition($2); }
+    | CASE when_then_clauses ELSE expression END  { $$ = new QgsExpressionNodeCondition($2,$4); }
 
     // columns
-    | COLUMN_REF                  { $$ = new QgsExpression::NodeColumnRef( *$1 ); delete $1; }
+    | COLUMN_REF                  { $$ = new QgsExpressionNodeColumnRef( *$1 ); delete $1; }
 
     // special columns (actually functions with no arguments)
     | SPECIAL_COL
@@ -251,7 +254,7 @@ expression:
           int fnIndex = QgsExpression::functionIndex(*$1);
           if (fnIndex >= 0)
           {
-            $$ = new QgsExpression::NodeFunction( fnIndex, nullptr );
+            $$ = new QgsExpressionNodeFunction( fnIndex, nullptr );
           }
           else
           {
@@ -265,23 +268,23 @@ expression:
     | VARIABLE
         {
           // @var is equivalent to var( "var" )
-          QgsExpression::NodeList* args = new QgsExpression::NodeList();
-          QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( QString(*$1).mid(1) );
+          QgsExpressionNode::NodeList* args = new QgsExpressionNode::NodeList();
+          QgsExpressionNodeLiteral* literal = new QgsExpressionNodeLiteral( QString(*$1).mid(1) );
           args->append( literal );
-          $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "var" ), args );
+          $$ = new QgsExpressionNodeFunction( QgsExpression::functionIndex( "var" ), args );
           delete $1;
         }
 
     //  literals
-    | NUMBER_FLOAT                { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
-    | NUMBER_INT                  { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
-    | BOOLEAN                     { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
-    | STRING                      { $$ = new QgsExpression::NodeLiteral( QVariant(*$1) ); delete $1; }
-    | NULLVALUE                   { $$ = new QgsExpression::NodeLiteral( QVariant() ); }
+    | NUMBER_FLOAT                { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
+    | NUMBER_INT                  { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
+    | BOOLEAN                     { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
+    | STRING                      { $$ = new QgsExpressionNodeLiteral( QVariant(*$1) ); delete $1; }
+    | NULLVALUE                   { $$ = new QgsExpressionNodeLiteral( QVariant() ); }
 ;
 
 named_node:
-    NAMED_NODE expression { $$ = new QgsExpression::NamedNode( *$1, $2 ); delete $1; }
+    NAMED_NODE expression { $$ = new QgsExpressionNode::NamedNode( *$1, $2 ); delete $1; }
     ;
 
 exp_list:
@@ -299,24 +302,24 @@ exp_list:
          }
        }
     | exp_list COMMA named_node { $$ = $1; $1->append($3); }
-    | expression              { $$ = new QgsExpression::NodeList(); $$->append($1); }
-    | named_node              { $$ = new QgsExpression::NodeList(); $$->append($1); }
+    | expression              { $$ = new QgsExpressionNode::NodeList(); $$->append($1); }
+    | named_node              { $$ = new QgsExpressionNode::NodeList(); $$->append($1); }
     ;
 
 when_then_clauses:
       when_then_clauses when_then_clause  { $$ = $1; $1->append($2); }
-    | when_then_clause                    { $$ = new QgsExpression::WhenThenList(); $$->append($1); }
+    | when_then_clause                    { $$ = new QgsExpressionNodeCondition::WhenThenList(); $$->append($1); }
     ;
 
 when_then_clause:
-      WHEN expression THEN expression     { $$ = new QgsExpression::WhenThen($2,$4); }
+      WHEN expression THEN expression     { $$ = new QgsExpressionNodeCondition::WhenThen($2,$4); }
     ;
 
 %%
 
 
 // returns parsed tree, otherwise returns nullptr and sets parserErrorMsg
-QgsExpression::Node* parseExpression(const QString& str, QString& parserErrorMsg)
+QgsExpressionNode* parseExpression(const QString& str, QString& parserErrorMsg)
 {
   expression_parser_context ctx;
   ctx.rootNode = 0;

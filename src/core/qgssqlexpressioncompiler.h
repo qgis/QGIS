@@ -93,7 +93,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * \param str string representing compiled node should be stored in this parameter
      * \returns result of node compilation
      */
-    virtual Result compileNode( const QgsExpression::Node *node, QString &str );
+    virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
     /** Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     Flags mFlags;
 
-    bool nodeIsNullLiteral( const QgsExpression::Node *node ) const;
+    bool nodeIsNullLiteral( const QgsExpressionNode *node ) const;
 
 };
 

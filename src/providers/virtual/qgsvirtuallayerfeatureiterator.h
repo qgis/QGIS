@@ -18,8 +18,9 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUALLAYER_FEATURE_ITERATOR_H
 
 
-#include <qgsvirtuallayerprovider.h>
-#include <qgsfeatureiterator.h>
+#include "qgsvirtuallayerprovider.h"
+#include "qgsfeatureiterator.h"
+
 #include <memory>
 #include <QPointer>
 
