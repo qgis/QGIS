@@ -39,7 +39,7 @@ class QgsVectorLayerLabelProvider;
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
   public:
-
+    //! Default constructor
     QgsAbstractVectorLayerLabeling() = default;
     virtual ~QgsAbstractVectorLayerLabeling() = default;
 
@@ -50,6 +50,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
 
     //! Factory for label provider implementation
+    //! \note not available in Python bindings
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
 
     //! Return labeling configuration as XML element
@@ -99,6 +100,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
 
     virtual QString type() const override;
     virtual QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
+    //! \note not available in Python bindings
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;

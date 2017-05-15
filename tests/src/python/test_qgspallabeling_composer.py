@@ -28,7 +28,8 @@ from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
-from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap
+from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap, QgsVectorLayerSimpleLabeling
+
 
 from utilities import (
     getTempfilePath,
@@ -284,7 +285,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     # noinspection PyUnusedLocal
     def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
         settings_type = 'Class'

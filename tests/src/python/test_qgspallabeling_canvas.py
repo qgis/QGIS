@@ -22,6 +22,7 @@ import qgis  # NOQA
 import sys
 import os
 from qgis.PyQt.QtCore import qDebug, QThreadPool
+from qgis.core import QgsVectorLayerSimpleLabeling
 
 from utilities import (
     getTempfilePath,
@@ -67,7 +68,7 @@ class TestCanvasBase(TestQgsPalLabeling):
         self._ColorTols.clear()
 
     def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
         settings_type = 'Class'

@@ -23,8 +23,10 @@ class QgsAbstractVectorLayerLabeling
 #include "qgsvectorlayerlabeling.h"
 %End
   public:
-
     QgsAbstractVectorLayerLabeling();
+%Docstring
+Default constructor
+%End
     virtual ~QgsAbstractVectorLayerLabeling();
 
     virtual QString type() const = 0;
