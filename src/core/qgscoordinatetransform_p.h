@@ -32,6 +32,25 @@
 #include "qgscoordinatereferencesystem.h"
 
 typedef void *projPJ;
+typedef void *projCtx;
+
+/**
+ * \class QgsProjContextStore
+ * \ingroup core
+ * Used to create and store a proj projCtx object, correctly freeing the context upon destruction.
+ */
+class QgsProjContextStore
+{
+  public:
+
+    QgsProjContextStore();
+    ~QgsProjContextStore();
+
+    projCtx get() { return context; }
+
+  private:
+    projCtx context;
+};
 
 class QgsCoordinateTransformPrivate : public QSharedData
 {
@@ -48,6 +67,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     ~QgsCoordinateTransformPrivate();
 
     bool initialize();
+    void initializeCurrentContext();
 
     //! Flag to indicate whether the transform is valid (ie has a valid
     //! source and destination crs)
@@ -65,14 +85,22 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
 
-    //! Proj4 data structure of the source projection (layer coordinate system)
-    projPJ mSourceProjection;
-
-    //! Proj4 data structure of the destination projection (map canvas coordinate system)
-    projPJ mDestinationProjection;
+    QString mSourceProjString;
+    QString mDestProjString;
+    projPJ sourceProjection();
+    projPJ destProjection();
 
     int mSourceDatumTransform;
     int mDestinationDatumTransform;
+
+    /**
+     * Thread local proj context storage. A new proj context will be created
+     * for every thread.
+     */
+    static thread_local QgsProjContextStore mProjContext;
+
+    QReadWriteLock mProjLock;
+    QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
 
     static QString datumTransformString( int datumTransform );
 
@@ -85,6 +113,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     void addNullGridShifts( QString &srcProjString, QString &destProjString ) const;
 
     void setFinder();
+
+    void freeProj();
 };
 
 /// @endcond

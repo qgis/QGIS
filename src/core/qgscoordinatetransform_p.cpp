@@ -29,11 +29,21 @@ extern "C"
 
 /// @cond PRIVATE
 
+thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
+
+QgsProjContextStore::QgsProjContextStore()
+{
+  context = pj_ctx_alloc();
+}
+
+QgsProjContextStore::~QgsProjContextStore()
+{
+  pj_ctx_free( context );
+}
+
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
   : mIsValid( false )
   , mShortCircuit( false )
-  , mSourceProjection( nullptr )
-  , mDestinationProjection( nullptr )
   , mSourceDatumTransform( -1 )
   , mDestinationDatumTransform( -1 )
 {
@@ -45,8 +55,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mShortCircuit( false )
   , mSourceCRS( source )
   , mDestCRS( destination )
-  , mSourceProjection( nullptr )
-  , mDestinationProjection( nullptr )
   , mSourceDatumTransform( -1 )
   , mDestinationDatumTransform( -1 )
 {
@@ -60,8 +68,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mShortCircuit( other.mShortCircuit )
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
-  , mSourceProjection( nullptr )
-  , mDestinationProjection( nullptr )
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
 {
@@ -72,14 +78,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 QgsCoordinateTransformPrivate::~QgsCoordinateTransformPrivate()
 {
   // free the proj objects
-  if ( mSourceProjection )
-  {
-    pj_free( mSourceProjection );
-  }
-  if ( mDestinationProjection )
-  {
-    pj_free( mDestinationProjection );
-  }
+  freeProj();
 }
 
 bool QgsCoordinateTransformPrivate::initialize()
@@ -109,43 +108,41 @@ bool QgsCoordinateTransformPrivate::initialize()
   bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
 
   // init the projections (destination and source)
+  freeProj();
 
-  pj_free( mSourceProjection );
-  QString sourceProjString = mSourceCRS.toProj4();
+  mSourceProjString = mSourceCRS.toProj4();
   if ( !useDefaultDatumTransform )
   {
-    sourceProjString = stripDatumTransform( sourceProjString );
+    mSourceProjString = stripDatumTransform( mSourceProjString );
   }
   if ( mSourceDatumTransform != -1 )
   {
-    sourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
+    mSourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
   }
 
-  pj_free( mDestinationProjection );
-  QString destProjString = mDestCRS.toProj4();
+  mDestProjString = mDestCRS.toProj4();
   if ( !useDefaultDatumTransform )
   {
-    destProjString = stripDatumTransform( destProjString );
+    mDestProjString = stripDatumTransform( mDestProjString );
   }
   if ( mDestinationDatumTransform != -1 )
   {
-    destProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
+    mDestProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
   }
 
   if ( !useDefaultDatumTransform )
   {
-    addNullGridShifts( sourceProjString, destProjString );
+    addNullGridShifts( mSourceProjString, mDestProjString );
   }
 
-  mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
-  mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
+  initializeCurrentContext();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
   QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
 #endif
 
-  if ( !mDestinationProjection || !mSourceProjection )
+  if ( !destProjection() || !sourceProjection() )
   {
     mIsValid = false;
   }
@@ -189,6 +186,44 @@ bool QgsCoordinateTransformPrivate::initialize()
     QgsDebugMsgLevel( "Source/Dest CRS not equal, shortcircuit is not set.", 3 );
   }
   return mIsValid;
+}
+
+void QgsCoordinateTransformPrivate::initializeCurrentContext()
+{
+  mProjLock.lockForWrite();
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
+                           pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) ) );
+  mProjLock.unlock();
+}
+
+projPJ QgsCoordinateTransformPrivate::sourceProjection()
+{
+  mProjLock.lockForRead();
+  if ( mProjProjections.contains( reinterpret_cast< uintptr_t>( mProjContext.get() ) ) )
+  {
+    projPJ src = mProjProjections.value( reinterpret_cast< uintptr_t>( mProjContext.get() ) ).first;
+    mProjLock.unlock();
+    return src;
+  }
+  mProjLock.unlock();
+
+  initializeCurrentContext();
+  return sourceProjection();
+}
+
+projPJ QgsCoordinateTransformPrivate::destProjection()
+{
+  mProjLock.lockForRead();
+  if ( mProjProjections.contains( reinterpret_cast< uintptr_t>( mProjContext.get() ) ) )
+  {
+    projPJ dest = mProjProjections.value( reinterpret_cast< uintptr_t>( mProjContext.get() ) ).second;
+    mProjLock.unlock();
+    return dest;
+  }
+  mProjLock.unlock();
+
+  initializeCurrentContext();
+  return destProjection();
 }
 
 QString QgsCoordinateTransformPrivate::stripDatumTransform( const QString &proj4 ) const
@@ -309,4 +344,18 @@ void QgsCoordinateTransformPrivate::setFinder()
 #endif
 }
 
+void QgsCoordinateTransformPrivate::freeProj()
+{
+  mProjLock.lockForWrite();
+  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
+  for ( ; it != mProjProjections.constEnd(); ++it )
+  {
+    pj_free( it.value().first );
+    pj_free( it.value().second );
+  }
+  mProjProjections.clear();
+  mProjLock.unlock();
+}
+
 ///@endcond
+
