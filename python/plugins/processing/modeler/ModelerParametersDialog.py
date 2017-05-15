@@ -88,7 +88,6 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
                                           QDialogButtonBox.Ok)
-        tooltips = self._alg.getParameterDescriptions()
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
         self.verticalLayout = QVBoxLayout()
@@ -143,10 +142,7 @@ class ModelerParametersDialog(QDialog):
             widget = wrapper.widget
             if widget is not None:
                 self.valueItems[param.name] = widget
-                if param.name in list(tooltips.keys()):
-                    tooltip = tooltips[param.name]
-                else:
-                    tooltip = param.description
+                tooltip = param.description()
                 label.setToolTip(tooltip)
                 widget.setToolTip(tooltip)
                 if param.isAdvanced:

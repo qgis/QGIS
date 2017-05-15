@@ -89,17 +89,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         """
         return None
 
-    def getParameterDescriptions(self):
-        """Returns a dict with param names as keys and detailed
-        descriptions of each param as value. These descriptions are
-        used as tool tips in the parameters dialog.
-
-        If a description does not exist, the parameter's
-        human-readable name is used.
-        """
-        descs = {}
-        return descs
-
     def checkParameterValuesBeforeExecuting(self):
         """If there is any check to do before launching the execution
         of the algorithm, it should be done here.
