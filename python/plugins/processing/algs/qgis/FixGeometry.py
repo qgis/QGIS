@@ -55,18 +55,19 @@ class FixGeometry(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'fixgeometries'
-
-    def displayName(self):
-        return self.tr('Fix geometries')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with fixed geometries')))
+
+    def name(self):
+        return 'fixgeometries'
+
+    def displayName(self):
+        return self.tr('Fix geometries')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

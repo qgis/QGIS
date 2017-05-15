@@ -61,13 +61,8 @@ class RandomPointsExtent(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinextent'
-
-    def displayName(self):
-        return self.tr('Random points in extent')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -77,6 +72,12 @@ class RandomPointsExtent(QgisAlgorithm):
         self.addParameter(ParameterCrs(self.CRS,
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'randompointsinextent'
+
+    def displayName(self):
+        return self.tr('Random points in extent')
 
     def processAlgorithm(self, context, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))

@@ -74,13 +74,8 @@ class ExtractByAttribute(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbyattribute'
-
-    def displayName(self):
-        return self.tr('Extract by attribute')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.i18n_operators = ['=',
                                '!=',
                                '>',
@@ -103,6 +98,12 @@ class ExtractByAttribute(QgisAlgorithm):
         self.addParameter(ParameterString(self.VALUE, self.tr('Value'), optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (attribute)')))
+
+    def name(self):
+        return 'extractbyattribute'
+
+    def displayName(self):
+        return self.tr('Extract by attribute')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

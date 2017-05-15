@@ -53,17 +53,18 @@ class LinesToPolygons(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
     def name(self):
         return 'linestopolygons'
 
     def displayName(self):
         return self.tr('Lines to polygons')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

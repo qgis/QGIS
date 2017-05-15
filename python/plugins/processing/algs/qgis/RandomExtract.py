@@ -54,13 +54,8 @@ class RandomExtract(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomextract'
-
-    def displayName(self):
-        return self.tr('Random extract')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -72,6 +67,12 @@ class RandomExtract(QgisAlgorithm):
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random)')))
+
+    def name(self):
+        return 'randomextract'
+
+    def displayName(self):
+        return self.tr('Random extract')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)

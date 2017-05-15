@@ -53,13 +53,8 @@ class SelectByAttributeSum(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyattributesum'
-
-    def displayName(self):
-        return self.tr('Select by attribute sum')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -69,6 +64,12 @@ class SelectByAttributeSum(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.VALUE, self.tr('Value')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
+
+    def name(self):
+        return 'selectbyattributesum'
+
+    def displayName(self):
+        return self.tr('Select by attribute sum')
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)

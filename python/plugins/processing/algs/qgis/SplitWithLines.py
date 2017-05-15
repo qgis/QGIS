@@ -57,19 +57,20 @@ class SplitWithLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'splitwithlines'
-
-    def displayName(self):
-        return self.tr('Split with lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer, single geometries only'), [dataobjects.TYPE_VECTOR_POLYGON,
                                                                                            dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split')))
+
+    def name(self):
+        return 'splitwithlines'
+
+    def displayName(self):
+        return self.tr('Split with lines')
 
     def processAlgorithm(self, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)

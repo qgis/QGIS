@@ -61,13 +61,8 @@ class Polygonize(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'polygonize'
-
-    def displayName(self):
-        return self.tr('Polygonize')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS,
@@ -75,6 +70,12 @@ class Polygonize(QgisAlgorithm):
         self.addParameter(ParameterBoolean(self.GEOMETRY,
                                            self.tr('Create geometry columns'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'polygonize'
+
+    def displayName(self):
+        return self.tr('Polygonize')
 
     def processAlgorithm(self, context, feedback):
         vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

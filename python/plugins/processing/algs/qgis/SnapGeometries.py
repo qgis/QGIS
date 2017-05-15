@@ -53,13 +53,8 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'snapgeometries'
-
-    def displayName(self):
-        return self.tr('Snap geometries to layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
@@ -74,6 +69,12 @@ class SnapGeometriesToLayer(QgisAlgorithm):
             self.tr('Behavior'),
             self.modes, default=0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
+
+    def name(self):
+        return 'snapgeometries'
+
+    def displayName(self):
+        return self.tr('Snap geometries to layer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

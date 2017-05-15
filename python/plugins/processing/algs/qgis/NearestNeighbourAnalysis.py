@@ -60,13 +60,8 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'nearestneighbouranalysis'
-
-    def displayName(self):
-        return self.tr('Nearest neighbour analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 
@@ -81,6 +76,12 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
         self.addOutput(OutputNumber(self.POINT_COUNT,
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
+
+    def name(self):
+        return 'nearestneighbouranalysis'
+
+    def displayName(self):
+        return self.tr('Nearest neighbour analysis')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)

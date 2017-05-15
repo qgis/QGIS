@@ -70,8 +70,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         # when running as part of a model
         self.model = None
 
-        self.defineCharacteristics()
-
     # methods to overwrite when creating a custom geoalgorithm
 
     def processAlgorithm(self, context, feedback):
@@ -81,11 +79,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         A GeoAlgorithmExecutionException should be raised in case
         something goes wrong.
         :param context:
-        """
-        pass
-
-    def defineCharacteristics(self):
-        """Here is where the parameters and outputs should be defined.
         """
         pass
 

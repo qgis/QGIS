@@ -65,13 +65,8 @@ class ExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'executesql'
-
-    def displayName(self):
-        return self.tr('Execute SQL')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))
@@ -102,6 +97,12 @@ class ExecuteSQL(QgisAlgorithm):
                                        self.tr('CRS'), optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
+
+    def name(self):
+        return 'executesql'
+
+    def displayName(self):
+        return self.tr('Execute SQL')
 
     def processAlgorithm(self, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)

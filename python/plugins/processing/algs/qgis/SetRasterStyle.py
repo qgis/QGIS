@@ -54,18 +54,19 @@ class SetRasterStyle(QgisAlgorithm):
     def group(self):
         return self.tr('Raster general tools')
 
-    def name(self):
-        return 'setstyleforrasterlayer'
-
-    def displayName(self):
-        return self.tr('Set style for raster layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,
                                         self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
+
+    def name(self):
+        return 'setstyleforrasterlayer'
+
+    def displayName(self):
+        return self.tr('Set style for raster layer')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)

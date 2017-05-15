@@ -69,16 +69,8 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
-    def name(self):
-        return 'warpreproject'
-
-    def displayName(self):
-        return self.tr('Warp (reproject)')
-
-    def group(self):
-        return self.tr('Raster projections')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'),
@@ -119,6 +111,15 @@ class warp(GdalAlgorithm):
                                              self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
+
+    def name(self):
+        return 'warpreproject'
+
+    def displayName(self):
+        return self.tr('Warp (reproject)')
+
+    def group(self):
+        return self.tr('Raster projections')
 
     def getConsoleCommands(self):
         srccrs = self.getParameterValue(self.SOURCE_SRS)

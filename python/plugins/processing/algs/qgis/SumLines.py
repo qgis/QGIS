@@ -54,13 +54,8 @@ class SumLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'sumlinelengths'
-
-    def displayName(self):
-        return self.tr('Sum line lengths')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.LINES,
                                           self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,
@@ -71,6 +66,12 @@ class SumLines(QgisAlgorithm):
                                           self.tr('Lines count field name', 'COUNT')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'sumlinelengths'
+
+    def displayName(self):
+        return self.tr('Sum line lengths')
 
     def processAlgorithm(self, context, feedback):
         lineLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.LINES), context)

@@ -62,13 +62,8 @@ class PointDistance(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'distancematrix'
-
-    def displayName(self):
-        return self.tr('Distance matrix')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]
@@ -89,6 +84,12 @@ class PointDistance(QgisAlgorithm):
                                           self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
+
+    def name(self):
+        return 'distancematrix'
+
+    def displayName(self):
+        return self.tr('Distance matrix')
 
     def processAlgorithm(self, context, feedback):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

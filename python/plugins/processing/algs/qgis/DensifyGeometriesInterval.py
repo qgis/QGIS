@@ -55,13 +55,8 @@ class DensifyGeometriesInterval(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'densifygeometriesgivenaninterval'
-
-    def displayName(self):
-        return self.tr('Densify geometries given an interval')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -69,6 +64,12 @@ class DensifyGeometriesInterval(QgisAlgorithm):
                                           self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
+
+    def name(self):
+        return 'densifygeometriesgivenaninterval'
+
+    def displayName(self):
+        return self.tr('Densify geometries given an interval')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

@@ -54,13 +54,8 @@ class MeanAndStdDevPlot(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'meanandstandarddeviationplot'
-
-    def displayName(self):
-        return self.tr('Mean and standard deviation plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
@@ -70,6 +65,12 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                                               self.tr('Value field'), self.INPUT))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
+
+    def name(self):
+        return 'meanandstandarddeviationplot'
+
+    def displayName(self):
+        return self.tr('Mean and standard deviation plot')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

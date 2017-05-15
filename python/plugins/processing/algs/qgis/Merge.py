@@ -51,18 +51,19 @@ class Merge(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'mergevectorlayers'
-
-    def displayName(self):
-        return self.tr('Merge vector layers')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Layers to merge'),
                                                  datatype=dataobjects.TYPE_VECTOR_ANY))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
+
+    def name(self):
+        return 'mergevectorlayers'
+
+    def displayName(self):
+        return self.tr('Merge vector layers')
 
     def processAlgorithm(self, context, feedback):
         inLayers = self.getParameterValue(self.LAYERS)

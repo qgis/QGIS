@@ -53,13 +53,8 @@ class Translate(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'translategeometry'
-
-    def displayName(self):
-        return self.tr('Translate geometry')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DELTA_X,
@@ -68,6 +63,12 @@ class Translate(QgisAlgorithm):
                                           self.tr('Offset distance (y-axis)'), default=0.0))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Translated')))
+
+    def name(self):
+        return 'translategeometry'
+
+    def displayName(self):
+        return self.tr('Translate geometry')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

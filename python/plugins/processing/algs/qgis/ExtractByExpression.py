@@ -54,18 +54,19 @@ class ExtractByExpression(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbyexpression'
-
-    def displayName(self):
-        return self.tr('Extract by expression')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterExpression(self.EXPRESSION,
                                               self.tr("Expression"), parent_layer=self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (expression)')))
+
+    def name(self):
+        return 'extractbyexpression'
+
+    def displayName(self):
+        return self.tr('Extract by expression')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

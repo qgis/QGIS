@@ -58,19 +58,20 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'orientedminimumboundingbox'
-
-    def displayName(self):
-        return self.tr('Oriented minimum bounding box')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate OMBB for each feature separately'), True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'orientedminimumboundingbox'
+
+    def displayName(self):
+        return self.tr('Oriented minimum bounding box')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

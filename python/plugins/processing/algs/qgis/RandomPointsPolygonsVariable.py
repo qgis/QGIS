@@ -60,13 +60,8 @@ class RandomPointsPolygonsVariable(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinsidepolygonsvariable'
-
-    def displayName(self):
-        return self.tr('Random points inside polygons (variable)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 
@@ -80,6 +75,12 @@ class RandomPointsPolygonsVariable(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'randompointsinsidepolygonsvariable'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (variable)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)

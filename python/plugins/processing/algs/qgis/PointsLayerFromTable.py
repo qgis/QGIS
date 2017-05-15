@@ -61,13 +61,8 @@ class PointsLayerFromTable(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'createpointslayerfromtable'
-
-    def displayName(self):
-        return self.tr('Create points layer from table')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -81,6 +76,12 @@ class PointsLayerFromTable(QgisAlgorithm):
         self.addParameter(ParameterCrs(self.TARGET_CRS,
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'createpointslayerfromtable'
+
+    def displayName(self):
+        return self.tr('Create points layer from table')
 
     def processAlgorithm(self, context, feedback):
         source = self.getParameterValue(self.INPUT)

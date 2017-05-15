@@ -62,13 +62,8 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'rectanglesovalsdiamondsfixed'
-
-    def displayName(self):
-        return self.tr('Rectangles, ovals, diamonds (fixed)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
@@ -91,6 +86,12 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'rectanglesovalsdiamondsfixed'
+
+    def displayName(self):
+        return self.tr('Rectangles, ovals, diamonds (fixed)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

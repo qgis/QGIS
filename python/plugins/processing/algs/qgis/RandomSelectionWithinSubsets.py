@@ -58,13 +58,8 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomselectionwithinsubsets'
-
-    def displayName(self):
-        return self.tr('Random selection within subsets')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -78,6 +73,12 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
                                           self.tr('Number/percentage of selected features'), 1, None, 10))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
+
+    def name(self):
+        return 'randomselectionwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random selection within subsets')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)

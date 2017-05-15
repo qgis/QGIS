@@ -54,13 +54,8 @@ class VectorLayerHistogram(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'vectorlayerhistogram'
-
-    def displayName(self):
-        return self.tr('Vector layer histogram')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -70,6 +65,12 @@ class VectorLayerHistogram(QgisAlgorithm):
                                           self.tr('number of bins'), 2, None, 10))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
+
+    def name(self):
+        return 'vectorlayerhistogram'
+
+    def displayName(self):
+        return self.tr('Vector layer histogram')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

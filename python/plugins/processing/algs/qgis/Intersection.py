@@ -66,18 +66,19 @@ class Intersection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'intersection'
-
-    def displayName(self):
-        return self.tr('Intersection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.INPUT2,
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
+
+    def name(self):
+        return 'intersection'
+
+    def displayName(self):
+        return self.tr('Intersection')
 
     def processAlgorithm(self, context, feedback):
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

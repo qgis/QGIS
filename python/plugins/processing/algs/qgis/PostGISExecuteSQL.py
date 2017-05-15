@@ -47,13 +47,8 @@ class PostGISExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'postgisexecutesql'
-
-    def displayName(self):
-        return self.tr('PostGIS execute SQL')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database'),
@@ -61,6 +56,12 @@ class PostGISExecuteSQL(QgisAlgorithm):
                 'widget_wrapper': {
                     'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+
+    def name(self):
+        return 'postgisexecutesql'
+
+    def displayName(self):
+        return self.tr('PostGIS execute SQL')
 
     def processAlgorithm(self, context, feedback):
         connection = self.getParameterValue(self.DATABASE)

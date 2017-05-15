@@ -59,18 +59,19 @@ class DefineProjection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'definecurrentprojection'
-
-    def displayName(self):
-        return self.tr('Define current projection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))
+
+    def name(self):
+        return 'definecurrentprojection'
+
+    def displayName(self):
+        return self.tr('Define current projection')
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)

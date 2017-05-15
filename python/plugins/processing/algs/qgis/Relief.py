@@ -60,13 +60,9 @@ class Relief(QgisAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def name(self):
-        return 'relief'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Relief')
-
-    def defineCharacteristics(self):
         class ParameterReliefColors(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'
@@ -135,6 +131,12 @@ class Relief(QgisAlgorithm):
                                     self.tr('Relief')))
         self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
                                    self.tr('Frequency distribution')))
+
+    def name(self):
+        return 'relief'
+
+    def displayName(self):
+        return self.tr('Relief')
 
     def processAlgorithm(self, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)

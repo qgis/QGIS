@@ -56,19 +56,20 @@ class SymmetricalDifference(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'symmetricaldifference'
-
-    def displayName(self):
-        return self.tr('Symmetrical difference')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.OVERLAY,
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
+
+    def name(self):
+        return 'symmetricaldifference'
+
+    def displayName(self):
+        return self.tr('Symmetrical difference')
 
     def processAlgorithm(self, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

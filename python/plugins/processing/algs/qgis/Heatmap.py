@@ -78,13 +78,8 @@ class Heatmap(QgisAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def name(self):
-        return 'heatmapkerneldensityestimation'
-
-    def displayName(self):
-        return self.tr('Heatmap (Kernel Density Estimation)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.RADIUS,
@@ -130,6 +125,12 @@ class Heatmap(QgisAlgorithm):
         self.addParameter(output_scaling)
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))
+
+    def name(self):
+        return 'heatmapkerneldensityestimation'
+
+    def displayName(self):
+        return self.tr('Heatmap (Kernel Density Estimation)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

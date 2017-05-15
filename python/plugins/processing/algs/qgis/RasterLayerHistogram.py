@@ -52,19 +52,20 @@ class RasterLayerHistogram(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'rasterlayerhistogram'
-
-    def displayName(self):
-        return self.tr('Raster layer histogram')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BINS,
                                           self.tr('Number of bins'), 2, None, 10))
 
         self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
+
+    def name(self):
+        return 'rasterlayerhistogram'
+
+    def displayName(self):
+        return self.tr('Raster layer histogram')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

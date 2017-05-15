@@ -55,13 +55,8 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'scatter3dplot'
-
-    def displayName(self):
-        return self.tr('Vector layer scatterplot 3D')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -78,6 +73,12 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                                               ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
+
+    def name(self):
+        return 'scatter3dplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot 3D')
 
     def processAlgorithm(self, context, feedback):
 

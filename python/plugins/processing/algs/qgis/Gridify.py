@@ -54,13 +54,8 @@ class Gridify(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'snappointstogrid'
-
-    def displayName(self):
-        return self.tr('Snap points to grid')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -69,6 +64,12 @@ class Gridify(QgisAlgorithm):
                                           self.tr('Vertical spacing'), default=0.1))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
+
+    def name(self):
+        return 'snappointstogrid'
+
+    def displayName(self):
+        return self.tr('Snap points to grid')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

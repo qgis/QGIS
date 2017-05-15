@@ -73,13 +73,8 @@ class SelectByAttribute(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyattribute'
-
-    def displayName(self):
-        return self.tr('Select by attribute')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.i18n_operators = ['=',
                                '!=',
                                '>',
@@ -102,6 +97,12 @@ class SelectByAttribute(QgisAlgorithm):
         self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
+
+    def name(self):
+        return 'selectbyattribute'
+
+    def displayName(self):
+        return self.tr('Select by attribute')
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)

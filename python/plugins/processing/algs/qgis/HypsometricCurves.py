@@ -63,13 +63,8 @@ class HypsometricCurves(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'hypsometriccurves'
-
-    def displayName(self):
-        return self.tr('Hypsometric curves')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
@@ -81,6 +76,12 @@ class HypsometricCurves(QgisAlgorithm):
 
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
+
+    def name(self):
+        return 'hypsometriccurves'
+
+    def displayName(self):
+        return self.tr('Hypsometric curves')
 
     def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)

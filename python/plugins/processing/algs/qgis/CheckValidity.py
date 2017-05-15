@@ -60,13 +60,8 @@ class CheckValidity(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'checkvalidity'
-
-    def displayName(self):
-        return self.tr('Check validity')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',
                         'GEOS']
@@ -91,6 +86,12 @@ class CheckValidity(QgisAlgorithm):
         self.addOutput(OutputVector(
             self.ERROR_OUTPUT,
             self.tr('Error output')))
+
+    def name(self):
+        return 'checkvalidity'
+
+    def displayName(self):
+        return self.tr('Check validity')
 
     def processAlgorithm(self, context, feedback):
         settings = QgsSettings()

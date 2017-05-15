@@ -51,16 +51,17 @@ class BoundingBox(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                                          self.tr('Input layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Bounds'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
     def name(self):
         return 'boundingboxes'
 
     def displayName(self):
         return self.tr('Bounding boxes')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Bounds'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

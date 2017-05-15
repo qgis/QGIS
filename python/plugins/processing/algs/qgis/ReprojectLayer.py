@@ -52,19 +52,20 @@ class ReprojectLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'reprojectlayer'
-
-    def displayName(self):
-        return self.tr('Reproject layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
                                        self.tr('Target CRS'), 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
+
+    def name(self):
+        return 'reprojectlayer'
+
+    def displayName(self):
+        return self.tr('Reproject layer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

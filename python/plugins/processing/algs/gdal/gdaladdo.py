@@ -66,16 +66,8 @@ class gdaladdo(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
-    def name(self):
-        return 'overviews'
-
-    def displayName(self):
-        return self.tr('Build overviews (pyramids)')
-
-    def group(self):
-        return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.LEVELS,
@@ -87,6 +79,15 @@ class gdaladdo(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.FORMAT,
                                              self.tr('Overview format'), self.FORMATS, 0))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Pyramidized'), True))
+
+    def name(self):
+        return 'overviews'
+
+    def displayName(self):
+        return self.tr('Build overviews (pyramids)')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def getConsoleCommands(self):
         inFile = self.getParameterValue(self.INPUT)

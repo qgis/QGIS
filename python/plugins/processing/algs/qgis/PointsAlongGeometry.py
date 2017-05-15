@@ -58,13 +58,8 @@ class PointsAlongGeometry(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'pointsalonglines'
-
-    def displayName(self):
-        return self.tr('Points along lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -75,6 +70,12 @@ class PointsAlongGeometry(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.END_OFFSET,
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'pointsalonglines'
+
+    def displayName(self):
+        return self.tr('Points along lines')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

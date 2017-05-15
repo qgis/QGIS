@@ -54,13 +54,8 @@ class Orthogonalize(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'orthogonalize'
-
-    def displayName(self):
-        return self.tr('Orthogonalize')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
@@ -75,6 +70,12 @@ class Orthogonalize(QgisAlgorithm):
         self.addParameter(max_iterations)
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
+
+    def name(self):
+        return 'orthogonalize'
+
+    def displayName(self):
+        return self.tr('Orthogonalize')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

@@ -63,16 +63,8 @@ class retile(GdalAlgorithm):
     def commandName(self):
         return "gdal_retile"
 
-    def name(self):
-        return 'retile'
-
-    def displayName(self):
-        return self.tr('Retile')
-
-    def group(self):
-        return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
@@ -120,6 +112,15 @@ class retile(GdalAlgorithm):
 
         self.addOutput(OutputDirectory(self.TARGETDIR,
                                        self.tr('The directory where the tile result is created')))
+
+    def name(self):
+        return 'retile'
+
+    def displayName(self):
+        return self.tr('Retile')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def getConsoleCommands(self):
 

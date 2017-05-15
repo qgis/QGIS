@@ -51,18 +51,19 @@ class DeleteColumn(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'deletecolumn'
-
-    def displayName(self):
-        return self.tr('Delete column')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.COLUMNS,
                                               self.tr('Fields to delete'), self.INPUT, multiple=True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+
+    def name(self):
+        return 'deletecolumn'
+
+    def displayName(self):
+        return self.tr('Delete column')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

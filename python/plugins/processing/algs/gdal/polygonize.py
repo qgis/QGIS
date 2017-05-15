@@ -49,6 +49,14 @@ class polygonize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterRaster(polygonize.INPUT,
+                                          self.tr('Input layer'), False))
+        self.addParameter(ParameterString(polygonize.FIELD,
+                                          self.tr('Output field name'), 'DN'))
+        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
+
     def name(self):
         return 'polygonize'
 
@@ -57,13 +65,6 @@ class polygonize(GdalAlgorithm):
 
     def group(self):
         return self.tr('Raster conversion')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(polygonize.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterString(polygonize.FIELD,
-                                          self.tr('Output field name'), 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
     def getConsoleCommands(self):
         output = self.getOutputValue(polygonize.OUTPUT)

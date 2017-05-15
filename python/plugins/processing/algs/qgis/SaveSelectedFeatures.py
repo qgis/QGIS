@@ -47,18 +47,19 @@ class SaveSelectedFeatures(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'saveselectedfeatures'
-
-    def displayName(self):
-        return self.tr('Save selected features')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Selection')))
+
+    def name(self):
+        return 'saveselectedfeatures'
+
+    def displayName(self):
+        return self.tr('Save selected features')
 
     def processAlgorithm(self, context, feedback):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)

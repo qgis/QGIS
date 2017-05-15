@@ -78,13 +78,8 @@ class ShortestPathPointToLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
-    def name(self):
-        return 'shortestpathpointtolayer'
-
-    def displayName(self):
-        return self.tr('Shortest path (point to layer)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
             (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -146,6 +141,12 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
+    def name(self):
+        return 'shortestpathpointtolayer'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to layer)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)

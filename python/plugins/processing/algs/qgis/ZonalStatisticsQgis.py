@@ -59,13 +59,8 @@ class ZonalStatisticsQgis(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'zonalstatisticsqgis'
-
-    def displayName(self):
-        return self.tr('Zonal Statistics (QGIS)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
                       self.tr('Sum'): QgsZonalStatistics.Sum,
                       self.tr('Mean'): QgsZonalStatistics.Mean,
@@ -98,6 +93,12 @@ class ZonalStatisticsQgis(QgisAlgorithm):
                                     self.tr('Zonal statistics'),
                                     True,
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'zonalstatisticsqgis'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics (QGIS)')
 
     def processAlgorithm(self, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_RASTER)

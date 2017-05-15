@@ -49,19 +49,20 @@ class TextToFloat(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'texttofloat'
-
-    def displayName(self):
-        return self.tr('Text to float')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Text attribute to convert to float'),
                                               self.INPUT, ParameterTableField.DATA_TYPE_STRING))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
+
+    def name(self):
+        return 'texttofloat'
+
+    def displayName(self):
+        return self.tr('Text to float')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

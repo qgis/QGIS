@@ -53,16 +53,8 @@ class Ogr2OgrDissolve(GdalAlgorithm):
     FIELDS = 'FIELDS'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'dissolvepolygons'
-
-    def displayName(self):
-        return self.tr('Dissolve polygons')
-
-    def group(self):
-        return self.tr('Vector geoprocessing')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterString(self.GEOMETRY,
@@ -87,6 +79,15 @@ class Ogr2OgrDissolve(GdalAlgorithm):
                                           '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Dissolved'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'dissolvepolygons'
+
+    def displayName(self):
+        return self.tr('Dissolve polygons')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

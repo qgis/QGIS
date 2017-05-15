@@ -51,17 +51,18 @@ class Boundary(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
+                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
+
     def name(self):
         return 'boundary'
 
     def displayName(self):
         return self.tr('Boundary')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

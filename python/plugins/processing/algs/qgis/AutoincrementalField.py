@@ -49,16 +49,17 @@ class AutoincrementalField(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
+
     def name(self):
         return 'addautoincrementalfield'
 
     def displayName(self):
         return self.tr('Add autoincremental field')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
 
     def processAlgorithm(self, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)

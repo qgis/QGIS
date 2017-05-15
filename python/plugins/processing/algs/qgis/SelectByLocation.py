@@ -56,13 +56,8 @@ class SelectByLocation(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbylocation'
-
-    def displayName(self):
-        return self.tr('Select by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -92,6 +87,12 @@ class SelectByLocation(QgisAlgorithm):
                                              self.tr('Modify current selection by'),
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
+
+    def name(self):
+        return 'selectbylocation'
+
+    def displayName(self):
+        return self.tr('Select by location')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)

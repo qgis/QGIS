@@ -60,18 +60,19 @@ class PointsFromPolygons(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'generatepointspixelcentroidsinsidepolygons'
-
-    def displayName(self):
-        return self.tr('Generate points (pixel centroids) inside polygons')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'generatepointspixelcentroidsinsidepolygons'
+
+    def displayName(self):
+        return self.tr('Generate points (pixel centroids) inside polygons')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)

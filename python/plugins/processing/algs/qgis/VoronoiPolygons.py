@@ -56,19 +56,20 @@ class VoronoiPolygons(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'voronoipolygons'
-
-    def displayName(self):
-        return self.tr('Voronoi polygons')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.BUFFER,
                                           self.tr('Buffer region'), 0.0, 100.0, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'voronoipolygons'
+
+    def displayName(self):
+        return self.tr('Voronoi polygons')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

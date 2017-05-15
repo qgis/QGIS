@@ -65,16 +65,8 @@ class rasterize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def name(self):
-        return 'rasterize'
-
-    def displayName(self):
-        return self.tr('Rasterize (vector to raster)')
-
-    def group(self):
-        return self.tr('Vector conversion')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
@@ -100,6 +92,15 @@ class rasterize(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Rasterized')))
+
+    def name(self):
+        return 'rasterize'
+
+    def displayName(self):
+        return self.tr('Rasterize (vector to raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)

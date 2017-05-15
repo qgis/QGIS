@@ -51,13 +51,8 @@ class GeometryConvert(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'convertgeometrytype'
-
-    def displayName(self):
-        return self.tr('Convert geometry type')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.types = [self.tr('Centroids'),
                       self.tr('Nodes'),
                       self.tr('Linestrings'),
@@ -70,6 +65,12 @@ class GeometryConvert(QgisAlgorithm):
                                              self.tr('New geometry type'), self.types))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
+
+    def name(self):
+        return 'convertgeometrytype'
+
+    def displayName(self):
+        return self.tr('Convert geometry type')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

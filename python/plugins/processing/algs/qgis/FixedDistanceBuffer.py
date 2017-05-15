@@ -63,13 +63,8 @@ class FixedDistanceBuffer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'fixeddistancebuffer'
-
-    def displayName(self):
-        return self.tr('Fixed distance buffer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -95,6 +90,12 @@ class FixedDistanceBuffer(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'fixeddistancebuffer'
+
+    def displayName(self):
+        return self.tr('Fixed distance buffer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

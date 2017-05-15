@@ -65,13 +65,8 @@ class RandomPointsAlongLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsalongline'
-
-    def displayName(self):
-        return self.tr('Random points along line')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -79,6 +74,12 @@ class RandomPointsAlongLines(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'randompointsalongline'
+
+    def displayName(self):
+        return self.tr('Random points along line')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)

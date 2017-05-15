@@ -56,13 +56,8 @@ class ExtractByLocation(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbylocation'
-
-    def displayName(self):
-        return self.tr('Extract by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -85,6 +80,12 @@ class ExtractByLocation(QgisAlgorithm):
                                           self.tr('Precision'),
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
+
+    def name(self):
+        return 'extractbylocation'
+
+    def displayName(self):
+        return self.tr('Extract by location')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)

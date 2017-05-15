@@ -67,13 +67,8 @@ class VectorGridPolygons(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'vectorgridpolygons'
-
-    def displayName(self):
-        return self.tr('Vector grid (polygons)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,
@@ -82,6 +77,12 @@ class VectorGridPolygons(QgisAlgorithm):
                                           self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'vectorgridpolygons'
+
+    def displayName(self):
+        return self.tr('Vector grid (polygons)')
 
     def processAlgorithm(self, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')

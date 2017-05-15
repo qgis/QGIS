@@ -63,19 +63,20 @@ class ExtentFromLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'polygonfromlayerextent'
-
-    def displayName(self):
-        return self.tr('Polygon from layer extent')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
                                            self.tr('Calculate extent for each feature separately'), False))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'polygonfromlayerextent'
+
+    def displayName(self):
+        return self.tr('Polygon from layer extent')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

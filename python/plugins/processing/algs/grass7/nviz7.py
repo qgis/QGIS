@@ -63,16 +63,8 @@ class nviz7(GeoAlgorithm):
     def flags(self):
         return QgsProcessingAlgorithm.FlagHideFromModeler
 
-    def name(self):
-        return 'nviz7'
-
-    def displayName(self):
-        return self.tr('nviz7')
-
-    def group(self):
-        return self.tr('Visualization(NVIZ)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(
             nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),
@@ -92,6 +84,15 @@ class nviz7(GeoAlgorithm):
             self.GRASS_REGION_CELLSIZE_PARAMETER,
             self.tr('GRASS region cellsize (leave 0 for default)'),
             0, None, 0.0))
+
+    def name(self):
+        return 'nviz7'
+
+    def displayName(self):
+        return self.tr('nviz7')
+
+    def group(self):
+        return self.tr('Visualization(NVIZ)')
 
     def processAlgorithm(self, context, feedback):
         commands = []

@@ -54,6 +54,14 @@ class rasterize_over(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.FIELD,
+                                              self.tr('Attribute field'), self.INPUT))
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+                                          self.tr('Existing raster layer'), False))
+
     def name(self):
         return 'rasterize_over'
 
@@ -62,13 +70,6 @@ class rasterize_over(GdalAlgorithm):
 
     def group(self):
         return self.tr('Vector conversion')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute field'), self.INPUT))
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Existing raster layer'), False))
 
     def getConsoleCommands(self):
         context = dataobjects.createContext()

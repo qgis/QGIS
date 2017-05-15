@@ -54,18 +54,8 @@ class ExampleAlgorithm(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
 
-    def name(self):
-        # Unique (non-user visible) name of algorithm
-        return 'create_copy_of_layer'
-
-    def displayName(self):
-        # The name that the user will see in the toolbox
-        return self.tr('Create copy of layer')
-
-    def group(self):
-        return self.tr('Algorithms for vector layers')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
@@ -78,6 +68,17 @@ class ExampleAlgorithm(GeoAlgorithm):
         # We add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
+
+    def name(self):
+        # Unique (non-user visible) name of algorithm
+        return 'create_copy_of_layer'
+
+    def displayName(self):
+        # The name that the user will see in the toolbox
+        return self.tr('Create copy of layer')
+
+    def group(self):
+        return self.tr('Algorithms for vector layers')
 
     def processAlgorithm(self, context, feedback):
         """Here is where the processing itself takes place.

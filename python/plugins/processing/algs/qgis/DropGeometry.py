@@ -53,18 +53,19 @@ class DropGeometry(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'dropgeometries'
-
-    def displayName(self):
-        return self.tr('Drop geometries')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT,
                                                                    dataobjects.TYPE_VECTOR_LINE,
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
+
+    def name(self):
+        return 'dropgeometries'
+
+    def displayName(self):
+        return self.tr('Drop geometries')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

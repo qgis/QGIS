@@ -52,19 +52,20 @@ class Ruggedness(QgisAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def name(self):
-        return 'ruggednessindex'
-
-    def displayName(self):
-        return self.tr('Ruggedness index')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
                                           self.tr('Z factor'), 1.0, 999999.99, 1.0))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Ruggedness index')))
+
+    def name(self):
+        return 'ruggednessindex'
+
+    def displayName(self):
+        return self.tr('Ruggedness index')
 
     def processAlgorithm(self, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)

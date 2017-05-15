@@ -81,13 +81,8 @@ class BasicStatisticsNumbers(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'basicstatisticsfornumericfields'
-
-    def displayName(self):
-        return self.tr('Basic statistics for numeric fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -113,6 +108,12 @@ class BasicStatisticsNumbers(QgisAlgorithm):
         self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
+
+    def name(self):
+        return 'basicstatisticsfornumericfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for numeric fields')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

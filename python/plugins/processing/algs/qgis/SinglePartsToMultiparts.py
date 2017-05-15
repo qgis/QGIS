@@ -52,18 +52,19 @@ class SinglePartsToMultiparts(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'singlepartstomultipart'
-
-    def displayName(self):
-        return self.tr('Singleparts to multipart')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
+
+    def name(self):
+        return 'singlepartstomultipart'
+
+    def displayName(self):
+        return self.tr('Singleparts to multipart')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

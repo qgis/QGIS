@@ -57,13 +57,8 @@ class UniqueValues(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'listuniquevalues'
-
-    def displayName(self):
-        return self.tr('List unique values')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -72,6 +67,12 @@ class UniqueValues(QgisAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Unique values')))
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
+
+    def name(self):
+        return 'listuniquevalues'
+
+    def displayName(self):
+        return self.tr('List unique values')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

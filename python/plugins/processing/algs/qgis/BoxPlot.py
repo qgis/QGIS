@@ -55,13 +55,8 @@ class BoxPlot(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'boxplot'
-
-    def displayName(self):
-        return self.tr('Box plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
@@ -81,6 +76,12 @@ class BoxPlot(QgisAlgorithm):
             msd, default=0))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
+
+    def name(self):
+        return 'boxplot'
+
+    def displayName(self):
+        return self.tr('Box plot')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
