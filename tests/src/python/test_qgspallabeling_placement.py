@@ -27,7 +27,8 @@ from qgis.core import (QgsLabelingEngineSettings,
                        QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsMarkerSymbol,
-                       QgsProperty)
+                       QgsProperty,
+                       QgsVectorLayerSimpleLabeling)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -65,7 +66,7 @@ class TestPlacementBase(TestQgsPalLabeling):
         self._MapSettings.setLabelingEngineSettings(engine_settings)
 
     def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
+        self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
         settings_type = 'Class'

@@ -247,15 +247,19 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         // evaluation
 
         //! add providers
+        //! \note not available in Python bindings
         void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
         //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
+        //! \note not available in Python bindings
         void subProviderIds( QStringList &list ) const SIP_SKIP;
 
         //! call prepare() on sub-providers and populate attributeNames
+        //! \note not available in Python bindings
         void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
         //! register individual features
+        //! \note not available in Python bindings
         RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry = nullptr ) SIP_SKIP;
 
         /**
@@ -326,6 +330,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     virtual QString type() const override;
     virtual QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    //! \note not available in Python bindings
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
