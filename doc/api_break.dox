@@ -1652,6 +1652,7 @@ QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 QgsPalLayerSettings        {#qgis_api_break_3_0_QgsPalLayerSettings}
 -------------------
 
+- "enabled" member variable has been removed. Labeling is enabled if layer.labeling() does not return null pointer. To disable labeling, call layer.setLabeling() with null pointer.
 - ct is now a QgsCoordinateTransform object, not a pointer. An invalid QgsCoordinateTransform will
 be used instead of a null pointer if no transformation is required.
 - prepareGeometry() and geometryRequiresPreparation() now take a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.

@@ -90,15 +90,7 @@ void QgsLabelingWidget::adaptToLayer()
   {
     QgsPalLayerSettings lyr = mLayer->labeling()->settings();
 
-    // enable/disable main options based upon whether layer is being labeled
-    if ( !lyr.enabled )
-    {
-      mLabelModeComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 3 );
-    }
+    mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 3 );
   }
   else
   {

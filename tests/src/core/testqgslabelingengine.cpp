@@ -98,8 +98,8 @@ void TestQgsLabelingEngine::cleanup()
 void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings )
 {
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
-  format.setSize( 12.4 );    // TODO: why does it render nothing when point size == 12 ???
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
   format.setNamedStyle( "Bold" );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
@@ -127,9 +127,10 @@ void TestQgsLabelingEngine::testBasic()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.enabled = true;
   settings.fieldName = "Class";
   setDefaultLabelParams( settings );
+
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
@@ -211,7 +212,6 @@ void TestQgsLabelingEngine::testRuleBased()
   QgsRuleBasedLabeling::Rule *root = new QgsRuleBasedLabeling::Rule( 0 );
 
   QgsPalLayerSettings s1;
-  s1.enabled = true;
   s1.fieldName = QStringLiteral( "Class" );
   s1.obstacle = false;
   s1.dist = 2;
@@ -228,7 +228,6 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
 
   QgsPalLayerSettings s2;
-  s2.enabled = true;
   s2.fieldName = QStringLiteral( "Class" );
   s2.obstacle = false;
   s2.dist = 2;
@@ -303,7 +302,6 @@ void TestQgsLabelingEngine::zOrder()
   context.setPainter( &p );
 
   QgsPalLayerSettings pls1;
-  pls1.enabled = true;
   pls1.fieldName = QStringLiteral( "Class" );
   pls1.placement = QgsPalLayerSettings::OverPoint;
   pls1.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
