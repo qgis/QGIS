@@ -76,6 +76,32 @@ class QgsProcessingAlgorithm
  :rtype: list of str
 %End
 
+    virtual QString shortHelpString() const;
+%Docstring
+ Returns a localised short helper string for the algorithm. This string should provide a basic description
+ about what the algorithm does and the parameters and outputs associated with it.
+.. seealso:: helpString()
+.. seealso:: helpUrl()
+ :rtype: str
+%End
+
+    virtual QString helpString() const;
+%Docstring
+ Returns a localised help string for the algorithm. Algorithm subclasses should implement either
+ helpString() or helpUrl().
+.. seealso:: helpUrl()
+.. seealso:: shortHelpString()
+ :rtype: str
+%End
+
+    virtual QString helpUrl() const;
+%Docstring
+ Returns a url pointing to the algorithm's help page.
+.. seealso:: helpString()
+.. seealso:: shortHelpString()
+ :rtype: str
+%End
+
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the algorithm.
