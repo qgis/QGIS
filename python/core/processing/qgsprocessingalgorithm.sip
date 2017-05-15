@@ -193,17 +193,14 @@ class QgsProcessingAlgorithm
  :rtype: QgsProcessingOutputDefinition
 %End
 
-    virtual QVariantMap run( const QVariantMap &parameters,
-                             QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+    QVariantMap run( const QVariantMap &parameters,
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 %Docstring
- Runs the algorithm using the specified ``parameters``. Algorithms should implement
- their custom processing logic here.
+ Executes the algorithm using the specified ``parameters``.
 
  The ``context`` argument specifies the context in which the algorithm is being run.
 
- Algorithm progress should be reported using the supplied ``feedback`` object. Additionally,
- well-behaved algorithms should periodically check ``feedback`` to determine whether the
- algorithm should be canceled and exited early.
+ Algorithm progress should be reported using the supplied ``feedback`` object.
 
  :return: A map of algorithm outputs. These may be output layer references, or calculated
  values such as statistical calculations.
@@ -237,6 +234,23 @@ class QgsProcessingAlgorithm
  as a result of a duplicate name).
 .. seealso:: addParameter()
  :rtype: bool
+%End
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+%Docstring
+ Runs the algorithm using the specified ``parameters``. Algorithms should implement
+ their custom processing logic here.
+
+ The ``context`` argument specifies the context in which the algorithm is being run.
+
+ Algorithm progress should be reported using the supplied ``feedback`` object. Additionally,
+ well-behaved algorithms should periodically check ``feedback`` to determine whether the
+ algorithm should be canceled and exited early.
+
+ :return: A map of algorithm outputs. These may be output layer references, or calculated
+ values such as statistical calculations.
+ :rtype: QVariantMap
 %End
 
     QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;

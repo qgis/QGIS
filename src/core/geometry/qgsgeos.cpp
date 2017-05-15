@@ -1377,11 +1377,16 @@ bool QgsGeos::centroid( QgsPoint &pt, QString *errorMsg ) const
     return false;
   }
 
-  double x, y;
-  GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
-  GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
-  pt.setX( x );
-  pt.setY( y );
+  try
+  {
+    double x, y;
+    GEOSGeomGetX_r( geosinit.ctxt, geos.get(), &x );
+    GEOSGeomGetY_r( geosinit.ctxt, geos.get(), &y );
+    pt.setX( x );
+    pt.setY( y );
+  }
+  CATCH_GEOS_WITH_ERRMSG( false );
+
   return true;
 }
 

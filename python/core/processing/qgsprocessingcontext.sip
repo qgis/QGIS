@@ -83,6 +83,28 @@ class QgsProcessingContext
  :rtype: QgsMapLayerStore
 %End
 
+    QStringList layersToLoadOnCompletion() const;
+%Docstring
+ Returns a list of layers (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+.. seealso:: setLayersToLoadOnCompletion()
+.. seealso:: addLayerToLoadOnCompletion()
+ :rtype: list of str
+%End
+
+    void setLayersToLoadOnCompletion( const QStringList &layers );
+%Docstring
+ Sets the list of ``layers`` (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+.. seealso:: addLayerToLoadOnCompletion()
+.. seealso:: layersToLoadOnCompletion()
+%End
+
+    void addLayerToLoadOnCompletion( const QString &layer );
+%Docstring
+ Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
+.. seealso:: setLayersToLoadOnCompletion()
+.. seealso:: layersToLoadOnCompletion()
+%End
+
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
@@ -136,6 +158,10 @@ class QgsProcessingContext
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
+
+
+
+
 
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 

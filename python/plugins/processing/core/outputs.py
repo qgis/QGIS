@@ -78,10 +78,6 @@ class Output(object):
         # outputs not representing layers or tables should always be hidden.
         self.hidden = str(hidden).lower() == str(True).lower()
 
-        # This value indicates whether the output has to be opened
-        # after being produced by the algorithm or not
-        self.open = True
-
     def __str__(self):
         return u'{} <{}>'.format(self.name, self.__class__.__name__)
 

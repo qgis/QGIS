@@ -76,7 +76,7 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
-QVariantMap QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !layer )
@@ -130,6 +130,11 @@ QgsBufferAlgorithm::QgsBufferAlgorithm()
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsProcessingParameterNumber::Double, 10 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "END_CAP_STYLE" ), QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
+
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
   addParameter( new QgsProcessingParameterOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
@@ -144,20 +149,20 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join." );
 }
 
-QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !layer )
     return QVariantMap();
 
   QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
+  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Polygon, layer->crs(), context ) );
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
   double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
