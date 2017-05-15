@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingoutputs.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
@@ -134,6 +135,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Returns an ordered list of parameter definitions utilized by the algorithm.
      * \see addParameter()
      * \see parameterDefinition()
+     * \see destinationParameterDefinitions()
      */
     QgsProcessingParameterDefinitions parameterDefinitions() const { return mParameters; }
 
@@ -149,6 +151,27 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * algorithm.
      */
     int countVisibleParameters() const;
+
+    /**
+     * Returns a list of destination parameters definitions utilized by the algorithm.
+     * \see QgsProcessingParameterDefinition::isDestination()
+     * \see parameterDefinitions()
+     */
+    QgsProcessingParameterDefinitions destinationParameterDefinitions() const;
+
+    /**
+     * Returns an ordered list of output definitions utilized by the algorithm.
+     * \see addOutput()
+     * \see outputDefinition()
+     */
+    QgsProcessingOutputDefinitions outputDefinitions() const { return mOutputs; }
+
+    /**
+     * Returns a matching output by \a name. Matching is done in a case-insensitive
+     * manner.
+     * \see outputDefinitions()
+     */
+    const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
      * Runs the algorithm using the specified \a parameters. Algorithms should implement
@@ -172,8 +195,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Adds a parameter \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if parameter could be successfully added, or false if the parameter could not be added (e.g.
      * as a result of a duplicate name).
+     * \see addOutput()
      */
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
+
+    /**
+     * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
+     * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
+     * as a result of a duplicate name).
+     * \see addParameter()
+     */
+    bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.
@@ -283,6 +315,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
+    QgsProcessingOutputDefinitions mOutputs;
 
     /**
      * Associates this algorithm with its provider. No transfer of ownership is involved.

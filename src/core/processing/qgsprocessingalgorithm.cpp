@@ -19,11 +19,13 @@
 #include "qgsapplication.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsrectangle.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
   qDeleteAll( mParameters );
+  qDeleteAll( mOutputs );
 }
 
 QString QgsProcessingAlgorithm::id() const
@@ -82,6 +84,19 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   return true;
 }
 
+bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
+{
+  if ( !definition )
+    return false;
+
+  // check for duplicate named outputs
+  if ( QgsProcessingAlgorithm::outputDefinition( definition->name() ) )
+    return false;
+
+  mOutputs << definition;
+  return true;
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
@@ -101,6 +116,29 @@ int QgsProcessingAlgorithm::countVisibleParameters() const
       count++;
   }
   return count;
+}
+
+QgsProcessingParameterDefinitions QgsProcessingAlgorithm::destinationParameterDefinitions() const
+{
+  QgsProcessingParameterDefinitions result;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( !def->isDestination() )
+      continue;
+
+    result << def;
+  }
+  return result;
+}
+
+const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( const QString &name ) const
+{
+  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  {
+    if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
+      return def;
+  }
+  return nullptr;
 }
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const

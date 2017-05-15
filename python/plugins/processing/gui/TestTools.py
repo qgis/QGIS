@@ -145,8 +145,8 @@ def createTest(text):
     results = {}
 
     i = 0
-    for param in alg.parameters:
-        if param.hidden:
+    for param in alg.parameterDefinitions():
+        if param.hidden or param.isDestination():
             continue
 
         i += 1
@@ -238,8 +238,8 @@ def createTest(text):
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.outputs if not out.hidden]):
-        token = tokens[i - alg.getVisibleOutputsCount()]
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.hidden]):
+        token = tokens[i - len(alg.destinationParameterDefinitions())]
 
         if isinstance(out, (OutputNumber, OutputString)):
             results[out.name] = str(out)

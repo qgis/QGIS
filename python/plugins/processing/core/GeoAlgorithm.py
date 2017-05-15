@@ -398,15 +398,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             if out.name == outputName:
                 out.setValue(value)
 
-    def getVisibleOutputsCount(self):
-        """Returns the number of non-hidden outputs.
-        """
-        i = 0
-        for out in self.outputs:
-            if not out.hidden:
-                i += 1
-        return i
-
     def getHTMLOutputsCount(self):
         """Returns the number of HTML outputs.
         """
