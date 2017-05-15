@@ -427,6 +427,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    /** Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
+     * \see customProperty()
+     * \since QGIS 3.0
+     */
+    QStringList customPropertyKeys() const;
+
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \see removeCustomProperty()

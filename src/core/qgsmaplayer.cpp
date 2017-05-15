@@ -788,7 +788,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   return writeXml( layerElement, document, context );
 
-} // bool QgsMapLayer::writeXml
+}
 
 
 bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -1572,6 +1572,11 @@ QUndoStack *QgsMapLayer::undoStackStyles()
   return &mUndoStackStyles;
 }
 
+
+QStringList QgsMapLayer::customPropertyKeys() const
+{
+  return mCustomProperties.keys();
+}
 
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {

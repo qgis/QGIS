@@ -1769,6 +1769,11 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     if ( labelingElement.isNull() ||
          ( labelingElement.attribute( "type" ) == "simple" && labelingElement.firstChildElement( QStringLiteral( "settings" ) ).isNull() ) )
     {
+      // make sure we have custom properties for labeling for 2.x projects
+      // (custom properties should be already loaded when reading the whole layer from XML,
+      // but when reading style, custom properties are not read)
+      readCustomProperties( node, QStringLiteral( "labeling" ) );
+
       // support for pre-QGIS 3 labeling configurations written in custom properties
       labeling = readLabelingFromCustomProperties();
     }
@@ -1810,9 +1815,6 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     mSimplifyMethod.setThreshold( e.attribute( QStringLiteral( "simplifyDrawingTol" ), QStringLiteral( "1" ) ).toFloat() );
     mSimplifyMethod.setForceLocalOptimization( e.attribute( QStringLiteral( "simplifyLocal" ), QStringLiteral( "1" ) ).toInt() );
     mSimplifyMethod.setMaximumScale( e.attribute( QStringLiteral( "simplifyMaxScale" ), QStringLiteral( "1" ) ).toFloat() );
-
-    //also restore custom properties (for labeling-ng)
-    readCustomProperties( node, QStringLiteral( "labeling" ) );
 
     //diagram renderer and diagram layer settings
     delete mDiagramRenderer;
@@ -4225,17 +4227,24 @@ QgsEditorWidgetSetup QgsVectorLayer::editorWidgetSetup( int index ) const
 QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties()
 {
   QgsAbstractVectorLayerLabeling *labeling = nullptr;
-  if ( customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) &&
-       customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() == true )
+  if ( customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) )
   {
-    // try to load from custom properties
-    QgsPalLayerSettings settings;
-    settings.readFromLayerCustomProperties( this );
-    labeling = new QgsVectorLayerSimpleLabeling( settings );
-  }
+    if ( customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() == true )
+    {
+      // try to load from custom properties
+      QgsPalLayerSettings settings;
+      settings.readFromLayerCustomProperties( this );
+      labeling = new QgsVectorLayerSimpleLabeling( settings );
+    }
 
-  // also clear old-style labeling config
-  removeCustomProperty( QStringLiteral( "labeling" ) );
+    // also clear old-style labeling config
+    removeCustomProperty( QStringLiteral( "labeling" ) );
+    Q_FOREACH ( const QString &key, customPropertyKeys() )
+    {
+      if ( key.startsWith( "labeling/" ) )
+        removeCustomProperty( key );
+    }
+  }
 
   return labeling;
 }
