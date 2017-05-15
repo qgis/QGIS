@@ -71,6 +71,11 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &, QgsProcessingConte
   return QVariantMap();
 }
 
+QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
+{
+  return nullptr;
+}
+
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )
 {
   if ( !definition )

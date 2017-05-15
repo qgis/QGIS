@@ -55,7 +55,7 @@ class GdalAlgorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 
-    def getCustomParametersDialog(self):
+    def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
     def processAlgorithm(self, context, feedback):

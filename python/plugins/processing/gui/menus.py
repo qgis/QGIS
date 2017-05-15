@@ -205,7 +205,7 @@ def _executeAlgorithm(alg):
 
     context = dataobjects.createContext()
     if (alg.countVisibleParameters()) > 0:
-        dlg = alg.getCustomParametersDialog()
+        dlg = alg.createCustomParametersWidget(None)
         if not dlg:
             dlg = AlgorithmDialog(alg)
         canvas = iface.mapCanvas()
