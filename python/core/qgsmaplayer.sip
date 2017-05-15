@@ -448,6 +448,14 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
+    QStringList customPropertyKeys() const;
+%Docstring
+ Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
+.. seealso:: customProperty()
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
  Set a custom property for layer. Properties are stored in a map and saved in project file.
