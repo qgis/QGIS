@@ -9,6 +9,7 @@
 
 
 
+
 class QgsExpressionFunction
 {
 %Docstring
