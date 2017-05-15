@@ -19,11 +19,13 @@
 #define QGSGUI_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
 class QgsMapLayerActionRegistry;
+class QgsNative;
 
 /**
  * \ingroup gui
@@ -45,6 +47,13 @@ class GUI_EXPORT QgsGui
      * Returns a pointer to the singleton instance.
      */
     static QgsGui *instance();
+
+    /**
+     * Returns the global native interface, which offers abstraction to the host OS's underlying public
+     * interfaces.
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP static QgsNative *nativePlatformInterface();
 
     /**
      * Returns the global editor widget registry, used for managing all known edit widget factories.
@@ -72,6 +81,7 @@ class GUI_EXPORT QgsGui
 
     QgsGui();
 
+    QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;

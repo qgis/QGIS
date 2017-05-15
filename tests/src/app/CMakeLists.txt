@@ -37,6 +37,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
+
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
 #directly included in the sources

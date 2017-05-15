@@ -100,6 +100,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 //
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
+#include "qgsmacnative.h"
 
 // check macro breaks QItemDelegate
 #ifdef check
@@ -205,6 +206,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsnative.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsoptions.h"
@@ -1210,7 +1212,7 @@ QgisApp::QgisApp()
   , mMapToolGroup( nullptr )
   , mPreviewGroup( nullptr )
 #ifdef Q_OS_MAC
-  , mWindowMenu( 0 )
+  , mWindowMenu( nullptr )
 #endif
   , mPanelMenu( nullptr )
   , mToolbarMenu( nullptr )
@@ -6119,12 +6121,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-#ifdef Q_OS_MAC
-  // Bring forward all open windows while maintaining layering order
-  ProcessSerialNumber psn;
-  GetCurrentProcess( &psn );
-  SetFrontProcess( &psn );
-#endif
+  QgsGui::nativePlatformInterface()->currentAppActivateIgnoringOtherApps();
 }
 
 void QgisApp::addWindow( QAction *action )

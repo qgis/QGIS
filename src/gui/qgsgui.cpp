@@ -19,12 +19,22 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#ifdef Q_OS_MACX
+#include "qgsmacnative.h"
+#else
+#include "qgsnative.h"
+#endif
 #include "qgsshortcutsmanager.h"
 
 QgsGui *QgsGui::instance()
 {
   static QgsGui *sInstance( new QgsGui() );
   return sInstance;
+}
+
+QgsNative *QgsGui::nativePlatformInterface()
+{
+  return instance()->mNative;
 }
 
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
@@ -53,10 +63,17 @@ QgsGui::~QgsGui()
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
   delete mShortcutsManager;
+  delete mNative;
 }
 
 QgsGui::QgsGui()
 {
+#ifdef Q_OS_MAC
+  mNative = new QgsMacNative();
+#else
+  mNative = new QgsNative();
+#endif
+
   mEditorWidgetRegistry = new QgsEditorWidgetRegistry();
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();

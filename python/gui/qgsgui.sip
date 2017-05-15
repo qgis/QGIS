@@ -31,6 +31,7 @@ class QgsGui
  :rtype: QgsGui
 %End
 
+
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
 %Docstring
  Returns the global editor widget registry, used for managing all known edit widget factories.
