@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
+from qgis.core import QGis, QgsFeature, QgsGeometry, NULL
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -80,14 +80,26 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         current = 0
         features = vector.features(layer)
         total = 100.0 / (len(features) * len(unique))
+
+        nullFeatures = []
         if not len(unique) == layer.featureCount():
             for i in unique:
-                multi_feature = []
                 first = True
+                multi_feature = []
                 features = vector.features(layer)
                 for inFeat in features:
                     atMap = inFeat.attributes()
                     idVar = atMap[index]
+                    if idVar in [None, NULL] and inFeat.id() not in nullFeatures:
+                        nullFeatures.append(inFeat.id())
+                        outGeom = QgsGeometry(inFeat.geometry())
+                        outFeat.setAttributes(atMap)
+                        outFeat.setGeometry(outGeom)
+                        writer.addFeature(outFeat)
+                        current += 1
+                        progress.setPercentage(int(current * total))
+                        continue
+
                     if unicode(idVar).strip() == unicode(i).strip():
                         if first:
                             attrs = atMap
@@ -100,11 +112,12 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                     current += 1
                     progress.setPercentage(int(current * total))
 
-                outFeat.setAttributes(attrs)
-                outGeom = QgsGeometry(self.convertGeometry(multi_feature,
-                                                           vType))
-                outFeat.setGeometry(outGeom)
-                writer.addFeature(outFeat)
+                if len(multi_feature) > 0:
+                    outGeom = QgsGeometry(
+                        self.convertGeometry(multi_feature, vType))
+                    outFeat.setGeometry(outGeom)
+                    outFeat.setAttributes(attrs)
+                    writer.addFeature(outFeat)
 
             del writer
         else:
