@@ -40,6 +40,14 @@
 
 class CORE_EXPORT QgsProcessingOutputDefinition
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "outputVector" )
+      sipType = sipType_QgsProcessingOutputVectorLayer;
+    SIP_END
+#endif
+
   public:
 
     /**

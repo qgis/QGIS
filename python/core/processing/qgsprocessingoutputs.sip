@@ -26,6 +26,11 @@ class QgsProcessingOutputDefinition
 %TypeHeaderCode
 #include "qgsprocessingoutputs.h"
 %End
+
+%ConvertToSubClassCode
+    if ( sipCpp->type() == "outputVector" )
+      sipType = sipType_QgsProcessingOutputVectorLayer;
+%End
   public:
 
     QgsProcessingOutputDefinition( const QString &name, const QString &description = QString() );
