@@ -72,8 +72,7 @@ class SetVectorStyle(QgisAlgorithm):
         layer = QgsProcessingUtils.mapLayerFromString(filename, context, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
         else:
             layer.loadNamedStyle(style)
-            iface.mapCanvas().refresh()
+            context.addLayerToLoadOnCompletion(layer.id())
             layer.triggerRepaint()

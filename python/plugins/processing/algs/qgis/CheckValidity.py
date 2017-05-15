@@ -178,9 +178,9 @@ class CheckValidity(QgisAlgorithm):
         del invalid_writer
         del error_writer
 
-        if valid_count == 0:
-            valid_output.open = False
-        if invalid_count == 0:
-            invalid_output.open = False
-        if error_count == 0:
-            error_output.open = False
+        if valid_count != 0:
+            context.addLayerToLoadOnCompletion(valid_output.value)
+        if invalid_count != 0:
+            context.addLayerToLoadOnCompletion(invalid_output.value)
+        if error_count != 0:
+            context.addLayerToLoadOnCompletion(error_output.value)

@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
+#include "qgsmaplayerlistutils.h"
 
 /**
  * \class QgsProcessingContext
@@ -101,6 +102,36 @@ class CORE_EXPORT QgsProcessingContext
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
+     * Returns a list of layers (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+     * \see setLayersToLoadOnCompletion()
+     * \see addLayerToLoadOnCompletion()
+     */
+    QStringList layersToLoadOnCompletion() const
+    {
+      return mLayersToLoadOnCompletion;
+    }
+
+    /**
+     * Sets the list of \a layers (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+     * \see addLayerToLoadOnCompletion()
+     * \see layersToLoadOnCompletion()
+     */
+    void setLayersToLoadOnCompletion( const QStringList &layers )
+    {
+      mLayersToLoadOnCompletion = layers;
+    }
+
+    /**
+     * Adds a \a layer to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
+     * \see setLayersToLoadOnCompletion()
+     * \see layersToLoadOnCompletion()
+     */
+    void addLayerToLoadOnCompletion( const QString &layer )
+    {
+      mLayersToLoadOnCompletion << layer;
+    }
+
+    /**
      * Returns a map of output values stored in the context. These are grouped with the map keys
      * matching the algorithm name for multi-algorithm models.
      * \note not available in Python bindings
@@ -177,11 +208,16 @@ class CORE_EXPORT QgsProcessingContext
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     QString mDefaultEncoding;
+    QStringList mLayersToLoadOnCompletion;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
 };
+
+
+
+
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 

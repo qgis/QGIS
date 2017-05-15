@@ -39,8 +39,8 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    virtual QVariantMap run( const QVariantMap &,
-                             QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
+    virtual QVariantMap processAlgorithm( const QVariantMap &,
+                                          QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
     QString mName;
 
     void runParameterChecks()
@@ -443,6 +443,23 @@ void TestQgsProcessing::context()
 
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
+
+  // layers to load on completion
+  QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
+  QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
+  context.setLayersToLoadOnCompletion( QStringList() << v1->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
+  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v1->id() );
+  context.addLayerToLoadOnCompletion( v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
+  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v1->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().at( 1 ), v2->id() );
+  context.setLayersToLoadOnCompletion( QStringList() << v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
+  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v2->id() );
+  delete v1;
+  delete v2;
 }
 
 void TestQgsProcessing::mapLayers()

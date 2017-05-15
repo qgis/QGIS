@@ -198,20 +198,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
-     * Runs the algorithm using the specified \a parameters. Algorithms should implement
-     * their custom processing logic here.
+     * Executes the algorithm using the specified \a parameters.
      *
      * The \a context argument specifies the context in which the algorithm is being run.
      *
-     * Algorithm progress should be reported using the supplied \a feedback object. Additionally,
-     * well-behaved algorithms should periodically check \a feedback to determine whether the
-     * algorithm should be canceled and exited early.
+     * Algorithm progress should be reported using the supplied \a feedback object.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
      */
-    virtual QVariantMap run( const QVariantMap &parameters,
-                             QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+    QVariantMap run( const QVariantMap &parameters,
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
@@ -238,6 +235,22 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see addParameter()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER );
+
+    /**
+     * Runs the algorithm using the specified \a parameters. Algorithms should implement
+     * their custom processing logic here.
+     *
+     * The \a context argument specifies the context in which the algorithm is being run.
+     *
+     * Algorithm progress should be reported using the supplied \a feedback object. Additionally,
+     * well-behaved algorithms should periodically check \a feedback to determine whether the
+     * algorithm should be canceled and exited early.
+     *
+     * \returns A map of algorithm outputs. These may be output layer references, or calculated
+     * values such as statistical calculations.
+     */
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.

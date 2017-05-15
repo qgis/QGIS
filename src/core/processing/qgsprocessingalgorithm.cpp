@@ -81,11 +81,6 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
   mProvider = provider;
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) const
-{
-  return QVariantMap();
-}
-
 QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 {
   return nullptr;
@@ -159,6 +154,11 @@ const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( c
       return def;
   }
   return nullptr;
+}
+
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  return processAlgorithm( parameters, context, feedback );
 }
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const

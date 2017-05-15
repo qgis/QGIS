@@ -462,9 +462,10 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
         #self.resolveOutputs()
         #self.evaluateParameterValues()
         #self.runPreExecutionScript(feedback)
-        alg.run(parameters, context, feedback)
+        result = alg.run(parameters, context, feedback)
         #self.processAlgorithm(parameters, context, feedback)
         feedback.setProgress(100)
+        return result
         #self.convertUnsupportedFormats(context, feedback)
         #self.runPostExecutionScript(feedback)
     #except GeoAlgorithmExecutionException as gaee:

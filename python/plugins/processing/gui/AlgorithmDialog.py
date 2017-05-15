@@ -33,7 +33,9 @@ from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 from qgis.core import (QgsProject,
                        QgsProcessingUtils,
                        QgsMessageLog,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterOutputVectorLayer)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -113,6 +115,17 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #    output.open = self.mainWidget.checkBoxes[param.name()].isChecked()
 
         return parameters
+
+    def getLayersToOpen(self):
+        layer_outputs = []
+        for param in self.alg.destinationParameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+            if isinstance(param, (OutputRaster, QgsProcessingParameterOutputVectorLayer, OutputTable)):
+                if self.mainWidget.checkBoxes[param.name()].isChecked():
+                    layer_outputs.append(param.name())
+
+        return layer_outputs
 
     def setParamValue(self, param, wrapper):
         if wrapper.widget:
@@ -220,7 +233,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             if self.iterateParam:
                 if executeIterating(self.alg, parameters, self.iterateParam, context, self.feedback):
-                    self.finish(context)
+                    self.finish(parameters, context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -229,11 +242,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #command = self.alg.getAsCommand()
                 #if command:
                 #    ProcessingLog.addToLog(command)
-                if executeAlgorithm(self.alg, parameters, context, self.feedback):
-                    self.finish(context)
-                else:
-                    QApplication.restoreOverrideCursor()
-                    self.resetGUI()
+                result = executeAlgorithm(self.alg, parameters, context, self.feedback)
+                self.finish(result, context)
+                #TODO
+                #else:
+                #    QApplication.restoreOverrideCursor()
+                #    self.resetGUI()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda e=e:
@@ -247,10 +261,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self, context):
+    def finish(self, result, context):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
+
+            for o in self.getLayersToOpen():
+                context.addLayerToLoadOnCompletion(result[o])
+
             if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()
                 return

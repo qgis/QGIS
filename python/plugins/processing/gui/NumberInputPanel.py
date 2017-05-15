@@ -33,7 +33,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
-from qgis.core import QgsExpression
+from qgis.core import (QgsExpression,
+                       QgsProcessingParameterNumber)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
 from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
@@ -63,8 +64,8 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
         self.param = param
         self.modelParametersDialog = modelParametersDialog
-        if param.default:
-            self.setValue(param.default)
+        if param.defaultValue():
+            self.setValue(param.defaultValue())
         self.btnSelect.clicked.connect(self.showExpressionsBuilder)
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
 
@@ -153,36 +154,36 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.setExpressionsEnabled(True)
 
         self.param = param
-        if self.param.isInteger:
+        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
             self.spnValue.setDecimals(0)
         else:
             # Guess reasonable step value
-            if self.param.max is not None and self.param.min is not None:
+            if self.param.maximum() is not None and self.param.minimum() is not None:
                 try:
-                    self.spnValue.setSingleStep(self.calculateStep(float(self.param.min), float(self.param.max)))
+                    self.spnValue.setSingleStep(self.calculateStep(float(self.param.minimum()), float(self.param.maximum())))
                 except:
                     pass
 
-        if self.param.max is not None:
-            self.spnValue.setMaximum(self.param.max)
+        if self.param.maximum() is not None:
+            self.spnValue.setMaximum(self.param.maximum())
         else:
             self.spnValue.setMaximum(999999999)
-        if self.param.min is not None:
-            self.spnValue.setMinimum(self.param.min)
+        if self.param.minimum() is not None:
+            self.spnValue.setMinimum(self.param.minimum())
         else:
             self.spnValue.setMinimum(-999999999)
 
         # set default value
-        if param.default is not None:
-            self.setValue(param.default)
+        if param.defaultValue() is not None:
+            self.setValue(param.defaultValue())
             try:
-                self.spnValue.setClearValue(float(param.default))
+                self.spnValue.setClearValue(float(param.defaultValue()))
             except:
                 pass
-        elif self.param.min is not None:
+        elif self.param.minimum() is not None:
             try:
-                self.setValue(float(self.param.min))
-                self.spnValue.setClearValue(float(self.param.min))
+                self.setValue(float(self.param.minimum()))
+                self.spnValue.setClearValue(float(self.param.minimum()))
             except:
                 pass
         else:

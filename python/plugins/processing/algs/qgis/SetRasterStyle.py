@@ -75,7 +75,6 @@ class SetRasterStyle(QgisAlgorithm):
         style = self.getParameterValue(self.STYLE)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
         else:
             with open(style) as f:
                 xml = "".join(f.readlines())
@@ -83,5 +82,6 @@ class SetRasterStyle(QgisAlgorithm):
             d.setContent(xml)
             n = d.firstChild()
             layer.readSymbology(n, '')
+            context.addLayerToLoadOnCompletion(self.getOutputFromName(self.OUTPUT).value)
             self.setOutputValue(self.OUTPUT, filename)
-            iface.mapCanvas().refresh()
+            layer.triggerRepaint()
