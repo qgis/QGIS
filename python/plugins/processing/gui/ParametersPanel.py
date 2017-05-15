@@ -34,14 +34,16 @@ import os
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
-                       QgsProcessingParameterVectorLayer)
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterOutputVectorLayer)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox)
 from qgis.PyQt.QtGui import QIcon
 
-from processing.gui.OutputSelectionPanel import OutputSelectionPanel
+from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.core.parameters import ParameterVector, ParameterExtent, ParameterPoint
 from processing.core.outputs import OutputRaster
@@ -93,17 +95,7 @@ class ParametersPanel(BASE, WIDGET):
                 continue
 
             if param.isDestination():
-                label = QLabel(param.description())
-                widget = OutputSelectionPanel(param, self.alg)
-                self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
-                self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
-                if isinstance(param, (OutputRaster, QgsProcessingParameterOutputVectorLayer, OutputTable)):
-                   check = QCheckBox()
-                   check.setText(self.tr('Open output file after running algorithm'))
-                   check.setChecked(True)
-                   self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
-                   self.checkBoxes[param.name()] = check
-                self.outputWidgets[param.name()] = widget
+                continue
             else:
                 desc = param.description()
                 if isinstance(param, QgsProcessingParameterExtent):
@@ -156,6 +148,22 @@ class ParametersPanel(BASE, WIDGET):
                     else:
                         self.layoutMain.insertWidget(
                             self.layoutMain.count() - 2, widget)
+
+        for output in self.alg.destinationParameterDefinitions():
+            if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            label = QLabel(output.description())
+            widget = DestinationSelectionPanel(output, self.alg)
+            self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
+            self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
+            if isinstance(output, (OutputRaster, QgsProcessingParameterOutputVectorLayer, OutputTable)):
+                check = QCheckBox()
+                check.setText(self.tr('Open output file after running algorithm'))
+                check.setChecked(True)
+                self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
+                self.checkBoxes[output.name()] = check
+            self.outputWidgets[output.name()] = widget
 
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))

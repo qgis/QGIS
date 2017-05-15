@@ -107,10 +107,10 @@ class GdalParametersPanel(ParametersPanel):
 
     def parametersHaveChanged(self):
         try:
-            self.parent.setParamValues()
-            for output in self.alg.outputs:
-                if output.value is None:
-                    output.value = self.tr("[temporary file]")
+            parameters = self.parent.getParamValues()
+            for output in self.alg.destinationParameterDefinitions():
+                if parameters[output.name()] is None:
+                    parameters[output.name()] = self.tr("[temporary file]")
             commands = self.alg.getConsoleCommands()
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
