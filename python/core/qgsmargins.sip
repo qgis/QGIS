@@ -138,90 +138,14 @@ class QgsMargins
 
 
 bool operator==( const QgsMargins &lhs, const QgsMargins &rhs );
-%Docstring
- Returns \c true if ``lhs`` and ``rhs`` are equal; otherwise returns \c false.
- :rtype: bool
-%End
-
 bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs );
-%Docstring
- Returns \c true if ``lhs`` and ``rhs`` are different; otherwise returns \c false.
- :rtype: bool
-%End
-
 QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 );
-%Docstring
- Returns a QgsMargins object that is the sum of the given margins, ``m1``
- and ``m2``; each component is added separately.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 );
-%Docstring
- Returns a QgsMargins object that is formed by subtracting ``m2`` from
- ``m1``; each component is subtracted separately.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator+( const QgsMargins &lhs, double rhs );
-%Docstring
- Returns a QgsMargins object that is formed by adding ``rhs`` to ``lhs``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator+( double lhs, const QgsMargins &rhs );
-%Docstring
- Returns a QgsMargins object that is formed by adding ``lhs`` to ``rhs``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator-( const QgsMargins &lhs, double rhs );
-%Docstring
- Returns a QgsMargins object that is formed by subtracting ``rhs`` from ``lhs``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator*( const QgsMargins &margins, double factor );
-%Docstring
- Returns a QgsMargins object that is formed by multiplying each component
- of the given ``margins`` by ``factor``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator*( double factor, const QgsMargins &margins );
-%Docstring
- Returns a QgsMargins object that is formed by multiplying each component
- of the given ``margins`` by ``factor``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator/( const QgsMargins &margins, double divisor );
-%Docstring
- Returns a QgsMargins object that is formed by dividing the components of
- the given ``margins`` by the given ``divisor``.
- :rtype: QgsMargins
-%End
-
-QgsMargins &QgsMargins::operator+=( const QgsMargins &margins );
-
-QgsMargins &QgsMargins::operator-=( const QgsMargins &margins );
-
-QgsMargins &QgsMargins::operator+=( double addend );
-
-QgsMargins &QgsMargins::operator-=( double subtrahend );
-
-QgsMargins &QgsMargins::operator*=( double factor );
-
-QgsMargins &QgsMargins::operator/=( double divisor );
-
 QgsMargins operator+( const QgsMargins &margins );
-%Docstring
- Returns a QgsMargins object that is formed from all components of ``margins``.
- :rtype: QgsMargins
-%End
-
 QgsMargins operator-( const QgsMargins &margins );
-%Docstring
- Returns a QgsMargins object that is formed by negating all components of ``margins``.
- :rtype: QgsMargins
-%End
