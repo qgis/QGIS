@@ -295,7 +295,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.enabled = ( mMode == Labels || mMode == ObstaclesOnly );
   lyr.drawLabels = ( mMode == Labels );
 
   bool isExpression;

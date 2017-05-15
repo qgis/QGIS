@@ -233,7 +233,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 {
   initPropertyDefinitions();
 
-  enabled = false;
   drawLabels = true;
   isExpression = false;
   fieldIndex = 0;
@@ -317,7 +316,6 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   // copy only permanent stuff
 
-  enabled = s.enabled;
   drawLabels = s.drawLabels;
 
   // text style
@@ -534,7 +532,6 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
-  enabled = layer->labelsEnabled();
   drawLabels = layer->customProperty( QStringLiteral( "labeling/drawLabels" ), true ).toBool();
 
   mFormat.readFromLayer( layer );
@@ -673,9 +670,6 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
 
 void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
 {
-  enabled = true;
-  drawLabels = true;
-
   // text style
   QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   fieldName = textStyleElem.attribute( QStringLiteral( "fieldName" ) );
@@ -756,6 +750,9 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
   // rendering
   QDomElement renderingElem = elem.firstChildElement( QStringLiteral( "rendering" ) );
+
+  drawLabels = renderingElem.attribute( QStringLiteral( "drawLabels" ), QStringLiteral( "1" ) ).toInt();
+
   scaleMin = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toInt();
   scaleMax = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toInt();
   scaleVisibility = renderingElem.attribute( QStringLiteral( "scaleVisibility" ) ).toInt();
@@ -794,7 +791,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
 QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  // we assume (enabled == true && drawLabels == true) so those are not saved
+
 
   QDomElement textStyleElem = mFormat.writeXml( doc, context );
 
@@ -848,6 +845,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   // rendering
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
+  renderingElem.setAttribute( QStringLiteral( "drawLabels" ), drawLabels );
   renderingElem.setAttribute( QStringLiteral( "scaleVisibility" ), scaleVisibility );
   renderingElem.setAttribute( QStringLiteral( "scaleMin" ), scaleMin );
   renderingElem.setAttribute( QStringLiteral( "scaleMax" ), scaleMax );

@@ -3513,8 +3513,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     QDomElement propertyNameElem = labelElem.firstChildElement( QStringLiteral( "PropertyName" ) );
     if ( !propertyNameElem.isNull() )
     {
-      // enable labeling + set labeling defaults
-      settings.enabled = true;
+      // set labeling defaults
 
       // label attribute
       QString labelAttribute = propertyNameElem.text();

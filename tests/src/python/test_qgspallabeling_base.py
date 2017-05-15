@@ -251,7 +251,6 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     def defaultLayerSettings(self):
         lyr = QgsPalLayerSettings()
-        lyr.enabled = True
         lyr.fieldName = 'text'  # default in test data sources
         font = self.getTestFont()
         font.setPointSize(32)

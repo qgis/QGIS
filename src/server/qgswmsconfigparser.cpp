@@ -389,7 +389,6 @@ QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &
   }
 
   QgsPalLayerSettings settings;
-  settings.enabled = true;
   settings.fieldName = "label";
 
   //give highest priority to highlight layers and make sure the labels are always drawn
