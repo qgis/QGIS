@@ -99,8 +99,9 @@ void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings
 {
   QgsTextFormat format;
   QFont font( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family(), 12 );
-  QgsFontUtils::updateFontViaStyle( font, QgsFontUtils::translateNamedStyle( "Bold" ) );
   format.setFont( font );
+  format.setSize( 12 );
+  format.setNamedStyle( QgsFontUtils::translateNamedStyle( "Bold" ) );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 }
