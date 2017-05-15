@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring

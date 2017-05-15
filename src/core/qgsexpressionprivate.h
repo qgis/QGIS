@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
 #include "qgsunittypes.h"
+#include "qgsexpressionnode.h"
 
 ///@cond
 

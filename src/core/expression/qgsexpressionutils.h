@@ -1,0 +1,377 @@
+/***************************************************************************
+                               qgsexpressionutils.cpp
+                             -------------------
+    begin                : May 2017
+    copyright            : (C) 2017 Matthias Kuhn
+    email                : matthias@opengis.ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifndef QGSEXPRESSIONUTILS_H
+#define QGSEXPRESSIONUTILS_H
+
+#include "qgsfeature.h"
+#include "qgsexpression.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+
+
+#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return QVariant(); }
+#define SET_EVAL_ERROR(x)   { parent->setEvalErrorString( x ); return QVariant(); }
+
+
+///////////////////////////////////////////////
+// three-value logic
+
+enum TVL
+{
+  False,
+  True,
+  Unknown
+};
+
+
+static TVL AND[3][3] =
+{
+  // false  true    unknown
+  { False, False,   False },   // false
+  { False, True,    Unknown }, // true
+  { False, Unknown, Unknown }  // unknown
+};
+
+static TVL OR[3][3] =
+{
+  { False,   True, Unknown },  // false
+  { True,    True, True },     // true
+  { Unknown, True, Unknown }   // unknown
+};
+
+static TVL NOT[3] = { True, False, Unknown };
+
+static QVariant tvl2variant( TVL v )
+{
+  switch ( v )
+  {
+    case False:
+      return 0;
+    case True:
+      return 1;
+    case Unknown:
+    default:
+      return QVariant( QVariant::Int );
+  }
+}
+
+#define TVL_True     QVariant( true )
+#define TVL_False    QVariant( false )
+#define TVL_Unknown  QVariant( QVariant::Int )
+
+// this handles also NULL values
+static TVL getTVLValue( const QVariant &value, QgsExpression *parent )
+{
+  // we need to convert to TVL
+  if ( value.isNull() )
+    return Unknown;
+
+  //handle some special cases
+  if ( value.canConvert<QgsGeometry>() )
+  {
+    //geom is false if empty
+    QgsGeometry geom = value.value<QgsGeometry>();
+    return geom.isNull() ? False : True;
+  }
+  else if ( value.canConvert<QgsFeature>() )
+  {
+    //feat is false if non-valid
+    QgsFeature feat = value.value<QgsFeature>();
+    return feat.isValid() ? True : False;
+  }
+
+  if ( value.type() == QVariant::Int )
+    return value.toInt() != 0 ? True : False;
+
+  bool ok;
+  double x = value.toDouble( &ok );
+  if ( !ok )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
+    return Unknown;
+  }
+  return !qgsDoubleNear( x, 0.0 ) ? True : False;
+}
+
+
+inline bool isIntSafe( const QVariant &v )
+{
+  if ( v.type() == QVariant::Int )
+    return true;
+  if ( v.type() == QVariant::UInt )
+    return true;
+  if ( v.type() == QVariant::LongLong )
+    return true;
+  if ( v.type() == QVariant::ULongLong )
+    return true;
+  if ( v.type() == QVariant::Double )
+    return false;
+  if ( v.type() == QVariant::String )
+  {
+    bool ok;
+    v.toString().toInt( &ok );
+    return ok;
+  }
+  return false;
+}
+inline bool isDoubleSafe( const QVariant &v )
+{
+  if ( v.type() == QVariant::Double )
+    return true;
+  if ( v.type() == QVariant::Int )
+    return true;
+  if ( v.type() == QVariant::UInt )
+    return true;
+  if ( v.type() == QVariant::LongLong )
+    return true;
+  if ( v.type() == QVariant::ULongLong )
+    return true;
+  if ( v.type() == QVariant::String )
+  {
+    bool ok;
+    double val = v.toString().toDouble( &ok );
+    ok = ok && qIsFinite( val ) && !qIsNaN( val );
+    return ok;
+  }
+  return false;
+}
+
+inline bool isDateTimeSafe( const QVariant &v )
+{
+  return v.type() == QVariant::DateTime
+         || v.type() == QVariant::Date
+         || v.type() == QVariant::Time;
+}
+
+inline bool isIntervalSafe( const QVariant &v )
+{
+  if ( v.canConvert<QgsInterval>() )
+  {
+    return true;
+  }
+
+  if ( v.type() == QVariant::String )
+  {
+    return QgsInterval::fromString( v.toString() ).isValid();
+  }
+  return false;
+}
+
+inline bool isNull( const QVariant &v )
+{
+  return v.isNull();
+}
+
+inline bool isList( const QVariant &v )
+{
+  return v.type() == QVariant::List;
+}
+
+// implicit conversion to string
+static QString getStringValue( const QVariant &value, QgsExpression * )
+{
+  return value.toString();
+}
+
+static double getDoubleValue( const QVariant &value, QgsExpression *parent )
+{
+  bool ok;
+  double x = value.toDouble( &ok );
+  if ( !ok || qIsNaN( x ) || !qIsFinite( x ) )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
+    return 0;
+  }
+  return x;
+}
+
+static qlonglong getIntValue( const QVariant &value, QgsExpression *parent )
+{
+  bool ok;
+  qlonglong x = value.toLongLong( &ok );
+  if ( ok )
+  {
+    return x;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
+    return 0;
+  }
+}
+
+static int getNativeIntValue( const QVariant &value, QgsExpression *parent )
+{
+  bool ok;
+  qlonglong x = value.toLongLong( &ok );
+  if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
+  {
+    return x;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to native int" ).arg( value.toString() ) );
+    return 0;
+  }
+}
+
+static QDateTime getDateTimeValue( const QVariant &value, QgsExpression *parent )
+{
+  QDateTime d = value.toDateTime();
+  if ( d.isValid() )
+  {
+    return d;
+  }
+  else
+  {
+    QTime t = value.toTime();
+    if ( t.isValid() )
+    {
+      return QDateTime( QDate( 1, 1, 1 ), t );
+    }
+
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
+    return QDateTime();
+  }
+}
+
+static QDate getDateValue( const QVariant &value, QgsExpression *parent )
+{
+  QDate d = value.toDate();
+  if ( d.isValid() )
+  {
+    return d;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( value.toString() ) );
+    return QDate();
+  }
+}
+
+static QTime getTimeValue( const QVariant &value, QgsExpression *parent )
+{
+  QTime t = value.toTime();
+  if ( t.isValid() )
+  {
+    return t;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( value.toString() ) );
+    return QTime();
+  }
+}
+
+static QgsInterval getInterval( const QVariant &value, QgsExpression *parent, bool report_error = false )
+{
+  if ( value.canConvert<QgsInterval>() )
+    return value.value<QgsInterval>();
+
+  QgsInterval inter = QgsInterval::fromString( value.toString() );
+  if ( inter.isValid() )
+  {
+    return inter;
+  }
+  // If we get here then we can't convert so we just error and return invalid.
+  if ( report_error )
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
+
+  return QgsInterval();
+}
+
+static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
+{
+  if ( value.canConvert<QgsGeometry>() )
+    return value.value<QgsGeometry>();
+
+  parent->setEvalErrorString( QStringLiteral( "Cannot convert to QgsGeometry" ) );
+  return QgsGeometry();
+}
+
+static QgsFeature getFeature( const QVariant &value, QgsExpression *parent )
+{
+  if ( value.canConvert<QgsFeature>() )
+    return value.value<QgsFeature>();
+
+  parent->setEvalErrorString( QStringLiteral( "Cannot convert to QgsFeature" ) );
+  return 0;
+}
+
+static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
+{
+  if ( value.canConvert<QgsExpressionNode *>() )
+    return value.value<QgsExpressionNode *>();
+
+  parent->setEvalErrorString( QStringLiteral( "Cannot convert to Node" ) );
+  return nullptr;
+}
+
+QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression * )
+{
+  QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+  if ( !vl )
+  {
+    QString layerString = value.toString();
+    vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerString ) ); //search by id first
+
+    if ( !vl )
+    {
+      QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerString );
+      if ( !layersByName.isEmpty() )
+      {
+        vl = qobject_cast<QgsVectorLayer *>( layersByName.at( 0 ) );
+      }
+    }
+  }
+
+  return vl;
+}
+
+
+static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
+  {
+    return value.toList();
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to array" ).arg( value.toString() ) );
+    return QVariantList();
+  }
+}
+
+static QVariantMap getMapValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( value.type() == QVariant::Map )
+  {
+    return value.toMap();
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
+    return QVariantMap();
+  }
+}
+
+#define FEAT_FROM_CONTEXT(c, f) if (!(c) || !(c)->hasFeature() ) return QVariant(); \
+  QgsFeature f = ( c )->feature();
+
+#endif // QGSEXPRESSIONUTILS_H
