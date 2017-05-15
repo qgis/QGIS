@@ -73,7 +73,7 @@ class SumLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Sum line lengths')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         lineLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.LINES), context)
         polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)

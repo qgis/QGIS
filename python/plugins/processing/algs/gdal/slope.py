@@ -76,7 +76,7 @@ class slope(GdalAlgorithm):
     def displayName(self):
         return self.tr('Slope')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = ['slope']
         arguments.append(str(self.getParameterValue(self.INPUT)))
         output = str(self.getOutputValue(self.OUTPUT))

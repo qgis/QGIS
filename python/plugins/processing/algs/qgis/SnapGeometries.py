@@ -76,7 +76,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def displayName(self):
         return self.tr('Snap geometries to layer')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         reference_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.REFERENCE_LAYER), context)
         tolerance = self.getParameterValue(self.TOLERANCE)

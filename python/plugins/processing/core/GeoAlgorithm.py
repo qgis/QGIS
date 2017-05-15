@@ -72,12 +72,13 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # methods to overwrite when creating a custom geoalgorithm
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
         A GeoAlgorithmExecutionException should be raised in case
         something goes wrong.
+        :param parameters:
         :param context:
         """
         pass
@@ -109,7 +110,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # =========================================================
 
-    def execute(self, context=None, feedback=None, model=None):
+    def execute(self, parameters, context=None, feedback=None, model=None):
         """The method to use to call a processing algorithm.
 
         Although the body of the algorithm is in processAlgorithm(),
@@ -118,6 +119,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
         Raises a GeoAlgorithmExecutionException in case anything goes
         wrong.
+        :param parameters:
         """
 
         if feedback is None:
@@ -131,7 +133,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             self.resolveOutputs()
             self.evaluateParameterValues()
             self.runPreExecutionScript(feedback)
-            self.processAlgorithm(context, feedback)
+            self.processAlgorithm(parameters, context, feedback)
             feedback.setProgress(100)
             self.convertUnsupportedFormats(context, feedback)
             self.runPostExecutionScript(feedback)
@@ -435,3 +437,47 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         if context == '':
             context = self.__class__.__name__
         return string, QCoreApplication.translate(context, string)
+
+
+def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
+    """The method to use to call a processing algorithm.
+
+    Although the body of the algorithm is in processAlgorithm(),
+    it should be called using this method, since it performs
+    some additional operations.
+
+    Raises a GeoAlgorithmExecutionException in case anything goes
+    wrong.
+    :param parameters:
+    """
+
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+    if context is None:
+        context = dataobjects.createContext()
+
+    #self.model = model
+    if True:
+        #self.setOutputCRS()
+        #self.resolveOutputs()
+        #self.evaluateParameterValues()
+        #self.runPreExecutionScript(feedback)
+        alg.run(parameters, context, feedback)
+        #self.processAlgorithm(parameters, context, feedback)
+        feedback.setProgress(100)
+        #self.convertUnsupportedFormats(context, feedback)
+        #self.runPostExecutionScript(feedback)
+    #except GeoAlgorithmExecutionException as gaee:
+        #lines = [self.tr('Error while executing algorithm')]
+     #   lines  = []
+      #  lines.append(traceback.format_exc())
+        #QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
+        #raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
+    #except Exception as e:
+        # If something goes wrong and is not caught in the
+        # algorithm, we catch it here and wrap it
+        #lines = [self.tr('Uncaught error while executing algorithm')]
+     #   lines = []
+      #  lines.append(traceback.format_exc())
+        #QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
+        #raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)

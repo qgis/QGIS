@@ -64,7 +64,7 @@ class Explode(QgisAlgorithm):
     def displayName(self):
         return self.tr('Explode lines')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         output = self.getOutputFromName(self.OUTPUT)
         fields = vlayer.fields()

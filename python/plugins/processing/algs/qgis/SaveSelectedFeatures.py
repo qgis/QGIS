@@ -61,7 +61,7 @@ class SaveSelectedFeatures(QgisAlgorithm):
     def displayName(self):
         return self.tr('Save selected features')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 

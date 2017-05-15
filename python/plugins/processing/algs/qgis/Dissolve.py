@@ -76,7 +76,7 @@ class Dissolve(QgisAlgorithm):
     def displayName(self):
         return self.tr('Dissolve')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)

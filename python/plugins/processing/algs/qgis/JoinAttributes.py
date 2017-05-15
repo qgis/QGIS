@@ -78,7 +78,7 @@ class JoinAttributes(QgisAlgorithm):
     def displayName(self):
         return self.tr('Join attributes table')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         input = self.getParameterValue(self.INPUT_LAYER)
         input2 = self.getParameterValue(self.INPUT_LAYER_2)
         output = self.getOutputFromName(self.OUTPUT_LAYER)

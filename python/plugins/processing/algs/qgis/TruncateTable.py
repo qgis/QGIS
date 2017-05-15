@@ -63,7 +63,7 @@ class TruncateTable(QgisAlgorithm):
     def displayName(self):
         return self.tr('Truncate table')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
         provider = layer.dataProvider()

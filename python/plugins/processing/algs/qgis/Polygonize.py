@@ -77,7 +77,7 @@ class Polygonize(QgisAlgorithm):
     def displayName(self):
         return self.tr('Polygonize')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         output = self.getOutputFromName(self.OUTPUT)
         if self.getParameterValue(self.FIELDS):

@@ -104,7 +104,7 @@ class ExecuteSQL(QgisAlgorithm):
     def displayName(self):
         return self.tr('Execute SQL')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)

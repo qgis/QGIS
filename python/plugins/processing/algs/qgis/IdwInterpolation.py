@@ -147,7 +147,7 @@ class IdwInterpolation(QgisAlgorithm):
     def displayName(self):
         return self.tr('IDW interpolation')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
         coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
         columns = self.getParameterValue(self.COLUMNS)

@@ -82,7 +82,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
     def displayName(self):
         return self.tr('Import into Spatialite')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         database = self.getParameterValue(self.DATABASE)
         uri = QgsDataSourceUri(database)
         if uri.database() is '':

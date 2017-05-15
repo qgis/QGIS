@@ -115,7 +115,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
     def displayName(self):
         return self.tr('Import into PostGIS')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         db = postgis.GeoDB.from_name(connection)
 

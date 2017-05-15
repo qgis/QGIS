@@ -30,7 +30,7 @@ from processing.core.parameters import getParameterFromString
 import os
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We create the output sequence according to percentiles number
     quantiles = alg.getParameterValue('quantiles') - 1
     outputs = []

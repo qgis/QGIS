@@ -85,7 +85,7 @@ class GeometryByExpression(QgisAlgorithm):
     def displayName(self):
         return self.tr('Geometry by expression')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         geometry_type = self.getParameterValue(self.OUTPUT_GEOMETRY)

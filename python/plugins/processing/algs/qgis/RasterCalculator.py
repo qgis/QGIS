@@ -103,7 +103,7 @@ class RasterCalculator(QgisAlgorithm):
     def displayName(self):
         return self.tr('Raster calculator')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         expression = self.getParameterValue(self.EXPRESSION)
         layersValue = self.getParameterValue(self.LAYERS)
         layersDict = {}

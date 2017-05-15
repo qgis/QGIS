@@ -30,7 +30,7 @@ from .i import multipleOutputDir
 from processing.core.parameters import getParameterFromString
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')

@@ -82,7 +82,7 @@ class LinesIntersection(QgisAlgorithm):
     def displayName(self):
         return self.tr('Line intersections')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
         layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
         fieldA = self.getParameterValue(self.FIELD_A)

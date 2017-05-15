@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QSizePolicy
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import Qt
 
+from qgis.core import QgsProcessingParameterDefinition
 from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
@@ -55,6 +56,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         AlgorithmDialogBase.__init__(self, alg)
 
         self.alg = alg
+        self.alg_parameters = []
 
         self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.displayName()))
 
@@ -67,17 +69,18 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.layout().insertWidget(0, self.bar)
 
     def accept(self):
-        self.algs = []
+        self.alg_parameters = []
         self.load = []
         self.canceled = False
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
-            alg = self.alg
             col = 0
-            for param in alg.parameterDefinitions():
-                if param.hidden or param.isDestination():
+            parameters = {}
+            for param in self.alg.parameterDefinitions():
+                if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
+                parameters[param.name()] = wrapper.value()
                 if not self.mainWidget.setParamValue(param, wrapper, alg):
                     self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                                          param.description, row + 1),
@@ -101,8 +104,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     self.algs = None
                     return
 
-            self.algs.append(alg)
-            if len(self.alg.destinationParameterDefinitions()) > 0:
+            self.alg_parameters.append(parameters)
+            if self.alg.countVisibleOutputs():
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 self.load.append(widget.currentIndex() == 0)
             else:
@@ -121,13 +124,13 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         context = dataobjects.createContext()
 
-        for count, alg in enumerate(self.algs):
-            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.displayName()))
-            if execute(alg, context, self.feedback) and not self.canceled:
+        for count, parameters in enumerate(self.alg_parameters):
+            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.alg_parameters)))
+            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
+            if execute(self.alg, parameters, context, self.feedback) and not self.canceled:
                 if self.load[count]:
-                    handleAlgorithmResults(alg, context, self.feedback, False)
-                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.displayName()))
+                    handleAlgorithmResults(self.alg, context, self.feedback, False)
+                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()))
             else:
                 QApplication.restoreOverrideCursor()
                 return
@@ -135,8 +138,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.finish()
 
     def finish(self):
-        for count, alg in enumerate(self.algs):
-            self.loadHTMLResults(alg, count)
+        for count, parameters in enumerate(self.alg_parameters):
+            self.loadHTMLResults(self.alg, count)
 
         self.createSummaryTable()
         QApplication.restoreOverrideCursor()

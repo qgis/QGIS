@@ -244,7 +244,7 @@ class Grass7Algorithm(GeoAlgorithm):
             cellsize = 100
         return cellsize
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
@@ -386,8 +386,10 @@ class Grass7Algorithm(GeoAlgorithm):
             command += ' -a'
         self.commands.append(command)
 
-    def processCommand(self):
-        """Prepare the GRASS algorithm command"""
+    def processCommand(self, parameters):
+        """Prepare the GRASS algorithm command
+        :param parameters:
+        """
         command = self.grass7Name
         command += ' ' + ' '.join(self.hardcodedStrings)
 

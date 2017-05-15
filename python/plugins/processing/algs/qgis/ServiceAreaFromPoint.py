@@ -157,7 +157,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
     def displayName(self):
         return self.tr('Service area (from point)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         strategy = self.getParameterValue(self.STRATEGY)

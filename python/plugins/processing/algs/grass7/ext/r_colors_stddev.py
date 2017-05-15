@@ -60,7 +60,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We need to remove output
     output = alg.getOutputFromName('output')
     alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix

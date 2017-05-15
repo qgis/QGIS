@@ -40,7 +40,7 @@ def processInputs(alg):
     alg.processInputs()
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     command = 'v.lrs.where lines={} points={} rstable={} thresh={} > {} --overwrite'.format(
         alg.exportedLayers[alg.getParameterValue('lines')],
         alg.exportedLayers[alg.getParameterValue('points')],

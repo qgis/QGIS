@@ -39,7 +39,8 @@ from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
                        QgsProcessingProvider,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
@@ -131,14 +132,16 @@ class Processing(object):
                                      Processing.tr("Processing"))
             return
 
+        parameters = {}
         if len(args) == 1 and isinstance(args[0], dict):
             # Set params by name and try to run the alg even if not all parameter values are provided,
             # by using the default values instead.
-            setParams = []
             for (name, value) in list(args[0].items()):
-                param = alg.getParameterFromName(name)
-                if param and param.setValue(value):
-                    setParams.append(name)
+                param = alg.parameterDefinition(name)
+                if param:
+                    # TODO
+                    # and param.setValue(value):
+                    parameters[param.name()] = value
                     continue
                 output = alg.getOutputFromName(name)
                 if output and output.setValue(value):
@@ -154,14 +157,14 @@ class Processing(object):
                     QgsMessageLog.CRITICAL
                 )
                 return
-            # fill any missing parameters with default values if allowed
-            for param in alg.parameters:
-                if param.name not in setParams:
-                    if not param.setDefaultValue():
+            # check for any manadatory parameters which were not specified
+            for param in alg.parameterDefinitions():
+                if param.name() not in parameters:
+                    if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         # fix_print_with_import
-                        print('Error: Missing parameter value for parameter %s.' % param.name)
+                        print('Error: Missing parameter value for parameter %s.' % param.name())
                         QgsMessageLog.logMessage(
-                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name),
+                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name()),
                             Processing.tr("Processing"))
                         return
         else:
@@ -173,14 +176,16 @@ class Processing(object):
                 processing.algorithmHelp(algOrName)
                 return
             i = 0
-            for param in alg.parameters:
-                if not param.hidden:
-                    if not param.setValue(args[i]):
+            for param in alg.parameterDefinitions():
+                if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    if not True: # TODO param.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong parameter value: ' + str(args[i]))
                         QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]),
                                                  Processing.tr("Processing"))
                         return
+                    else:
+                        parameters[param.name()] = args[i]
                     i = i + 1
 
             for output in alg.outputs:
@@ -232,7 +237,7 @@ class Processing(object):
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
 
-        ret = execute(alg, context, feedback)
+        ret = execute(alg, parameters, context, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, context, feedback)

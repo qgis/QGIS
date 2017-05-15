@@ -68,7 +68,7 @@ class ExtractByExpression(QgisAlgorithm):
     def displayName(self):
         return self.tr('Extract by expression')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         expression_string = self.getParameterValue(self.EXPRESSION)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),

@@ -33,7 +33,7 @@ from processing.core.parameters import getParameterFromString
 from os import path
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Creates a new location with the CRS
     crsParam = alg.getParameterFromName('crs')
     crsId = int(crsParam.value[5:])

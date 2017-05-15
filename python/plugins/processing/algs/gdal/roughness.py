@@ -64,7 +64,7 @@ class roughness(GdalAlgorithm):
     def displayName(self):
         return self.tr('Roughness')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = ['roughness']
         arguments.append(str(self.getParameterValue(self.INPUT)))
         output = str(self.getOutputValue(self.OUTPUT))

@@ -68,7 +68,7 @@ class CreateConstantRaster(QgisAlgorithm):
     def displayName(self):
         return self.tr('Create constant raster layer')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         value = self.getParameterValue(self.NUMBER)
 

@@ -72,7 +72,7 @@ class SplitWithLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Split with lines')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
         splitLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
 

@@ -76,7 +76,7 @@ class ExportGeometryInfo(QgisAlgorithm):
     def displayName(self):
         return self.tr('Export/Add geometry columns')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         method = self.getParameterValue(self.METHOD)
 

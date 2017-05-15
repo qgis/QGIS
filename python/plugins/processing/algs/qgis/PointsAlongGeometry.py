@@ -77,7 +77,7 @@ class PointsAlongGeometry(QgisAlgorithm):
     def displayName(self):
         return self.tr('Points along lines')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         start_offset = self.getParameterValue(self.START_OFFSET)

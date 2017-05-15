@@ -72,7 +72,7 @@ class VectorLayerHistogram(QgisAlgorithm):
     def displayName(self):
         return self.tr('Vector layer histogram')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldname = self.getParameterValue(self.FIELD)
         bins = self.getParameterValue(self.BINS)

@@ -843,7 +843,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             try:
                 layer = self.combo.currentLayer()
                 if layer:
-                    return layer
+                    return layer.id()
                 else:
                     return self.combo.currentText()
             except:

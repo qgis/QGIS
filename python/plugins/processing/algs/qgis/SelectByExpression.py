@@ -73,7 +73,7 @@ class SelectByExpression(QgisAlgorithm):
     def displayName(self):
         return self.tr('Select by expression')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

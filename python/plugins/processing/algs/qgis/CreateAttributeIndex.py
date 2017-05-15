@@ -66,7 +66,7 @@ class CreateAttributeIndex(QgisAlgorithm):
     def displayName(self):
         return self.tr('Create attribute index')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
         field = self.getParameterValue(self.FIELD)

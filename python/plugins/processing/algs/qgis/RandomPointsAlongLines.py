@@ -81,7 +81,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Random points along line')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         pointCount = float(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

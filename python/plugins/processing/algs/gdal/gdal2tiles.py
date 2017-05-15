@@ -126,7 +126,7 @@ class gdal2tiles(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
 
         arguments = []
 

@@ -39,7 +39,7 @@ def processInputs(alg):
                  [2, 3, 4, 5, 61])
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove rasters parameter
     rasters = alg.getParameterFromName('rasters')
     alg.parameters.remove(rasters)

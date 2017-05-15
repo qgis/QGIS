@@ -71,7 +71,7 @@ class SelectByAttributeSum(QgisAlgorithm):
     def displayName(self):
         return self.tr('Select by attribute sum')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         fieldName = self.getParameterValue(self.FIELD)

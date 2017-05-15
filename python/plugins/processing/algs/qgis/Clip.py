@@ -70,7 +70,7 @@ class Clip(QgisAlgorithm):
     def displayName(self):
         return self.tr('Clip')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         source_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)
         mask_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.OVERLAY), context)
 

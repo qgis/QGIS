@@ -29,14 +29,14 @@ __revision__ = '$Format:%H$'
 from .i import exportInputRasters
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
 
     # Temporary remove outputs:
     outputs = [alg.getOutputFromName('{}output'.format(f)) for f in ['red', 'green', 'blue']]
     for out in outputs:
         alg.removeOutputFromName(out.name)
 
-    alg.processCommand()
+    alg.processCommand(parameters)
 
     # Re-add outputs
     for output in outputs:

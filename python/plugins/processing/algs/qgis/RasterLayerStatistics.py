@@ -79,7 +79,7 @@ class RasterLayerStatistics(QgisAlgorithm):
     def displayName(self):
         return self.tr('Raster layer statistics')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(uri, context)

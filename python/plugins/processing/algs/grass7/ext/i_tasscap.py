@@ -34,7 +34,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return verifyRasterNum(alg, 'input', 6, 8)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')

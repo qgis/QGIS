@@ -94,7 +94,7 @@ class SelectByLocation(QgisAlgorithm):
     def displayName(self):
         return self.tr('Select by location')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

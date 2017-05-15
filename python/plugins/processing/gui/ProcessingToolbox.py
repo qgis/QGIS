@@ -287,7 +287,8 @@ class ProcessingToolbox(BASE, WIDGET):
             else:
                 feedback = MessageBarProgress()
                 execute(alg, context, feedback)
-                handleAlgorithmResults(alg, context, feedback)
+                parameters = {}
+                handleAlgorithmResults(alg, parameters, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action

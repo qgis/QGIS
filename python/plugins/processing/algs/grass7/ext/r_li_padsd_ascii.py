@@ -33,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return checkMovingWindow(alg, True)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     configFile(alg, True)
 
 

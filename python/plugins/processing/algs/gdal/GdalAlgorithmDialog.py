@@ -111,7 +111,7 @@ class GdalParametersPanel(ParametersPanel):
             for output in self.alg.destinationParameterDefinitions():
                 if parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
-            commands = self.alg.getConsoleCommands()
+            commands = self.alg.getConsoleCommands(parameters)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
