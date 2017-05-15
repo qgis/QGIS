@@ -76,17 +76,8 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     # methods to overwrite when creating a custom geoalgorithm
 
-    def _formatHelp(self, text):
-        return "<h2>%s</h2>%s" % (self.displayName(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
-
-    def help(self):
-        return False, None
-
-    def shortHelp(self):
-        text = shortHelp.get(self.id(), None)
-        if text is not None:
-            text = self._formatHelp(text)
-        return text
+    def shortHelpString(self):
+        return shortHelp.get(self.id(), None)
 
     def processAlgorithm(self, context, feedback):
         """Here goes the algorithm itself.

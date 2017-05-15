@@ -57,6 +57,7 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override { return QObject::tr( "Centroids" ); }
     virtual QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
 
     virtual QVariantMap run( const QVariantMap &parameters,
                              QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
@@ -77,6 +78,7 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
 
     virtual QVariantMap run( const QVariantMap &parameters,
                              QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;

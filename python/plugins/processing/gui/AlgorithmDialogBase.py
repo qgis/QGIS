@@ -104,7 +104,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         # if desktop.physicalDpiX() > 96:
         # self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
-        algHelp = self.alg.shortHelp()
+        algHelp = self.formatHelp(self.alg)
         if algHelp is None:
             self.textShortHelp.setVisible(False)
         else:
@@ -123,18 +123,18 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.textShortHelp.anchorClicked.connect(linkClicked)
 
-        isText, algHelp = self.alg.help()
-        if algHelp is not None:
-            algHelp = algHelp if isText else QUrl(algHelp)
+        if self.alg.helpString() is not None:
             try:
-                if isText:
-                    self.txtHelp.setHtml(algHelp)
-                else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
-                    self.txtHelp.setHtml(html)
-                    rq = QNetworkRequest(algHelp)
-                    self.reply = QgsNetworkAccessManager.instance().get(rq)
-                    self.reply.finished.connect(self.requestFinished)
+                self.txtHelp.setHtml(self.alg.helpString())
+            except Exception:
+                self.tabWidget.removeTab(2)
+        elif self.alg.helpUrl() is not None:
+            try:
+                html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                self.txtHelp.setHtml(html)
+                rq = QNetworkRequest(QUrl(self.alg.helpUrl()))
+                self.reply = QgsNetworkAccessManager.instance().get(rq)
+                self.reply.finished.connect(self.requestFinished)
             except Exception:
                 self.tabWidget.removeTab(2)
         else:
@@ -142,6 +142,12 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def formatHelp(self, alg):
+        text = alg.shortHelpString()
+        if not text:
+            return None
+        return "<h2>%s</h2>%s" % (alg.displayName(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
 
     def requestFinished(self):
         """Change the webview HTML content"""

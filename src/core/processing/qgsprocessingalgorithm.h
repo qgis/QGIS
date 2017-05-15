@@ -96,6 +96,29 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual QStringList tags() const { return QStringList(); }
 
     /**
+     * Returns a localised short helper string for the algorithm. This string should provide a basic description
+     * about what the algorithm does and the parameters and outputs associated with it.
+     * \see helpString()
+     * \see helpUrl()
+     */
+    virtual QString shortHelpString() const;
+
+    /**
+     * Returns a localised help string for the algorithm. Algorithm subclasses should implement either
+     * helpString() or helpUrl().
+     * \see helpUrl()
+     * \see shortHelpString()
+     */
+    virtual QString helpString() const;
+
+    /**
+     * Returns a url pointing to the algorithm's help page.
+     * \see helpString()
+     * \see shortHelpString()
+     */
+    virtual QString helpUrl() const;
+
+    /**
      * Returns an icon for the algorithm.
      * \see svgIconPath()
     */

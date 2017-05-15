@@ -77,7 +77,7 @@ class GdalAlgorithm(GeoAlgorithm):
             commands[i] = c
         GdalUtils.runGdal(commands, feedback)
 
-    def shortHelp(self):
+    def shortHelpString(self):
         helpPath = GdalUtils.gdalHelpPath()
         if helpPath == '':
             return
@@ -87,9 +87,9 @@ class GdalAlgorithm(GeoAlgorithm):
         else:
             url = helpPath + '{}.html'.format(self.commandName())
 
-        return self._formatHelp('''This algorithm is based on the GDAL {} module.
+        return '''This algorithm is based on the GDAL {} module.
                 For more info, see the <a href={}> module help</a>
-                '''.format(self.commandName(), url))
+                '''.format(self.commandName(), url)
 
     def commandName(self):
         for output in self.outputs:

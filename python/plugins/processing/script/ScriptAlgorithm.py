@@ -198,16 +198,16 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             out.setValue(ns[out.name])
 
-    def help(self):
+    def helpString(self):
         if self.descriptionFile is None:
             return False, None
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
-            return True, getHtmlFromHelpFile(self, helpfile)
+            return getHtmlFromHelpFile(self, helpfile)
         else:
-            return False, None
+            return None
 
-    def shortHelp(self):
+    def shortHelpString(self):
         if self.descriptionFile is None:
             return None
         helpFile = str(self.descriptionFile) + '.help'
@@ -216,7 +216,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     descriptions = json.load(f)
                     if 'ALG_DESC' in descriptions:
-                        return self._formatHelp(str(descriptions['ALG_DESC']))
+                        return str(descriptions['ALG_DESC'])
                 except:
                     return None
         return None

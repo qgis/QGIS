@@ -539,15 +539,15 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-    def help(self):
+    def helpString(self):
         try:
-            return True, getHtmlFromDescriptionsDict(self, self.helpContent)
+            return getHtmlFromDescriptionsDict(self, self.helpContent)
         except:
-            return False, None
+            return None
 
-    def shortHelp(self):
+    def shortHelpString(self):
         if 'ALG_DESC' in self.helpContent:
-            return self._formatHelp(str(self.helpContent['ALG_DESC']))
+            return str(self.helpContent['ALG_DESC'])
         return None
 
     def getParameterDescriptions(self):
