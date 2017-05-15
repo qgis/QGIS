@@ -98,7 +98,7 @@ class GridPolygon(QgisAlgorithm):
     def displayName(self):
         return self.tr('Create grid (polygon)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         idx = self.getParameterValue(self.TYPE)
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)

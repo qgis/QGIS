@@ -64,7 +64,7 @@ class Boundary(QgisAlgorithm):
     def displayName(self):
         return self.tr('Boundary')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         input_wkb = layer.wkbType()

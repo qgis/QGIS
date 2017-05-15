@@ -97,7 +97,7 @@ class FixedDistanceBuffer(QgisAlgorithm):
     def displayName(self):
         return self.tr('Fixed distance buffer')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         dissolve = self.getParameterValue(self.DISSOLVE)

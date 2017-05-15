@@ -73,7 +73,7 @@ class Hillshade(QgisAlgorithm):
     def displayName(self):
         return self.tr('Hillshade')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         azimuth = self.getParameterValue(self.AZIMUTH)

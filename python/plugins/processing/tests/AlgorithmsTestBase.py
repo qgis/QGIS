@@ -103,12 +103,13 @@ class AlgorithmsTest(object):
         else:
             alg = QgsApplication.processingRegistry().algorithmById(defs['algorithm'])
 
+        parameters = {}
         if isinstance(params, list):
             for param in zip(alg.parameters, params):
-                param[0].setValue(param[1])
+                parameters[param[0].name] = param[1]
         else:
             for k, p in list(params.items()):
-                alg.setParameterValue(k, p)
+                parameters[k] = p
 
         for r, p in list(defs['results'].items()):
             alg.setOutputValue(r, self.load_result_param(p))
@@ -124,14 +125,14 @@ class AlgorithmsTest(object):
 
         if expectFailure:
             try:
-                alg.execute(context)
+                alg.execute(parameters, context)
                 self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            alg.execute(context)
+            alg.execute(parameters, context)
             self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
 
     def load_params(self, params):

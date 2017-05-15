@@ -74,7 +74,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output for command
     output_dir = alg.getOutputFromName('output_dir')
     maps = alg.getParameterFromName('maps')

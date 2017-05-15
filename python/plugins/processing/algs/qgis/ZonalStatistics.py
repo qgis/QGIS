@@ -91,9 +91,10 @@ class ZonalStatistics(QgisAlgorithm):
     def displayName(self):
         return self.tr('Zonal Statistics')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
+            :param parameters:
             :param context:
         """
 

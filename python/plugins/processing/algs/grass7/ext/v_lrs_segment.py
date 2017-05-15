@@ -48,7 +48,7 @@ def processInputs(alg):
     alg.processInputs()
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     in_file = alg.getParameterValue('in_file')
     if in_file:
         # Creates a temporary txt file

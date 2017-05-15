@@ -83,7 +83,7 @@ class AddTableField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Add field to attributes table')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)

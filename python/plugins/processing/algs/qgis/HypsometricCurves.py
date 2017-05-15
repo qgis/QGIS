@@ -83,7 +83,7 @@ class HypsometricCurves(QgisAlgorithm):
     def displayName(self):
         return self.tr('Hypsometric curves')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
         step = self.getParameterValue(self.STEP)

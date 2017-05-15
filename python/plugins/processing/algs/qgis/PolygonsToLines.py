@@ -66,7 +66,7 @@ class PolygonsToLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Polygons to lines')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.LineString,

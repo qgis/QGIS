@@ -80,8 +80,9 @@ class ExampleAlgorithm(GeoAlgorithm):
     def group(self):
         return self.tr('Algorithms for vector layers')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         """Here is where the processing itself takes place.
+        :param parameters:
         :param context:
         """
 

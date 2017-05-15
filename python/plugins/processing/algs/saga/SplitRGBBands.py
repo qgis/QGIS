@@ -69,7 +69,7 @@ class SplitRGBBands(GeoAlgorithm):
     def group(self):
         return self.tr('Image tools')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')

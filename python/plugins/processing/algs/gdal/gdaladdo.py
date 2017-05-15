@@ -89,7 +89,7 @@ class gdaladdo(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         inFile = self.getParameterValue(self.INPUT)
         clearOverviews = self.getParameterValue(self.CLEAN)
         ovrFormat = self.getParameterValue(self.FORMAT)

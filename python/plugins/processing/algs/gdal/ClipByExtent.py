@@ -83,7 +83,7 @@ class ClipByExtent(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         out = self.getOutputValue(self.OUTPUT)
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)

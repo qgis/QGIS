@@ -74,7 +74,7 @@ class PointsFromLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Generate points (pixel centroids) along line')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
 
         rasterPath = str(self.getParameterValue(self.INPUT_RASTER))

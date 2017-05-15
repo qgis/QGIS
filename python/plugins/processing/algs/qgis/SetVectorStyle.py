@@ -65,7 +65,7 @@ class SetVectorStyle(QgisAlgorithm):
     def displayName(self):
         return self.tr('Set style for vector layer')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)

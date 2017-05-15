@@ -126,12 +126,12 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(self, context, feedback)
+        GdalAlgorithm.processAlgorithm(parameters, self, context)
         self.processing = False
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         uri = uri_from_name(connection)
         if self.processing:

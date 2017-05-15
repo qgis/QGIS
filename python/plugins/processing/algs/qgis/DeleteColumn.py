@@ -65,7 +65,7 @@ class DeleteColumn(QgisAlgorithm):
     def displayName(self):
         return self.tr('Delete column')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')

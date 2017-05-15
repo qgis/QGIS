@@ -71,7 +71,7 @@ class DensifyGeometriesInterval(QgisAlgorithm):
     def displayName(self):
         return self.tr('Densify geometries given an interval')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         interval = self.getParameterValue(self.INTERVAL)
 

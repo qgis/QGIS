@@ -83,7 +83,7 @@ class hillshade(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = ['hillshade']
         arguments.append(str(self.getParameterValue(self.INPUT)))
         arguments.append(str(self.getOutputValue(self.OUTPUT)))

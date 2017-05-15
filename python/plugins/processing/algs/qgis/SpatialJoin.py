@@ -109,7 +109,7 @@ class SpatialJoin(QgisAlgorithm):
     def displayName(self):
         return self.tr('Join attributes by location')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
         join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)

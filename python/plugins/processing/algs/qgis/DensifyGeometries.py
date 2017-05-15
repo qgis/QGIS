@@ -76,7 +76,7 @@ class DensifyGeometries(QgisAlgorithm):
     def displayName(self):
         return self.tr('Densify geometries')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         vertices = self.getParameterValue(self.VERTICES)
 

@@ -72,7 +72,7 @@ class GeometryConvert(QgisAlgorithm):
     def displayName(self):
         return self.tr('Convert geometry type')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         index = self.getParameterValue(self.TYPE)
 

@@ -63,7 +63,7 @@ class PostGISExecuteSQL(QgisAlgorithm):
     def displayName(self):
         return self.tr('PostGIS execute SQL')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         self.db = postgis.GeoDB.from_name(connection)
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')

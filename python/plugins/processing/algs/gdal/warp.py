@@ -121,7 +121,7 @@ class warp(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
         useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)

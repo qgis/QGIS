@@ -66,7 +66,7 @@ class SinglePartsToMultiparts(QgisAlgorithm):
     def displayName(self):
         return self.tr('Singleparts to multipart')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
 

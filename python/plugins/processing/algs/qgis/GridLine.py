@@ -90,7 +90,7 @@ class GridLine(QgisAlgorithm):
     def displayName(self):
         return self.tr('Create grid (lines)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)

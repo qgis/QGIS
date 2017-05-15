@@ -81,7 +81,7 @@ class RandomPointsPolygonsFixed(QgisAlgorithm):
     def displayName(self):
         return self.tr('Random points inside polygons (fixed)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         value = float(self.getParameterValue(self.VALUE))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

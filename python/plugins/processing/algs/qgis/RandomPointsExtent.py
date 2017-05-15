@@ -79,7 +79,7 @@ class RandomPointsExtent(QgisAlgorithm):
     def displayName(self):
         return self.tr('Random points in extent')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         extent = str(self.getParameterValue(self.EXTENT)).split(',')

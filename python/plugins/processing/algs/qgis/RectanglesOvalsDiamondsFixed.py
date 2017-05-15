@@ -93,7 +93,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
     def displayName(self):
         return self.tr('Rectangles, ovals, diamonds (fixed)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         shape = self.getParameterValue(self.SHAPE)
         width = self.getParameterValue(self.WIDTH)

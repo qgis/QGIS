@@ -72,7 +72,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # remove output before processCommand
     output = alg.getOutputFromName('output_dir')
     alg.removeOutputFromName('output_dir')

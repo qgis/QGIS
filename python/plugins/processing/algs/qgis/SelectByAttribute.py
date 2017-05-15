@@ -104,7 +104,7 @@ class SelectByAttribute(QgisAlgorithm):
     def displayName(self):
         return self.tr('Select by attribute')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         fieldName = self.getParameterValue(self.FIELD)

@@ -42,7 +42,7 @@ from processing.tools import dataobjects
 from processing.tools.system import getTempFilename
 
 
-def execute(alg, context=None, feedback=None):
+def execute(alg, parameters, context=None, feedback=None):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
 
@@ -56,7 +56,7 @@ def execute(alg, context=None, feedback=None):
         context = dataobjects.createContext()
 
     try:
-        alg.execute(context, feedback)
+        alg.execute(parameters, context, feedback)
         return True
     except GeoAlgorithmExecutionException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
@@ -65,11 +65,11 @@ def execute(alg, context=None, feedback=None):
         return False
 
 
-def executeIterating(alg, paramToIter, context, feedback):
+def executeIterating(alg, parameters, paramToIter, context, feedback):
     # Generate all single-feature layers
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
-    layerfile = alg.getParameterValue(paramToIter)
+    layerfile = parameters[paramToIter]
     layer = QgsProcessingUtils.mapLayerFromString(layerfile, context, False)
     feat = QgsFeature()
     filelist = []
@@ -89,7 +89,7 @@ def executeIterating(alg, paramToIter, context, feedback):
 
     # now run all the algorithms
     for i, f in enumerate(filelist):
-        alg.setParameterValue(paramToIter, f)
+        parameters[paramToIter] = f
         for out in alg.outputs:
             filename = outputs[out.name]
             if filename:
@@ -98,7 +98,7 @@ def executeIterating(alg, paramToIter, context, feedback):
             out.value = filename
         feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
         feedback.setProgress(i * 100 / len(filelist))
-        if execute(alg, None, feedback):
+        if execute(alg, parameters, None, feedback):
             handleAlgorithmResults(alg, context, None, False)
         else:
             return False

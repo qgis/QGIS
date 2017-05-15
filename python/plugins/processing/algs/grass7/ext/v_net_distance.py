@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import getParameterFromString
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     """ Handle data preparation for v.net.distance:
     * Integrate point layers into network vector map.
     * Make v.net.distance use those layers.

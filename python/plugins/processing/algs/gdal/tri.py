@@ -65,7 +65,7 @@ class tri(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = ['TRI']
         arguments.append(str(self.getParameterValue(self.INPUT)))
         arguments.append(str(self.getOutputValue(self.OUTPUT)))

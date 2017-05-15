@@ -69,7 +69,7 @@ class Difference(QgisAlgorithm):
     def displayName(self):
         return self.tr('Difference')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.INPUT), context)
         layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.OVERLAY), context)
 

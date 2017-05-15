@@ -61,7 +61,7 @@ class AutoincrementalField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Add autoincremental field')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
             QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

@@ -80,7 +80,7 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     def displayName(self):
         return self.tr('Vector layer scatterplot 3D')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
 
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)

@@ -75,7 +75,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
     def displayName(self):
         return self.tr('Vector layer scatterplot')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)
         yfieldname = self.getParameterValue(self.YFIELD)

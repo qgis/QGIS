@@ -62,7 +62,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We need to introduce something clever:
     # if the input raster is multiband: export each component directly
     raster = alg.exportedLayers[alg.getParameterValue('input')]

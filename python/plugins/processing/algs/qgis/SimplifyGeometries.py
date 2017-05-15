@@ -79,7 +79,7 @@ class SimplifyGeometries(QgisAlgorithm):
     def displayName(self):
         return self.tr('Simplify geometries')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
         method = self.getParameterValue(self.METHOD)

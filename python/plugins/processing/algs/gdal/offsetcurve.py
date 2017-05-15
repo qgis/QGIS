@@ -72,7 +72,7 @@ class OffsetCurve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         distance = self.getParameterValue(self.RADIUS)

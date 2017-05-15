@@ -71,7 +71,7 @@ class gdaltindex(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []

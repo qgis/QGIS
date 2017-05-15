@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
                        QgsProcessingUtils,
+                       QgsMessageLog,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -49,6 +50,7 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.GeoAlgorithm import executeAlgorithm
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
@@ -110,7 +112,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                 #    output.open = self.mainWidget.checkBoxes[param.name()].isChecked()
 
-        return True
+        return parameters
 
     def setParamValue(self, param, wrapper):
         if wrapper.widget:
@@ -159,7 +161,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
             parameters = self.getParamValues()
-            if checkCRS and not self.alg.checkInputCRS():
+
+            QgsMessageLog.logMessage(str(parameters), 'Processing', QgsMessageLog.CRITICAL)
+
+            # TODO
+            if False and checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                                              self.tr('Layers do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
@@ -169,7 +175,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if reply == QMessageBox.No:
                     return
             checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
-            if checkExtentCRS and self.checkExtentCRS():
+            #TODO
+            if False and checkExtentCRS and self.checkExtentCRS():
                 reply = QMessageBox.question(self, self.tr("Extent CRS"),
                                              self.tr('Extent parameters must use the same CRS as the input layers.\n'
                                                      'Your input layers do not have the same extent as the project, '
@@ -179,7 +186,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg._checkParameterValuesBeforeExecuting(context)
+            # TODO
+            #msg = self.alg._checkParameterValuesBeforeExecuting(context)
+            msg = None
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -210,16 +219,17 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
-                if executeIterating(self.alg, self.iterateParam, context, self.feedback):
+                if executeIterating(self.alg, parameters, self.iterateParam, context, self.feedback):
                     self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
-                command = self.alg.getAsCommand()
-                if command:
-                    ProcessingLog.addToLog(command)
-                if execute(self.alg, context, self.feedback):
+                # TODO
+                #command = self.alg.getAsCommand()
+                #if command:
+                #    ProcessingLog.addToLog(command)
+                if executeAlgorithm(self.alg, parameters, context, self.feedback):
                     self.finish(context)
                 else:
                     QApplication.restoreOverrideCursor()

@@ -52,7 +52,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return None
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We temporary remove the output 'from_output'
     fromOutput = alg.getOutputFromName(u'from_output')
     fromParam = alg.getParameterValue(u'from')

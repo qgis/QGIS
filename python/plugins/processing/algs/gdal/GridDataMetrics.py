@@ -97,7 +97,7 @@ class GridDataMetrics(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(

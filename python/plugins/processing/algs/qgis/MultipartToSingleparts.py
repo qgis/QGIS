@@ -60,7 +60,7 @@ class MultipartToSingleparts(QgisAlgorithm):
     def displayName(self):
         return self.tr('Multipart to singleparts')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 

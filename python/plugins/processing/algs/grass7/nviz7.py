@@ -94,7 +94,7 @@ class nviz7(GeoAlgorithm):
     def group(self):
         return self.tr('Visualization(NVIZ)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         commands = []
         vector = self.getParameterValue(self.VECTOR)
         elevation = self.getParameterValue(self.ELEVATION)

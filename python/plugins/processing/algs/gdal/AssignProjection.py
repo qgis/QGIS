@@ -66,7 +66,7 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         fileName = self.getParameterValue(self.INPUT)
         crs = self.getParameterValue(self.CRS)
         output = self.getOutputValue(self.OUTPUT)  # NOQA

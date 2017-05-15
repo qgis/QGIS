@@ -76,7 +76,7 @@ class HubLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Hub lines')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
 

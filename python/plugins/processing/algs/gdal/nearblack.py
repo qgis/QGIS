@@ -70,7 +70,7 @@ class nearblack(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = []
         arguments.append('-o')
         output = str(self.getOutputValue(self.OUTPUT))

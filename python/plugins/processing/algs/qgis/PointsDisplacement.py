@@ -74,7 +74,7 @@ class PointsDisplacement(QgisAlgorithm):
     def displayName(self):
         return self.tr('Points displacement')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)

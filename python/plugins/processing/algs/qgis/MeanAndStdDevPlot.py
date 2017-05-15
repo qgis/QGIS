@@ -72,7 +72,7 @@ class MeanAndStdDevPlot(QgisAlgorithm):
     def displayName(self):
         return self.tr('Mean and standard deviation plot')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)

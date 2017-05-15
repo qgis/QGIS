@@ -93,7 +93,7 @@ class FieldsPyculator(QgisAlgorithm):
     def displayName(self):
         return self.tr('Advanced Python field calculator')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)

@@ -70,7 +70,7 @@ class pct2rgb(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = []
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))

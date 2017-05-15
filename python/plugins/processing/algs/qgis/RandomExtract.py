@@ -74,7 +74,7 @@ class RandomExtract(QgisAlgorithm):
     def displayName(self):
         return self.tr('Random extract')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

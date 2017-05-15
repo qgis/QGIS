@@ -83,7 +83,7 @@ class PointsLayerFromTable(QgisAlgorithm):
     def displayName(self):
         return self.tr('Create points layer from table')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         source = self.getParameterValue(self.INPUT)
         vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)

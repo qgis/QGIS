@@ -66,7 +66,7 @@ class polygonize(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         output = self.getOutputValue(polygonize.OUTPUT)
 
         arguments = []

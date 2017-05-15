@@ -115,7 +115,7 @@ class BasicStatisticsNumbers(QgisAlgorithm):
     def displayName(self):
         return self.tr('Basic statistics for numeric fields')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
 

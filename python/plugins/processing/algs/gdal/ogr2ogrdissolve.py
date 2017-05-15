@@ -89,7 +89,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         geometry = self.getParameterValue(self.GEOMETRY)
         field = self.getParameterValue(self.FIELD)

@@ -84,7 +84,7 @@ class VectorGridLines(QgisAlgorithm):
     def displayName(self):
         return self.tr('Vector grid (lines)')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)

@@ -121,7 +121,7 @@ class BasicStatisticsForField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Basic statistics for fields')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))

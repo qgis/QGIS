@@ -64,7 +64,7 @@ class TextToFloat(QgisAlgorithm):
     def displayName(self):
         return self.tr('Text to float')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fields().lookupField(fieldName)

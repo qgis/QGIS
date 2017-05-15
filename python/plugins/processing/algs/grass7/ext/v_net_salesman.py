@@ -29,7 +29,7 @@ from processing.core.parameters import getParameterFromString
 from .v_net import incorporatePoints
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We temporary remove the output 'sequence'
     sequence = alg.getOutputFromName(u'sequence')
     sequenceFile = alg.getOutputValue(u'sequence')

@@ -67,7 +67,7 @@ class rgb2pct(GdalAlgorithm):
     def displayName(self):
         return self.tr('RGB to PCT')
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))

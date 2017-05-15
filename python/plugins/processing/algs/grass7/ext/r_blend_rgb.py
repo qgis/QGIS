@@ -66,7 +66,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We need to remove all outputs
     basename = getOutputFromString('OutputRaster|output|Output basename')
     basename.value = 'output'

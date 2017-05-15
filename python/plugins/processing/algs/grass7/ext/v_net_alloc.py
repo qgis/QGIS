@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     incorporatePoints(alg)
 
 

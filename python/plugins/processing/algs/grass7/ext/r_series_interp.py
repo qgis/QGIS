@@ -44,7 +44,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return None
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We temporary remove the output directory
     outdir = alg.getOutputFromName('output_dir')
     alg.removeOutputFromName('output_dir')

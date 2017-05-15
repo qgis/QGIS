@@ -474,7 +474,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             v = value
         return param.evaluateForModeler(v, self)
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         executed = []
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
@@ -496,7 +496,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip() +
                                                                                '=' + str(p.value) for p in alg.algorithm.parameters]))
                             t0 = time.time()
-                            alg.algorithm.execute(context, feedback)
+                            alg.algorithm.execute(parameters, context, feedback)
                             dt = time.time() - t0
 
                             # copy algorithm output value(s) back to model in case the algorithm modified those

@@ -93,7 +93,7 @@ class CheckValidity(QgisAlgorithm):
     def displayName(self):
         return self.tr('Check validity')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         settings = QgsSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 

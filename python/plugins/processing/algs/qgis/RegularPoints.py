@@ -84,7 +84,7 @@ class RegularPoints(QgisAlgorithm):
     def displayName(self):
         return self.tr('Regular points')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))

@@ -54,7 +54,8 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
 
     def accept(self):
         try:
-            self.setParamValues()
+            parameters = self.getParamValues()
+            self.setOutputValues()
             msg = self.alg._checkParameterValuesBeforeExecuting()
             if msg:
                 QMessageBox.warning(

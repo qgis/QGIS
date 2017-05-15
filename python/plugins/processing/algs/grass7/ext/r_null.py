@@ -69,7 +69,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We temporary remove the output 'sequence'
     output = alg.getOutputFromName(u'output')
     alg.removeOutputFromName(u'output')

@@ -65,7 +65,7 @@ class Centroids(QgisAlgorithm):
     def displayName(self):
         return self.tr('Centroids')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         writer = self.getOutputFromName(

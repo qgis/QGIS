@@ -102,13 +102,14 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     return rootFilename
 
 
-def regroupRasters(alg, field, groupField, subgroupField=None, extFile=None):
+def regroupRasters(alg, parameters, field, groupField, subgroupField=None, extFile=None):
     """
     Group multiple input rasters into a group
     * If there is a subgroupField, a subgroup will automatically created.
     * When an external file is provided, the file is copied into the respective
       directory of the subgroup.
     * extFile is a dict of the form 'parameterName':'directory name'.
+    :param parameters:
     """
     # List of rasters names
     rasters = alg.getParameterFromName(field)

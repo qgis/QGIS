@@ -77,7 +77,7 @@ class Datasources2Vrt(QgisAlgorithm):
     def displayName(self):
         return self.tr('Build virtual vector')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)

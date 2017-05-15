@@ -65,7 +65,7 @@ class Merge(QgisAlgorithm):
     def displayName(self):
         return self.tr('Merge vector layers')
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         inLayers = self.getParameterValue(self.LAYERS)
 
         layers = []
