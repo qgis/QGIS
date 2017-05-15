@@ -69,13 +69,8 @@ class FieldsCalculator(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'fieldcalculator'
-
-    def displayName(self):
-        return self.tr('Field calculator')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),
@@ -95,6 +90,12 @@ class FieldsCalculator(QgisAlgorithm):
                                            self.tr('Create new field'), True))
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
+
+    def name(self):
+        return 'fieldcalculator'
+
+    def displayName(self):
+        return self.tr('Field calculator')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

@@ -60,13 +60,8 @@ class ConcaveHull(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'concavehull'
-
-    def displayName(self):
-        return self.tr('Concave hull')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,
@@ -78,6 +73,12 @@ class ConcaveHull(QgisAlgorithm):
                                            self.tr('Split multipart geometry into singleparts geometries'), False))
         self.addOutput(
             OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'concavehull'
+
+    def displayName(self):
+        return self.tr('Concave hull')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(ConcaveHull.INPUT), context)

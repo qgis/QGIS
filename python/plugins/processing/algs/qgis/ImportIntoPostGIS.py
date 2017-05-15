@@ -63,13 +63,8 @@ class ImportIntoPostGIS(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'importintopostgis'
-
-    def displayName(self):
-        return self.tr('Import into PostGIS')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to import')))
         self.addParameter(ParameterString(
@@ -113,6 +108,12 @@ class ImportIntoPostGIS(QgisAlgorithm):
                                            self.tr('Drop length constraints on character fields'), False))
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
                                            self.tr('Create single-part geometries instead of multi-part'), False))
+
+    def name(self):
+        return 'importintopostgis'
+
+    def displayName(self):
+        return self.tr('Import into PostGIS')
 
     def processAlgorithm(self, context, feedback):
         connection = self.getParameterValue(self.DATABASE)

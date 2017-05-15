@@ -63,16 +63,8 @@ class GridInvDist(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def name(self):
-        return 'gridinvdist'
-
-    def displayName(self):
-        return self.tr('Grid (Inverse distance to a power)')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
@@ -98,6 +90,15 @@ class GridInvDist(GdalAlgorithm):
                                              self.tr('Output raster type'), self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated IDW')))
+
+    def name(self):
+        return 'gridinvdist'
+
+    def displayName(self):
+        return self.tr('Grid (Inverse distance to a power)')
+
+    def group(self):
+        return self.tr('Raster analysis')
 
     def getConsoleCommands(self):
         arguments = ['-l']

@@ -48,13 +48,8 @@ class roughness(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def name(self):
-        return 'roughness'
-
-    def displayName(self):
-        return self.tr('Roughness')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))
@@ -62,6 +57,12 @@ class roughness(GdalAlgorithm):
                                            self.tr('Compute edges'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Roughness')))
+
+    def name(self):
+        return 'roughness'
+
+    def displayName(self):
+        return self.tr('Roughness')
 
     def getConsoleCommands(self):
         arguments = ['roughness']

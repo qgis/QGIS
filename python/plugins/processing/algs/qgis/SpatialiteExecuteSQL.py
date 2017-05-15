@@ -50,15 +50,16 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
+        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+
     def name(self):
         return 'spatialiteexecutesql'
 
     def displayName(self):
         return self.tr('Spatialite execute SQL')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 
     def processAlgorithm(self, context, feedback):
         database = self.getParameterValue(self.DATABASE)

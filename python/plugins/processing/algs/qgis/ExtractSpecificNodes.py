@@ -56,18 +56,19 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'extractspecificnodes'
-
-    def displayName(self):
-        return self.tr('Extract specific nodes')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
         self.addParameter(ParameterString(self.NODES,
                                           self.tr('Node indices'), default='0'))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'extractspecificnodes'
+
+    def displayName(self):
+        return self.tr('Extract specific nodes')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

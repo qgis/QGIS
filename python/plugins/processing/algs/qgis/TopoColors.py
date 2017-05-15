@@ -70,13 +70,8 @@ class TopoColor(QgisAlgorithm):
     def group(self):
         return self.tr('Cartographic tools')
 
-    def name(self):
-        return 'topologicalcoloring'
-
-    def displayName(self):
-        return self.tr('Topological coloring')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,
@@ -92,6 +87,12 @@ class TopoColor(QgisAlgorithm):
             balance_by, default=0))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'topologicalcoloring'
+
+    def displayName(self):
+        return self.tr('Topological coloring')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

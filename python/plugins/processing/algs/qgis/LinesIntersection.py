@@ -57,13 +57,8 @@ class LinesIntersection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'lineintersections'
-
-    def displayName(self):
-        return self.tr('Line intersections')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
@@ -80,6 +75,12 @@ class LinesIntersection(QgisAlgorithm):
             optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'lineintersections'
+
+    def displayName(self):
+        return self.tr('Line intersections')
 
     def processAlgorithm(self, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)

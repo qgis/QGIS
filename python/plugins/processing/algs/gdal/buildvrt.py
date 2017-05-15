@@ -51,6 +51,18 @@ class buildvrt(GdalAlgorithm):
 
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterMultipleInput(self.INPUT,
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
+        self.addParameter(ParameterSelection(self.RESOLUTION,
+                                             self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
+        self.addParameter(ParameterBoolean(self.SEPARATE,
+                                           self.tr('Layer stack'), True))
+        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
+                                           self.tr('Allow projection difference'), False))
+        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Virtual')))
+
     def name(self):
         return 'buildvirtualraster'
 
@@ -62,17 +74,6 @@ class buildvrt(GdalAlgorithm):
 
     def group(self):
         return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
-        self.addParameter(ParameterSelection(self.RESOLUTION,
-                                             self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
-        self.addParameter(ParameterBoolean(self.SEPARATE,
-                                           self.tr('Layer stack'), True))
-        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
-                                           self.tr('Allow projection difference'), False))
-        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Virtual')))
 
     def getConsoleCommands(self):
         arguments = []

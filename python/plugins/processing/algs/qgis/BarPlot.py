@@ -54,13 +54,8 @@ class BarPlot(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'barplot'
-
-    def displayName(self):
-        return self.tr('Bar plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
@@ -72,6 +67,12 @@ class BarPlot(QgisAlgorithm):
                                               ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
+
+    def name(self):
+        return 'barplot'
+
+    def displayName(self):
+        return self.tr('Bar plot')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

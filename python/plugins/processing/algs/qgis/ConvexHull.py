@@ -62,13 +62,8 @@ class ConvexHull(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'convexhull'
-
-    def displayName(self):
-        return self.tr('Convex hull')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Create single minimum convex hull'),
                         self.tr('Create convex hulls based on field')]
 
@@ -80,6 +75,12 @@ class ConvexHull(QgisAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Method'), self.methods))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'convexhull'
+
+    def displayName(self):
+        return self.tr('Convex hull')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

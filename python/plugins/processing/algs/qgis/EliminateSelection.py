@@ -62,13 +62,8 @@ class EliminateSelection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'eliminateselectedpolygons'
-
-    def displayName(self):
-        return self.tr('Eliminate selected polygons')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),
                       self.tr('Largest common boundary')]
@@ -79,6 +74,12 @@ class EliminateSelection(QgisAlgorithm):
                                              self.tr('Merge selection with the neighbouring polygon with the'),
                                              self.modes))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'eliminateselectedpolygons'
+
+    def displayName(self):
+        return self.tr('Eliminate selected polygons')
 
     def processAlgorithm(self, context, feedback):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

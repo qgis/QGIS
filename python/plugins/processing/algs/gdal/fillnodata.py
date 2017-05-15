@@ -52,16 +52,8 @@ class fillnodata(GdalAlgorithm):
     NO_DEFAULT_MASK = 'NO_DEFAULT_MASK'
     OUTPUT = 'OUTPUT'
 
-    def name(self):
-        return 'fillnodata'
-
-    def displayName(self):
-        return self.tr('Fill nodata')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -76,6 +68,15 @@ class fillnodata(GdalAlgorithm):
                                            self.tr('Do not use default validity mask'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
+
+    def name(self):
+        return 'fillnodata'
+
+    def displayName(self):
+        return self.tr('Fill nodata')
+
+    def group(self):
+        return self.tr('Raster analysis')
 
     def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)

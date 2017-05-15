@@ -54,13 +54,8 @@ class VectorLayerScatterplot(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'vectorlayerscatterplot'
-
-    def displayName(self):
-        return self.tr('Vector layer scatterplot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -73,6 +68,12 @@ class VectorLayerScatterplot(QgisAlgorithm):
                                               ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
+
+    def name(self):
+        return 'vectorlayerscatterplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

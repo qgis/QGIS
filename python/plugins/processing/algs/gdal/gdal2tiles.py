@@ -60,16 +60,8 @@ class gdal2tiles(GdalAlgorithm):
     RESAMPLINGS = ['average', 'near', 'bilinear', 'cubic', 'cubicspline', 'lanczos', 'antialias']
     WEBVIEWERS = ['all', 'google', 'openlayers', 'leaflet', 'none']
 
-    def name(self):
-        return 'gdal2tiles'
-
-    def displayName(self):
-        return self.tr('gdal2tiles')
-
-    def group(self):
-        return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         # Required parameters
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
@@ -124,6 +116,15 @@ class gdal2tiles(GdalAlgorithm):
 
         self.addOutput(OutputDirectory(self.OUTPUTDIR,
                                        self.tr('The directory where the tile result is created')))
+
+    def name(self):
+        return 'gdal2tiles'
+
+    def displayName(self):
+        return self.tr('gdal2tiles')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def getConsoleCommands(self):
 

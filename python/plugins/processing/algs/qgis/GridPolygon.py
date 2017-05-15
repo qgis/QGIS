@@ -70,13 +70,8 @@ class GridPolygon(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'creategridpolygon'
-
-    def displayName(self):
-        return self.tr('Create grid (polygon)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]
@@ -96,6 +91,12 @@ class GridPolygon(QgisAlgorithm):
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'creategridpolygon'
+
+    def displayName(self):
+        return self.tr('Create grid (polygon)')
 
     def processAlgorithm(self, context, feedback):
         idx = self.getParameterValue(self.TYPE)

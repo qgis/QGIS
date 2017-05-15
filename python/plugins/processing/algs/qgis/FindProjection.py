@@ -63,13 +63,8 @@ class FindProjection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'findprojection'
-
-    def displayName(self):
-        return self.tr('Find projection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,
@@ -81,6 +76,12 @@ class FindProjection(QgisAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
                                   self.tr('Candidates')))
+
+    def name(self):
+        return 'findprojection'
+
+    def displayName(self):
+        return self.tr('Find projection')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

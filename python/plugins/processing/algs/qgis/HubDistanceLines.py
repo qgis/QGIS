@@ -71,13 +71,8 @@ class HubDistanceLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'distancetonearesthublinetohub'
-
-    def displayName(self):
-        return self.tr('Distance to nearest hub (line to hub)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),
@@ -94,6 +89,12 @@ class HubDistanceLines(QgisAlgorithm):
                                              self.tr('Measurement unit'), self.units))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
+    def name(self):
+        return 'distancetonearesthublinetohub'
+
+    def displayName(self):
+        return self.tr('Distance to nearest hub (line to hub)')
 
     def processAlgorithm(self, context, feedback):
         layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)

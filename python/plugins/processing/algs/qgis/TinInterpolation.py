@@ -70,13 +70,8 @@ class TinInterpolation(QgisAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def name(self):
-        return 'tininterpolation'
-
-    def displayName(self):
-        return self.tr('TIN interpolation')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]
@@ -157,6 +152,12 @@ class TinInterpolation(QgisAlgorithm):
         self.addOutput(OutputVector(self.TRIANULATION_FILE,
                                     self.tr('Triangulation'),
                                     ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
+
+    def name(self):
+        return 'tininterpolation'
+
+    def displayName(self):
+        return self.tr('TIN interpolation')
 
     def processAlgorithm(self, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)

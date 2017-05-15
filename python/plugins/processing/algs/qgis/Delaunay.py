@@ -62,19 +62,20 @@ class Delaunay(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'delaunaytriangulation'
-
-    def displayName(self):
-        return self.tr('Delaunay triangulation')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Delaunay triangulation'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'delaunaytriangulation'
+
+    def displayName(self):
+        return self.tr('Delaunay triangulation')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

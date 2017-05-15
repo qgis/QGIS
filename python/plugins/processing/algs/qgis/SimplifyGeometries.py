@@ -56,13 +56,8 @@ class SimplifyGeometries(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'simplifygeometries'
-
-    def displayName(self):
-        return self.tr('Simplify geometries')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -77,6 +72,12 @@ class SimplifyGeometries(QgisAlgorithm):
                                           self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
+
+    def name(self):
+        return 'simplifygeometries'
+
+    def displayName(self):
+        return self.tr('Simplify geometries')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

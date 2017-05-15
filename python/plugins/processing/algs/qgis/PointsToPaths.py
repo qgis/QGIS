@@ -67,13 +67,8 @@ class PointsToPaths(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'pointstopath'
-
-    def displayName(self):
-        return self.tr('Points to path')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
@@ -87,6 +82,12 @@ class PointsToPaths(QgisAlgorithm):
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
         self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
+
+    def name(self):
+        return 'pointstopath'
+
+    def displayName(self):
+        return self.tr('Points to path')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)

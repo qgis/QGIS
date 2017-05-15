@@ -59,13 +59,8 @@ class JoinAttributes(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'joinattributestable'
-
-    def displayName(self):
-        return self.tr('Join attributes table')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
@@ -76,6 +71,12 @@ class JoinAttributes(QgisAlgorithm):
                                               self.tr('Table field 2'), self.INPUT_LAYER_2))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Joined layer')))
+
+    def name(self):
+        return 'joinattributestable'
+
+    def displayName(self):
+        return self.tr('Join attributes table')
 
     def processAlgorithm(self, context, feedback):
         input = self.getParameterValue(self.INPUT_LAYER)

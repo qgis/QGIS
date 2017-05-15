@@ -50,13 +50,8 @@ class ExtendLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'extendlines'
-
-    def displayName(self):
-        return self.tr('Extend lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.START_DISTANCE,
@@ -65,6 +60,12 @@ class ExtendLines(QgisAlgorithm):
                                           self.tr('End distance'), default=0.0))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Extended lines')))
+
+    def name(self):
+        return 'extendlines'
+
+    def displayName(self):
+        return self.tr('Extend lines')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

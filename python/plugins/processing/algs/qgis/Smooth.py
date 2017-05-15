@@ -51,13 +51,8 @@ class Smooth(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'smoothgeometry'
-
-    def displayName(self):
-        return self.tr('Smooth geometry')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.ITERATIONS,
@@ -67,6 +62,12 @@ class Smooth(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.MAX_ANGLE,
                                           self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
+
+    def name(self):
+        return 'smoothgeometry'
+
+    def displayName(self):
+        return self.tr('Smooth geometry')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

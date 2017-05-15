@@ -65,13 +65,9 @@ class IdwInterpolation(QgisAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def name(self):
-        return 'idwinterpolation'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('IDW interpolation')
-
-    def defineCharacteristics(self):
         class ParameterInterpolationData(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
@@ -144,6 +140,12 @@ class IdwInterpolation(QgisAlgorithm):
                                           optional=False))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Interpolated')))
+
+    def name(self):
+        return 'idwinterpolation'
+
+    def displayName(self):
+        return self.tr('IDW interpolation')
 
     def processAlgorithm(self, context, feedback):
         interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)

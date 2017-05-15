@@ -60,13 +60,8 @@ class SingleSidedBuffer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'singlesidedbuffer'
-
-    def displayName(self):
-        return self.tr('Single sided buffer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -92,6 +87,12 @@ class SingleSidedBuffer(QgisAlgorithm):
                                           self.tr('Mitre limit'), 1, default=2))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffers')))
+
+    def name(self):
+        return 'singlesidedbuffer'
+
+    def displayName(self):
+        return self.tr('Single sided buffer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

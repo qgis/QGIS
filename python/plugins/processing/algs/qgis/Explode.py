@@ -51,17 +51,18 @@ class Explode(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer'),
+                                          [dataobjects.TYPE_VECTOR_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
     def name(self):
         return 'explodelines'
 
     def displayName(self):
         return self.tr('Explode lines')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, context, feedback):
         vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

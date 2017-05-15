@@ -62,13 +62,8 @@ class ImportIntoSpatialite(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'importintospatialite'
-
-    def displayName(self):
-        return self.tr('Import into Spatialite')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Layer to import')))
         self.addParameter(ParameterVector(self.DATABASE, self.tr('File database'), False, False))
         self.addParameter(ParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
@@ -80,6 +75,12 @@ class ImportIntoSpatialite(QgisAlgorithm):
         self.addParameter(ParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
+
+    def name(self):
+        return 'importintospatialite'
+
+    def displayName(self):
+        return self.tr('Import into Spatialite')
 
     def processAlgorithm(self, context, feedback):
         database = self.getParameterValue(self.DATABASE)

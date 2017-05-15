@@ -75,16 +75,8 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
 
-    def name(self):
-        return 'importlayertableasgeometrylesstableintopostgresqldatabase'
-
-    def displayName(self):
-        return self.tr('Import layer/table as geometryless table into PostgreSQL database')
-
-    def group(self):
-        return self.tr('Vector miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
@@ -124,6 +116,15 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
                                            True))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
+
+    def name(self):
+        return 'importlayertableasgeometrylesstableintopostgresqldatabase'
+
+    def displayName(self):
+        return self.tr('Import layer/table as geometryless table into PostgreSQL database')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
 
     def processAlgorithm(self, context, feedback):
         self.processing = True

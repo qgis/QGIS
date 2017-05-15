@@ -46,6 +46,14 @@ class AssignProjection(GdalAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterCrs(self.CRS,
+                                       self.tr('Desired CRS'), ''))
+
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Layer with projection'), True))
+
     def name(self):
         return 'assignprojection'
 
@@ -57,13 +65,6 @@ class AssignProjection(GdalAlgorithm):
 
     def group(self):
         return self.tr('Raster projections')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Desired CRS'), ''))
-
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Layer with projection'), True))
 
     def getConsoleCommands(self):
         fileName = self.getParameterValue(self.INPUT)

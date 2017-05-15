@@ -63,16 +63,8 @@ class translate(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
-    def name(self):
-        return 'translate'
-
-    def displayName(self):
-        return self.tr('Translate (convert format)')
-
-    def group(self):
-        return self.tr('Raster conversion')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),
@@ -101,6 +93,15 @@ class translate(GdalAlgorithm):
                                              self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
+
+    def name(self):
+        return 'translate'
+
+    def displayName(self):
+        return self.tr('Translate (convert format)')
+
+    def group(self):
+        return self.tr('Raster conversion')
 
     def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)

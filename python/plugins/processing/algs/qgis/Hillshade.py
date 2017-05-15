@@ -54,13 +54,8 @@ class Hillshade(QgisAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def name(self):
-        return 'hillshade'
-
-    def displayName(self):
-        return self.tr('Hillshade')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
@@ -71,6 +66,12 @@ class Hillshade(QgisAlgorithm):
                                           self.tr('Vertical angle'), 1.00, 90.00, 40.00))
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Hillshade')))
+
+    def name(self):
+        return 'hillshade'
+
+    def displayName(self):
+        return self.tr('Hillshade')
 
     def processAlgorithm(self, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)

@@ -57,13 +57,8 @@ class RandomPointsLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinlayerbounds'
-
-    def displayName(self):
-        return self.tr('Random points in layer bounds')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -71,6 +66,12 @@ class RandomPointsLayer(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'randompointsinlayerbounds'
+
+    def displayName(self):
+        return self.tr('Random points in layer bounds')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)

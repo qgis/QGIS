@@ -62,13 +62,8 @@ class RegularPoints(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'regularpoints'
-
-    def displayName(self):
-        return self.tr('Regular points')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.SPACING,
@@ -82,6 +77,12 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(ParameterCrs(self.CRS,
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'regularpoints'
+
+    def displayName(self):
+        return self.tr('Regular points')
 
     def processAlgorithm(self, context, feedback):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')

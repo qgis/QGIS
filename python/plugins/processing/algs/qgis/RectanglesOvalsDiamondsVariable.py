@@ -64,13 +64,8 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'rectanglesovalsdiamondsvariable'
-
-    def displayName(self):
-        return self.tr('Rectangles, ovals, diamonds (variable)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
@@ -100,6 +95,12 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'rectanglesovalsdiamondsvariable'
+
+    def displayName(self):
+        return self.tr('Rectangles, ovals, diamonds (variable)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

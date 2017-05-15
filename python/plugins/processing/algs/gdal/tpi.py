@@ -49,13 +49,8 @@ class tpi(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def name(self):
-        return 'tpitopographicpositionindex'
-
-    def displayName(self):
-        return self.tr('TPI (Topographic Position Index)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))
@@ -63,6 +58,12 @@ class tpi(GdalAlgorithm):
                                            self.tr('Compute edges'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Topographic Position Index')))
+
+    def name(self):
+        return 'tpitopographicpositionindex'
+
+    def displayName(self):
+        return self.tr('TPI (Topographic Position Index)')
 
     def getConsoleCommands(self):
         arguments = ['TPI']

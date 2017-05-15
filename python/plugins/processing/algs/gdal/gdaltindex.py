@@ -48,6 +48,17 @@ class gdaltindex(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterMultipleInput(self.INPUT,
+                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
+        self.addParameter(ParameterString(self.FIELD_NAME,
+                                          self.tr('Tile index field'),
+                                          'location', optional=True))
+        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
+                                           self.tr('Skip files with different projection reference'), False))
+        self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tile index')))
+
     def name(self):
         return 'tileindex'
 
@@ -59,16 +70,6 @@ class gdaltindex(GdalAlgorithm):
 
     def group(self):
         return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
-        self.addParameter(ParameterString(self.FIELD_NAME,
-                                          self.tr('Tile index field'),
-                                          'location', optional=True))
-        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
-                                           self.tr('Skip files with different projection reference'), False))
-        self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tile index')))
 
     def getConsoleCommands(self):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))

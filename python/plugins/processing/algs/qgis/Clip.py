@@ -56,18 +56,19 @@ class Clip(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'clip'
-
-    def displayName(self):
-        return self.tr('Clip')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Clip.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Clip.OVERLAY,
                                           self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
+
+    def name(self):
+        return 'clip'
+
+    def displayName(self):
+        return self.tr('Clip')
 
     def processAlgorithm(self, context, feedback):
         source_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)

@@ -62,13 +62,8 @@ class SpatialJoin(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'joinattributesbylocation'
-
-    def displayName(self):
-        return self.tr('Join attributes by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -107,6 +102,12 @@ class SpatialJoin(QgisAlgorithm):
         self.addParameter(ParameterSelection(self.KEEP,
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
+
+    def name(self):
+        return 'joinattributesbylocation'
+
+    def displayName(self):
+        return self.tr('Join attributes by location')
 
     def processAlgorithm(self, context, feedback):
         target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)

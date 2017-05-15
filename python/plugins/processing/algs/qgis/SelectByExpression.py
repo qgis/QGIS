@@ -52,13 +52,8 @@ class SelectByExpression(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyexpression'
-
-    def displayName(self):
-        return self.tr('Select by expression')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),
@@ -71,6 +66,12 @@ class SelectByExpression(QgisAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
+
+    def name(self):
+        return 'selectbyexpression'
+
+    def displayName(self):
+        return self.tr('Select by expression')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)

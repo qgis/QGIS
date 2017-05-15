@@ -51,16 +51,8 @@ class Ogr2OgrBuffer(GdalAlgorithm):
     MULTI = 'MULTI'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'buffervectors'
-
-    def displayName(self):
-        return self.tr('Buffer vectors')
-
-    def group(self):
-        return self.tr('Vector geoprocessing')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.GEOMETRY,
@@ -81,6 +73,15 @@ class Ogr2OgrBuffer(GdalAlgorithm):
                                           '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'buffervectors'
+
+    def displayName(self):
+        return self.tr('Buffer vectors')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

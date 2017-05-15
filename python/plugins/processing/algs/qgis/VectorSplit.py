@@ -53,18 +53,19 @@ class VectorSplit(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'splitvectorlayer'
-
-    def displayName(self):
-        return self.tr('Split vector layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
+
+    def name(self):
+        return 'splitvectorlayer'
+
+    def displayName(self):
+        return self.tr('Split vector layer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

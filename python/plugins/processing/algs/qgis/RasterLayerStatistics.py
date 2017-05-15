@@ -60,13 +60,8 @@ class RasterLayerStatistics(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'rasterlayerstatistics'
-
-    def displayName(self):
-        return self.tr('Raster layer statistics')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
@@ -77,6 +72,12 @@ class RasterLayerStatistics(QgisAlgorithm):
         self.addOutput(OutputNumber(self.COUNT, self.tr('valid cells count')))
         self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
         self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
+
+    def name(self):
+        return 'rasterlayerstatistics'
+
+    def displayName(self):
+        return self.tr('Raster layer statistics')
 
     def processAlgorithm(self, context, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)

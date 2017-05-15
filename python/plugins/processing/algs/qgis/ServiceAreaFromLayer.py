@@ -76,13 +76,8 @@ class ServiceAreaFromLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
-    def name(self):
-        return 'serviceareafromlayer'
-
-    def displayName(self):
-        return self.tr('Service area (from layer)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
             (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -148,6 +143,12 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_POLYGON,
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'serviceareafromlayer'
+
+    def displayName(self):
+        return self.tr('Service area (from layer)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)

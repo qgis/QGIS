@@ -54,13 +54,8 @@ class PolarPlot(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'polarplot'
-
-    def displayName(self):
-        return self.tr('Polar plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
@@ -69,6 +64,12 @@ class PolarPlot(QgisAlgorithm):
                                               self.tr('Value field'), self.INPUT))
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
+
+    def name(self):
+        return 'polarplot'
+
+    def displayName(self):
+        return self.tr('Polar plot')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

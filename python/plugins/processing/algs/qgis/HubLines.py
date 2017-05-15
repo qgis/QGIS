@@ -57,13 +57,8 @@ class HubLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'hublines'
-
-    def displayName(self):
-        return self.tr('Hub lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.HUBS,
                                           self.tr('Hub layer')))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
@@ -74,6 +69,12 @@ class HubLines(QgisAlgorithm):
                                               self.tr('Spoke ID field'), self.SPOKES))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
+    def name(self):
+        return 'hublines'
+
+    def displayName(self):
+        return self.tr('Hub lines')
 
     def processAlgorithm(self, context, feedback):
         layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)

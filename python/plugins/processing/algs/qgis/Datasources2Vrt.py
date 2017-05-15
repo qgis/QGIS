@@ -57,13 +57,8 @@ class Datasources2Vrt(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'buildvirtualvector'
-
-    def displayName(self):
-        return self.tr('Build virtual vector')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))
@@ -75,6 +70,12 @@ class Datasources2Vrt(QgisAlgorithm):
                                   self.tr('Virtual vector'), ext='vrt'))
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
+
+    def name(self):
+        return 'buildvirtualvector'
+
+    def displayName(self):
+        return self.tr('Build virtual vector')
 
     def processAlgorithm(self, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)

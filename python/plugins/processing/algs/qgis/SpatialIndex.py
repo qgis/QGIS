@@ -52,17 +52,18 @@ class SpatialIndex(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input Layer')))
+        self.addOutput(OutputVector(self.OUTPUT,
+                                    self.tr('Indexed layer'), True))
+
     def name(self):
         return 'createspatialindex'
 
     def displayName(self):
         return self.tr('Create spatial index')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Indexed layer'), True))
 
     def processAlgorithm(self, context, feedback):
         fileName = self.getParameterValue(self.INPUT)

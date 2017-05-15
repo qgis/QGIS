@@ -40,8 +40,9 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         with open(self.descriptionFile) as f:
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
-        self._group = ''
-        self._name = ''
+
+        self._name = self.description["name"]
+        self._group = self.description["group"]
 
     def group(self):
         return self._group
@@ -54,10 +55,6 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def flags(self):
         return QgsProcessingAlgorithm.FlagHideFromModeler
-
-    def defineCharacteristics(self):
-        self._name = self.description["name"]
-        self._group = self.description["group"]
 
     def execute(self, context=None, feedback=None, model=None):
         self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"])

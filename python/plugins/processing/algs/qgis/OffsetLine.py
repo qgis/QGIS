@@ -58,13 +58,8 @@ class OffsetLine(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'offsetline'
-
-    def displayName(self):
-        return self.tr('Offset line')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -82,6 +77,12 @@ class OffsetLine(QgisAlgorithm):
                                           self.tr('Mitre limit'), 1, default=2))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
+    def name(self):
+        return 'offsetline'
+
+    def displayName(self):
+        return self.tr('Offset line')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

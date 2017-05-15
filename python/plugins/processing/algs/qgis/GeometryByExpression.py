@@ -57,13 +57,8 @@ class GeometryByExpression(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'geometrybyexpression'
-
-    def displayName(self):
-        return self.tr('Geometry by expression')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 
@@ -83,6 +78,12 @@ class GeometryByExpression(QgisAlgorithm):
                                               self.tr("Geometry expression"), '$geometry', parent_layer=self.INPUT_LAYER))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Modified geometry')))
+
+    def name(self):
+        return 'geometrybyexpression'
+
+    def displayName(self):
+        return self.tr('Geometry by expression')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

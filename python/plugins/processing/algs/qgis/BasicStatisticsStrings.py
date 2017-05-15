@@ -74,13 +74,8 @@ class BasicStatisticsStrings(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'basicstatisticsfortextfields'
-
-    def displayName(self):
-        return self.tr('Basic statistics for text fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -99,6 +94,12 @@ class BasicStatisticsStrings(QgisAlgorithm):
         self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
         self.addOutput(OutputNumber(self.MIN_VALUE, self.tr('Minimum string value')))
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
+
+    def name(self):
+        return 'basicstatisticsfortextfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for text fields')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

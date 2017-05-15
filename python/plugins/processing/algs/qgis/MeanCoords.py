@@ -57,13 +57,8 @@ class MeanCoords(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'meancoordinates'
-
-    def displayName(self):
-        return self.tr('Mean coordinate(s)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.WEIGHT,
@@ -77,6 +72,12 @@ class MeanCoords(QgisAlgorithm):
                                               optional=True))
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'meancoordinates'
+
+    def displayName(self):
+        return self.tr('Mean coordinate(s)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)

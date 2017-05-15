@@ -57,13 +57,8 @@ class PointsDisplacement(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'pointsdisplacement'
-
-    def displayName(self):
-        return self.tr('Points displacement')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -72,6 +67,12 @@ class PointsDisplacement(QgisAlgorithm):
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'pointsdisplacement'
+
+    def displayName(self):
+        return self.tr('Points displacement')
 
     def processAlgorithm(self, context, feedback):
         radius = self.getParameterValue(self.DISTANCE)

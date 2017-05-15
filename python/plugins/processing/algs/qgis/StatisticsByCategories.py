@@ -51,13 +51,8 @@ class StatisticsByCategories(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'statisticsbycategories'
-
-    def displayName(self):
-        return self.tr('Statistics by categories')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
@@ -68,6 +63,12 @@ class StatisticsByCategories(QgisAlgorithm):
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
+
+    def name(self):
+        return 'statisticsbycategories'
+
+    def displayName(self):
+        return self.tr('Statistics by categories')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

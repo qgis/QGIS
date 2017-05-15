@@ -51,18 +51,19 @@ class EquivalentNumField(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'adduniquevalueindexfield'
-
-    def displayName(self):
-        return self.tr('Add unique value index field')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
+
+    def name(self):
+        return 'adduniquevalueindexfield'
+
+    def displayName(self):
+        return self.tr('Add unique value index field')
 
     def processAlgorithm(self, context, feedback):
         fieldname = self.getParameterValue(self.FIELD)

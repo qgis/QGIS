@@ -49,16 +49,8 @@ class information(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
-    def name(self):
-        return 'gdalinfo'
-
-    def displayName(self):
-        return self.tr('Information')
-
-    def group(self):
-        return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(information.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,
@@ -67,6 +59,15 @@ class information(GdalAlgorithm):
                                            self.tr('Suppress metadata info'), False))
         self.addOutput(OutputHTML(information.OUTPUT,
                                   self.tr('Layer information')))
+
+    def name(self):
+        return 'gdalinfo'
+
+    def displayName(self):
+        return self.tr('Information')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
 
     def getConsoleCommands(self):
         arguments = []

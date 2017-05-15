@@ -51,19 +51,20 @@ class DeleteHoles(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'deleteholes'
-
-    def displayName(self):
-        return self.tr('Delete holes')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_AREA,
                                           self.tr('Remove holes with area less than'), 0, 10000000.0, default=0.0, optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'deleteholes'
+
+    def displayName(self):
+        return self.tr('Delete holes')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

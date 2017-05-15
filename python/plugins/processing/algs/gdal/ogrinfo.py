@@ -43,6 +43,15 @@ class OgrInfo(GdalAlgorithm):
     SUMMARY_ONLY = 'SUMMARY_ONLY'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
+                                           self.tr('Summary output only'),
+                                           True))
+
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
+
     def name(self):
         return 'ogrinfo'
 
@@ -51,14 +60,6 @@ class OgrInfo(GdalAlgorithm):
 
     def group(self):
         return self.tr('Vector miscellaneous')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
-                                           self.tr('Summary output only'),
-                                           True))
-
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
 
     def getConsoleCommands(self):
         arguments = ["ogrinfo"]

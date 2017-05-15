@@ -56,19 +56,20 @@ class PoleOfInaccessibility(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'poleofinaccessibility'
-
-    def displayName(self):
-        return self.tr('Pole of Inaccessibility')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.TOLERANCE,
                                           self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'poleofinaccessibility'
+
+    def displayName(self):
+        return self.tr('Pole of Inaccessibility')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

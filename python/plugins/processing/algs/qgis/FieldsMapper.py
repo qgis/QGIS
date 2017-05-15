@@ -62,13 +62,8 @@ class FieldsMapper(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'refactorfields'
-
-    def displayName(self):
-        return self.tr('Refactor fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
@@ -109,6 +104,12 @@ class FieldsMapper(QgisAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
+
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
 
     def processAlgorithm(self, context, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)

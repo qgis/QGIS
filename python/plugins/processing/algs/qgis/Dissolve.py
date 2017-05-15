@@ -59,13 +59,8 @@ class Dissolve(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'dissolve'
-
-    def displayName(self):
-        return self.tr('Dissolve')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Dissolve.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -74,6 +69,12 @@ class Dissolve(QgisAlgorithm):
         self.addParameter(ParameterTableField(Dissolve.FIELD,
                                               self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
+
+    def name(self):
+        return 'dissolve'
+
+    def displayName(self):
+        return self.tr('Dissolve')
 
     def processAlgorithm(self, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)

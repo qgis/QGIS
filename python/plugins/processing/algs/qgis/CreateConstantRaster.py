@@ -51,13 +51,8 @@ class CreateConstantRaster(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'createconstantrasterlayer'
-
-    def displayName(self):
-        return self.tr('Create constant raster layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
@@ -66,6 +61,12 @@ class CreateConstantRaster(QgisAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
+
+    def name(self):
+        return 'createconstantrasterlayer'
+
+    def displayName(self):
+        return self.tr('Create constant raster layer')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

@@ -48,16 +48,8 @@ class aspect(GdalAlgorithm):
     ZERO_FLAT = 'ZERO_FLAT'
     OUTPUT = 'OUTPUT'
 
-    def name(self):
-        return 'aspect'
-
-    def displayName(self):
-        return self.tr('Aspect')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))
@@ -72,6 +64,15 @@ class aspect(GdalAlgorithm):
                                            self.tr('Return 0 for flat (instead of -9999)'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Aspect')))
+
+    def name(self):
+        return 'aspect'
+
+    def displayName(self):
+        return self.tr('Aspect')
+
+    def group(self):
+        return self.tr('Raster analysis')
 
     def getConsoleCommands(self):
         arguments = ['aspect']

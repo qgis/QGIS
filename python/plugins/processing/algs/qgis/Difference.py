@@ -55,18 +55,19 @@ class Difference(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'difference'
-
-    def displayName(self):
-        return self.tr('Difference')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Difference.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Difference.OVERLAY,
                                           self.tr('Difference layer')))
         self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
+
+    def name(self):
+        return 'difference'
+
+    def displayName(self):
+        return self.tr('Difference')
 
     def processAlgorithm(self, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Difference.INPUT), context)

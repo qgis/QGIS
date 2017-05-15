@@ -65,18 +65,19 @@ class Union(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'union'
-
-    def displayName(self):
-        return self.tr('Union')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Union.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Union.INPUT2,
                                           self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
+
+    def name(self):
+        return 'union'
+
+    def displayName(self):
+        return self.tr('Union')
 
     def processAlgorithm(self, context, feedback):
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT), context)

@@ -59,13 +59,8 @@ class RasterCalculator(QgisAlgorithm):
     def group(self):
         return self.tr('Raster')
 
-    def name(self):
-        return 'rastercalculator'
-
-    def displayName(self):
-        return self.tr('Raster calculator')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),
                                                  datatype=dataobjects.TYPE_RASTER,
@@ -101,6 +96,12 @@ class RasterCalculator(QgisAlgorithm):
                                           self.tr('Output extent'),
                                           optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output')))
+
+    def name(self):
+        return 'rastercalculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
 
     def processAlgorithm(self, context, feedback):
         expression = self.getParameterValue(self.EXPRESSION)

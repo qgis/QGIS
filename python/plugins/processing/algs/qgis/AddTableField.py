@@ -58,14 +58,8 @@ class AddTableField(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'addfieldtoattributestable'
-
-    def displayName(self):
-        return self.tr('Add field to attributes table')
-
-    def defineCharacteristics(self):
-
+    def __init__(self):
+        super().__init__()
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
@@ -82,6 +76,12 @@ class AddTableField(QgisAlgorithm):
                                           self.tr('Field precision'), 0, 10, 0))
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
+
+    def name(self):
+        return 'addfieldtoattributestable'
+
+    def displayName(self):
+        return self.tr('Add field to attributes table')
 
     def processAlgorithm(self, context, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)

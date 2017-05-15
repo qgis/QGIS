@@ -50,17 +50,18 @@ class TruncateTable(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterTable(self.INPUT,
+                                         self.tr('Input Layer')))
+        self.addOutput(OutputVector(self.OUTPUT,
+                                    self.tr('Truncated layer'), True))
+
     def name(self):
         return 'truncatetable'
 
     def displayName(self):
         return self.tr('Truncate table')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input Layer')))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Truncated layer'), True))
 
     def processAlgorithm(self, context, feedback):
         file_name = self.getParameterValue(self.INPUT)

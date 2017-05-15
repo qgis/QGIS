@@ -47,16 +47,17 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+
     def name(self):
         return 'deleteduplicategeometries'
 
     def displayName(self):
         return self.tr('Delete duplicate geometries')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

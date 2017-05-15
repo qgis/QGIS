@@ -51,16 +51,8 @@ class hillshade(GdalAlgorithm):
     ALTITUDE = 'ALTITUDE'
     OUTPUT = 'OUTPUT'
 
-    def name(self):
-        return 'hillshade'
-
-    def displayName(self):
-        return self.tr('Hillshade')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))
@@ -81,6 +73,15 @@ class hillshade(GdalAlgorithm):
                                           self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Hillshade')))
+
+    def name(self):
+        return 'hillshade'
+
+    def displayName(self):
+        return self.tr('Hillshade')
+
+    def group(self):
+        return self.tr('Raster analysis')
 
     def getConsoleCommands(self):
         arguments = ['hillshade']

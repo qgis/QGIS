@@ -240,22 +240,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.inputs = {}
         GeoAlgorithm.__init__(self)
 
-    def name(self):
-        return self._name
-
-    def displayName(self):
-        return self._name
-
-    def group(self):
-        return self._group
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/processingModel.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("processingModel.svg")
-
-    def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
                    ParameterBoolean, ParameterString, ParameterNumber]
         self.parameters = []
@@ -277,6 +261,21 @@ class ModelerAlgorithm(GeoAlgorithm):
                     modelOutput.description = alg.outputs[out].description
                     self.outputs.append(modelOutput)
         self.outputs.sort(key=attrgetter("description"))
+
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._name
+
+    def group(self):
+        return self._group
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingModel.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingModel.svg")
 
     def addParameter(self, param):
         self.inputs[param.param.name] = param

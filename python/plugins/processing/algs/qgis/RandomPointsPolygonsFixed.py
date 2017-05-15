@@ -59,13 +59,8 @@ class RandomPointsPolygonsFixed(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinsidepolygonsfixed'
-
-    def displayName(self):
-        return self.tr('Random points inside polygons (fixed)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 
@@ -79,6 +74,12 @@ class RandomPointsPolygonsFixed(QgisAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+
+    def name(self):
+        return 'randompointsinsidepolygonsfixed'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (fixed)')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)

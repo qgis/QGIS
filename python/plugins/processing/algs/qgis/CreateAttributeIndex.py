@@ -51,19 +51,20 @@ class CreateAttributeIndex(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'createattributeindex'
-
-    def displayName(self):
-        return self.tr('Create attribute index')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute to index'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
+
+    def name(self):
+        return 'createattributeindex'
+
+    def displayName(self):
+        return self.tr('Create attribute index')
 
     def processAlgorithm(self, context, feedback):
         file_name = self.getParameterValue(self.INPUT)

@@ -68,13 +68,8 @@ class GridLine(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'creategridlines'
-
-    def displayName(self):
-        return self.tr('Create grid (lines)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -88,6 +83,12 @@ class GridLine(QgisAlgorithm):
         self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+
+    def name(self):
+        return 'creategridlines'
+
+    def displayName(self):
+        return self.tr('Create grid (lines)')
 
     def processAlgorithm(self, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')

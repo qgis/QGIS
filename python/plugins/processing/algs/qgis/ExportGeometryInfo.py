@@ -57,13 +57,8 @@ class ExportGeometryInfo(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'exportaddgeometrycolumns'
-
-    def displayName(self):
-        return self.tr('Export/Add geometry columns')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
@@ -74,6 +69,12 @@ class ExportGeometryInfo(QgisAlgorithm):
                                              self.tr('Calculate using'), self.calc_methods, 0))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
+
+    def name(self):
+        return 'exportaddgeometrycolumns'
+
+    def displayName(self):
+        return self.tr('Export/Add geometry columns')
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

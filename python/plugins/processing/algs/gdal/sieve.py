@@ -56,6 +56,16 @@ class sieve(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(self.THRESHOLD,
+                                          self.tr('Threshold'), 0, 9999, 2))
+        self.addParameter(ParameterSelection(self.CONNECTIONS,
+                                             self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
+
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
+
     def name(self):
         return 'sieve'
 
@@ -64,15 +74,6 @@ class sieve(GdalAlgorithm):
 
     def group(self):
         return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(self.THRESHOLD,
-                                          self.tr('Threshold'), 0, 9999, 2))
-        self.addParameter(ParameterSelection(self.CONNECTIONS,
-                                             self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
-
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
 
     def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)

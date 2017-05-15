@@ -78,16 +78,8 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
     PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'importvectorintopostgisdatabasenewconnection'
-
-    def displayName(self):
-        return self.tr('Import Vector into PostGIS database (new connection)')
-
-    def group(self):
-        return self.tr('Vector miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -160,6 +152,15 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
                                            True))
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
+
+    def name(self):
+        return 'importvectorintopostgisdatabasenewconnection'
+
+    def displayName(self):
+        return self.tr('Import Vector into PostGIS database (new connection)')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
 
     def getConnectionString(self):
         host = self.getParameterValue(self.HOST)

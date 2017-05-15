@@ -50,16 +50,17 @@ class RemoveNullGeometry(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
+
     def name(self):
         return 'removenullgeometries'
 
     def displayName(self):
         return self.tr('Remove null geometries')
-
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
 
     def processAlgorithm(self, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)

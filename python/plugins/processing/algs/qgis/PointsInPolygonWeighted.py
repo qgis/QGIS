@@ -63,13 +63,8 @@ class PointsInPolygonWeighted(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'countpointsinpolygonweighted'
-
-    def displayName(self):
-        return self.tr('Count points in polygon(weighted)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -80,6 +75,12 @@ class PointsInPolygonWeighted(QgisAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+
+    def name(self):
+        return 'countpointsinpolygonweighted'
+
+    def displayName(self):
+        return self.tr('Count points in polygon(weighted)')
 
     def processAlgorithm(self, context, feedback):
         polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)

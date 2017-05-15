@@ -54,13 +54,8 @@ class RandomSelection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomselection'
-
-    def displayName(self):
-        return self.tr('Random selection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -71,6 +66,12 @@ class RandomSelection(QgisAlgorithm):
         self.addParameter(ParameterNumber(self.NUMBER,
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
+
+    def name(self):
+        return 'randomselection'
+
+    def displayName(self):
+        return self.tr('Random selection')
 
     def processAlgorithm(self, context, feedback):
         filename = self.getParameterValue(self.INPUT)
