@@ -1,3 +1,15 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmargins.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMargins
 {
 
@@ -138,14 +150,40 @@ class QgsMargins
 
 
 bool operator==( const QgsMargins &lhs, const QgsMargins &rhs );
+
 bool operator!=( const QgsMargins &lhs, const QgsMargins &rhs );
+
 QgsMargins operator+( const QgsMargins &m1, const QgsMargins &m2 );
+
 QgsMargins operator-( const QgsMargins &m1, const QgsMargins &m2 );
+
 QgsMargins operator+( const QgsMargins &lhs, double rhs );
+
 QgsMargins operator+( double lhs, const QgsMargins &rhs );
+
 QgsMargins operator-( const QgsMargins &lhs, double rhs );
+
 QgsMargins operator*( const QgsMargins &margins, double factor );
+
 QgsMargins operator*( double factor, const QgsMargins &margins );
+
 QgsMargins operator/( const QgsMargins &margins, double divisor );
+
+
+
+
+
+
+
 QgsMargins operator+( const QgsMargins &margins );
+
 QgsMargins operator-( const QgsMargins &margins );
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmargins.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -93,9 +93,9 @@ sub dbg_info
 }
 
 sub remove_constructor_or_body {
-    # https://regex101.com/r/ZaP3tC/3
+    # https://regex101.com/r/ZaP3tC/4
     do {no warnings 'uninitialized';
-        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(~?\w+|operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
+        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
              || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
              || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
@@ -336,7 +336,7 @@ while ($line_idx < $line_count){
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
-    if ($line =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE).*?$/){
+    if ($line =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO).*?$/){
         next;
     }
 
@@ -375,11 +375,11 @@ while ($line_idx < $line_count){
             $global_bracket_nesting_index[$#global_bracket_nesting_index] += $bracket_balance;
             if ($global_bracket_nesting_index[$#global_bracket_nesting_index] == 0){
                 dbg_info(" going up in class/struct tree");
-                if ($#ACCESS > 1){
+                if ($#ACCESS > 0){
                     pop(@global_bracket_nesting_index);
                     pop(@ACCESS);
                 }
-                if ($#ACCESS == 1){
+                if ($#ACCESS == 0){
                     dbg_info("reached top level");
                     # top level should stasy public
                     dbg_info
@@ -439,7 +439,7 @@ while ($line_idx < $line_count){
         }
     }
 
-    if ( $line =~ m/^(\s*struct)\s+(\w+)$/ ) {
+    if ( $line =~ m/^\s*struct(\s+\w+_EXPORT)?\s+\w+$/ ) {
         dbg_info("  going to struct => public");
         push @ACCESS, PUBLIC;
         push @global_bracket_nesting_index, 0;
@@ -689,6 +689,7 @@ while ($line_idx < $line_count){
             $line =~ m/\s*typedef / ||
             $line =~ m/\s*struct / ||
             $line =~ m/operator\[\]\(/ ||
+            ($line =~ m/operator[!+-=*\/\[\]]{1,2}/ && $#ACCESS == 0) ||  # apparently global operators cannot be documented
             $line =~ m/^\s*%\w+(.*)?$/ ){
         dbg_info('skipping comment');
         $comment = '';
