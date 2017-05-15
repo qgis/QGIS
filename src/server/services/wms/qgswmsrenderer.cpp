@@ -2184,8 +2184,9 @@ namespace QgsWms
         }
 
         //labeling
-        if ( vl->customProperty( QStringLiteral( "labeling/enabled" ) ).toString() == QLatin1String( "true" ) )
+        if ( vl->labeling() )
         {
+          // TODO: this need a complete re-work: there may be simple or rule-based labeling. we need to temporarily replace labeling instance.
           double labelTransparency = vl->customProperty( QStringLiteral( "labeling/textTransp" ) ).toDouble();
           labelTransparencies.push_back( qMakePair( vl, labelTransparency ) );
           vl->setCustomProperty( QStringLiteral( "labeling/textTransp" ), labelTransparency + ( 100 - labelTransparency ) * ( 1.0 - opacityRatio ) );

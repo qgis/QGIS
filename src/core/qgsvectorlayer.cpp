@@ -3466,6 +3466,8 @@ int QgsVectorLayer::layerTransparency() const
 
 void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 {
+  setLabeling( nullptr ); // start with no labeling
+
   QDomElement element = node.toElement();
   if ( element.isNull() )
     return;
@@ -3500,46 +3502,22 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     return;
   }
 
+  QgsPalLayerSettings settings;
+
   // Label
-  setCustomProperty( QStringLiteral( "labeling/enabled" ), false );
   QDomElement labelElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Label" ) );
   if ( !labelElem.isNull() )
   {
     QDomElement propertyNameElem = labelElem.firstChildElement( QStringLiteral( "PropertyName" ) );
     if ( !propertyNameElem.isNull() )
     {
-      // enable labeling
-      setCustomProperty( QStringLiteral( "labeling" ), "pal" );
-      setCustomProperty( QStringLiteral( "labeling/enabled" ), true );
-
-      // set labeling defaults
-      setCustomProperty( QStringLiteral( "labeling/fontFamily" ), "Sans-Serif" );
-      setCustomProperty( QStringLiteral( "labeling/fontItalic" ), false );
-      setCustomProperty( QStringLiteral( "labeling/fontSize" ), 10 );
-      setCustomProperty( QStringLiteral( "labeling/fontSizeInMapUnits" ), false );
-      setCustomProperty( QStringLiteral( "labeling/fontBold" ), false );
-      setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), false );
-      setCustomProperty( QStringLiteral( "labeling/textColorR" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/textColorG" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/textColorB" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/textTransp" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), false );
-      setCustomProperty( QStringLiteral( "labeling/bufferSize" ), 1 );
-      setCustomProperty( QStringLiteral( "labeling/bufferSizeInMapUnits" ), false );
-      setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), 255 );
-      setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), 255 );
-      setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), 255 );
-      setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/placement" ), QgsPalLayerSettings::AroundPoint );
-      setCustomProperty( QStringLiteral( "labeling/xOffset" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/yOffset" ), 0 );
-      setCustomProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), false );
-      setCustomProperty( QStringLiteral( "labeling/angleOffset" ), 0 );
+      // enable labeling + set labeling defaults
+      settings.enabled = true;
 
       // label attribute
       QString labelAttribute = propertyNameElem.text();
-      setCustomProperty( QStringLiteral( "labeling/fieldName" ), labelAttribute );
-      setCustomProperty( QStringLiteral( "labeling/isExpression" ), false );
+      settings.fieldName = labelAttribute;
+      settings.isExpression = false;
 
       int fieldIndex = mFields.lookupField( labelAttribute );
       if ( fieldIndex == -1 )
@@ -3548,7 +3526,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         QgsExpression exp( labelAttribute );
         if ( !exp.hasEvalError() )
         {
-          setCustomProperty( QStringLiteral( "labeling/isExpression" ), true );
+          settings.isExpression = true;
         }
         else
         {
@@ -3568,6 +3546,12 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     return;
   }
 
+  QString fontFamily = "Sans-Serif";
+  int fontPointSize = 10;
+  int fontWeight = -1;
+  bool fontItalic = false;
+  bool fontUnderline = false;
+
   // Font
   QDomElement fontElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Font" ) );
   if ( !fontElem.isNull() )
@@ -3583,11 +3567,11 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         elemText = cssElem.text();
         if ( cssName == QLatin1String( "font-family" ) )
         {
-          setCustomProperty( QStringLiteral( "labeling/fontFamily" ), elemText );
+          fontFamily = elemText;
         }
         else if ( cssName == QLatin1String( "font-style" ) )
         {
-          setCustomProperty( QStringLiteral( "labeling/fontItalic" ), ( elemText == QLatin1String( "italic" ) ) || ( elemText == QLatin1String( "Italic" ) ) );
+          fontItalic = ( elemText == QLatin1String( "italic" ) ) || ( elemText == QLatin1String( "Italic" ) );
         }
         else if ( cssName == QLatin1String( "font-size" ) )
         {
@@ -3595,16 +3579,17 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
           int fontSize = elemText.toInt( &ok );
           if ( ok )
           {
-            setCustomProperty( QStringLiteral( "labeling/fontSize" ), fontSize );
+            fontPointSize = fontSize;
           }
         }
         else if ( cssName == QLatin1String( "font-weight" ) )
         {
-          setCustomProperty( QStringLiteral( "labeling/fontBold" ), ( elemText == QLatin1String( "bold" ) ) || ( elemText == QLatin1String( "Bold" ) ) );
+          if ( ( elemText == QLatin1String( "bold" ) ) || ( elemText == QLatin1String( "Bold" ) ) )
+            fontWeight = QFont::Bold;
         }
         else if ( cssName == QLatin1String( "font-underline" ) )
         {
-          setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), ( elemText == QLatin1String( "underline" ) ) || ( elemText == QLatin1String( "Underline" ) ) );
+          fontUnderline = ( elemText == QLatin1String( "underline" ) ) || ( elemText == QLatin1String( "Underline" ) );
         }
       }
 
@@ -3612,22 +3597,27 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     }
   }
 
+  QgsTextFormat format;
+  QFont font( fontFamily, fontPointSize, fontWeight, fontItalic );
+  font.setUnderline( fontUnderline );
+  format.setFont( font );
+  format.setSize( fontPointSize );
+
   // Fill
   QColor textColor = QgsOgcUtils::colorFromOgcFill( textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) ) );
   if ( textColor.isValid() )
   {
-    setCustomProperty( QStringLiteral( "labeling/textColorR" ), textColor.red() );
-    setCustomProperty( QStringLiteral( "labeling/textColorG" ), textColor.green() );
-    setCustomProperty( QStringLiteral( "labeling/textColorB" ), textColor.blue() );
-    setCustomProperty( QStringLiteral( "labeling/textTransp" ), 100 - static_cast< int >( 100 * textColor.alphaF() ) );
+    format.setColor( textColor );
   }
+
+  QgsTextBufferSettings bufferSettings;
 
   // Halo
   QDomElement haloElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Halo" ) );
   if ( !haloElem.isNull() )
   {
-    setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), true );
-    setCustomProperty( QStringLiteral( "labeling/bufferSize" ), 1 );
+    bufferSettings.setEnabled( true );
+    bufferSettings.setSize( 1 );
 
     QDomElement radiusElem = haloElem.firstChildElement( QStringLiteral( "Radius" ) );
     if ( !radiusElem.isNull() )
@@ -3636,17 +3626,14 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
       double bufferSize = radiusElem.text().toDouble( &ok );
       if ( ok )
       {
-        setCustomProperty( QStringLiteral( "labeling/bufferSize" ), bufferSize );
+        bufferSettings.setSize( bufferSize );
       }
     }
 
     QColor bufferColor = QgsOgcUtils::colorFromOgcFill( haloElem.firstChildElement( QStringLiteral( "Fill" ) ) );
     if ( bufferColor.isValid() )
     {
-      setCustomProperty( QStringLiteral( "labeling/bufferColorR" ), bufferColor.red() );
-      setCustomProperty( QStringLiteral( "labeling/bufferColorG" ), bufferColor.green() );
-      setCustomProperty( QStringLiteral( "labeling/bufferColorB" ), bufferColor.blue() );
-      setCustomProperty( QStringLiteral( "labeling/bufferTransp" ), 100 - static_cast< int >( 100 * bufferColor.alphaF() ) );
+      bufferSettings.setColor( bufferColor );
     }
   }
 
@@ -3658,7 +3645,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "PointPlacement" ) );
     if ( !pointPlacementElem.isNull() )
     {
-      setCustomProperty( QStringLiteral( "labeling/placement" ), QgsPalLayerSettings::OverPoint );
+      settings.placement = QgsPalLayerSettings::OverPoint;
 
       QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
       if ( !displacementElem.isNull() )
@@ -3670,7 +3657,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
           double xOffset = displacementXElem.text().toDouble( &ok );
           if ( ok )
           {
-            setCustomProperty( QStringLiteral( "labeling/xOffset" ), xOffset );
+            settings.xOffset = xOffset;
           }
         }
         QDomElement displacementYElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementY" ) );
@@ -3680,7 +3667,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
           double yOffset = displacementYElem.text().toDouble( &ok );
           if ( ok )
           {
-            setCustomProperty( QStringLiteral( "labeling/yOffset" ), yOffset );
+            settings.yOffset = yOffset;
           }
         }
       }
@@ -3692,11 +3679,15 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         double rotation = rotationElem.text().toDouble( &ok );
         if ( ok )
         {
-          setCustomProperty( QStringLiteral( "labeling/angleOffset" ), rotation );
+          settings.angleOffset = rotation;
         }
       }
     }
   }
+
+  format.setBuffer( bufferSettings );
+  settings.setFormat( format );
+  setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
 }
 
 QgsEditFormConfig QgsVectorLayer::editFormConfig() const

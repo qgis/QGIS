@@ -319,6 +319,22 @@ General changes        {#qgis_api_break_3_0_global}
 - Network analysis library has been merged into analysis library
 
 
+Labeling    {#qgis_api_break_3_0_Labeling}
+--------
+
+Labeling of vector layers used to be configured in 2.x using setCustomProperties() method with various
+lots of options prefixed with "labeling" keyword, for example: layer.setCustomProperties("labeling/fieldName", "my_field").
+While 2.x projects and .qml files containing configuration using custom properties will still work,
+calling these API methods will have no effect on layer's labeling configuration anymore: all settings
+are now stored in objects derived from QgsAbstractVectorLayerLabeling:
+
+- QgsVectorLayerSimpleLabeling - when all features are labeled the same way
+- QgsRuleBasedLabeling - rule-based labeling
+
+The current configuration of labeling can be queried with vector layer's labeling() method and modified with
+setLabeling() method.
+
+
 Data Providers        {#qgis_api_break_3_0_DataProviders}
 --------------
 
