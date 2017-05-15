@@ -706,19 +706,38 @@ void QgsProcessingParameterTableField::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
-QgsProcessingParameterVector::QgsProcessingParameterVector( const QString &name, const QString &description, LayerType type, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, LayerType type, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
 }
 
-QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVector::dataType() const
+QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVectorLayer::dataType() const
 {
   return mDataType;
 }
 
-void QgsProcessingParameterVector::setDataType( QgsProcessingParameterDefinition::LayerType dataType )
+void QgsProcessingParameterVectorLayer::setDataType( QgsProcessingParameterDefinition::LayerType dataType )
 {
   mDataType = dataType;
+}
+
+
+
+QgsProcessingParameterOutputVectorLayer::QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mDataType( type )
+{
+
+}
+
+QgsProcessingParameterDefinition::LayerType QgsProcessingParameterOutputVectorLayer::dataType() const
+{
+  return mDataType;
+}
+
+void QgsProcessingParameterOutputVectorLayer::setDataType( QgsProcessingParameterDefinition::LayerType type )
+{
+  mDataType = type;
 }

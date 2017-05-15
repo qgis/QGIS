@@ -74,8 +74,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         for row in range(self.mainWidget.tblParameters.rowCount()):
             alg = self.alg
             col = 0
-            for param in alg.parameters:
-                if param.hidden:
+            for param in alg.parameterDefinitions():
+                if param.hidden or param.isDestination():
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
                 if not self.mainWidget.setParamValue(param, wrapper, alg):
@@ -85,7 +85,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     self.algs = None
                     return
                 col += 1
-            for out in alg.outputs:
+            for out in alg.destinationParameterDefinitions():
                 if out.hidden:
                     continue
 
@@ -102,7 +102,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     return
 
             self.algs.append(alg)
-            if self.alg.getVisibleOutputsCount():
+            if len(self.alg.destinationParameterDefinitions()) > 0:
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 self.load.append(widget.currentIndex() == 0)
             else:

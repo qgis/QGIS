@@ -64,6 +64,14 @@ class QgsProcessingParameterDefinition
  :rtype: str
 %End
 
+    virtual bool isDestination() const;
+%Docstring
+ Returns true if this parameter represents a file or layer destination, e.g. parameters
+ which are used for the destination for layers output by an algorithm will return
+ true.
+ :rtype: bool
+%End
+
     QString name() const;
 %Docstring
  Returns the name of the parameter. This is the internal identifier by which
@@ -906,7 +914,7 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterVector : QgsProcessingParameterDefinition
+class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 {
 %Docstring
  A vector layer parameter for processing algorithms.
@@ -918,10 +926,10 @@ class QgsProcessingParameterVector : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterVector( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                  bool optional = false );
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterVector.
+ Constructor for QgsProcessingParameterVectorLayer.
 %End
 
     virtual QString type() const;
@@ -937,6 +945,45 @@ class QgsProcessingParameterVector : QgsProcessingParameterDefinition
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 %Docstring
  Sets the layer ``type`` for layers acceptable by the parameter.
+.. seealso:: dataType()
+%End
+
+};
+
+
+class QgsProcessingParameterOutputVectorLayer : QgsProcessingParameterDefinition
+{
+%Docstring
+ A vector layer output for processing algorithms.
+
+ A parameter which represents the destination for a vector layer created by an algorithm.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterOutputVectorLayer.
+%End
+
+    virtual QString type() const;
+    virtual bool isDestination() const;
+
+    QgsProcessingParameterDefinition::LayerType dataType() const;
+%Docstring
+ Returns the layer type for the output layer associated with the parameter.
+.. seealso:: setDataType()
+ :rtype: QgsProcessingParameterDefinition.LayerType
+%End
+
+    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+%Docstring
+ Sets the layer ``type`` for the output layer associated with the parameter.
 .. seealso:: dataType()
 %End
 

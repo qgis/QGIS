@@ -85,6 +85,13 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QString type() const = 0;
 
     /**
+     * Returns true if this parameter represents a file or layer destination, e.g. parameters
+     * which are used for the destination for layers output by an algorithm will return
+     * true.
+     */
+    virtual bool isDestination() const { return false; }
+
+    /**
      * Returns the name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
      * @see setName()
@@ -906,20 +913,20 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
 };
 
 /**
- * \class QgsProcessingParameterVector
+ * \class QgsProcessingParameterVectorLayer
  * \ingroup core
  * A vector layer parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVector : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingParameterVector.
+     * Constructor for QgsProcessingParameterVectorLayer.
      */
-    QgsProcessingParameterVector( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                  bool optional = false );
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "vector" ); }
 
@@ -938,8 +945,47 @@ class CORE_EXPORT QgsProcessingParameterVector : public QgsProcessingParameterDe
 
   private:
 
-    QgsProcessingParameterDefinition::LayerType mDataType;
+    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
 
+};
+
+
+/**
+ * \class QgsProcessingParameterOutputVectorLayer
+ * \ingroup core
+ * A vector layer output for processing algorithms.
+ *
+ * A parameter which represents the destination for a vector layer created by an algorithm.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterOutputVectorLayer : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterOutputVectorLayer.
+     */
+    QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "vectorOut" ); }
+    bool isDestination() const override { return true; }
+
+    /**
+     * Returns the layer type for the output layer associated with the parameter.
+     * \see setDataType()
+     */
+    QgsProcessingParameterDefinition::LayerType dataType() const;
+
+    /**
+     * Sets the layer \a type for the output layer associated with the parameter.
+     * \see dataType()
+     */
+    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+
+  private:
+
+    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

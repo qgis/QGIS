@@ -265,7 +265,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.exec_()
                 return
 
-            if (alg.countVisibleParameters() + alg.getVisibleOutputsCount()) > 0:
+            if alg.countVisibleParameters() > 0:
                 dlg = alg.getCustomParametersDialog()
                 if not dlg:
                     dlg = AlgorithmDialog(alg)

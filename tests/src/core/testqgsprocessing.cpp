@@ -71,6 +71,37 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       p4->setFlags( QgsProcessingParameterDefinition::FlagHidden );
       QVERIFY( addParameter( p4 ) );
       QCOMPARE( countVisibleParameters(), 2 );
+
+
+      //destination styleparameters
+      QVERIFY( destinationParameterDefinitions().isEmpty() );
+      QgsProcessingParameterOutputVectorLayer *p5 = new QgsProcessingParameterOutputVectorLayer( "p5" );
+      QVERIFY( addParameter( p5 ) );
+      QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 );
+      QgsProcessingParameterOutputVectorLayer *p6 = new QgsProcessingParameterOutputVectorLayer( "p6" );
+      QVERIFY( addParameter( p6 ) );
+      QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
+    }
+
+    void runOutputChecks()
+    {
+      QVERIFY( outputDefinitions().isEmpty() );
+      QVERIFY( addOutput( new QgsProcessingOutputVectorLayer( "p1" ) ) );
+      QCOMPARE( outputDefinitions().count(), 1 );
+      QCOMPARE( outputDefinitions().at( 0 )->name(), QString( "p1" ) );
+
+      QVERIFY( !addOutput( nullptr ) );
+      QCOMPARE( outputDefinitions().count(), 1 );
+      // duplicate name!
+      QgsProcessingOutputVectorLayer *p2 = new QgsProcessingOutputVectorLayer( "p1" );
+      QVERIFY( !addOutput( p2 ) );
+      delete p2;
+      QCOMPARE( outputDefinitions().count(), 1 );
+
+      QCOMPARE( outputDefinition( "p1" ), outputDefinitions().at( 0 ) );
+      // parameterDefinition should be case insensitive
+      QCOMPARE( outputDefinition( "P1" ), outputDefinitions().at( 0 ) );
+      QVERIFY( !outputDefinition( "invalid" ) );
     }
 
 };
@@ -149,6 +180,7 @@ class TestQgsProcessing: public QObject
     void createFeatureSink();
     void parameters();
     void algorithmParameters();
+    void algorithmOutputs();
     void parameterGeneral();
     void parameterBoolean();
     void parameterCrs();
@@ -976,6 +1008,12 @@ void TestQgsProcessing::algorithmParameters()
 {
   DummyAlgorithm alg( "test" );
   alg.runParameterChecks();
+}
+
+void TestQgsProcessing::algorithmOutputs()
+{
+  DummyAlgorithm alg( "test" );
+  alg.runOutputChecks();
 }
 
 void TestQgsProcessing::parameterGeneral()

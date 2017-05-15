@@ -97,30 +97,32 @@ class BatchPanel(BASE, WIDGET):
                 break
 
         # Determine column count
-        nOutputs = self.alg.getVisibleOutputsCount() + 1
+        nOutputs = len(self.alg.destinationParameterDefinitions()) + 1
         if nOutputs == 1:
             nOutputs = 0
 
         self.tblParameters.setColumnCount(
-            self.alg.countVisibleParameters() + nOutputs)
+            self.alg.countVisibleParameters())
 
         # Table headers
         column = 0
-        for param in self.alg.parameters:
+        for param in self.alg.parameterDefinitions():
+            if param.isDestination():
+                continue
             self.tblParameters.setHorizontalHeaderItem(
                 column, QTableWidgetItem(param.description))
             if param.isAdvanced:
                 self.tblParameters.setColumnHidden(column, True)
             column += 1
 
-        for out in self.alg.outputs:
+        for out in self.alg.destinationParameterDefinitions():
             if not out.hidden:
                 self.tblParameters.setHorizontalHeaderItem(
                     column, QTableWidgetItem(out.description))
                 column += 1
 
         # Last column for indicating if output will be added to canvas
-        if self.alg.getVisibleOutputsCount():
+        if len(self.alg.destinationParameterDefinitions()) > 0:
             self.tblParameters.setHorizontalHeaderItem(
                 column, QTableWidgetItem(self.tr('Load in QGIS')))
 
@@ -233,8 +235,8 @@ class BatchPanel(BASE, WIDGET):
         wrappers = {}
         row = self.tblParameters.rowCount() - 1
         column = 0
-        for param in self.alg.parameters:
-            if param.hidden:
+        for param in self.alg.parameterDefinitions():
+            if param.hidden or param.isDestination():
                 continue
 
             wrapper = param.wrapper(self.parent, row, column)
@@ -242,7 +244,7 @@ class BatchPanel(BASE, WIDGET):
             self.setCellWrapper(row, column, wrapper)
             column += 1
 
-        for out in self.alg.outputs:
+        for out in self.alg.destinationParameterDefinitions():
             if out.hidden:
                 continue
 
@@ -251,7 +253,7 @@ class BatchPanel(BASE, WIDGET):
                     out, self.alg, row, column, self))
             column += 1
 
-        if self.alg.getVisibleOutputsCount():
+        if len(self.alg.destinationParameterDefinitions()) > 0:
             item = QComboBox()
             item.addItem(self.tr('Yes'))
             item.addItem(self.tr('No'))
