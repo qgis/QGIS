@@ -106,12 +106,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
     def getParametersPanel(self, parent):
         return ParametersPanel(parent, self)
 
-    def getCustomParametersDialog(self):
-        """If the algorithm has a custom parameters dialog, it should
-        be returned here, ready to be executed.
-        """
-        return None
-
     def getCustomModelerParametersDialog(self, modelAlg, algName=None):
         """If the algorithm has a custom parameters dialog when called
         from the modeler, it should be returned here, ready to be

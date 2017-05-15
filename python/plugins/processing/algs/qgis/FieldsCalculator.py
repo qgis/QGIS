@@ -169,5 +169,5 @@ class FieldsCalculator(GeoAlgorithm):
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
 
-    def getCustomParametersDialog(self):
+    def createCustomParametersWidget(self, parent):
         return FieldsCalculatorDialog(self)

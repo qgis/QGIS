@@ -269,7 +269,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.algType == self.SCRIPT_PYTHON:
             alg = ScriptAlgorithm(None, self.editor.text())
 
-        dlg = alg.getCustomParametersDialog()
+        dlg = alg.createCustomParametersWidget(self)
         if not dlg:
             dlg = AlgorithmDialog(alg)
 
