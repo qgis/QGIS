@@ -122,8 +122,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     pass
 
-    def checkBeforeOpeningParametersDialog(self):
-        return self.error
+    def canExecute(self):
+        return not self.error, self.error
 
     def checkInputCRS(self):
         if self.noCRSWarning:

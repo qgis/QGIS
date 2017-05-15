@@ -572,8 +572,9 @@ class Grass7Algorithm(GeoAlgorithm):
     def getTempFilename(self):
         return system.getTempFilename()
 
-    def checkBeforeOpeningParametersDialog(self):
-        return Grass7Utils.checkGrass7IsInstalled()
+    def canExecute(self):
+        message = Grass7Utils.checkGrass7IsInstalled()
+        return not message, message
 
     def checkParameterValuesBeforeExecuting(self):
         if self.module:

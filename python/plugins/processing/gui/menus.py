@@ -193,8 +193,8 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
 
 
 def _executeAlgorithm(alg):
-    message = alg.checkBeforeOpeningParametersDialog()
-    if message:
+    ok, message = alg.canExecute()
+    if not ok:
         dlg = MessageDialog()
         dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
