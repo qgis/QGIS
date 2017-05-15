@@ -19,7 +19,11 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#ifdef Q_OS_MACX
+#include "qgsmacnative.h"
+#else
 #include "qgsnative.h"
+#endif
 #include "qgsshortcutsmanager.h"
 
 QgsGui *QgsGui::instance()
