@@ -49,6 +49,11 @@ QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
   return FlagSupportsBatch;
 }
 
+bool QgsProcessingAlgorithm::canExecute( QString * ) const
+{
+  return true;
+}
+
 QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
 {
   return mProvider;

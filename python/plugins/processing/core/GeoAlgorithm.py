@@ -130,20 +130,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         descs = {}
         return descs
 
-    def checkBeforeOpeningParametersDialog(self):
-        """If there is any check to perform before the parameters
-        dialog is opened, it should be done here.
-
-        This method returns an error message string if there is any
-        problem (for instance, an external app not configured yet),
-        or None if the parameters dialog can be opened.
-
-        Note that this check should also be done in the
-        processAlgorithm method, since algorithms can be called without
-        opening the parameters dialog.
-        """
-        return None
-
     def checkParameterValuesBeforeExecuting(self):
         """If there is any check to do before launching the execution
         of the algorithm, it should be done here.

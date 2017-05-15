@@ -255,8 +255,8 @@ class ProcessingToolbox(BASE, WIDGET):
         if isinstance(item, TreeAlgorithmItem):
             context = dataobjects.createContext()
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            message = alg.checkBeforeOpeningParametersDialog()
-            if message:
+            ok, message = alg.canExecute()
+            if not ok:
                 dlg = MessageDialog()
                 dlg.setTitle(self.tr('Error executing algorithm'))
                 dlg.setMessage(

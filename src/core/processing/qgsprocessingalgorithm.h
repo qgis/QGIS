@@ -118,6 +118,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual Flags flags() const;
 
     /**
+     * Returns true if the algorithm can execute. Algorithm subclasses can return false
+     * here to indicate that they are not able to execute, e.g. as a result of unmet
+     * external dependencies. If specified, the \a errorMessage argument will be filled
+     * with a localised error message describing why the algorithm cannot execute.
+     */
+    virtual bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const;
+
+    /**
      * Returns the provider to which this algorithm belongs.
      */
     QgsProcessingProvider *provider() const;

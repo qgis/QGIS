@@ -525,11 +525,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         else:
             return None
 
-    def checkBeforeOpeningParametersDialog(self):
+    def canExecute(self):
         for alg in list(self.algs.values()):
             algInstance = QgsApplication.processingRegistry().algorithmById(alg.consoleName)
             if algInstance is None:
-                return self.tr("The model you are trying to run contains an algorithm that is not available: <i>{0}</i>").format(alg.consoleName)
+                return False, self.tr("The model you are trying to run contains an algorithm that is not available: <i>{0}</i>").format(alg.consoleName)
+        return True, None
 
     def setModelerView(self, dialog):
         self.modelerdialog = dialog

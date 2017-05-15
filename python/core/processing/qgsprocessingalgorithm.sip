@@ -104,6 +104,15 @@ class QgsProcessingAlgorithm
  :rtype: Flags
 %End
 
+    virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
+%Docstring
+ Returns true if the algorithm can execute. Algorithm subclasses can return false
+ here to indicate that they are not able to execute, e.g. as a result of unmet
+ external dependencies. If specified, the ``errorMessage`` argument will be filled
+ with a localised error message describing why the algorithm cannot execute.
+ :rtype: bool
+%End
+
     QgsProcessingProvider *provider() const;
 %Docstring
  Returns the provider to which this algorithm belongs.
