@@ -698,7 +698,7 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     if ( p.isDiagram )
       valid = layer->diagramsEnabled();
     else
-      valid = settings.enabled;
+      valid = true;
   }
 
   if ( !valid )

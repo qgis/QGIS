@@ -377,10 +377,6 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
-
-    // whether to label this layer
-    bool enabled;
-
     /** Whether to draw labels for this layer. For some layers it may be desirable
      * to register their features as obstacles for other labels without requiring
      * labels to be drawn for the layer itself. In this case drawLabels can be set

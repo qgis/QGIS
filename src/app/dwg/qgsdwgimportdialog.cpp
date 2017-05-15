@@ -356,7 +356,6 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QS
     QgsPalLayerSettings pls;
     pls.setFormat( tf );
 
-    pls.enabled = true;
     pls.drawLabels = true;
     pls.fieldName = "text";
     pls.wrapChar = "\\P";
