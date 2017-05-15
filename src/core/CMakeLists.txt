@@ -91,6 +91,7 @@ SET(QGIS_CORE_SRCS
   expression/qgsexpressionnode.cpp
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
+  expression/qgsexpressionutils.cpp
 
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
