@@ -63,17 +63,6 @@ static QColor _readColor( QgsVectorLayer *layer, const QString &property, const 
   return QColor( r, g, b, a );
 }
 
-#if 0
-static void _writeColor( QgsVectorLayer *layer, const QString &property, const QColor &color, bool withAlpha = true )
-{
-  layer->setCustomProperty( property + 'R', color.red() );
-  layer->setCustomProperty( property + 'G', color.green() );
-  layer->setCustomProperty( property + 'B', color.blue() );
-  if ( withAlpha )
-    layer->setCustomProperty( property + 'A', color.alpha() );
-}
-#endif
-
 QgsTextBufferSettings::QgsTextBufferSettings()
 {
   d = new QgsTextBufferSettingsPrivate();
@@ -264,36 +253,6 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
   else
     setPaintEffect( nullptr );
 }
-
-#if 0
-void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
-{
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), d->enabled );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferSize" ), d->size );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  _writeColor( layer, QStringLiteral( "labeling/bufferColor" ), d->color );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferNoFill" ), !d->fillBufferInterior );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferOpacity" ), d->opacity );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
-
-  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
-  {
-    QDomDocument doc( QStringLiteral( "effect" ) );
-    QDomElement effectElem = doc.createElement( QStringLiteral( "effect" ) );
-    d->paintEffect->saveProperties( doc, effectElem );
-    QString effectProps;
-    QTextStream stream( &effectProps );
-    effectElem.save( stream, -1 );
-    layer->setCustomProperty( QStringLiteral( "labeling/bufferEffect" ), effectProps );
-  }
-  else
-  {
-    layer->removeCustomProperty( QStringLiteral( "labeling/bufferEffect" ) );
-  }
-}
-#endif
 
 void QgsTextBufferSettings::readXml( const QDomElement &elem )
 {
@@ -766,53 +725,6 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     setPaintEffect( nullptr );
 }
 
-#if 0
-void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
-{
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeDraw" ), d->enabled );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeType" ), static_cast< unsigned int >( d->type ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSVGFile" ), d->svgFile );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeType" ), static_cast< unsigned int >( d->sizeType ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeX" ), d->size.width() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeY" ), d->size.height() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeUnit" ), QgsUnitTypes::encodeUnit( d->sizeUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRotationType" ), static_cast< unsigned int >( d->rotationType ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRotation" ), d->rotation );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetX" ), d->offset.x() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetY" ), d->offset.y() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiX" ), d->radii.width() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiY" ), d->radii.height() );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiUnit" ), QgsUnitTypes::encodeUnit( d->radiiUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeRadiiMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiiMapUnitScale ) );
-  _writeColor( layer, QStringLiteral( "labeling/shapeFillColor" ), d->fillColor, true );
-  _writeColor( layer, QStringLiteral( "labeling/shapeBorderColor" ), d->strokeColor, true );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidth" ), d->strokeWidth );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->strokeWidthUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeOpacity" ), d->opacity );
-  layer->setCustomProperty( QStringLiteral( "labeling/shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
-
-  if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect ) )
-  {
-    QDomDocument doc( QStringLiteral( "effect" ) );
-    QDomElement effectElem = doc.createElement( QStringLiteral( "effect" ) );
-    d->paintEffect->saveProperties( doc, effectElem );
-    QString effectProps;
-    QTextStream stream( &effectProps );
-    effectElem.save( stream, -1 );
-    layer->setCustomProperty( QStringLiteral( "labeling/shapeEffect" ), effectProps );
-  }
-  else
-  {
-    layer->removeCustomProperty( QStringLiteral( "labeling/shapeEffect" ) );
-  }
-}
-#endif
-
 void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
@@ -1203,27 +1115,6 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
-#if 0
-void QgsTextShadowSettings::writeToLayer( QgsVectorLayer *layer ) const
-{
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowDraw" ), d->enabled );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetAngle" ), d->offsetAngle );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetDist" ), d->offsetDist );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->offsetMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOffsetGlobal" ), d->offsetGlobal );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadius" ), d->radius );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusUnit" ), QgsUnitTypes::encodeUnit( d->radiusUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->radiusMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowRadiusAlphaOnly" ), d->radiusAlphaOnly );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowOpacity" ), d->opacity );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowScale" ), d->scale );
-  _writeColor( layer, QStringLiteral( "labeling/shadowColor" ), d->color, false );
-  layer->setCustomProperty( QStringLiteral( "labeling/shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
-}
-#endif
-
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
@@ -1529,33 +1420,6 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   mShadowSettings.readFromLayer( layer );
   mBackgroundSettings.readFromLayer( layer );
 }
-
-#if 0
-void QgsTextFormat::writeToLayer( QgsVectorLayer *layer ) const
-{
-  layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), d->textFont.family() );
-  layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontSize" ), d->fontSize );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontSizeUnit" ), QgsUnitTypes::encodeUnit( d->fontSizeUnits ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->fontSizeMapUnitScale ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontWeight" ), d->textFont.weight() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontItalic" ), d->textFont.italic() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontStrikeout" ), d->textFont.strikeOut() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontUnderline" ), d->textFont.underline() );
-  _writeColor( layer, QStringLiteral( "labeling/textColor" ), d->textColor );
-  layer->setCustomProperty( QStringLiteral( "labeling/textOpacity" ), d->opacity );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontCapitals" ), static_cast< unsigned int >( d->textFont.capitalization() ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontLetterSpacing" ), d->textFont.letterSpacing() );
-  layer->setCustomProperty( QStringLiteral( "labeling/fontWordSpacing" ), d->textFont.wordSpacing() );
-  layer->setCustomProperty( QStringLiteral( "labeling/textOpacity" ), d->opacity );
-  layer->setCustomProperty( QStringLiteral( "labeling/blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
-  layer->setCustomProperty( QStringLiteral( "labeling/multilineHeight" ), d->multilineHeight );
-
-  mBufferSettings.writeToLayer( layer );
-  mShadowSettings.writeToLayer( layer );
-  mBackgroundSettings.writeToLayer( layer );
-}
-#endif
 
 void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
