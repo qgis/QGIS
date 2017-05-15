@@ -41,7 +41,6 @@ from qgis.core import (QgsProcessingFeedback,
 
 from builtins import str
 from builtins import object
-from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
@@ -89,9 +88,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         """Here is where the parameters and outputs should be defined.
         """
         pass
-
-    def getParametersPanel(self, parent):
-        return ParametersPanel(parent, self)
 
     def getCustomModelerParametersDialog(self, modelAlg, algName=None):
         """If the algorithm has a custom parameters dialog when called
