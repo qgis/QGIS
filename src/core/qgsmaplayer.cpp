@@ -377,6 +377,10 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   savedValidation = QgsCoordinateReferenceSystem::customCrsValidation();
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
+  // read custom properties before passing reading further to a subclass, so that
+  // the subclass can also read custom properties
+  readCustomProperties( layerElement );
+
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
 
@@ -503,8 +507,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     setTransparency( myElement.text().toInt() );
   }
 #endif
-
-  readCustomProperties( layerElement );
 
   mMetadata.readFromLayer( this );
 
