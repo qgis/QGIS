@@ -45,12 +45,13 @@ class QgsOptionalExpression
     int operator== ( const QgsOptionalExpression &other ) const;
 %MethodCode
       sipRes = *sipCpp == *a0;
-%End        %End
+%End
 
-    int __bool__() const;      +    QgsOptionalExpression( const QgsExpression &expression, bool enabled );
-%MethodCode        +%Docstring
-      sipRes = sipCpp->enabled();      + Construct an optional expression with the provided expression and enabled state.
-%End        %End
+
+    int __bool__() const;
+%MethodCode
+      sipRes = sipCpp->enabled();
+%End
 
     /**
      * Check if this optional is enabled
