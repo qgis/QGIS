@@ -31,7 +31,8 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget,
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -88,23 +89,26 @@ class AlgorithmDialog(AlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
-    def setParamValues(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
+    def getParamValues(self):
+        parameters = {}
 
-        for param in params:
-            if param.hidden:
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            wrapper = self.mainWidget.wrappers[param.name]
-            if not self.setParamValue(param, wrapper):
-                raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+            if not param.isDestination():
+                wrapper = self.mainWidget.wrappers[param.name()]
+                if wrapper.widget:
+                    value = wrapper.value()
+                    parameters[param.name()] = value
 
-        for output in outputs:
-            if output.hidden:
-                continue
-            output.value = self.mainWidget.outputWidgets[output.name].getValue()
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                output.open = self.mainWidget.checkBoxes[output.name].isChecked()
+                    #TODO
+                    #if not self.setParamValue(param, wrapper):
+                    #    raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+            else:
+                parameters[param.name()] = self.mainWidget.outputWidgets[param.name()].getValue()
+                # TODO
+                #if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
+                #    output.open = self.mainWidget.checkBoxes[param.name()].isChecked()
 
         return True
 
@@ -154,7 +158,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            self.setParamValues()
+            parameters = self.getParamValues()
             if checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                                              self.tr('Layers do not all use the same CRS. This can '
