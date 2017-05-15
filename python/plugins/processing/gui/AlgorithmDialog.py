@@ -38,6 +38,7 @@ from qgis.utils import iface
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import execute, executeIterating
@@ -62,7 +63,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setMainWidget(alg.getParametersPanel(self))
+        self.setMainWidget(self.getParametersPanel(alg, self))
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -77,6 +78,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         layout.addWidget(self.runAsBatchButton)
         self.cornerWidget.setLayout(layout)
         self.tabWidget.setCornerWidget(self.cornerWidget)
+
+    def getParametersPanel(self, alg, parent):
+        return ParametersPanel(parent, alg)
 
     def runAsBatch(self):
         self.close()
