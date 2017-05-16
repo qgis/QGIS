@@ -103,21 +103,22 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
 # )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/metadata
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/core
-  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/raster/
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+
   ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/core/raster/
+  ${CMAKE_BINARY_DIR}/src/core/raster
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/customwidgets
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}

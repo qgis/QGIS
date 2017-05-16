@@ -148,24 +148,26 @@ SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 
 
 INCLUDE_DIRECTORIES(
-  ..
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ../../app
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ../../core/layertree
-  ../../core/raster
-  ../../core/symbology-ng
-  ../../gui
-  ../../gui/editorwidgets
-  ../../gui/symbology-ng
-  ../../gui/layertree
-  ../../providers/grass
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/providers/grass
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
