@@ -32,6 +32,7 @@
 #include "qgslogger.h"
 #include "qgseditorwidgetsetup.h"
 #include "qgsgui.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -737,7 +738,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement &layerElem, QD
     QgsExpression exp( vLayer->displayExpression() );
     if ( exp.isField() )
     {
-      displayField = static_cast<const QgsExpression::NodeColumnRef *>( exp.rootNode() )->name();
+      displayField = static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name();
       displayFieldIdx = vLayer->fields().lookupField( displayField );
     }
 
