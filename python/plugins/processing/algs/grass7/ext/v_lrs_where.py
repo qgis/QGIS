@@ -37,7 +37,7 @@ def processInputs(alg):
         alg.exportedLayers[rstable]
     )
     alg.commands.append(command)
-    alg.processInputs()
+    alg.processInputs(parameters,context)
 
 
 def processCommand(alg, parameters):

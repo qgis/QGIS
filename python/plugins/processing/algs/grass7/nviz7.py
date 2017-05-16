@@ -115,7 +115,7 @@ class nviz7(GeoAlgorithm):
         if cellsize:
             command += ' res=' + str(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + str(self.getDefaultCellsize(parameters,context))
         commands.append(command)
 
         command = 'nviz7'
@@ -170,22 +170,22 @@ class nviz7(GeoAlgorithm):
         command += ' --overwrite -o'
         return (command, destFilename)
 
-    def getDefaultCellsize(self):
+    def getDefaultCellsize(self, parameters, context):
         cellsize = 0
-        context = dataobjects.createContext()
-        for param in self.parameters:
-            if param.value:
+        for param in self.parameterDefinitions():
+            if param.name() in parameters:
+                value = parameters[param.name()]
                 if isinstance(param, ParameterRaster):
-                    if isinstance(param.value, QgsRasterLayer):
-                        layer = param.value
+                    if isinstance(value, QgsRasterLayer):
+                        layer = value
                     else:
-                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
+                        layer = QgsProcessingUtils.mapLayerFromString(value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
-                    layers = param.value.split(';')
+                    layers = value.split(';')
                     for layername in layers:
                         layer = QgsProcessingUtils.mapLayerFromString(layername, context)
                         if isinstance(layer, QgsRasterLayer):
