@@ -1,9 +1,6 @@
 core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
-core/qgsexpressioncontext.sip
-core/qgsfeaturerequest.sip
-core/qgsoptionalexpression.sip
 core/qgspaintenginehack.sip
 core/qgspainting.sip
 core/qgspallabeling.sip

@@ -196,9 +196,6 @@ Copy constructor
 %End
 
     bool operator==( const QgsProperty &other ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsProperty &other ) const;
 %Docstring
  :rtype: bool

@@ -1,3 +1,14 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsoptionalexpression.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsOptionalExpression
 {
 %Docstring
@@ -34,52 +45,50 @@ class QgsOptionalExpression
 %End
 
 
-    /**
-     * Compare this QgsOptionalExpression to another one.
-     *
-     * This will compare the enabled flag and call the == operator
-     * of the contained class.
-     *
-     * @note Added in QGIS 3.0
-     */
+
     int operator== ( const QgsOptionalExpression &other ) const;
 %MethodCode
-      sipRes = *sipCpp == *a0;
+    sipRes = *sipCpp == *a0;
 %End
 
 
     int __bool__() const;
+%Docstring
+ :rtype: int
+%End
 %MethodCode
-      sipRes = sipCpp->enabled();
+    sipRes = sipCpp->enabled();
 %End
 
-    /**
-     * Check if this optional is enabled
-     *
-     * @note Added in QGIS 3.0
-     */
     bool enabled() const;
+%Docstring
+ Check if this optional is enabled
 
-    /**
-     * Set if this optional is enabled
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     void setEnabled( bool enabled );
+%Docstring
+ Set if this optional is enabled
 
-    /**
-     * Access the payload data
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     QgsExpression data() const;
+%Docstring
+ Access the payload data
 
-    /**
-     * Set the payload data
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+ :rtype: QgsExpression
+%End
+
     void setData( const QgsExpression &data );
+%Docstring
+ Set the payload data
+
+.. versionadded:: 3.0
+%End
 
     void writeXml( QDomElement &element );
 %Docstring
@@ -98,3 +107,14 @@ class QgsOptionalExpression
 .. versionadded:: 2.18
 %End
 };
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsoptionalexpression.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

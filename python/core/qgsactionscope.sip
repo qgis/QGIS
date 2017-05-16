@@ -52,10 +52,6 @@ class QgsActionScope
 %End
 
     bool operator==( const QgsActionScope &other ) const;
-%Docstring
- Compares two action scopes
- :rtype: bool
-%End
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring

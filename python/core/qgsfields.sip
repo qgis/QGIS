@@ -275,10 +275,6 @@ Utility function to return a list of QgsField instances
 %End
 
     bool operator==( const QgsFields &other ) const;
-%Docstring
-.. versionadded:: 2.6
- :rtype: bool
-%End
     bool operator!=( const QgsFields &other ) const;
 %Docstring
 .. versionadded:: 2.6

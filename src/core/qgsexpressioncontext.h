@@ -337,15 +337,15 @@ class CORE_EXPORT QgsExpressionContext
      * Ownership of the scopes is transferred to the stack.
      * \since QGIS 3.0
      */
-    explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes );
+    explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
     /** Copy constructor
      */
     QgsExpressionContext( const QgsExpressionContext &other );
 
-    QgsExpressionContext &operator=( const QgsExpressionContext &other );
+    QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;
 
-    QgsExpressionContext &operator=( QgsExpressionContext &&other ) noexcept;
+    QgsExpressionContext &operator=( QgsExpressionContext &&other ) noexcept SIP_SKIP;
 
     ~QgsExpressionContext();
 
@@ -498,7 +498,7 @@ class CORE_EXPORT QgsExpressionContext
      * \param scopes scopes to append to context
      * \since QGIS 3.0
      */
-    void appendScopes( const QList<QgsExpressionContextScope *> &scopes );
+    void appendScopes( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
     /**
      * Removes the last scope from the expression context and return it.
@@ -690,7 +690,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a list of three scopes: global, layer's project and layer.
      * \since QGIS 3.0
      */
-    static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer );
+    static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer ) SIP_FACTORY;
 
     /** Sets a layer context variable. This variable will be contained within scopes retrieved via
      * layerScope().

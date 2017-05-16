@@ -386,6 +386,18 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     Some<Other> memberToSkip;
     QList<QgsMapLayer *> list2skip;
     QMap<QString, Qt::CheckState> map2skip;
+    FilterType mFilter = FilterNone;
+    QgsFeatureId mFilterFid = -1;
+    QgsFeatureIds mFilterFids;
+    std::unique_ptr< QgsExpression > mFilterExpression;
+    long mLimit = -1;
+    InvalidGeometryCheck mInvalidGeometryFilter = GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    static QHash<QString, Help> sFunctionHelpTexts;
+    friend class QgsOgcUtils;
+    template<typename> friend class QgsAbstractFeatureIteratorFromSource;
+    const QgsAbstractGeometry *mGeometry = 0;
+    mutable unsigned char *mP;
 
   private:
     void privateMethodAreNotShown();
@@ -459,6 +471,22 @@ class CORE_EXPORT AbstractClass SIP_ABSTRACT
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSipifyHeader::Flags )
+
+class CORE_EXPORT TemplateInheritance1 : public QgsTemplate<Something>
+{
+}
+class CORE_EXPORT TemplateInheritance2 : public QgsTemplate<Something>, private SomethingElse
+{
+}
+class CORE_EXPORT TemplateInheritance3 : public QgsTemplate<Something>, public SomethingElse
+{
+}
+class CORE_EXPORT TemplateInheritance4 : public SomethingElse1, public QgsTemplate<Something>, public SomethingElse2
+{
+}
+class CORE_EXPORT TemplateInheritance5 : public SomethingElse, public QgsTemplate<Something>
+{
+}
 
 
 #endif

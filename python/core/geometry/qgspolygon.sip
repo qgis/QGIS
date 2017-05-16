@@ -23,9 +23,6 @@ class QgsPolygonV2: QgsCurvePolygon
     QgsPolygonV2();
 
     bool operator==( const QgsPolygonV2 &other ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsPolygonV2 &other ) const;
 %Docstring
  :rtype: bool

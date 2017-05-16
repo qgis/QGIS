@@ -68,9 +68,6 @@ class QgsEditFormConfig
 
 
     bool operator==( const QgsEditFormConfig &o );
-%Docstring
- :rtype: bool
-%End
 
     void addTab( QgsAttributeEditorElement *data /Transfer/ );
 %Docstring

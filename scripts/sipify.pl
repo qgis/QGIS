@@ -92,7 +92,7 @@ sub dbg_info
   }
 }
 
-sub remove_constructor_or_body {
+sub detect_following_body_or_list {
     # https://regex101.com/r/ZaP3tC/4
     do {no warnings 'uninitialized';
         if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
@@ -100,30 +100,34 @@ sub remove_constructor_or_body {
              || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3$4$5;";
-            if ($line !~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/){
-                dbg_info("  go for multiline");
+            remove_initializerlist_or_body() unless $line =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
+            $line = $newline;
+        }
+    };
+}
+
+sub remove_initializerlist_or_body {
+    do {no warnings 'uninitialized';
+        dbg_info("remove constructor definition, function bodies, member initializing list");
+        $line = $lines[$line_idx];
+        $line_idx++;
+        while ( $line =~ m/^\s*[:,]\s+([\w<>]|::)+\(.*?\)/){
+          dbg_info("  member initializing list");
+          $line = $lines[$line_idx];
+          $line_idx++;
+        }
+        if ( $line =~ m/^\s*\{/ ){
+            my $nesting_index = 0;
+            while ($line_idx < $line_count){
+                dbg_info("  remove body");
+                $nesting_index += $line =~ tr/\{//;
+                $nesting_index -= $line =~ tr/\}//;
+                if ($nesting_index == 0){
+                    last;
+                }
                 $line = $lines[$line_idx];
                 $line_idx++;
-                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
-                  dbg_info("  member initializing list");
-                  $line = $lines[$line_idx];
-                  $line_idx++;
-                }
-                if ( $line =~ m/^\s*\{/ ){
-                    my $nesting_index = 0;
-                    while ($line_idx < $line_count){
-                        dbg_info("  remove body");
-                        $nesting_index += $line =~ tr/\{//;
-                        $nesting_index -= $line =~ tr/\}//;
-                        if ($nesting_index == 0){
-                            last;
-                        }
-                        $line = $lines[$line_idx];
-                        $line_idx++;
-                    }
-                }
             }
-            $line = $newline;
         }
     };
 }
@@ -226,8 +230,8 @@ while ($line_idx < $line_count){
     if ($line =~ m/^\s*#/){
 
         # skip #if 0 blocks
-        if ( $line =~ m/^\s*#if 0/){
-          dbg_info("skipping #if 0 block");
+        if ( $line =~ m/^\s*#if (0|defined\(Q_OS_WIN\))/){
+          dbg_info("skipping #if $1 block");
           my $nesting_index = 0;
           while ($line_idx < $line_count){
               $line = $lines[$line_idx];
@@ -356,7 +360,7 @@ while ($line_idx < $line_count){
         $MULTILINE_DEFINITION = 0;
         }
         # also skip method body if there is one
-        remove_constructor_or_body();
+        detect_following_body_or_list();
         # line skipped, go to next iteration
         next;
     }
@@ -446,11 +450,13 @@ while ($line_idx < $line_count){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/2
-    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT)?\s+(\w+)(\s*\:\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<\w+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
+    # https://regex101.com/r/6FWntP/5
+    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
         dbg_info("class definition started => private");
         push @ACCESS, PRIVATE;
         push @global_bracket_nesting_index, 0;
+        my @template_inheritance_template = ();
+        my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
             $classname = $3;
             $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class $classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
@@ -460,8 +466,15 @@ while ($line_idx < $line_count){
         if ($4){
             my $m = $4;
             $m =~ s/public //g;
-            $m =~ s/[,:]?\s*private \w+(::\w+)?//;
-            $m =~ s/(\s*:)?\s*$//;
+            $m =~ s/[,:]?\s*private \w+(::\w+)?//g;
+            while ($m =~ /[,:]\s+(\w+)<((\w|::)+)>/g){
+                dbg_info("template class");
+                push @template_inheritance_template, $1;
+                push @template_inheritance_class, $2;
+            }
+            $m =~ s/\w+<(\w|::)+>//g; # remove template Inheritance, not handled at the moment (see commented lines below)
+            $m =~ s/([:,])\s*,/$1/g;
+            $m =~ s/(\s*[:,])?\s*$//;
             $line .= $m;
         }
         if (defined $+{annot})
@@ -475,7 +488,14 @@ while ($line_idx < $line_count){
             $line .= "%Docstring\n$comment\n%End\n";
         }
         $line .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"";
-
+        # see https://www.riverbankcomputing.com/pipermail/pyqt/2015-May/035893.html
+        # this doesn't work as expected since it leads to double definitions (typedef vs class)
+        # while (@template_inheritance_template) {
+        #     my $tpl = pop @template_inheritance_template;
+        #     my $cls = pop @template_inheritance_class;
+        #     $line .= "\n#include \"" . lc $tpl  . ".h\"";
+        #     $line .= "\ntypedef $tpl<$cls> $classname;";
+        # }
         push @output, dbg("CLS")."$line\n";
 
         # Skip opening curly bracket, we already added that above
@@ -524,7 +544,10 @@ while ($line_idx < $line_count){
     }
 
     # skip non-method member declaration in non-public sections
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] != PUBLIC && $line =~ m/^\s*(?:mutable\s)?\w+[\w<> *&:,]* \*?\w+( = \w+(\([^()]+\))?)?;/){
+    # https://regex101.com/r/gUBZUk/7
+    if ( $SIP_RUN != 1 &&
+         $ACCESS[$#ACCESS] != PUBLIC &&
+         $line =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)? \*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?))?;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
@@ -586,7 +609,7 @@ while ($line_idx < $line_count){
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition, function bodies, member initializing list
-        $SIP_RUN == 1 or remove_constructor_or_body();
+        $SIP_RUN == 1 or detect_following_body_or_list();
 
         # remove inline declarations
         if ( $line =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
@@ -639,30 +662,10 @@ while ($line_idx < $line_count){
             $MULTILINE_DEFINITION = 0;
             dbg_info("ending multiline");
             # remove potential following body
-
-
             if ( $SIP_RUN == 0 && $line !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){
                 dbg_info("remove following body of multiline def");
                 my $last_line = $line;
-                $line = $lines[$line_idx];
-                $line_idx++;
-                while ( $line =~ m/^\s*[:,]\s+[\w<>]+\(.*?\)/){
-                    dbg_info("  member initializing list");
-                    $line = $lines[$line_idx];
-                    $line_idx++;
-                }
-                my $nesting_index = 1;
-                if ( $line =~ m/^\s*\{$/ ){
-                    while ($line_idx < $line_count){
-                        $line = $lines[$line_idx];
-                        $line_idx++;
-                        $nesting_index += $line =~ tr/\{//;
-                        $nesting_index -= $line =~ tr/\}//;
-                        if ($nesting_index == 0){
-                            last;
-                        }
-                    }
-                }
+                remove_initializerlist_or_body();
                 # add missing semi column
                 my $dummy = pop(@output);
                 push @output, dbg("MLT")."$last_line;\n";
@@ -689,6 +692,7 @@ while ($line_idx < $line_count){
             $line =~ m/\s*typedef / ||
             $line =~ m/\s*struct / ||
             $line =~ m/operator\[\]\(/ ||
+            $line =~ m/operator==/ ||
             ($line =~ m/operator[!+-=*\/\[\]]{1,2}/ && $#ACCESS == 0) ||  # apparently global operators cannot be documented
             $line =~ m/^\s*%\w+(.*)?$/ ){
         dbg_info('skipping comment');

@@ -258,11 +258,6 @@ Copy constructor
 %End
 
     bool operator==( const QgsRectangle &r1 ) const;
-%Docstring
- Comparison operator
- :return: True if rectangles are equal
- :rtype: bool
-%End
 
     bool operator!=( const QgsRectangle &r1 ) const;
 %Docstring

@@ -60,9 +60,6 @@ class QgsField
     virtual ~QgsField();
 
     bool operator==( const QgsField &other ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsField &other ) const;
 %Docstring
  :rtype: bool
