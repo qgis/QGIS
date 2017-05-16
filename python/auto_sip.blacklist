@@ -450,7 +450,6 @@ server/qgsaccesscontrolfilter.sip
 server/qgsaccesscontrol.sip
 server/qgsmapserviceexception.sip
 server/qgscapabilitiescache.sip
-server/qgsrequesthandler.sip
 server/qgsserverprojectparser.sip
 server/qgswmsconfigparser.sip
 server/qgswmsprojectparser.sip
