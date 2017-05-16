@@ -655,6 +655,20 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(renderer.nColors(), 2)
         self.assertEqual(renderer.usesBands(), [1])
 
+    def testClone(self):
+        myPath = os.path.join(unitTestDataPath('raster'),
+                              'band1_float32_noct_epsg4326.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        layer = QgsRasterLayer(myPath, myBaseName)
+
+        renderer = layer.renderer().clone()
+        renderer.setOpacity(33.3)
+        layer.setRenderer(renderer)
+
+        clone = layer.clone()
+        self.assertEqual(clone.renderer().opacity(), 33.3)
+
 
 if __name__ == '__main__':
     unittest.main()
