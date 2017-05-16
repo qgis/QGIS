@@ -462,7 +462,12 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  width = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, width );
+  offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  l->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   l->setOffset( offset );
   l->setPenJoinStyle( penJoinStyle );
   l->setPenCapStyle( penCapStyle );
@@ -1518,7 +1523,12 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  interval = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, interval );
+  offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotateMarker );
+  x->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   x->setPlacement( placement );
   x->setInterval( interval );
   x->setSubSymbol( marker.release() );

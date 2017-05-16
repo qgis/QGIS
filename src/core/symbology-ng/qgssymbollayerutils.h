@@ -137,6 +137,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
 
+    /** Returns the size scaled in pixels according to the uom attribute.
+     * \param uom The uom attribute from SLD 1.1 version
+     * \param size The original size
+     * \returns the size in pixels
+     * \since QGIS 3.0
+     */
+    static double sizeInPixelsFromSldUom( const QString &uom, double size );
+
     static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
 
