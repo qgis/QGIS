@@ -137,7 +137,7 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      * Returns the search prefix character(s) for this filter. Prefix a search
      * with these characters will restrict the locator search to only include
      * results from this filter.
-     * \note Plugins are not permitted to utilise prefixes with < 3 characters,
+     * \note Plugins are not permitted to utilize prefixes with < 3 characters,
      * as these are reserved for core QGIS functions. If a plugin registers
      * a filter with a prefix shorter than 3 characters then the prefix will
      * be ignored.

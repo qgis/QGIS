@@ -34,6 +34,7 @@ from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 
+
 class AlgorithmLocatorFilter(QgsLocatorFilter):
 
     def __init__(self, parent=None):
@@ -51,20 +52,20 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
     def prefix(self):
         return 'a'
 
-    def fetchResults(self,string,context,feedback):
+    def fetchResults(self, string, context, feedback):
         for a in QgsApplication.processingRegistry().algorithms():
             if feedback.isCanceled():
                 return
             if a.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
 
-            if QgsLocatorFilter.stringMatches(a.displayName(),string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t,string)]:
+            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)]:
                 result = QgsLocatorResult()
                 result.filter = self
                 result.displayString = a.displayName()
                 result.icon = a.icon()
                 result.userData = a.id()
-                if QgsLocatorFilter.stringMatches(a.displayName(),string):
+                if string and QgsLocatorFilter.stringMatches(a.displayName(), string):
                     result.score = float(len(string)) / len(a.displayName())
                 else:
                     result.score = 0

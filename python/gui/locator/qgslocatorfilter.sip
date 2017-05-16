@@ -118,7 +118,7 @@ class QgsLocatorFilter : QObject
  results from this filter.
 .. note::
 
-   Plugins are not permitted to utilise prefixes with < 3 characters,
+   Plugins are not permitted to utilize prefixes with < 3 characters,
  as these are reserved for core QGIS functions. If a plugin registers
  a filter with a prefix shorter than 3 characters then the prefix will
  be ignored.

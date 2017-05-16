@@ -510,7 +510,7 @@ QgsLocatorFilterFilter::QgsLocatorFilterFilter( QgsLocatorWidget *locator, QObje
   , mLocator( locator )
 {}
 
-void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
   if ( !string.isEmpty() )
   {
