@@ -23,7 +23,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD
 from processing.tools import dataobjects
-from processing.core.parameters import _resolveLayers
+
 import os
 from qgis.PyQt import uic
 from qgis.gui import QgsDoubleSpinBox
@@ -193,7 +193,7 @@ class HeatmapPixelSizeWidgetWrapper(WidgetWrapper):
     def setLayer(self, layer):
         context = dataobjects.createContext()
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(_resolveLayers(layer), context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self.widget.setLayer(layer)
 
     def radiusChanged(self, wrapper):

@@ -91,18 +91,6 @@ def _expressionContext():
     return context
 
 
-def _resolveLayers(value):
-    layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-    if value:
-        inputlayers = value.split(';')
-        for i, inputlayer in enumerate(inputlayers):
-            for layer in layers:
-                if layer.name() == inputlayer:
-                    inputlayers[i] = layer.source()
-                    break
-        return ";".join(inputlayers)
-
-
 class Parameter(object):
 
     """
@@ -153,9 +141,6 @@ class Parameter(object):
 
     def evaluate(self, alg):
         pass
-
-    def evaluateForModeler(self, value, model):
-        return value
 
 
 class ParameterBoolean(Parameter):
@@ -281,9 +266,6 @@ class ParameterDataObject(Parameter):
             s = QgsProcessingUtils.normalizeLayerSource(str(self.value))
             s = '"%s"' % s
             return s
-
-    def evaluate(self, alg):
-        self.value = _resolveLayers(self.value)
 
 
 class ParameterExtent(Parameter):
@@ -703,9 +685,6 @@ class ParameterMultipleInput(ParameterDataObject):
         elif definition.lower().strip() == 'multiple vector':
             return ParameterMultipleInput(name, definition,
                                           dataobjects.TYPE_VECTOR_ANY, isOptional)
-
-    def evaluate(self, alg):
-        self.value = _resolveLayers(self.value)
 
 
 class ParameterNumber(Parameter):

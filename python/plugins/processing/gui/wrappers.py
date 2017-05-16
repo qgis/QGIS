@@ -99,8 +99,7 @@ from processing.core.parameters import (ParameterBoolean,
                                         ParameterTableField,
                                         ParameterExtent,
                                         ParameterFixedTable,
-                                        ParameterCrs,
-                                        _resolveLayers)
+                                        ParameterCrs)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.core.outputs import (OutputFile, OutputRaster, OutputVector,
@@ -967,7 +966,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
     def setLayer(self, layer):
         context = dataobjects.createContext()
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(_resolveLayers(layer), context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self.widget.setLayer(layer)
 
     def setValue(self, value):
@@ -1136,7 +1135,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
     def setLayer(self, layer):
         context = dataobjects.createContext()
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(_resolveLayers(layer), context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self._layer = layer
         self.refreshItems()
 
@@ -1195,6 +1194,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
 
 class WidgetWrapperFactory:
+
     """
     Factory for parameter widget wrappers
     """
