@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon, QColor
 
 from qgis.analysis import QgsRelief
-
+from qgis.core import QgsProcessingParameterDefinition
 from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (Parameter,
                                         ParameterRaster,
@@ -74,13 +74,13 @@ class Relief(QgisAlgorithm):
 
             def setValue(self, value):
                 if value is None:
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
                     self.value = None
                     return True
 
                 if value == '':
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
 
                 if isinstance(value, str):

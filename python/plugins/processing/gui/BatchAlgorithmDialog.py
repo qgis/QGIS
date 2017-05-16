@@ -91,7 +91,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     return
                 col += 1
             for out in alg.destinationParameterDefinitions():
-                if out.hidden:
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
 
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
@@ -101,7 +101,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     col += 1
                 else:
                     self.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                         out.description, row + 1),
+                                         out.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
@@ -150,12 +150,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
     def loadHTMLResults(self, alg, num):
         for out in alg.outputs:
-            if out.hidden or not out.open:
+            if out.flags() & QgsProcessingParameterDefinition.FlagHidden or not out.open:
                 continue
 
             if isinstance(out, OutputHTML):
                 ProcessingResults.addResult(
-                    '{} [{}]'.format(out.description, num), out.value)
+                    '{} [{}]'.format(out.description(), num), out.value)
 
     def createSummaryTable(self):
         createTable = False
@@ -174,7 +174,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 f.write('<hr>\n')
                 for out in alg.outputs:
                     if isinstance(out, (OutputNumber, OutputString)):
-                        f.write('<p>{}: {}</p>\n'.format(out.description, out.value))
+                        f.write('<p>{}: {}</p>\n'.format(out.description(), out.value))
             f.write('<hr>\n')
 
         ProcessingResults.addResult(

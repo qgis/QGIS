@@ -81,7 +81,7 @@ def processCommand(alg, parameters):
     for param in paramsToDelete:
         alg.parameters.remove(param)
 
-    alg.processCommand()
+    alg.processCommand(parameters, context)
 
     # Bring back the parameters:
     for param in paramsToDelete:

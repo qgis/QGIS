@@ -26,6 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsProcessingParameterDefinition
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -111,7 +113,7 @@ class gdal2tiles(GdalAlgorithm):
                                       None, False, True))
 
         for param in params:
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
         self.addOutput(OutputDirectory(self.OUTPUTDIR,

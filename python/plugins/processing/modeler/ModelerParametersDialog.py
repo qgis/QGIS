@@ -40,6 +40,7 @@ from qgis.core import (QgsNetworkAccessManager,
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
 
+from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.core.outputs import (OutputRaster,
@@ -114,7 +115,7 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout.addWidget(line)
 
         for param in self._alg.parameters:
-            if param.isAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.advancedButton = QPushButton()
                 self.advancedButton.setText(self.tr('Show advanced parameters'))
                 self.advancedButton.clicked.connect(
@@ -124,42 +125,42 @@ class ModelerParametersDialog(QDialog):
                 advancedButtonHLayout.addStretch()
                 self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
-        for param in self._alg.parameters:
-            if param.hidden:
+        for param in self._alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            desc = param.description
+            desc = param.description()
             if isinstance(param, ParameterExtent):
                 desc += self.tr('(xmin, xmax, ymin, ymax)')
             if isinstance(param, ParameterPoint):
                 desc += self.tr('(x, y)')
-            if param.optional:
+            if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 desc += self.tr(' [optional]')
             label = QLabel(desc)
-            self.labels[param.name] = label
+            self.labels[param.name()] = label
 
-            wrapper = param.wrapper(self)
-            self.wrappers[param.name] = wrapper
+            wrapper = WidgetWrapperFactory.create_wrapper(param, self)
+            self.wrappers[param.name()] = wrapper
 
             widget = wrapper.widget
             if widget is not None:
-                self.valueItems[param.name] = widget
+                self.valueItems[param.name()] = widget
                 tooltip = param.description()
                 label.setToolTip(tooltip)
                 widget.setToolTip(tooltip)
-                if param.isAdvanced:
+                if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                     label.setVisible(self.showAdvanced)
                     widget.setVisible(self.showAdvanced)
-                    self.widgets[param.name] = widget
+                    self.widgets[param.name()] = widget
 
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
         for output in self._alg.outputs:
-            if output.hidden:
+            if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
                                    OutputHTML, OutputFile, OutputDirectory)):
-                label = QLabel(output.description + '<' +
+                label = QLabel(output.description() + '<' +
                                output.__class__.__name__ + '>')
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
@@ -249,7 +250,7 @@ class ModelerParametersDialog(QDialog):
         else:
             self.advancedButton.setText(self.tr('Show advanced parameters'))
         for param in self._alg.parameters:
-            if param.isAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
@@ -289,25 +290,25 @@ class ModelerParametersDialog(QDialog):
 
     def resolveValueDescription(self, value):
         if isinstance(value, ValueFromInput):
-            return self.model.inputs[value.name].param.description
+            return self.model.inputs[value.name].param.description()
         else:
             alg = self.model.algs[value.alg]
-            return self.tr("'{0}' from algorithm '{1}'").format(alg.algorithm.getOutputFromName(value.output).description, alg.description)
+            return self.tr("'{0}' from algorithm '{1}'").format(alg.algorithm.getOutputFromName(value.output).description(), alg.description)
 
     def setPreviousValues(self):
         if self._algName is not None:
             alg = self.model.algs[self._algName]
             self.descriptionBox.setText(alg.description)
-            for param in alg.algorithm.parameters:
-                if param.hidden:
+            for param in alg.algorithm.parameterDefinitions():
+                if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
-                if param.name in alg.params:
-                    value = alg.params[param.name]
+                if param.name() in alg.params:
+                    value = alg.params[param.name()]
                 else:
-                    value = param.default
-                self.wrappers[param.name].setValue(value)
+                    value = param.defaultValue()
+                self.wrappers[param.name()].setValue(value)
             for name, out in list(alg.outputs.items()):
-                self.valueItems[name].setText(out.description)
+                self.valueItems[name].setText(out.description())
 
             selected = []
             dependencies = self.getAvailableDependencies()  # spellok
@@ -331,10 +332,10 @@ class ModelerParametersDialog(QDialog):
                                      level=QgsMessageBar.WARNING)
                 return None
         for output in outputs:
-            if not output.hidden:
-                name = str(self.valueItems[output.name].text())
+            if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                name = str(self.valueItems[output.name()].text())
                 if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-                    alg.outputs[output.name] = ModelerOutput(name)
+                    alg.outputs[output.name()] = ModelerOutput(name)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
         availableDependencies = self.getAvailableDependencies()  # spellok

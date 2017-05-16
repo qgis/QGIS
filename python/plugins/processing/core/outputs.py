@@ -45,7 +45,8 @@ from qgis.core import (QgsExpressionContext,
                        QgsProject,
                        QgsSettings,
                        QgsVectorFileWriter,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 
 
 def _expressionContext(alg):
@@ -63,20 +64,11 @@ class Output(object):
 
     def __init__(self, name='', description='', hidden=False):
         self.name = name
-        self.description = description
 
         # The value of an output is a string representing the location
         # of the output. For a file based output, it should be the
         # filepath to it.
         self.value = None
-
-        # A hidden output will not be shown to the user, who will not
-        # be able to select where to store it. Use this to generate
-        # outputs that are modified version of inputs (like a selection
-        # in a vector layer). In the case of layers, hidden outputs are
-        # not loaded into QGIS after the algorithm is executed. Other
-        # outputs not representing layers or tables should always be hidden.
-        self.hidden = str(hidden).lower() == str(True).lower()
 
     def __str__(self):
         return u'{} <{}>'.format(self.name, self.__class__.__name__)
@@ -107,7 +99,7 @@ class Output(object):
         return []
 
     def resolveValue(self, alg):
-        if self.hidden:
+        if self.flags() & QgsProcessingParameterDefinition.FlagHidden:
             return
         if not bool(self.value):
             self.value = self._resolveTemporary(alg)
@@ -135,9 +127,6 @@ class Output(object):
     def expressionContext(self, alg):
         return _expressionContext(alg)
 
-    def typeName(self):
-        return self.__class__.__name__.replace('Output', '').lower()
-
     def tr(self, string, context=''):
         if context == '':
             context = 'Output'
@@ -154,9 +143,8 @@ class OutputExtent(Output):
 
     def __init__(self, name='', description=''):
         self.name = name
-        self.description = description
         self.value = None
-        self.hidden = True
+        self.setFlags(self.flags() | QgsProcessingParameterDefinition.FlagHidden)
 
     def setValue(self, value):
         try:

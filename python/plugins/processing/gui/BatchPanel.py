@@ -35,6 +35,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileD
 from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
+from processing.gui.wrappers import WidgetWrapperFactory
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
@@ -94,7 +95,7 @@ class BatchPanel(BASE, WIDGET):
     def initWidgets(self):
         # If there are advanced parameters — show corresponding button
         for param in self.alg.parameters:
-            if param.isAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.btnAdvanced.show()
                 break
 
@@ -112,15 +113,15 @@ class BatchPanel(BASE, WIDGET):
             if param.isDestination():
                 continue
             self.tblParameters.setHorizontalHeaderItem(
-                column, QTableWidgetItem(param.description))
-            if param.isAdvanced:
+                column, QTableWidgetItem(param.description()))
+            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, True)
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
-            if not out.hidden:
+            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 self.tblParameters.setHorizontalHeaderItem(
-                    column, QTableWidgetItem(out.description))
+                    column, QTableWidgetItem(out.description()))
                 column += 1
 
         # Last column for indicating if output will be added to canvas
@@ -157,20 +158,20 @@ class BatchPanel(BASE, WIDGET):
                 params = alg[self.PARAMETERS]
                 outputs = alg[self.OUTPUTS]
                 column = 0
-                for param in self.alg.parameters:
-                    if param.hidden:
+                for param in self.alg.parameterDefinitions():
+                    if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
-                    if param.name in params:
-                        value = params[param.name].strip('"')
+                    if param.name() in params:
+                        value = params[param.name()].strip('"')
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
 
                 for out in self.alg.outputs:
-                    if out.hidden:
+                    if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
-                    if out.name in outputs:
-                        value = outputs[out.name].strip('"')
+                    if out.name() in outputs:
+                        value = outputs[out.name()].strip('"')
                         widget = self.tblParameters.cellWidget(row, column)
                         widget.setValue(value)
                     column += 1
@@ -200,7 +201,7 @@ class BatchPanel(BASE, WIDGET):
                 algParams[param.name()] = param.getValueAsCommandLineParameter()
                 col += 1
             for out in alg.outputs:
-                if out.hidden:
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
                 widget = self.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
@@ -209,7 +210,7 @@ class BatchPanel(BASE, WIDGET):
                     col += 1
                 else:
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                                out.description, row + 1),
+                                                out.description(), row + 1),
                                                 level=QgsMessageBar.WARNING, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
@@ -236,16 +237,16 @@ class BatchPanel(BASE, WIDGET):
         row = self.tblParameters.rowCount() - 1
         column = 0
         for param in self.alg.parameterDefinitions():
-            if param.hidden or param.isDestination():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                 continue
 
-            wrapper = param.wrapper(self.parent, row, column)
-            wrappers[param.name] = wrapper
+            wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
+            wrappers[param.name()] = wrapper
             self.setCellWrapper(row, column, wrapper)
             column += 1
 
         for out in self.alg.destinationParameterDefinitions():
-            if out.hidden:
+            if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
 
             self.tblParameters.setCellWidget(
@@ -275,5 +276,5 @@ class BatchPanel(BASE, WIDGET):
 
     def toggleAdvancedMode(self, checked):
         for column, param in enumerate(self.alg.parameters):
-            if param.isAdvanced:
+            if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, not checked)

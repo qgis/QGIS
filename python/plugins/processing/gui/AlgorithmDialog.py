@@ -130,7 +130,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        for param in self.alg.parameters:
+        for param in self.alg.parameterDefinitions():
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
@@ -151,7 +151,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if param.skip_crs_check:
                     continue
 
-                value = self.mainWidget.wrappers[param.name].widget.leText.text().strip()
+                value = self.mainWidget.wrappers[param.name()].widget.leText.text().strip()
                 if value:
                     hasExtent = True
 

@@ -74,7 +74,7 @@ class RasterCalculator(QgisAlgorithm):
                     param = i.param
                     if isinstance(param, ParameterRaster):
                         new = "{}@".format(os.path.basename(param.value))
-                        old = "{}@".format(param.name)
+                        old = "{}@".format(param.name())
                         value = value.replace(old, new)
 
                     for alg in list(model.algs.values()):
@@ -164,7 +164,7 @@ class RasterCalculator(QgisAlgorithm):
         for i in list(model.inputs.values()):
             param = i.param
             if isinstance(param, ParameterRaster) and "{}@".format(param.name) in expression:
-                values.append(ValueFromInput(param.name))
+                values.append(ValueFromInput(param.name()))
 
         if algorithm.name:
             dependent = model.getDependentAlgorithms(algorithm.name)
