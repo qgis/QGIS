@@ -123,6 +123,9 @@ class QgsMultiRenderChecker
 
 };
 
+%Feature TESTS
+%If (TESTS)
+
 
 class QgsCompositionChecker : QgsMultiRenderChecker
 {
@@ -144,6 +147,8 @@ class QgsCompositionChecker : QgsMultiRenderChecker
 %End
 
 };
+
+%End
 
 
 /************************************************************************
