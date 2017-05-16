@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -66,7 +67,7 @@ class Orthogonalize(QgisAlgorithm):
         max_iterations = ParameterNumber(self.MAX_ITERATIONS,
                                          self.tr('Maximum algorithm iterations'),
                                          1, 10000, 1000)
-        max_iterations.isAdvanced = True
+        max_iterations.setFlags(max_iterations.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(max_iterations)
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))

@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 import math
 
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsProcessingParameterDefinition)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QVBoxLayout,
@@ -108,8 +109,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.nameTextBox = QLineEdit()
         self.verticalLayout.addWidget(self.nameTextBox)
 
-        if isinstance(self.param, Parameter):
-            self.nameTextBox.setText(self.param.description)
+        if isinstance(self.param, QgsProcessingParameterDefinition):
+            self.nameTextBox.setText(self.param.description())
 
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
                 isinstance(self.param, ParameterBoolean):
@@ -126,9 +127,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             idx = 0
             for param in list(self.alg.inputs.values()):
                 if isinstance(param.param, (ParameterVector, ParameterTable)):
-                    self.parentCombo.addItem(param.param.description, param.param.name)
+                    self.parentCombo.addItem(param.param.description(), param.param.name())
                     if self.param is not None:
-                        if self.param.parent == param.param.name:
+                        if self.param.parent == param.param.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -205,7 +206,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultEdit = QgsExpressionLineEdit()
             if self.param is not None:
-                self.defaultEdit.setExpression(self.param.default)
+                self.defaultEdit.setExpression(self.param.defaultValue())
             self.verticalLayout.addWidget(self.defaultEdit)
 
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
@@ -214,9 +215,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             idx = 1
             for param in list(self.alg.inputs.values()):
                 if isinstance(param.param, (ParameterVector, ParameterTable)):
-                    self.parentCombo.addItem(param.param.description, param.param.name)
+                    self.parentCombo.addItem(param.param.description(), param.param.name())
                     if self.param is not None:
-                        if self.param.parent_layer == param.param.name:
+                        if self.param.parent_layer == param.param.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -225,7 +226,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultTextBox = QLineEdit()
             if self.param is not None:
-                self.defaultTextBox.setText(self.param.default)
+                self.defaultTextBox.setText(self.param.defaultValue())
             self.verticalLayout.addWidget(self.defaultTextBox)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or
                 isinstance(self.param, ParameterFile)):
@@ -242,14 +243,14 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultTextBox = QLineEdit()
             if self.param is not None:
-                self.defaultTextBox.setText(self.param.default)
+                self.defaultTextBox.setText(self.param.defaultValue())
             self.verticalLayout.addWidget(self.defaultTextBox)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.selector = QgsProjectionSelectionWidget()
             if self.param is not None:
-                self.selector.setCrs(QgsCoordinateReferenceSystem(self.param.default))
+                self.selector.setCrs(QgsCoordinateReferenceSystem(self.param.defaultValue()))
             else:
                 self.selector.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
             self.verticalLayout.addWidget(self.selector)
@@ -259,7 +260,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.requiredCheck.setText(self.tr('Mandatory'))
         self.requiredCheck.setChecked(True)
         if self.param is not None:
-            self.requiredCheck.setChecked(not self.param.optional)
+            self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
         self.verticalLayout.addWidget(self.requiredCheck)
 
         self.buttonBox = QDialogButtonBox(self)
@@ -290,7 +291,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             while name in self.alg.inputs:
                 name = safeName.lower() + str(i)
         else:
-            name = self.param.name
+            name = self.param.name()
         if (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or
                 isinstance(self.param, ParameterBoolean)):
             self.param = ParameterBoolean(name, description, self.state.isChecked())
@@ -364,7 +365,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_CRS or
                 isinstance(self.param, ParameterCrs)):
             self.param = ParameterCrs(name, description, default=self.selector.crs().authid())
-        self.param.optional = not self.requiredCheck.isChecked()
+        if not self.requiredCheck.isChecked():
+            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
         self.close()
 
     def cancelPressed(self):

@@ -32,6 +32,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
 
+from qgis.core import QgsProcessingParameterDefinition
+
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
 from processing.core.outputs import OutputRaster
@@ -61,25 +63,25 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         numOutputs = 0
         for output in self.alg.outputs:
             if isinstance(output, (OutputVector, OutputRaster)):
-                if not output.hidden:
+                if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     numOutputs += 1
         self.tblStyles.setRowCount(numOutputs)
 
         i = 0
         for output in self.alg.outputs:
             if isinstance(output, (OutputVector, OutputRaster)):
-                if not output.hidden:
-                    item = QTableWidgetItem(output.description + '<' +
+                if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    item = QTableWidgetItem(output.description() + '<' +
                                             output.__class__.__name__ + '>')
                     item.setFlags(Qt.ItemIsEnabled)
                     self.tblStyles.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()
                     style = \
                         RenderingStyles.getStyle(self.alg.id(),
-                                                 output.name)
+                                                 output.name())
                     if style:
                         item.setText(str(style))
-                    self.valueItems[output.name] = item
+                    self.valueItems[output.name()] = item
                     self.tblStyles.setCellWidget(i, 1, item)
                     self.tblStyles.setRowHeight(i, 22)
             i += 1

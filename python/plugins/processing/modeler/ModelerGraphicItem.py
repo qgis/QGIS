@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import Qt, QPointF, QRectF
 from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter
 from qgis.PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
+from qgis.core import QgsProcessingParameterDefinition
 from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -278,9 +279,9 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'In')
             i = 1
             if not self.element.paramsFolded:
-                for param in self.element.algorithm.parameters:
-                    if not param.hidden:
-                        text = self.getAdjustedText(param.description)
+                for param in self.element.algorithm.parameterDefinitions():
+                    if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                        text = self.getAdjustedText(param.description())
                         h = -(fm.height() * 1.2) * (i + 1)
                         h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
                         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
@@ -292,7 +293,7 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'Out')
             if not self.element.outputsFolded:
                 for i, out in enumerate(self.element.algorithm.outputs):
-                    text = self.getAdjustedText(out.description)
+                    text = self.getAdjustedText(out.description())
                     h = fm.height() * 1.2 * (i + 2)
                     h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
                     pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
@@ -322,7 +323,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, Algorithm) and self.element.algorithm.outputs:
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
-            text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
+            text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description())
             font = QFont('Verdana', 8)
             font.setPixelSize(12)
             fm = QFontMetricsF(font)

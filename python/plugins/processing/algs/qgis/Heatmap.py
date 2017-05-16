@@ -31,7 +31,8 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import QgsKernelDensityEstimation
 
 from processing.algs.qgis import QgisAlgorithm
@@ -88,7 +89,7 @@ class Heatmap(QgisAlgorithm):
 
         radius_field_param = ParameterTableField(self.RADIUS_FIELD,
                                                  self.tr('Radius from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER)
-        radius_field_param.isAdvanced = True
+        radius_field_param.setFlags(radius_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(radius_field_param)
 
         class ParameterHeatmapPixelSize(ParameterNumber):
@@ -108,20 +109,20 @@ class Heatmap(QgisAlgorithm):
 
         weight_field_param = ParameterTableField(self.WEIGHT_FIELD,
                                                  self.tr('Weight from field'), self.INPUT_LAYER, optional=True, datatype=ParameterTableField.DATA_TYPE_NUMBER)
-        weight_field_param.isAdvanced = True
+        weight_field_param.setFlags(weight_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(weight_field_param)
         kernel_shape_param = ParameterSelection(self.KERNEL,
                                                 self.tr('Kernel shape'), self.KERNELS)
-        kernel_shape_param.isAdvanced = True
+        kernel_shape_param.setFlags(kernel_shape_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(kernel_shape_param)
         decay_ratio = ParameterNumber(self.DECAY,
                                       self.tr('Decay ratio (Triangular kernels only)'),
                                       -100.0, 100.0, 0.0)
-        decay_ratio.isAdvanced = True
+        decay_ratio.setFlags(decay_ratio.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(decay_ratio)
         output_scaling = ParameterSelection(self.OUTPUT_VALUE,
                                             self.tr('Output value scaling'), self.OUTPUT_VALUES)
-        output_scaling.isAdvanced = True
+        output_scaling.setFlags(output_scaling.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(output_scaling)
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Heatmap')))

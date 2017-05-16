@@ -35,6 +35,7 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
                        QgsProject)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -52,7 +53,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
         self.param = param
-        if self.param.optional:
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
@@ -89,7 +90,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
 
-        if self.param.optional:
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)

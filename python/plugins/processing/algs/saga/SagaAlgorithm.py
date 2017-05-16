@@ -214,20 +214,20 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in list(self.exportedLayers.keys()):
-                    command += ' -' + param.name + ' "' \
+                    command += ' -' + param.name() + ' "' \
                         + self.exportedLayers[value] + '"'
                 else:
-                    command += ' -' + param.name + ' "' + value + '"'
+                    command += ' -' + param.name() + ' "' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
-                command += ' -' + param.name + ' "' + s + '"'
+                command += ' -' + param.name() + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' -' + param.name.strip() + " true"
+                    command += ' -' + param.name().strip() + " true"
                 else:
-                    command += ' -' + param.name.strip() + " false"
+                    command += ' -' + param.name().strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
@@ -236,7 +236,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
-                command += ' -' + param.name + ' "' + tempTableFile + '"'
+                command += ' -' + param.name() + ' "' + tempTableFile + '"'
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
@@ -247,9 +247,9 @@ class SagaAlgorithm(GeoAlgorithm):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += ' -' + param.name() + ' ' + str(param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += ' -' + param.name() + ' "' + str(param.value) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'

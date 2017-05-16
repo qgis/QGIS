@@ -31,7 +31,15 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsField,
+                       QgsFields,
+                       QgsFeatureRequest,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -134,7 +142,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                       0.0, 99999999.999999, 0.0))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(OutputVector(self.OUTPUT_POINTS,

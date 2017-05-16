@@ -38,6 +38,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointXY,
                        QgsFields,
                        QgsField,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -143,7 +144,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
                                       0.0, 99999999.999999, 0.0))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(OutputNumber(self.TRAVEL_COST,

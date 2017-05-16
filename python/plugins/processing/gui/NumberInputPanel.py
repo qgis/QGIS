@@ -85,7 +85,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 out = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description, alg.description)
+                desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description(), alg.description)
             variables[name] = desc
         values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
         values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
@@ -98,7 +98,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
                 element = alg.algorithm.getOutputFromName(value.output)
-                desc = self.tr("Output '{0}' from algorithm '{1}'").format(element.description, alg.description)
+                desc = self.tr("Output '{0}' from algorithm '{1}'").format(element.description(), alg.description)
             variables['%s_minx' % name] = self.tr("Minimum X of {0}").format(desc)
             variables['%s_miny' % name] = self.tr("Minimum Y of {0}").format(desc)
             variables['%s_maxx' % name] = self.tr("Maximum X of {0}").format(desc)
@@ -122,8 +122,8 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         values = []
         for param in self.modelParametersDialog.model.parameters:
             if isinstance(param, ParameterNumber):
-                if "@" + param.name in value:
-                    values.append(ValueFromInput(param.name))
+                if "@" + param.name() in value:
+                    values.append(ValueFromInput(param.name()))
         for alg in list(self.modelParametersDialog.model.algs.values()):
             for out in alg.algorithm.outputs:
                 if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name(), out.name) in value:

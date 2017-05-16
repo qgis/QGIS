@@ -37,7 +37,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterDefinition)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -183,7 +184,7 @@ class Grass7Algorithm(GeoAlgorithm):
                             vectorOutputs += 1
                         if isinstance(output, OutputHTML):
                             self.addOutput(OutputFile("rawoutput",
-                                                      self.tr("{0} (raw output)").format(output.description),
+                                                      self.tr("{0} (raw output)").format(output.description()),
                                                       "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
@@ -203,17 +204,17 @@ class Grass7Algorithm(GeoAlgorithm):
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                     'v.in.ogr snap tolerance (-1 = no snap)',
                                     -1, None, -1.0)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
                                     'v.in.ogr min area', 0, None, 0.0001)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
         if vectorOutputs == 1:
             param = ParameterSelection(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                        'v.out.ogr output type',
                                        self.OUTPUT_TYPES)
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
     def getDefaultCellsize(self):
@@ -395,7 +396,7 @@ class Grass7Algorithm(GeoAlgorithm):
         command += ' ' + ' '.join(self.hardcodedStrings)
 
         # Add algorithm command
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             if param.value is None or param.value == '':
                 continue
             if param.name in [self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
@@ -403,28 +404,28 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in list(self.exportedLayers.keys()):
-                    command += ' ' + param.name + '=' \
+                    command += ' ' + param.name() + '=' \
                         + self.exportedLayers[value]
                 else:
-                    command += ' ' + param.name + '=' + value
+                    command += ' ' + param.name() + '=' + value
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 s = s.replace(';', ',')
-                command += ' ' + param.name + '=' + s
+                command += ' ' + param.name() + '=' + s
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' ' + param.name
+                    command += ' ' + param.name()
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + str(param.options[idx][1])
+                command += ' ' + param.name() + '=' + str(param.options[idx][1])
             elif isinstance(param, ParameterString):
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name() + '="' + str(param.value) + '"'
             elif isinstance(param, ParameterPoint):
-                command += ' ' + param.name + '=' + str(param.value)
+                command += ' ' + param.name() + '=' + str(param.value)
             else:
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name() + '="' + str(param.value) + '"'
 
         for out in self.outputs:
             if isinstance(out, OutputFile):

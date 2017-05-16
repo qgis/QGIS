@@ -37,6 +37,7 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingAlgorithm,
                        QgsProject,
                        QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
                        QgsMessageLog)
 
 from builtins import str
@@ -350,7 +351,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         for param in self.parameters:
             s += '\t' + str(param) + '\n'
         for out in self.outputs:
-            if not out.hidden:
+            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 s += '\t' + str(out) + '\n'
         s += '\n'
         return s
@@ -394,7 +395,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         for param in self.parameters:
             s += param.getValueAsCommandLineParameter() + ','
         for out in self.outputs:
-            if not out.hidden:
+            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 s += out.getValueAsCommandLineParameter() + ','
         s = s[:-1] + ')'
         return s

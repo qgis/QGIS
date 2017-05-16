@@ -35,7 +35,8 @@ import json
 from qgis.PyQt.QtCore import QPointF
 from operator import attrgetter
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -147,9 +148,9 @@ class Algorithm(object):
                     return str(value)
             params.append(_toString(value))
         for out in self.algorithm.outputs:
-            if not out.hidden:
-                if out.name in self.outputs:
-                    params.append(safeName(self.outputs[out.name].description).lower())
+            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if out.name() in self.outputs:
+                    params.append(safeName(self.outputs[out.name()].description()).lower())
                 else:
                     params.append(str(None))
         s.append("outputs_%s=processing.run('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
@@ -258,7 +259,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 for out in alg.outputs:
                     modelOutput = copy.deepcopy(alg.algorithm.getOutputFromName(out))
                     modelOutput.name = self.getSafeNameForOutput(alg.modeler_name, out)
-                    modelOutput.description = alg.outputs[out].description
+                    modelOutput.description = alg.outputs[out].description()
                     self.outputs.append(modelOutput)
         self.outputs.sort(key=attrgetter("description"))
 
@@ -411,30 +412,30 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def prepareAlgorithm(self, alg):
         algInstance = alg.algorithm
-        for param in algInstance.parameters:
-            if not param.hidden:
-                if param.name in alg.params:
-                    value = self.resolveValue(alg.params[param.name], param)
+        for param in algInstance.parameterDefinitions():
+            if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if param.name() in alg.params:
+                    value = self.resolveValue(alg.params[param.name()], param)
                 else:
                     if iface is not None:
                         iface.messageBar().pushMessage(self.tr("Warning"),
-                                                       self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name, alg.displayName()),
+                                                       self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name(), alg.displayName()),
                                                        QgsMessageBar.WARNING, 4)
-                    value = param.default
+                    value = param.defaultValue()
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
                 if not param.setValue(value) and not isinstance(param,
                                                                 ParameterDataObject):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
-                            value, param.__class__.__name__, param.name
+                            value, param.__class__.__name__, param.name()
                         )
                     )
 
         for out in algInstance.outputs:
-            if not out.hidden:
-                if out.name in alg.outputs:
-                    name = self.getSafeNameForOutput(alg.modeler_name, out.name)
+            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if out.name() in alg.outputs:
+                    name = self.getSafeNameForOutput(alg.modeler_name, out.name())
                     modelOut = self.getOutputFromName(name)
                     if modelOut:
                         out.value = modelOut.value
@@ -501,9 +502,9 @@ class ModelerAlgorithm(GeoAlgorithm):
 
                             # copy algorithm output value(s) back to model in case the algorithm modified those
                             for out in alg.algorithm.outputs:
-                                if not out.hidden:
-                                    if out.name in alg.outputs:
-                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.modeler_name, out.name))
+                                if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                                    if out.name() in alg.outputs:
+                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.modeler_name, out.name()))
                                         if modelOut:
                                             modelOut.value = out.value
 
@@ -636,7 +637,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             s.append(param.param.getAsScriptCode())
         for alg in list(self.algs.values()):
             for name, out in list(alg.outputs.items()):
-                s.append('##%s=%s' % (safeName(out.description).lower(), alg.getOutputType(name)))
+                s.append('##%s=%s' % (safeName(out.description()).lower(), alg.getOutputType(name)))
 
         executed = []
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]

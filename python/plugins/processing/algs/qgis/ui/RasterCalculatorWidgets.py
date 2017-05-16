@@ -1,4 +1,5 @@
 from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
                        QgsProject)
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.tools import dataobjects
@@ -242,6 +243,6 @@ class LayersListWidgetWrapper(WidgetWrapper):
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.optional:
+            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values

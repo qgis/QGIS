@@ -26,7 +26,8 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingParameterDefinition)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterMultipleInput, ParameterTableField, ParameterVector, ParameterSelection
 from processing.tools.system import mkdir
@@ -58,14 +59,14 @@ def baseHelpForAlgorithm(alg, folder):
         # Algorithm parameters
         f.write('Parameters\n')
         f.write('----------\n\n')
-        for p in alg.parameters:
+        for p in alg.parameterDefinitions():
             if isinstance(p, (ParameterMultipleInput, ParameterTableField, ParameterVector)):
-                f.write('``{}`` [{}: {}]\n'.format(p.description, p.typeName(), p.dataType()))
+                f.write('``{}`` [{}: {}]\n'.format(p.description(), p.type(), p.dataType()))
             else:
-                f.write('``{}`` [{}]\n'.format(p.description, p.typeName()))
+                f.write('``{}`` [{}]\n'.format(p.description(), p.type()))
 
             if hasattr(p, 'optional'):
-                if p.optional:
+                if p.flags() & QgsProcessingParameterDefinition.FlagOptional:
                     f.write('  Optional.\n\n')
 
             f.write('  <put parameter description here>\n\n')
@@ -76,14 +77,14 @@ def baseHelpForAlgorithm(alg, folder):
                     f.write('  * {} --- {}\n'.format(count, opt))
                 f.write('\n')
 
-            if hasattr(p, 'default'):
-                f.write('  Default: *{}*\n\n'.format(p.default if p.default != '' else '(not set)'))
+            if hasattr(p, 'defaultValue'):
+                f.write('  Default: *{}*\n\n'.format(p.defaultValue() if p.defaultValue() else '(not set)'))
 
         # Algorithm outputs
         f.write('Outputs\n')
         f.write('-------\n\n')
         for o in alg.outputs:
-            f.write('``{}`` [{}]\n'.format(o.description, o.typeName()))
+            f.write('``{}`` [{}]\n'.format(o.description(), o.type()))
             f.write('  <put output description here>\n\n')
 
         # Console usage
@@ -91,12 +92,12 @@ def baseHelpForAlgorithm(alg, folder):
         f.write('-------------\n')
         f.write('\n::\n\n')
         cmd = "  processing.run('{}', ".format(alg.id())
-        for p in alg.parameters:
-            cmd += '{}, '.format(p.name.lower().strip())
+        for p in alg.parameterDefinitions():
+            cmd += '{}, '.format(p.name().lower().strip())
 
         for o in alg.outputs:
-            if not o.hidden:
-                cmd += '{}, '.format(o.name.lower().strip())
+            if not o.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                cmd += '{}, '.format(o.name().lower().strip())
         cmd = cmd[:-2] + ')\n\n'
         f.write(cmd)
 

@@ -189,7 +189,7 @@ class Processing(object):
                     i = i + 1
 
             for output in alg.outputs:
-                if not output.hidden:
+                if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     if not output.setValue(args[i]):
                         # fix_print_with_import
                         print('Error: Wrong output value: ' + str(args[i]))

@@ -47,9 +47,9 @@ def algorithmOptions(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         opts = ''
-        for param in alg.parameters:
+        for param in alg.parameterDefinitions():
             if isinstance(param, ParameterSelection):
-                opts += '{} ({})\n'.format(param.name, param.description)
+                opts += '{} ({})\n'.format(param.name(), param.description())
                 for option in enumerate(param.options):
                     opts += '\t{} - {}\n'.format(option[0], option[1])
         print(opts)
