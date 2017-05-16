@@ -16,6 +16,8 @@
 #ifndef QGSEXPRESSIONFUNCTION_H
 #define QGSEXPRESSIONFUNCTION_H
 
+#include <functional>
+
 #include <QString>
 #include <QVariant>
 #include <QSet>
