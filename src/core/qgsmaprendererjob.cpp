@@ -289,6 +289,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.context.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
     job.context.setPainter( painter );
     job.context.setLabelingEngine( labelingEngine2 );
+    ct.detachForThread();
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
 

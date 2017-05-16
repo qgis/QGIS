@@ -49,6 +49,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     explicit QgsCoordinateTransformPrivate()
       : mIsValid( false )
       , mShortCircuit( false )
+      , mProjContext( nullptr )
       , mSourceProjection( nullptr )
       , mDestinationProjection( nullptr )
       , mSourceDatumTransform( -1 )
@@ -63,6 +64,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
       , mShortCircuit( false )
       , mSourceCRS( source )
       , mDestCRS( destination )
+      , mProjContext( nullptr )
       , mSourceProjection( nullptr )
       , mDestinationProjection( nullptr )
       , mSourceDatumTransform( -1 )
@@ -78,10 +80,12 @@ class QgsCoordinateTransformPrivate : public QSharedData
       , mShortCircuit( other.mShortCircuit )
       , mSourceCRS( other.mSourceCRS )
       , mDestCRS( other.mDestCRS )
+      , mProjContext( nullptr )
       , mSourceProjection( nullptr )
       , mDestinationProjection( nullptr )
       , mSourceDatumTransform( other.mSourceDatumTransform )
       , mDestinationDatumTransform( other.mDestinationDatumTransform )
+        // important - don't copy mOwnerThread!
     {
       //must reinitialize to setup mSourceProjection and mDestinationProjection
       initialize();
@@ -98,6 +102,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
       {
         pj_free( mDestinationProjection );
       }
+      if ( mProjContext )
+        pj_ctx_free( mProjContext );
     }
 
     bool initialize()
@@ -121,6 +127,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
         QgsDebugMsgLevel( "Destination CRS is invalid!", 4 );
         return false;
       }
+
+      if ( !mProjContext )
+        mProjContext = pj_ctx_alloc();
 
       mIsValid = true;
 
@@ -155,8 +164,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
         addNullGridShifts( sourceProjString, destProjString );
       }
 
-      mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
-      mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
+      mSourceProjection = pj_init_plus_ctx( mProjContext, sourceProjString.toUtf8() );
+      mDestinationProjection = pj_init_plus_ctx( mProjContext, destProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
       QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
@@ -330,6 +339,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
 
+    projCtx mProjContext = nullptr;
+
     //! Proj4 data structure of the source projection (layer coordinate system)
     projPJ mSourceProjection;
 
@@ -338,6 +349,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     int mSourceDatumTransform;
     int mDestinationDatumTransform;
+
+#ifdef QGISDEBUG
+    //! Owner thread - used during debugging to ensure QgsCoordinateTransform::detachForThread() is called
+    QThread *mOwnerThread = nullptr;
+#endif
 
     void setFinder()
     {

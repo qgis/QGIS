@@ -40,6 +40,12 @@ class QPolygonF;
 * and destination coordinate systems refer to layer and map canvas respectively. All
 * operations are from the perspective of the layer. For example, a forward transformation
 * transforms coordinates from the layer's coordinate system to the map canvas.
+*
+* \warning QgsCoordinateTransform transformations are not thread safe. If
+* a QgsCoordinateTransform object is to be reused in a background thread,
+* the detachForThread() method MUST be called prior to performing any
+* transformations using the object.
+*
 * \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
 */
 class CORE_EXPORT QgsCoordinateTransform
@@ -82,6 +88,14 @@ class CORE_EXPORT QgsCoordinateTransform
      * \since QGIS 3.0
      */
     bool isValid() const;
+
+    /**
+     * Detaches the coordinate transform, making it safe for use in a new thread.
+     * \warning This MUST be called for all QgsCoordinateTransform objects which
+     * will be performing transformations in a new thread!
+     * \since QGIS 3.0
+     */
+    void detachForThread();
 
     /**
      * Sets the source coordinate reference system.

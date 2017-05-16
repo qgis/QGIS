@@ -418,6 +418,7 @@ namespace QgsWms
       }
 
       QgsCoordinateTransform tr = mapSettings.layerTransform( vl );
+      tr.detachForThread();
       context.setCoordinateTransform( tr );
       context.setExtent( tr.transformBoundingBox( mapSettings.extent(), QgsCoordinateTransform::ReverseTransform ) );
 
