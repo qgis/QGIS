@@ -285,6 +285,7 @@
 %Include metadata/qgslayermetadatavalidator.sip
 
 %Include processing/qgsprocessingalgorithm.sip
+%Include processing/qgsprocessingalgrunnertask.sip
 %Include processing/qgsprocessingcontext.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingoutputs.sip

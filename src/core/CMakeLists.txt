@@ -95,6 +95,7 @@ SET(QGIS_CORE_SRCS
 
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
+  processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingprovider.cpp
@@ -633,6 +634,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
