@@ -67,7 +67,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     ~QgsCoordinateTransformPrivate();
 
     bool initialize();
-    void initializeCurrentContext();
+
+    QPair< projPJ, projPJ > threadLocalProjData();
 
     //! Flag to indicate whether the transform is valid (ie has a valid
     //! source and destination crs)
@@ -87,8 +88,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     QString mSourceProjString;
     QString mDestProjString;
-    projPJ sourceProjection();
-    projPJ destProjection();
 
     int mSourceDatumTransform;
     int mDestinationDatumTransform;
