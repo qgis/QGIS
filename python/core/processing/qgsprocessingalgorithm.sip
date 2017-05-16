@@ -139,6 +139,17 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
+    virtual bool checkParameterValues( const QVariantMap &parameters,
+                                       QgsProcessingContext &context, QString *message /Out/ = 0 ) const;
+%Docstring
+ Checks the supplied ``parameter`` values to verify that they satisfy the requirements
+ of this algorithm in the supplied ``context``. The ``message`` parameter will be
+ filled with explanatory text if validation fails.
+ Overridden implementations should also check this base class implementation.
+ :return: true if parameters are acceptable for the algorithm.
+ :rtype: bool
+%End
+
     QgsProcessingProvider *provider() const;
 %Docstring
  Returns the provider to which this algorithm belongs.

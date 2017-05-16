@@ -36,7 +36,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.core import (QgsRasterLayer,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog)
+                       QgsMessageLog,
+                       QgsProcessingAlgorithm)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -578,9 +579,9 @@ class Grass7Algorithm(GeoAlgorithm):
         message = Grass7Utils.checkGrass7IsInstalled()
         return not message, message
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         if self.module:
             if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
                 func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
-                return func(self)
-        return
+                return func(self), None
+        return super(Grass7Algorithm, self).checkParameterValues(parameters, context)

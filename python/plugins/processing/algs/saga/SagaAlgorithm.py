@@ -342,17 +342,16 @@ class SagaAlgorithm(GeoAlgorithm):
         sessionExportedLayers[source] = destFilename
         return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         """
         We check that there are no multiband layers, which are not
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
-        context = dataobjects.createContext()
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             files = []
             if isinstance(param, ParameterRaster):
-                files = [param.value]
+                files = [parameters[param.name()]]
             elif (isinstance(param, ParameterMultipleInput) and
                     param.datatype == dataobjects.TYPE_RASTER):
                 if param.value is not None:
@@ -362,12 +361,13 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
-                    return self.tr('Input layer {0} has more than one band.\n'
-                                   'Multiband layers are not supported by SAGA').format(layer.name())
+                    return False, self.tr('Input layer {0} has more than one band.\n'
+                                          'Multiband layers are not supported by SAGA').format(layer.name())
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())
                     else:
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
-                            return self.tr("Input layers do not have the same grid extent.")
+                            return False, self.tr("Input layers do not have the same grid extent.")
+        return super(SagaAlgorithm, self).checkParameterValues(parameters, context)

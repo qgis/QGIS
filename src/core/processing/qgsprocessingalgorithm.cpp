@@ -71,6 +71,20 @@ bool QgsProcessingAlgorithm::canExecute( QString * ) const
   return true;
 }
 
+bool QgsProcessingAlgorithm::checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const
+{
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( !def->checkValueIsAcceptable( parameters.value( def->name() ), &context ) )
+    {
+      if ( message )
+        *message = QObject::tr( "Incorrect parameter value for %1" ).arg( def->name() );
+      return false;
+    }
+  }
+  return true;
+}
+
 QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
 {
   return mProvider;

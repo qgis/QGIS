@@ -204,8 +204,8 @@ class Processing(object):
         else:
             context = dataobjects.createContext()
 
-        msg = alg._checkParameterValuesBeforeExecuting(context)
-        if msg:
+        ok, msg = alg.checkParameterValues(parameters, context)
+        if not ok:
             # fix_print_with_import
             print('Unable to execute algorithm\n' + str(msg))
             QgsMessageLog.logMessage(Processing.tr('Unable to execute algorithm\n{0}').format(msg),

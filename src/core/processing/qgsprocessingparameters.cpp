@@ -241,9 +241,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
 
 QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  QString rectText = parameterAsString( definition, parameters, name, context );
-  if ( rectText.isEmpty() )
-    rectText = definition->defaultValue().toString();
+  QVariant val = parameters.value( name );
+  QString rectText;
+  if ( val.canConvert<QgsProperty>() )
+    rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+  else
+    rectText = val.toString();
 
   if ( rectText.isEmpty() )
     return QgsRectangle();
@@ -445,6 +448,17 @@ QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QStrin
   , mFlags( optional ? FlagOptional : 0 )
 {}
 
+bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String && input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
@@ -455,10 +469,52 @@ QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const
 
 }
 
+bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
 }
 
 QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -467,10 +523,80 @@ QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name,
 
 }
 
+bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  QStringList parts = input.toString().split( ',' );
+  if ( parts.count() == 4 )
+  {
+    bool xMinOk = false;
+    ( void )parts.at( 0 ).toDouble( &xMinOk );
+    bool xMaxOk = false;
+    ( void )parts.at( 1 ).toDouble( &xMaxOk );
+    bool yMinOk = false;
+    ( void )parts.at( 2 ).toDouble( &yMinOk );
+    bool yMaxOk = false;
+    ( void )parts.at( 3 ).toDouble( &yMaxOk );
+    if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
+      return true;
+  }
+
+  // try as layer extent
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
 QgsProcessingParameterPoint::QgsProcessingParameterPoint( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+
+  QStringList parts = input.toString().split( ',' );
+  if ( parts.count() == 2 )
+  {
+    bool xOk = false;
+    ( void )parts.at( 0 ).toDouble( &xOk );
+    bool yOk = false;
+    ( void )parts.at( 1 ).toDouble( &yOk );
+    return xOk && yOk;
+  }
+  else
+    return false;
 }
 
 QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional )
@@ -481,6 +607,36 @@ QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, con
 
 }
 
+bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  QString string = input.toString().trimmed();
+
+  if ( input.type() != QVariant::String || string.isEmpty() )
+    return mFlags & FlagOptional;
+
+  switch ( mBehavior )
+  {
+    case File:
+    {
+      if ( !mExtension.isEmpty() )
+        return string.endsWith( mExtension, Qt::CaseInsensitive );
+      return true;
+    }
+
+    case Folder:
+      return true;
+  }
+  return true;
+}
+
 QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name, const QString &description, int numberRows, bool fixedNumberRows, const QStringList &headers, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mHeaders( headers )
@@ -488,6 +644,31 @@ QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name,
   , mFixedNumberRows( fixedNumberRows )
 {
 
+}
+
+bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().isEmpty() )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::Double || input.type() == QVariant::Int )
+  {
+    return true;
+  }
+
+  return false;
 }
 
 QStringList QgsProcessingParameterMatrix::headers() const
@@ -527,6 +708,63 @@ QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( cons
 
 }
 
+bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > 1 )
+      return false;
+
+    if ( !context )
+      return true;
+
+    return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().count() < mMinimumNumberInputs )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > input.toList().count() )
+      return false;
+
+    if ( !context )
+      return true;
+
+    Q_FOREACH ( const QVariant &v, input.toList() )
+    {
+      if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
+        return false;
+    }
+    return true;
+  }
+  else if ( input.type() == QVariant::StringList )
+  {
+    if ( input.toStringList().count() < mMinimumNumberInputs )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > input.toStringList().count() )
+      return false;
+
+    if ( !context )
+      return true;
+
+    Q_FOREACH ( const QString &v, input.toStringList() )
+    {
+      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+        return false;
+    }
+    return true;
+  }
+  return false;
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterMultipleLayers::layerType() const
 {
   return mLayerType;
@@ -537,6 +775,17 @@ void QgsProcessingParameterMultipleLayers::setLayerType( LayerType type )
   mLayerType = type;
 }
 
+int QgsProcessingParameterMultipleLayers::minimumNumberInputs() const
+{
+  return mMinimumNumberInputs;
+}
+
+void QgsProcessingParameterMultipleLayers::setMinimumNumberInputs( int minimumNumberInputs )
+{
+  if ( mMinimumNumberInputs >= 1 || !( flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+    mMinimumNumberInputs = minimumNumberInputs;
+}
+
 QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name, const QString &description, Type type, const QVariant &defaultValue, bool optional, double minValue, double maxValue )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mMin( minValue )
@@ -544,6 +793,27 @@ QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name,
   , mDataType( type )
 {
 
+}
+
+bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  bool ok = false;
+  double res = input.toDouble( &ok );
+  if ( !ok )
+    return mFlags & FlagOptional;
+
+  if ( res < mMin || res > mMax )
+    return false;
+
+  return true;
 }
 
 double QgsProcessingParameterNumber::minimum() const
@@ -583,6 +853,46 @@ QgsProcessingParameterRange::QgsProcessingParameterRange( const QString &name, c
 
 }
 
+bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::String )
+  {
+    QStringList list = input.toString().split( ',' );
+    if ( list.count() != 2 )
+      return mFlags & FlagOptional;
+    bool ok = false;
+    list.at( 0 ).toDouble( &ok );
+    bool ok2 = false;
+    list.at( 1 ).toDouble( &ok2 );
+    if ( !ok || !ok2 )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().count() != 2 )
+      return mFlags & FlagOptional;
+
+    bool ok = false;
+    input.toList().at( 0 ).toDouble( &ok );
+    bool ok2 = false;
+    input.toList().at( 1 ).toDouble( &ok2 );
+    if ( !ok || !ok2 )
+      return mFlags & FlagOptional;
+    return true;
+  }
+
+  return false;
+}
+
 QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
 {
   return mDataType;
@@ -599,12 +909,94 @@ QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QStr
 
 }
 
+bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
 QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mOptions( options )
   , mAllowMultiple( allowMultiple )
 {
 
+}
+
+bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::List )
+  {
+    if ( !mAllowMultiple )
+      return false;
+
+    Q_FOREACH ( const QVariant &val, input.toList() )
+    {
+      bool ok = false;
+      int res = val.toInt( &ok );
+      if ( !ok )
+        return false;
+      else if ( res < 0 || res >= mOptions.count() )
+        return false;
+    }
+
+    return true;
+  }
+  else if ( input.type() == QVariant::String )
+  {
+    QStringList parts = input.toString().split( ',' );
+    if ( parts.count() > 1 && !mAllowMultiple )
+      return false;
+
+    Q_FOREACH ( const QString &part, parts )
+    {
+      bool ok = false;
+      int res = part.toInt( &ok );
+      if ( !ok )
+        return false;
+      else if ( res < 0 || res >= mOptions.count() )
+        return false;
+    }
+    return true;
+  }
+  else if ( input.type() == QVariant::Int || input.type() == QVariant::Double )
+  {
+    bool ok = false;
+    int res = input.toInt( &ok );
+    if ( !ok )
+      return false;
+    else if ( res >= 0 && res < mOptions.count() )
+      return true;
+  }
+  return false;
 }
 
 QStringList QgsProcessingParameterEnum::options() const
@@ -676,6 +1068,38 @@ QgsProcessingParameterTableField::QgsProcessingParameterTableField( const QStrin
 
 }
 
+bool QgsProcessingParameterTableField::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  {
+    if ( !mAllowMultiple )
+      return false;
+  }
+  else if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    QStringList parts = input.toString().split( ';' );
+    if ( parts.count() > 1 && !mAllowMultiple )
+      return false;
+  }
+  else
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+  return true;
+}
+
 QString QgsProcessingParameterTableField::parentLayerParameter() const
 {
   return mParentLayerParameter;
@@ -713,6 +1137,32 @@ QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QStr
 
 }
 
+bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVectorLayer::dataType() const
 {
   return mDataType;
@@ -730,6 +1180,25 @@ QgsProcessingParameterOutputVectorLayer::QgsProcessingParameterOutputVectorLayer
   , mDataType( type )
 {
 
+}
+
+bool QgsProcessingParameterOutputVectorLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String )
+    return false;
+
+  if ( input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
 }
 
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterOutputVectorLayer::dataType() const

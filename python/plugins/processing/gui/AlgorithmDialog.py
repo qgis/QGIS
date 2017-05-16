@@ -101,18 +101,15 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 continue
             if not param.isDestination():
                 wrapper = self.mainWidget.wrappers[param.name()]
+                value = None
                 if wrapper.widget:
                     value = wrapper.value()
                     parameters[param.name()] = value
 
-                    #TODO
-                    #if not self.setParamValue(param, wrapper):
-                    #    raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+                    if not param.checkValueIsAcceptable(value):
+                        raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
             else:
                 parameters[param.name()] = self.mainWidget.outputWidgets[param.name()].getValue()
-                # TODO
-                #if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                #    output.open = self.mainWidget.checkBoxes[param.name()].isChecked()
 
         return parameters
 
@@ -126,12 +123,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     layer_outputs.append(param.name())
 
         return layer_outputs
-
-    def setParamValue(self, param, wrapper):
-        if wrapper.widget:
-            return param.setValue(wrapper.value())
-        else:
-            return True
 
     def checkExtentCRS(self):
         unmatchingCRS = False
@@ -199,9 +190,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            # TODO
-            #msg = self.alg._checkParameterValuesBeforeExecuting(context)
-            msg = None
+            ok, msg = self.alg.checkParameterValues(parameters, context)
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -258,7 +247,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             except:
                 pass
             self.bar.clearWidgets()
-            self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
+            self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                  level=QgsMessageBar.WARNING, duration=5)
 
     def finish(self, result, context):

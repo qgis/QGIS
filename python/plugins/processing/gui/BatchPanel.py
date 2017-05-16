@@ -32,7 +32,8 @@ import json
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
 
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
@@ -47,6 +48,7 @@ from processing.core.parameters import ParameterPoint  # NOQA
 from processing.core.parameters import ParameterSelection  # NOQA
 from processing.core.parameters import ParameterFixedTable  # NOQA
 from processing.core.parameters import ParameterMultipleInput  # NOQA
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -180,21 +182,22 @@ class BatchPanel(BASE, WIDGET):
 
     def save(self):
         toSave = []
+        context = dataobjects.createContext()
         for row in range(self.tblParameters.rowCount()):
             algParams = {}
             algOutputs = {}
             col = 0
             alg = self.alg
-            for param in alg.parameters:
-                if param.hidden:
+            for param in alg.parameterDefinitions():
+                if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
                 wrapper = self.wrappers[row][col]
-                if not self.setParamValue(param, wrapper, alg):
+                if not param.checkValueIsAcceptable(wrapper.value, context):
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                                param.description, row + 1),
+                                                param.description(), row + 1),
                                                 level=QgsMessageBar.WARNING, duration=5)
                     return
-                algParams[param.name] = param.getValueAsCommandLineParameter()
+                algParams[param.name()] = param.getValueAsCommandLineParameter()
                 col += 1
             for out in alg.outputs:
                 if out.hidden:
@@ -220,9 +223,6 @@ class BatchPanel(BASE, WIDGET):
                 filename += '.json'
             with open(filename, 'w') as f:
                 json.dump(toSave, f)
-
-    def setParamValue(self, param, wrapper, alg=None):
-        return param.setValue(wrapper.value())
 
     def setCellWrapper(self, row, column, wrapper):
         self.wrappers[row][column] = wrapper

@@ -222,9 +222,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def getParamValues(self):
         return {}
 
-    def setParamValue(self, param, widget, alg=None):
-        pass
-
     def accept(self):
         pass
 

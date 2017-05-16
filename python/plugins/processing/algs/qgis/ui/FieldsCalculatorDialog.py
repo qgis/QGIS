@@ -209,8 +209,10 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         parameters['FORMULA'] = self.builder.expressionText()
         parameters['OUTPUT_LAYER'] = self.leOutputFile.text().strip() or None
 
-        msg = self.alg.checkParameterValuesBeforeExecuting()
-        if msg:
+        context = dataobjects.createContext()
+
+        ok, msg = self.alg.checkParameterValues(parameters, context)
+        if not ok:
             QMessageBox.warning(
                 self, self.tr('Unable to execute algorithm'), msg)
             return {}
