@@ -164,11 +164,12 @@ class FieldsCalculator(QgisAlgorithm):
                 self.tr('An error occurred while evaluating the calculation '
                         'string:\n{0}').format(error))
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         newField = self.getParameterValue(self.NEW_FIELD)
         fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
+        return super(FieldsCalculator, self).checkParameterValues(parameters, context)
 
     def createCustomParametersWidget(self, parent):
         return FieldsCalculatorDialog(self)

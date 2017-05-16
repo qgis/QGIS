@@ -33,7 +33,7 @@ from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-
+from processing.tools import dataobjects
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
@@ -53,11 +53,12 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.addTab(self.settingsPanel, "Description")
 
     def accept(self):
+        context = dataobjects.createContext()
         try:
             parameters = self.getParamValues()
             self.setOutputValues()
-            msg = self.alg._checkParameterValuesBeforeExecuting()
-            if msg:
+            ok, msg = self.alg.checkParameterValues(parameters, context)
+            if not ok:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return
@@ -80,7 +81,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
                 self.parent.bar.pushMessage("", self.tr('Missing parameter value: {0}').format(
-                                            e.parameter.description),
+                                            e.parameter.description()),
                                             level=QgsMessageBar.WARNING, duration=5)
                 return
             except:

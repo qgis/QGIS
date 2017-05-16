@@ -34,7 +34,8 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QTextBrowser)
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsProcessingParameterDefinition)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
@@ -320,13 +321,13 @@ class ModelerParametersDialog(QDialog):
         alg = Algorithm(self._alg.id())
         alg.setName(self.model)
         alg.description = self.descriptionBox.text()
-        params = self._alg.parameters
+        params = self._alg.parameterDefinitions()
         outputs = self._alg.outputs
         for param in params:
-            if param.hidden:
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if not self.setParamValue(alg, param, self.wrappers[param.name]):
-                self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description,
+            if not param.checkValueIsAcceptable(self.wrappers[param.name()].value):
+                self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
                                      level=QgsMessageBar.WARNING)
                 return None
         for output in outputs:
@@ -342,15 +343,6 @@ class ModelerParametersDialog(QDialog):
 
         self._alg.processBeforeAddingToModeler(alg, self.model)
         return alg
-
-    def setParamValue(self, alg, param, wrapper):
-        try:
-            if wrapper.widget:
-                value = wrapper.value()
-                alg.params[param.name] = value
-            return True
-        except InvalidParameterValue:
-            return False
 
     def okPressed(self):
         self.alg = self.createAlgorithm()

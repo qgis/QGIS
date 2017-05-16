@@ -90,18 +90,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         """
         return None
 
-    def checkParameterValuesBeforeExecuting(self):
-        """If there is any check to do before launching the execution
-        of the algorithm, it should be done here.
-
-        If values are not correct, a message should be returned
-        explaining the problem.
-
-        This check is called from the parameters dialog, and also when
-        calling from the console.
-        """
-        return None
-
     def processBeforeAddingToModeler(self, alg, model):
         """Add here any task that has to be performed before adding an algorithm
         to a model, such as changing the value of a parameter depending on value
@@ -149,23 +137,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             lines.append(traceback.format_exc())
             QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
             raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
-
-    def _checkParameterValuesBeforeExecuting(self, context=None):
-        if context is None:
-            context = dataobjects.createContext()
-        for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector,
-                                  ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        inputlayers = param.value.split(';')
-                    else:
-                        inputlayers = [param.value]
-                    for inputlayer in inputlayers:
-                        obj = QgsProcessingUtils.mapLayerFromString(inputlayer, context)
-                        if obj is None:
-                            return "Wrong parameter value: " + param.value
-        return self.checkParameterValuesBeforeExecuting()
 
     def runPostExecutionScript(self, feedback):
         scriptFile = ProcessingConfig.getSetting(

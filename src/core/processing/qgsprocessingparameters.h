@@ -186,6 +186,15 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     void setFlags( const Flags &flags ) { mFlags = flags; }
 
+    /**
+     * Checks whether the specified \a input value is acceptable for the
+     * parameter. Returns true if the value can be accepted.
+     * The optional \a context parameter can be specified to allow a more stringent
+     * check to be performed, capable of checking for the presence of required
+     * layers and other factors within the context.
+     */
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const;
+
   protected:
 
     //! Parameter name
@@ -360,7 +369,6 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
                                    bool optional = false );
 
     QString type() const override { return QStringLiteral( "boolean" ); }
-
 };
 
 /**
@@ -380,6 +388,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
                                bool optional = false );
 
     QString type() const override { return QStringLiteral( "crs" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 };
 
 /**
@@ -399,6 +408,7 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
                                     bool optional = false );
 
     QString type() const override { return QStringLiteral( "layer" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 };
 
 /**
@@ -418,7 +428,7 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
                                   bool optional = false );
 
     QString type() const override { return QStringLiteral( "extent" ); }
-
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -440,6 +450,7 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
                                  bool optional = false );
 
     QString type() const override { return QStringLiteral( "point" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -467,6 +478,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
                                 bool optional = false );
 
     QString type() const override { return QStringLiteral( "file" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the parameter behavior (e.g. File or Folder).
@@ -517,6 +529,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
                                   bool optional = false );
 
     QString type() const override { return QStringLiteral( "matrix" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns a list of column headers (if set).
@@ -586,6 +599,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
                                           bool optional = false );
 
     QString type() const override { return QStringLiteral( "multilayer" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.
@@ -599,9 +613,24 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      */
     void setLayerType( QgsProcessingParameterDefinition::LayerType type );
 
+    /**
+     * Returns the minimum number of layers required for the parameter. If the return value is < 1
+     * then the parameter accepts any number of layers.
+     * \see setMinimumNumberInputs()
+     */
+    int minimumNumberInputs() const;
+
+    /**
+     * Sets the \a minimum number of layers required for the parameter. The minimum must be >= 1
+     * if the parameter is not optional.
+     * \see minimumNumberInputs()
+     */
+    void setMinimumNumberInputs( int minimum );
+
   private:
 
     LayerType mLayerType = TypeVectorAny;
+    int mMinimumNumberInputs = 0;
 
 };
 
@@ -634,6 +663,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                          );
 
     QString type() const override { return QStringLiteral( "number" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the minimum value acceptable by the parameter.
@@ -697,6 +727,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
                                  bool optional = false );
 
     QString type() const override { return QStringLiteral( "range" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the acceptable data type for the range.
@@ -732,6 +763,7 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "raster" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -754,6 +786,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 bool optional = false );
 
     QString type() const override { return QStringLiteral( "enum" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the list of acceptable options for the parameter.
@@ -909,6 +942,7 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "field" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -971,7 +1005,7 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "vector" ); }
-
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.
@@ -1012,6 +1046,7 @@ class CORE_EXPORT QgsProcessingParameterOutputVectorLayer : public QgsProcessing
 
     QString type() const override { return QStringLiteral( "vectorOut" ); }
     bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the layer type for the output layer associated with the parameter.

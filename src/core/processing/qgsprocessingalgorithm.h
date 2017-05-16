@@ -151,6 +151,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const;
 
     /**
+     * Checks the supplied \a parameter values to verify that they satisfy the requirements
+     * of this algorithm in the supplied \a context. The \a message parameter will be
+     * filled with explanatory text if validation fails.
+     * Overridden implementations should also check this base class implementation.
+     * \returns true if parameters are acceptable for the algorithm.
+     */
+    virtual bool checkParameterValues( const QVariantMap &parameters,
+                                       QgsProcessingContext &context, QString *message SIP_OUT = nullptr ) const;
+
+    /**
      * Returns the provider to which this algorithm belongs.
      */
     QgsProcessingProvider *provider() const;

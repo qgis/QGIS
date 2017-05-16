@@ -184,6 +184,6 @@ class FieldsPyculator(QgisAlgorithm):
 
         del writer
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         # TODO check that formula is correct and fields exist
-        pass
+        return super(FieldsPyculator, self).checkParameterValues(parameters, context)
