@@ -493,7 +493,6 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
   }
 }
 
-
 QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) const
 {
   if ( profileName != QLatin1String( "" ) )
@@ -528,16 +527,16 @@ void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( const QString &profi
 void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
 {
   QgsSettings mySettings;
-  QString myProfiles;
+  QStringList myProfiles;
   QMap< QString, QString >::const_iterator i = mOptionsMap.constBegin();
   while ( i != mOptionsMap.constEnd() )
   {
     setCreateOptions( i.key(), i.value() );
-    myProfiles += i.key() + QStringLiteral( " " );
+    myProfiles << i.key();
     ++i;
   }
   mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles",
-                       myProfiles.trimmed() );
+                       myProfiles );
   mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/defaultProfile",
                        currentProfileKey().trimmed() );
 }
@@ -556,7 +555,7 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString &profileN
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
   QgsSettings mySettings;
-  return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
+  return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toStringList();
 }
 
 void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
