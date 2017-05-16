@@ -88,6 +88,9 @@ class ClipByExtent(GdalAlgorithm):
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)
         projwin = self.getParameterValue(self.PROJWIN)
+        layer = self.getParameterValue(self.INPUT)
+        if not projwin:
+            projwin = QgsProcessingUtils.combineLayerExtents([layer])
 
         if noData is not None:
             noData = str(noData)

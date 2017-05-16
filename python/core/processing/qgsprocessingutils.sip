@@ -152,6 +152,12 @@ class QgsProcessingUtils
    available in Python bindings as createFeatureSink()
 %End
 
+    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Combines the extent of several map ``layers``. If specified, the target ``crs``
+ will be used to transform the layer's extent to the desired output reference system.
+ :rtype: QgsRectangle
+%End
 
 };
 

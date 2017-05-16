@@ -104,12 +104,15 @@ class translate(GdalAlgorithm):
         return self.tr('Raster conversion')
 
     def getConsoleCommands(self, parameters):
+        inLayer = self.getParameterValue(self.INPUT)
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
         expand = self.getParameterFromName(self.EXPAND).options[self.getParameterValue(self.EXPAND)][1]
         projwin = str(self.getParameterValue(self.PROJWIN))
+        if not projwin:
+            projwin = QgsProcessingUtils.combineLayerExtents([inLayer])
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
         opts = self.getParameterValue(self.OPTIONS)

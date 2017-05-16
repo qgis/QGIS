@@ -122,10 +122,13 @@ class warp(GdalAlgorithm):
         return self.tr('Raster projections')
 
     def getConsoleCommands(self, parameters):
+        inLayer = self.getParameterValue(self.INPUT)
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
         useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)
         rasterExtent = self.getParameterValue(self.RASTER_EXTENT)
+        if not rasterExtent:
+            rasterExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
         extentCrs = self.getParameterValue(self.EXTENT_CRS)
         opts = self.getParameterValue(self.OPTIONS)
         noData = self.getParameterValue(self.NO_DATA)

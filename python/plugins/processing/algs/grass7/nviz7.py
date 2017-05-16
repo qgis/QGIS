@@ -102,6 +102,9 @@ class nviz7(GeoAlgorithm):
 
         region = \
             str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        if not region:
+            region = QgsProcessingUtils.combineLayerExtents(layers)
+
         regionCoords = region.split(',')
         command = 'g.region '
         command += 'n=' + str(regionCoords[3])

@@ -42,6 +42,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
                        QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
                        QgsProject,
+                       QgsRectangle,
                        QgsVectorFileWriter,
                        QgsProcessingParameterDefinition)
 
@@ -355,52 +356,6 @@ class ParameterExtent(Parameter):
             descName = _createDescriptiveName(name)
             default = definition.strip()[len('extent') + 1:] or None
             return ParameterExtent(name, descName, default, isOptional)
-
-    def evaluate(self, alg):
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional and not bool(self.value):
-            self.value = self.getMinCoveringExtent(alg)
-
-    def getMinCoveringExtent(self, alg):
-        first = True
-        found = False
-        context = dataobjects.createContext()
-        for param in alg.parameters:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
 
 
 class ParameterPoint(Parameter):

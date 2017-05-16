@@ -106,6 +106,8 @@ class rasterize(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT)
         noData = self.getParameterValue(self.NO_DATA)
         rastext = str(self.getParameterValue(self.RAST_EXT))
+        if not rastext:
+            rastext = QgsProcessingUtils.combineLayerExtents([inLayer])
         opts = self.getParameterValue(self.OPTIONS)
         out = self.getOutputValue(self.OUTPUT)
 
