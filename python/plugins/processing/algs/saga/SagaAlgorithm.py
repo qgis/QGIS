@@ -204,6 +204,10 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException(
                                 self.tr('Unsupported file format'))
 
+        # TODO - set minimum extent
+        if not extent:
+            extent = QgsProcessingUtils.combineLayerExtents([layer])
+
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
         command += ' ' + ' '.join(self.hardcodedStrings)

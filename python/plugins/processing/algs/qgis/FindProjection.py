@@ -87,6 +87,8 @@ class FindProjection(QgisAlgorithm):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')
+        if not extent:
+            extent = QgsProcessingUtils.combineLayerExtents([layer])
         target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))
 
         target_geom = QgsGeometry.fromRect(QgsRectangle(float(extent[0]), float(extent[2]),

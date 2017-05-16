@@ -203,6 +203,8 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         simplify = str(self.getParameterValue(self.SIMPLIFY))
         segmentize = str(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
+        if not spat:
+            spat = QgsProcessingUtils.combineLayerExtents([inLayer])
         clip = self.getParameterValue(self.CLIP)
         where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'

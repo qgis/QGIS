@@ -18,6 +18,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgscsexception.h"
 #include "qgsprocessingcontext.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"
@@ -398,5 +399,39 @@ void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString
 {
   *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context );
 }
+
+
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs )
+{
+  QgsRectangle extent;
+  Q_FOREACH ( QgsMapLayer *layer, layers )
+  {
+    if ( !layer )
+      continue;
+
+    if ( crs.isValid() )
+    {
+      //transform layer extent to target CRS
+      QgsCoordinateTransform ct( layer->crs(), crs );
+      try
+      {
+        QgsRectangle reprojExtent = ct.transformBoundingBox( layer->extent() );
+        extent.combineExtentWith( reprojExtent );
+      }
+      catch ( QgsCsException & )
+      {
+        // can't reproject... what to do here? hmmm?
+        // let's ignore this layer for now, but maybe we should just use the original extent?
+      }
+    }
+    else
+    {
+      extent.combineExtentWith( layer->extent() );
+    }
+
+  }
+  return extent;
+}
+
 
 

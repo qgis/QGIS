@@ -69,6 +69,8 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
+        if not clipExtent:
+            clipExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value

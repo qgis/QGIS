@@ -205,6 +205,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.getParameterValue(self.SIMPLIFY)
         segmentize = self.getParameterValue(self.SEGMENTIZE)
         spat = self.getParameterValue(self.SPAT)
+        if not spat:
+            spat = QgsProcessingUtils.combineLayerExtents([inLayer])
         clip = self.getParameterValue(self.CLIP)
         where = self.getParameterValue(self.WHERE)
         gt = self.getParameterValue(self.GT)

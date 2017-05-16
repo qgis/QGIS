@@ -180,6 +180,11 @@ class CORE_EXPORT QgsProcessingUtils
       const QgsCoordinateReferenceSystem &crs,
       QgsProcessingContext &context ) SIP_PYNAME( createFeatureSink );
 
+    /**
+     * Combines the extent of several map \a layers. If specified, the target \a crs
+     * will be used to transform the layer's extent to the desired output reference system.
+     */
+    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
   private:
 

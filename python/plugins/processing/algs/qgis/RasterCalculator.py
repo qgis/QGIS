@@ -127,6 +127,8 @@ class RasterCalculator(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
         extentValue = self.getParameterValue(self.EXTENT)
+        if not extentValue:
+            extentValue = QgsProcessingUtils.combineLayerExtents(layersValue)
 
         if extentValue:
             extent = extentValue.split(',')
