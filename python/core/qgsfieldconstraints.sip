@@ -125,9 +125,6 @@ class QgsFieldConstraints
 %End
 
     bool operator==( const QgsFieldConstraints &other ) const;
-%Docstring
- :rtype: bool
-%End
 
 };
 

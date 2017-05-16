@@ -27,7 +27,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
 
-typedef QList<int> QgsAttributeList;
+
 
 /** \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
@@ -208,27 +208,28 @@ class CORE_EXPORT QgsFeatureRequest
         bool mNullsFirst;
     };
 
+
     /** \ingroup core
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
      * \since QGIS 2.14
      */
-    class OrderBy : public QList<OrderByClause>
+    class CORE_EXPORT OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
       public:
 
         /**
          * Create a new empty order by
          */
-        CORE_EXPORT OrderBy()
-          : QList<OrderByClause>()
+        OrderBy()
+          : QList<QgsFeatureRequest::OrderByClause>()
         {}
 
         /**
          * Create a new order by from a list of clauses
          */
-        CORE_EXPORT OrderBy( const QList<OrderByClause> &other );
+        OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
          * Get a copy as a list of OrderByClauses
@@ -236,27 +237,27 @@ class CORE_EXPORT QgsFeatureRequest
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
-        QList<OrderByClause> CORE_EXPORT list() const;
+        QList<QgsFeatureRequest::OrderByClause> list() const;
 
         /**
          * Serialize to XML
          */
-        void CORE_EXPORT save( QDomElement &elem ) const;
+        void save( QDomElement &elem ) const;
 
         /**
          * Deserialize from XML
          */
-        void CORE_EXPORT load( const QDomElement &elem );
+        void load( const QDomElement &elem );
 
         /**
          * Returns a set of used attributes
          */
-        QSet<QString> CORE_EXPORT usedAttributes() const;
+        QSet<QString> usedAttributes() const;
 
         /**
          * Dumps the content to an SQL equivalent syntax
          */
-        QString CORE_EXPORT dump() const;
+        QString dump() const;
     };
 
     /**
@@ -330,7 +331,25 @@ class CORE_EXPORT QgsFeatureRequest
      * \since QGIS 3.0
      * \see invalidGeometryCallback()
      */
+#ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+#else
+    QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    sipRes = sipCpp;
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
 
     /**
      * Returns the callback function to use when encountering an invalid geometry and

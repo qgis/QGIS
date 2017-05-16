@@ -113,9 +113,6 @@ Gradient color at stop
 %End
 
     bool operator==( const QgsGradientStop &other ) const;
-%Docstring
- :rtype: bool
-%End
 };
 
 typedef QList<QgsGradientStop> QgsGradientStopsList;

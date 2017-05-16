@@ -463,12 +463,6 @@ Returns whether this CRS is correctly initialized and usable
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
-%Docstring
- Overloaded == operator used to compare to CRS's.
-
-  Internally it will use authid() for comparison.
- :rtype: bool
-%End
 
     bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
 %Docstring

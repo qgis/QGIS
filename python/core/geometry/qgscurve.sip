@@ -24,9 +24,6 @@ class QgsCurve: QgsAbstractGeometry
     QgsCurve();
 
     virtual bool operator==( const QgsCurve &other ) const = 0;
-%Docstring
- :rtype: bool
-%End
     virtual bool operator!=( const QgsCurve &other ) const = 0;
 %Docstring
  :rtype: bool

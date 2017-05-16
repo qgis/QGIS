@@ -50,9 +50,6 @@ class QgsTriangle : QgsPolygonV2
 %End
 
     bool operator==( const QgsTriangle &other ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsTriangle &other ) const;
 %Docstring
  :rtype: bool

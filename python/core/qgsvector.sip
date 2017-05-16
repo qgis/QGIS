@@ -141,10 +141,6 @@ Swaps the sign of the x and y components of the vector.
 %End
 
     bool operator==( QgsVector other ) const;
-%Docstring
-Equality operator
- :rtype: bool
-%End
 
     bool operator!=( QgsVector other ) const;
 %Docstring

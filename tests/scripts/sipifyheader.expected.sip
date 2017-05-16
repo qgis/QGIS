@@ -44,7 +44,7 @@ typedef QVector<QVariant> QgsSuperClass;
 %End
 }
 
-class QgsSipifyHeader : QtClass<QVariant>
+class QgsSipifyHeader
 {
 %Docstring
  Documentation goes here
@@ -125,10 +125,6 @@ Default constructor
 
 
     bool operator==( const QgsSipifyHeader other );
-%Docstring
-Comparison operator should be kept
- :rtype: bool
-%End
 
     void multilineMethod( const QgsPoint &startPoint,
                           QgsFeatureId featureId,
@@ -390,6 +386,42 @@ A constructor
 
 QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
 
+
+class TemplateInheritance1
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
+class TemplateInheritance2
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
+class TemplateInheritance3 : SomethingElse
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
+class TemplateInheritance4 : SomethingElse1, SomethingElse2
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
+class TemplateInheritance5 : SomethingElse
+{
+
+%TypeHeaderCode
+#include "sipifyheader.h"
+%End
+}
 
 
 /************************************************************************
