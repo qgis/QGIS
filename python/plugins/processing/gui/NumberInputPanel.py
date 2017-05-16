@@ -39,6 +39,7 @@ from qgis.gui import QgsExpressionBuilderDialog
 from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
 from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
+from processing.tools.dataobjects import createExpressionContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
@@ -48,6 +49,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ModellerNumberInputPanel(BASE, WIDGET):
+
     """
     Number input panel for use inside the modeller - this input panel
     is based off the base input panel and includes a text based line input
@@ -70,7 +72,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
 
     def showExpressionsBuilder(self):
-        context = self.param.expressionContext()
+        context = createExpressionContext()
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         context.popScope()
@@ -138,6 +140,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
 
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
+
     """
     Number input panel for use outside the modeller - this input panel
     contains a user friendly spin box for entering values. It also
@@ -195,7 +198,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
     def showExpressionsBuilder(self):
-        context = self.param.expressionContext()
+        context = createExpressionContext()
         dlg = QgsExpressionBuilderDialog(None, str(self.spnValue.value()), self, 'generic', context)
 
         dlg.setWindowTitle(self.tr('Expression based input'))

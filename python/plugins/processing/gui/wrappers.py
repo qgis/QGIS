@@ -230,7 +230,7 @@ class ExpressionWidgetWrapperMixin():
         return widget
 
     def showExpressionsBuilder(self):
-        context = self.param.expressionContext()
+        context = dataobjects.createExpressionContext()
         value = self.value()
         if not isinstance(value, str):
             value = ''

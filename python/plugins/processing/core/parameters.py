@@ -37,10 +37,10 @@ from copy import deepcopy
 import numbers
 
 from qgis.core import QgsProcessingUtils
-from qgis.utils import iface
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinateReferenceSystem,
-                       QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope,
+                       QgsExpression,
                        QgsProject,
                        QgsRectangle,
                        QgsVectorFileWriter,
@@ -70,25 +70,6 @@ def _splitParameterOptions(line):
 
 def _createDescriptiveName(s):
     return s.replace('_', ' ')
-
-
-def _expressionContext():
-    context = QgsExpressionContext()
-    context.appendScope(QgsExpressionContextUtils.globalScope())
-    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
-
-    if iface.mapCanvas():
-        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
-
-    processingScope = QgsExpressionContextScope()
-
-    extent = iface.mapCanvas().fullExtent()
-    processingScope.setVariable('fullextent_minx', extent.xMinimum())
-    processingScope.setVariable('fullextent_miny', extent.yMinimum())
-    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
-    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
-    context.appendScope(processingScope)
-    return context
 
 
 class Parameter(object):
@@ -138,9 +119,6 @@ class Parameter(object):
         if context == '':
             context = 'Parameter'
         return QCoreApplication.translate(context, string)
-
-    def evaluate(self, alg):
-        pass
 
 
 class ParameterBoolean(Parameter):
@@ -726,8 +704,7 @@ class ParameterNumber(Parameter):
 
         if isinstance(n, str):
             try:
-                v = self._evaluate(n)
-                self.value = float(v)
+                self.value = float(n)
                 if self.isInteger:
                     self.value = int(math.floor(self.value))
                 return True
@@ -772,22 +749,6 @@ class ParameterNumber(Parameter):
                 default = None
             return ParameterNumber(name, descName, default=default, optional=isOptional)
 
-    def _evaluate(self, value):
-        exp = QgsExpression(value)
-        if exp.hasParserError():
-            raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
-        result = exp.evaluate(_expressionContext())
-        if exp.hasEvalError():
-            raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-        if self.isInteger:
-            return math.floor(result)
-        else:
-            return result
-
-    def evaluate(self, alg):
-        if isinstance(self.value, str) and bool(self.value):
-            self.value = self._evaluate(self.value)
-
     def _layerVariables(self, element, alg=None):
         variables = {}
         context = dataobjects.createContext()
@@ -826,9 +787,6 @@ class ParameterNumber(Parameter):
             value = value.replace(k, str(v))
 
         return value
-
-    def expressionContext(self):
-        return _expressionContext()
 
     def getValueAsCommandLineParameter(self):
         if self.value is None:
@@ -1070,7 +1028,6 @@ class ParameterString(Parameter):
                  optional=False, evaluateExpressions=False, metadata={}):
         Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiline = parseBool(multiline)
-        self.evaluateExpressions = parseBool(evaluateExpressions)
 
     def setValue(self, obj):
         if not bool(obj):
@@ -1117,19 +1074,6 @@ class ParameterString(Parameter):
                 return ParameterString(name, descName, default, multiline=True, optional=isOptional)
             else:
                 return ParameterString(name, descName, multiline=True, optional=isOptional)
-
-    def evaluate(self, alg):
-        if isinstance(self.value, str) and bool(self.value) and self.evaluateExpressions:
-            exp = QgsExpression(self.value)
-            if exp.hasParserError():
-                raise ValueError(self.tr("Error in parameter expression: ") + exp.parserErrorString())
-            result = exp.evaluate(_expressionContext())
-            if exp.hasEvalError():
-                raise ValueError("Error evaluating parameter expression: " + exp.evalErrorString())
-            self.value = result
-
-    def expressionContext(self):
-        return _expressionContext()
 
 
 class ParameterExpression(Parameter):
