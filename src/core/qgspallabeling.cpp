@@ -2529,8 +2529,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, QgsRenderContext &cont
     if ( QgsPalLabeling::geometryRequiresPreparation( &permissibleZone, context, ct, doClip ? extentGeom : nullptr ) )
     {
       QgsGeometry* preparedZone = QgsPalLabeling::prepareGeometry( &permissibleZone, context, ct, doClip ? extentGeom : nullptr );
-      permissibleZone = *preparedZone;
-      delete preparedZone;
+      if ( preparedZone )
+      {
+        // QgsPalLabeling::prepareGeometry may return NULL on
+        // QgsCsException exception
+        permissibleZone = *preparedZone;
+        delete preparedZone;
+      }
     }
   }
 
