@@ -40,9 +40,13 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsSettings,
                        QgsProcessingUtils,
                        QgsProcessingContext,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpressionContextScope)
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -88,6 +92,25 @@ def createContext():
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
 
+    return context
+
+
+def createExpressionContext():
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.globalScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+
+    if iface.mapCanvas():
+        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
+
+    processingScope = QgsExpressionContextScope()
+
+    extent = iface.mapCanvas().fullExtent()
+    processingScope.setVariable('fullextent_minx', extent.xMinimum())
+    processingScope.setVariable('fullextent_miny', extent.yMinimum())
+    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+    context.appendScope(processingScope)
     return context
 
 

@@ -120,7 +120,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         try:
             self.setOutputCRS()
             self.resolveOutputs()
-            self.evaluateParameterValues()
             self.runPreExecutionScript(feedback)
             self.processAlgorithm(parameters, context, feedback)
             feedback.setProgress(100)
@@ -228,14 +227,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             if ext in exts:
                 return name
         return 'GTiff'
-
-    def evaluateParameterValues(self):
-        for param in self.parameters:
-            try:
-                param.evaluate(self)
-            except ValueError as e:
-                traceback.print_exc()
-                raise GeoAlgorithmExecutionException(str(e))
 
     def resolveOutputs(self):
         """Sets temporary outputs (output.value = None) with a
