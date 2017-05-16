@@ -451,6 +451,10 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
+  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
+
   double angle = 0.0;
   QString angleFunc;
   if ( QgsSymbolLayerUtils::rotationFromSldElement( graphicElem, angleFunc ) )
@@ -462,6 +466,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   }
 
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
+  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setStrokeColor( strokeColor );

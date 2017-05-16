@@ -4036,3 +4036,23 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScale
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
   }
 }
+
+double QgsSymbolLayerUtils::sizeInPixelsFromSldUom( const QString &uom, double size )
+{
+  double scale = 1.0;
+
+  if ( uom == QLatin1String( "http://www.opengeospatial.org/se/units/metre" ) )
+  {
+    scale = 1.0 / 0.00028; // from meters to pixels
+  }
+  else if ( uom == QLatin1String( "http://www.opengeospatial.org/se/units/foot" ) )
+  {
+    scale = 304.8 / 0.28; // from feet to pixels
+  }
+  else
+  {
+    scale = 1.0; // from pixels to pixels (default unit)
+  }
+
+  return size * scale;
+}
