@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils, NULL
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -87,13 +87,6 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         for current, feature in enumerate(features):
             atMap = feature.attributes()
             idVar = atMap[index]
-            if idVar in [None, NULL]:
-                outFeat.setAttributes(atMap)
-                outFeat.setGeometry(feature.geometry())
-                writer.addFeature(outFeat)
-                feedback.setProgress(int(current * total))
-                continue
-
             key = str(idVar).strip()
             if key not in collection_geom:
                 collection_geom[key] = []
