@@ -68,9 +68,6 @@ The maximum size in millimeters, or 0.0 if unset
 %End
 
     bool operator==( const QgsMapUnitScale &other ) const;
-%Docstring
- :rtype: bool
-%End
 
     bool operator!=( const QgsMapUnitScale &other ) const;
 %Docstring

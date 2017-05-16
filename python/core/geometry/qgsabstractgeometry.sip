@@ -498,9 +498,6 @@ struct QgsVertexId
 %End
 
   bool operator==( QgsVertexId other ) const;
-%Docstring
- :rtype: bool
-%End
   bool operator!=( QgsVertexId other ) const;
 %Docstring
  :rtype: bool

@@ -62,10 +62,6 @@ Return the ID of the layer this dependency depends on
 %End
 
     bool operator==( const QgsMapLayerDependency &other ) const;
-%Docstring
-Comparison operator
- :rtype: bool
-%End
 
     //! hash operator
     long __hash__() const;

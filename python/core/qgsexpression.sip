@@ -108,13 +108,6 @@ Implicit sharing was added in 2.14
     ~QgsExpression();
 
     bool operator==( const QgsExpression &other ) const;
-%Docstring
- Compares two expressions. The operator returns true
- if the expression string is equal.
-
-.. versionadded:: 3.0
- :rtype: bool
-%End
 
     bool isValid() const;
 %Docstring
@@ -456,9 +449,6 @@ Returns the default value for the parameter.
 %End
 
         bool operator==( const QgsExpression::Parameter &other ) const;
-%Docstring
- :rtype: bool
-%End
 
     };
 
@@ -658,9 +648,6 @@ The help text for the function.
 %End
 
         bool operator==( const QgsExpression::Function &other ) const;
-%Docstring
- :rtype: bool
-%End
 
         virtual bool handlesNull() const;
 %Docstring

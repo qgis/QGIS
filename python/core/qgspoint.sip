@@ -213,10 +213,6 @@ Calculates azimuth between this point and other one (clockwise in degree, starti
 %End
 
     bool operator==( const QgsPoint &other );
-%Docstring
-equality operator
- :rtype: bool
-%End
 
     bool operator!=( const QgsPoint &other ) const;
 %Docstring

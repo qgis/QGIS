@@ -62,9 +62,6 @@ class QgsPointV2: QgsAbstractGeometry
 %End
 
     bool operator==( const QgsPointV2 &pt ) const;
-%Docstring
- :rtype: bool
-%End
     bool operator!=( const QgsPointV2 &pt ) const;
 %Docstring
  :rtype: bool
