@@ -85,6 +85,7 @@
 #include "qgsxmlutils.h"
 #include "qgsunittypes.h"
 #include "qgstaskmanager.h"
+#include "qgsreadwritecontext.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -199,6 +200,63 @@ QgsVectorLayer::~QgsVectorLayer()
 
   delete mRenderer;
   delete mConditionalStyles;
+}
+
+QgsVectorLayer *QgsVectorLayer::clone( bool deep ) const
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( source(), originalName(), mProviderKey );
+  QgsMapLayer::clone( layer, deep );
+
+  QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
+  Q_FOREACH ( QgsVectorLayerJoinInfo join, joins )
+  {
+    layer->addJoin( join );
+  }
+
+  layer->setProviderEncoding( dataProvider()->encoding() );
+  layer->setDisplayExpression( displayExpression() );
+  layer->setMapTipTemplate( mapTipTemplate() );
+  layer->setReadOnly( isReadOnly() );
+  layer->selectByIds( selectedFeatureIds() );
+  layer->setExcludeAttributesWms( excludeAttributesWms() );
+  layer->setExcludeAttributesWfs( excludeAttributesWfs() );
+  layer->setExtent( extent() );
+  layer->setRenderer( renderer()->clone() );
+  layer->setAttributeTableConfig( attributeTableConfig() );
+  layer->setFeatureBlendMode( featureBlendMode() );
+  layer->setLayerTransparency( layerTransparency() );
+
+  if ( labeling() )
+  {
+    layer->setLabeling( labeling()->clone() );
+  }
+  layer->setSimplifyMethod( simplifyMethod() );
+
+  if ( diagramRenderer() )
+  {
+    layer->setDiagramRenderer( diagramRenderer()->clone() );
+  }
+
+  if ( diagramLayerSettings() )
+  {
+    QgsDiagramLayerSettings *dls = new QgsDiagramLayerSettings( *diagramLayerSettings() );
+    layer->setDiagramLayerSettings( *dls );
+  }
+
+  for ( int i = 0; i < fields().count(); i++ )
+  {
+    layer->setFieldAlias( i, attributeAlias( i ) );
+  }
+
+  for ( int i = 0; i < fields().count(); i++ )
+  {
+    if ( fields().fieldOrigin( i ) == QgsFields::OriginExpression )
+    {
+      layer->addExpressionField( expressionField( i ), fields().at( i ) );
+    }
+  }
+
+  return layer;
 }
 
 QString QgsVectorLayer::storageType() const
