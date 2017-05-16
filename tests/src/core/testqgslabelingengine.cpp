@@ -596,7 +596,7 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
   settings.fitInPolygonOnly = true;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer", "vl", "memory" ) );
-  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
   QgsFeature f( vl2->fields(), 1 );
 
   QString wkt1 = "POLYGON((0 0,8 0,8 -90,0 0))";
