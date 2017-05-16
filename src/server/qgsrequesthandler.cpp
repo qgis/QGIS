@@ -121,6 +121,16 @@ QByteArray QgsRequestHandler::body() const
   return mResponse.data();
 }
 
+QByteArray QgsRequestHandler::data() const
+{
+  return mRequest.data( );
+}
+
+QString QgsRequestHandler::url() const
+{
+  return mRequest.url( ).toString( );
+}
+
 void QgsRequestHandler::setStatusCode( int code )
 {
   mResponse.setStatusCode( code );

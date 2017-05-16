@@ -104,6 +104,12 @@ class SERVER_EXPORT QgsRequestHandler
     //! Return response body data
     QByteArray body() const;
 
+    //! Return request POST data (can be null)
+    QByteArray data() const;
+
+    //! Return request url
+    QString url() const;
+
     //! Set response http status code
     void setStatusCode( int code );
 
