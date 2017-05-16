@@ -8984,39 +8984,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       }
       else if ( vlayer )
       {
-        QgsVectorLayer *dupVLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
-        if ( vlayer->dataProvider() )
-        {
-          dupVLayer->setProviderEncoding( vlayer->dataProvider()->encoding() );
-        }
-
-        //add variables defined in layer properties
-        QStringList variableNames = vlayer->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
-        QStringList variableValues = vlayer->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
-
-        int varIndex = 0;
-        Q_FOREACH ( const QString &variableName, variableNames )
-        {
-          if ( varIndex >= variableValues.length() )
-          {
-            break;
-          }
-
-          QVariant varValue = variableValues.at( varIndex );
-          varIndex++;
-          QgsExpressionContextUtils::setLayerVariable( dupVLayer, variableName, varValue );
-        }
-
-        Q_FOREACH ( const QgsVectorLayerJoinInfo &join, vlayer->vectorJoins() )
-          dupVLayer->addJoin( join );
-
-        for ( int fld = 0; fld < vlayer->fields().count(); fld++ )
-        {
-          if ( vlayer->fields().fieldOrigin( fld ) == QgsFields::OriginExpression )
-            dupVLayer->addExpressionField( vlayer->expressionField( fld ), vlayer->fields().at( fld ) );
-        }
-
-        dupLayer = dupVLayer;
+        dupLayer = vlayer->clone();
       }
     }
 
@@ -9025,7 +8993,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( selectedLyr );
       if ( rlayer )
       {
-        dupLayer = new QgsRasterLayer( rlayer->source(), layerDupName );
+        dupLayer = rlayer->clone();
       }
     }
 
