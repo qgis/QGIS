@@ -135,14 +135,15 @@ bool QgsCoordinateTransformPrivate::initialize()
     addNullGridShifts( mSourceProjString, mDestProjString );
   }
 
-  initializeCurrentContext();
+  // create proj projections for current thread
+  QPair<projPJ, projPJ> res = threadLocalProjData();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
   QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
 #endif
 
-  if ( !destProjection() || !sourceProjection() )
+  if ( !res.first || !res.second )
   {
     mIsValid = false;
   }
@@ -188,42 +189,26 @@ bool QgsCoordinateTransformPrivate::initialize()
   return mIsValid;
 }
 
-void QgsCoordinateTransformPrivate::initializeCurrentContext()
+QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
 {
+  mProjLock.lockForRead();
+
+  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
+  if ( it != mProjProjections.constEnd() )
+  {
+    QPair<projPJ, projPJ> res = it.value();
+    mProjLock.unlock();
+    return res;
+  }
+
+  // proj projections don't exist yet, so we need to create
+  mProjLock.unlock();
   mProjLock.lockForWrite();
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
-                           pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) ) );
+  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
+                                         pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), res );
   mProjLock.unlock();
-}
-
-projPJ QgsCoordinateTransformPrivate::sourceProjection()
-{
-  mProjLock.lockForRead();
-  if ( mProjProjections.contains( reinterpret_cast< uintptr_t>( mProjContext.get() ) ) )
-  {
-    projPJ src = mProjProjections.value( reinterpret_cast< uintptr_t>( mProjContext.get() ) ).first;
-    mProjLock.unlock();
-    return src;
-  }
-  mProjLock.unlock();
-
-  initializeCurrentContext();
-  return sourceProjection();
-}
-
-projPJ QgsCoordinateTransformPrivate::destProjection()
-{
-  mProjLock.lockForRead();
-  if ( mProjProjections.contains( reinterpret_cast< uintptr_t>( mProjContext.get() ) ) )
-  {
-    projPJ dest = mProjProjections.value( reinterpret_cast< uintptr_t>( mProjContext.get() ) ).second;
-    mProjLock.unlock();
-    return dest;
-  }
-  mProjLock.unlock();
-
-  initializeCurrentContext();
-  return destProjection();
+  return res;
 }
 
 QString QgsCoordinateTransformPrivate::stripDatumTransform( const QString &proj4 ) const
