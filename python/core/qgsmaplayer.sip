@@ -67,6 +67,15 @@ class QgsMapLayer : QObject
     virtual ~QgsMapLayer();
 
 
+    virtual QgsMapLayer *clone( bool deep ) const = 0;
+%Docstring
+ Returns a new instance equivalent to this one.
+ \param deep If true, a deep copy is done
+ :return: a new layer instance
+.. versionadded:: 3.0
+ :rtype: QgsMapLayer
+%End
+
     QgsMapLayer::LayerType type() const;
 %Docstring
  Returns the type of the layer.
@@ -468,6 +477,13 @@ Invoked by QgsProject.read().
  Read a custom property from layer. Properties are stored in a map and saved in project file.
 .. seealso:: setCustomProperty()
  :rtype: QVariant
+%End
+
+    void setCustomProperties( const QgsObjectCustomProperties &properties );
+%Docstring
+ Set custom properties for layer.
+ \param properties The custom properties to set.
+.. versionadded:: 3.0
 %End
 
     void removeCustomProperty( const QString &key );
@@ -1028,6 +1044,16 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 %End
 
   protected:
+
+    void clone( QgsMapLayer *layer, bool deep = false ) const;
+%Docstring
+ Copies attributes like name, short name, ... into another layer. The
+  unique ID is copied too if deep parameter is true.
+ \param layer The copy recipient
+ \param deep To copy the unique ID or not
+.. versionadded:: 3.0
+%End
+
     virtual void setExtent( const QgsRectangle &rect );
 %Docstring
 Set the extent

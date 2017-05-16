@@ -133,6 +133,15 @@ Write configuration (for project saving)
 Return list of all defined style names
  :rtype: list of str
 %End
+
+    QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
+%Docstring
+ Gets available styles for the associated map layer.
+ :return: A map of map layer style by style name
+.. versionadded:: 3.0
+ :rtype: QMap<str, QgsMapLayerStyle>
+%End
+
     QgsMapLayerStyle style( const QString &name ) const;
 %Docstring
 Return data of a stored style - accessed by its unique name
