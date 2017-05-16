@@ -280,7 +280,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
-    QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+    mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 };
 
 //! Output stream operator

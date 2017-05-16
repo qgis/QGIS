@@ -128,6 +128,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgscoordinatetransform_p.cpp
   qgscoordinateutils.cpp
   qgscredentials.cpp
   qgscrscache.cpp

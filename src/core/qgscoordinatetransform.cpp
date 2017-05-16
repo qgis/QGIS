@@ -474,8 +474,12 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ReverseTransform ) )
-       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ForwardTransform ) ) )
+  QPair<projPJ, projPJ> projData = d->threadLocalProjData();
+  projPJ sourceProj = projData.first;
+  projPJ destProj = projData.second;
+
+  if ( ( pj_is_latlong( destProj ) && ( direction == ReverseTransform ) )
+       || ( pj_is_latlong( sourceProj ) && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -487,13 +491,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult;
   if ( direction == ReverseTransform )
   {
-    projResult = pj_transform( d->mDestinationProjection, d->mSourceProjection, numPoints, 0, x, y, z );
+    projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );
   }
   else
   {
-    Q_ASSERT( d->mSourceProjection );
-    Q_ASSERT( d->mDestinationProjection );
-    projResult = pj_transform( d->mSourceProjection, d->mDestinationProjection, numPoints, 0, x, y, z );
+    Q_ASSERT( sourceProj );
+    Q_ASSERT( destProj );
+    projResult = pj_transform( sourceProj, destProj, numPoints, 0, x, y, z );
   }
 
   if ( projResult != 0 )
@@ -515,8 +519,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
-    char *srcdef = pj_get_def( d->mSourceProjection, 0 );
-    char *dstdef = pj_get_def( d->mDestinationProjection, 0 );
+    char *srcdef = pj_get_def( sourceProj, 0 );
+    char *dstdef = pj_get_def( destProj, 0 );
 
     QString msg = QObject::tr( "%1 of\n"
                                "%2"
@@ -538,8 +542,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the result is lat/long, convert the results from radians back
   // to degrees
-  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ForwardTransform ) )
-       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ReverseTransform ) ) )
+  if ( ( pj_is_latlong( destProj ) && ( direction == ForwardTransform ) )
+       || ( pj_is_latlong( sourceProj ) && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
