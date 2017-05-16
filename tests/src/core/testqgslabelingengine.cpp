@@ -47,6 +47,7 @@ class TestQgsLabelingEngine : public QObject
     void testSubstitutions();
     void testCapitalization();
     void testParticipatingLayers();
+    void testRegisterFeatureUnprojectible();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -584,6 +585,43 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
   bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
+}
+
+// See https://issues.qgis.org/issues/15507
+void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = QString( "'aa label'" );
+  settings.isExpression = true;
+  settings.fitInPolygonOnly = true;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer", "vl", "memory" ) );
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
+  QgsFeature f( vl2->fields(), 1 );
+
+  QString wkt1 = "POLYGON((0 0,8 0,8 -90,0 0))";
+  f.setGeometry( QgsGeometry().fromWkt( wkt1 ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( "EPSG:3857" );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QSet<QString> attributes;
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.size(), 0 );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )
