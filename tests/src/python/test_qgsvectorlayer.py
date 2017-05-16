@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -41,7 +41,15 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointV2,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsLineSymbol,
+                       QgsMapLayerStyle,
+                       QgsMapLayerDependency,
+                       QgsPalLayerSettings,
+                       QgsVectorLayerSimpleLabeling,
+                       QgsSingleCategoryDiagramRenderer,
+                       QgsDiagramLayerSettings,
+                       QgsTextFormat)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
@@ -2090,6 +2098,221 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPoint(500, 600))))
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
+
+    def testCloneMapLayerAttributes(self):
+        # init crs
+        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+
+        # init map layer styles
+        tmplayer = createLayerWithTwoPoints()
+        sym1 = QgsLineSymbol()
+        sym1.setColor(Qt.magenta)
+        tmplayer.setRenderer(QgsSingleSymbolRenderer(sym1))
+
+        style0 = QgsMapLayerStyle()
+        style0.readFromLayer(tmplayer)
+        style1 = QgsMapLayerStyle()
+        style1.readFromLayer(tmplayer)
+
+        # init dependencies layers
+        ldep = createLayerWithTwoPoints()
+        dep = QgsMapLayerDependency(ldep.id())
+
+        # init layer
+        layer = createLayerWithTwoPoints()
+        layer.setBlendMode(QPainter.CompositionMode_Screen)
+        layer.styleManager().addStyle('style0', style0)
+        layer.styleManager().addStyle('style1', style1)
+        layer.setName('MyName')
+        layer.setShortName('MyShortName')
+        layer.setMinimumScale(0.5)
+        layer.setMaximumScale(1.5)
+        layer.setScaleBasedVisibility(True)
+        layer.setTitle('MyTitle')
+        layer.setAbstract('MyAbstract')
+        layer.setKeywordList('MyKeywordList')
+        layer.setDataUrl('MyDataUrl')
+        layer.setDataUrlFormat('MyDataUrlFormat')
+        layer.setAttribution('MyAttribution')
+        layer.setAttributionUrl('MyAttributionUrl')
+        layer.setMetadataUrl('MyMetadataUrl')
+        layer.setMetadataUrlType('MyMetadataUrlType')
+        layer.setMetadataUrlFormat('MyMetadataUrlFormat')
+        layer.setLegendUrl('MyLegendUrl')
+        layer.setLegendUrlFormat('MyLegendUrlFormat')
+        layer.setDependencies([dep])
+        layer.setCrs(srs)
+
+        layer.setCustomProperty('MyKey0', 'MyValue0')
+        layer.setCustomProperty('MyKey1', 'MyValue1')
+
+        # clone
+        clone = layer.clone()
+
+        # test QgsMapLayer attributes
+        self.assertEqual(layer.type(), clone.type())
+        self.assertEqual(layer.readOnly(), clone.readOnly())
+        self.assertEqual(layer.extent(), clone.extent())
+        self.assertEqual(layer.isValid(), clone.isValid())
+        self.assertEqual(layer.isEditable(), clone.isEditable())
+        self.assertEqual(layer.isSpatial(), clone.isSpatial())
+        self.assertEqual(layer.styleURI(), clone.styleURI())
+        self.assertEqual(layer.publicSource(), clone.publicSource())
+        self.assertEqual(layer.source(), clone.source())
+        self.assertEqual(layer.blendMode(), clone.blendMode())
+        self.assertEqual(layer.name(), clone.name())
+        self.assertEqual(layer.originalName(), clone.originalName())
+        self.assertEqual(layer.shortName(), clone.shortName())
+        self.assertEqual(layer.minimumScale(), clone.minimumScale())
+        self.assertEqual(layer.maximumScale(), clone.maximumScale())
+        self.assertEqual(layer.hasScaleBasedVisibility(), clone.hasScaleBasedVisibility())
+        self.assertEqual(layer.title(), clone.title())
+        self.assertEqual(layer.abstract(), clone.abstract())
+        self.assertEqual(layer.keywordList(), clone.keywordList())
+        self.assertEqual(layer.dataUrl(), clone.dataUrl())
+        self.assertEqual(layer.dataUrlFormat(), clone.dataUrlFormat())
+        self.assertEqual(layer.attribution(), clone.attribution())
+        self.assertEqual(layer.attributionUrl(), clone.attributionUrl())
+        self.assertEqual(layer.metadataUrl(), clone.metadataUrl())
+        self.assertEqual(layer.metadataUrlType(), clone.metadataUrlType())
+        self.assertEqual(layer.metadataUrlFormat(), clone.metadataUrlFormat())
+        self.assertEqual(layer.legendUrl(), clone.legendUrl())
+        self.assertEqual(layer.legendUrlFormat(), clone.legendUrlFormat())
+        self.assertEqual(layer.crs().authid(), clone.crs().authid())
+        self.assertEqual(layer.readOnly(), clone.readOnly())
+
+        styles = clone.styleManager().styles()
+        self.assertTrue('style0' in styles)
+        self.assertTrue('style1' in styles)
+
+        dependencies = list(clone.dependencies())
+        self.assertEqual(len(dependencies), 1)
+        self.assertEqual(dependencies[0].layerId(), dep.layerId())
+
+        self.assertEqual(clone.customProperty('MyKey0'), 'MyValue0')
+        self.assertEqual(clone.customProperty('MyKey1'), 'MyValue1')
+
+    def testCloneId(self):
+        layer = createLayerWithFivePoints()
+
+        # deep clone by default
+        clone = layer.clone()
+        self.assertFalse(clone.id() == layer.id())
+
+        clone = layer.clone(False)
+        self.assertFalse(clone.id() == layer.id())
+
+        clone = layer.clone(True)
+        self.assertEqual(clone.id(), layer.id())
+
+    def testCloneVectorLayerAttributes(self):
+        # init layer
+        layer = createLayerWithFivePoints()
+        layer.setLayerTransparency(33)
+        layer.setProviderEncoding('latin9')
+        layer.setDisplayExpression('MyDisplayExpression')
+        layer.setMapTipTemplate('MyMapTipTemplate')
+        layer.setExcludeAttributesWfs(['MyExcludeAttributeWFS'])
+        layer.setExcludeAttributesWms(['MyExcludeAttributeWMS'])
+
+        layer.setFeatureBlendMode(QPainter.CompositionMode_Xor)
+
+        sym = QgsLineSymbol()
+        sym.setColor(Qt.magenta)
+        layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        simplify = layer.simplifyMethod()
+        simplify.setTolerance(33.3)
+        simplify.setThreshold(0.333)
+        layer.setSimplifyMethod(simplify)
+
+        layer.setFieldAlias(0, 'MyAlias0')
+        layer.setFieldAlias(1, 'MyAlias1')
+
+        jl0 = createLayerWithTwoPoints()
+        j0 = QgsVectorLayerJoinInfo()
+        j0.setJoinLayer(jl0)
+
+        jl1 = createLayerWithTwoPoints()
+        j1 = QgsVectorLayerJoinInfo()
+        j1.setJoinLayer(jl1)
+        jids = [jl0.id(), jl1.id()]
+
+        layer.addJoin(j0)
+        layer.addJoin(j1)
+
+        fids = layer.allFeatureIds()
+        selected_fids = fids[0:3]
+        layer.selectByIds(selected_fids)
+
+        cfg = layer.attributeTableConfig()
+        cfg.setSortOrder(Qt.DescendingOrder)  # by default AscendingOrder
+        layer.setAttributeTableConfig(cfg)
+
+        pal = QgsPalLayerSettings()
+        text_format = QgsTextFormat()
+        text_format.setSize(33)
+        text_format.setColor(Qt.magenta)
+        pal.setFormat(text_format)
+
+        labeling = QgsVectorLayerSimpleLabeling(pal)
+        layer.setLabeling(labeling)
+
+        diag_renderer = QgsSingleCategoryDiagramRenderer()
+        diag_renderer.setAttributeLegend(False)  # true by default
+        diag_renderer.setSizeLegend(True)  # false by default
+        layer.setDiagramRenderer(diag_renderer)
+
+        diag_settings = QgsDiagramLayerSettings()
+        diag_settings.setPriority(3)
+        diag_settings.setZIndex(0.33)
+        layer.setDiagramLayerSettings(diag_settings)
+
+        # clone
+        clone = layer.clone()
+
+        # test QgsVectorLayer attributes
+        self.assertEqual(layer.fields().count(), clone.fields().count())
+        self.assertEqual(layer.layerTransparency(), clone.layerTransparency())
+        self.assertEqual(layer.dataProvider().encoding(), clone.dataProvider().encoding())
+        self.assertEqual(layer.displayExpression(), clone.displayExpression())
+        self.assertEqual(layer.mapTipTemplate(), clone.mapTipTemplate())
+
+        joins = clone.vectorJoins()
+        self.assertEqual(len(joins), 2)
+        self.assertTrue(joins[0].joinLayerId() in jids)
+        self.assertTrue(joins[1].joinLayerId() in jids)
+
+        self.assertEqual(sorted(layer.selectedFeatureIds()), sorted(clone.selectedFeatureIds()))
+        self.assertEqual(layer.excludeAttributesWms(), clone.excludeAttributesWms())
+        self.assertEqual(layer.excludeAttributesWfs(), clone.excludeAttributesWfs())
+        self.assertEqual(layer.attributeTableConfig().sortOrder(), clone.attributeTableConfig().sortOrder())
+        self.assertEqual(layer.featureBlendMode(), clone.featureBlendMode())
+
+        self.assertEqual(layer.simplifyMethod().tolerance(), clone.simplifyMethod().tolerance())
+        self.assertEqual(layer.simplifyMethod().threshold(), clone.simplifyMethod().threshold())
+        self.assertEqual(clone.attributeAlias(0), 'MyAlias0')
+        self.assertEqual(clone.attributeAlias(1), 'MyAlias1')
+
+        renderer = layer.renderer()
+        clone_sym = renderer.symbol()
+        self.assertEqual(clone_sym.type(), sym.type())
+        self.assertEqual(clone_sym.color(), Qt.magenta)
+
+        clone_labeling = clone.labeling()
+        clone_pal = clone_labeling.settings()
+        clone_text_format = clone_pal.format()
+        self.assertEqual(clone_text_format.size(), 33)
+        self.assertEqual(clone_text_format.color(), Qt.magenta)
+
+        clone_diag_renderer = clone.diagramRenderer()
+        self.assertEqual(clone_diag_renderer.rendererName(), 'SingleCategory')
+        self.assertFalse(clone_diag_renderer.attributeLegend())
+        self.assertTrue(clone_diag_renderer.sizeLegend())
+
+        clone_diag_settings = layer.diagramLayerSettings()
+        self.assertEqual(clone_diag_settings.zIndex(), 0.33)
+        self.assertEqual(clone_diag_settings.priority(), 3)
 
 
 # TODO:
