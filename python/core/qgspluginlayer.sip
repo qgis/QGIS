@@ -26,6 +26,15 @@ In order to be readable from project files, they should set these attributes in 
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
     ~QgsPluginLayer();
 
+    virtual QgsPluginLayer *clone( bool deep ) const = 0;
+%Docstring
+ Returns a new instance equivalent to this one.
+ \param deep If true, a deep copy is done
+ :return: a new layer instance
+.. versionadded:: 3.0
+ :rtype: QgsPluginLayer
+%End
+
     QString pluginLayerType();
 %Docstring
 Return plugin layer type (the same as used in QgsPluginLayerRegistry)
