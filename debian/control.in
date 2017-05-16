@@ -132,6 +132,18 @@ Description: QGIS - shared analysis library
  .
  This package contains the shared analysis library.
 
+Package: libqgis-native{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared native gui library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared native gui library.
+
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
