@@ -1131,7 +1131,15 @@ void QgsWmsProvider::createTileRequestsXYZ( const QgsWmtsTileMatrix* tm, const Q
       turl.replace( "{q}", _tile2quadkey( tile.col, tile.row, z ) );
 
     turl.replace( "{x}", QString::number( tile.col ), Qt::CaseInsensitive );
-    turl.replace( "{y}", QString::number( tile.row ), Qt::CaseInsensitive );
+    // inverted Y axis
+    if ( turl.contains( "{-y}" ) )
+    {
+      turl.replace( "{-y}" , QString::number( tm->matrixHeight - tile.row - 1 ), Qt::CaseInsensitive );
+    }
+    else
+    {
+      turl.replace( "{y}", QString::number( tile.row ), Qt::CaseInsensitive );
+    }
     turl.replace( "{z}", QString::number( z ), Qt::CaseInsensitive );
 
     QgsDebugMsgLevel( QString( "tileRequest %1 %2/%3 (%4,%5): %6" ).arg( mTileReqNo ).arg( i ).arg( tiles.count() ).arg( tile.row ).arg( tile.col ).arg( turl ), 2 );
@@ -3409,6 +3417,12 @@ QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
   {
     scale = 0;
     mapExtent = extent();
+  }
+
+  if ( mSettings.mXyz )
+  {
+    // we are working with XYZ tiles: no legend graphics available
+    return nullptr;
   }
 
   QUrl url = getLegendGraphicFullURL( scale, mapExtent );
