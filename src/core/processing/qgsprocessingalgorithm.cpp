@@ -250,3 +250,5 @@ QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parame
 {
   return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, name, context );
 }
+
+
