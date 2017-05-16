@@ -65,6 +65,8 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   {
     parts << QStringLiteral( "field=%1:%2" ).arg( field.name(), memoryLayerFieldType( field.type() ) );
   }
+  // required so that source differs between memory layers
+  parts << QStringLiteral( "uid=%1" ).arg( QUuid::createUuid().toString() );
 
   QString uri = geomType + '?' + parts.join( '&' );
 

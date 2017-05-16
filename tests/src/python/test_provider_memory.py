@@ -349,6 +349,10 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.name(), 'my name')
         self.assertTrue(layer.fields().isEmpty())
 
+        # similar layers should have unique sources
+        layer2 = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
+        self.assertNotEqual(layer.source(), layer2.source())
+
         # geometry type
         layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Point)
         self.assertTrue(layer.isValid())
