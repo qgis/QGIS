@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include <QtTest/QtTest>
 
 #include <qgsapplication.h>
@@ -45,6 +47,7 @@ class TestQgsLabelingEngineV2 : public QObject
     void testEncodeDecodePositionOrder();
     void testSubstitutions();
     void testCapitalization();
+    void testRegisterFeatureUnprojectible();
 
   private:
     QgsVectorLayer* vl;
@@ -536,6 +539,44 @@ bool TestQgsLabelingEngineV2::imageCheck( const QString& testName, QImage &image
   bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
+}
+
+// See https://issues.qgis.org/issues/15507
+void TestQgsLabelingEngineV2::testRegisterFeatureUnprojectible()
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = QString( "'aa label'" );
+  settings.isExpression = true;
+  settings.fitInPolygonOnly = true;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer", "vl", "memory" ) );
+  QgsVectorLayerLabelProvider* provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
+  QgsFeature f( vl2->fields(), 1 );
+
+  QString wkt1 = "POLYGON((0 0,8 0,8 -90,0 0))";
+  f.setGeometry( QgsGeometry().fromWkt( wkt1 ) );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setCrsTransformEnabled( true );
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( "EPSG:3857" );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QStringList() << vl2->id() );
+  mapSettings.setOutputDpi( 96 );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  QStringList attributes;
+  QgsLabelingEngineV2 engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  provider->prepare( context, attributes );
+
+  provider->registerFeature( f, context );
+  QCOMPARE( provider->mLabels.size(), 0 );
 }
 
 QTEST_MAIN( TestQgsLabelingEngineV2 )
