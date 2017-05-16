@@ -110,6 +110,13 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 
     //! Return list of all defined style names
     QStringList styles() const;
+
+    /** Gets available styles for the associated map layer.
+     * \returns A map of map layer style by style name
+     * \since QGIS 3.0
+     */
+    QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
+
     //! Return data of a stored style - accessed by its unique name
     QgsMapLayerStyle style( const QString &name ) const;
 

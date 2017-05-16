@@ -110,6 +110,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! QgsMapLayer cannot be copied
     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
 
+    /** Returns a new instance equivalent to this one.
+     * \param deep If true, a deep copy is done
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsMapLayer *clone( bool deep ) const = 0;
+
     /** Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
@@ -443,6 +450,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setCustomProperty()
     */
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+
+    /** Set custom properties for layer.
+     * \param properties The custom properties to set.
+     * \since QGIS 3.0
+     */
+    void setCustomProperties( const QgsObjectCustomProperties &properties );
 
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
@@ -916,6 +929,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void metadataChanged();
 
   protected:
+
+    /** Copies attributes like name, short name, ... into another layer. The
+     *  unique ID is copied too if deep parameter is true.
+     * \param layer The copy recipient
+     * \param deep To copy the unique ID or not
+     * \since QGIS 3.0
+     */
+    void clone( QgsMapLayer *layer, bool deep = false ) const;
+
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
 
@@ -1008,6 +1030,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
 
   private:
+
+    /** Set the unique id of the layer.
+     * /param id the new unique id of the layer
+     */
+    void setId( const QString &id );
 
     /**
      * This method returns true by default but can be overwritten to specify

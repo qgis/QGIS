@@ -94,6 +94,43 @@ QgsMapLayer::~QgsMapLayer()
   delete mStyleManager;
 }
 
+void QgsMapLayer::clone( QgsMapLayer *layer, bool deep ) const
+{
+  layer->setBlendMode( blendMode() );
+
+  QMap<QString, QgsMapLayerStyle> styles = styleManager()->mapLayerStyles();
+  for ( QString s : styles.keys() )
+  {
+    layer->styleManager()->addStyle( s, styles.value( s ) );
+  }
+
+  layer->setName( name() );
+  layer->setShortName( shortName() );
+  layer->setMinimumScale( minimumScale() );
+  layer->setMaximumScale( maximumScale() );
+  layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
+  layer->setTitle( title() );
+  layer->setAbstract( abstract() );
+  layer->setKeywordList( keywordList() );
+  layer->setDataUrl( dataUrl() );
+  layer->setDataUrlFormat( dataUrlFormat() );
+  layer->setAttribution( attribution() );
+  layer->setAttributionUrl( attributionUrl() );
+  layer->setMetadataUrl( metadataUrl() );
+  layer->setMetadataUrlType( metadataUrlType() );
+  layer->setMetadataUrlFormat( metadataUrlFormat() );
+  layer->setLegendUrl( legendUrl() );
+  layer->setLegendUrlFormat( legendUrlFormat() );
+  layer->setDependencies( dependencies() );
+  layer->setCrs( crs() );
+  layer->setCustomProperties( mCustomProperties );
+
+  if ( deep )
+  {
+    layer->setId( id() );
+  }
+}
+
 QgsMapLayer::LayerType QgsMapLayer::type() const
 {
   return mLayerType;
@@ -102,6 +139,11 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
 QString QgsMapLayer::id() const
 {
   return mID;
+}
+
+void QgsMapLayer::setId( const QString &id )
+{
+  mID = id;
 }
 
 void QgsMapLayer::setName( const QString &name )
@@ -1581,6 +1623,11 @@ QStringList QgsMapLayer::customPropertyKeys() const
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
+}
+
+void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
+{
+  mCustomProperties = properties;
 }
 
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
