@@ -243,7 +243,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingwidget.h"
 #include "qgssourceselectdialog.h"
-#include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
@@ -3692,10 +3691,10 @@ void QgisApp::restoreWindowState()
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {
-  QgsSponsors *sponsors = new QgsSponsors( this );
-  sponsors->show();
-  sponsors->raise();
-  sponsors->activateWindow();
+  QgsSettings settings;
+  QString qgisSponsorsUrl = settings.value( QStringLiteral( "qgis/qgisSponsorsUrl" ),
+                            tr( "http://qgis.org/en/site/about/sponsorship.html" ) ).toString();
+  openURL( qgisSponsorsUrl, false );
 }
 
 void QgisApp::about()
