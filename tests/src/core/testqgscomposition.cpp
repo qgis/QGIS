@@ -29,6 +29,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsproject.h"
 #include "qgscomposerlegend.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
@@ -873,16 +874,21 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
       "ogr" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
+  QgsRasterLayer *rl = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+
   QgsProject p;
   p.addMapLayer( layer2 );
   p.addMapLayer( layer );
+  p.addMapLayer( rl );
 
   // create composition
   QgsComposition c( &p );
   // add a map
   QgsComposerMap *map = new QgsComposerMap( &c, 1, 1, 10, 10 );
   c.addComposerMap( map );
-  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 );
+  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 << rl );
 
   // save composition to template
   QDomDocument doc;
@@ -899,8 +905,11 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
       "ogr" );
+  QgsRasterLayer *rl5 = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
   p2.addMapLayer( layer4 );
   p2.addMapLayer( layer3 );
+  p2.addMapLayer( rl5 );
 
   // make a new composition from template
   QgsComposition c2( &p2 );
@@ -911,7 +920,7 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QgsComposerMap *map2 = static_cast< QgsComposerMap *>( maps.at( 0 ) );
   QVERIFY( map2 );
 
-  QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 );
+  QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 << rl5 );
 }
 
 void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
