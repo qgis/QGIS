@@ -32,6 +32,10 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
 
     QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *parent = nullptr );
 
+  public slots:
+
+    void commitChanges();
+
   private:
 
     QgsLocator *mLocator = nullptr;
@@ -77,11 +81,21 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
+
+  public slots:
+
+    void commitChanges();
+
   private:
 
     QgsLocatorFilter *filterForIndex( const QModelIndex &index ) const;
 
     QgsLocator *mLocator = nullptr;
+
+    // changes are defered to support cancelation
+    QHash< QgsLocatorFilter *, bool > mEnabledChanges;
+    QHash< QgsLocatorFilter *, bool > mDefaultChanges;
+
 };
 
 #endif // QGSLOCATOROPTIONSWIDGET_H

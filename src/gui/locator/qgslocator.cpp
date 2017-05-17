@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
+#include "qgssettings.h"
 #include <QtConcurrent>
 #include <functional>
 
@@ -72,6 +73,14 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
       mPrefixedFilters.insert( filter->prefix(), filter );
     }
   }
+
+  // restore settings
+  QgsSettings settings;
+  bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
+  bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
+
+  filter->setEnabled( enabled );
+  filter->setUseWithoutPrefix( byDefault );
 }
 
 void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
