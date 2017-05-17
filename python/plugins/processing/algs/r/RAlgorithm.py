@@ -53,7 +53,11 @@ from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputDirectory
+from processing.core.outputs import OutputString
+from processing.core.outputs import OutputNumber
 from processing.tools.system import isWindows
+from processing.tools.system import setTempOutput
 from processing.script.WrongScriptException import WrongScriptException
 from .RUtils import RUtils
 
@@ -62,6 +66,7 @@ class RAlgorithm(GeoAlgorithm):
 
     R_CONSOLE_OUTPUT = 'R_CONSOLE_OUTPUT'
     RPLOTS = 'RPLOTS'
+    R_OUTPUT_VALUES = 'R_OUTPUT_VALUES'
 
     def getCopy(self):
         newone = RAlgorithm(self.descriptionFile)
@@ -99,6 +104,7 @@ class RAlgorithm(GeoAlgorithm):
         self.commands = []
         self.showPlots = False
         self.showConsoleOutput = False
+        self.saveOutputValues = False
         self.useRasterPackage = True
         self.passFileNames = False
         self.verboseCommands = []
@@ -108,7 +114,7 @@ class RAlgorithm(GeoAlgorithm):
             if line.startswith('##'):
                 try:
                     self.processParameterLine(line)
-                except Exception:
+                except Exception as e:
                     raise WrongScriptException(
                         self.tr('Could not load R script: %s.\n Problem with line %s' % (self.descriptionFile, line)))
             elif line.startswith('>'):
@@ -282,8 +288,24 @@ class RAlgorithm(GeoAlgorithm):
             out = OutputVector()
         elif token.lower().strip().startswith('table'):
             out = OutputTable()
-        elif token.lower().strip().startswith('file'):
-            out = OutputFile()
+        else:
+            if token.lower().strip().startswith('file'):
+                out = OutputFile()
+                ext = token.strip()[len('file') + 1:]
+                if ext:
+                    out.ext = ext
+            elif token.lower().strip().startswith('directory'):
+                out = OutputDirectory()
+            elif token.lower().strip().startswith('number'):
+                out = OutputNumber()
+            elif token.lower().strip().startswith('string'):
+                out = OutputString()
+
+            if not self.saveOutputValues and out:
+                outVal = OutputFile(RAlgorithm.R_OUTPUT_VALUES, self.tr('R Output values'), ext='txt')
+                outVal.hidden = True
+                self.addOutput(outVal)
+                self.saveOutputValues = True
 
         return out
 
@@ -301,6 +323,10 @@ class RAlgorithm(GeoAlgorithm):
             progress.setCommand(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         RUtils.executeRAlgorithm(self, progress)
+        if self.saveOutputValues:
+            with open(self.getOutputValue(RAlgorithm.R_OUTPUT_VALUES), 'r') as f:
+                lines = [line.strip() for line in f]
+            self.parseOutputValues(iter(lines))
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             f = open(htmlfilename, 'w')
@@ -312,6 +338,37 @@ class RAlgorithm(GeoAlgorithm):
             f.write(RUtils.getConsoleOutput())
             f.close()
 
+    def parseOutputValues(self, lines):
+        if not self.saveOutputValues:
+            return
+
+        out = None
+        ender = 0
+        line = lines.next().strip('\n').strip('\r')
+        while ender < 10:
+            if line.startswith('##'):
+                name = line.replace('#', '')
+                out = self.getOutputFromName(name)
+            else:
+                if line == '':
+                    ender += 1
+                else:
+                    ender = 0
+                    if out:
+                        if isinstance(out, OutputNumber):
+                            out.setValue(float(line) if '.' in line else int(line))
+                        elif isinstance(out, OutputString):
+                            if not out.value:
+                                out.setValue(line)
+                            else:
+                                out.value += '\n\r' + line
+                        else:
+                            out.setValue(line)
+            try:
+                line = lines.next().strip('\n').strip('\r')
+            except:
+                break
+
     def getFullSetOfRCommands(self):
         commands = []
         commands += self.getImportCommands()
@@ -322,6 +379,15 @@ class RAlgorithm(GeoAlgorithm):
 
     def getExportCommands(self):
         commands = []
+
+        # Output Values
+        outputDataFile = None
+        if self.saveOutputValues:
+            outputDataFile = self.getOutputValue(RAlgorithm.R_OUTPUT_VALUES)
+            if not outputDataFile:
+                setTempOutput(self.getOutputFromName(RAlgorithm.R_OUTPUT_VALUES), self)
+                outputDataFile = self.getOutputValue(RAlgorithm.R_OUTPUT_VALUES)
+
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 value = out.value
@@ -347,6 +413,9 @@ class RAlgorithm(GeoAlgorithm):
                 value = out.value
                 value = value.replace('\\', '/')
                 commands.append('write.csv(' + out.name + ',"' + value + '")')
+            elif out.name != RAlgorithm.R_OUTPUT_VALUES:
+                commands.append('cat("##' + out.name + '",file="' + outputDataFile + '",sep="\n",append=TRUE)')
+                commands.append('cat(' + out.name + ',file="' + outputDataFile + '",sep="\n",append=TRUE)')
 
         if self.showPlots:
             commands.append('dev.off()')
@@ -371,6 +440,7 @@ class RAlgorithm(GeoAlgorithm):
         commands.append('library("raster")')
         commands.append('library("rgdal")')
 
+        # Add parameters
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value is None:
@@ -488,6 +558,13 @@ class RAlgorithm(GeoAlgorithm):
                     iLayer += 1
                 s += ')\n'
                 commands.append(s)
+
+        # Set outputs
+        for out in self.outputs:
+            if isinstance(out, OutputFile) or isinstance(out, OutputDirectory):
+                if not out.value:
+                    setTempOutput(out, self)
+                commands.append(out.name + ' = "' + out.value + '"')
 
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
