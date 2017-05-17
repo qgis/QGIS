@@ -256,7 +256,7 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   QString key = itemKey( item );
-  QgsDebugMsgLevel( key , 4);
+  QgsDebugMsgLevel( key, 4 );
   if ( settingsMap.contains( key ) )
   {
     QgsDebugMsgLevel( "contains!!!!", 4 );
