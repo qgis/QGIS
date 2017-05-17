@@ -219,7 +219,6 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->selectByIds( selectedFeatureIds() );
   layer->setExcludeAttributesWms( excludeAttributesWms() );
   layer->setExcludeAttributesWfs( excludeAttributesWfs() );
-  layer->setExtent( extent() );
   layer->setRenderer( renderer()->clone() );
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
