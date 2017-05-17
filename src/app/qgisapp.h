@@ -563,6 +563,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
 
+    QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
+
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
 

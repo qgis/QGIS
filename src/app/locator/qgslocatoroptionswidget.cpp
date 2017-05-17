@@ -37,7 +37,10 @@ QgsLocatorFiltersModel::QgsLocatorFiltersModel( QgsLocator *locator, QObject *pa
   : QAbstractTableModel( parent )
   , mLocator( locator )
 {
-
+  setHeaderData( Name, Qt::Horizontal, tr( "Filter" ) );
+  setHeaderData( Prefix, Qt::Horizontal, tr( "Prefix" ) );
+  setHeaderData( Active, Qt::Horizontal, tr( "Enabled" ) );
+  setHeaderData( Default, Qt::Horizontal, tr( "Default" ) );
 }
 
 int QgsLocatorFiltersModel::rowCount( const QModelIndex & ) const
@@ -111,8 +114,30 @@ Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
     case Active:
     case Default:
       flags = flags | Qt::ItemIsUserCheckable;
+      flags = flags | Qt::ItemIsEditable;
       break;
   }
 
   return flags;
+}
+
+QVariant QgsLocatorFiltersModel::zheaderData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal && role == Qt::SizeHintRole )
+  {
+    QSize size = QAbstractTableModel::headerData( section, orientation, role ).toSize();
+    switch ( section )
+    {
+      case Name:
+        break;
+      case Prefix:
+      case Active:
+      case Default:
+        size.setWidth( 100 );
+        break;
+    }
+    return size;
+  }
+
+  return QAbstractTableModel::headerData( section, orientation, role );
 }
