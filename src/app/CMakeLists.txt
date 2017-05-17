@@ -524,7 +524,6 @@ INCLUDE_DIRECTORIES(
   openstreetmap
   dwg
   dwg/libdxfrw
-  dwg/libdxfrw
   locator
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
