@@ -86,6 +86,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     void triggerSearchAndShowList();
     void searchFinished();
     void addResult( const QgsLocatorResult &result );
+    void configMenuAboutToShow();
 
   private:
 
@@ -96,11 +97,13 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     QgsFloatingWidget *mResultsContainer = nullptr;
     QgsLocatorResultsView *mResultsView = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QMenu *mMenu = nullptr;
 
     QString mNextRequestedString;
     bool mHasQueuedRequest = false;
     bool mHasSelectedResult = false;
     QTimer mPopupTimer;
+    QTimer mFocusTimer;
 
     void updateResults( const QString &text );
     void acceptCurrentEntry();
