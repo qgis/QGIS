@@ -105,6 +105,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 
   layer->setName( name() );
   layer->setShortName( shortName() );
+  layer->setExtent( extent() );
   layer->setMinimumScale( minimumScale() );
   layer->setMaximumScale( maximumScale() );
   layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
