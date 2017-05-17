@@ -89,6 +89,8 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mScaleX = props.value( QStringLiteral( "scale_x" ), QStringLiteral( "1.0" ) ).toDouble();
   mScaleY = props.value( QStringLiteral( "scale_y" ), QStringLiteral( "1.0" ) ).toDouble();
   mRotation = props.value( QStringLiteral( "rotation" ), QStringLiteral( "0.0" ) ).toDouble();
+  mShearX = props.value( QStringLiteral( "shear_x" ), QStringLiteral( "0.0" ) ).toDouble();
+  mShearY = props.value( QStringLiteral( "shear_y" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateX = props.value( QStringLiteral( "translate_x" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateY = props.value( QStringLiteral( "translate_y" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "translate_unit" ) ) );
