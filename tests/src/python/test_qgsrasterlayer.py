@@ -23,6 +23,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
+                       QgsReadWriteContext,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
                        QgsProject,
@@ -666,8 +667,32 @@ class TestQgsRasterLayer(unittest.TestCase):
         renderer.setOpacity(33.3)
         layer.setRenderer(renderer)
 
+        # clone layer
         clone = layer.clone()
-        self.assertEqual(clone.renderer().opacity(), 33.3)
+
+        # generate xml from layer
+        layer_doc = QDomDocument("doc")
+        layer_elem = layer_doc.createElement("maplayer")
+        layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
+
+        # generate xml from clone
+        clone_doc = QDomDocument("doc")
+        clone_elem = clone_doc.createElement("maplayer")
+        clone.writeLayerXml(clone_elem, clone_doc, QgsReadWriteContext())
+
+        # replace id within xml of clone
+        clone_id_elem = clone_elem.firstChildElement("id")
+        clone_id_elem_patch = clone_doc.createElement("id")
+        clone_id_elem_patch_value = clone_doc.createTextNode(layer.id())
+        clone_id_elem_patch.appendChild(clone_id_elem_patch_value)
+        clone_elem.replaceChild(clone_id_elem_patch, clone_id_elem)
+
+        # update doc
+        clone_doc.appendChild(clone_elem)
+        layer_doc.appendChild(layer_elem)
+
+        # compare xml documents
+        self.assertEqual(layer_doc.toString(), clone_doc.toString())
 
 
 if __name__ == '__main__':
