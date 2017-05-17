@@ -219,10 +219,14 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->selectByIds( selectedFeatureIds() );
   layer->setExcludeAttributesWms( excludeAttributesWms() );
   layer->setExcludeAttributesWfs( excludeAttributesWfs() );
-  layer->setRenderer( renderer()->clone() );
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setLayerTransparency( layerTransparency() );
+
+  if ( renderer() )
+  {
+    layer->setRenderer( renderer()->clone() );
+  }
 
   if ( labeling() )
   {
