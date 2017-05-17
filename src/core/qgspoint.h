@@ -225,12 +225,6 @@ class CORE_EXPORT QgsPoint
     //! Multiply x and y by the given value
     void multiply( double scalar );
 
-    //! Test if this point is on the segment defined by points a, b
-    //! \returns 0 if this point is not on the open ray through a and b,
-    //! 1 if point is on open ray a, 2 if point is within line segment,
-    //! 3 if point is on open ray b.
-    int onSegment( const QgsPoint &a, const QgsPoint &b ) const;
-
     //! Assignment
     QgsPoint &operator=( const QgsPoint &other );
 
