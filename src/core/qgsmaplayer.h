@@ -451,8 +451,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 
-    /** Set custom properties for layer.
-     * \param properties The custom properties to set.
+    /** Set custom properties for layer. Current properties are dropped.
      * \since QGIS 3.0
      */
     void setCustomProperties( const QgsObjectCustomProperties &properties );
