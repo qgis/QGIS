@@ -26,7 +26,7 @@ In order to be readable from project files, they should set these attributes in 
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
     ~QgsPluginLayer();
 
-    virtual QgsPluginLayer *clone( bool deep ) const = 0;
+    virtual QgsPluginLayer *clone() const = 0;
 %Docstring
  Returns a new instance equivalent to this one.
  \param deep If true, a deep copy is done

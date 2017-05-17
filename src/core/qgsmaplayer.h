@@ -110,12 +110,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! QgsMapLayer cannot be copied
     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
 
-    /** Returns a new instance equivalent to this one.
-     * \param deep If true, a deep copy is done
+    /** Returns a new instance equivalent to this one except for the id which
+     *  is still unique.
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsMapLayer *clone( bool deep ) const = 0;
+    virtual QgsMapLayer *clone() const = 0;
 
     /** Returns the type of the layer.
      */
@@ -930,13 +930,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   protected:
 
-    /** Copies attributes like name, short name, ... into another layer. The
-     *  unique ID is copied too if deep parameter is true.
+    /** Copies attributes like name, short name, ... into another layer.
      * \param layer The copy recipient
-     * \param deep To copy the unique ID or not
      * \since QGIS 3.0
      */
-    void clone( QgsMapLayer *layer, bool deep = false ) const;
+    void clone( QgsMapLayer *layer ) const;
 
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
@@ -1030,11 +1028,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
 
   private:
-
-    /** Set the unique id of the layer.
-     * /param id the new unique id of the layer
-     */
-    void setId( const QString &id );
 
     /**
      * This method returns true by default but can be overwritten to specify

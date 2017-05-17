@@ -2195,15 +2195,8 @@ class TestQgsVectorLayer(unittest.TestCase):
     def testCloneId(self):
         layer = createLayerWithFivePoints()
 
-        # deep clone by default
         clone = layer.clone()
         self.assertFalse(clone.id() == layer.id())
-
-        clone = layer.clone(False)
-        self.assertFalse(clone.id() == layer.id())
-
-        clone = layer.clone(True)
-        self.assertEqual(clone.id(), layer.id())
 
     def testCloneVectorLayerAttributes(self):
         # init layer

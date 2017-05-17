@@ -144,10 +144,10 @@ QgsRasterLayer::~QgsRasterLayer()
   // Note: provider and other interfaces are owned and deleted by pipe
 }
 
-QgsRasterLayer *QgsRasterLayer::clone( bool deep ) const
+QgsRasterLayer *QgsRasterLayer::clone() const
 {
   QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
-  QgsMapLayer::clone( layer, deep );
+  QgsMapLayer::clone( layer );
   layer->setRenderer( renderer()->clone() );
   return layer;
 }
