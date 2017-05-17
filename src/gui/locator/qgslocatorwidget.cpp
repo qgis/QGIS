@@ -122,6 +122,13 @@ void QgsLocatorWidget::search( const QString &string )
   performSearch();
 }
 
+void QgsLocatorWidget::invalidateResults()
+{
+  mLocator->cancelWithoutBlocking();
+  mLocatorModel->clear();
+  mResultsContainer->hide();
+}
+
 void QgsLocatorWidget::scheduleDelayedPopup()
 {
   mPopupTimer.start();

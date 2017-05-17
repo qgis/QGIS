@@ -23,6 +23,7 @@
 #include "ui_qgslocatoroptionswidgetbase.h"
 
 class QgsLocatorFiltersModel;
+class QgsLocatorWidget;
 
 class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWidgetBase
 {
@@ -30,7 +31,7 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
 
   public:
 
-    QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *parent = nullptr );
+    QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent = nullptr );
 
   public slots:
 
@@ -38,6 +39,7 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
 
   private:
 
+    QgsLocatorWidget *mLocatorWidget = nullptr;
     QgsLocator *mLocator = nullptr;
     QgsLocatorFiltersModel *mModel = nullptr;
 };

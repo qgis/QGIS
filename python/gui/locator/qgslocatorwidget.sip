@@ -49,6 +49,12 @@ class QgsLocatorWidget : QWidget
  Triggers the locator widget to focus, open and start searching for a specified ``string``.
 %End
 
+    void invalidateResults();
+%Docstring
+ Invalidates the current search results, e.g. as a result of changes to the locator
+ filter settings.
+%End
+
   signals:
 
     void configTriggered();

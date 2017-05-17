@@ -943,7 +943,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mVariableEditor->setEditableScopeIndex( 0 );
 
   // locator
-  mLocatorOptionsWidget = new QgsLocatorOptionsWidget( QgisApp::instance()->locatorWidget()->locator(), this );
+  mLocatorOptionsWidget = new QgsLocatorOptionsWidget( QgisApp::instance()->locatorWidget(), this );
   QVBoxLayout *locatorLayout = new QVBoxLayout();
   locatorLayout->addWidget( mLocatorOptionsWidget );
   mOptionsLocatorGroupBox->setLayout( locatorLayout );
