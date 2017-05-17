@@ -173,6 +173,19 @@ class QgsLocatorFilter : QObject
  :rtype: bool
 %End
 
+    bool enabled() const;
+%Docstring
+ Returns true if the filter is enabled.
+.. seealso:: setEnabled()
+ :rtype: bool
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+ Sets whether the filter is ``enabled``.
+.. seealso:: enabled()
+%End
+
   signals:
 
     void resultFetched( const QgsLocatorResult &result );

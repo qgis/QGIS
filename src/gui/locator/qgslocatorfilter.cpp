@@ -30,6 +30,16 @@ bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &s
   return candidate.contains( search, Qt::CaseInsensitive );
 }
 
+bool QgsLocatorFilter::enabled() const
+{
+  return mEnabled;
+}
+
+void QgsLocatorFilter::setEnabled( bool enabled )
+{
+  mEnabled = enabled;
+}
+
 bool QgsLocatorFilter::useWithoutPrefix() const
 {
   return mUseWithoutPrefix;

@@ -190,6 +190,18 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      */
     static bool stringMatches( const QString &candidate, const QString &search );
 
+    /**
+     * Returns true if the filter is enabled.
+     * \see setEnabled()
+     */
+    bool enabled() const;
+
+    /**
+     * Sets whether the filter is \a enabled.
+     * \see enabled()
+     */
+    void setEnabled( bool enabled );
+
   signals:
 
     /**
@@ -200,6 +212,7 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
 
   private:
 
+    bool mEnabled = true;
     bool mUseWithoutPrefix = true;
 
 };

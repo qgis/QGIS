@@ -245,6 +245,9 @@ void QgsLocatorWidget::configMenuAboutToShow()
   QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
   for ( ; fIt != filters.constEnd(); ++fIt )
   {
+    if ( !fIt.value()->enabled() )
+      continue;
+
     QAction *action = new QAction( fIt.value()->displayName(), mMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
@@ -576,7 +579,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     if ( feedback->isCanceled() )
       return;
 
-    if ( fIt.value() == this || !fIt.value() )
+    if ( fIt.value() == this || !fIt.value() || !fIt.value()->enabled() )
       continue;
 
     QgsLocatorResult result;
