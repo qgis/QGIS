@@ -1702,6 +1702,12 @@ QgsPluginLayerRegistry        {#qgis_api_break_3_0_QgsPluginLayerRegistry}
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::pluginLayerRegistry() to access an application-wide registry.
 
 
+QgsPoint   {#qgis_api_break_3_0_QgsPoint}
+--------
+
+- onSegment() has been removed. Use sqrDistToSegment() instead for a more precise test.
+
+
 QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRenderer}
 ----------------------------
 

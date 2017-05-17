@@ -329,36 +329,6 @@ void QgsPoint::multiply( double scalar )
   mY *= scalar;
 }
 
-int QgsPoint::onSegment( const QgsPoint &a, const QgsPoint &b ) const
-{
-  //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
-  if (
-    qAbs( ( b.y() - a.y() ) * ( mX - a.x() ) - ( mY - a.y() ) * ( b.x() - a.x() ) )
-    >= qMax( qAbs( b.x() - a.x() ), qAbs( b.y() - a.y() ) )
-  )
-  {
-    return 0;
-  }
-  if ( ( b.x() < a.x() && a.x() < mX ) || ( b.y() < a.y() && a.y() < mY ) )
-  {
-    return 1;
-  }
-  if ( ( mX < a.x() && a.x() < b.x() ) || ( mY < a.y() && a.y() < b.y() ) )
-  {
-    return 1;
-  }
-  if ( ( a.x() < b.x() && b.x() < mX ) || ( a.y() < b.y() && b.y() < mY ) )
-  {
-    return 3;
-  }
-  if ( ( mX < b.x() && b.x() < a.x() ) || ( mY < b.y() && b.y() < a.y() ) )
-  {
-    return 3;
-  }
-
-  return 2;
-}
-
 double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon ) const
 {
   double nx, ny; //normal vector

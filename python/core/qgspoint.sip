@@ -229,12 +229,6 @@ Inequality operator
 Multiply x and y by the given value
 %End
 
-    int onSegment( const QgsPoint &a, const QgsPoint &b ) const;
-%Docstring
-3 if point is on open ray b.
- :rtype: int
-%End
-
 
     QgsVector operator-( const QgsPoint &p ) const;
 %Docstring
