@@ -222,7 +222,6 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setLayerTransparency( layerTransparency() );
-  layer->setEditFormConfig( editFormConfig() );
 
   Q_FOREACH ( QgsAction action, actions()->actions() )
   {
@@ -269,6 +268,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
       layer->addExpressionField( expressionField( i ), fields().at( i ) );
     }
   }
+
+  layer->setEditFormConfig( editFormConfig() );
 
   return layer;
 }

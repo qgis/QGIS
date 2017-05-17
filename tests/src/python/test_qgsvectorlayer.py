@@ -21,6 +21,8 @@ from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
+                       QgsAction,
+                       QgsEditorWidgetSetup,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -2099,7 +2101,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
 
-    def testCloneMapLayerAttributes(self):
+    def testClone(self):
         # init crs
         srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
 
@@ -2146,61 +2148,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         layer.setCustomProperty('MyKey0', 'MyValue0')
         layer.setCustomProperty('MyKey1', 'MyValue1')
 
-        # clone
-        clone = layer.clone()
-
-        # test QgsMapLayer attributes
-        self.assertEqual(layer.type(), clone.type())
-        self.assertEqual(layer.readOnly(), clone.readOnly())
-        self.assertEqual(layer.extent(), clone.extent())
-        self.assertEqual(layer.isValid(), clone.isValid())
-        self.assertEqual(layer.isEditable(), clone.isEditable())
-        self.assertEqual(layer.isSpatial(), clone.isSpatial())
-        self.assertEqual(layer.styleURI(), clone.styleURI())
-        self.assertEqual(layer.publicSource(), clone.publicSource())
-        self.assertEqual(layer.source(), clone.source())
-        self.assertEqual(layer.blendMode(), clone.blendMode())
-        self.assertEqual(layer.name(), clone.name())
-        self.assertEqual(layer.originalName(), clone.originalName())
-        self.assertEqual(layer.shortName(), clone.shortName())
-        self.assertEqual(layer.minimumScale(), clone.minimumScale())
-        self.assertEqual(layer.maximumScale(), clone.maximumScale())
-        self.assertEqual(layer.hasScaleBasedVisibility(), clone.hasScaleBasedVisibility())
-        self.assertEqual(layer.title(), clone.title())
-        self.assertEqual(layer.abstract(), clone.abstract())
-        self.assertEqual(layer.keywordList(), clone.keywordList())
-        self.assertEqual(layer.dataUrl(), clone.dataUrl())
-        self.assertEqual(layer.dataUrlFormat(), clone.dataUrlFormat())
-        self.assertEqual(layer.attribution(), clone.attribution())
-        self.assertEqual(layer.attributionUrl(), clone.attributionUrl())
-        self.assertEqual(layer.metadataUrl(), clone.metadataUrl())
-        self.assertEqual(layer.metadataUrlType(), clone.metadataUrlType())
-        self.assertEqual(layer.metadataUrlFormat(), clone.metadataUrlFormat())
-        self.assertEqual(layer.legendUrl(), clone.legendUrl())
-        self.assertEqual(layer.legendUrlFormat(), clone.legendUrlFormat())
-        self.assertEqual(layer.crs().authid(), clone.crs().authid())
-        self.assertEqual(layer.readOnly(), clone.readOnly())
-
-        styles = clone.styleManager().styles()
-        self.assertTrue('style0' in styles)
-        self.assertTrue('style1' in styles)
-
-        dependencies = list(clone.dependencies())
-        self.assertEqual(len(dependencies), 1)
-        self.assertEqual(dependencies[0].layerId(), dep.layerId())
-
-        self.assertEqual(clone.customProperty('MyKey0'), 'MyValue0')
-        self.assertEqual(clone.customProperty('MyKey1'), 'MyValue1')
-
-    def testCloneId(self):
-        layer = createLayerWithFivePoints()
-
-        clone = layer.clone()
-        self.assertFalse(clone.id() == layer.id())
-
-    def testCloneVectorLayerAttributes(self):
-        # init layer
-        layer = createLayerWithFivePoints()
         layer.setLayerTransparency(33)
         layer.setProviderEncoding('latin9')
         layer.setDisplayExpression('MyDisplayExpression')
@@ -2229,7 +2176,6 @@ class TestQgsVectorLayer(unittest.TestCase):
         jl1 = createLayerWithTwoPoints()
         j1 = QgsVectorLayerJoinInfo()
         j1.setJoinLayer(jl1)
-        jids = [jl0.id(), jl1.id()]
 
         layer.addJoin(j0)
         layer.addJoin(j1)
@@ -2261,51 +2207,47 @@ class TestQgsVectorLayer(unittest.TestCase):
         diag_settings.setZIndex(0.33)
         layer.setDiagramLayerSettings(diag_settings)
 
-        # clone
+        edit_form_config = layer.editFormConfig()
+        edit_form_config.setUiForm("MyUiForm")
+        edit_form_config.setInitFilePath("MyInitFilePath")
+        layer.setEditFormConfig(edit_form_config)
+
+        widget_setup = QgsEditorWidgetSetup("MyWidgetSetupType", {})
+        layer.setEditorWidgetSetup(0, widget_setup)
+
+        layer.setConstraintExpression(0, "MyFieldConstraintExpression")
+        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
+        layer.setDefaultValueExpression(0, "MyDefaultValueExpression")
+
+        action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
+        layer.actions().addAction(action)
+
+        # clone layer
         clone = layer.clone()
 
-        # test QgsVectorLayer attributes
-        self.assertEqual(layer.fields().count(), clone.fields().count())
-        self.assertEqual(layer.layerTransparency(), clone.layerTransparency())
-        self.assertEqual(layer.dataProvider().encoding(), clone.dataProvider().encoding())
-        self.assertEqual(layer.displayExpression(), clone.displayExpression())
-        self.assertEqual(layer.mapTipTemplate(), clone.mapTipTemplate())
+        # generate xml from layer
+        layer_doc = QDomDocument("doc")
+        layer_elem = layer_doc.createElement("maplayer")
+        layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
 
-        joins = clone.vectorJoins()
-        self.assertEqual(len(joins), 2)
-        self.assertTrue(joins[0].joinLayerId() in jids)
-        self.assertTrue(joins[1].joinLayerId() in jids)
+        # generate xml from clone
+        clone_doc = QDomDocument("doc")
+        clone_elem = clone_doc.createElement("maplayer")
+        clone.writeLayerXml(clone_elem, clone_doc, QgsReadWriteContext())
 
-        self.assertEqual(sorted(layer.selectedFeatureIds()), sorted(clone.selectedFeatureIds()))
-        self.assertEqual(layer.excludeAttributesWms(), clone.excludeAttributesWms())
-        self.assertEqual(layer.excludeAttributesWfs(), clone.excludeAttributesWfs())
-        self.assertEqual(layer.attributeTableConfig().sortOrder(), clone.attributeTableConfig().sortOrder())
-        self.assertEqual(layer.featureBlendMode(), clone.featureBlendMode())
+        # replace id within xml of clone
+        clone_id_elem = clone_elem.firstChildElement("id")
+        clone_id_elem_patch = clone_doc.createElement("id")
+        clone_id_elem_patch_value = clone_doc.createTextNode(layer.id())
+        clone_id_elem_patch.appendChild(clone_id_elem_patch_value)
+        clone_elem.replaceChild(clone_id_elem_patch, clone_id_elem)
 
-        self.assertEqual(layer.simplifyMethod().tolerance(), clone.simplifyMethod().tolerance())
-        self.assertEqual(layer.simplifyMethod().threshold(), clone.simplifyMethod().threshold())
-        self.assertEqual(clone.attributeAlias(0), 'MyAlias0')
-        self.assertEqual(clone.attributeAlias(1), 'MyAlias1')
+        # update doc
+        clone_doc.appendChild(clone_elem)
+        layer_doc.appendChild(layer_elem)
 
-        renderer = layer.renderer()
-        clone_sym = renderer.symbol()
-        self.assertEqual(clone_sym.type(), sym.type())
-        self.assertEqual(clone_sym.color(), Qt.magenta)
-
-        clone_labeling = clone.labeling()
-        clone_pal = clone_labeling.settings()
-        clone_text_format = clone_pal.format()
-        self.assertEqual(clone_text_format.size(), 33)
-        self.assertEqual(clone_text_format.color(), Qt.magenta)
-
-        clone_diag_renderer = clone.diagramRenderer()
-        self.assertEqual(clone_diag_renderer.rendererName(), 'SingleCategory')
-        self.assertFalse(clone_diag_renderer.attributeLegend())
-        self.assertTrue(clone_diag_renderer.sizeLegend())
-
-        clone_diag_settings = layer.diagramLayerSettings()
-        self.assertEqual(clone_diag_settings.zIndex(), 0.33)
-        self.assertEqual(clone_diag_settings.priority(), 3)
+        # compare xml documents
+        self.assertEqual(layer_doc.toString(), clone_doc.toString())
 
 
 # TODO:
