@@ -26,6 +26,9 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *
 
   mModel = new QgsLocatorFiltersModel( mLocator, this );
   mFiltersTreeView->setModel( mModel );
+
+  mFiltersTreeView->header()->setStretchLastSection( false );
+  mFiltersTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
 }
 
 
@@ -33,19 +36,17 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *
 // QgsLocatorFiltersModel
 //
 
+#define HIDDEN_FILTER_OFFSET 1
+
 QgsLocatorFiltersModel::QgsLocatorFiltersModel( QgsLocator *locator, QObject *parent )
   : QAbstractTableModel( parent )
   , mLocator( locator )
 {
-  setHeaderData( Name, Qt::Horizontal, tr( "Filter" ) );
-  setHeaderData( Prefix, Qt::Horizontal, tr( "Prefix" ) );
-  setHeaderData( Active, Qt::Horizontal, tr( "Enabled" ) );
-  setHeaderData( Default, Qt::Horizontal, tr( "Default" ) );
 }
 
 int QgsLocatorFiltersModel::rowCount( const QModelIndex & ) const
 {
-  return mLocator->filters().count();
+  return mLocator->filters().count() - HIDDEN_FILTER_OFFSET;
 }
 
 int QgsLocatorFiltersModel::columnCount( const QModelIndex & ) const
@@ -67,10 +68,10 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
       switch ( index.column() )
       {
         case Name:
-          return mLocator->filters().at( index.row() )->displayName();
+          return filterForIndex( index )->displayName();
 
         case Prefix:
-          return mLocator->filters().at( index.row() )->prefix();
+          return filterForIndex( index )->prefix();
 
         case Active:
         case Default:
@@ -86,16 +87,49 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
           return QVariant();
 
         case Active:
-          return Qt::Checked;
+          return filterForIndex( index )->enabled() ? Qt::Checked : Qt::Unchecked;
 
         case Default:
-          return mLocator->filters().at( index.row() )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
+          return filterForIndex( index )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
       }
-
-
   }
 
   return QVariant();
+}
+
+bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
+       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+    return false;
+
+  switch ( role )
+  {
+    case Qt::CheckStateRole:
+    {
+      switch ( index.column() )
+      {
+        case Name:
+        case Prefix:
+          return false;
+
+        case Active:
+        {
+          filterForIndex( index )->setEnabled( value.toInt() == Qt::Checked );
+          emit dataChanged( index, index, QVector<int>() << Qt::EditRole << Qt::CheckStateRole );
+          return true;
+        }
+
+        case Default:
+        {
+          filterForIndex( index )->setUseWithoutPrefix( value.toInt() == Qt::Checked );
+          emit dataChanged( index, index, QVector<int>() << Qt::EditRole << Qt::CheckStateRole );
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
@@ -121,23 +155,30 @@ Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
-QVariant QgsLocatorFiltersModel::zheaderData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsLocatorFiltersModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation == Qt::Horizontal && role == Qt::SizeHintRole )
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
-    QSize size = QAbstractTableModel::headerData( section, orientation, role ).toSize();
     switch ( section )
     {
       case Name:
-        break;
+        return tr( "Filter" );
+
       case Prefix:
+        return tr( "Prefix" );
+
       case Active:
+        return tr( "Enabled" );
+
       case Default:
-        size.setWidth( 100 );
-        break;
+        return tr( "Default" );
     }
-    return size;
   }
 
-  return QAbstractTableModel::headerData( section, orientation, role );
+  return QVariant();
+}
+
+QgsLocatorFilter *QgsLocatorFiltersModel::filterForIndex( const QModelIndex &index ) const
+{
+  return mLocator->filters().at( index.row() + HIDDEN_FILTER_OFFSET );
 }

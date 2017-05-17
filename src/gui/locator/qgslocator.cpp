@@ -99,7 +99,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   if ( searchString.indexOf( ' ' ) > 0 )
   {
     QString prefix = searchString.left( searchString.indexOf( ' ' ) );
-    if ( mPrefixedFilters.contains( prefix ) )
+    if ( mPrefixedFilters.contains( prefix ) && mPrefixedFilters.value( prefix )->enabled() )
     {
       mActiveFilters << mPrefixedFilters.value( prefix );
       searchString = searchString.mid( prefix.length() + 1 );
@@ -109,7 +109,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   {
     Q_FOREACH ( QgsLocatorFilter *filter, mFilters )
     {
-      if ( filter->useWithoutPrefix() )
+      if ( filter->useWithoutPrefix() && filter->enabled() )
         mActiveFilters << filter;
     }
   }
