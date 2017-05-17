@@ -632,7 +632,7 @@ void TestQgsPaintEffect::glow()
 void TestQgsPaintEffect::transform()
 {
   //create
-  QgsTransformEffect* effect = new QgsTransformEffect();
+  QgsTransformEffect *effect = new QgsTransformEffect();
   QVERIFY( effect );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
@@ -640,8 +640,8 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->translateX(), 6.0 );
   effect->setTranslateY( 77 );
   QCOMPARE( effect->translateY(), 77.0 );
-  effect->setTranslateUnit( QgsSymbolV2::MapUnit );
-  QCOMPARE( effect->translateUnit(), QgsSymbolV2::MapUnit );
+  effect->setTranslateUnit( QgsUnitTypes::RenderMapUnits );
+  QCOMPARE( effect->translateUnit(), QgsUnitTypes::RenderMapUnits );
   effect->setTranslateMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->translateMapUnitScale().maxScale, 2.0 );
@@ -663,12 +663,12 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
 
   //copy constructor
-  QgsTransformEffect* copy = new QgsTransformEffect( *effect );
+  QgsTransformEffect *copy = new QgsTransformEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );
   QCOMPARE( copy->translateY(), 77.0 );
-  QCOMPARE( copy->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( copy->translateUnit(), QgsUnitTypes::RenderMapUnits );
   QCOMPARE( copy->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( copy->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( copy->scaleX(), 0.5 );
@@ -682,13 +682,13 @@ void TestQgsPaintEffect::transform()
   delete copy;
 
   //clone
-  QgsPaintEffect* clone = effect->clone();
-  QgsTransformEffect* cloneCast = dynamic_cast<QgsTransformEffect* >( clone );
+  QgsPaintEffect *clone = effect->clone();
+  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), false );
   QCOMPARE( cloneCast->translateX(), 6.0 );
   QCOMPARE( cloneCast->translateY(), 77.0 );
-  QCOMPARE( cloneCast->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( cloneCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
   QCOMPARE( cloneCast->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( cloneCast->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( cloneCast->scaleX(), 0.5 );
@@ -703,13 +703,13 @@ void TestQgsPaintEffect::transform()
 
   //read/write
   QgsStringMap props = effect->properties();
-  QgsPaintEffect* readEffect = QgsTransformEffect::create( props );
-  QgsTransformEffect* readCast = dynamic_cast<QgsTransformEffect* >( readEffect );
+  QgsPaintEffect *readEffect = QgsTransformEffect::create( props );
+  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->enabled(), false );
   QCOMPARE( readCast->translateX(), 6.0 );
   QCOMPARE( readCast->translateY(), 77.0 );
-  QCOMPARE( readCast->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( readCast->translateUnit(), QgsUnitTypes::RenderMapUnits );
   QCOMPARE( readCast->translateMapUnitScale().minScale, 1.0 );
   QCOMPARE( readCast->translateMapUnitScale().maxScale, 2.0 );
   QCOMPARE( readCast->scaleX(), 0.5 );
