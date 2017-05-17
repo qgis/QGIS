@@ -31,6 +31,7 @@
 
 class QgsExpressionContext;
 class QgsOptionsPageWidget;
+class QgsLocatorOptionsWidget;
 
 /**
  * \class QgsOptions
@@ -254,6 +255,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
   private:
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
+    QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
 
 };
 

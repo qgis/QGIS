@@ -48,4 +48,5 @@ PyQgsDBManagerGpkg
 PyQgsFileDownloader
 PyQgsSettings
 PyQgsConsole
+PyQgsLocator
 PyQgsAuthManagerPasswordOWSTest 

@@ -115,6 +115,7 @@ class QgsTileScaleWidget;
 class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
+class QgsLocatorWidget;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -561,6 +562,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns map overview canvas
     QgsMapOverviewCanvas *mapOverviewCanvas() { return mOverviewCanvas; }
+
+    QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -1973,6 +1976,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 
     QSystemTrayIcon *mTray = nullptr;
+
+    QgsLocatorWidget *mLocatorWidget = nullptr;
 
     friend class TestQgisAppPython;
 };

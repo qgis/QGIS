@@ -145,6 +145,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    /**
+     * Returns the icon corresponding to a specified map \a layer.
+     * \since QGIS 3.0
+     */
+    static QIcon iconForLayer( QgsMapLayer *layer );
+
   protected slots:
     void removeLayers( const QStringList &layerIds );
     void addLayers( const QList<QgsMapLayer *> &layers );

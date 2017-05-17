@@ -122,6 +122,7 @@ INCLUDE_DIRECTORIES(
   ../src/gui/editorwidgets/core
   ../src/gui/effects
   ../src/gui/layertree
+  ../src/gui/locator
 
   ../src/plugins
 

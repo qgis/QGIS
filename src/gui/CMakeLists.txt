@@ -157,6 +157,10 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
 
+  locator/qgslocator.cpp
+  locator/qgslocatorfilter.cpp
+  locator/qgslocatorwidget.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -600,6 +604,10 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
+
+  locator/qgslocator.h
+  locator/qgslocatorfilter.h
+  locator/qgslocatorwidget.h
 )
 
 QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -685,6 +693,8 @@ SET(QGIS_GUI_HDRS
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
 
+  locator/qgslocatorcontext.h
+
   raster/qgsrasterrendererwidget.h
 
   symbology-ng/qgssymbolwidgetcontext.h
@@ -741,6 +751,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
+  ${CMAKE_CURRENT_SOURCE_DIR}/locator
   ${CMAKE_CURRENT_SOURCE_DIR}/effects
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui

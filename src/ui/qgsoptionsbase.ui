@@ -271,6 +271,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Locator</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/search.svg</normaloff>:/images/themes/default/search.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Advanced</string>
           </property>
           <property name="icon">
@@ -311,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -340,7 +349,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>691</width>
+                <width>843</width>
                 <height>702</height>
                </rect>
               </property>
@@ -1556,7 +1565,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
+                <width>531</width>
                 <height>787</height>
                </rect>
               </property>
@@ -5332,6 +5341,17 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsLocatorSettings">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QGroupBox" name="mOptionsLocatorGroupBox">
+             <property name="title">
+              <string>Locator Filters</string>
+             </property>
             </widget>
            </item>
           </layout>

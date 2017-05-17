@@ -188,6 +188,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslayoutmanager.h"
+#include "qgslocatorwidget.h"
+#include "qgslocator.h"
+#include "qgsinbuiltlocatorfilters.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
@@ -962,6 +965,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // set graphical credential requester
   new QgsCredentialDialog( this );
+
+  mLocatorWidget->setMapCanvas( mMapCanvas );
+  connect( mLocatorWidget, &QgsLocatorWidget::configTriggered, this, [ = ] { showOptionsDialog( this, QString( "mOptionsLocatorSettings" ) ); } );
 
   qApp->processEvents();
 
@@ -2630,11 +2636,38 @@ void QgisApp::createStatusBar()
   mMessageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMessageLogRead.svg" ) ) );
   mMessageButton->setToolTip( tr( "Messages" ) );
   mMessageButton->setWhatsThis( tr( "Messages" ) );
-  mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mMessageButton->setObjectName( QStringLiteral( "mMessageLogViewerButton" ) );
   mMessageButton->setMaximumHeight( mScaleWidget->height() );
   mMessageButton->setCheckable( true );
   statusBar()->addPermanentWidget( mMessageButton, 0 );
+
+  mLocatorWidget = new QgsLocatorWidget( statusBar() );
+  statusBar()->addPermanentWidget( mLocatorWidget );
+  QShortcut *locatorShortCut = new QShortcut( QKeySequence( tr( "Ctrl+K" ) ), this );
+  connect( locatorShortCut, &QShortcut::activated, mLocatorWidget, [ = ] { mLocatorWidget->search( QString() ); } );
+  locatorShortCut->setObjectName( QStringLiteral( "Locator" ) );
+  locatorShortCut->setWhatsThis( tr( "Trigger Locator" ) );
+
+  mLocatorWidget->locator()->registerFilter( new QgsLayerTreeLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsLayoutLocatorFilter() );
+  QList< QWidget *> actionObjects;
+  actionObjects << menuBar()
+                << mAdvancedDigitizeToolBar
+                << mFileToolBar
+                << mLayerToolBar
+                << mDigitizeToolBar
+                << mMapNavToolBar
+                << mAttributesToolBar
+                << mPluginToolBar
+                << mRasterToolBar
+                << mLabelToolBar
+                << mVectorToolBar
+                << mDatabaseToolBar
+                << mWebToolBar
+                << mSnappingToolBar;
+
+  mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
+
 }
 
 void QgisApp::setIconSizes( int size )
@@ -7189,7 +7222,9 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   {
     if ( composer->composition() == composition )
     {
-      composer->open();
+      composer->show();
+      composer->activate();
+      composer->raise();
       return composer;
     }
   }

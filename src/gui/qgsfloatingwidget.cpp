@@ -207,7 +207,7 @@ bool QgsFloatingWidgetEventFilter::eventFilter( QObject *object, QEvent *event )
     case QEvent::Move:
     case QEvent::Resize:
       emit anchorPointChanged();
-      return true;
+      return false;
     default:
       return false;
   }
