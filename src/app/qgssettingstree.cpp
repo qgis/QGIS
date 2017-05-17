@@ -256,10 +256,10 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   QString key = itemKey( item );
-  QgsDebugMsg( key );
+  QgsDebugMsgLevel( key , 4);
   if ( settingsMap.contains( key ) )
   {
-    QgsDebugMsg( "contains!!!!" );
+    QgsDebugMsgLevel( "contains!!!!", 4 );
     QStringList values = settingsMap[ key ];
     item->setText( 3, values.at( 0 ) );
     item->setToolTip( 0, values.at( 1 ) );

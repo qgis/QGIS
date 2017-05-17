@@ -202,6 +202,20 @@ class GUI_EXPORT QgsLocatorFilter : public QObject
      */
     void setEnabled( bool enabled );
 
+    /**
+     * Should return true if the filter has a configuration widget.
+     * \see createConfigWidget()
+     */
+    virtual bool hasConfigWidget() const;
+
+    /**
+     * Opens the configuration widget for the filter (if it has one), with the specified \a parent widget.
+     * The base class implementation does nothing. Subclasses can override this to show their own
+     * custom configuration widget.
+     * \note hasConfigWidget() must return true to indicate that the filter supports configuration.
+     */
+    virtual void openConfigWidget( QWidget *parent = nullptr );
+
   signals:
 
     /**

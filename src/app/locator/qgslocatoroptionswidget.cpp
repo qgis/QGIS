@@ -31,12 +31,44 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWi
 
   mFiltersTreeView->header()->setStretchLastSection( false );
   mFiltersTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+
+  mConfigureFilterButton->setEnabled( false );
+  connect( mFiltersTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]( const QItemSelection & selected, const QItemSelection & )
+  {
+    if ( selected.count() == 0 || selected.at( 0 ).indexes().count() == 0 )
+    {
+      mConfigureFilterButton->setEnabled( false );
+    }
+    else
+    {
+      QModelIndex sel = selected.at( 0 ).indexes().at( 0 );
+      QgsLocatorFilter *filter = mModel->filterForIndex( sel );
+      mConfigureFilterButton->setEnabled( filter->hasConfigWidget() );
+    }
+  } );
+  connect( mConfigureFilterButton, &QPushButton::clicked, this, &QgsLocatorOptionsWidget::configureCurrentFilter );
 }
 
 void QgsLocatorOptionsWidget::commitChanges()
 {
   mModel->commitChanges();
   mLocatorWidget->invalidateResults();
+}
+
+void QgsLocatorOptionsWidget::configureCurrentFilter()
+{
+  auto selected = mFiltersTreeView->selectionModel()->selection();
+  if ( selected.count() == 0 || selected.at( 0 ).indexes().count() == 0 )
+  {
+    return;
+  }
+  else
+  {
+    QModelIndex sel = selected.at( 0 ).indexes().at( 0 );
+    QgsLocatorFilter *filter = mModel->filterForIndex( sel );
+    if ( filter )
+      filter->openConfigWidget();
+  }
 }
 
 

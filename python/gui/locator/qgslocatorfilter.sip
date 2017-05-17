@@ -186,6 +186,23 @@ class QgsLocatorFilter : QObject
 .. seealso:: enabled()
 %End
 
+    virtual bool hasConfigWidget() const;
+%Docstring
+ Should return true if the filter has a configuration widget.
+.. seealso:: createConfigWidget()
+ :rtype: bool
+%End
+
+    virtual void openConfigWidget( QWidget *parent = 0 );
+%Docstring
+ Opens the configuration widget for the filter (if it has one), with the specified ``parent`` widget.
+ The base class implementation does nothing. Subclasses can override this to show their own
+ custom configuration widget.
+.. note::
+
+   hasConfigWidget() must return true to indicate that the filter supports configuration.
+%End
+
   signals:
 
     void resultFetched( const QgsLocatorResult &result );
