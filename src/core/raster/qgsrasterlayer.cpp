@@ -149,9 +149,11 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
   QgsMapLayer::clone( layer );
 
-  for ( int i = 0; i < mPipe.size(); i++ )
+  // do not clone data provider which is the first element in pipe
+  for ( int i = 1; i < mPipe.size(); i++ )
   {
-    layer->pipe()->set( mPipe.at( i )->clone() );
+    if ( mPipe.at( i ) )
+      layer->pipe()->set( mPipe.at( i )->clone() );
   }
 
   return layer;
