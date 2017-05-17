@@ -102,7 +102,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   {
     const QString &key = mServiceName != QString ( "WFS" ) ? mServiceName.toLower() : mServiceName;
     QgsDebugMsg( "Add connection for provider " + key );
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
     if ( !library )
     {
       QgsDebugMsg( "Cannot get provider " + key );
