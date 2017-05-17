@@ -1347,6 +1347,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
+    /**
+     * Returns a map of constraint with their strength for a specific field of the layer.
+     * \param fieldIndex field index
+     * \since QGIS 3.0
+     */
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 
     /**

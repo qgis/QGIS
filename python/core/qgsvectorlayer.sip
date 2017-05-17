@@ -1432,6 +1432,9 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 %Docstring
+ Returns a map of constraint with their strength for a specific field of the layer.
+ \param fieldIndex field index
+.. versionadded:: 3.0
  :rtype: QMap< QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength>
 %End
 
