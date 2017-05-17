@@ -85,7 +85,6 @@
 #include "qgsxmlutils.h"
 #include "qgsunittypes.h"
 #include "qgstaskmanager.h"
-#include "qgsreadwritecontext.h"
 
 #include "diagram/qgsdiagram.h"
 
