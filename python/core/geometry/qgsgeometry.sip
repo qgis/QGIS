@@ -188,6 +188,19 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
+    bool isSimple() const;
+%Docstring
+ Determines whether the geometry is simple (according to OGC definition),
+ i.e. it has no anomalous geometric points, such as self-intersection or self-tangency.
+ Uses GEOS library for the test.
+.. note::
+
+   This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
+ for checking anomalies in polygon geometries one can use isGeosValid().
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     double area() const;
 %Docstring
  Returns the area of the geometry using GEOS
