@@ -507,6 +507,7 @@ Setup the coordinate system transformation for the layer
  :rtype: QgsActionManager
 %End
 
+
     int selectedFeatureCount() const;
 %Docstring
  The number of features that are selected in this layer
@@ -1427,6 +1428,11 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 .. versionadded:: 3.0
 .. seealso:: setFieldConstraint()
  :rtype: QgsFieldConstraints.Constraints
+%End
+
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
+%Docstring
+ :rtype: QMap< QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength>
 %End
 
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );

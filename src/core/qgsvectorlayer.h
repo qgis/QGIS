@@ -539,6 +539,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsActionManager *actions() { return mActions; }
 
     /**
+     * Get all layer actions defined on this layer.
+     *
+     * The pointer which is returned is const.
+     */
+    const QgsActionManager *actions() const SIP_SKIP { return mActions; }
+
+    /**
      * The number of features that are selected in this layer
      *
      * \returns See description
@@ -1339,6 +1346,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see setFieldConstraint()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 
     /**
      * Sets a constraint for a specified field index. Any constraints inherited from the layer's
