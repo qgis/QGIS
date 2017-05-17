@@ -481,8 +481,7 @@ Invoked by QgsProject.read().
 
     void setCustomProperties( const QgsObjectCustomProperties &properties );
 %Docstring
- Set custom properties for layer.
- \param properties The custom properties to set.
+ Set custom properties for layer. Current properties are dropped.
 .. versionadded:: 3.0
 %End
 
