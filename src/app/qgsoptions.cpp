@@ -1515,6 +1515,8 @@ void QgsOptions::saveOptions()
 
   saveDefaultDatumTransformations();
 
+  mLocatorOptionsWidget->commitChanges();
+
   Q_FOREACH ( QgsOptionsPageWidget *widget, mAdditionalOptionWidgets )
   {
     widget->apply();

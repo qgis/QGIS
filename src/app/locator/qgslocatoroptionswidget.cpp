@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgslocatoroptionswidget.h"
+#include "qgssettings.h"
 
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *parent )
   : QWidget( parent )
@@ -29,6 +29,11 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *
 
   mFiltersTreeView->header()->setStretchLastSection( false );
   mFiltersTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+}
+
+void QgsLocatorOptionsWidget::commitChanges()
+{
+  mModel->commitChanges();
 }
 
 
@@ -87,10 +92,20 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
           return QVariant();
 
         case Active:
-          return filterForIndex( index )->enabled() ? Qt::Checked : Qt::Unchecked;
+        {
+          QgsLocatorFilter *filter = filterForIndex( index );
+          if ( mEnabledChanges.contains( filter ) )
+            return mEnabledChanges.value( filter ) ? Qt::Checked : Qt::Unchecked;
+          else
+            return filterForIndex( index )->enabled() ? Qt::Checked : Qt::Unchecked;
+        }
 
         case Default:
-          return filterForIndex( index )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
+          QgsLocatorFilter *filter = filterForIndex( index );
+          if ( mDefaultChanges.contains( filter ) )
+            return mDefaultChanges.value( filter ) ? Qt::Checked : Qt::Unchecked;
+          else
+            return filterForIndex( index )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
       }
   }
 
@@ -107,6 +122,7 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
   {
     case Qt::CheckStateRole:
     {
+      bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
       switch ( index.column() )
       {
         case Name:
@@ -115,15 +131,15 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
         case Active:
         {
-          filterForIndex( index )->setEnabled( value.toInt() == Qt::Checked );
-          emit dataChanged( index, index, QVector<int>() << Qt::EditRole << Qt::CheckStateRole );
+          mEnabledChanges.insert( filterForIndex( index ), checked );
+          emit dataChanged( index, index );
           return true;
         }
 
         case Default:
         {
-          filterForIndex( index )->setUseWithoutPrefix( value.toInt() == Qt::Checked );
-          emit dataChanged( index, index, QVector<int>() << Qt::EditRole << Qt::CheckStateRole );
+          mDefaultChanges.insert( filterForIndex( index ), checked );
+          emit dataChanged( index, index );
           return true;
         }
       }
@@ -148,7 +164,6 @@ Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
     case Active:
     case Default:
       flags = flags | Qt::ItemIsUserCheckable;
-      flags = flags | Qt::ItemIsEditable;
       break;
   }
 
@@ -176,6 +191,26 @@ QVariant QgsLocatorFiltersModel::headerData( int section, Qt::Orientation orient
   }
 
   return QVariant();
+}
+
+void QgsLocatorFiltersModel::commitChanges()
+{
+  QgsSettings settings;
+
+  QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
+  for ( ; it != mEnabledChanges.constEnd(); ++it )
+  {
+    QgsLocatorFilter *filter = it.key();
+    settings.setValue( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), it.value(), QgsSettings::Section::Gui );
+    filter->setEnabled( it.value() );
+  }
+  it = mDefaultChanges.constBegin();
+  for ( ; it != mDefaultChanges.constEnd(); ++it )
+  {
+    QgsLocatorFilter *filter = it.key();
+    settings.setValue( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), it.value(), QgsSettings::Section::Gui );
+    filter->setUseWithoutPrefix( it.value() );
+  }
 }
 
 QgsLocatorFilter *QgsLocatorFiltersModel::filterForIndex( const QModelIndex &index ) const
