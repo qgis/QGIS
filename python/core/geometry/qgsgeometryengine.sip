@@ -155,6 +155,13 @@ class QgsGeometryEngine
  :rtype: bool
 %End
 
+    virtual bool isSimple( QString *errorMsg = 0 ) const = 0;
+%Docstring
+ Determines whether the geometry is simple (according to OGC definition).
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     virtual int splitGeometry( const QgsLineString &splitLine,
                                QList<QgsAbstractGeometry *> &newGeometries,
                                bool topological,

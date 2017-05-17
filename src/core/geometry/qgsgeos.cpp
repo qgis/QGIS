@@ -1494,6 +1494,20 @@ bool QgsGeos::isEmpty( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
+bool QgsGeos::isSimple( QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return false;
+  }
+
+  try
+  {
+    return GEOSisSimple_r( geosinit.ctxt, mGeos );
+  }
+  CATCH_GEOS_WITH_ERRMSG( false );
+}
+
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
   bool segmentize = false;

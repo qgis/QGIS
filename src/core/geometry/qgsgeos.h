@@ -71,6 +71,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isValid( QString *errorMsg = nullptr ) const override;
     bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     bool isEmpty( QString *errorMsg = nullptr ) const override;
+    bool isSimple( QString *errorMsg = nullptr ) const override;
 
     /** Splits this geometry according to a given line.
     \param splitLine the line that splits the geometry

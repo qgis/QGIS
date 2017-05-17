@@ -1980,6 +1980,15 @@ bool QgsGeometry::isGeosValid() const
   return geos.isValid();
 }
 
+bool QgsGeometry::isSimple() const
+{
+  if ( !d->geometry )
+    return false;
+
+  QgsGeos geos( d->geometry );
+  return geos.isSimple();
+}
+
 bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
   if ( !d->geometry || !g.d->geometry )
