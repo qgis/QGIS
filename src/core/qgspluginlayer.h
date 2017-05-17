@@ -37,7 +37,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     ~QgsPluginLayer();
 
     /** Returns a new instance equivalent to this one.
-     * \param deep If true, a deep copy is done
      * \returns a new layer instance
      * \since QGIS 3.0
      */
