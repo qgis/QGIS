@@ -20,10 +20,11 @@
 #include "qgslocator.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
-#include <QLayout>
-#include <QCompleter>
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include <QLayout>
+#include <QCompleter>
+#include <QMenu>
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   : QWidget( parent )
@@ -33,7 +34,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   , mResultsView( new QgsLocatorResultsView( this ) )
 {
   mLineEdit->setShowClearButton( true );
-  mLineEdit->setShowSearchIcon( true );
+  mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
 
   resize( 200, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
@@ -79,6 +80,9 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mPopupTimer.setInterval( 100 );
   mPopupTimer.setSingleShot( true );
   connect( &mPopupTimer, &QTimer::timeout, this, &QgsLocatorWidget::performSearch );
+  mFocusTimer.setInterval( 110 );
+  mFocusTimer.setSingleShot( true );
+  connect( &mFocusTimer, &QTimer::timeout, this, &QgsLocatorWidget::triggerSearchAndShowList );
 
   mLineEdit->installEventFilter( this );
   mResultsContainer->installEventFilter( this );
@@ -87,6 +91,17 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   window()->installEventFilter( this );
 
   mLocator->registerFilter( new QgsLocatorFilterFilter( this, this ) );
+
+  mMenu = new QMenu( this );
+  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( "/search.svg" ), QLineEdit::LeadingPosition );
+  connect( menuAction, &QAction::triggered, this, [ = ]
+  {
+    mFocusTimer.stop();
+    mResultsContainer->hide();
+    mMenu->exec( QCursor::pos() );
+  } );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsLocatorWidget::configMenuAboutToShow );
+
 }
 
 QgsLocator *QgsLocatorWidget::locator()
@@ -197,12 +212,13 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
   {
     if ( !mLineEdit->hasFocus() && !mResultsContainer->hasFocus() && !mResultsView->hasFocus() )
     {
+      mFocusTimer.stop();
       mResultsContainer->hide();
     }
   }
   else if ( event->type() == QEvent::FocusIn && obj == mLineEdit )
   {
-    triggerSearchAndShowList();
+    mFocusTimer.start();
   }
   else if ( obj == window() && event->type() == QEvent::Resize )
   {
@@ -220,6 +236,40 @@ void QgsLocatorWidget::addResult( const QgsLocatorResult &result )
     int row = mProxyModel->flags( mProxyModel->index( 0, 0 ) ) & Qt::ItemIsSelectable ? 0 : 1;
     mResultsView->setCurrentIndex( mProxyModel->index( row, 0 ) );
   }
+}
+
+void QgsLocatorWidget::configMenuAboutToShow()
+{
+  mMenu->clear();
+  QMap< QString, QgsLocatorFilter *> filters = mLocator->prefixedFilters();
+  QMap< QString, QgsLocatorFilter *>::const_iterator fIt = filters.constBegin();
+  for ( ; fIt != filters.constEnd(); ++fIt )
+  {
+    QAction *action = new QAction( fIt.value()->displayName(), mMenu );
+    connect( action, &QAction::triggered, this, [ = ]
+    {
+      QString currentText = mLineEdit->text();
+      if ( currentText.isEmpty() )
+        currentText = tr( "<type here>" );
+      else
+      {
+        QStringList parts = currentText.split( ' ' );
+        if ( parts.count() > 1 && mLocator->prefixedFilters().contains( parts.at( 0 ) ) )
+        {
+          parts.pop_front();
+          currentText = parts.join( ' ' );
+        }
+      }
+
+      mLineEdit->setText( fIt.key() + ' ' + currentText );
+      mLineEdit->setSelection( fIt.key().length() + 1, currentText.length() );
+    } );
+    mMenu->addAction( action );
+  }
+  mMenu->addSeparator();
+  QAction *configAction = new QAction( trUtf8( "Configure…" ), mMenu );
+  mMenu->addAction( configAction );
+
 }
 
 void QgsLocatorWidget::updateResults( const QString &text )
