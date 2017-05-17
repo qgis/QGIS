@@ -36,6 +36,7 @@ class QgsLocatorOptionsWidget : public QWidget, private Ui::QgsLocatorOptionsWid
   public slots:
 
     void commitChanges();
+    void configureCurrentFilter();
 
   private:
 
@@ -84,13 +85,14 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
 
+
+    QgsLocatorFilter *filterForIndex( const QModelIndex &index ) const;
+
   public slots:
 
     void commitChanges();
 
   private:
-
-    QgsLocatorFilter *filterForIndex( const QModelIndex &index ) const;
 
     QgsLocator *mLocator = nullptr;
 

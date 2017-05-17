@@ -40,6 +40,16 @@ void QgsLocatorFilter::setEnabled( bool enabled )
   mEnabled = enabled;
 }
 
+bool QgsLocatorFilter::hasConfigWidget() const
+{
+  return false;
+}
+
+void QgsLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  Q_UNUSED( parent );
+}
+
 bool QgsLocatorFilter::useWithoutPrefix() const
 {
   return mUseWithoutPrefix;
