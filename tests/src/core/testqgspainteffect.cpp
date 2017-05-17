@@ -26,6 +26,7 @@
 #include "qgsshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
+#include "qgstransformeffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -106,6 +107,7 @@ class TestQgsPaintEffect: public QObject
     void blur();
     void dropShadow();
     void glow();
+    void transform();
 
     void stack();
 
@@ -626,6 +628,102 @@ void TestQgsPaintEffect::glow()
 
   //TODO - inner glow
 
+}
+
+void TestQgsPaintEffect::transform()
+{
+  //create
+  QgsTransformEffect* effect = new QgsTransformEffect();
+  QVERIFY( effect );
+  effect->setEnabled( false );
+  QCOMPARE( effect->enabled(), false );
+  effect->setTranslateX( 6 );
+  QCOMPARE( effect->translateX(), 6.0 );
+  effect->setTranslateY( 77 );
+  QCOMPARE( effect->translateY(), 77.0 );
+  effect->setTranslateUnit( QgsSymbolV2::MapUnit );
+  QCOMPARE( effect->translateUnit(), QgsSymbolV2::MapUnit );
+  effect->setTranslateMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
+  QCOMPARE( effect->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( effect->translateMapUnitScale().maxScale, 2.0 );
+  effect->setScaleX( 0.5 );
+  QCOMPARE( effect->scaleX(), 0.5 );
+  effect->setScaleY( 1.5 );
+  QCOMPARE( effect->scaleY(), 1.5 );
+  effect->setRotation( 45.5 );
+  QCOMPARE( effect->rotation(), 45.5 );
+  effect->setShearX( 1.2 );
+  QCOMPARE( effect->shearX(), 1.2 );
+  effect->setShearY( 0.6 );
+  QCOMPARE( effect->shearY(), 0.6 );
+  effect->setReflectX( true );
+  QCOMPARE( effect->reflectX(), true );
+  effect->setReflectY( true );
+  QCOMPARE( effect->reflectY(), true );
+  effect->setDrawMode( QgsPaintEffect::Modifier );
+  QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
+
+  //copy constructor
+  QgsTransformEffect* copy = new QgsTransformEffect( *effect );
+  QVERIFY( copy );
+  QCOMPARE( copy->enabled(), false );
+  QCOMPARE( copy->translateX(), 6.0 );
+  QCOMPARE( copy->translateY(), 77.0 );
+  QCOMPARE( copy->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( copy->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( copy->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( copy->scaleX(), 0.5 );
+  QCOMPARE( copy->scaleY(), 1.5 );
+  QCOMPARE( copy->rotation(), 45.5 );
+  QCOMPARE( copy->shearX(), 1.2 );
+  QCOMPARE( copy->shearY(), 0.6 );
+  QCOMPARE( copy->reflectX(), true );
+  QCOMPARE( copy->reflectY(), true );
+  QCOMPARE( copy->drawMode(), QgsPaintEffect::Modifier );
+  delete copy;
+
+  //clone
+  QgsPaintEffect* clone = effect->clone();
+  QgsTransformEffect* cloneCast = dynamic_cast<QgsTransformEffect* >( clone );
+  QVERIFY( cloneCast );
+  QCOMPARE( cloneCast->enabled(), false );
+  QCOMPARE( cloneCast->translateX(), 6.0 );
+  QCOMPARE( cloneCast->translateY(), 77.0 );
+  QCOMPARE( cloneCast->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( cloneCast->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( cloneCast->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( cloneCast->scaleX(), 0.5 );
+  QCOMPARE( cloneCast->scaleY(), 1.5 );
+  QCOMPARE( cloneCast->rotation(), 45.5 );
+  QCOMPARE( cloneCast->shearX(), 1.2 );
+  QCOMPARE( cloneCast->shearY(), 0.6 );
+  QCOMPARE( cloneCast->reflectX(), true );
+  QCOMPARE( cloneCast->reflectY(), true );
+  QCOMPARE( cloneCast->drawMode(), QgsPaintEffect::Modifier );
+  delete cloneCast;
+
+  //read/write
+  QgsStringMap props = effect->properties();
+  QgsPaintEffect* readEffect = QgsTransformEffect::create( props );
+  QgsTransformEffect* readCast = dynamic_cast<QgsTransformEffect* >( readEffect );
+  QVERIFY( readCast );
+  QCOMPARE( readCast->enabled(), false );
+  QCOMPARE( readCast->translateX(), 6.0 );
+  QCOMPARE( readCast->translateY(), 77.0 );
+  QCOMPARE( readCast->translateUnit(), QgsSymbolV2::MapUnit );
+  QCOMPARE( readCast->translateMapUnitScale().minScale, 1.0 );
+  QCOMPARE( readCast->translateMapUnitScale().maxScale, 2.0 );
+  QCOMPARE( readCast->scaleX(), 0.5 );
+  QCOMPARE( readCast->scaleY(), 1.5 );
+  QCOMPARE( readCast->rotation(), 45.5 );
+  QCOMPARE( readCast->shearX(), 1.2 );
+  QCOMPARE( readCast->shearY(), 0.6 );
+  QCOMPARE( readCast->reflectX(), true );
+  QCOMPARE( readCast->reflectY(), true );
+  QCOMPARE( readCast->drawMode(), QgsPaintEffect::Modifier );
+  delete readCast;
+
+  delete effect;
 }
 
 void TestQgsPaintEffect::stack()
