@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgslocatoroptionswidget.h"
+#include "qgslocatorwidget.h"
 #include "qgssettings.h"
 
-QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *parent )
+QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
   : QWidget( parent )
-  , mLocator( locator )
+  , mLocatorWidget( locator )
+  , mLocator( locator->locator() )
 {
   setupUi( this );
 
@@ -34,6 +36,7 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocator *locator, QWidget *
 void QgsLocatorOptionsWidget::commitChanges()
 {
   mModel->commitChanges();
+  mLocatorWidget->invalidateResults();
 }
 
 

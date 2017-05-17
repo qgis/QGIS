@@ -74,6 +74,12 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      */
     void search( const QString &string );
 
+    /**
+     * Invalidates the current search results, e.g. as a result of changes to the locator
+     * filter settings.
+     */
+    void invalidateResults();
+
   signals:
 
     /**
