@@ -1465,6 +1465,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     if ( mDataSource.right( 10 ) == QLatin1String( "|layerid=0" ) )
       mDataSource.chop( 10 );
   }
+  else if ( provider == QStringLiteral( "memory" ) )
+  {
+    // required so that source differs between memory layers
+    mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
+  }
 
   connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::dataChanged );
   connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::removeSelection );

@@ -338,6 +338,15 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fet.fields()[1].name(), 'mapinfo_is_the_stone_age')
         self.assertEqual(fet.fields()[2].name(), 'super_size')
 
+    def testUniqueSource(self):
+        """
+        Similar memory layers should have unique source - some code checks layer source to identify
+        matching layers
+        """
+        layer = QgsVectorLayer("Point", "test", "memory")
+        layer2 = QgsVectorLayer("Point", "test2", "memory")
+        self.assertNotEqual(layer.source(), layer2.source())
+
     def testCreateMemoryLayer(self):
         """
         Test QgsMemoryProviderUtils.createMemoryLayer()
