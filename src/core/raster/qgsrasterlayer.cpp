@@ -148,7 +148,12 @@ QgsRasterLayer *QgsRasterLayer::clone() const
 {
   QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
   QgsMapLayer::clone( layer );
-  layer->setRenderer( renderer()->clone() );
+
+  for ( int i = 0; i < mPipe.size(); i++ )
+  {
+    layer->pipe()->set( mPipe.at( i )->clone() );
+  }
+
   return layer;
 }
 
