@@ -83,6 +83,11 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
+    /** Determines whether the geometry is simple (according to OGC definition).
+     * \since QGIS 3.0
+     */
+    virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;
+
     virtual int splitGeometry( const QgsLineString &splitLine,
                                QList<QgsAbstractGeometry *> &newGeometries,
                                bool topological,

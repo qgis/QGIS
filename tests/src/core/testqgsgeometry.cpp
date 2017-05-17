@@ -124,6 +124,8 @@ class TestQgsGeometry : public QObject
 
     void makeValid();
 
+    void isSimple();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
@@ -5420,6 +5422,33 @@ void TestQgsGeometry::makeValid()
     QgsGeometry gValid = gInput.makeValid();
     QVERIFY( gValid.isGeosValid() );
     QVERIFY( gValid.isGeosEqual( gExp ) );
+  }
+}
+
+void TestQgsGeometry::isSimple()
+{
+  typedef QPair<QString, bool> InputWktAndExpectedResult;
+  QList<InputWktAndExpectedResult> geoms;
+  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1)" ), true );
+  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0 0)" ), true );  // may be closed (linear ring)
+  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0 -1)" ), false ); // self-intersection
+  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0.5 0, 0 1)" ), false ); // self-tangency
+  geoms << qMakePair( QString( "POINT(1 1)" ), true ); // points are simple
+  geoms << qMakePair( QString( "POLYGON((0 0, 1 1, 1 1, 0 0))" ), true ); // polygons are always simple, even if they are invalid
+  geoms << qMakePair( QString( "MULTIPOINT((1 1), (2 2))" ), true );
+  geoms << qMakePair( QString( "MULTIPOINT((1 1), (1 1))" ), false );  // must not contain the same point twice
+  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ), true );
+  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 0), (0 0, 1 0))" ), true );  // may be touching at endpoints
+  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 1), (0 1, 1 0))" ), false );  // must not intersect each other
+  geoms << qMakePair( QString( "MULTIPOLYGON(((0 0, 1 1, 1 1, 0 0)),((0 0, 1 1, 1 1, 0 0)))" ), true ); // multi-polygons are always simple
+
+  Q_FOREACH ( const InputWktAndExpectedResult &pair, geoms )
+  {
+    QgsGeometry gInput = QgsGeometry::fromWkt( pair.first );
+    QVERIFY( !gInput.isNull() );
+
+    bool res = gInput.isSimple();
+    QCOMPARE( res, pair.second );
   }
 }
 
