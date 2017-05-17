@@ -522,8 +522,10 @@ void QgsLocatorResultsView::selectPreviousResult()
   setCurrentIndex( model()->index( previousRow, 0 ) );
 }
 
-///@endcond
 
+//
+// QgsLocatorProxyModel
+//
 
 QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -566,6 +568,11 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 }
 
+
+//
+// QgsLocatorFilterFilter
+//
+
 QgsLocatorFilterFilter::QgsLocatorFilterFilter( QgsLocatorWidget *locator, QObject *parent )
   : QgsLocatorFilter( parent )
   , mLocator( locator )
@@ -603,3 +610,6 @@ void QgsLocatorFilterFilter::triggerResult( const QgsLocatorResult &result )
 {
   mLocator->search( result.userData.toString() );
 }
+
+
+///@endcond
