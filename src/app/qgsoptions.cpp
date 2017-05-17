@@ -47,6 +47,8 @@
 #include "qgsclipboard.h"
 #include "qgssettings.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgslocatorwidget.h"
+#include "qgslocatoroptionswidget.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -939,6 +941,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
+
+  // locator
+  mLocatorOptionsWidget = new QgsLocatorOptionsWidget( QgisApp::instance()->locatorWidget()->locator(), this );
+  QVBoxLayout *locatorLayout = new QVBoxLayout();
+  locatorLayout->addWidget( mLocatorOptionsWidget );
+  mOptionsLocatorGroupBox->setLayout( locatorLayout );
 
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 

@@ -49,6 +49,13 @@ class QgsLocatorWidget : QWidget
  Triggers the locator widget to focus, open and start searching for a specified ``string``.
 %End
 
+  signals:
+
+    void configTriggered();
+%Docstring
+ Emitted when the configure option is triggered in the widget.
+%End
+
   protected:
 
     virtual bool eventFilter( QObject *obj, QEvent *event );

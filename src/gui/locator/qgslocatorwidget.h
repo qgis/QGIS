@@ -74,6 +74,13 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
      */
     void search( const QString &string );
 
+  signals:
+
+    /**
+     * Emitted when the configure option is triggered in the widget.
+     */
+    void configTriggered();
+
   protected:
 
     bool eventFilter( QObject *obj, QEvent *event ) override;
