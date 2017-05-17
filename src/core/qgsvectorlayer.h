@@ -404,11 +404,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  created for the same data source and renderers for features and diagrams
      *  are cloned too. Moreover, each attributes (transparency, extent, selected
      *  features and so on) are identicals.
-     * \param deep If true, a deep copy is done (unique ID is copied too)
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsVectorLayer *clone( bool deep = false ) const override SIP_FACTORY;
+    virtual QgsVectorLayer *clone() const override SIP_FACTORY;
 
     //! Returns the permanent storage type for this layer as a friendly name.
     QString storageType() const;

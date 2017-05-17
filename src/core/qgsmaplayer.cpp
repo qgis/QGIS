@@ -94,7 +94,7 @@ QgsMapLayer::~QgsMapLayer()
   delete mStyleManager;
 }
 
-void QgsMapLayer::clone( QgsMapLayer *layer, bool deep ) const
+void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
@@ -123,11 +123,6 @@ void QgsMapLayer::clone( QgsMapLayer *layer, bool deep ) const
   layer->setDependencies( dependencies() );
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
-
-  if ( deep )
-  {
-    layer->setId( id() );
-  }
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -138,11 +133,6 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
 QString QgsMapLayer::id() const
 {
   return mID;
-}
-
-void QgsMapLayer::setId( const QString &id )
-{
-  mID = id;
 }
 
 void QgsMapLayer::setName( const QString &name )

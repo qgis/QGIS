@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsPluginLayer *clone( bool deep ) const override = 0;
+    virtual QgsPluginLayer *clone() const override = 0;
 
     //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();

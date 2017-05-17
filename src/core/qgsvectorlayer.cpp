@@ -202,10 +202,10 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mConditionalStyles;
 }
 
-QgsVectorLayer *QgsVectorLayer::clone( bool deep ) const
+QgsVectorLayer *QgsVectorLayer::clone() const
 {
   QgsVectorLayer *layer = new QgsVectorLayer( source(), originalName(), mProviderKey );
-  QgsMapLayer::clone( layer, deep );
+  QgsMapLayer::clone( layer );
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
   Q_FOREACH ( QgsVectorLayerJoinInfo join, joins )

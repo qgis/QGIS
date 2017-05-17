@@ -334,13 +334,12 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     virtual ~QgsVectorLayer();
 
 
-    virtual QgsVectorLayer *clone( bool deep = false ) const /Factory/;
+    virtual QgsVectorLayer *clone() const /Factory/;
 %Docstring
  Returns a new instance equivalent to this one. A new provider is
   created for the same data source and renderers for features and diagrams
   are cloned too. Moreover, each attributes (transparency, extent, selected
   features and so on) are identicals.
- \param deep If true, a deep copy is done (unique ID is copied too)
  :return: a new layer instance
 .. versionadded:: 3.0
  :rtype: QgsVectorLayer

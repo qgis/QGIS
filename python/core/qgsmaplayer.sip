@@ -67,10 +67,10 @@ class QgsMapLayer : QObject
     virtual ~QgsMapLayer();
 
 
-    virtual QgsMapLayer *clone( bool deep ) const = 0;
+    virtual QgsMapLayer *clone() const = 0;
 %Docstring
- Returns a new instance equivalent to this one.
- \param deep If true, a deep copy is done
+ Returns a new instance equivalent to this one except for the id which
+  is still unique.
  :return: a new layer instance
 .. versionadded:: 3.0
  :rtype: QgsMapLayer
@@ -1045,12 +1045,10 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 
   protected:
 
-    void clone( QgsMapLayer *layer, bool deep = false ) const;
+    void clone( QgsMapLayer *layer ) const;
 %Docstring
- Copies attributes like name, short name, ... into another layer. The
-  unique ID is copied too if deep parameter is true.
+ Copies attributes like name, short name, ... into another layer.
  \param layer The copy recipient
- \param deep To copy the unique ID or not
 .. versionadded:: 3.0
 %End
 

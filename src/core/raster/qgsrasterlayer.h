@@ -190,11 +190,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
-     * \param deep If true, a deep copy is done (unique ID is copy too)
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsRasterLayer *clone( bool deep = false ) const override SIP_FACTORY;
+    virtual QgsRasterLayer *clone() const override SIP_FACTORY;
 
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
