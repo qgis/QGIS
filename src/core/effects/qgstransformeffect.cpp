@@ -94,6 +94,8 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mScaleX = props.value( "scale_x", "1.0" ).toDouble();
   mScaleY = props.value( "scale_y", "1.0" ).toDouble();
   mRotation = props.value( "rotation", "0.0" ).toDouble();
+  mShearX = props.value( "shear_x", "0.0" ).toDouble();
+  mShearY = props.value( "shear_y", "0.0" ).toDouble();
   mTranslateX = props.value( "translate_x", "0.0" ).toDouble();
   mTranslateY = props.value( "translate_y", "0.0" ).toDouble();
   mTranslateUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "translate_unit" ) );
