@@ -155,6 +155,7 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
+  locator/qgslocatoroptionswidget.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -333,6 +334,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgsatlascompositionwidget.h
 
   locator/qgsinbuiltlocatorfilters.h
+  locator/qgslocatoroptionswidget.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
