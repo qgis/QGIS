@@ -35,7 +35,7 @@
 #include "qgsexpression.h"
 #include "qgsvisibilitypresetcollection.h"
 #include "qgsannotation.h"
-#include "qgsvectorlayerref.h"
+#include "qgsmaplayerref.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -1326,7 +1326,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement layerSetElem = doc.createElement( "LayerSet" );
   Q_FOREACH ( const QString &layerId, mLayerSet )
   {
-    QgsVectorLayerRef layerRef( layerId );
+    QgsMapLayerRef layerRef( layerId );
     layerRef.resolve();
 
     if ( !layerRef )
