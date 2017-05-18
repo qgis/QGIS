@@ -1973,6 +1973,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::GeometryCollectionZ:
       case QgsWkbTypes::GeometryCollectionM:
       case QgsWkbTypes::GeometryCollectionZM:
+      case QgsWkbTypes::Triangle:
+      case QgsWkbTypes::TriangleZ:
+      case QgsWkbTypes::TriangleM:
+      case QgsWkbTypes::TriangleZM:
       case QgsWkbTypes::Unknown:
       case QgsWkbTypes::NoGeometry:
 
