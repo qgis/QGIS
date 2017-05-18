@@ -215,21 +215,21 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \since QGIS 2.14
      */
-    class OrderBy : public QList<QgsFeatureRequest::OrderByClause>
+    class CORE_EXPORT OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
       public:
 
         /**
          * Create a new empty order by
          */
-        CORE_EXPORT OrderBy()
+        OrderBy()
           : QList<QgsFeatureRequest::OrderByClause>()
         {}
 
         /**
          * Create a new order by from a list of clauses
          */
-        CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
+        OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
          * Get a copy as a list of OrderByClauses
@@ -237,27 +237,27 @@ class CORE_EXPORT QgsFeatureRequest
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
-        QList<QgsFeatureRequest::OrderByClause> CORE_EXPORT list() const;
+        QList<QgsFeatureRequest::OrderByClause> list() const;
 
         /**
          * Serialize to XML
          */
-        void CORE_EXPORT save( QDomElement &elem ) const;
+        void save( QDomElement &elem ) const;
 
         /**
          * Deserialize from XML
          */
-        void CORE_EXPORT load( const QDomElement &elem );
+        void load( const QDomElement &elem );
 
         /**
          * Returns a set of used attributes
          */
-        QSet<QString> CORE_EXPORT usedAttributes() const;
+        QSet<QString> usedAttributes() const;
 
         /**
          * Dumps the content to an SQL equivalent syntax
          */
-        QString CORE_EXPORT dump() const;
+        QString dump() const;
     };
 
     /**
