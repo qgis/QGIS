@@ -17,6 +17,11 @@
 # -r: deactivate interactive mode to fix errors
 # optional argument: list of files to be checked
 
+# temporarly display all commands to debug issues in TRAVIS
+if [[ $TRAVIS =~ true ]]; then
+  set -x
+fi
+
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
 AGIGNORE=${DIR}/.agignore
