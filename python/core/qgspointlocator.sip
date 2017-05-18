@@ -1,143 +1,225 @@
-/***************************************************************************
-  qgspointlocator.sip
-  --------------------------------------
-  Date                 : November 2014
-  Copyright            : (C) 2014 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsPointLocator : QObject
 {
-%TypeHeaderCode
-#include <qgspointlocator.h>
+%Docstring
+ The class defines interface for querying point location:
+  - query nearest vertices / edges to a point
+  - query vertices / edges in rectangle
+  - query areas covering a point
+
+ Works with one layer.
+
+.. versionadded:: 2.8
 %End
 
+%TypeHeaderCode
+#include "qgspointlocator.h"
+%End
   public:
 
-    /** Construct point locator for a layer.
-     *  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
-     *  do the searches on data reprojected to the given CRS
-     *  @arg extent  if not null, will index only a subset of the layer
-     */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem& destinationCrs = QgsCoordinateReferenceSystem(),
+    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle *extent = 0 );
+%Docstring
+ Construct point locator for a layer.
+  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
+  do the searches on data reprojected to the given CRS
+  @arg extent  if not null, will index only a subset of the layer
+%End
 
     ~QgsPointLocator();
 
-    //! Get associated layer
-    //! @note added in QGIS 2.14
     QgsVectorLayer *layer() const;
-    //! Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
-    //! @note added in QGIS 2.14
+%Docstring
+.. versionadded:: 2.14
+ :rtype: QgsVectorLayer
+%End
     QgsCoordinateReferenceSystem destinationCrs() const;
-    //! Get extent of the area point locator covers - if null then it caches the whole layer
-    //! @note added in QGIS 2.14
+%Docstring
+.. versionadded:: 2.14
+ :rtype: QgsCoordinateReferenceSystem
+%End
     const QgsRectangle *extent() const;
-    //! Configure extent - if not null, it will index only that area
-    //! @note added in QGIS 2.14
+%Docstring
+.. versionadded:: 2.14
+ :rtype: QgsRectangle
+%End
     void setExtent( const QgsRectangle *extent );
+%Docstring
+.. versionadded:: 2.14
+%End
 
     enum Type
     {
-      Invalid, //!< Invalid
-      Vertex,  //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
-      Edge,    //!< Snapped to an edge
-      Area,    //!< Snapped to an area
-      All      //!< Combination of vertex, edge and area
+      Invalid,
+      Vertex,
+      Edge,
+      Area,
+      All
     };
 
     typedef QFlags<QgsPointLocator::Type> Types;
 
-    /** Prepare the index for queries. Does nothing if the index already exists.
-     * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
-    bool init( int maxFeaturesToIndex = -1 );
 
-    /** Indicate whether the data have been already indexed */
+    bool init( int maxFeaturesToIndex = -1 );
+%Docstring
+ Prepare the index for queries. Does nothing if the index already exists.
+ If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
+ to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+ false if the creation of index has been prematurely stopped due to the limit of features, otherwise true *
+ :rtype: bool
+%End
+
     bool hasIndex() const;
+%Docstring
+Indicate whether the data have been already indexed
+ :rtype: bool
+%End
 
     struct Match
     {
-      //! consruct invalid match
-      Match();
+        Match();
+%Docstring
+construct invalid match
+%End
 
-      Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0 );
+        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0, QgsPoint *edgePoints = 0 );
 
-      QgsPointLocator::Type type() const;
+        QgsPointLocator::Type type() const;
+%Docstring
+ :rtype: QgsPointLocator.Type
+%End
 
+        bool isValid() const;
+%Docstring
+ :rtype: bool
+%End
+        bool hasVertex() const;
+%Docstring
+ :rtype: bool
+%End
+        bool hasEdge() const;
+%Docstring
+ :rtype: bool
+%End
+        bool hasArea() const;
+%Docstring
+ :rtype: bool
+%End
 
-      bool isValid() const;
-      bool hasVertex() const;
-      bool hasEdge() const;
-      bool hasArea() const;
+        double distance() const;
+%Docstring
+units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+ :rtype: float
+%End
 
-      //! for vertex / edge match
-      //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
-      double distance() const;
+        QgsPoint point() const;
+%Docstring
+coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+ :rtype: QgsPoint
+%End
 
-      //! for vertex / edge match
-      //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
-      QgsPoint point() const;
+        int vertexIndex() const;
+%Docstring
+for vertex / edge match (first vertex of the edge)
+ :rtype: int
+%End
 
-      //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex() const;
+        QgsVectorLayer *layer() const;
+%Docstring
+ The vector layer where the snap occurred.
+ Will be null if the snap happened on an intersection.
+ :rtype: QgsVectorLayer
+%End
 
-      //! reference vector layer
-      QgsVectorLayer *layer() const;
+        QgsFeatureId featureId() const;
+%Docstring
+ The id of the feature to which the snapped geometry belongs.
+ :rtype: QgsFeatureId
+%End
 
-      QgsFeatureId featureId() const;
+        void edgePoints( QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/ ) const;
+%Docstring
+Only for a valid edge match - obtain endpoints of the edge
+%End
 
-      //! Only for a valid edge match - obtain endpoints of the edge
-      void edgePoints( QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/ ) const;
+        bool operator==( const QgsPointLocator::Match &other ) const;
 
-      bool operator==( const QgsPointLocator::Match &other ) const;
+      protected:
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;
 
-    //! Interface that allows rejection of some matches in intersection queries
-    //! (e.g. a match can only belong to a particular feature / match must not be a particular point).
-    //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
       virtual ~MatchFilter();
       virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
+%Docstring
+ :rtype: bool
+%End
     };
 
-    // intersection queries
 
-    //! Find nearest vertex to the specified point - up to distance specified by tolerance
-    //! Optional filter may discard unwanted matches.
     Match nearestVertex( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
-    //! Find nearest edges to the specified point - up to distance specified by tolerance
-    //! Optional filter may discard unwanted matches.
+%Docstring
+Optional filter may discard unwanted matches.
+ :rtype: Match
+%End
     Match nearestEdge( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
-    //! Find edges within a specified recangle
-    //! Optional filter may discard unwanted matches.
+%Docstring
+Optional filter may discard unwanted matches.
+ :rtype: Match
+%End
     MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
-    //! Override of edgesInRect that construct rectangle from a center point and tolerance
+%Docstring
+Optional filter may discard unwanted matches.
+ :rtype: MatchList
+%End
     MatchList edgesInRect( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Override of edgesInRect that construct rectangle from a center point and tolerance
+ :rtype: MatchList
+%End
 
-    // point-in-polygon query
 
-    // TODO: function to return just the first match?
-    //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPoint &point );
+%Docstring
+find out if the point is in any polygons
+ :rtype: MatchList
+%End
 
-    //
 
-    //! Return how many geometries are cached in the index
-    //! @note added in QGIS 2.14
     int cachedGeometryCount() const;
+%Docstring
+.. versionadded:: 2.14
+ :rtype: int
+%End
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+%Docstring
+ :rtype: bool
+%End
+  protected slots:
     void destroyIndex();
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -8,6 +8,9 @@ use constant PRIVATE => 0;
 use constant PROTECTED => 1;
 use constant PUBLIC => 2;
 
+use constant STRICT => 10;
+use constant UNSTRICT => 11;
+
 # read arguments
 my $debug = 0;
 die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
@@ -182,8 +185,12 @@ sub fix_annotations(){
 }
 
 # detect a comment block, return 1 if found
-sub detect_comment_block(){
-    if ($line =~ m/^\s*\/\*/){
+# if STRICT comment block shall begin at beginning of line (no code in front)
+sub detect_comment_block{
+    my %args = ( strict_mode => STRICT, @_ );
+    # dbg_info("detect comment strict:" . $args{strict_mode} );
+    if ( $line =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $line =~ m/\/\*/ ){
+        dbg_info("found comment block");
         do {no warnings 'uninitialized';
             $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*?)\n?$/$2/r );
         };
@@ -533,8 +540,9 @@ while ($line_idx < $line_count){
                 if ($line =~ m/\};/){
                     last;
                 }
-                $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/;
-                push @output, dbg("ENU3")."$line\n";
+                my $enum_val = $line =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/r;
+                push @output, dbg("ENU3")."$enum_val\n";
+                detect_comment_block(strict_mode => UNSTRICT);
             }
             push @output, dbg("ENU4")."$line\n";
             # enums don't have Docstring apparently
@@ -544,10 +552,10 @@ while ($line_idx < $line_count){
     }
 
     # skip non-method member declaration in non-public sections
-    # https://regex101.com/r/gUBZUk/7
+    # https://regex101.com/r/gUBZUk/8
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $line =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)? \*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?))?;/){
+         $line =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)? \*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?)|\[\d+\])?;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }

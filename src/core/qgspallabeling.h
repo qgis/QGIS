@@ -43,7 +43,7 @@
 #include "qgstextrenderer.h"
 #include "qgspropertycollection.h"
 
-namespace pal
+namespace pal SIP_SKIP
 {
   class Pal;
   class Layer;
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsPalLayerSettings
       QuadrantRight,
       QuadrantBelowLeft,
       QuadrantBelow,
-      QuadrantBelowRight
+      QuadrantBelowRight,
     };
 
     enum UpsideDownLabels
@@ -516,7 +516,9 @@ class CORE_EXPORT QgsPalLayerSettings
      * the feature's original geometry will be used as an obstacle for labels. Not available
      * in Python bindings.
      */
-    void registerFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature = nullptr, QgsGeometry *obstacleGeometry = nullptr );
+    void registerFeature( QgsFeature &f, QgsRenderContext &context,
+                          QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
+                          QgsGeometry *obstacleGeometry SIP_PYARGREMOVE = nullptr );
 
     /** Read settings from a DOM element
      * \since QGIS 2.12
@@ -537,8 +539,9 @@ class CORE_EXPORT QgsPalLayerSettings
     /** Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \note not available in Python bindings
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /** Sets the label's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
@@ -690,6 +693,9 @@ class CORE_EXPORT QgsLabelingResults
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
   private:
+#ifdef SIP_RUN
+    QgsLabelingResults( const QgsLabelingResults & );
+#endif
 
     QgsLabelSearchTree *mLabelSearchTree = nullptr;
 

@@ -93,6 +93,9 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh );
+#endif
 
     typedef QMap<QString, QgsPluginLayerType *> PluginLayerTypes;
 

@@ -108,9 +108,9 @@ class CORE_EXPORT QgsSnappingConfig
         /**
          * Compare this configuration to other.
          */
-        bool operator!= ( const IndividualLayerSettings &other ) const;
+        bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
-        bool operator== ( const IndividualLayerSettings &other ) const;
+        bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:
         bool mValid;
@@ -167,13 +167,56 @@ class CORE_EXPORT QgsSnappingConfig
     void setIntersectionSnapping( bool enabled );
 
     //! return individual snapping settings for all layers
+#ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+#else
+    SIP_PYDICT individualLayerSettings() const;
+    % MethodCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+    if ( !d )
+      return nullptr;
+    // Set the dictionary elements.
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> container = sipCpp->individualLayerSettings();
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
+    while ( i != container.constEnd() )
+    {
+      QgsVectorLayer *vl = i.key();
+      QgsSnappingConfig::IndividualLayerSettings *ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
+
+      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
+      PyObject *ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
+
+      if ( !vlobj || !ilsobj || PyDict_SetItem( d, vlobj, ilsobj ) < 0 )
+      {
+        Py_DECREF( d );
+        if ( vlobj )
+        {
+          Py_DECREF( vlobj );
+        }
+        if ( ilsobj )
+        {
+          Py_DECREF( ilsobj );
+        }
+        else
+        {
+          delete ils;
+        }
+        PyErr_SetString( PyExc_StopIteration, "" );
+      }
+      Py_DECREF( vlobj );
+      Py_DECREF( ilsobj );
+      ++i;
+    }
+    sipRes = d;
+    % End
+#endif
 
     //! return individual layer snappings settings (applied if mode is AdvancedConfiguration)
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 
     //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings );
+    void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Compare this configuration to other.

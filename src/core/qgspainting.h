@@ -47,9 +47,9 @@ class CORE_EXPORT QgsPainting
     };
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( BlendMode blendMode );
+    static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+    static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
 };
 

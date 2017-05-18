@@ -386,8 +386,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's layout manager, which manages compositions within
      * the project.
      * \since QGIS 3.0
+     * \note not available in Python bindings
      */
-    const QgsLayoutManager *layoutManager() const;
+    const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
      * Returns the project's layout manager, which manages compositions within
@@ -568,6 +569,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
+#ifndef SIP_RUN
+
     /** Returns a list of registered map layers with a specified layer type.
      *
      * Example:
@@ -578,11 +581,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.16
      * \see mapLayers()
      */
-    template <typename T> SIP_SKIP
+    template <typename T>
     QVector<T> layers() const
     {
       return mLayerStore->layers<T>();
     }
+#endif
 
     /**
      * \brief
@@ -609,9 +613,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 1.8
      * \see addMapLayer()
      */
-    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers,
+    QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers SIP_TRANSFER,
                                        bool addToLegend = true,
-                                       bool takeOwnership = true );
+                                       bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -640,7 +644,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * take ownership
      * \see addMapLayers()
      */
-    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true, bool takeOwnership = true );
+    QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer SIP_TRANSFER,
+                              bool addToLegend = true,
+                              bool takeOwnership SIP_PYARGREMOVE = true );
 
     /**
      * \brief
@@ -1047,7 +1053,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 /** Return the version string found in the given DOM document
    \returns the version string or an empty string if none found
+   \note not available in Python bindings.
  */
-CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc );
+CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 
 #endif
