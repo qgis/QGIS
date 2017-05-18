@@ -36,12 +36,14 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mLineEdit->setShowClearButton( true );
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
 
-  resize( 200, 30 );
+  int placeholderMinWidth = mLineEdit->fontMetrics().width( mLineEdit->placeholderText() );
+  int minWidth = qMax( 200, ( int )( placeholderMinWidth * 1.3 ) );
+  resize( minWidth, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   sizePolicy.setHorizontalStretch( 0 );
   sizePolicy.setVerticalStretch( 0 );
   setSizePolicy( sizePolicy );
-  setMinimumSize( QSize( 200, 0 ) );
+  setMinimumSize( QSize( minWidth, 0 ) );
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setMargin( 0 );
