@@ -7,7 +7,6 @@ SET(QGIS_APP_SRCS
   qgsabout.cpp
   qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
-  qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsjoindialog.cpp
@@ -296,7 +295,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
   qgssnappingdialog.h
-  qgssponsors.h
   qgsstatisticalsummarydockwidget.h
   qgssubstitutionlistwidget.h
   qgssvgannotationdialog.h
@@ -520,7 +518,7 @@ IF(PEDANTIC)
     SET_SOURCE_FILES_PROPERTIES(
         qgisappinterface.cpp
         ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-	PROPERTIES COMPILE_FLAGS "/wd4996"
+    PROPERTIES COMPILE_FLAGS "/wd4996"
     )
   ELSE(MSVC)
     SET_SOURCE_FILES_PROPERTIES(
