@@ -29,7 +29,6 @@ In order to be readable from project files, they should set these attributes in 
     virtual QgsPluginLayer *clone() const = 0;
 %Docstring
  Returns a new instance equivalent to this one.
- \param deep If true, a deep copy is done
  :return: a new layer instance
 .. versionadded:: 3.0
  :rtype: QgsPluginLayer
