@@ -96,13 +96,13 @@ sub dbg_info
 }
 
 sub detect_following_body_or_list {
-    # https://regex101.com/r/ZaP3tC/4
+    # https://regex101.com/r/ZaP3tC/6
     do {no warnings 'uninitialized';
-        if ( $line =~  m/^(\s*)?(explicit )?(virtual )?(static |const )*(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
+        if ( $line =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
              || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
              || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
-            my $newline = "$1$2$3$4$5;";
+            my $newline = "$1$2$3;";
             remove_initializerlist_or_body() unless $line =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
             $line = $newline;
         }
@@ -138,12 +138,13 @@ sub remove_initializerlist_or_body {
 sub fix_annotations(){
   # printed annotations
   $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
-  $line =~ s/\bSIP_ARRAY\b/\/Array\//;
-  $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//;
+  $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
+  $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
   $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
   $line =~ s/\bSIP_IN\b/\/In\//g;
   $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
   $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
+  $line =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
   $line =~ s/\bSIP_OUT\b/\/Out\//g;
   $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
   $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;

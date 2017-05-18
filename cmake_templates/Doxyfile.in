@@ -2059,6 +2059,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_IF_FEATURE" \
                          "SIP_INOUT" \
                          "SIP_KEEPREFERENCE" \
+                         "SIP_NODEFAULTCTORS" \
                          "SIP_OUT" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \
