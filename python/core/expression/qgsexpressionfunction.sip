@@ -64,9 +64,6 @@ Returns the default value for the parameter.
 %End
 
         bool operator==( const QgsExpressionFunction::Parameter &other ) const;
-%Docstring
- :rtype: bool
-%End
 
     };
 
@@ -253,9 +250,6 @@ The help text for the function.
 %End
 
     bool operator==( const QgsExpressionFunction &other ) const;
-%Docstring
- :rtype: bool
-%End
 
     virtual bool handlesNull() const;
 %Docstring
