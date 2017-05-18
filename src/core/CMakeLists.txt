@@ -828,6 +828,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerexporter.h
   qgsvectorlayerjoininfo.h
   qgsvectorlayerlabelprovider.h
+  qgsvectorlayerlabeling.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerutils.h
