@@ -232,7 +232,7 @@ void QgsOWSSourceSelect::populateConnectionList()
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -245,7 +245,7 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -587,7 +587,7 @@ void QgsOWSSourceSelect::addDefaultServers()
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
+  settings.beginGroup( "/qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
