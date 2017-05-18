@@ -34,7 +34,11 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   , mResultsView( new QgsLocatorResultsView( this ) )
 {
   mLineEdit->setShowClearButton( true );
+#ifdef Q_OS_MACX
+  mLineEdit->setPlaceholderText( tr( "Type to locate (Cmd+K)" ) );
+#elif
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
+#endif
 
   resize( 200, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
