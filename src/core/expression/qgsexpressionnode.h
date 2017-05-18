@@ -106,7 +106,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
     /** \ingroup core
      */
-    class NodeList
+    class CORE_EXPORT NodeList
     {
       public:
         virtual ~NodeList();

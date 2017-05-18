@@ -87,7 +87,11 @@ Node
     };
 
     class NodeList
-    {
+{
+
+%TypeHeaderCode
+#include "qgsexpressionnode.h"
+%End
       public:
         virtual ~NodeList();
         void append( QgsExpressionNode *node /Transfer/ );
