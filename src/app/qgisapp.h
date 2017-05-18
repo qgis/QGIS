@@ -92,6 +92,7 @@ class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
 class QgsOptionsWidgetFactory;
+class QgsStatusBar;
 
 class QDomDocument;
 class QNetworkReply;
@@ -556,6 +557,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *vectorToolBar() { return mVectorToolBar; }
     QToolBar *databaseToolBar() { return mDatabaseToolBar; }
     QToolBar *webToolBar() { return mWebToolBar; }
+
+    QgsStatusBar *statusBarIface() { return mStatusBar; }
 
     //! return CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
@@ -1978,6 +1981,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSystemTrayIcon *mTray = nullptr;
 
     QgsLocatorWidget *mLocatorWidget = nullptr;
+
+    QgsStatusBar *mStatusBar = nullptr;
 
     friend class TestQgisAppPython;
 };

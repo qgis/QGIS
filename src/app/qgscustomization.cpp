@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsstatusbar.h"
 
 #include <QAction>
 #include <QDir>
@@ -599,7 +600,7 @@ void QgsCustomization::createTreeItemStatus()
   topItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   topItem->setCheckState( 0, Qt::Checked );
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   Q_FOREACH ( QObject *obj, sb->children() )
   {
     if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
@@ -653,7 +654,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   if ( !mEnabled )
     return;
 
-  QMainWindow *mw = QgisApp::instance();
+  QgisApp *mw = QgisApp::instance();
   QMenuBar *menubar = mw->menuBar();
 
   mSettings->beginGroup( QStringLiteral( "Customization/Menus" ) );
@@ -738,7 +739,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   {
     mSettings->beginGroup( QStringLiteral( "Customization/StatusBar" ) );
 
-    QStatusBar *sb = mw->statusBar();
+    QgsStatusBar *sb = mw->statusBarIface();
     Q_FOREACH ( QObject *obj, sb->children() )
     {
       if ( obj->inherits( "QWidget" ) )

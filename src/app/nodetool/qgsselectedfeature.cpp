@@ -27,6 +27,7 @@
 #include "qgisapp.h"
 #include "qgslayertreeview.h"
 #include "qgsproject.h"
+#include "qgsstatusbar.h"
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
@@ -189,7 +190,7 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
   connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
   mValidator->start();
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation started." ) );
 }
 
@@ -212,14 +213,14 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
     mGeomErrorMarkers << marker;
   }
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( e.what() );
   sb->setToolTip( mTip );
 }
 
 void QgsSelectedFeature::validationFinished()
 {
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", mGeomErrorMarkers.size() ) );
 }
 

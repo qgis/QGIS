@@ -54,8 +54,8 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   // setup floating container widget
   mResultsContainer = new QgsFloatingWidget( parent ? parent->window() : nullptr );
   mResultsContainer->setAnchorWidget( mLineEdit );
-  mResultsContainer->setAnchorPoint( QgsFloatingWidget::BottomRight );
-  mResultsContainer->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
+  mResultsContainer->setAnchorPoint( QgsFloatingWidget::BottomLeft );
+  mResultsContainer->setAnchorWidgetPoint( QgsFloatingWidget::TopLeft );
 
   QHBoxLayout *containerLayout = new QHBoxLayout( this );
   containerLayout->setMargin( 0 );
