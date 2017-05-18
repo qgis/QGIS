@@ -3637,7 +3637,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
   static QMutex sFunctionsMutex( QMutex::Recursive );
   QMutexLocker locker( &sFunctionsMutex );
 
-  static QList<QgsExpressionFunction *> sFunctions;
   if ( sFunctions.isEmpty() )
   {
     QgsExpressionFunction::ParameterList aggParams = QgsExpressionFunction::ParameterList()
