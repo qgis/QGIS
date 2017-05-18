@@ -298,7 +298,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
         //! tell which rules will be used to render the feature
-        RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
@@ -322,14 +322,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns A list of rules
          */
-        RuleList &children() { return mChildren; }
+        QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * \returns A list of descendant rules
          */
-        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedRenderer::RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule

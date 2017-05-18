@@ -25,12 +25,12 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
+#include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
+#include "qgsrectangle.h"
+#include "qgsvectorsimplifymethod.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -41,8 +41,8 @@ class QgsMapSettings;
 /** \ingroup core
  * Contains information about the context of a rendering operation.
  * The context of a rendering operation defines properties such as
- * the conversion ratio between screen and map units, the extents /
- * bounding box to be rendered etc.
+ * the conversion ratio between screen and map units, the extents
+ * to be rendered etc.
  **/
 class CORE_EXPORT QgsRenderContext
 {
