@@ -223,7 +223,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setLayerTransparency( layerTransparency() );
 
-  Q_FOREACH ( QgsAction action, actions()->actions() )
+  Q_FOREACH ( const QgsAction &action, actions()->actions() )
   {
     layer->actions()->addAction( action );
   }
