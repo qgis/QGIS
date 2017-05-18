@@ -35,7 +35,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 {
   mLineEdit->setShowClearButton( true );
 #ifdef Q_OS_MACX
-  mLineEdit->setPlaceholderText( tr( "Type to locate (Cmd+K)" ) );
+  mLineEdit->setPlaceholderText( tr( "Type to locate (⌘K)" ) );
 #elif
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
 #endif
