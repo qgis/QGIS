@@ -215,7 +215,6 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgssourceselectdialog.h"
-#include "qgssponsors.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
@@ -3402,10 +3401,7 @@ void QgisApp::restoreWindowState()
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {
-  QgsSponsors * sponsors = new QgsSponsors( this );
-  sponsors->show();
-  sponsors->raise();
-  sponsors->activateWindow();
+  openURL( tr( "http://qgis.org/en/site/about/sponsorship.html" ), false );
 }
 
 void QgisApp::about()
