@@ -82,7 +82,7 @@ class DBManagerPlugin(object):
             uri = QgsDataSourceUri(aMapLayer.source())
             table = uri.table()
             if table.startswith('(') and table.endswith(')'):
-                self.addCustomActionForLayer(self.layerAction, aMapLayer)
+                self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
