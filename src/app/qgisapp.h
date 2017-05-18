@@ -849,9 +849,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! validate a SRS
     void validateCrs( QgsCoordinateReferenceSystem &crs );
 
-    //! QGis Sponsors
+    //! QGIS Sponsors
     void sponsors();
-    //! About QGis
+    //! About QGIS
     void about();
     //! Add a raster layer to the map (will prompt user for file name using dlg )
     void addRasterLayer();
