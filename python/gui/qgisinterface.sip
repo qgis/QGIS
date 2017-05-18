@@ -509,6 +509,8 @@ class QgisInterface : QObject
     /** Get timeout for timed messages: default of 5 seconds */
     virtual int messageTimeout() = 0;
 
+	virtual QgsStatusBar *statusBarIface() = 0;
+
     /**
      * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the
      * locator.

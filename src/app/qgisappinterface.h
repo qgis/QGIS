@@ -494,6 +494,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() override;
 
+    QgsStatusBar *statusBarIface() override;
+
     void registerLocatorFilter( QgsLocatorFilter *filter ) override;
     void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
 

@@ -43,6 +43,7 @@ class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
+class QgsStatusBar;
 
 #include <QObject>
 #include <QFont>
@@ -651,6 +652,14 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Get timeout for timed messages: default of 5 seconds
     virtual int messageTimeout() = 0;
+
+    /**
+     * Returns a pointer to the app's status bar interface. This should be
+     * used for interacting and adding widgets and messages to the app's
+     * status bar (do not use the native Qt statusBar() method).
+     * \since QGIS 3.0
+     */
+    virtual QgsStatusBar *statusBarIface() = 0;
 
     /**
      * Registers a locator \a filter for the app's locator bar. Ownership of the filter is transferred to the

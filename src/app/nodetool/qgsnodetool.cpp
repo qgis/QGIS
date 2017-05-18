@@ -31,7 +31,7 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
-
+#include "qgsstatusbar.h"
 #include "qgisapp.h"
 #include "qgsselectedfeature.h"
 #include "qgsnodeeditor.h"
@@ -1797,7 +1797,7 @@ void QgsNodeTool::validationFinished()
     GeometryValidation &validation = *it;
     if ( validation.validator == validator )
     {
-      QStatusBar *sb = QgisApp::instance()->statusBar();
+      QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
       sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", validation.errorMarkers.size() ) );
       if ( validation.errorMarkers.isEmpty() )
       {
@@ -1838,7 +1838,7 @@ void QgsNodeTool::GeometryValidation::addError( QgsGeometry::Error e )
     errorMarkers << marker;
   }
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
+  QgsStatusBar *sb = QgisApp::instance()->statusBarIface();
   sb->showMessage( e.what() );
   sb->setToolTip( errors );
 }

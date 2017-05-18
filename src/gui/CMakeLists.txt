@@ -306,6 +306,7 @@ SET(QGIS_GUI_SRCS
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
+  qgsstatusbar.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -451,6 +452,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsshortcutsmanager.h
   qgsslider.h
   qgssqlcomposerdialog.h
+  qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
   qgstablewidgetbase.h

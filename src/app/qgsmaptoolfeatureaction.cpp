@@ -32,6 +32,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgisapp.h"
 #include "qgsgui.h"
+#include "qgsstatusbar.h"
 
 #include <QSettings>
 #include <QMouseEvent>
@@ -80,7 +81,7 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   if ( !doAction( vlayer, e->x(), e->y() ) )
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
 }
 
 void QgsMapToolFeatureAction::activate()

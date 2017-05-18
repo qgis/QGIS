@@ -247,6 +247,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssnappingwidget.h"
 #include "qgssourceselectdialog.h"
 #include "qgsstatisticalsummarydockwidget.h"
+#include "qgsstatusbar.h"
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsstatusbarscalewidget.h"
@@ -2520,21 +2521,25 @@ void QgisApp::createStatusBar()
   //remove borders from children under Windows
   statusBar()->setStyleSheet( QStringLiteral( "QStatusBar::item {border: none;}" ) );
 
+  mStatusBar = new QgsStatusBar();
+
+  statusBar()->addPermanentWidget( mStatusBar, 10 );
+
   // Add a panel to the status bar for the scale, coords and progress
   // And also rendering suppression checkbox
-  mProgressBar = new QProgressBar( statusBar() );
+  mProgressBar = new QProgressBar( mStatusBar );
   mProgressBar->setObjectName( QStringLiteral( "mProgressBar" ) );
   mProgressBar->setMaximumWidth( 100 );
   mProgressBar->hide();
   mProgressBar->setWhatsThis( tr( "Progress bar that displays the status "
                                   "of rendering layers and other time-intensive operations" ) );
-  statusBar()->addPermanentWidget( mProgressBar, 1 );
+  mStatusBar->addPermanentWidget( mProgressBar, 1 );
 
   connect( mMapCanvas, &QgsMapCanvas::renderStarting, this, &QgisApp::canvasRefreshStarted );
   connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, this, &QgisApp::canvasRefreshFinished );
 
-  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsApplication::taskManager(), statusBar() );
-  statusBar()->addPermanentWidget( mTaskManagerWidget, 0 );
+  mTaskManagerWidget = new QgsTaskManagerStatusBarWidget( QgsApplication::taskManager(), mStatusBar );
+  mStatusBar->addPermanentWidget( mTaskManagerWidget, 0 );
 
   // Bumped the font up one point size since 8 was too
   // small on some platforms. A point size of 9 still provides
@@ -2543,29 +2548,29 @@ void QgisApp::createStatusBar()
   statusBar()->setFont( myFont );
 
   //coords status bar widget
-  mCoordsEdit = new QgsStatusBarCoordinatesWidget( statusBar() );
+  mCoordsEdit = new QgsStatusBarCoordinatesWidget( mStatusBar );
   mCoordsEdit->setObjectName( QStringLiteral( "mCoordsEdit" ) );
   mCoordsEdit->setMapCanvas( mMapCanvas );
   mCoordsEdit->setFont( myFont );
-  statusBar()->addPermanentWidget( mCoordsEdit, 0 );
+  mStatusBar->addPermanentWidget( mCoordsEdit, 0 );
 
-  mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, statusBar() );
+  mScaleWidget = new QgsStatusBarScaleWidget( mMapCanvas, mStatusBar );
   mScaleWidget->setObjectName( QStringLiteral( "mScaleWidget" ) );
   mScaleWidget->setFont( myFont );
   connect( mScaleWidget, &QgsStatusBarScaleWidget::scaleLockChanged, mMapCanvas, &QgsMapCanvas::setScaleLocked );
-  statusBar()->addPermanentWidget( mScaleWidget, 0 );
+  mStatusBar->addPermanentWidget( mScaleWidget, 0 );
 
   // zoom widget
-  mMagnifierWidget = new QgsStatusBarMagnifierWidget( statusBar() );
+  mMagnifierWidget = new QgsStatusBarMagnifierWidget( mStatusBar );
   mMagnifierWidget->setObjectName( QStringLiteral( "mMagnifierWidget" ) );
   mMagnifierWidget->setFont( myFont );
   connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, mMagnifierWidget, &QgsStatusBarMagnifierWidget::updateMagnification );
   connect( mMagnifierWidget, &QgsStatusBarMagnifierWidget::magnificationChanged, mMapCanvas, &QgsMapCanvas::setMagnificationFactor );
   mMagnifierWidget->updateMagnification( QSettings().value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble() );
-  statusBar()->addPermanentWidget( mMagnifierWidget, 0 );
+  mStatusBar->addPermanentWidget( mMagnifierWidget, 0 );
 
   // add a widget to show/set current rotation
-  mRotationLabel = new QLabel( QString(), statusBar() );
+  mRotationLabel = new QLabel( QString(), mStatusBar );
   mRotationLabel->setObjectName( QStringLiteral( "mRotationLabel" ) );
   mRotationLabel->setFont( myFont );
   mRotationLabel->setMinimumWidth( 10 );
@@ -2575,9 +2580,9 @@ void QgisApp::createStatusBar()
   mRotationLabel->setFrameStyle( QFrame::NoFrame );
   mRotationLabel->setText( tr( "Rotation" ) );
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
-  statusBar()->addPermanentWidget( mRotationLabel, 0 );
+  mStatusBar->addPermanentWidget( mRotationLabel, 0 );
 
-  mRotationEdit = new QgsDoubleSpinBox( statusBar() );
+  mRotationEdit = new QgsDoubleSpinBox( mStatusBar );
   mRotationEdit->setObjectName( QStringLiteral( "mRotationEdit" ) );
   mRotationEdit->setClearValue( 0.0 );
   mRotationEdit->setKeyboardTracking( false );
@@ -2592,13 +2597,13 @@ void QgisApp::createStatusBar()
                                    "in degrees. It also allows editing to set "
                                    "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
-  statusBar()->addPermanentWidget( mRotationEdit, 0 );
+  mStatusBar->addPermanentWidget( mRotationEdit, 0 );
   connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgisApp::userRotation );
 
   showRotation();
 
   // render suppression status bar widget
-  mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
+  mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), mStatusBar );
   mRenderSuppressionCBox->setObjectName( QStringLiteral( "mRenderSuppressionCBox" ) );
   mRenderSuppressionCBox->setChecked( true );
   mRenderSuppressionCBox->setFont( myFont );
@@ -2607,11 +2612,11 @@ void QgisApp::createStatusBar()
                                         "events. When not checked, no rendering is done. This allows you "
                                         "to add a large number of layers and symbolize them before rendering." ) );
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
-  statusBar()->addPermanentWidget( mRenderSuppressionCBox, 0 );
+  mStatusBar->addPermanentWidget( mRenderSuppressionCBox, 0 );
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
-  mOnTheFlyProjectionStatusButton = new QToolButton( statusBar() );
+  mOnTheFlyProjectionStatusButton = new QToolButton( mStatusBar );
   mOnTheFlyProjectionStatusButton->setAutoRaise( true );
   mOnTheFlyProjectionStatusButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mOnTheFlyProjectionStatusButton->setObjectName( QStringLiteral( "mOntheFlyProjectionStatusButton" ) );
@@ -2627,10 +2632,10 @@ void QgisApp::createStatusBar()
       "to open coordinate reference system dialog" ) );
   connect( mOnTheFlyProjectionStatusButton, &QAbstractButton::clicked,
            this, &QgisApp::projectPropertiesProjections );//bring up the project props dialog when clicked
-  statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusButton, 0 );
-  statusBar()->showMessage( tr( "Ready" ) );
+  mStatusBar->addPermanentWidget( mOnTheFlyProjectionStatusButton, 0 );
+  mStatusBar->showMessage( tr( "Ready" ) );
 
-  mMessageButton = new QToolButton( statusBar() );
+  mMessageButton = new QToolButton( mStatusBar );
   mMessageButton->setAutoRaise( true );
   mMessageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mMessageLogRead.svg" ) ) );
   mMessageButton->setToolTip( tr( "Messages" ) );
@@ -2638,10 +2643,10 @@ void QgisApp::createStatusBar()
   mMessageButton->setObjectName( QStringLiteral( "mMessageLogViewerButton" ) );
   mMessageButton->setMaximumHeight( mScaleWidget->height() );
   mMessageButton->setCheckable( true );
-  statusBar()->addPermanentWidget( mMessageButton, 0 );
+  mStatusBar->addPermanentWidget( mMessageButton, 0 );
 
-  mLocatorWidget = new QgsLocatorWidget( statusBar() );
-  statusBar()->addPermanentWidget( mLocatorWidget );
+  mLocatorWidget = new QgsLocatorWidget( mStatusBar );
+  mStatusBar->addPermanentWidget( mLocatorWidget, 0, QgsStatusBar::AnchorLeft );
   QShortcut *locatorShortCut = new QShortcut( QKeySequence( tr( "Ctrl+K" ) ), this );
   connect( locatorShortCut, &QShortcut::activated, mLocatorWidget, [ = ] { mLocatorWidget->search( QString() ); } );
   locatorShortCut->setObjectName( QStringLiteral( "Locator" ) );
@@ -5221,7 +5226,7 @@ void QgisApp::enableProjectMacros()
 bool QgisApp::addProject( const QString &projectFile )
 {
   QFileInfo pfi( projectFile );
-  statusBar()->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
+  mStatusBar->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
   qApp->processEvents();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -5248,7 +5253,7 @@ bool QgisApp::addProject( const QString &projectFile )
       buttons |= QMessageBox::Ok;
     }
     QApplication::restoreOverrideCursor();
-    statusBar()->clearMessage();
+    mStatusBar->clearMessage();
 
     int r = QMessageBox::critical( this,
                                    tr( "Unable to open project" ),
@@ -5354,7 +5359,7 @@ bool QgisApp::addProject( const QString &projectFile )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 
-  statusBar()->showMessage( tr( "Project loaded" ), 3000 );
+  mStatusBar->showMessage( tr( "Project loaded" ), 3000 );
   return true;
 } // QgisApp::addProject(QString projectFile)
 
@@ -5420,7 +5425,7 @@ bool QgisApp::fileSave()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
 
     saveRecentProjectPath( fullPath.filePath() );
 
@@ -5472,7 +5477,7 @@ void QgisApp::fileSaveAs()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
+    mStatusBar->showMessage( tr( "Saved project to: %1" ).arg( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath() );
     mProjectLastModified = fullPath.lastModified();
@@ -10895,7 +10900,7 @@ void QgisApp::updateMouseCoordinatePrecision()
 
 void QgisApp::showStatusMessage( const QString &message )
 {
-  statusBar()->showMessage( message );
+  mStatusBar->showMessage( message );
 }
 
 void QgisApp::displayMapToolMessage( const QString &message, QgsMessageBar::MessageLevel level )

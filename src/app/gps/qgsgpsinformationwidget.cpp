@@ -36,6 +36,7 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
 #include "qgssettings.h"
+#include "qgsstatusbar.h"
 
 // QWT Charting widget
 
@@ -1122,5 +1123,5 @@ void QgsGPSInformationWidget::setStatusIndicator( const FixStatus statusValue )
 
 void QgsGPSInformationWidget::showStatusBarMessage( const QString &msg )
 {
-  QgisApp::instance()->statusBar()->showMessage( msg );
+  QgisApp::instance()->statusBarIface()->showMessage( msg );
 }
