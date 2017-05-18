@@ -98,7 +98,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
 {
   layer->setBlendMode( blendMode() );
 
-  Q_FOREACH ( QString s, styleManager()->styles() )
+  Q_FOREACH ( const QString &s, styleManager()->styles() )
   {
     layer->styleManager()->addStyle( s, styleManager()->style( s ) );
   }
