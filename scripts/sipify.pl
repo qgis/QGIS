@@ -95,21 +95,21 @@ sub dbg_info
   }
 }
 
-sub detect_following_body_or_list {
+sub detect_and_remove_following_body_or_initializerlist {
     # https://regex101.com/r/ZaP3tC/6
     do {no warnings 'uninitialized';
-        if ( $line =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
+        if ( $line =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( (?:const|SIP_[A-Z_]*?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\};?|(?!;))(\s*\/\/.*)?$/
              || $line =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
              || $line =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3;";
-            remove_initializerlist_or_body() unless $line =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
+            remove_following_body_or_initializerlist() unless $line =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
             $line = $newline;
         }
     };
 }
 
-sub remove_initializerlist_or_body {
+sub remove_following_body_or_initializerlist {
     do {no warnings 'uninitialized';
         dbg_info("remove constructor definition, function bodies, member initializing list");
         $line = $lines[$line_idx];
@@ -368,7 +368,7 @@ while ($line_idx < $line_count){
         $MULTILINE_DEFINITION = 0;
         }
         # also skip method body if there is one
-        detect_following_body_or_list();
+        detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
         next;
     }
@@ -432,8 +432,9 @@ while ($line_idx < $line_count){
         next;
     }
     # Skip operators
-    if ( $line =~ m/operator(=|<<|>>)\s*\(/ ){
+    if ( $line =~ m/operator(=|<<|>>|->)\s*\(/ ){
         dbg_info("skip operator");
+        detect_and_remove_following_body_or_initializerlist();
         next;
     }
 
@@ -475,12 +476,14 @@ while ($line_idx < $line_count){
             my $m = $4;
             $m =~ s/public //g;
             $m =~ s/[,:]?\s*private \w+(::\w+)?//g;
-            while ($m =~ /[,:]\s+(\w+)<((\w|::)+)>/g){
+            # detect template based inheritance
+            while ($m =~ /[,:]\s+((?!QList)\w+)<((\w|::)+)>/g){
                 dbg_info("template class");
                 push @template_inheritance_template, $1;
                 push @template_inheritance_class, $2;
             }
-            $m =~ s/\w+<(\w|::)+>//g; # remove template Inheritance, not handled at the moment (see commented lines below)
+            $m =~ s/(\b(?!QList)\w+)<((?:\w|::)+)>/$1${2}Base/g; # use the typeded as template inheritance
+            $m =~ s/(\w+)<((?:\w|::)+)>//g; # remove remaining templates
             $m =~ s/([:,])\s*,/$1/g;
             $m =~ s/(\s*[:,])?\s*$//;
             $line .= $m;
@@ -496,14 +499,17 @@ while ($line_idx < $line_count){
             $line .= "%Docstring\n$comment\n%End\n";
         }
         $line .= "\n%TypeHeaderCode\n#include \"" . basename($headerfile) . "\"";
+        # for template based inheritance, add a typedef to define the base type
+        # add it to the class and to the TypeHeaderCode
+        # also include the template header
         # see https://www.riverbankcomputing.com/pipermail/pyqt/2015-May/035893.html
-        # this doesn't work as expected since it leads to double definitions (typedef vs class)
-        # while (@template_inheritance_template) {
-        #     my $tpl = pop @template_inheritance_template;
-        #     my $cls = pop @template_inheritance_class;
-        #     $line .= "\n#include \"" . lc $tpl  . ".h\"";
-        #     $line .= "\ntypedef $tpl<$cls> $classname;";
-        # }
+        while (@template_inheritance_template) {
+            my $tpl = pop @template_inheritance_template;
+            my $cls = pop @template_inheritance_class;
+            $line = "\ntypedef $tpl<$cls> ${tpl}${cls}Base;\n\n$line";
+            $line .= "\n#include \"" . lc $tpl  . ".h\"";
+            $line .= "\ntypedef $tpl<$cls> ${tpl}${cls}Base;";
+        }
         push @output, dbg("CLS")."$line\n";
 
         # Skip opening curly bracket, we already added that above
@@ -612,13 +618,16 @@ while ($line_idx < $line_count){
                 $line =~ s/^(\s*?)\b(.*)$/$1virtual $2\n/;
             }
         }
+
+        # keyword fixes
+        $line =~ s/^(\s*template<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $line =~ s/\s*\boverride\b//;
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $line =~ s/\bnullptr\b/0/g;
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition, function bodies, member initializing list
-        $SIP_RUN == 1 or detect_following_body_or_list();
+        $SIP_RUN == 1 or detect_and_remove_following_body_or_initializerlist();
 
         # remove inline declarations
         if ( $line =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
@@ -674,7 +683,7 @@ while ($line_idx < $line_count){
             if ( $SIP_RUN == 0 && $line !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){
                 dbg_info("remove following body of multiline def");
                 my $last_line = $line;
-                remove_initializerlist_or_body();
+                remove_following_body_or_initializerlist();
                 # add missing semi column
                 my $dummy = pop(@output);
                 push @output, dbg("MLT")."$last_line;\n";
@@ -695,6 +704,10 @@ while ($line_idx < $line_count){
     if ( $line =~ m/^\s*$/ )
     {
         $is_override = 0;
+        next;
+    }
+    if ( $line =~ m/^\s*template<.*>/ ){
+        # do not comment now for templates, wait for class definition
         next;
     }
     elsif ( $line =~ m/\/\// ||

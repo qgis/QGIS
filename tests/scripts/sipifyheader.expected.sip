@@ -44,7 +44,10 @@ typedef QVector<QVariant> QgsSuperClass;
 %End
 }
 
-class QgsSipifyHeader
+
+typedef QtClass<QVariant> QtClassQVariantBase;
+
+class QgsSipifyHeader : QtClassQVariantBase
 {
 %Docstring
  Documentation goes here
@@ -58,6 +61,8 @@ class QgsSipifyHeader
 
 %TypeHeaderCode
 #include "sipifyheader.h"
+#include "qtclass.h"
+typedef QtClass<QVariant> QtClassQVariantBase;
 %End
 
 %ConvertToSubClassCode
@@ -387,11 +392,16 @@ A constructor
 QFlags<QgsSipifyHeader::MyEnum> operator|(QgsSipifyHeader::MyEnum f1, QFlags<QgsSipifyHeader::MyEnum> f2);
 
 
-class TemplateInheritance1
+
+typedef QgsTemplate<Something> QgsTemplateSomethingBase;
+
+class TemplateInheritance1 : QgsTemplateSomethingBase
 {
 
 %TypeHeaderCode
 #include "sipifyheader.h"
+#include "qgstemplate.h"
+typedef QgsTemplate<Something> QgsTemplateSomethingBase;
 %End
 }
 class TemplateInheritance2
@@ -401,11 +411,16 @@ class TemplateInheritance2
 #include "sipifyheader.h"
 %End
 }
-class TemplateInheritance3 : SomethingElse
+
+typedef QgsTemplate<Something> QgsTemplateSomethingBase;
+
+class TemplateInheritance3 : QgsTemplateSomethingBase, SomethingElse
 {
 
 %TypeHeaderCode
 #include "sipifyheader.h"
+#include "qgstemplate.h"
+typedef QgsTemplate<Something> QgsTemplateSomethingBase;
 %End
 }
 class TemplateInheritance4 : SomethingElse1, SomethingElse2
