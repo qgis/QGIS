@@ -437,6 +437,7 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionVertexTool"/>
+   <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
    <addaction name="mActionCopyFeatures"/>
