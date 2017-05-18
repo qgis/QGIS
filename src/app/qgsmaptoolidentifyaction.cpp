@@ -36,6 +36,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
+#include "qgsstatusbar.h"
 
 #include "qgssettings.h"
 #include <QMouseEvent>
@@ -135,7 +136,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
   }
   else
   {

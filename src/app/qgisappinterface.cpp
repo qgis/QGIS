@@ -736,6 +736,11 @@ int QgisAppInterface::messageTimeout()
   return qgis->messageTimeout();
 }
 
+QgsStatusBar *QgisAppInterface::statusBarIface()
+{
+  return qgis->statusBarIface();
+}
+
 void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
 {
   qgis->mLocatorWidget->locator()->registerFilter( filter );

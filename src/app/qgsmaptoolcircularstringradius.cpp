@@ -21,6 +21,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspointv2.h"
+#include "qgsstatusbar.h"
 #include <QDoubleSpinBox>
 #include <QMouseEvent>
 #include <cmath>
@@ -167,7 +168,7 @@ void QgsMapToolCircularStringRadius::deleteRadiusSpinBox()
 {
   if ( mRadiusSpinBox )
   {
-    QgisApp::instance()->statusBar()->removeWidget( mRadiusSpinBox );
+    QgisApp::instance()->statusBarIface()->removeWidget( mRadiusSpinBox );
     delete mRadiusSpinBox;
     mRadiusSpinBox = nullptr;
   }

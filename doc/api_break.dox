@@ -401,6 +401,8 @@ are similar, but only apply to composer windows when they are exist. To access a
 from a project, the new QgsProject.instance().layoutManager() class should be used instead.
 Additionally, the new interface methods work with QgsComposerInterface objects instead
 of QgsComposerView objects.
+- interaction with the main window status bar should no longer use the native Qt statusBar() method.
+Instead iface.statusBarIface() should be used.
 
 CharacterWidget        {#qgis_api_break_3_0_CharacterWidget}
 -------------------

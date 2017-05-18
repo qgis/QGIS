@@ -159,6 +159,7 @@
 %Include qgsshortcutsmanager.sip
 %Include qgsslider.sip
 %Include qgssourceselectdialog.sip
+%Include qgsstatusbar.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip
 %Include qgstablewidgetbase.sip
