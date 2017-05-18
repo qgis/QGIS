@@ -148,6 +148,11 @@ QVariantList QgsGeoNodeConnection::getLayers()
     {
       layerName.remove( 0, geonodePrefix.length() );
     }
+    QString geonodePrefix2 = QStringLiteral( "geonode:" );
+    if ( layerName.contains( geonodePrefix2 ) )
+    {
+      layerName.remove( 0, geonodePrefix2.length() );
+    }
     layer[QStringLiteral( "name" )] = layerName;
     layerList[i] = layer;
   }

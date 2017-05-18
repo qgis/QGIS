@@ -256,7 +256,8 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         QString typeName = layer.toMap()["typename"].toString();
 
         // Specific for QGIS Server backend only
-        QString layerXYZURL = xyzURL.replace( "LAYERNAME", layerName );
+        QString layerXYZURL = xyzURL;
+        layerXYZURL = layerXYZURL.replace( "LAYERNAME", layerName );
 
         titleItem->setData( uuid,  Qt::UserRole + 1 );
         titleItem->setData( layerXYZURL,  Qt::UserRole + 2 );
