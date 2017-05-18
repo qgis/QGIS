@@ -77,10 +77,6 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
 {
   //find out initial arrow direction
   QVariant attrVal = feature.attribute( mCurrentRotationAttributes.toList().at( 0 ) );
-  if ( !attrVal.isValid() )
-  {
-    return;
-  }
 
   mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( mMarkerSymbol.data() );
