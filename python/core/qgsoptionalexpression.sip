@@ -9,7 +9,13 @@
 
 
 
-class QgsOptionalExpression
+
+
+
+
+typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
+
+class QgsOptionalExpression : QgsOptionalQgsExpressionBase
 {
 %Docstring
 
@@ -24,6 +30,8 @@ class QgsOptionalExpression
 
 %TypeHeaderCode
 #include "qgsoptionalexpression.h"
+#include "qgsoptional.h"
+typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase;
 %End
   public:
 
@@ -44,51 +52,6 @@ class QgsOptionalExpression
  Construct an optional expression with the provided expression and enabled state.
 %End
 
-
-
-    int operator== ( const QgsOptionalExpression &other ) const;
-%MethodCode
-    sipRes = *sipCpp == *a0;
-%End
-
-
-    int __bool__() const;
-%Docstring
- :rtype: int
-%End
-%MethodCode
-    sipRes = sipCpp->enabled();
-%End
-
-    bool enabled() const;
-%Docstring
- Check if this optional is enabled
-
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-    void setEnabled( bool enabled );
-%Docstring
- Set if this optional is enabled
-
-.. versionadded:: 3.0
-%End
-
-    QgsExpression data() const;
-%Docstring
- Access the payload data
-
-.. versionadded:: 3.0
- :rtype: QgsExpression
-%End
-
-    void setData( const QgsExpression &data );
-%Docstring
- Set the payload data
-
-.. versionadded:: 3.0
-%End
 
     void writeXml( QDomElement &element );
 %Docstring

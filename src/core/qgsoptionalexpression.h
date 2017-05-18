@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 
+
 /**
  * \ingroup core
  *
@@ -32,6 +33,8 @@
  *
  * \since QGIS 2.18
  */
+
+
 
 class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
 {
@@ -54,58 +57,6 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      */
     QgsOptionalExpression( const QgsExpression &expression, bool enabled );
 
-
-    // SIP does not handle properly template class Inheritance at the moment
-    // following is copied from QgsOptional header
-#ifdef SIP_RUN
-
-    /**
-     * Compare this QgsOptionalExpression to another one.
-     *
-     * This will compare the enabled flag and call the == operator
-     * of the contained class.
-     *
-     * @note Added in QGIS 3.0
-     */
-    int operator== ( const QgsOptionalExpression &other ) const;
-    % MethodCode
-    sipRes = *sipCpp == *a0;
-    % End
-
-
-    int __bool__() const;
-    % MethodCode
-    sipRes = sipCpp->enabled();
-    % End
-
-    /**
-     * Check if this optional is enabled
-     *
-     * \since QGIS 3.0
-     */
-    bool enabled() const;
-
-    /**
-     * Set if this optional is enabled
-     *
-     * \since QGIS 3.0
-     */
-    void setEnabled( bool enabled );
-
-    /**
-     * Access the payload data
-     *
-     * \since QGIS 3.0
-     */
-    QgsExpression data() const;
-
-    /**
-     * Set the payload data
-     *
-     * \since QGIS 3.0
-     */
-    void setData( const QgsExpression &data );
-#endif
 
     /**
      * Save the optional expression to the provided QDomElement.
