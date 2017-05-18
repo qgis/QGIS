@@ -72,7 +72,7 @@ class QgsExpressionUtils
           return 1;
         case Unknown:
         default:
-          return QVariant( QVariant::Int );
+          return QVariant();
       }
     }
 
