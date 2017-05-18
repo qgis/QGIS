@@ -208,44 +208,45 @@ class QgsFeatureRequest
 %End
       public:
 
-        CORE_EXPORT OrderBy();
+        OrderBy();
 %Docstring
  Create a new empty order by
- :rtype: CORE_EXPORT
 %End
 
-        CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
+        OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 %Docstring
  Create a new order by from a list of clauses
- :rtype: CORE_EXPORT
 %End
 
-        QList<QgsFeatureRequest::OrderByClause> CORE_EXPORT list() const;
+        QList<QgsFeatureRequest::OrderByClause> list() const;
 %Docstring
  Get a copy as a list of OrderByClauses
 
  This is only required in Python where the inheritance
  is not properly propagated and this makes it usable.
+ :rtype: list of QgsFeatureRequest.OrderByClause
 %End
 
-        void  save( QDomElement &elem ) const;
+        void save( QDomElement &elem ) const;
 %Docstring
  Serialize to XML
 %End
 
-        void  load( const QDomElement &elem );
+        void load( const QDomElement &elem );
 %Docstring
  Deserialize from XML
 %End
 
-        QSet<QString>  usedAttributes() const;
+        QSet<QString> usedAttributes() const;
 %Docstring
  Returns a set of used attributes
+ :rtype: set of str
 %End
 
-        QString  dump() const;
+        QString dump() const;
 %Docstring
  Dumps the content to an SQL equivalent syntax
+ :rtype: str
 %End
     };
 

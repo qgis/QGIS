@@ -137,10 +137,10 @@ Takes ownership of the provided node
  :rtype: list of str
 %End
 
-        NodeList *clone() const;
+        QgsExpressionNode::NodeList *clone() const;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
- :rtype: NodeList
+ :rtype: QgsExpressionNode.NodeList
 %End
 
         virtual QString dump() const;
