@@ -207,7 +207,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   QgsMapLayer::clone( layer );
 
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
-  Q_FOREACH ( QgsVectorLayerJoinInfo join, joins )
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &join, joins )
   {
     layer->addJoin( join );
   }
