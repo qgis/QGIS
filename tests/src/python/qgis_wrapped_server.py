@@ -113,6 +113,18 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+import copy
+import os
+import signal
+import ssl
+import sys
+import urllib.parse
+
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from qgis.core import QgsApplication
+from qgis.server import (QgsBufferServerRequest, QgsBufferServerResponse,
+                         QgsServer, QgsServerRequest)
+
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -120,9 +132,8 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 
-import os
-
-# Needed on Qt 5 so that the serialization of XML is consistent among all executions
+# Needed on Qt 5 so that the serialization of XML is consistent among all
+# executions
 os.environ['QT_HASH_SEED'] = '1'
 
 import sys
@@ -142,7 +153,8 @@ QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
 QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
 
 # HTTP Basic
-QGIS_SERVER_HTTP_BASIC_AUTH = os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH', False)
+QGIS_SERVER_HTTP_BASIC_AUTH = os.environ.get(
+    'QGIS_SERVER_HTTP_BASIC_AUTH', False)
 QGIS_SERVER_USERNAME = os.environ.get('QGIS_SERVER_USERNAME', 'username')
 QGIS_SERVER_PASSWORD = os.environ.get('QGIS_SERVER_PASSWORD', 'password')
 
@@ -153,12 +165,16 @@ QGIS_SERVER_PKI_AUTHORITY = os.environ.get('QGIS_SERVER_PKI_AUTHORITY')
 QGIS_SERVER_PKI_USERNAME = os.environ.get('QGIS_SERVER_PKI_USERNAME')
 
 # OAuth2 authentication
-QGIS_SERVER_OAUTH2_CERTIFICATE = os.environ.get('QGIS_SERVER_OAUTH2_CERTIFICATE')
+QGIS_SERVER_OAUTH2_CERTIFICATE = os.environ.get(
+    'QGIS_SERVER_OAUTH2_CERTIFICATE')
 QGIS_SERVER_OAUTH2_KEY = os.environ.get('QGIS_SERVER_OAUTH2_KEY')
 QGIS_SERVER_OAUTH2_AUTHORITY = os.environ.get('QGIS_SERVER_OAUTH2_AUTHORITY')
-QGIS_SERVER_OAUTH2_USERNAME = os.environ.get('QGIS_SERVER_OAUTH2_USERNAME', 'username')
-QGIS_SERVER_OAUTH2_PASSWORD = os.environ.get('QGIS_SERVER_OAUTH2_PASSWORD', 'password')
-QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN = os.environ.get('QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN', 3600)
+QGIS_SERVER_OAUTH2_USERNAME = os.environ.get(
+    'QGIS_SERVER_OAUTH2_USERNAME', 'username')
+QGIS_SERVER_OAUTH2_PASSWORD = os.environ.get(
+    'QGIS_SERVER_OAUTH2_PASSWORD', 'password')
+QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN = os.environ.get(
+    'QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN', 3600)
 
 # Check if PKI is enabled
 QGIS_SERVER_PKI_AUTH = (
@@ -218,7 +234,8 @@ if QGIS_SERVER_HTTP_BASIC_AUTH:
             # No auth ...
             handler.clear()
             handler.setResponseHeader('Status', '401 Authorization required')
-            handler.setResponseHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
+            handler.setResponseHeader(
+                'WWW-Authenticate', 'Basic realm="QGIS Server"')
             handler.appendBody(b'<h1>Authorization required</h1>')
 
     filter = HTTPBasicFilter(qgs_server.serverInterface())
@@ -307,7 +324,8 @@ if QGIS_SERVER_OAUTH2_AUTH:
             # access_token and the refresh_token and set expiration for the
             # access_token to now + expires_in seconds.
             _tokens[token['access_token']] = copy.copy(token)
-            _tokens[token['access_token']]['expiration'] = datetime.now().timestamp() + int(token['expires_in'])
+            _tokens[token['access_token']]['expiration'] = datetime.now(
+            ).timestamp() + int(token['expires_in'])
 
         def validate_bearer_token(self, token, scopes, request):
             """Check the token"""
@@ -325,7 +343,8 @@ if QGIS_SERVER_OAUTH2_AUTH:
             return []
 
     validator = SimpleValidator()
-    oauth_server = LegacyApplicationServer(validator, token_expires_in=QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN)
+    oauth_server = LegacyApplicationServer(
+        validator, token_expires_in=QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN)
 
     class OAuth2Filter(QgsServerFilter):
         """This filter provides testing endpoint for OAuth2 Resource Owner Grant Flow
@@ -349,7 +368,8 @@ if QGIS_SERVER_OAUTH2_AUTH:
                 old_expires_in = oauth_server.default_token_type.expires_in
                 # Hacky way to dynamically set token expiration time
                 oauth_server.default_token_type.expires_in = ttl
-                headers, payload, code = oauth_server.create_token_response('/token', 'post', body, {})
+                headers, payload, code = oauth_server.create_token_response(
+                    '/token', 'post', body, {})
                 oauth_server.default_token_type.expires_in = old_expires_in
                 for k, v in headers.items():
                     handler.setResponseHeader(k, v)
@@ -371,9 +391,11 @@ if QGIS_SERVER_OAUTH2_AUTH:
             # Check for valid token
             auth = handler.requestHeader('HTTP_AUTHORIZATION')
             if auth:
-                result, response = oauth_server.verify_request(handler.url(), 'post', '', {'Authorization': auth})
+                result, response = oauth_server.verify_request(
+                    urllib.parse.quote_plus(handler.url(), safe='/:?=&'), 'post', '', {'Authorization': auth})
                 if result:
-                    # This is a test endpoint for OAuth2, it requires a valid token
+                    # This is a test endpoint for OAuth2, it requires a valid
+                    # token
                     if handler.url().find('/result') != -1:
                         handler.clear()
                         handler.appendBody(b'Valid Token: enjoy OAuth2')
@@ -387,7 +409,8 @@ if QGIS_SERVER_OAUTH2_AUTH:
             handler.clear()
             handler.setStatusCode(401)
             handler.setResponseHeader('Status', '401 Unauthorized')
-            handler.setResponseHeader('WWW-Authenticate', 'Bearer realm="QGIS Server"')
+            handler.setResponseHeader(
+                'WWW-Authenticate', 'Bearer realm="QGIS Server"')
             handler.appendBody(b'Invalid Token: Authorization required.')
 
     filter = OAuth2Filter(qgs_server.serverInterface())
@@ -401,10 +424,17 @@ class Handler(BaseHTTPRequestHandler):
         # CGI vars:
         headers = {}
         for k, v in self.headers.items():
+<<<<<<< a7fb4238893336c8d5b2b4802f63588175e70c83
             headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
         if not self.path.startswith('http'):
             self.path = "%s://%s:%s%s" % ('https' if https else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
         request = QgsBufferServerRequest(self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
+=======
+            headers['HTTP_%s' % k.replace(
+                ' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
+        request = QgsBufferServerRequest(
+            self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
+>>>>>>> Pass urlencoded URL to the oauth handler
         response = QgsBufferServerResponse()
         qgs_server.handleRequest(request, response)
 
@@ -455,7 +485,7 @@ if __name__ == '__main__':
                 ca_certs=QGIS_SERVER_OAUTH2_AUTHORITY,
                 keyfile=QGIS_SERVER_OAUTH2_KEY,
                 server_side=True,
-                #cert_reqs=ssl.CERT_REQUIRED,  # No certs for OAuth2
+                # cert_reqs=ssl.CERT_REQUIRED,  # No certs for OAuth2
                 ssl_version=ssl.PROTOCOL_TLSv1)
         else:
             server.socket = ssl.wrap_socket(
