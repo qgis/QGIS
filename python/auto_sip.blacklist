@@ -4,15 +4,6 @@ core/qgis.sip
 core/qgspropertycollection.sip
 core/qgspythonrunner.sip
 core/qgsrange.sip
-core/qgsrelationmanager.sip
-core/qgsrenderchecker.sip
-core/qgsrendercontext.sip
-core/qgsrulebasedlabeling.sip
-core/qgsrunprocess.sip
-core/qgsruntimeprofiler.sip
-core/qgsscalecalculator.sip
-core/qgsscaleutils.sip
-core/qgssimplifymethod.sip
 core/qgssnappingutils.sip
 core/qgsspatialindex.sip
 core/qgssqlstatement.sip

@@ -80,7 +80,7 @@ the function returns 1 if QGISDEBUG is defined and 0 if not*
 Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
 %End
 
-    const QString logFile();
+    static const QString logFile();
 %Docstring
  Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
  otherwise returns a file name for writing log messages to.*

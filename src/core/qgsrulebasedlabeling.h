@@ -40,8 +40,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 {
   public:
     class Rule;
-    typedef QList<Rule *> RuleList;
-    typedef QMap<Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
+    typedef QList<QgsRuleBasedLabeling::Rule *> RuleList;
+    typedef QMap<QgsRuleBasedLabeling::Rule *, QgsVectorLayerLabelProvider *> RuleToProviderMap;
 
     /**
      * \ingroup core
@@ -186,50 +186,50 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          *
          * \returns A list of rules
          */
-        const RuleList &children() const { return mChildren; }
+        const QgsRuleBasedLabeling::RuleList &children() const { return mChildren; }
 
         /**
          * Return all children rules of this rule
          *
          * \returns A list of rules
          */
-        RuleList &children() SIP_SKIP { return mChildren; }
+        QgsRuleBasedLabeling::RuleList &children() SIP_SKIP { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * \returns A list of descendant rules
          */
-        RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedLabeling::RuleList descendants() const { RuleList l; Q_FOREACH ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
 
         /**
          * The parent rule
          *
          * \returns Parent rule
          */
-        const Rule *parent() const SIP_SKIP { return mParent; }
+        const QgsRuleBasedLabeling::Rule *parent() const SIP_SKIP { return mParent; }
 
         /**
          * The parent rule
          *
          * \returns Parent rule
          */
-        Rule *parent() { return mParent; }
+        QgsRuleBasedLabeling::Rule *parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
-        void appendChild( Rule *rule SIP_TRANSFER );
+        void appendChild( QgsRuleBasedLabeling::Rule *rule SIP_TRANSFER );
 
         //! add child rule, take ownership, sets this as parent
-        void insertChild( int i, Rule *rule SIP_TRANSFER );
+        void insertChild( int i, QgsRuleBasedLabeling::Rule *rule SIP_TRANSFER );
 
         //! delete child rule
         void removeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        const Rule *findRuleByKey( const QString &key ) const;
+        const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
 
         //! clone this rule, return new instance
-        Rule *clone() const SIP_FACTORY;
+        QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
 
         // load / save
 
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
          * \param context reading context
          * \returns A new rule
          */
-        static Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) SIP_FACTORY;
+        static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
         //! store labeling info to XML element
         QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -269,6 +269,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         bool requiresAdvancedEffects() const;
 
       private:
+#ifdef SIP_RUN
+        Rule( const QgsRuleBasedLabeling::Rule &rh );
+#endif
 
         /**
          * Check if a given feature shall be labelled by this rule
@@ -319,7 +322,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
     ~QgsRuleBasedLabeling();
 
-    Rule *rootRule() { return mRootRule; }
+    QgsRuleBasedLabeling::Rule *rootRule() { return mRootRule; }
     const Rule *rootRule() const SIP_SKIP { return mRootRule; }
 
     //! Create the instance from a DOM element with saved configuration

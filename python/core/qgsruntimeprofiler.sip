@@ -1,55 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsruntimeprofiler.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsRuntimeProfiler
 {
+
 %TypeHeaderCode
-#include <qgsruntimeprofiler.h>
+#include "qgsruntimeprofiler.h"
 %End
   public:
-    /**
-     * @brief Instance of the run time profiler. To use the main profiler
-     * use this instance.
-     * @return The instance of the run time profiler
-     */
+
     QgsRuntimeProfiler();
+%Docstring
+ Constructor to create a new runtime profiler.
+%End
 
-    /**
-     * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
-     * front of the profile tag set using start.
-     * @param name The name of the group.
-     */
     void beginGroup( const QString &name );
+%Docstring
+ Begin the group for the profiler. Groups will append {GroupName}/ to the
+ front of the profile tag set using start.
+ \param name The name of the group.
+%End
 
-    /**
-     * @brief End the current active group.
-     */
     void endGroup();
+%Docstring
+ End the current active group.
+%End
 
-    /**
-     * @brief Start a profile event with the given name.
-     * @param name The name of the profile event. Will have the name of
-     * the active group appended after ending.
-     */
     void start( const QString &name );
+%Docstring
+ Start a profile event with the given name.
+ \param name The name of the profile event. Will have the name of
+ the active group appended after ending.
+%End
 
-    /**
-     * @brief End the current profile event.
-     */
     void end();
+%Docstring
+ End the current profile event.
+%End
 
-    /**
-     * @brief Return all the current profile times.
-     * @return A list of profile event names and times.
-     */
-     const QList<QPair<QString, double>> profileTimes() const;
 
-    /**
-     * @brief clear Clear all profile data.
-     */
     void clear();
+%Docstring
+ clear Clear all profile data.
+%End
 
-    /**
-     * @brief The current total time collected in the profiler.
-     * @return The current total time collected in the profiler.
-     */
     double totalTime();
+%Docstring
+ The current total time collected in the profiler.
+ :return: The current total time collected in the profiler.
+ :rtype: float
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsruntimeprofiler.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

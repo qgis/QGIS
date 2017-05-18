@@ -34,35 +34,35 @@
 #define SIP_TRANSFERTHIS
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
  */
 #define SIP_OUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
  */
 #define SIP_IN
 
 /*
  * Combination of
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-In
  * and
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-Out
  */
 #define SIP_INOUT
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Factory
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#function-annotation-Factory
  */
 #define SIP_FACTORY
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-PyName
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
 /*
- * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-KeepReference
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
@@ -75,6 +75,11 @@
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#argument-annotation-ArraySize
  */
 #define SIP_ARRAYSIZE
+
+/*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html#class-annotation-NoDefaultCtors
+ */
+#define SIP_NODEFAULTCTORS
 
 /*
   * discard line
