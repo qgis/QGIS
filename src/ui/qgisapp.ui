@@ -352,6 +352,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionDataSourceManager"/>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
@@ -2633,6 +2634,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Layout Extents</string>
+   </property>
+  </action>
+  <action name="mActionDataSourceManager">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDataSourceManager.svg</normaloff>:/images/themes/default/mActionDataSourceManager.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Data Source Manager</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Data Source Manager</string>
    </property>
   </action>
  </widget>
