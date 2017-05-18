@@ -39,7 +39,6 @@ from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
-SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
 
 _installedVersion = None
@@ -83,13 +82,10 @@ def findSagaFolder():
 
 
 def sagaPath():
-    folder = ProcessingConfig.getSetting(SAGA_FOLDER)
-    if folder and not os.path.isdir(folder):
-        folder = None
-        QgsMessageLog.logMessage('Specified SAGA folder does not exist. Will try to find built-in binaries.', 'Processing', QgsMessageLog.WARNING)
-    if folder is None or folder == '':
-        folder = findSagaFolder()
+    if not isWindows() and not isMac():
+        return ''
 
+    folder = findSagaFolder()
     return folder or ''
 
 
