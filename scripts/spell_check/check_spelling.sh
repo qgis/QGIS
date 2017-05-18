@@ -18,9 +18,9 @@
 # optional argument: list of files to be checked
 
 # temporarly display all commands to debug issues in TRAVIS
-if [[ $TRAVIS =~ true ]]; then
-  set -x
-fi
+# if [[ $TRAVIS =~ true ]]; then
+#   set -x
+# fi
 
 DIR=$(git rev-parse --show-toplevel)/scripts/spell_check
 
@@ -279,8 +279,8 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
       fi
     fi
   done 3< <(
-    unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --ignore-case    -p $AGIGNORE "${IGNORECASE}" $INPUTFILES
-    unbuffer ag --all-text --nopager --color-match "30;43" --numbers --nomultiline --case-sensitive -p $AGIGNORE "${CASEMATCH}"  $INPUTFILES
+    unbuffer ag --noaffinity --all-text --nopager --color-match "30;43" --numbers --nomultiline --ignore-case    -p $AGIGNORE "${IGNORECASE}" $INPUTFILES
+    unbuffer ag --noaffinity --all-text --nopager --color-match "30;43" --numbers --nomultiline --case-sensitive -p $AGIGNORE "${CASEMATCH}"  $INPUTFILES
   )
 
   rm -f $SPELLFILE
