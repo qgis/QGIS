@@ -2097,10 +2097,10 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   QStringList v;
   v.reserve( sizeof( map ) / sizeof( *map ) );
 
-  for(;;)
+  for ( ;; )
   {
     char **values = CSVReadParseLine( fp );
-    if( !values )
+    if ( !values )
       break;
 
     v.clear();
