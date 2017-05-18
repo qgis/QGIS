@@ -1,27 +1,62 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 
 class QgsPluginLayer : QgsMapLayer
 {
+%Docstring
+Base class for plugin layers. These can be implemented by plugins
+and registered in QgsPluginLayerRegistry.
+
+In order to be readable from project files, they should set these attributes in layer DOM node:
+"type" = "plugin"
+"name" = "your_layer_type"
+%End
+
 %TypeHeaderCode
 #include "qgspluginlayer.h"
 %End
-
   public:
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
+    ~QgsPluginLayer();
 
-    /** Return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
+%Docstring
+Return plugin layer type (the same as used in QgsPluginLayerRegistry)
+ :rtype: str
+%End
 
-    /** Set extent of the layer */
-    void setExtent( const QgsRectangle &extent );
+    virtual void setExtent( const QgsRectangle &extent );
 
-    /** Set source string. This is used for example in layer tree to show tooltip.
-     * @note added in 2.16
-     */
+%Docstring
+Set extent of the layer
+%End
+
     void setSource( const QString &source );
+%Docstring
+ Set source string. This is used for example in layer tree to show tooltip.
+.. versionadded:: 2.16
+%End
 
-    //! return a list of symbology items for the legend
-    //! (default implementation returns nothing)
-    //! @note Added in v2.1
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+%Docstring
+.. versionadded:: 2.1
+ :rtype: QgsLegendSymbologyList
+%End
 
+  protected:
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

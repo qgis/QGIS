@@ -227,23 +227,23 @@ class QgsFeatureRequest
  :rtype: list of QgsFeatureRequest.OrderByClause
 %End
 
-        void save( QDomElement &elem ) const;
+        void  save( QDomElement &elem ) const;
 %Docstring
  Serialize to XML
 %End
 
-        void load( const QDomElement &elem );
+        void  load( const QDomElement &elem );
 %Docstring
  Deserialize from XML
 %End
 
-        QSet<QString> usedAttributes() const;
+        QSet<QString>  usedAttributes() const;
 %Docstring
  Returns a set of used attributes
  :rtype: set of str
 %End
 
-        QString dump() const;
+        QString  dump() const;
 %Docstring
  Dumps the content to an SQL equivalent syntax
  :rtype: str

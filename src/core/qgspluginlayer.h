@@ -18,7 +18,7 @@
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
+typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList SIP_SKIP;
 
 /** \ingroup core
   Base class for plugin layers. These can be implemented by plugins
