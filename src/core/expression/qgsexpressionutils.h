@@ -62,23 +62,23 @@ class QgsExpressionUtils
 
     static constexpr TVL NOT[3] = { True, False, Unknown };
 
+#define TVL_True QVariant( 1 )
+#define TVL_False QVariant( 0 )
+#define TVL_Unknown QVariant()
+
     static QVariant tvl2variant( TVL v )
     {
       switch ( v )
       {
         case False:
-          return 0;
+          return TVL_False;
         case True:
-          return 1;
+          return TVL_True;
         case Unknown:
         default:
-          return QVariant();
+          return TVL_Unknown;
       }
     }
-
-#define TVL_True     QVariant( true )
-#define TVL_False    QVariant( false )
-#define TVL_Unknown  QVariant( QVariant::Int )
 
 // this handles also NULL values
     static TVL getTVLValue( const QVariant &value, QgsExpression *parent )
