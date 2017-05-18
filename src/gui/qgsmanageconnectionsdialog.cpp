@@ -213,13 +213,13 @@ bool QgsManageConnectionsDialog::populateConnections()
     switch ( mConnectionType )
     {
       case WMS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wms" ) );
         break;
       case WFS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
         break;
       case WCS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wcs" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wcs" ) );
         break;
       case PostGIS:
         settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
@@ -361,7 +361,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Qgis/connections-" + service.toLower() + '/';
+    path = "/qgis/connections-" + service.toLower() + '/';
     QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
@@ -377,7 +377,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( QStringLiteral( "dpiMode" ), settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
     }
 
-    path = "/Qgis/" + service.toUpper() + '/';
+    path = "/qgis/" + service.toUpper() + '/';
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -397,14 +397,14 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = QStringLiteral( "/Qgis/connections-wfs/" );
+    path = QStringLiteral( "/qgis/connections-wfs/" );
     QDomElement el = doc.createElement( QStringLiteral( "wfs" ) );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
     el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer", "" ).toString() );
 
-    path = QStringLiteral( "/Qgis/WFS/" );
+    path = QStringLiteral( "/qgis/WFS/" );
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -592,7 +592,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
   QString connectionName;
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+  settings.beginGroup( "/qgis/connections-" + service.toLower() );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -645,7 +645,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+    settings.beginGroup( "/qgis/connections-" + service.toLower() );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.setValue( QString( '/' + connectionName + "/ignoreGetMapURI" ), child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ) );
     settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ) );
@@ -658,7 +658,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/" + service.toUpper() + '/' + connectionName );
+      settings.beginGroup( "/qgis/" + service.toUpper() + '/' + connectionName );
       settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
       settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
@@ -679,7 +679,7 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 
   QString connectionName;
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+  settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -732,13 +732,13 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+    settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.endGroup();
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/WFS/" + connectionName );
+      settings.beginGroup( "/qgis/WFS/" + connectionName );
       settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
       settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
