@@ -475,16 +475,16 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSipifyHeader::Flags )
 class CORE_EXPORT TemplateInheritance1 : public QgsTemplate<Something>
 {
 }
-class CORE_EXPORT TemplateInheritance2 : public QgsTemplate<Something>, private SomethingElse
+class CORE_EXPORT TemplateInheritance2 : public QList<Something>, private SomethingElse
 {
 }
 class CORE_EXPORT TemplateInheritance3 : public QgsTemplate<Something>, public SomethingElse
 {
 }
-class CORE_EXPORT TemplateInheritance4 : public SomethingElse1, public QgsTemplate<Something>, public SomethingElse2
+class CORE_EXPORT TemplateInheritance4 : public SomethingElse1, public QList<Something>, public SomethingElse2
 {
 }
-class CORE_EXPORT TemplateInheritance5 : public SomethingElse, public QgsTemplate<Something>
+class CORE_EXPORT TemplateInheritance5 : public SomethingElse, public QList<Something>
 {
 }
 
