@@ -53,7 +53,7 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
+[ -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ] && ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)
