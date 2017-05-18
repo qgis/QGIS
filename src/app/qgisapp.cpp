@@ -285,6 +285,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
+#include "qgsdatasourcemanagerdialog.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -1392,6 +1393,8 @@ QgisApp::~QgisApp()
   delete mPythonUtils;
 
   delete mTray;
+
+  delete mDataSourceManagerDialog;
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1582,6 +1585,16 @@ bool QgisApp::event( QEvent *event )
     done = QMainWindow::event( event );
   }
   return done;
+}
+
+void QgisApp::dataSourceManager()
+{
+  if ( ! mDataSourceManagerDialog )
+  {
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this );
+  }
+  // TODO: handle docked
+  mDataSourceManagerDialog->exec();
 }
 
 QgisAppStyleSheet *QgisApp::styleSheetBuilder()
@@ -1808,6 +1821,7 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
+  connect( mActionDataSourceManager, &QAction::triggered, this, &QgisApp::dataSourceManager );
   connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
   connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
@@ -2364,6 +2378,7 @@ void QgisApp::createToolBars()
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionDataSourceManager );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
   bt->addAction( mActionNewGeoPackageLayer );
@@ -2772,6 +2787,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetLayerCRS.png" ) ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRSFromLayer.png" ) ) );
   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewVectorLayer.svg" ) ) );
+  mActionDataSourceManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDataSourceManager.svg" ) ) );
   mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ) );
   mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAllToOverview.svg" ) ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ) );

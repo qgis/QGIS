@@ -61,6 +61,7 @@ SET(QGIS_APP_SRCS
   qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
+  qgsdatasourcemanagerdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -247,6 +248,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
+  qgsdatasourcemanagerdialog.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolannotation.h

@@ -117,6 +117,7 @@ class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
+class QgsDataSourceManagerDialog;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -442,6 +443,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDraw() { return mActionDraw; }
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
+    QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
     QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
@@ -779,6 +781,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
+
+    //! Open the DataSourceManager dialog/dock
+    void dataSourceManager( );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -1911,6 +1916,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
+
+    //! Data Source Manager
+    QgsDataSourceManagerDialog *mDataSourceManagerDialog = nullptr;
 
     //! snapping widget
     QgsSnappingWidget *mSnappingWidget = nullptr;
