@@ -201,6 +201,79 @@ QgsVectorLayer::~QgsVectorLayer()
   delete mConditionalStyles;
 }
 
+QgsVectorLayer *QgsVectorLayer::clone() const
+{
+  QgsVectorLayer *layer = new QgsVectorLayer( source(), originalName(), mProviderKey );
+  QgsMapLayer::clone( layer );
+
+  QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &join, joins )
+  {
+    layer->addJoin( join );
+  }
+
+  layer->setProviderEncoding( dataProvider()->encoding() );
+  layer->setDisplayExpression( displayExpression() );
+  layer->setMapTipTemplate( mapTipTemplate() );
+  layer->setReadOnly( isReadOnly() );
+  layer->selectByIds( selectedFeatureIds() );
+  layer->setExcludeAttributesWms( excludeAttributesWms() );
+  layer->setExcludeAttributesWfs( excludeAttributesWfs() );
+  layer->setAttributeTableConfig( attributeTableConfig() );
+  layer->setFeatureBlendMode( featureBlendMode() );
+  layer->setLayerTransparency( layerTransparency() );
+
+  Q_FOREACH ( const QgsAction &action, actions()->actions() )
+  {
+    layer->actions()->addAction( action );
+  }
+
+  if ( renderer() )
+  {
+    layer->setRenderer( renderer()->clone() );
+  }
+
+  if ( labeling() )
+  {
+    layer->setLabeling( labeling()->clone() );
+  }
+  layer->setSimplifyMethod( simplifyMethod() );
+
+  if ( diagramRenderer() )
+  {
+    layer->setDiagramRenderer( diagramRenderer()->clone() );
+  }
+
+  if ( diagramLayerSettings() )
+  {
+    QgsDiagramLayerSettings *dls = new QgsDiagramLayerSettings( *diagramLayerSettings() );
+    layer->setDiagramLayerSettings( *dls );
+  }
+
+  for ( int i = 0; i < fields().count(); i++ )
+  {
+    layer->setFieldAlias( i, attributeAlias( i ) );
+    layer->setEditorWidgetSetup( i, editorWidgetSetup( i ) );
+    layer->setConstraintExpression( i, constraintExpression( i ), constraintDescription( i ) );
+    layer->setDefaultValueExpression( i, defaultValueExpression( i ) );
+
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> constraints = fieldConstraintsAndStrength( i );
+    for ( QgsFieldConstraints::Constraint c : constraints.keys() )
+    {
+      layer->setFieldConstraint( i, c, constraints.value( c ) );
+    }
+
+    if ( fields().fieldOrigin( i ) == QgsFields::OriginExpression )
+    {
+      layer->addExpressionField( expressionField( i ), fields().at( i ) );
+    }
+  }
+
+  layer->setEditFormConfig( editFormConfig() );
+
+  return layer;
+}
+
 QString QgsVectorLayer::storageType() const
 {
   if ( mDataProvider )
@@ -4139,6 +4212,26 @@ QgsFieldConstraints::Constraints QgsVectorLayer::fieldConstraints( int fieldInde
   }
 
   return constraints;
+}
+
+QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> QgsVectorLayer::fieldConstraintsAndStrength( int fieldIndex ) const
+{
+  QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > m;
+
+  if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+    return m;
+
+  QString name = mFields.at( fieldIndex ).name();
+
+  for ( QPair< QString, QgsFieldConstraints::Constraint > p : mFieldConstraintStrength.keys() )
+  {
+    if ( p.first == name )
+    {
+      m[ p.second ] = mFieldConstraintStrength.value( p );
+    }
+  }
+
+  return m;
 }
 
 void QgsVectorLayer::setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength )

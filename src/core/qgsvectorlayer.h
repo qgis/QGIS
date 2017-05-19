@@ -400,6 +400,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
 
+    /** Returns a new instance equivalent to this one. A new provider is
+     *  created for the same data source and renderers for features and diagrams
+     *  are cloned too. Moreover, each attributes (transparency, extent, selected
+     *  features and so on) are identicals.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsVectorLayer *clone() const override SIP_FACTORY;
+
     //! Returns the permanent storage type for this layer as a friendly name.
     QString storageType() const;
 
@@ -528,6 +537,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * which is used by the layer, so any changes are immediately applied.
      */
     QgsActionManager *actions() { return mActions; }
+
+    /**
+     * Get all layer actions defined on this layer.
+     *
+     * The pointer which is returned is const.
+     */
+    const QgsActionManager *actions() const SIP_SKIP { return mActions; }
 
     /**
      * The number of features that are selected in this layer
@@ -1330,6 +1346,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see setFieldConstraint()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
+     * Returns a map of constraint with their strength for a specific field of the layer.
+     * \param fieldIndex field index
+     * \since QGIS 3.0
+     */
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 
     /**
      * Sets a constraint for a specified field index. Any constraints inherited from the layer's

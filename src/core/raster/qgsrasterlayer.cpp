@@ -144,6 +144,21 @@ QgsRasterLayer::~QgsRasterLayer()
   // Note: provider and other interfaces are owned and deleted by pipe
 }
 
+QgsRasterLayer *QgsRasterLayer::clone() const
+{
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
+  QgsMapLayer::clone( layer );
+
+  // do not clone data provider which is the first element in pipe
+  for ( int i = 1; i < mPipe.size(); i++ )
+  {
+    if ( mPipe.at( i ) )
+      layer->pipe()->set( mPipe.at( i )->clone() );
+  }
+
+  return layer;
+}
+
 //////////////////////////////////////////////////////////
 //
 // Static Methods and members

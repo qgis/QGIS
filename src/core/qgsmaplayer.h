@@ -110,6 +110,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! QgsMapLayer cannot be copied
     QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
 
+    /** Returns a new instance equivalent to this one except for the id which
+     *  is still unique.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsMapLayer *clone() const = 0;
+
     /** Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
@@ -443,6 +450,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setCustomProperty()
     */
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+
+    /** Set custom properties for layer. Current properties are dropped.
+     * \since QGIS 3.0
+     */
+    void setCustomProperties( const QgsObjectCustomProperties &properties );
 
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
@@ -916,6 +928,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void metadataChanged();
 
   protected:
+
+    /** Copies attributes like name, short name, ... into another layer.
+     * \param layer The copy recipient
+     * \since QGIS 3.0
+     */
+    void clone( QgsMapLayer *layer ) const;
+
     //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
 

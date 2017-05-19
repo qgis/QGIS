@@ -70,6 +70,11 @@ QStringList QgsMapLayerStyleManager::styles() const
   return mStyles.keys();
 }
 
+QMap<QString, QgsMapLayerStyle> QgsMapLayerStyleManager::mapLayerStyles() const
+{
+  return mStyles;
+}
+
 QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString &name ) const
 {
   if ( name == mCurrentStyle )

@@ -1696,6 +1696,7 @@ QgsPluginLayer        {#qgis_api_break_3_0_QgsPluginLayer}
 --------------
 
 - createMapRenderer(): default implementation (which called plugin's draw() method) has been removed. Plugin layers must implement createMapRenderer().
+- clone(): new pure virtual method. Plugin layer must implement clone().
 
 
 QgsPluginLayerRegistry        {#qgis_api_break_3_0_QgsPluginLayerRegistry}

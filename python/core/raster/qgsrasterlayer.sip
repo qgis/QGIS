@@ -41,6 +41,13 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief The destructor */
     ~QgsRasterLayer();
 
+    /** Returns a new instance equivalent to this one. A new provider is
+     *  created for the same data source and renderer is cloned too.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsRasterLayer *clone() const /Factory/;
+
     /** \brief This enumerator describes the types of shading that can be used */
     enum ColorShadingAlgorithm
     {

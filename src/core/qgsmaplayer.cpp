@@ -94,6 +94,38 @@ QgsMapLayer::~QgsMapLayer()
   delete mStyleManager;
 }
 
+void QgsMapLayer::clone( QgsMapLayer *layer ) const
+{
+  layer->setBlendMode( blendMode() );
+
+  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  {
+    layer->styleManager()->addStyle( s, styleManager()->style( s ) );
+  }
+
+  layer->setName( name() );
+  layer->setShortName( shortName() );
+  layer->setExtent( extent() );
+  layer->setMinimumScale( minimumScale() );
+  layer->setMaximumScale( maximumScale() );
+  layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
+  layer->setTitle( title() );
+  layer->setAbstract( abstract() );
+  layer->setKeywordList( keywordList() );
+  layer->setDataUrl( dataUrl() );
+  layer->setDataUrlFormat( dataUrlFormat() );
+  layer->setAttribution( attribution() );
+  layer->setAttributionUrl( attributionUrl() );
+  layer->setMetadataUrl( metadataUrl() );
+  layer->setMetadataUrlType( metadataUrlType() );
+  layer->setMetadataUrlFormat( metadataUrlFormat() );
+  layer->setLegendUrl( legendUrl() );
+  layer->setLegendUrlFormat( legendUrlFormat() );
+  layer->setDependencies( dependencies() );
+  layer->setCrs( crs() );
+  layer->setCustomProperties( mCustomProperties );
+}
+
 QgsMapLayer::LayerType QgsMapLayer::type() const
 {
   return mLayerType;
@@ -1581,6 +1613,11 @@ QStringList QgsMapLayer::customPropertyKeys() const
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
+}
+
+void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
+{
+  mCustomProperties = properties;
 }
 
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const

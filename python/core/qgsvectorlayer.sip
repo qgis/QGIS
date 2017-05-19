@@ -334,6 +334,17 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     virtual ~QgsVectorLayer();
 
 
+    virtual QgsVectorLayer *clone() const /Factory/;
+%Docstring
+ Returns a new instance equivalent to this one. A new provider is
+  created for the same data source and renderers for features and diagrams
+  are cloned too. Moreover, each attributes (transparency, extent, selected
+  features and so on) are identicals.
+ :return: a new layer instance
+.. versionadded:: 3.0
+ :rtype: QgsVectorLayer
+%End
+
     QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.
@@ -495,6 +506,7 @@ Setup the coordinate system transformation for the layer
  which is used by the layer, so any changes are immediately applied.
  :rtype: QgsActionManager
 %End
+
 
     int selectedFeatureCount() const;
 %Docstring
@@ -1416,6 +1428,14 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 .. versionadded:: 3.0
 .. seealso:: setFieldConstraint()
  :rtype: QgsFieldConstraints.Constraints
+%End
+
+    QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
+%Docstring
+ Returns a map of constraint with their strength for a specific field of the layer.
+ \param fieldIndex field index
+.. versionadded:: 3.0
+ :rtype: QMap< QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength>
 %End
 
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );

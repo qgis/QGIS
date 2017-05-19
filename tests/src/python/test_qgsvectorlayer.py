@@ -16,11 +16,13 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.PyQt.QtGui import QPainter
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
+                       QgsAction,
+                       QgsEditorWidgetSetup,
                        QgsVectorLayer,
                        QgsRectangle,
                        QgsFeature,
@@ -41,7 +43,15 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointV2,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsLineSymbol,
+                       QgsMapLayerStyle,
+                       QgsMapLayerDependency,
+                       QgsPalLayerSettings,
+                       QgsVectorLayerSimpleLabeling,
+                       QgsSingleCategoryDiagramRenderer,
+                       QgsDiagramLayerSettings,
+                       QgsTextFormat)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 start_app()
@@ -2090,6 +2100,154 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPoint(500, 600))))
         self.assertEqual(len(list(layer.getFeatures(req))), 2)
         layer.rollBack()
+
+    def testClone(self):
+        # init crs
+        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+
+        # init map layer styles
+        tmplayer = createLayerWithTwoPoints()
+        sym1 = QgsLineSymbol()
+        sym1.setColor(Qt.magenta)
+        tmplayer.setRenderer(QgsSingleSymbolRenderer(sym1))
+
+        style0 = QgsMapLayerStyle()
+        style0.readFromLayer(tmplayer)
+        style1 = QgsMapLayerStyle()
+        style1.readFromLayer(tmplayer)
+
+        # init dependencies layers
+        ldep = createLayerWithTwoPoints()
+        dep = QgsMapLayerDependency(ldep.id())
+
+        # init layer
+        layer = createLayerWithTwoPoints()
+        layer.setBlendMode(QPainter.CompositionMode_Screen)
+        layer.styleManager().addStyle('style0', style0)
+        layer.styleManager().addStyle('style1', style1)
+        layer.setName('MyName')
+        layer.setShortName('MyShortName')
+        layer.setMinimumScale(0.5)
+        layer.setMaximumScale(1.5)
+        layer.setScaleBasedVisibility(True)
+        layer.setTitle('MyTitle')
+        layer.setAbstract('MyAbstract')
+        layer.setKeywordList('MyKeywordList')
+        layer.setDataUrl('MyDataUrl')
+        layer.setDataUrlFormat('MyDataUrlFormat')
+        layer.setAttribution('MyAttribution')
+        layer.setAttributionUrl('MyAttributionUrl')
+        layer.setMetadataUrl('MyMetadataUrl')
+        layer.setMetadataUrlType('MyMetadataUrlType')
+        layer.setMetadataUrlFormat('MyMetadataUrlFormat')
+        layer.setLegendUrl('MyLegendUrl')
+        layer.setLegendUrlFormat('MyLegendUrlFormat')
+        layer.setDependencies([dep])
+        layer.setCrs(srs)
+
+        layer.setCustomProperty('MyKey0', 'MyValue0')
+        layer.setCustomProperty('MyKey1', 'MyValue1')
+
+        layer.setLayerTransparency(33)
+        layer.setProviderEncoding('latin9')
+        layer.setDisplayExpression('MyDisplayExpression')
+        layer.setMapTipTemplate('MyMapTipTemplate')
+        layer.setExcludeAttributesWfs(['MyExcludeAttributeWFS'])
+        layer.setExcludeAttributesWms(['MyExcludeAttributeWMS'])
+
+        layer.setFeatureBlendMode(QPainter.CompositionMode_Xor)
+
+        sym = QgsLineSymbol()
+        sym.setColor(Qt.magenta)
+        layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        simplify = layer.simplifyMethod()
+        simplify.setTolerance(33.3)
+        simplify.setThreshold(0.333)
+        layer.setSimplifyMethod(simplify)
+
+        layer.setFieldAlias(0, 'MyAlias0')
+        layer.setFieldAlias(1, 'MyAlias1')
+
+        jl0 = createLayerWithTwoPoints()
+        j0 = QgsVectorLayerJoinInfo()
+        j0.setJoinLayer(jl0)
+
+        jl1 = createLayerWithTwoPoints()
+        j1 = QgsVectorLayerJoinInfo()
+        j1.setJoinLayer(jl1)
+
+        layer.addJoin(j0)
+        layer.addJoin(j1)
+
+        fids = layer.allFeatureIds()
+        selected_fids = fids[0:3]
+        layer.selectByIds(selected_fids)
+
+        cfg = layer.attributeTableConfig()
+        cfg.setSortOrder(Qt.DescendingOrder)  # by default AscendingOrder
+        layer.setAttributeTableConfig(cfg)
+
+        pal = QgsPalLayerSettings()
+        text_format = QgsTextFormat()
+        text_format.setSize(33)
+        text_format.setColor(Qt.magenta)
+        pal.setFormat(text_format)
+
+        labeling = QgsVectorLayerSimpleLabeling(pal)
+        layer.setLabeling(labeling)
+
+        diag_renderer = QgsSingleCategoryDiagramRenderer()
+        diag_renderer.setAttributeLegend(False)  # true by default
+        diag_renderer.setSizeLegend(True)  # false by default
+        layer.setDiagramRenderer(diag_renderer)
+
+        diag_settings = QgsDiagramLayerSettings()
+        diag_settings.setPriority(3)
+        diag_settings.setZIndex(0.33)
+        layer.setDiagramLayerSettings(diag_settings)
+
+        edit_form_config = layer.editFormConfig()
+        edit_form_config.setUiForm("MyUiForm")
+        edit_form_config.setInitFilePath("MyInitFilePath")
+        layer.setEditFormConfig(edit_form_config)
+
+        widget_setup = QgsEditorWidgetSetup("MyWidgetSetupType", {})
+        layer.setEditorWidgetSetup(0, widget_setup)
+
+        layer.setConstraintExpression(0, "MyFieldConstraintExpression")
+        layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
+        layer.setDefaultValueExpression(0, "MyDefaultValueExpression")
+
+        action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
+        layer.actions().addAction(action)
+
+        # clone layer
+        clone = layer.clone()
+
+        # generate xml from layer
+        layer_doc = QDomDocument("doc")
+        layer_elem = layer_doc.createElement("maplayer")
+        layer.writeLayerXml(layer_elem, layer_doc, QgsReadWriteContext())
+
+        # generate xml from clone
+        clone_doc = QDomDocument("doc")
+        clone_elem = clone_doc.createElement("maplayer")
+        clone.writeLayerXml(clone_elem, clone_doc, QgsReadWriteContext())
+
+        # replace id within xml of clone
+        clone_id_elem = clone_elem.firstChildElement("id")
+        clone_id_elem_patch = clone_doc.createElement("id")
+        clone_id_elem_patch_value = clone_doc.createTextNode(layer.id())
+        clone_id_elem_patch.appendChild(clone_id_elem_patch_value)
+        clone_elem.replaceChild(clone_id_elem_patch, clone_id_elem)
+
+        # update doc
+        clone_doc.appendChild(clone_elem)
+        layer_doc.appendChild(layer_elem)
+
+        # compare xml documents
+        self.assertEqual(layer_doc.toString(), clone_doc.toString())
 
 
 # TODO:
