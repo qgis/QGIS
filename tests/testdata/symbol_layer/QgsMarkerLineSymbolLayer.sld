@@ -11,6 +11,8 @@
             <VendorOption name="placement">centralPoint</VendorOption>
             <se:Stroke>
               <se:GraphicStroke>
+                <se:Gap>3.3</se:Gap>
+                <se:PerpendicularOffset>6.6</se:PerpendicularOffset>
                 <se:Graphic>
                   <se:Mark>
                     <se:WellKnownName>circle</se:WellKnownName>
