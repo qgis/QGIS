@@ -151,7 +151,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     bool mShowLabel;
     bool mVisible;
-    bool mInitialized;
 };
 
 #endif // QGSRELATIONEDITOR_H
