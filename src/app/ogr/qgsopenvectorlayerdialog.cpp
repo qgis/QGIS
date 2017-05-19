@@ -31,11 +31,16 @@
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
-QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+  : QDialog( parent, fl ),
+    mEmbeddedMode( embeddedMode )
 {
   setupUi( this );
 
+  if ( mEmbeddedMode )
+  {
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
+  }
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
@@ -49,7 +54,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowF
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = cmbEncodings->findText( enc );
   if ( encindex < 0 )
@@ -382,7 +387,14 @@ void QgsOpenVectorLayerDialog::accept()
   // Save the used encoding
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
-  QDialog::accept();
+  if ( ! mEmbeddedMode )
+  {
+    QDialog::accept();
+  }
+  else if ( ! mDataSources.isEmpty( ) )
+  {
+    emit addVectorLayers( mDataSources, encoding(), dataSourceType( ) );
+  }
 }
 
 void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )

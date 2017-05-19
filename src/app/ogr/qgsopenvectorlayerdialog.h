@@ -32,7 +32,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     Q_OBJECT
 
   public:
-    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, bool embeddedMode = false );
     ~QgsOpenVectorLayerDialog();
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
@@ -53,6 +53,8 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QString mEnc;
     //! Stores the datasource type
     QString mDataSourceType;
+    //! Embedded dialog (do not call parent's accept) and emit signals
+    bool mEmbeddedMode;
 
   private slots:
     //! Opens the create connection dialog to build a new connection
@@ -85,6 +87,10 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#loading-a-layer-from-a-file" ) ); }
+
+  signals:
+    //! Emitted when in embedded mode
+    void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 };
 
 #endif // QGSOPENVECTORDIALOG_H
