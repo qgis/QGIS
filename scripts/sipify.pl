@@ -55,6 +55,7 @@ close $handle;
 my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
+my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = 0;
 
 my $comment = '';
@@ -390,6 +391,11 @@ while ($line_idx < $line_count){
                 if ($#ACCESS > 0){
                     pop(@global_bracket_nesting_index);
                     pop(@ACCESS);
+
+		    die "Class $classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
+		        if $EXPORTED[-1] == 0;
+
+		    pop @EXPORTED;
                 }
                 if ($#ACCESS == 0){
                     dbg_info("reached top level");
@@ -455,6 +461,7 @@ while ($line_idx < $line_count){
     if ( $line =~ m/^\s*struct(\s+\w+_EXPORT)?\s+\w+$/ ) {
         dbg_info("  going to struct => public");
         push @ACCESS, PUBLIC;
+	push @EXPORTED, 0;
         push @global_bracket_nesting_index, 0;
     }
 
@@ -463,12 +470,13 @@ while ($line_idx < $line_count){
     if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
         dbg_info("class definition started => private");
         push @ACCESS, PRIVATE;
+        push @EXPORTED, 0;
         push @global_bracket_nesting_index, 0;
         my @template_inheritance_template = ();
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
             $classname = $3;
-            $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class $classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
+	    $EXPORTED[-1]++ if $line =~ m/\b[A-Z]+_EXPORT\b/;
         };
         $line = "$1 $3";
         # Inheritance
@@ -625,6 +633,11 @@ while ($line_idx < $line_count){
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $line =~ s/\bnullptr\b/0/g;
         $line =~ s/\s*=\s*default\b//g;
+
+	if( $line =~ /\w+_EXPORT/ ) {
+		$EXPORTED[-1]++;
+		$line =~ s/\b\w+_EXPORT\s+//g;
+	}
 
         # remove constructor definition, function bodies, member initializing list
         $SIP_RUN == 1 or detect_and_remove_following_body_or_initializerlist();
