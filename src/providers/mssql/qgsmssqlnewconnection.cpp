@@ -143,7 +143,6 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
 
 QgsMssqlNewConnection::~QgsMssqlNewConnection()
 {
-  delete bar;
 }
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )

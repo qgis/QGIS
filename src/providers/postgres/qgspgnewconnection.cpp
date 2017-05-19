@@ -107,7 +107,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
 QgsPgNewConnection::~QgsPgNewConnection()
 {
-  delete bar;
+
 }
 
 //! Autoconnected SLOTS *
