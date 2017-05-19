@@ -48,7 +48,7 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         super(EditRenderingStylesDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.alg = alg.getCopy()
+        self.alg = alg
 
         self.tblStyles.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.setWindowTitle(self.alg.displayName())

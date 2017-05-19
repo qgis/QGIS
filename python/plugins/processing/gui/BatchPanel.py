@@ -182,7 +182,7 @@ class BatchPanel(BASE, WIDGET):
             algParams = {}
             algOutputs = {}
             col = 0
-            alg = self.alg.getCopy()
+            alg = self.alg
             for param in alg.parameters:
                 if param.hidden:
                     continue

@@ -92,12 +92,11 @@ class GdalAlgorithm(GeoAlgorithm):
                 '''.format(self.commandName(), url))
 
     def commandName(self):
-        alg = self.getCopy()
-        for output in alg.outputs:
+        for output in self.outputs:
             output.setValue("dummy")
-        for param in alg.parameters:
+        for param in self.parameters:
             param.setValue("1")
-        name = alg.getConsoleCommands()[0]
+        name = self.getConsoleCommands()[0]
         if name.endswith(".py"):
             name = name[:-3]
         return name

@@ -78,9 +78,6 @@ class SagaAlgorithm(GeoAlgorithm):
         self._display_name = ''
         self._group = ''
 
-    def getCopy(self):
-        return self
-
     def icon(self):
         if self._icon is None:
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))

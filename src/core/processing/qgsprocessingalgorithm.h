@@ -123,12 +123,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsProcessingProvider *provider() const;
 
     /**
-     * Associates this algorithm with its provider. No transfer of ownership is involved.
-     */
-    //TEMPORARY - remove when algorithms are no longer copied in python code
-    void setProvider( QgsProcessingProvider *provider );
-
-    /**
      * Returns an ordered list of parameter definitions utilized by the algorithm.
      * \see addParameter()
      * \see parameterDefinition()
@@ -281,6 +275,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
+
+    /**
+     * Associates this algorithm with its provider. No transfer of ownership is involved.
+     */
+    void setProvider( QgsProcessingProvider *provider );
 
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;

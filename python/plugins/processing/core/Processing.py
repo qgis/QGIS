@@ -130,11 +130,6 @@ class Processing(object):
             QgsMessageLog.logMessage(Processing.tr('Error: Algorithm {0} not found\n').format(algOrName),
                                      Processing.tr("Processing"))
             return
-        # hack - remove when getCopy is removed
-        provider = alg.provider()
-        alg = alg.getCopy()
-        #hack pt2
-        alg.setProvider(provider)
 
         if len(args) == 1 and isinstance(args[0], dict):
             # Set params by name and try to run the alg even if not all parameter values are provided,
