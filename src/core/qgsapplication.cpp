@@ -40,6 +40,7 @@
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
+#include "processing/qgsnativealgorithms.h"
 
 #include <QDir>
 #include <QFile>
@@ -1578,6 +1579,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
+  mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
 }
 

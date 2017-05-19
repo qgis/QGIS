@@ -21,8 +21,27 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingprovider.h"
 
 ///@cond PRIVATE
+
+class QgsNativeAlgorithms: public QgsProcessingProvider
+{
+  public:
+
+    QgsNativeAlgorithms( QObject *parent = nullptr );
+
+    QIcon icon() const override;
+    QString svgIconPath() const override;
+    QString id() const override;
+    QString name() const override;
+    bool supportsNonFileBasedOutput() const override;
+
+  protected:
+
+    void loadAlgorithms() override;
+
+};
 
 /**
  * Native centroid algorithm.
@@ -54,7 +73,7 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
     QgsBufferAlgorithm();
 
-    QString name() const override { return QStringLiteral( "fixeddistancebuffer" ); }
+    QString name() const override { return QStringLiteral( "buffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry tools" ); }
