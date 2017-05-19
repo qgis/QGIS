@@ -33,7 +33,7 @@ from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
                        QgsApplication)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterBoolean
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputString
 
 
-class Datasources2Vrt(GeoAlgorithm):
+class Datasources2Vrt(QgisAlgorithm):
     DATASOURCES = 'DATASOURCES'
     UNIONED = 'UNIONED'
 

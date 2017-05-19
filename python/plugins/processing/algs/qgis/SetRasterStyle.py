@@ -31,7 +31,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
@@ -39,7 +39,7 @@ from processing.tools import dataobjects
 from qgis.utils import iface
 
 
-class SetRasterStyle(GeoAlgorithm):
+class SetRasterStyle(QgisAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'

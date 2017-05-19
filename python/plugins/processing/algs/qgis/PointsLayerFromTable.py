@@ -31,7 +31,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsGeometry,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterCrs
@@ -39,7 +39,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class PointsLayerFromTable(GeoAlgorithm):
+class PointsLayerFromTable(QgisAlgorithm):
 
     INPUT = 'INPUT'
     XFIELD = 'XFIELD'

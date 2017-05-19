@@ -33,7 +33,7 @@ from qgis.core import (QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterMultipleInput
@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class ExecuteSQL(GeoAlgorithm):
+class ExecuteSQL(QgisAlgorithm):
 
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider

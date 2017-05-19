@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -42,7 +42,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExportGeometryInfo(GeoAlgorithm):
+class ExportGeometryInfo(QgisAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'CALC_METHOD'

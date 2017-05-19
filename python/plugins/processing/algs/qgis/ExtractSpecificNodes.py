@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 import math
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterString
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.PyQt.QtCore import QVariant
 
 
-class ExtractSpecificNodes(GeoAlgorithm):
+class ExtractSpecificNodes(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'

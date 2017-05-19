@@ -32,11 +32,11 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExpression
 
 
-class SelectByExpression(GeoAlgorithm):
+class SelectByExpression(QgisAlgorithm):
 
     LAYERNAME = 'LAYERNAME'
     EXPRESSION = 'EXPRESSION'

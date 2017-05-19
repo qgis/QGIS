@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -41,7 +41,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExtractNodes(GeoAlgorithm):
+class ExtractNodes(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

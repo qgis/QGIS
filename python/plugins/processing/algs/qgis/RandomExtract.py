@@ -30,7 +30,7 @@ import random
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
-class RandomExtract(GeoAlgorithm):
+class RandomExtract(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

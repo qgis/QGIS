@@ -33,12 +33,12 @@ from qgis.core import (QgsApplication,
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class BoxPlot(GeoAlgorithm):
+class BoxPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

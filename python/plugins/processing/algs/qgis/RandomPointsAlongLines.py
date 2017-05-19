@@ -42,14 +42,14 @@ from qgis.core import (QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
-class RandomPointsAlongLines(GeoAlgorithm):
+class RandomPointsAlongLines(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     POINT_NUMBER = 'POINT_NUMBER'

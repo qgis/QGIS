@@ -39,7 +39,7 @@ from qgis.core import (QgsRectangle,
                        QgsWkbTypes,
                        QgsFields)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
@@ -51,7 +51,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridPolygon(GeoAlgorithm):
+class GridPolygon(QgisAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'

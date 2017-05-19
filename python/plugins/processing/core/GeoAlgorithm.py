@@ -48,7 +48,6 @@ from processing.core.parameters import ParameterRaster, ParameterVector, Paramet
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects
-from processing.algs.help import shortHelp
 
 
 class GeoAlgorithm(QgsProcessingAlgorithm):
@@ -75,9 +74,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         self.defineCharacteristics()
 
     # methods to overwrite when creating a custom geoalgorithm
-
-    def shortHelpString(self):
-        return shortHelp.get(self.id(), None)
 
     def processAlgorithm(self, context, feedback):
         """Here goes the algorithm itself.

@@ -41,7 +41,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsWkbTypes)
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
@@ -50,7 +50,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VectorGridLines(GeoAlgorithm):
+class VectorGridLines(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
     STEP_X = 'STEP_X'

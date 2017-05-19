@@ -27,13 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.tools import postgis
 
 
-class PostGISExecuteSQL(GeoAlgorithm):
+class PostGISExecuteSQL(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'

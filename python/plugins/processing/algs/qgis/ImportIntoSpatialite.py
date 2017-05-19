@@ -30,7 +30,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterTableField
 from processing.tools import spatialite
 
 
-class ImportIntoSpatialite(GeoAlgorithm):
+class ImportIntoSpatialite(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'

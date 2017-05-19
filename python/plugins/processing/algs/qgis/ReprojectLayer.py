@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsProcessingUtils
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
@@ -37,7 +37,7 @@ from qgis.PyQt.QtGui import QIcon
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ReprojectLayer(GeoAlgorithm):
+class ReprojectLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     TARGET_CRS = 'TARGET_CRS'

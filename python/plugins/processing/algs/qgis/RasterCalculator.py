@@ -28,7 +28,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterMultipleInput, ParameterExtent, ParameterString, ParameterRaster, ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
@@ -42,7 +42,7 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
 
 
-class RasterCalculator(GeoAlgorithm):
+class RasterCalculator(QgisAlgorithm):
 
     LAYERS = 'LAYERS'
     EXTENT = 'EXTENT'

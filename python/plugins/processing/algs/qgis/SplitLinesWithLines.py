@@ -35,14 +35,14 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 from processing.tools import vector
 
 
-class SplitLinesWithLines(GeoAlgorithm):
+class SplitLinesWithLines(QgisAlgorithm):
 
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'

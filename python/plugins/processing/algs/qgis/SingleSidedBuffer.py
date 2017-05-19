@@ -32,7 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SingleSidedBuffer(GeoAlgorithm):
+class SingleSidedBuffer(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'

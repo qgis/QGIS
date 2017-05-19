@@ -30,7 +30,7 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
@@ -38,7 +38,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class VectorLayerHistogram(GeoAlgorithm):
+class VectorLayerHistogram(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

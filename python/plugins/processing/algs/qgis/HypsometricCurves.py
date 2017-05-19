@@ -36,7 +36,7 @@ from qgis.core import (QgsRectangle,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -46,7 +46,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import raster, vector, dataobjects
 
 
-class HypsometricCurves(GeoAlgorithm):
+class HypsometricCurves(QgisAlgorithm):
 
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'

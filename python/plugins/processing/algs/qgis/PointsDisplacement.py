@@ -34,14 +34,14 @@ from qgis.core import (QgsApplication,
                        QgsPointXY,
                        QgsProcessingUtils)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
 
-class PointsDisplacement(GeoAlgorithm):
+class PointsDisplacement(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     DISTANCE = 'DISTANCE'

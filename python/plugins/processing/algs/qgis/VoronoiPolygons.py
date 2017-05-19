@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -44,7 +44,7 @@ from . import voronoi
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VoronoiPolygons(GeoAlgorithm):
+class VoronoiPolygons(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BUFFER = 'BUFFER'

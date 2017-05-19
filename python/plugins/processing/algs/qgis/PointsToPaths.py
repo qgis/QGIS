@@ -39,7 +39,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
@@ -48,7 +48,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects
 
 
-class PointsToPaths(GeoAlgorithm):
+class PointsToPaths(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     GROUP_FIELD = 'GROUP_FIELD'

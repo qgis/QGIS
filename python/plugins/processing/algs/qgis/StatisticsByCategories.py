@@ -30,12 +30,12 @@ from qgis.core import (QgsApplication,
                        QgsStatisticalSummary,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 
 
-class StatisticsByCategories(GeoAlgorithm):
+class StatisticsByCategories(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'

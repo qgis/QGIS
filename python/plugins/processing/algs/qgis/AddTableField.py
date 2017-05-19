@@ -30,7 +30,7 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class AddTableField(GeoAlgorithm):
+class AddTableField(QgisAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
