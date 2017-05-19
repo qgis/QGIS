@@ -85,10 +85,15 @@ static QLocale cLocale("C");
 
 white       [ \t\r\n]+
 
-non_ascii    [\x80-\xFF]
+U       [\x80-\xBF]
+U2      [\xC2-\xDF]
+U3      [\xE0-\xEF]
+U4      [\xF0-\xF4]
 
-identifier_first    [A-Za-z_]|{non_ascii}
-identifier_next     [A-Za-z0-9_]|{non_ascii}
+UONLY   {U2}{U}|{U3}{U}{U}|{U4}{U}{U}{U}
+
+identifier_first    [A-Za-z_]|{UONLY}
+identifier_next     [A-Za-z0-9_]|{UONLY}
 identifier  {identifier_first}{identifier_next}*
 
 identifier_str_char  "\"\""|[^\"]

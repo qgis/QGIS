@@ -108,10 +108,15 @@ line_comment \-\-[^\r\n]*[\r\n]?
 
 white       [ \t\r\n]+
 
-non_ascii    [\x80-\xFF]
+U       [\x80-\xBF]
+U2      [\xC2-\xDF]
+U3      [\xE0-\xEF]
+U4      [\xF0-\xF4]
 
-col_first    [A-Za-z_]|{non_ascii}
-col_next     [A-Za-z0-9_]|{non_ascii}
+UONLY   {U2}{U}|{U3}{U}{U}|{U4}{U}{U}{U}
+
+col_first    [A-Za-z_]|{UONLY}
+col_next     [A-Za-z0-9_]|{UONLY}
 column_ref  {col_first}{col_next}*
 
 deprecated_function "$"[xXyY]_?[aA][tT]
