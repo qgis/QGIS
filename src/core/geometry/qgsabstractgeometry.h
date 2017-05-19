@@ -306,19 +306,19 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see area()
      * \see perimeter()
      */
-    virtual double length() const { return 0.0; }
+    virtual double length() const;
 
     /** Returns the perimeter of the geometry.
      * \see area()
      * \see length()
      */
-    virtual double perimeter() const { return 0.0; }
+    virtual double perimeter() const;
 
     /** Returns the area of the geometry.
      * \see length()
      * \see perimeter()
      */
-    virtual double area() const { return 0.0; }
+    virtual double area() const;
 
     //! Returns the centroid of the geometry
     virtual QgsPointV2 centroid() const;
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns true if the geometry contains curved segments
      */
-    virtual bool hasCurvedSegments() const { return false; }
+    virtual bool hasCurvedSegments() const;
 
     /** Returns a version of the geometry without curves. Caller takes ownership of
      * the returned geometry.
@@ -342,7 +342,7 @@ class CORE_EXPORT QgsAbstractGeometry
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         \returns the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry *toCurveType() const SIP_FACTORY { return 0; }
+    virtual QgsAbstractGeometry *toCurveType() const SIP_FACTORY;
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Clears any cached parameters associated with the geometry, e.g., bounding boxes
      */
-    virtual void clearCache() const {}
+    virtual void clearCache() const;
 
 };
 

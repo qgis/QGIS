@@ -27,15 +27,16 @@ SET (WMS_MOC_HDRS
 QT5_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
-  .
-  ../../core
-  ../../core/auth
-  ../../core/geometry
-  ../../core/raster
-  ../../core/metadata
-  ../../gui
-  ../../gui/auth
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+
+  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )

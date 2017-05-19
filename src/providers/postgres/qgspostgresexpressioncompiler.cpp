@@ -15,6 +15,7 @@
 
 #include "qgspostgresexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
@@ -143,15 +144,15 @@ QString QgsPostgresExpressionCompiler::castToInt( const QString &value ) const
   return QStringLiteral( "((%1)::int)" ).arg( value );
 }
 
-QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntFunction:
+    case QgsExpressionNode::ntFunction:
     {
-      const QgsExpression::NodeFunction *n = static_cast<const QgsExpression::NodeFunction *>( node );
+      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
 
-      QgsExpression::Function *fd = QgsExpression::Functions()[n->fnIndex()];
+      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
       if ( fd->name() == "$geometry" )
       {
         result = quotedIdentifier( mGeometryColumn );

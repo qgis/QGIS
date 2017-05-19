@@ -154,6 +154,21 @@ QString QgsMapLayer::name() const
   return mLayerName;
 }
 
+QgsDataProvider *QgsMapLayer::dataProvider()
+{
+  return nullptr;
+}
+
+const QgsDataProvider *QgsMapLayer::dataProvider() const
+{
+  return nullptr;
+}
+
+QString QgsMapLayer::originalName() const
+{
+  return mLayerOrigName;
+}
+
 QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
@@ -920,6 +935,11 @@ void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
   emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
 }
 
+const QgsLayerMetadata &QgsMapLayer::metadata() const
+{
+  return mMetadata;
+}
+
 void QgsMapLayer::setMinimumScale( double scale )
 {
   mMinScale = scale;
@@ -1630,11 +1650,21 @@ void QgsMapLayer::removeCustomProperty( const QString &key )
   mCustomProperties.remove( key );
 }
 
+QgsError QgsMapLayer::error() const
+{
+  return mError;
+}
+
 
 
 bool QgsMapLayer::isEditable() const
 {
   return false;
+}
+
+bool QgsMapLayer::isSpatial() const
+{
+  return true;
 }
 
 void QgsMapLayer::setValid( bool valid )
@@ -1681,6 +1711,11 @@ void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
 QString QgsMapLayer::htmlMetadata() const
 {
   return QString();
+}
+
+QDateTime QgsMapLayer::timestamp() const
+{
+  return QDateTime() ;
 }
 
 void QgsMapLayer::emitStyleChanged()
@@ -1736,6 +1771,11 @@ bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers 
 {
   QHash<const QgsMapLayer *, int> marks;
   return _depHasCycleDFS( this, marks, this, layers );
+}
+
+bool QgsMapLayer::isReadOnly() const
+{
+  return true;
 }
 
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const

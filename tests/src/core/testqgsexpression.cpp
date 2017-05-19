@@ -19,12 +19,12 @@
 
 #include <qgsapplication.h>
 //header for class being tested
-#include <qgsexpression.h>
-#include <qgsfeature.h>
+#include "qgsexpression.h"
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include <qgsfeaturerequest.h>
-#include <qgsgeometry.h>
-#include <qgsrenderchecker.h>
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
+#include "qgsrenderchecker.h"
 #include "qgsexpressioncontext.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
@@ -32,6 +32,7 @@
 #include "qgsdistancearea.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
+#include "qgsexpressionnodeimpl.h"
 
 static void _parseAndEvalExpr( int arg )
 {
@@ -1209,12 +1210,6 @@ class TestQgsExpression: public QObject
       run_evaluation_test( exp3, evalError, result );
       QgsExpression exp4( exp );
       run_evaluation_test( exp4, evalError, result );
-    }
-
-    void eval_precedence()
-    {
-      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boDiv], "/" );
-      QCOMPARE( QgsExpression::BINARY_OPERATOR_TEXT[QgsExpression::boConcat], "||" );
     }
 
     void eval_columns()

@@ -68,7 +68,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \returns composer map
      * \see setComposerMap
      */
-    virtual const QgsComposerMap *composerMap() const { return mComposerMap; }
+    virtual const QgsComposerMap *composerMap() const;
 
     /** Get the unique id for the map item
      * \returns unique id
@@ -79,30 +79,30 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \param name display name
      * \see name
      */
-    virtual void setName( const QString &name ) { mName = name; }
+    virtual void setName( const QString &name );
 
     /** Get friendly display name for the item
      * \returns display name
      * \see setName
      */
-    virtual QString name() const { return mName; }
+    virtual QString name() const;
 
     /** Controls whether the item will be drawn
      * \param enabled set to true to enable drawing of the item
      * \see enabled
      */
-    virtual void setEnabled( const bool enabled ) { mEnabled = enabled; }
+    virtual void setEnabled( const bool enabled );
 
     /** Returns whether the item will be drawn
      * \returns true if item will be drawn on the map
      * \see setEnabled
      */
-    virtual bool enabled() const { return mEnabled; }
+    virtual bool enabled() const;
 
     /** Returns true if the item is drawn using advanced effects, such as blend modes.
      * \returns true if item uses advanced effects
      */
-    virtual bool usesAdvancedEffects() const { return false; }
+    virtual bool usesAdvancedEffects() const;
 
   protected:
 

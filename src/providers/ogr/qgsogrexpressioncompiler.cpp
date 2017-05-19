@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsogrexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsogrprovider.h"
 
 QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source )
@@ -45,22 +46,22 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   return QgsSqlExpressionCompiler::compile( exp );
 }
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntBinaryOperator:
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator *>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
-        case QgsExpression::boILike:
-        case QgsExpression::boNotILike:
+        case QgsExpressionNodeBinaryOperator::boILike:
+        case QgsExpressionNodeBinaryOperator::boNotILike:
           return Fail; //disabled until https://trac.osgeo.org/gdal/ticket/5132 is fixed
 
-        case QgsExpression::boMod:
-        case QgsExpression::boConcat:
-        case QgsExpression::boPow:
-        case QgsExpression::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boMod:
+        case QgsExpressionNodeBinaryOperator::boConcat:
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by OGR
 
         default:
@@ -69,15 +70,15 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
       }
     }
 
-    case QgsExpression::ntFunction:
-    case QgsExpression::ntCondition:
+    case QgsExpressionNode::ntFunction:
+    case QgsExpressionNode::ntCondition:
       //not support by OGR
       return Fail;
 
-    case QgsExpression::ntUnaryOperator:
-    case QgsExpression::ntColumnRef:
-    case QgsExpression::ntInOperator:
-    case QgsExpression::ntLiteral:
+    case QgsExpressionNode::ntUnaryOperator:
+    case QgsExpressionNode::ntColumnRef:
+    case QgsExpressionNode::ntInOperator:
+    case QgsExpressionNode::ntLiteral:
       break;
   }
 

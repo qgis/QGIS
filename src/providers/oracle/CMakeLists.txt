@@ -39,20 +39,18 @@ SET(ORACLE_HDRS
 QT5_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
-  ../../core
-  ../../core/geometry
-  ../../core/metadata
-  ../../gui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-)
-INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTSQL_INCLUDEDIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )

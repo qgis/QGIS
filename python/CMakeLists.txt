@@ -93,38 +93,37 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
-  ../src/core
-  ../src/core/annotations
-  ../src/core/auth
-  ../src/core/pal
-  ../src/core/composer
-  ../src/core/diagram
-  ../src/core/effects
-  ../src/core/fieldformatter
-  ../src/core/dxf
-  ../src/core/geometry
-  ../src/core/gps
-  ../src/core/layertree
-  ../src/core/metadata
-  ../src/core/processing
-  ../src/core/providers
-  ../src/core/providers/memory
-  ../src/core/raster
-  ../src/core/scalebar
-  ../src/core/symbology-ng
-
-  ../src/gui
-  ../src/gui/symbology-ng
-  ../src/gui/raster
-  ../src/gui/attributetable
-  ../src/gui/auth
-  ../src/gui/editorwidgets
-  ../src/gui/editorwidgets/core
-  ../src/gui/effects
-  ../src/gui/layertree
-  ../src/gui/locator
-
-  ../src/plugins
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/pal
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/diagram
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/providers
+  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/plugins
 
   ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
   ${CMAKE_BINARY_DIR}/src/core

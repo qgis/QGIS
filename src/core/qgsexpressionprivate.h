@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgsdistancearea.h"
 #include "qgsunittypes.h"
+#include "qgsexpressionnode.h"
 
 ///@cond
 
@@ -60,7 +61,7 @@ class QgsExpressionPrivate
 
     QAtomicInt ref;
 
-    QgsExpression::Node *mRootNode = nullptr;
+    QgsExpressionNode *mRootNode = nullptr;
 
     QString mParserErrorString;
     QString mEvalErrorString;

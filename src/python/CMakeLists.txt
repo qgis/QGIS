@@ -1,11 +1,13 @@
 SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 INCLUDE_DIRECTORIES(
-  ../core
-  ../core/geometry
-  ../core/metadata
-  ../core/raster
-  ../gui
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
 )

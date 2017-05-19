@@ -727,7 +727,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
   // geometries are converted between spatialite and QgsGeometry
   // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
 
-  QgsExpression::Function *foo = reinterpret_cast<QgsExpression::Function *>( sqlite3_user_data( ctxt ) );
+  QgsExpressionFunction *foo = reinterpret_cast<QgsExpressionFunction *>( sqlite3_user_data( ctxt ) );
 
   QVariantList variants;
   for ( int i = 0; i < nArgs; i++ )
@@ -849,7 +849,7 @@ void registerQgisFunctions( sqlite3 *db )
   QStringList reservedFunctions;
   reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
-  Q_FOREACH ( QgsExpression::Function *foo, QgsExpression::Functions() )
+  Q_FOREACH ( QgsExpressionFunction *foo, QgsExpression::Functions() )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {

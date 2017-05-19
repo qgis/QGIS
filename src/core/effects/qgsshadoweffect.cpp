@@ -168,9 +168,19 @@ QgsDropShadowEffect::QgsDropShadowEffect()
 
 }
 
+QString QgsDropShadowEffect::type() const
+{
+  return QStringLiteral( "dropShadow" );
+}
+
 QgsDropShadowEffect *QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
+}
+
+bool QgsDropShadowEffect::exteriorShadow() const
+{
+  return true;
 }
 
 
@@ -191,7 +201,17 @@ QgsInnerShadowEffect::QgsInnerShadowEffect()
 
 }
 
+QString QgsInnerShadowEffect::type() const
+{
+  return QStringLiteral( "innerShadow" );
+}
+
 QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const
 {
   return new QgsInnerShadowEffect( *this );
+}
+
+bool QgsInnerShadowEffect::exteriorShadow() const
+{
+  return false;
 }

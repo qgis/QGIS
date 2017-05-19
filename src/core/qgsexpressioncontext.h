@@ -25,8 +25,10 @@
 #include <QSet>
 #include "qgsfeature.h"
 #include "qgsexpression.h"
+#include "qgsexpressionfunction.h"
 
 class QgsExpression;
+class QgsExpressionNodeFunction;
 class QgsMapLayer;
 class QgsComposition;
 class QgsComposerItem;
@@ -43,7 +45,7 @@ class QgsSymbol;
  * \since QGIS 2.12
  */
 
-class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
+class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
 {
   public:
 
@@ -61,7 +63,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
-      : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
       , mUsesGeometry( usesGeometry )
       , mReferencedColumns( referencedColumns )
     {}
@@ -72,7 +74,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
      * \since QGIS 3.0
      */
     QgsScopedExpressionFunction( const QString &fnname,
-                                 const QgsExpression::ParameterList &params,
+                                 const QgsExpressionFunction::ParameterList &params,
                                  const QString &group,
                                  const QString &helpText = QString(),
                                  bool usesGeometry = false,
@@ -80,7 +82,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool lazyEval = false,
                                  bool handlesNull = false,
                                  bool isContextual = true )
-      : QgsExpression::Function( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
+      : QgsExpressionFunction( fnname, params, group, helpText, lazyEval, handlesNull, isContextual )
       , mUsesGeometry( usesGeometry )
       , mReferencedColumns( referencedColumns )
     {}
@@ -91,11 +93,11 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
      */
     virtual QgsScopedExpressionFunction *clone() const = 0 SIP_FACTORY;
 
-    virtual bool usesGeometry( const QgsExpression::NodeFunction *node ) const override;
+    virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
+    virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual bool isStatic( const QgsExpression::NodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
   private:
     bool mUsesGeometry;
@@ -253,7 +255,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see functionNames()
      * \see variable()
      */
-    QgsExpression::Function *function( const QString &name ) const;
+    QgsExpressionFunction *function( const QString &name ) const;
 
     /** Retrieves a list of names of functions contained in the scope.
      * \see function()
@@ -479,7 +481,7 @@ class CORE_EXPORT QgsExpressionContext
      * \returns function if contained by the context, otherwise null.
      * \see hasFunction
      */
-    QgsExpression::Function *function( const QString &name ) const;
+    QgsExpressionFunction *function( const QString &name ) const;
 
     /** Returns the number of scopes contained in the context.
      */

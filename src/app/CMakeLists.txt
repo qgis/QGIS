@@ -478,57 +478,57 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/composer
+  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_SOURCE_DIR}/src/app/gps
+  ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
+  ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/python
+  ${CMAKE_SOURCE_DIR}/src/native
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_BINARY_DIR}/src/ui
+  ${CMAKE_BINARY_DIR}/src/native
 )
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-)
-INCLUDE_DIRECTORIES(
-  ../analysis/raster
-  ../analysis/openstreetmap
-  ../core
-  ../core/annotations
-  ../core/auth
-  ../core/gps
-  ../core/composer
-  ../core/dxf
-  ../core/geometry
-  ../core/metadata
-  ../core/layertree
-  ../core/providers/memory
-  ../core/raster
-  ../core/scalebar
-  ../core/symbology-ng
-  ../gui
-  ../gui/symbology-ng
-  ../gui/attributetable
-  ../gui/auth
-  ../gui/locator
-  ../gui/raster
-  ../gui/editorwidgets
-  ../gui/editorwidgets/core
-  ../gui/layertree
-  ../plugins
-  ../python
-  gps
-  openstreetmap
-  dwg
-  dwg/libdxfrw
-  locator
-  ${CMAKE_SOURCE_DIR}/src/native
-  ${CMAKE_BINARY_DIR}/src/native
-)
-INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}

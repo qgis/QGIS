@@ -109,27 +109,28 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+  ${CMAKE_SOURCE_DIR}/src/plugins/diagram_overlay
+  ${CMAKE_SOURCE_DIR}/src/python
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
-  ../core
-  ../core/auth
-  ../core/dxf
-  ../core/geometry
-  ../core/metadata
-  ../core/raster
-  ../core/symbology-ng
-  ../core/composer
-  ../core/layertree
-  ../gui
-  ../gui/editorwidgets
-  ../gui/editorwidgets/core
-  ../analysis/interpolation
-  ../plugins/diagram_overlay
-  ../python
-  .
 )
 
 ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})

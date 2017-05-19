@@ -71,10 +71,10 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
     :param usesgeometry:
     :return:
     """
-    class QgsExpressionFunction(QgsExpression.Function):
+    class QgsPyExpressionFunction(QgsExpressionFunction):
 
         def __init__(self, func, name, args, group, helptext='', usesGeometry=True, referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
-            QgsExpression.Function.__init__(self, name, args, group, helptext)
+            QgsExpressionFunction.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs
             self.uses_geometry = usesGeometry
@@ -132,7 +132,7 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
-    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns, expandargs)
+    f = QgsPyExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns, expandargs)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.

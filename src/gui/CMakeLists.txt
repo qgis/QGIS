@@ -746,35 +746,36 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
-  ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
-  ${CMAKE_CURRENT_SOURCE_DIR}/auth
-  ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
-  ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
-  ${CMAKE_CURRENT_SOURCE_DIR}/layertree
-  ${CMAKE_CURRENT_SOURCE_DIR}/locator
-  ${CMAKE_CURRENT_SOURCE_DIR}/effects
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/native
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/native
-  ../core
-  ../core/annotations
-  ../core/auth
-  ../core/composer
-  ../core/fieldformatter
-  ../core/geometry
-  ../core/layertree
-  ../core/metadata
-  ../core/providers/memory
-  ../core/raster
-  ../core/scalebar
-  ../core/symbology-ng
-  ../core/effects
-  ../core/metadata
-  ../native
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
