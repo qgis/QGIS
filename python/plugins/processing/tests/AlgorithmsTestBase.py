@@ -83,8 +83,9 @@ class AlgorithmsTest(object):
         with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
             algorithm_tests = yaml.load(stream)
 
-        for algtest in algorithm_tests['tests']:
-            yield self.check_algorithm, algtest['name'], algtest
+        if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
+            for algtest in algorithm_tests['tests']:
+                yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
         """
