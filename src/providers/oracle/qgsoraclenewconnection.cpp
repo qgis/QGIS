@@ -166,5 +166,4 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {
-  delete bar;
 }

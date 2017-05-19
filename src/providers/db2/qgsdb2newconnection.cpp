@@ -145,7 +145,6 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 QgsDb2NewConnection::~QgsDb2NewConnection()
 {
-  delete bar;
 }
 
 bool QgsDb2NewConnection::testConnection()
