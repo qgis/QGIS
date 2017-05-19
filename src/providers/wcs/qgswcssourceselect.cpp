@@ -27,8 +27,8 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
+  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, embeddedMode, managerMode )
 {
   // Hide irrelevant widgets
   mWMSGroupBox->hide();

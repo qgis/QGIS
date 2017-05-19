@@ -187,9 +187,9 @@ void QgsWfsRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
 {
-  return new QgsWFSSourceSelect( parent, fl );
+  return new QgsWFSSourceSelect( parent, fl, embeddedMode );
 }
 
 QGISEXTERN int dataCapabilities()

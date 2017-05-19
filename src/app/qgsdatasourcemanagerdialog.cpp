@@ -85,6 +85,21 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent ) :
     { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) ); } );
   }
 
+#ifdef HAVE_POSTGRESQL
+  /////////////////////////////////////////////////////////////////////////////
+  // POSTGIS
+  dlg = providerDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
+  if ( dlg )
+  {
+    connect( dlg, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+             this, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ) );
+    connect( dlg, SIGNAL( progress( int, int ) ),
+             this, SIGNAL( showProgress( int, int ) ) );
+    connect( dlg, SIGNAL( progressMessage( QString ) ),
+             this, SIGNAL( showStatusMessage( QString ) ) );
+  }
+#endif
+
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -115,7 +130,7 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 
 QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon )
 {
-  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget ) );
+  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, true ) );
   if ( !dlg )
   {
     QMessageBox::warning( this, providerName, tr( "Cannot get %1 select dialog from provider %2." ).arg( providerName, providerKey ) );

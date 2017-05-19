@@ -265,10 +265,11 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
 {
   Q_UNUSED( parent );
   Q_UNUSED( fl );
-  //return new QgsOWSSourceSelect( parent, fl );
+  Q_UNUSED( embeddedMode );
+  //return new QgsOWSSourceSelect( parent, fl, embeddedMode );
   return nullptr;
 }

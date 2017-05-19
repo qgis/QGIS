@@ -438,9 +438,9 @@ QGISEXTERN void registerGui( QMainWindow *mainWindow )
   QgsTileScaleWidget::showTileScale( mainWindow );
 }
 
-QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
 {
-  return new QgsWMSSourceSelect( parent, fl );
+  return new QgsWMSSourceSelect( parent, fl, embeddedMode );
 }
 
 

@@ -52,6 +52,9 @@ class QgsDataSourceManagerDialog : public QDialog
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     void addWfsLayer( const QString &uri, const QString &typeName );
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
+    void showProgress( int progress, int totalSteps );
+    void showStatusMessage( const QString &message );
+    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
 
   private:
     //! Return the dialog from the provider

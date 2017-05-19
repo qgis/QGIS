@@ -56,15 +56,13 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 {
   setupUi( this );
 
-  if ( mEmbeddedMode || ( Qt::Widget == fl ) )
+  if ( mEmbeddedMode )
   {
     // For some osbscure reson hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->setHidden( true );
     mHoldDialogOpen->hide();
-    // Set this in any event, to prevent auto-close
-    mEmbeddedMode = true;
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );

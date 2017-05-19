@@ -117,7 +117,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QDialog( parent, fl )
   , mManagerMode( managerMode )
   , mEmbeddedMode( embeddedMode )
