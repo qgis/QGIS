@@ -9307,6 +9307,17 @@ QgsVectorLayer* QgisApp::addVectorLayer( const QString& vectorLayerPath, const Q
     {
       // Register this layer with the layers registry
       QList<QgsMapLayer *> myList;
+
+      //set friendly name for datasources with only one layer
+      QStringList sublayers = layer->dataProvider()->subLayers();
+      QStringList elements = sublayers.at( 0 ).split( ':' );
+
+      Q_ASSERT( elements.size() >= 4 );
+      if ( layer->name() != elements.at( 1 ) )
+      {
+        layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+      }
+
       myList << layer;
       QgsMapLayerRegistry::instance()->addMapLayers( myList );
       bool ok;
