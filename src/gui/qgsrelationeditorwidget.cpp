@@ -35,7 +35,6 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
     , mViewMode( QgsDualView::AttributeEditor )
     , mShowLabel( true )
     , mVisible( false )
-    , mInitialized( false )
 {
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -181,7 +180,6 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
 
     mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
-    mInitialized = true;
   }
 }
 
@@ -523,7 +521,7 @@ void QgsRelationEditorWidget::updateUi()
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
 
-  if ( mVisible && !mInitialized )
+  if ( mVisible )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
 
@@ -551,7 +549,6 @@ void QgsRelationEditorWidget::updateUi()
     {
       mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
     }
-    mInitialized = true;
   }
 
   mToggleEditingButton->setVisible( true );
