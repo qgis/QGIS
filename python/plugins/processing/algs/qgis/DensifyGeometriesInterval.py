@@ -33,14 +33,14 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class DensifyGeometriesInterval(GeoAlgorithm):
+class DensifyGeometriesInterval(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'

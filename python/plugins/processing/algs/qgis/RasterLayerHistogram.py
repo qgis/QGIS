@@ -30,14 +30,14 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputHTML
 from processing.tools import raster
 
 
-class RasterLayerHistogram(GeoAlgorithm):
+class RasterLayerHistogram(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BINS = 'BINS'

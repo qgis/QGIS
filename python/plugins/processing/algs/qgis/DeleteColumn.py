@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class DeleteColumn(GeoAlgorithm):
+class DeleteColumn(QgisAlgorithm):
 
     INPUT = 'INPUT'
     COLUMNS = 'COLUMN'

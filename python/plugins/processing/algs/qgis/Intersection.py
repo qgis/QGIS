@@ -37,7 +37,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsProcessingUtils)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import vector
@@ -54,7 +54,7 @@ for key, value in list(wkbTypeGroups.items()):
         wkbTypeGroups[const] = key
 
 
-class Intersection(GeoAlgorithm):
+class Intersection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INPUT2 = 'INPUT2'

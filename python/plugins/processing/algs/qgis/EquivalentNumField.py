@@ -30,13 +30,13 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class EquivalentNumField(GeoAlgorithm):
+class EquivalentNumField(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

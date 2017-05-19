@@ -36,7 +36,7 @@ from qgis.analysis import (QgsInterpolator,
                            QgsGridFileWriter
                            )
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (Parameter,
                                         ParameterNumber,
@@ -52,7 +52,7 @@ from processing.core.outputs import (OutputRaster,
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class TinInterpolation(GeoAlgorithm):
+class TinInterpolation(QgisAlgorithm):
 
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     METHOD = 'METHOD'

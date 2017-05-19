@@ -31,14 +31,14 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputHTML
 from processing.tools import raster
 
 
-class RasterLayerStatistics(GeoAlgorithm):
+class RasterLayerStatistics(QgisAlgorithm):
 
     INPUT = 'INPUT'
 

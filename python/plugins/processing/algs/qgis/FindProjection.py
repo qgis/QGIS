@@ -35,7 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateTransform,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterExtent
@@ -44,7 +44,7 @@ from processing.core.outputs import OutputHTML
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class FindProjection(GeoAlgorithm):
+class FindProjection(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     TARGET_AREA = 'TARGET_AREA'

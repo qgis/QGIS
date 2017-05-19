@@ -35,7 +35,7 @@ from qgis.core import (QgsExpression,
                        QgsProject,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -47,7 +47,7 @@ from processing.core.outputs import OutputVector
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 
-class FieldsCalculator(GeoAlgorithm):
+class FieldsCalculator(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     NEW_FIELD = 'NEW_FIELD'

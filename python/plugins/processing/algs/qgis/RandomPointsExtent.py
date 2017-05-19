@@ -37,7 +37,7 @@ from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbT
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
@@ -47,7 +47,7 @@ from processing.tools import vector, dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsExtent(GeoAlgorithm):
+class RandomPointsExtent(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
     POINT_NUMBER = 'POINT_NUMBER'

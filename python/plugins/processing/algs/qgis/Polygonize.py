@@ -34,7 +34,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -42,7 +42,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class Polygonize(GeoAlgorithm):
+class Polygonize(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

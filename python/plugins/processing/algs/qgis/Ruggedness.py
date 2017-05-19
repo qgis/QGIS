@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsRuggednessFilter
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
@@ -40,7 +40,7 @@ from processing.tools import raster
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Ruggedness(GeoAlgorithm):
+class Ruggedness(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'

@@ -33,7 +33,7 @@ from qgis.core import (QgsMapToPixelSimplifier,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -43,7 +43,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SimplifyGeometries(GeoAlgorithm):
+class SimplifyGeometries(QgisAlgorithm):
 
     INPUT = 'INPUT'
     TOLERANCE = 'TOLERANCE'

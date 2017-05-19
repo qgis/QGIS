@@ -30,13 +30,13 @@ from qgis.core import (QgsVectorDataProvider,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class CreateAttributeIndex(GeoAlgorithm):
+class CreateAttributeIndex(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'

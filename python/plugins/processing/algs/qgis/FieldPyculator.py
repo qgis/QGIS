@@ -33,7 +33,7 @@ from qgis.core import (QgsFeature,
                        QgsField,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class FieldsPyculator(GeoAlgorithm):
+class FieldsPyculator(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'

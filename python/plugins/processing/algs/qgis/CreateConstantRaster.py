@@ -29,14 +29,14 @@ from osgeo import gdal
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
 
 
-class CreateConstantRaster(GeoAlgorithm):
+class CreateConstantRaster(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

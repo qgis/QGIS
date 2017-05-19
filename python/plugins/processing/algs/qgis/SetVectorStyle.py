@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.parameters import ParameterFile
@@ -36,7 +36,7 @@ from processing.tools import dataobjects
 from qgis.utils import iface
 
 
-class SetVectorStyle(GeoAlgorithm):
+class SetVectorStyle(QgisAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'

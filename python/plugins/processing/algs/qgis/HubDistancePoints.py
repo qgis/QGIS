@@ -36,7 +36,7 @@ from qgis.core import (QgsField,
                        QgsApplication,
                        QgsProject,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -48,7 +48,7 @@ from processing.tools import dataobjects
 from math import sqrt
 
 
-class HubDistancePoints(GeoAlgorithm):
+class HubDistancePoints(QgisAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
     FIELD = 'FIELD'

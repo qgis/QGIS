@@ -37,14 +37,14 @@ from qgis.core import (QgsApplication,
                        QgsPointXY,
                        QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, raster
 
 
-class PointsFromPolygons(GeoAlgorithm):
+class PointsFromPolygons(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'

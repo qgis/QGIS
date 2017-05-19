@@ -31,12 +31,12 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class SnapGeometriesToLayer(GeoAlgorithm):
+class SnapGeometriesToLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     REFERENCE_LAYER = 'REFERENCE_LAYER'

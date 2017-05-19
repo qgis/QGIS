@@ -30,7 +30,7 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -38,7 +38,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class MeanAndStdDevPlot(GeoAlgorithm):
+class MeanAndStdDevPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

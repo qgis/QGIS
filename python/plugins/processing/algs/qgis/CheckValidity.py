@@ -37,7 +37,7 @@ from qgis.core import (QgsSettings,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -46,7 +46,7 @@ settings_method_key = "/qgis/digitizing/validate_geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class CheckValidity(GeoAlgorithm):
+class CheckValidity(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     METHOD = 'METHOD'

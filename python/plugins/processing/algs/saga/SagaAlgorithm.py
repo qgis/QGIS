@@ -53,6 +53,7 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputVector,
                                      OutputRaster)
 from processing.tools import dataobjects
+from processing.algs.help import shortHelp
 from processing.tools.system import getTempFilename, getTempFilenameInTempFolder
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
 from . import SagaUtils
@@ -91,6 +92,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def group(self):
         return self._group
+
+    def shortHelpString(self):
+        return shortHelp.get(self.id(), None)
 
     def defineCharacteristicsFromFile(self):
         with open(self.descriptionFile) as lines:

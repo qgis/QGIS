@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
@@ -41,7 +41,7 @@ from processing.tools.system import mkdir
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VectorSplit(GeoAlgorithm):
+class VectorSplit(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'

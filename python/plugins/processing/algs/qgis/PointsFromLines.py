@@ -38,13 +38,13 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 from processing.tools import raster, dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
 
-class PointsFromLines(GeoAlgorithm):
+class PointsFromLines(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'

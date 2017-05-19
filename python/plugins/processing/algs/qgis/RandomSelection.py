@@ -31,7 +31,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsProcessingUtils
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomSelection(GeoAlgorithm):
+class RandomSelection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

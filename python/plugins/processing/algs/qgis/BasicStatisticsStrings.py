@@ -36,7 +36,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsFeatureRequest,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -45,7 +45,7 @@ from processing.core.outputs import OutputNumber
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BasicStatisticsStrings(GeoAlgorithm):
+class BasicStatisticsStrings(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'

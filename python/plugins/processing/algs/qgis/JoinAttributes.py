@@ -32,7 +32,7 @@ from qgis.core import (QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -42,7 +42,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class JoinAttributes(GeoAlgorithm):
+class JoinAttributes(QgisAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'

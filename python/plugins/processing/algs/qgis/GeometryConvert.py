@@ -30,14 +30,14 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class GeometryConvert(GeoAlgorithm):
+class GeometryConvert(QgisAlgorithm):
     INPUT = 'INPUT'
     TYPE = 'TYPE'
     OUTPUT = 'OUTPUT'

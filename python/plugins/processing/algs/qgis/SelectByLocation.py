@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -41,7 +41,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SelectByLocation(GeoAlgorithm):
+class SelectByLocation(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'

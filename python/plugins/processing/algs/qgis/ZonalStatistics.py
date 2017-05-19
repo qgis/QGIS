@@ -41,7 +41,7 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -52,7 +52,7 @@ from processing.tools.raster import mapToPixel
 from processing.tools import dataobjects, vector
 
 
-class ZonalStatistics(GeoAlgorithm):
+class ZonalStatistics(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'

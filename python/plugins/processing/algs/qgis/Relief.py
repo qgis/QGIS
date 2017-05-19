@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 
 from qgis.analysis import QgsRelief
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
@@ -45,7 +45,7 @@ from processing.tools import raster
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Relief(GeoAlgorithm):
+class Relief(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'

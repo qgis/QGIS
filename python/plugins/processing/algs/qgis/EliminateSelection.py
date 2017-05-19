@@ -36,7 +36,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -46,7 +46,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class EliminateSelection(GeoAlgorithm):
+class EliminateSelection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'

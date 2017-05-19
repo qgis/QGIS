@@ -31,14 +31,14 @@ from qgis.core import (QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.tools import dataobjects
 
 
-class FixGeometry(GeoAlgorithm):
+class FixGeometry(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
