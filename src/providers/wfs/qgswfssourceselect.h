@@ -72,6 +72,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
+    //! Embedded mode, without 'Close'
+    bool mEmbeddedMode;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set

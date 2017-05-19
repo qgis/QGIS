@@ -51,7 +51,6 @@
 #include <QPicture>
 #include <QUrl>
 #include <QValidator>
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -64,9 +63,11 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 {
   setupUi( this );
 
-  if ( mEmbeddedMode )
+  if ( mEmbeddedMode || ( Qt::Widget == fl ) )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    // For some osbscure reson hiding does not work!
+    // buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );

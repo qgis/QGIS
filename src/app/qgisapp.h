@@ -168,23 +168,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
 
-    /** Add a vector layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the vectorLayerPath and baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
-    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
-
-    /** \brief overloaded version of the private addLayer method that takes a list of
-     * file names instead of prompting user with a dialog.
-     \param enc encoding type for the layer
-    \param dataSourceType type of ogr datasource
-     \returns true if successfully added layer
-     */
-    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-
     /** Overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
@@ -793,6 +776,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       way.
       */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
+
+    /** Add a vector layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the vectorLayerPath and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
+    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
+
+    /** \brief overloaded version of the private addLayer method that takes a list of
+     * file names instead of prompting user with a dialog.
+     \param enc encoding type for the layer
+    \param dataSourceType type of ogr datasource
+     \returns true if successfully added layer
+     */
+    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
