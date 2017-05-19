@@ -26,6 +26,43 @@
 
 ///@cond PRIVATE
 
+QgsNativeAlgorithms::QgsNativeAlgorithms( QObject *parent )
+  : QgsProcessingProvider( parent )
+{}
+
+QIcon QgsNativeAlgorithms::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+}
+
+QString QgsNativeAlgorithms::svgIconPath() const
+{
+  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+}
+
+QString QgsNativeAlgorithms::id() const
+{
+  return QStringLiteral( "native" );
+}
+
+QString QgsNativeAlgorithms::name() const
+{
+  return tr( "QGIS" );
+}
+
+bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
+{
+  return true;
+}
+
+void QgsNativeAlgorithms::loadAlgorithms()
+{
+  addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsBufferAlgorithm() );
+}
+
+
+
 QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
   addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
