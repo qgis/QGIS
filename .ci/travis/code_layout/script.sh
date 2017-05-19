@@ -19,5 +19,6 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export QGISSTYLE=${DIR}/scripts/qgisstyle
 
 pushd build
-xvfb-run ctest -V --output-on-failure
+python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
+  xvfb-run ctest -V --output-on-failure
 popd
