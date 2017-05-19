@@ -18,6 +18,13 @@ class QgsOptional
  Often it is used for configuration options which can be enabled or disabled but also have
  more internal configuration information that should not be lost when disabling and re-enabling.
 
+.. note::
+
+   For Python you need to use implementations for specific template classes
+.. note::
+
+   Not available in Python bindings (although SIP file is present for specific implementations).
+
 .. versionadded:: 3.0
 %End
 
