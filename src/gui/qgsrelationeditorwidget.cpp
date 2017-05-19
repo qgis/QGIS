@@ -361,10 +361,14 @@ void QgsRelationEditorWidget::linkFeature()
                                 .setFilterFids( selectionDlg.selectedFeatures() )
                                 .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
 
+      QgsFields fields = mRelation.referencingLayer()->fields();
+      int attrCount = fields.size();
+      int firstIdx = fields.indexFromName( mRelation.fieldPairs().at( 0 ).first );
+      int secondIdx = mNmRelation.referencingFields().at( 0 );
       QgsFeature relatedFeature;
 
       QgsFeatureList newFeatures;
-      QgsFeature linkFeature( mRelation.referencingLayer()->fields() );
+      QgsFeature linkFeature( fields );
 
       Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mRelation.fieldPairs() )
       {
@@ -373,9 +377,14 @@ void QgsRelationEditorWidget::linkFeature()
 
       while ( it.nextFeature( relatedFeature ) )
       {
-        Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mNmRelation.fieldPairs() )
+        for ( int i = 0; i < attrCount; ++i )
         {
-          linkFeature.setAttribute( fieldPair.first, relatedFeature.attribute( fieldPair.second ) );
+          if ( i == firstIdx )
+            linkFeature.setAttribute( i, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
+          else if ( i == secondIdx )
+            linkFeature.setAttribute( i, relatedFeature.attribute( mNmRelation.referencedFields().at( 0 ) ) );
+          else
+            linkFeature.setAttribute( i, mRelation.referencingLayer()->defaultValue( i ) );
         }
 
         newFeatures << linkFeature;
