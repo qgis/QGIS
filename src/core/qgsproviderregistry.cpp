@@ -438,10 +438,10 @@ int QgsProviderRegistry::providerCapabilities( const QString &providerKey ) cons
 }
 
 // This should be QWidget, not QDialog
-typedef QWidget *selectFactoryFunction_t( QWidget *parent, Qt::WindowFlags fl );
+typedef QWidget *selectFactoryFunction_t( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode );
 
 QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
-    QWidget *parent, Qt::WindowFlags fl )
+    QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
 {
   selectFactoryFunction_t *selectFactory =
     reinterpret_cast< selectFactoryFunction_t * >( cast_to_fptr( function( providerKey, "selectWidget" ) ) );
@@ -449,7 +449,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   if ( !selectFactory )
     return nullptr;
 
-  return selectFactory( parent, fl );
+  return selectFactory( parent, fl, embeddedMode );
 }
 
 QFunctionPointer QgsProviderRegistry::function( QString const &providerKey,

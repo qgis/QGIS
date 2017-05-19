@@ -193,7 +193,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QDialog( parent, fl )
   , mManagerMode( managerMode )
   , mEmbeddedMode( embeddedMode )
@@ -204,7 +204,9 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
 
   if ( mEmbeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->setHidden( true );
+    mHoldDialogOpen->hide();
   }
   else
   {
@@ -509,7 +511,7 @@ void QgsPgSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( !( mHoldDialogOpen->isChecked() || mEmbeddedMode ) )
     {
       accept();
     }

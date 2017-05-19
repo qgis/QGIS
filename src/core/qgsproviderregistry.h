@@ -98,7 +98,7 @@ class CORE_EXPORT QgsProviderRegistry
      * responsible for deleting the returned widget.
      */
     QWidget *createSelectionWidget( const QString &providerKey,
-                                    QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+                                    QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), bool embeddedMode = false );
 
     /**
      * Get pointer to provider function

@@ -116,7 +116,7 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
     model->setData( index, le->text() );
 }
 
-QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QDialog( parent, fl )
   , mManagerMode( managerMode )
   , mEmbeddedMode( embeddedMode )

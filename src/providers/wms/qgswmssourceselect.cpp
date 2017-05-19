@@ -54,7 +54,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QDialog( parent, fl )
   , mManagerMode( managerMode )
   , mEmbeddedMode( embeddedMode )
@@ -63,7 +63,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 {
   setupUi( this );
 
-  if ( mEmbeddedMode || ( Qt::Widget == fl ) )
+  if ( mEmbeddedMode )
   {
     // For some osbscure reson hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
