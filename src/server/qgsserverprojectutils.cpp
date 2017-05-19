@@ -139,9 +139,68 @@ QStringList QgsServerProjectUtils::wmsRestrictedComposers( const QgsProject &pro
   return project.readListEntry( QStringLiteral( "WMSRestrictedComposers" ), QStringLiteral( "/" ), QStringList() );
 }
 
+QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
+{
+  QStringList crsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
+  if ( crsList.isEmpty() )
+  {
+    QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
+    bool conversionOk;
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      int epsgNr = valueList.at( i ).toInt( &conversionOk );
+      if ( conversionOk )
+      {
+        crsList.append( QStringLiteral( "EPSG:%1" ).arg( epsgNr ) );
+      }
+    }
+  }
+  if ( crsList.isEmpty() )
+  {
+    //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
+    QString projectCrsId = project.crs().authid();
+    crsList.append( projectCrsId );
+    if ( projectCrsId.compare( QLatin1String( "EPSG:4326" ), Qt::CaseInsensitive ) != 0 )
+    {
+      crsList.append( QStringLiteral( "EPSG:%1" ).arg( 4326 ) );
+    }
+    if ( projectCrsId.compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) != 0 )
+    {
+      crsList.append( QStringLiteral( "EPSG:%1" ).arg( 3857 ) );
+    }
+  }
+  return crsList;
+}
+
 QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
+}
+
+QString QgsServerProjectUtils::wmsRootName( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSRootName" ), QStringLiteral( "/" ), "" );
+}
+
+QStringList QgsServerProjectUtils::wmsRestrictedLayers( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WMSRestrictedLayers" ), QStringLiteral( "/" ), QStringList() );
+}
+
+QgsRectangle QgsServerProjectUtils::wmsExtent( const QgsProject &project )
+{
+  bool ok = false;
+  QStringList values = project.readListEntry( QStringLiteral( "WMSExtent" ), QStringLiteral( "/" ), QStringList(), &ok );
+  if ( !ok || values.size() != 4 )
+  {
+    return QgsRectangle();
+  }
+  //order of value elements must be xmin, ymin, xmax, ymax
+  double xmin = values[ 0 ].toDouble();
+  double ymin = values[ 1 ].toDouble();
+  double xmax = values[ 2 ].toDouble();
+  double ymax = values[ 3 ].toDouble();
+  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
 QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
