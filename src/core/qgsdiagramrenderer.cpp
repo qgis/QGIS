@@ -564,9 +564,9 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
   return -1;
 }
 
-QgsMarkerSymbol *QgsDiagramRenderer::createSymbol( QDomElement sizeLegendSymbolElem ) const
+QgsMarkerSymbol *QgsDiagramRenderer::createSymbol( QDomElement sizeLegendSymbolElem, const QgsReadWriteContext &context ) const
 {
-  return QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem );
+  return QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, context );
 }
 
 void QgsLinearlyInterpolatedDiagramRenderer::setSizeLegendSymbol( QgsMarkerSymbol *symbol )
@@ -628,7 +628,7 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
   QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
   {
-    setSizeLegendSymbol( createSymbol( sizeLegendSymbolElem ) );
+    setSizeLegendSymbol( createSymbol( sizeLegendSymbolElem, context ) );
   }
 }
 

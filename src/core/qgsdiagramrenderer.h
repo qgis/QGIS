@@ -647,9 +647,10 @@ class CORE_EXPORT QgsDiagramRenderer
     /**
      * Create the symbol
      * \param sizeLegendSymbolElem
+     * \param context
      * \return markerSymbol
      */
-    virtual QgsMarkerSymbol *createSymbol( QDomElement sizeLegendSymbolElem ) const;
+    virtual QgsMarkerSymbol *createSymbol( QDomElement sizeLegendSymbolElem, const QgsReadWriteContext &context ) const;
 
     //! Converts size from mm to map units
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
