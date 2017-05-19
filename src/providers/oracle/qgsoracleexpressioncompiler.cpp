@@ -15,6 +15,7 @@
 
 #include "qgsoracleexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
 QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields )
