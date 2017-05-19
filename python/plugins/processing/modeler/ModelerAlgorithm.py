@@ -225,21 +225,6 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     CANVAS_SIZE = 4000
 
-    def getCopy(self):
-        newone = ModelerAlgorithm()
-
-        newone.algs = {}
-        for algname, alg in self.algs.items():
-            newone.algs[algname] = Algorithm()
-            newone.algs[algname].__dict__.update(copy.deepcopy(alg.todict()))
-        newone.inputs = copy.deepcopy(self.inputs)
-        newone.defineCharacteristics()
-        newone._name = self._name
-        newone._group = self._group
-        newone.descriptionFile = self.descriptionFile
-        newone.helpContent = copy.deepcopy(self.helpContent)
-        return newone
-
     def __init__(self):
         self._name = self.tr('Model', 'ModelerAlgorithm')
         # The dialog where this model is being edited

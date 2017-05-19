@@ -246,11 +246,6 @@ class ProcessingToolbox(BASE, WIDGET):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            #hack - remove when getCopy is removed
-            provider = alg.provider()
-            alg = alg.getCopy()
-            #hack pt 2
-            alg.setProvider(provider)
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
             dlg.exec_()
@@ -269,11 +264,6 @@ class ProcessingToolbox(BASE, WIDGET):
                             'be run :-( </h3>\n{0}').format(message))
                 dlg.exec_()
                 return
-
-            # temporary hack - TODO remove this getCopy when parameters are moved from algorithm
-            provider = alg.provider()
-            alg = alg.getCopy()
-            alg.setProvider(provider)
 
             if (alg.countVisibleParameters() + alg.getVisibleOutputsCount()) > 0:
                 dlg = alg.getCustomParametersDialog()

@@ -72,10 +72,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
 
-    def getCopy(self):
-        newone = self
-        return newone
-
     def icon(self):
         return self._icon
 

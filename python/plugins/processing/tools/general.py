@@ -63,7 +63,6 @@ def algorithmHelp(id):
     """
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
-        alg = alg.getCopy()
         print(str(alg))
         algorithmOptions(id)
     else:

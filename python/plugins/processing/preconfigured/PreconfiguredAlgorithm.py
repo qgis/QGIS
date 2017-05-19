@@ -55,19 +55,12 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
     def flags(self):
         return QgsProcessingAlgorithm.FlagHideFromModeler
 
-    def getCopy(self):
-        newone = self
-        newone.outputs = []
-        newone._name = self._name
-        newone._group = self._group
-        return newone
-
     def defineCharacteristics(self):
         self._name = self.description["name"]
         self._group = self.description["group"]
 
     def execute(self, context=None, feedback=None, model=None):
-        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"]).getCopy()
+        self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"])
         for name, value in list(self.description["parameters"].items()):
             self.alg.setParameterValue(name, value)
         for name, value in list(self.description["outputs"].items()):

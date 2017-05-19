@@ -112,7 +112,7 @@ class ModelerDialog(BASE, WIDGET):
                 else:
                     alg = QgsApplication.processingRegistry().algorithmById(text)
                     if alg is not None:
-                        self._addAlgorithm(alg.getCopy(), event.pos())
+                        self._addAlgorithm(alg, event.pos())
                 event.accept()
             else:
                 event.ignore()
@@ -269,7 +269,7 @@ class ModelerDialog(BASE, WIDGET):
             evt.accept()
 
     def editHelp(self):
-        alg = self.alg.getCopy()
+        alg = self.alg
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
@@ -281,12 +281,7 @@ class ModelerDialog(BASE, WIDGET):
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
-        # hack - remove when above getCopy is removed
-        provider = self.alg.provider()
-        alg = self.alg.getCopy()
-        # hack pt 2
-        alg.setProvider(provider)
-        dlg = AlgorithmDialog(alg)
+        dlg = AlgorithmDialog(self.alg)
         dlg.exec_()
 
     def save(self):
@@ -554,7 +549,7 @@ class ModelerDialog(BASE, WIDGET):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            self._addAlgorithm(alg.getCopy())
+            self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):
         dlg = alg.getCustomModelerParametersDialog(self.alg)

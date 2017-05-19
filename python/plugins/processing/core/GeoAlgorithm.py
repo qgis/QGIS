@@ -74,15 +74,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
         self.defineCharacteristics()
 
-    def getCopy(self):
-        """Returns a new instance of this algorithm, ready to be used
-        for being executed.
-        """
-        newone = self
-        newone.parameters = copy.deepcopy(self.parameters)
-        newone.outputs = copy.deepcopy(self.outputs)
-        return newone
-
     # methods to overwrite when creating a custom geoalgorithm
 
     def _formatHelp(self, text):

@@ -203,12 +203,6 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
 
-    # hack - remove when getCopy is removed
-    provider = alg.provider()
-    alg = alg.getCopy()
-    #hack pt 2
-    alg.setProvider(provider)
-
     context = dataobjects.createContext()
     if (alg.countVisibleParameters() + alg.getVisibleOutputsCount()) > 0:
         dlg = alg.getCustomParametersDialog()

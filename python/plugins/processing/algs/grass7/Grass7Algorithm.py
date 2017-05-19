@@ -97,9 +97,6 @@ class Grass7Algorithm(GeoAlgorithm):
         except ImportError:
             self.module = None
 
-    def getCopy(self):
-        return self
-
     def name(self):
         return self._name
 
