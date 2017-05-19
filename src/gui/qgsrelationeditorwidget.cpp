@@ -35,6 +35,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
     , mViewMode( QgsDualView::AttributeEditor )
     , mShowLabel( true )
     , mVisible( false )
+    , mInitialized( false )
 {
   QVBoxLayout* topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -180,6 +181,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
 
     mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+    mInitialized = true;
   }
 }
 
@@ -202,17 +204,6 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
 
   if ( !mRelation.isValid() )
     return;
-
-  mToggleEditingButton->setVisible( true );
-
-  Q_FOREACH ( QgsTransactionGroup* tg, QgsProject::instance()->transactionGroups().values() )
-  {
-    if ( tg->layers().contains( mRelation.referencingLayer() ) )
-    {
-      mToggleEditingButton->setVisible( false );
-      mSaveEditsButton->setVisible( false );
-    }
-  }
 
   connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
   connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
@@ -532,7 +523,7 @@ void QgsRelationEditorWidget::updateUi()
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
 
-  if ( mVisible )
+  if ( mVisible && !mInitialized )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
 
@@ -559,6 +550,18 @@ void QgsRelationEditorWidget::updateUi()
     else
     {
       mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
+    }
+    mInitialized = true;
+  }
+
+  mToggleEditingButton->setVisible( true );
+
+  Q_FOREACH ( QgsTransactionGroup* tg, QgsProject::instance()->transactionGroups().values() )
+  {
+    if ( tg->layers().contains( mRelation.referencingLayer() ) )
+    {
+      mToggleEditingButton->setVisible( false );
+      mSaveEditsButton->setVisible( false );
     }
   }
 }
