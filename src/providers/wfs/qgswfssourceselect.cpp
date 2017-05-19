@@ -52,12 +52,19 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   : QDialog( parent, fl )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
+  , mEmbeddedMode( embeddedMode )
 {
   setupUi( this );
 
-  if ( embeddedMode )
+  if ( mEmbeddedMode || ( Qt::Widget == fl ) )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    // For some osbscure reson hiding does not work!
+    // buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->setHidden( true );
+    mHoldDialogOpen->hide();
+    // Set this in any event, to prevent auto-close
+    mEmbeddedMode = true;
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
@@ -400,7 +407,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addWfsLayer( mUri, layerName );
   }
 
-  if ( !mHoldDialogOpen->isChecked() )
+  if ( !( mHoldDialogOpen->isChecked() || mEmbeddedMode ) )
   {
     accept();
   }

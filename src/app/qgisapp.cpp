@@ -1592,6 +1592,13 @@ void QgisApp::dataSourceManager()
   if ( ! mDataSourceManagerDialog )
   {
     mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this );
+    // Forward signals
+    connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+             this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
+             this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
+             this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
   }
   // TODO: handle docked
   mDataSourceManagerDialog->exec();

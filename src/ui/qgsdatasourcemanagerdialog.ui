@@ -2,29 +2,47 @@
 <ui version="4.0">
  <class>QgsDataSourceManagerDialog</class>
  <widget class="QDialog" name="QgsDataSourceManagerDialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
+    <width>1010</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Data Source Manager</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QSplitter" name="mSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
      <widget class="QFrame" name="mListFrame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>1</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -32,7 +50,19 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QListWidget" name="mList">
          <property name="sizePolicy">
@@ -49,9 +79,27 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>160</width>
+           <width>200</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideNone</enum>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
          <item>
           <property name="text">
@@ -68,10 +116,16 @@
      </widget>
      <widget class="QFrame" name="mDialogsFrame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>10</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>400</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -79,7 +133,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
        <item>
         <widget class="QStackedWidget" name="mStackedWidget">
          <property name="sizePolicy">

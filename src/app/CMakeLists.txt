@@ -533,6 +533,43 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
+  ../analysis/raster
+  ../analysis/openstreetmap
+  ../core
+  ../core/annotations
+  ../core/auth
+  ../core/gps
+  ../core/composer
+  ../core/dxf
+  ../core/geometry
+  ../core/metadata
+  ../core/layertree
+  ../core/providers/memory
+  ../core/raster
+  ../core/scalebar
+  ../core/symbology-ng
+  ../gui
+  ../gui/symbology-ng
+  ../gui/attributetable
+  ../gui/auth
+  ../gui/raster
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
+  ../gui/layertree
+  ../plugins
+  ../python
+  gps
+  ogr
+  openstreetmap
+  dwg
+  dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
+)
+INCLUDE_DIRECTORIES(SYSTEM
+>>>>>>> [addlayerbutton] Added WFS, WMS and vector layers
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}

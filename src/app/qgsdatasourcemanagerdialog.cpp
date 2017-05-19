@@ -1,13 +1,28 @@
+/***************************************************************************
+    qgsdatasourcemanagerdialog.cpp - datasource manager dialog
+
+    ---------------------
+    begin                : May 19, 2017
+    copyright            : (C) 2017 by Alessandro Pasotti
+    email                : apasotti at itopen dot it
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include <QMessageBox>
 #include <QListWidgetItem>
-#include <QMdiArea>
-#include <QMdiSubWindow>
 
 #include "qgsdatasourcemanagerdialog.h"
 #include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgsopenvectorlayerdialog.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent ) :
   QDialog( parent ),
@@ -27,34 +42,47 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent ) :
   // Bind list index to the stacked dialogs
   connect( ui->mList, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentPage( int ) ) );
 
-  // Add the browser widget to the first stacked widget page
+  /////////////////////////////////////////////////////////////////////////////
+  // BROWSER Add the browser widget to the first stacked widget page
+
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mStackedWidget->addWidget( mBrowserWidget );
 
-  // Add data provider dialogs
+  /////////////////////////////////////////////////////////////////////////////
+  // VECTOR Layers (completely different interface: it's not a provider)
 
+  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, true );
+  ui->mStackedWidget->addWidget( ovl );
+  QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mList );
+  ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
+  connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
+
+  // Add data provider dialogs
+  QDialog *dlg;
+
+  /////////////////////////////////////////////////////////////////////////////
   // WMS
-  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wms" ), this ) );
-  if ( !wmss )
+
+  dlg = providerDialog( QStringLiteral( "wms" ), tr( "WMS" ), QStringLiteral( "/mActionAddWmsLayer.svg" ) );
+  if ( dlg )
   {
-    QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
+    // Forward
+    connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+             this, SLOT( rasterLayerAdded( QString const &, QString const &, QString const & ) ) );
   }
-  else
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WFS
+
+  dlg = providerDialog( QStringLiteral( "WFS" ), tr( "WFS" ), QStringLiteral( "/mActionAddWfsLayer.svg" ) );
+  if ( dlg )
   {
-    connect( wmss, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-             qApp, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-    //wmss->exec();
-    wmss->setWindowFlags( Qt::Widget );
-    QMdiArea *wmsMdi = new QMdiArea( this );
-    QMdiSubWindow *wmsSub;
-    wmsMdi->setViewMode( QMdiArea::TabbedView );
-    wmsSub = wmsMdi->addSubWindow( wmss );
-    wmsSub->show();
-    ui->mStackedWidget->addWidget( wmsMdi );
-    mDialogs.append( wmss ); // TODO: rm
-    QListWidgetItem *wmsItem = new QListWidgetItem( tr( "WMS" ), ui->mList );
-    wmsItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ) );
+    // Forward (if only a common interface for the signals had been used in the providers ...)
+    connect( dlg, SIGNAL( addWfsLayer( QString, QString ) ), this, SIGNAL( addWfsLayer( QString, QString ) ) );
+    connect( this, &QgsDataSourceManagerDialog::addWfsLayer,
+             this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
+    { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) ); } );
   }
 
 }
@@ -66,5 +94,38 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
+  // TODO: change window title according to the active page
   ui->mStackedWidget->setCurrentIndex( index );
+}
+
+void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
+{
+  emit( addRasterLayer( uri, baseName, providerKey ) );
+}
+
+void QgsDataSourceManagerDialog::vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
+{
+  emit( addVectorLayer( vectorLayerPath, baseName, providerKey ) );
+}
+
+void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
+{
+  emit addVectorLayers( layerQStringList, enc, dataSourceType );
+}
+
+QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon )
+{
+  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget ) );
+  if ( !dlg )
+  {
+    QMessageBox::warning( this, providerName, tr( "Cannot get %1 select dialog from provider %2." ).arg( providerName, providerKey ) );
+    return nullptr;
+  }
+  else
+  {
+    ui->mStackedWidget->addWidget( dlg );
+    QListWidgetItem *wmsItem = new QListWidgetItem( providerName, ui->mList );
+    wmsItem->setIcon( QgsApplication::getThemeIcon( icon ) );
+    return dlg;
+  }
 }
