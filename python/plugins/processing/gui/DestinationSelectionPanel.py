@@ -225,4 +225,6 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.leText.setText(dirName)
 
     def getValue(self):
+        if not self.leText.text():
+            return 'memory:'
         return self.leText.text()
