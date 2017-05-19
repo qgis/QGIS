@@ -53,6 +53,21 @@ class QgsRasterFileWriter
  :rtype: QgsRasterDataProvider
 %End
 
+    QgsRasterDataProvider *createRaster( Qgis::DataType dataType,
+                                         int width, int height, const QgsRectangle &extent,
+                                         int nBands, const QgsCoordinateReferenceSystem &crs ) /Factory/;
+%Docstring
+ Create a raster file with given number of bands without initializing the pixel data.
+ Returned provider may be used to initialize the raster using writeBlock() calls.
+ Ownership of the returned provider is passed to the caller.
+.. note::
+
+   Does not work with tiled mode enabled.
+ :return: Instance of data provider in editing mode (on success) or None on error.
+.. versionadded:: 3.0
+ :rtype: QgsRasterDataProvider
+%End
+
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
