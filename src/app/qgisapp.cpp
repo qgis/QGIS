@@ -3742,68 +3742,71 @@ void QgisApp::about()
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     sAbt = new QgsAbout( this );
-    QString versionString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
+    QString aboutString = QStringLiteral( "<html><body><div align='center'><table width='100%'>" );
 
-    versionString += QLatin1String( "<tr>" );
-    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
+    aboutString += QLatin1String( "<tr>" );
+    aboutString += "<td>" + tr( "QGIS version" )       + "</td><td>" + Qgis::QGIS_VERSION + "</td><td>";
 
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
     {
-      versionString += tr( "QGIS code branch" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
+      aboutString += tr( "QGIS code branch" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/tree/release-%1_%2\">Release %1.%2</a></td>" )
                        .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 );
     }
     else
     {
-      versionString += tr( "QGIS code revision" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( Qgis::QGIS_DEV_VERSION );
+      aboutString += tr( "QGIS code revision" ) + QStringLiteral( "</td><td><a href=\"https://github.com/qgis/QGIS/commit/%1\">%1</a></td>" ).arg( Qgis::QGIS_DEV_VERSION );
     }
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "Running against Qt" )  + "</td><td>" + qVersion() + "</td>";
+    aboutString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
+    aboutString += "<td>" + tr( "Running against Qt" )  + "</td><td>" + qVersion() + "</td>";
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
+    aboutString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
+    aboutString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "Compiled against GEOS" ) + "</td><td>" + GEOS_CAPI_VERSION + "</td>";
-    versionString += "<td>" + tr( "Running against GEOS" ) + "</td><td>" + GEOSversion() + "</td>";
+    aboutString += "<td>" + tr( "Compiled against GEOS" ) + "</td><td>" + GEOS_CAPI_VERSION + "</td>";
+    aboutString += "<td>" + tr( "Running against GEOS" ) + "</td><td>" + GEOSversion() + "</td>";
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
+    aboutString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
-    versionString += PG_VERSION;
+    aboutString += PG_VERSION;
 #else
     versionString += tr( "No support." );
 #endif
-    versionString += QLatin1String( "</td>" );
+    aboutString += QLatin1String( "</td>" );
 
-    versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
-    versionString += spatialite_version();
-    versionString += QLatin1String( "</td>" );
+    aboutString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
+    aboutString += spatialite_version();
+    aboutString += QLatin1String( "</td>" );
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
+    aboutString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
+    aboutString += "<td>" + tr( "PROJ.4 Version" ) + "</td><td>" + QString::number( PJ_VERSION ) + "</td>";
 
-    versionString += QLatin1String( "</tr><tr>" );
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
+    aboutString += "<td>" + tr( "QScintilla2 Version" ) + "</td><td>" + QSCINTILLA_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    aboutString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
+    aboutString += QLatin1String( "</tr><tr>" );
 
-    versionString += QLatin1String( "</tr></table></div></body></html>" );
+    aboutString += "<td>" + tr( "Settings path" ) + "</td>";
+    aboutString += "<td colspan=3>" + QSettings().fileName() + "</td></tr>";
 
-    sAbt->setVersion( versionString );
+    aboutString += QLatin1String( "</table></div></body></html>" );
 
+    sAbt->setVersion( aboutString );
     QApplication::restoreOverrideCursor();
   }
   sAbt->show();
