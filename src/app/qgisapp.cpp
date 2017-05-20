@@ -9315,7 +9315,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( const QString& vectorLayerPath, const Q
       Q_ASSERT( elements.size() >= 4 );
       if ( layer->name() != elements.at( 1 ) )
       {
-        layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+        layer->setName( QString( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
       }
 
       myList << layer;
