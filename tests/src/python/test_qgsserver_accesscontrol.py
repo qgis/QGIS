@@ -210,7 +210,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
 
     def test_wms_getprojectsettings(self):
         query_string = "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(self.projectPath),
+            "MAP": urllib.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetProjectSettings"
