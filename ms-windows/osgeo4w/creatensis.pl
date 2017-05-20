@@ -274,7 +274,7 @@ open F, ">../Installer-Files/postinstall.bat";
 my $r = ">>postinstall.log 2>&1\r\n";
 
 print F "\@echo off\r\n";
-print F "del postinstall.log\r\n";
+print F "if exist postinstall.log del postinstall.log\r\n";
 print F "set OSGEO4W_ROOT_MSYS=%OSGEO4W_ROOT:\\=/%$r";
 print F "if \"%OSGEO4W_ROOT_MSYS:~1,1%\"==\":\" set OSGEO4W_ROOT_MSYS=/%OSGEO4W_ROOT_MSYS:~0,1%/%OSGEO4W_ROOT_MSYS:~3%$r";
 
