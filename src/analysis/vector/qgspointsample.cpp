@@ -85,13 +85,13 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
     {
       minDistance = fet.attribute( mMinDistanceAttribute ).toDouble();
     }
-    addSamplePoints( fet, writer, nPoints, minDistance );
+    addSamplePoints( fet, writer, outputFields, nPoints, minDistance );
   }
 
   return 0;
 }
 
-void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
+void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, const QgsFields& outputFields, int nPoints, double minDistance )
 {
   if ( !inputFeature.constGeometry() )
     return;
@@ -122,7 +122,7 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
     if ( ptGeom->within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
       //add feature to writer
-      QgsFeature f( mNCreatedPoints );
+      QgsFeature f( outputFields, mNCreatedPoints );
       f.setAttribute( "id", mNCreatedPoints + 1 );
       f.setAttribute( "station_id", points + 1 );
       f.setAttribute( "stratum_id", inputFeature.id() );

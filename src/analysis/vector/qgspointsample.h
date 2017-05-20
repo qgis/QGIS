@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsPointSample
   private:
 
     QgsPointSample(); //default constructor is forbidden
-    void addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance );
+    void addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, const QgsFields& outputFields, int nPoints, double minDistance );
     bool checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap );
 
     /** Layer id of input polygon/multipolygon layer*/
