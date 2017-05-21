@@ -22,10 +22,11 @@
 #include <QString>
 #include <gdal_version.h>
 #include "qgis_analysis.h"
+#include "qgis.h"
 
 class QgsRectangle;
 
-typedef void *GDALDatasetH;
+typedef void *GDALDatasetH SIP_SKIP;
 
 
 /** \ingroup analysis
@@ -138,7 +139,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! used for rescaling of values (if necessary)
       double srcCellSizeInDestCRS;
     };
-    typedef QList<Item> List;
+    typedef QList<QgsAlignRaster::Item> List;
 
     //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
@@ -261,8 +262,11 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     //! Computed geo-transform
     double mGeoTransform[6];
-    //! Computed raster grid width/height
-    int mXSize, mYSize;
+    //! Computed raster grid width
+    int mXSize;
+
+    //! Computed raster grid height
+    int mYSize;
 
 };
 
