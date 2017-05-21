@@ -92,7 +92,7 @@ bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
   return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ) );
 }
 
-bool QgsServerProjectUtils::wmsInfoFormatSIA2045( const QgsProject &project )
+bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
   QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
 
