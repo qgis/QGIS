@@ -304,7 +304,7 @@ void QgsLocatorWidget::updateResults( const QString &text )
   else
   {
     mHasSelectedResult = false;
-    mLocatorModel->clear();
+    mLocatorModel->deferredClear();
     mLocator->fetchResults( text, createContext() );
   }
 }
@@ -350,14 +350,27 @@ QgsLocatorContext QgsLocatorWidget::createContext()
 
 QgsLocatorModel::QgsLocatorModel( QObject *parent )
   : QAbstractTableModel( parent )
-{}
+{
+  mDeferredClearTimer.setInterval( 100 );
+  mDeferredClearTimer.setSingleShot( true );
+  connect( &mDeferredClearTimer, &QTimer::timeout, this, &QgsLocatorModel::clear );
+}
 
 void QgsLocatorModel::clear()
 {
+  mDeferredClearTimer.stop();
+  mDeferredClear = false;
+
   beginResetModel();
   mResults.clear();
   mFoundResultsFromFilterNames.clear();
   endResetModel();
+}
+
+void QgsLocatorModel::deferredClear()
+{
+  mDeferredClear = true;
+  mDeferredClearTimer.start();
 }
 
 int QgsLocatorModel::rowCount( const QModelIndex & ) const
@@ -459,17 +472,29 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
     flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   }
   return flags;
-
 }
 
 void QgsLocatorModel::addResult( const QgsLocatorResult &result )
 {
+  mDeferredClearTimer.stop();
+  if ( mDeferredClear )
+  {
+    mFoundResultsFromFilterNames.clear();
+  }
+
   int pos = mResults.size();
   bool addingFilter = !result.filter->displayName().isEmpty() && !mFoundResultsFromFilterNames.contains( result.filter->name() );
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
-  beginInsertRows( QModelIndex(), pos, pos + ( addingFilter ? 1 : 0 ) );
+  if ( mDeferredClear )
+  {
+    beginResetModel();
+    mResults.clear();
+  }
+  else
+    beginInsertRows( QModelIndex(), pos, pos + ( addingFilter ? 1 : 0 ) );
+
   if ( addingFilter )
   {
     Entry entry;
@@ -480,7 +505,13 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   Entry entry;
   entry.result = result;
   mResults << entry;
-  endInsertRows();
+
+  if ( mDeferredClear )
+    endResetModel();
+  else
+    endInsertRows();
+
+  mDeferredClear = false;
 }
 
 
