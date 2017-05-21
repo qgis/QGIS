@@ -23,7 +23,8 @@ from builtins import str
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QFile, Qgis
+from qgis.core import Qgis
+from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtWidgets import QApplication
 
 from ..connector import DBConnector
