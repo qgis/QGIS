@@ -694,7 +694,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # keyword fixes
     do {no warnings 'uninitialized';
-        $LINE =~ s/^(\s*template<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
+        $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
         $LINE =~ s/\s*\bextern \b//;
         $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
@@ -712,7 +712,7 @@ while ($LINE_IDX < $LINE_COUNT){
     # https://regex101.com/r/gUBZUk/10
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $LINE =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/){
+         $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
@@ -868,7 +868,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
         next;
     }
-    if ( $LINE =~ m/^\s*template<.*>/ ){
+    if ( $LINE =~ m/^\s*template\s*<.*>/ ){
         # do not comment now for templates, wait for class definition
         next;
     }
