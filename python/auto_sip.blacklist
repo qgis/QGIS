@@ -260,7 +260,6 @@ analysis/vector/qgsgeometryanalyzer.sip
 analysis/vector/qgsgeometrysnapper.sip
 analysis/vector/qgspointsample.sip
 analysis/vector/qgstransectsample.sip
-analysis/vector/qgszonalstatistics.sip
 analysis/interpolation/Bezier3D.sip
 analysis/interpolation/CloughTocherInterpolator.sip
 analysis/interpolation/DualEdgeTriangulation.sip
@@ -282,10 +281,8 @@ analysis/interpolation/qgstininterpolator.sip
 analysis/openstreetmap/qgsosmbase.sip
 analysis/openstreetmap/qgsosmdatabase.sip
 analysis/openstreetmap/qgsosmimport.sip
-analysis/raster/qgsalignraster.sip
 analysis/raster/qgsderivativefilter.sip
 analysis/raster/qgsaspectfilter.sip
-analysis/raster/qgshillshadefilter.sip
 analysis/raster/qgskde.sip
 analysis/raster/qgsninecellfilter.sip
 analysis/raster/qgsrastercalcnode.sip
