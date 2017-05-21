@@ -140,7 +140,8 @@ void QgsLocator::cancel()
 
 void QgsLocator::cancelWithoutBlocking()
 {
-  mFeedback->cancel();
+  if ( mFeedback )
+    mFeedback->cancel();
 }
 
 bool QgsLocator::isRunning() const
