@@ -224,7 +224,7 @@ namespace QgsWms
 
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version )
   {
-    bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSIA2045( *project );
+    bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
     //Service element
     QDomElement serviceElem = doc.createElement( QStringLiteral( "Service" ) );
@@ -819,7 +819,7 @@ namespace QgsWms
                                     bool projectSettings )
     {
       bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
-      bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSIA2045( *project );
+      bool siaFormat = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
       QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
       QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();

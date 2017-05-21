@@ -121,7 +121,7 @@ namespace QgsServerProjectUtils
       * \param project the QGIS project
       * \returns if the info format is SIA20145.
       */
-    bool wmsInfoFormatSIA2045( const QgsProject &project );
+    bool wmsInfoFormatSia2045( const QgsProject &project );
 
     /** Returns if Inspire is activated.
       * \param project the QGIS project
