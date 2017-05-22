@@ -61,7 +61,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
                        QgsProject,
                        QgsApplication,
-                       QgsProcessingContext)
+                       QgsProcessingContext,
+                       QgsProcessingUtils,
+                       QgsProcessingFeedback)
 
 from qgis.testing import _UnexpectedSuccess
 
@@ -112,7 +114,7 @@ class AlgorithmsTest(object):
                 parameters[k] = p
 
         for r, p in list(defs['results'].items()):
-            alg.setOutputValue(r, self.load_result_param(p))
+            parameters[r] = self.load_result_param(p)
 
         expectFailure = False
         if 'expectedFailure' in defs:
@@ -122,18 +124,19 @@ class AlgorithmsTest(object):
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+        feedback = QgsProcessingFeedback()
 
         if expectFailure:
             try:
-                alg.execute(parameters, context)
-                self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
+                results = alg.run(parameters, context, feedback)
+                self.check_results(results, context, defs['params'], defs['results'])
             except Exception:
                 pass
             else:
                 raise _UnexpectedSuccess
         else:
-            alg.execute(parameters, context)
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
+            results = alg.run(parameters, context, feedback)
+            self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):
         """
@@ -153,7 +156,7 @@ class AlgorithmsTest(object):
         """
         try:
             if param['type'] in ('vector', 'raster', 'table'):
-                return self.load_layer(id, param)
+                return self.load_layer(id, param).id()
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
@@ -231,7 +234,7 @@ class AlgorithmsTest(object):
 
         return os.path.join(prefix, param['name'])
 
-    def check_results(self, results, params, expected):
+    def check_results(self, results, context, params, expected):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
@@ -239,14 +242,14 @@ class AlgorithmsTest(object):
             if expected_result['type'] in ('vector', 'table'):
                 expected_lyr = self.load_layer(id, expected_result)
                 if 'in_place_result' in expected_result:
-                    result_lyr = QgsVectorLayer(self.in_place_layers[id], id, 'ogr')
+                    result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
                 else:
                     try:
                         results[id]
                     except KeyError as e:
                         raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
-                    result_lyr = QgsVectorLayer(results[id], id, 'ogr')
+                    result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
 
                 compare = expected_result.get('compare', {})
 

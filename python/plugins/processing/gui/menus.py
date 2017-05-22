@@ -221,7 +221,7 @@ def _executeAlgorithm(alg):
     else:
         feedback = MessageBarProgress()
         parameters = {}
-        execute(alg, parameters, context, feedback)
+        ret, results = execute(alg, parameters, context, feedback)
         handleAlgorithmResults(alg, context, feedback)
         feedback.close()
 

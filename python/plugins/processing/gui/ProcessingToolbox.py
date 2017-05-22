@@ -286,8 +286,8 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
-                execute(alg, context, feedback)
                 parameters = {}
+                ret, results = execute(alg, parameters, context, feedback)
                 handleAlgorithmResults(alg, parameters, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
