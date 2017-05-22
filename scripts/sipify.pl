@@ -579,10 +579,10 @@ while ($line_idx < $line_count){
     }
 
     # skip non-method member declaration in non-public sections
-    # https://regex101.com/r/gUBZUk/8
+    # https://regex101.com/r/gUBZUk/9
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $line =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)? \*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?)|\[\d+\])?;/){
+         $line =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?)|\[\d+\])?)+;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
