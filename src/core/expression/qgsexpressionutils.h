@@ -45,22 +45,11 @@ class QgsExpressionUtils
     };
 
 
-    static constexpr TVL AND[3][3] =
-    {
-      // false  true    unknown
-      { False, False,   False },   // false
-      { False, True,    Unknown }, // true
-      { False, Unknown, Unknown }  // unknown
-    };
+    static TVL AND[3][3];
 
-    static constexpr TVL OR[3][3] =
-    {
-      { False,   True, Unknown },  // false
-      { True,    True, True },     // true
-      { Unknown, True, Unknown }   // unknown
-    };
+    static TVL OR[3][3];
 
-    static constexpr TVL NOT[3] = { True, False, Unknown };
+    static TVL NOT[3];
 
 #define TVL_True QVariant( 1 )
 #define TVL_False QVariant( 0 )
