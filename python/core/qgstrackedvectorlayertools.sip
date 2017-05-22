@@ -1,39 +1,48 @@
-/***************************************************************************
-  qgstrackedvectorlayertools.sip - QgsTrackedVectorLayerTools
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstrackedvectorlayertools.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 16.5.2016
- copyright            : (C) 2016 by Matthias Kuhn, OPENGIS.ch
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
 class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 {
+
 %TypeHeaderCode
 #include "qgstrackedvectorlayertools.h"
 %End
   public:
     QgsTrackedVectorLayerTools();
 
-    bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
-    bool startEditing( QgsVectorLayer *layer ) const ;
-    bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const ;
-    bool saveEdits( QgsVectorLayer *layer ) const ;
-    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = 0 ) const;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
 
-    /**
-     * Set the vector layer tools that will be used to interact with the data
-     */
-    void setVectorLayerTools(const QgsVectorLayerTools *tools );
+    virtual bool startEditing( QgsVectorLayer *layer ) const;
 
-    /**
-     * Delete all features which have been added via this object.
-     */
+    virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const;
+
+    virtual bool saveEdits( QgsVectorLayer *layer ) const;
+
+    virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = 0 ) const;
+
+
+    void setVectorLayerTools( const QgsVectorLayerTools *tools );
+%Docstring
+ Set the vector layer tools that will be used to interact with the data
+%End
+
     void rollback();
+%Docstring
+ Delete all features which have been added via this object.
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstrackedvectorlayertools.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -16,8 +16,11 @@
 #ifndef QGSSPATIALINDEX_H
 #define QGSSPATIALINDEX_H
 
+
+#include "qgis_sip.h"
+
 // forward declaration
-namespace SpatialIndex
+namespace SpatialIndex SIP_SKIP
 {
   class IStorageManager;
   class ISpatialIndex;
@@ -93,7 +96,7 @@ class CORE_EXPORT QgsSpatialIndex
     /* debugging */
 
     //! get reference count - just for debugging!
-    QAtomicInt refs() const;
+    QAtomicInt SIP_PYTYPE( int ) refs() const;
 
   protected:
     //! \note not available in Python bindings

@@ -130,11 +130,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
         , unit( u )
       {}
 
-      bool operator==( const LayerConfig &other ) const
+      bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
       }
-      bool operator!=( const LayerConfig &other ) const
+      bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const
       {
         return !operator==( other );
       }
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     };
 
     //! Query layers used for snapping
-    QList<LayerConfig> layers() const { return mLayers; }
+    QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
     /** Get extra information about the instance
      * \since QGIS 2.14

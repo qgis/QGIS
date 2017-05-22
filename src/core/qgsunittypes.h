@@ -142,13 +142,13 @@ class CORE_EXPORT QgsUnitTypes
     };
 
     //! List of render units
-    typedef QList<RenderUnit> RenderUnitList;
+    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
 
     // DISTANCE UNITS
 
     /** Returns the type for a distance unit.
      */
-    Q_INVOKABLE static DistanceUnitType unitType( DistanceUnit unit );
+    Q_INVOKABLE static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
 
     /** Encodes a distance unit to a string.
      * \param unit unit to encode
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+    Q_INVOKABLE static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 
     /**
      * Will convert an \a area with a given \a unit to an area value which is nice to display.
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+    Q_INVOKABLE static QgsUnitTypes::AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 
     /** Returns an distance formatted as a friendly string.
      * \param distance distance to format
