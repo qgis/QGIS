@@ -422,7 +422,7 @@ void QgsAttributeTableModel::loadLayer()
   {
     ++i;
 
-    if ( t.elapsed() > 1000 )
+    if ( t.elapsed() > 1000 || i == 1 )
     {
       bool cancel = false;
       emit progress( i, cancel );
