@@ -66,7 +66,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
       \since QGIS 2.6 */
-    void setJoinFieldNamesSubset( QStringList *fieldNamesSubset ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
+    void setJoinFieldNamesSubset( QStringList *fieldNamesSubset SIP_TRANSFER ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /** Get subset of fields to be used from joined layer. All fields will be used if null is returned.
       \since QGIS 2.6 */

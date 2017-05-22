@@ -38,6 +38,18 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 
 class CORE_EXPORT QgsAbstractPropertyCollection
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
+      sipType = sipType_QgsPropertyCollection;
+    else if ( dynamic_cast<QgsPropertyCollectionStack *>( sipCpp ) )
+      sipType = sipType_QgsPropertyCollectionStack;
+    else
+      sipType = sipType_QgsAbstractPropertyCollection;
+    SIP_END
+#endif
+
   public:
 
     /**
@@ -290,7 +302,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     QSet<int> propertyKeys() const override;
     void clear() override;
     bool hasProperty( int key ) const override;
-    QgsProperty property( int key ) const override;
+    QgsProperty property( int key ) const override SIP_SKIP;
 
     /**
      * Returns a reference to a matching property from the collection, if one exists.
@@ -299,8 +311,8 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * \returns matching property, or null if no matching, active property found.
      * \see hasProperty()
      */
-
     virtual QgsProperty &property( int key );
+
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
@@ -393,8 +405,9 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * Returns the collection at the corresponding index from the stack.
      * \param index position of collection, 0 based
      * \returns collection if one exists at the specified index
+     * \note not available in Python bindings
      */
-    const QgsPropertyCollection *at( int index ) const;
+    const QgsPropertyCollection *at( int index ) const SIP_SKIP;
 
     /**
      * Returns the first collection with a matching name from the stack.
