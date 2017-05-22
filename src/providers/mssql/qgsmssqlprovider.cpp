@@ -368,9 +368,27 @@ void QgsMssqlProvider::loadFields()
 {
   mAttributeFields.clear();
   mDefaultValues.clear();
+  mComputedColumns.clear();
+
   // get field spec
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
+
+  // Get computed columns which need to be ignored on insert or update.
+  if ( !query.exec( QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) ) )
+  {
+    QgsDebugMsg( query.lastError().text( ) );
+    return;
+  }
+
+  if ( query.isActive() )
+  {
+    while ( query.next() )
+    {
+      mComputedColumns.append( query.value( 0 ).toString() );
+    }
+  }
+
   if ( !query.exec( QStringLiteral( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
     QgsDebugMsg( query.lastError().text( ) );
@@ -432,6 +450,7 @@ void QgsMssqlProvider::loadFields()
               sqlTypeName ) );
         }
 
+        //COLUMN_DEF
         if ( !query.value( 12 ).isNull() )
         {
           mDefaultValues.insert( i, query.value( 12 ).toString() );
@@ -835,6 +854,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
 
+      if ( mComputedColumns.contains( fld.name() ) )
+        continue; // skip computed columns because they are done server side.
+
       if ( !first )
       {
         statement += ',';
@@ -911,6 +933,9 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
 
       if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attrs.at( i ).toString() )
         continue; // skip fields having default values
+
+      if ( mComputedColumns.contains( fld.name() ) )
+        continue; // skip computed columns because they are done server side.
 
       QVariant::Type type = fld.type();
       if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
@@ -1142,6 +1167,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       if ( fld.name().isEmpty() )
         continue; // invalid
 
+      if ( mComputedColumns.contains( fld.name() ) )
+        continue; // skip computed columns because they are done server side.
+
       if ( !first )
         statement += ',';
       else
@@ -1175,6 +1203,9 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
 
       if ( fld.name().isEmpty() )
         continue; // invalid
+
+      if ( mComputedColumns.contains( fld.name() ) )
+        continue; // skip computed columns because they are done server side.
 
       QVariant::Type type = fld.type();
       if ( it2->isNull() || !it2->isValid() )

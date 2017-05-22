@@ -150,6 +150,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     //! Fields
     QgsFields mAttributeFields;
     QMap<int, QString> mDefaultValues;
+    QList<QString> mComputedColumns;
 
     mutable QgsMssqlGeometryParser mParser;
 
