@@ -307,7 +307,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Launched when a feature has been added
      * @param fid feature id
      */
-    virtual void featureAdded( QgsFeatureId fid );
+    virtual void featureAdded( QgsFeatureId fid, bool resettingModel = false );
 
     /**
      * Launched when layer has been deleted

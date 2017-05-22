@@ -197,7 +197,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   return true;
 }
 
-void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
+void QgsAttributeTableModel::featureAdded( QgsFeatureId fid , bool resettingModel )
 {
   QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
@@ -225,10 +225,12 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
     if ( ! mIdRowMap.contains( fid ) )
     {
       int n = mRowIdMap.size();
-      beginInsertRows( QModelIndex(), n, n );
+      if ( !resettingModel )
+        beginInsertRows( QModelIndex(), n, n );
       mIdRowMap.insert( fid, n );
       mRowIdMap.insert( n, fid );
-      endInsertRows();
+      if ( !resettingModel )
+        endInsertRows();
       reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
     }
   }
@@ -412,7 +414,7 @@ void QgsAttributeTableModel::loadLayer()
 
       t.restart();
     }
-    featureAdded( mFeat.id() );
+    featureAdded( mFeat.id(), true );
   }
 
   emit finished();
