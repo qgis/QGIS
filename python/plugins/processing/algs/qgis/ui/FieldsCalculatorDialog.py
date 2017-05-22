@@ -116,10 +116,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def updateLayer(self, layer):
         self.layer = layer
-
-        self.initContext()
         self.builder.setLayer(self.layer)
-        self.builder.loadFieldNames()
+        self.initContext()
         self.populateFields()
 
     def setupSpinboxes(self, index):
