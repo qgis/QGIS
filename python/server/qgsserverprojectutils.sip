@@ -111,11 +111,89 @@ namespace QgsServerProjectUtils
       */
     int wmsMaxHeight( const QgsProject &project );
 
+    /** Returns if layer ids are used as name in WMS.
+      * \param project the QGIS project
+      * \returns if layer ids are used as name.
+      */
+    bool wmsUseLayerIds( const QgsProject &project );
+
+    /** Returns if the info format is SIA20145.
+      * \param project the QGIS project
+      * \returns if the info format is SIA20145.
+      */
+    bool wmsInfoFormatSia2045( const QgsProject &project );
+
+    /** Returns if Inspire is activated.
+      * \param project the QGIS project
+      * \returns if Inspire is activated.
+      */
+    bool wmsInspireActivated( const QgsProject &project );
+
+    /** Returns the Inspire language.
+      * \param project the QGIS project
+      * \returns the Inspire language if defined in project.
+      */
+    QString wmsInspireLanguage( const QgsProject &project );
+
+    /** Returns the Inspire metadata URL.
+      * \param project the QGIS project
+      * \returns the Inspire metadata URL if defined in project.
+      */
+    QString wmsInspireMetadataUrl( const QgsProject &project );
+
+    /** Returns the Inspire metadata URL type.
+      * \param project the QGIS project
+      * \returns the Inspire metadata URL type if defined in project.
+      */
+    QString wmsInspireMetadataUrlType( const QgsProject &project );
+
+    /** Returns the Inspire temporal reference.
+      * \param project the QGIS project
+      * \returns the Inspire temporal reference if defined in project.
+      */
+    QString wmsInspireTemporalReference( const QgsProject &project );
+
+    /** Returns the Inspire metadata date.
+      * \param project the QGIS project
+      * \returns the Inspire metadata date if defined in project.
+      */
+    QString wmsInspireMetadataDate( const QgsProject &project );
+
+    /** Returns the restricted composer list.
+      * \param project the QGIS project
+      * \returns the restricted composer list if defined in project.
+      */
+    QStringList wmsRestrictedComposers( const QgsProject &project );
+
     /** Returns the WMS ervice url defined in a QGIS project.
       * @param project the QGIS project
       * @return url if defined in project, an empty string otherwise.
       */
     QString wmsServiceUrl( const QgsProject &project );
+
+    /** Returns the WMS root layer name defined in a QGIS project.
+      * \param project the QGIS project
+      * \returns root layer name if defined in project, an empty string otherwise.
+      */
+    QString wmsRootName( const QgsProject &project );
+
+    /** Returns the restricted layer name list.
+      * \param project the QGIS project
+      * \returns the restricted layer name list if defined in project.
+      */
+    QStringList wmsRestrictedLayers( const QgsProject &project );
+
+    /** Returns the WMS output CRS list.
+      * \param project the QGIS project
+      * \returns the WMS output CRS list.
+      */
+    QStringList wmsOutputCrsList( const QgsProject &project );
+
+    /** Returns the WMS Extent restriction.
+      * \param project the QGIS project
+      * \returns the WMS Extent restriction.
+      */
+    QgsRectangle wmsExtent( const QgsProject &project );
 
     /** Returns the WFS service url defined in a QGIS project.
       * @param project the QGIS project
@@ -128,6 +206,14 @@ namespace QgsServerProjectUtils
       * @return the Layer ids list.
       */
     QStringList wfsLayerIds( const QgsProject &project );
+
+    /** Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
+      * @param project the QGIS project
+      * @param layerId the layer id in the project
+      * @return the layer precision for WFS GetFeature.
+      */
+
+    int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
 
     /** Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
       * @param project the QGIS project

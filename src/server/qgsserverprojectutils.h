@@ -123,7 +123,7 @@ namespace QgsServerProjectUtils
     * \param project the QGIS project
     * \returns if the info format is SIA20145.
     */
-  SERVER_EXPORT bool wmsInfoFormatSIA2045( const QgsProject &project );
+  SERVER_EXPORT bool wmsInfoFormatSia2045( const QgsProject &project );
 
   /** Returns if Inspire is activated.
     * \param project the QGIS project
@@ -172,6 +172,30 @@ namespace QgsServerProjectUtils
     * \returns url if defined in project, an empty string otherwise.
     */
   SERVER_EXPORT QString wmsServiceUrl( const QgsProject &project );
+
+  /** Returns the WMS root layer name defined in a QGIS project.
+    * \param project the QGIS project
+    * \returns root layer name if defined in project, an empty string otherwise.
+    */
+  SERVER_EXPORT QString wmsRootName( const QgsProject &project );
+
+  /** Returns the restricted layer name list.
+    * \param project the QGIS project
+    * \returns the restricted layer name list if defined in project.
+    */
+  SERVER_EXPORT QStringList wmsRestrictedLayers( const QgsProject &project );
+
+  /** Returns the WMS output CRS list.
+    * \param project the QGIS project
+    * \returns the WMS output CRS list.
+    */
+  SERVER_EXPORT QStringList wmsOutputCrsList( const QgsProject &project );
+
+  /** Returns the WMS Extent restriction.
+    * \param project the QGIS project
+    * \returns the WMS Extent restriction.
+    */
+  SERVER_EXPORT  QgsRectangle wmsExtent( const QgsProject &project );
 
   /** Returns the WFS service url defined in a QGIS project.
     * \param project the QGIS project
