@@ -73,9 +73,7 @@ def run(algOrName, *args, **kwargs):
     """Executes given algorithm and returns its outputs as dictionary
     object.
     """
-    alg = Processing.runAlgorithm(algOrName, None, *args, **kwargs)
-    if alg is not None:
-        return alg.getOutputValuesAsDictionary()
+    return Processing.runAlgorithm(algOrName, None, *args, **kwargs)
 
 
 def runAndLoadResults(name, *args, **kwargs):

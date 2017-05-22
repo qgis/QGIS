@@ -56,13 +56,13 @@ def execute(alg, parameters, context=None, feedback=None):
         context = dataobjects.createContext()
 
     try:
-        alg.execute(parameters, context, feedback)
-        return True
+        results = alg.run(parameters, context, feedback)
+        return True, results
     except GeoAlgorithmExecutionException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
         if feedback is not None:
             feedback.reportError(e.msg)
-        return False
+        return False, {}
 
 
 def executeIterating(alg, parameters, paramToIter, context, feedback):
@@ -98,7 +98,8 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
             out.value = filename
         feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
         feedback.setProgress(i * 100 / len(filelist))
-        if execute(alg, parameters, None, feedback):
+        ret, results = execute(alg, parameters, None, feedback)
+        if ret:
             handleAlgorithmResults(alg, context, None, False)
         else:
             return False

@@ -53,7 +53,7 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-#from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
 #from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
 #from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 #from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
@@ -237,7 +237,7 @@ class Processing(object):
         elif iface is not None:
             feedback = MessageBarProgress(alg.displayName())
 
-        ret = execute(alg, parameters, context, feedback)
+        ret, results = execute(alg, parameters, context, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, context, feedback)

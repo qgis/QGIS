@@ -306,12 +306,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 i += 1
         return i
 
-    def getOutputValuesAsDictionary(self):
-        d = {}
-        for out in self.outputs:
-            d[out.name] = out.value
-        return d
-
     def removeOutputFromName(self, name):
         for out in self.outputs:
             if out.name == name:

@@ -227,7 +227,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 ProcessingLog.addToLog(self.alg.getAsCommand())
 
                 context = dataobjects.createContext()
-                self.executed = execute(self.alg, parameters, context, self.feedback)
+                self.executed, results = execute(self.alg, parameters, context, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            context,

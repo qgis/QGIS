@@ -127,7 +127,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         for count, parameters in enumerate(self.alg_parameters):
             self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.alg_parameters)))
             self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
-            if execute(self.alg, parameters, context, self.feedback) and not self.canceled:
+            ret, results = execute(self.alg, parameters, context, self.feedback)
+            if ret and not self.canceled:
                 if self.load[count]:
                     handleAlgorithmResults(self.alg, context, self.feedback, False)
                 self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()))
