@@ -274,7 +274,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 func = getattr(self.module, 'processInputs')
                 func(self)
             else:
-                self.processInputs(parameters,context)
+                self.processInputs(parameters, context)
 
             if hasattr(self.module, 'processCommand'):
                 func = getattr(self.module, 'processCommand')
@@ -288,7 +288,7 @@ class Grass7Algorithm(GeoAlgorithm):
             else:
                 self.processOutputs()
         else:
-            self.processInputs(parameters,context)
+            self.processInputs(parameters, context)
             self.processCommand()
             self.processOutputs()
 

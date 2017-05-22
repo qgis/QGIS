@@ -115,7 +115,7 @@ class nviz7(GeoAlgorithm):
         if cellsize:
             command += ' res=' + str(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize(parameters,context))
+            command += ' res=' + str(self.getDefaultCellsize(parameters, context))
         commands.append(command)
 
         command = 'nviz7'
