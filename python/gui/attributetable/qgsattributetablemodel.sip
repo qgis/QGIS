@@ -240,11 +240,14 @@ class QgsAttributeTableModel : QAbstractTableModel
      * @param fids feature ids
      */
     virtual void featuresDeleted( const QgsFeatureIds& fids );
+
     /**
      * Launched when a feature has been added
      * @param fid feature id
+     * @param resettingModel set to true if model is in the process of being reset
+     * and the normal begin/EndInsertRows calls should not be made
      */
-    virtual void featureAdded( QgsFeatureId fid );
+    virtual void featureAdded( QgsFeatureId fid, bool resettingModel = false );
 
     /**
      * Launched when layer has been deleted
