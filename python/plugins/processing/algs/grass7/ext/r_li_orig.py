@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import shutil
 from processing.tools.system import isWindows, userFolder, mkdir
 from os import path
+from copy import deepcopy
 
 
 def rliPath():
@@ -73,26 +74,29 @@ def checkMovingWindow(alg):
     return None
 
 
-def configFile(alg, outputTxt=False):
-    """ Handle inline configuration """
+def configFile(alg, parameters, outputTxt=False):
+    """ Handle inline configuration
+    :param parameters:
+    """
+    new_parameters = deepcopy(parameters)
+
     # Where is the GRASS7 user directory ?
     userGrass7Path = rliPath()
     mkdir(userGrass7Path)
-    origConfigFile = alg.getParameterValue('config')
+    origConfigFile = new_parameters['config']
 
     # Handle inline configuration
-    configTxt = alg.getParameterFromName('config_txt')
-    if configTxt.value:
+    if new_parameters['config_txt']:
         # Creates a temporary txt file in user r.li directory
         tempConfig = alg.getTempFilename()
         configFilePath = path.join(userGrass7Path, tempConfig)
         # Inject rules into temporary txt file
         with open(configFilePath, "w") as f:
-            f.write(configTxt.value)
+            f.write(new_parameters['config_txt'])
 
         # Use temporary file as rules file
-        alg.setParameterValue('config', configFilePath)
-        alg.parameters.remove(configTxt)
+        new_parameters['config'] = configFilePath
+        del new_parameters['config_txt']
 
     # If we have a configuration file, we need to copy it into user dir
     if origConfigFile:
@@ -101,20 +105,16 @@ def configFile(alg, outputTxt=False):
         shutil.copy(origConfigFile, configFilePath)
 
         # Change the parameter value
-        alg.setParameterValue('config', configFilePath)
+        new_parameters['config'] = configFilePath
 
     if outputTxt:
         origOutput = alg.getOutputValue('output')
         alg.setOutputValue('output', path.basename(origOutput))
 
-    alg.processCommand()
+    alg.processCommand(new_parameters)
 
     # Remove Config file:
     removeConfigFile(alg)
-
-    # re-add configTxt
-    alg.addParameter(configTxt)
-    alg.setParameterValue('config', origConfigFile)
 
 
 def moveOutputTxtFile(alg):

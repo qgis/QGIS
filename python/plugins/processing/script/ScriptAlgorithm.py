@@ -174,8 +174,8 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns['scriptDescriptionFile'] = self.descriptionFile
         ns['context'] = context
 
-        for param in self.parameters:
-            ns[param.name] = param.value
+        for param in self.parameterDefinitions():
+            ns[param.name] = parameters[param.name()]
 
         for out in self.outputs:
             ns[out.name] = out.value
@@ -230,9 +230,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
-                    for param in self.parameters:
-                        if param.name in descriptions:
-                            descs[param.name] = str(descriptions[param.name])
+                    for param in self.parameterDefinitions():
+                        if param.name() in descriptions:
+                            descs[param.name()] = str(descriptions[param.name()])
                 except:
                     return descs
         return descs

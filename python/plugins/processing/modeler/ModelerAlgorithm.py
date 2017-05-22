@@ -424,8 +424,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = param.defaultValue()
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
-                if not param.setValue(value) and not isinstance(param,
-                                                                ParameterDataObject):
+                if not param.checkValueIsAcceptable(value) and not isinstance(param,
+                                                                              ParameterDataObject):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
                             value, param.__class__.__name__, param.name()

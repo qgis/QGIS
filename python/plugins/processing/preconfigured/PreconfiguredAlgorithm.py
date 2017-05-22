@@ -30,6 +30,7 @@ import os
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from copy import deepcopy
 import json
 
 
@@ -57,10 +58,11 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         return QgsProcessingAlgorithm.FlagHideFromModeler
 
     def execute(self, parameters, context=None, feedback=None, model=None):
+        new_parameters = deepcopy(parameters)
         self.alg = QgsApplication.processingRegistry().algorithmById(self.description["algname"])
         for name, value in list(self.description["parameters"].items()):
-            self.alg.setParameterValue(name, value)
+            new_parameters[name] = value
         for name, value in list(self.description["outputs"].items()):
             self.alg.setOutputValue(name, value)
-        self.alg.execute(parameters, feedback)
+        self.alg.execute(new_parameters, feedback)
         self.outputs = self.alg.outputs
