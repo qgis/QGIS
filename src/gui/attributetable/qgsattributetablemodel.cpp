@@ -44,7 +44,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   : QAbstractTableModel( parent )
   , mLayerCache( layerCache )
   , mFieldCount( 0 )
-  , mSortCacheExpression( QLatin1String( "" ) )
   , mSortFieldIndex( -1 )
   , mExtraColumns( 0 )
 {
@@ -212,18 +211,18 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel
 
   if ( featOk && mFeatureRequest.acceptFeature( mFeat ) )
   {
-    if ( mSortFieldIndex == -1 )
-    {
-      mExpressionContext.setFeature( mFeat );
-      mSortCache[mFeat.id()] = mSortCacheExpression.evaluate( &mExpressionContext );
-    }
-    else
+    if ( mSortFieldIndex >= 0 )
     {
       QgsFieldFormatter *fieldFormatter = mFieldFormatters.at( mSortFieldIndex );
       const QVariant &widgetCache = mAttributeWidgetCaches.at( mSortFieldIndex );
       const QVariantMap &widgetConfig = mWidgetConfigs.at( mSortFieldIndex );
       QVariant sortValue = fieldFormatter->representValue( layer(), mSortFieldIndex, widgetConfig, widgetCache, mFeat.attribute( mSortFieldIndex ) );
       mSortCache.insert( mFeat.id(), sortValue );
+    }
+    else if ( mSortCacheExpression.isValid() )
+    {
+      mExpressionContext.setFeature( mFeat );
+      mSortCache[mFeat.id()] = mSortCacheExpression.evaluate( &mExpressionContext );
     }
 
     // Skip if the fid is already in the map (do not add twice)!
@@ -799,7 +798,14 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString )
   mSortCache.clear();
   mSortCacheAttributes.clear();
   mSortFieldIndex = -1;
-  mSortCacheExpression = QgsExpression( expressionString );
+  if ( !expressionString.isEmpty() )
+    mSortCacheExpression = QgsExpression( expressionString );
+  else
+  {
+    // no sorting
+    mSortCacheExpression = QgsExpression();
+    return;
+  }
 
   QgsFieldFormatter *fieldFormatter = nullptr;
   QVariant widgetCache;
@@ -852,7 +858,7 @@ void QgsAttributeTableModel::prefetchSortData( const QString &expressionString )
 
 QString QgsAttributeTableModel::sortCacheExpression() const
 {
-  if ( mSortCacheExpression.rootNode() )
+  if ( mSortCacheExpression.isValid() )
     return mSortCacheExpression.expression();
   else
     return QString();
