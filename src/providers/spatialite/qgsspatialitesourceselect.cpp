@@ -39,10 +39,12 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded ):
-  QDialog( parent, fl )
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode ):
+  QDialog( parent, fl ),
+  mEmbeddedMode( embeddedMode )
 {
   setupUi( this );
+
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
@@ -65,7 +67,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSpatiaLiteSourceSelect::buildQuery );
   mBuildQueryButton->setEnabled( false );
 
-  if ( embedded )
+  if ( mEmbeddedMode )
   {
     buttonBox->button( QDialogButtonBox::Close )->hide();
   }

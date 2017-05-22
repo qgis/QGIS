@@ -50,7 +50,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     static bool newConnection( QWidget *parent );
 
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embedded = false );
+    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embeddedMode = false );
 
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
@@ -129,6 +129,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
     QPushButton *mStatsButton = nullptr;
+    bool mEmbeddedMode;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H
