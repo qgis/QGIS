@@ -1130,9 +1130,9 @@ void QgsProcessingParameterTableField::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
-QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, LayerType type, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterVectorLayer::QgsProcessingParameterVectorLayer( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
-  , mDataType( type )
+  , mDataTypes( types )
 {
 
 }
@@ -1163,16 +1163,15 @@ bool QgsProcessingParameterVectorLayer::checkValueIsAcceptable( const QVariant &
   return false;
 }
 
-QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVectorLayer::dataType() const
+QList< int > QgsProcessingParameterVectorLayer::dataTypes() const
 {
-  return mDataType;
+  return mDataTypes;
 }
 
-void QgsProcessingParameterVectorLayer::setDataType( QgsProcessingParameterDefinition::LayerType dataType )
+void QgsProcessingParameterVectorLayer::setDataTypes( const QList<int> &types )
 {
-  mDataType = dataType;
+  mDataTypes = types;
 }
-
 
 
 QgsProcessingParameterOutputVectorLayer::QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )

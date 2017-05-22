@@ -2098,7 +2098,7 @@ void TestQgsProcessing::parameterVectorLayer()
   context.setProject( &p );
 
   // not optional!
-  QgsProcessingParameterVectorLayer *def = new QgsProcessingParameterVectorLayer( "non_optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false );
+  QgsProcessingParameterVectorLayer *def = new QgsProcessingParameterVectorLayer( "non_optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -2130,7 +2130,7 @@ void TestQgsProcessing::parameterVectorLayer()
 
   // optional
   delete def;
-  def = new QgsProcessingParameterVectorLayer( "optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, v1->id(), true );
+  def = new QgsProcessingParameterVectorLayer( "optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, v1->id(), true );
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def, params, QStringLiteral( "optional" ), context )->id(), v1->id() );
   QVERIFY( def->checkValueIsAcceptable( false ) );

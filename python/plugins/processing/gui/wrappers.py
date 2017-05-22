@@ -763,13 +763,13 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(layout)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessingParameterDefinition.TypeVectorAny == self.param.dataType():
+            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes():
                 filters = QgsMapLayerProxyModel.HasGeometry
-            if QgsProcessingParameterDefinition.TypeVectorPoint == self.param.dataType():
+            if QgsProcessingParameterDefinition.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
-            if QgsProcessingParameterDefinition.TypeVectorLine == self.param.dataType():
+            if QgsProcessingParameterDefinition.TypeVectorLine in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.LineLayer
-            if QgsProcessingParameterDefinition.TypeVectorPolygon == self.param.dataType():
+            if QgsProcessingParameterDefinition.TypeVectorPolygon in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PolygonLayer
 
             try:
@@ -783,7 +783,8 @@ class VectorWidgetWrapper(WidgetWrapper):
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
                 self.combo.setShowCrs(True)
 
-            self.combo.setFilters(filters)
+            if filters:
+                self.combo.setFilters(filters)
             self.combo.setExcludedProviders(['grass'])
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))

@@ -30,6 +30,7 @@ import os
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterOutputVectorLayer,
                        QgsProcessingOutputVectorLayer)
@@ -52,16 +53,9 @@ class Boundary(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_LAYER, self.tr('Input layer')))
-
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterOutputVectorLayer(self.OUTPUT_LAYER, self.tr('Boundary')))
-
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Boundaries")))
-
- #       self.addParameter(ParameterVector(self.INPUT_LAYER,
-  #                                        self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
-   #                                                                dataobjects.TYPE_VECTOR_POLYGON]))
-#        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
