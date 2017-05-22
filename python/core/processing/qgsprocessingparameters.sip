@@ -168,10 +168,13 @@ class QgsProcessingParameterDefinition
  @see flags()
 %End
 
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 %Docstring
  Checks whether the specified ``input`` value is acceptable for the
  parameter. Returns true if the value can be accepted.
+ The optional ``context`` parameter can be specified to allow a more stringent
+ check to be performed, capable of checking for the presence of required
+ layers and other factors within the context.
  :rtype: bool
 %End
 
@@ -384,6 +387,8 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 };
 
 class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
@@ -405,6 +410,8 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 };
 
 class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
@@ -426,6 +433,8 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 
 };
 
@@ -449,7 +458,7 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
 };
@@ -479,7 +488,7 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     Behavior behavior() const;
@@ -531,7 +540,7 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     QStringList headers() const;
@@ -601,7 +610,7 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     QgsProcessingParameterDefinition::LayerType layerType() const;
@@ -664,7 +673,7 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     double minimum() const;
@@ -729,7 +738,7 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     QgsProcessingParameterNumber::Type dataType() const;
@@ -766,6 +775,8 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 
 };
 
@@ -790,7 +801,7 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     QStringList options() const;
@@ -945,7 +956,7 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input ) const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
     QString parentLayerParameter() const;
@@ -1001,26 +1012,28 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(),
+                                       const QList< int > &types = QList< int >(),
+                                       const QVariant &defaultValue = QVariant(), bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterVectorLayer.
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QList< int > dataTypes() const;
 %Docstring
- Returns the layer type for layers acceptable by the parameter.
-.. seealso:: setDataType()
- :rtype: QgsProcessingParameterDefinition.LayerType
+ Returns the layer types for layers acceptable by the parameter.
+.. seealso:: setDataTypes()
+ :rtype: list of int
 %End
 
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataTypes( const QList< int > &types );
 %Docstring
- Sets the layer ``type`` for layers acceptable by the parameter.
-.. seealso:: dataType()
+ Sets the layer ``types`` for layers acceptable by the parameter.
+.. seealso:: dataTypes()
 %End
 
 };
@@ -1048,6 +1061,8 @@ class QgsProcessingParameterOutputVectorLayer : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool isDestination() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
 %Docstring

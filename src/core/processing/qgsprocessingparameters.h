@@ -999,29 +999,30 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
   public:
 
     /**
-     * Constructor for QgsProcessingParameterVectorLayer.
-     */
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+    * Constructor for QgsProcessingParameterVectorLayer.
+    */
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(),
+                                       const QList< int > &types = QList< int >(),
+                                       const QVariant &defaultValue = QVariant(), bool optional = false );
 
     QString type() const override { return QStringLiteral( "vector" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
-     * Returns the layer type for layers acceptable by the parameter.
-     * \see setDataType()
+     * Returns the layer types for layers acceptable by the parameter.
+     * \see setDataTypes()
      */
-    QgsProcessingParameterDefinition::LayerType dataType() const;
+    QList< int > dataTypes() const;
 
     /**
-     * Sets the layer \a type for layers acceptable by the parameter.
-     * \see dataType()
+     * Sets the layer \a types for layers acceptable by the parameter.
+     * \see dataTypes()
      */
-    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+    void setDataTypes( const QList< int > &types );
 
   private:
 
-    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+    QList< int > mDataTypes = QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny;
 
 };
 
