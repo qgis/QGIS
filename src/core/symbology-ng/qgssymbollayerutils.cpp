@@ -2661,11 +2661,7 @@ QgsStringMap QgsSymbolLayerUtils::parseProperties( QDomElement &element )
   QDomElement e = element.firstChildElement();
   while ( !e.isNull() )
   {
-    if ( e.tagName() != QLatin1String( "prop" ) )
-    {
-      QgsDebugMsg( "unknown tag " + e.tagName() );
-    }
-    else
+    if ( e.tagName() == QLatin1String( "prop" ) )
     {
       QString propKey = e.attribute( QStringLiteral( "k" ) );
       QString propValue = e.attribute( QStringLiteral( "v" ) );
