@@ -105,8 +105,8 @@ class AlgorithmsTest(object):
 
         parameters = {}
         if isinstance(params, list):
-            for param in zip(alg.parameters, params):
-                parameters[param[0].name] = param[1]
+            for param in zip(alg.parameterDefinitions(), params):
+                parameters[param[0].name()] = param[1]
         else:
             for k, p in list(params.items()):
                 parameters[k] = p

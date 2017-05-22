@@ -145,38 +145,38 @@ class SagaAlgorithm(GeoAlgorithm):
 
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.
-        for param in self.parameters:
+        for param in self.parameterDefinitions():
             if isinstance(param, ParameterRaster):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                if param.value.endswith('sdat'):
-                    param.value = param.value[:-4] + "sgrd"
-                elif not param.value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(param.value)
+                if parameters[param.name()].endswith('sdat'):
+                    parameters[param.name()] = parameters[param.name()][:-4] + "sgrd"
+                elif not parameters[param.name()].endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(parameters[param.name()])
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                layer = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                layer = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
                 if layer:
                     filename = dataobjects.exportVectorLayer(layer)
                     self.exportedLayers[param.value] = filename
-                elif not param.value.endswith('shp'):
+                elif not parameteres[param.name()].endswith('shp'):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                table = QgsProcessingUtils.mapLayerFromString(param.value, context, False)
+                table = QgsProcessingUtils.mapLayerFromString(parameters[param.name()], context, False)
                 if table:
                     filename = dataobjects.exportTable(table)
-                    self.exportedLayers[param.value] = filename
-                elif not param.value.endswith('shp'):
+                    self.exportedLayers[parameters[param.name()]] = filename
+                elif not parameters[param.name()].endswith('shp'):
                     raise GeoAlgorithmExecutionException(
                         self.tr('Unsupported file format'))
             if isinstance(param, ParameterMultipleInput):
-                if param.value is None:
+                if param.name() not in parameters or parameters[param.name()] is None:
                     continue
                 layers = param.value.split(';')
                 if layers is None or len(layers) == 0:
@@ -212,23 +212,23 @@ class SagaAlgorithm(GeoAlgorithm):
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
         command += ' ' + ' '.join(self.hardcodedStrings)
 
-        for param in self.parameters:
-            if param.value is None:
+        for param in self.parameterDefinitions():
+            if not param.name() in parameters or parameters[param.name()] is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
-                value = param.value
+                value = parameters[param.name()]
                 if value in list(self.exportedLayers.keys()):
                     command += ' -' + param.name() + ' "' \
                         + self.exportedLayers[value] + '"'
                 else:
                     command += ' -' + param.name() + ' "' + value + '"'
             elif isinstance(param, ParameterMultipleInput):
-                s = param.value
+                s = parameters[param.name()]
                 for layer in list(self.exportedLayers.keys()):
                     s = s.replace(layer, self.exportedLayers[layer])
                 command += ' -' + param.name() + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
-                if param.value:
+                if parameters[param.name()]:
                     command += ' -' + param.name().strip() + " true"
                 else:
                     command += ' -' + param.name().strip() + " false"
@@ -236,7 +236,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
                     f.write('\t'.join([col for col in param.cols]) + '\n')
-                    values = param.value.split(',')
+                    values = parameters[param.name()].split(',')
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
@@ -244,9 +244,9 @@ class SagaAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
-                halfcell = self.getOutputCellsize() / 2
+                halfcell = self.getOutputCellsize(parameters) / 2
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
-                values = param.value.split(',')
+                values = parameters[param.name()].split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
                         + str(float(values[i]) + offset[i])
@@ -310,15 +310,16 @@ class SagaAlgorithm(GeoAlgorithm):
         else:
             return commands
 
-    def getOutputCellsize(self):
+    def getOutputCellsize(self, parameters):
         """Tries to guess the cell size of the output, searching for
         a parameter with an appropriate name for it.
+        :param parameters:
         """
 
         cellsize = 0
-        for param in self.parameters:
-            if param.value is not None and param.name == 'USER_SIZE':
-                cellsize = float(param.value)
+        for param in self.parameterDefinitions():
+            if param.name() in parameters and param.name() == 'USER_SIZE':
+                cellsize = float(parameters[param.name()])
                 break
         return cellsize
 

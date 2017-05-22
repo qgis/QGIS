@@ -27,10 +27,12 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import getParameterFromString
 from .v_net import incorporatePoints
+from copy import deepcopy
 
 
 def processCommand(alg, parameters):
     # We temporary remove the output 'sequence'
+    new_parameters = deepcopy(parameters)
     sequence = alg.getOutputFromName(u'sequence')
     sequenceFile = alg.getOutputValue(u'sequence')
     alg.exportedLayers[sequence.value] = sequence.name + alg.uniqueSuffix
@@ -38,12 +40,10 @@ def processCommand(alg, parameters):
 
     # We create a new parameter with the same name
     param = getParameterFromString(u"ParameterString|sequence|sequence|None|False|False")
-    param.setValue(sequenceFile)
-    alg.addParameter(param)
+    new_parameters[param.name()] = sequenceFile
 
     # Let's do the incorporation and command generation
-    incorporatePoints(alg)
+    incorporatePoints(alg, new_parameters)
 
     # then we delete the input parameter and add the old output
-    alg.parameters.remove(param)
     alg.addOutput(sequence)

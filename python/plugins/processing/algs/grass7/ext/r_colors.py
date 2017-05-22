@@ -27,6 +27,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import os
+from copy import deepcopy
 
 
 def checkParameterValuesBeforeExecuting(alg):
@@ -74,32 +75,29 @@ def processInputs(alg):
 
 def processCommand(alg, parameters):
     # remove output before processCommand
+    new_parameters = deepcopy(parameters)
+
     output = alg.getOutputFromName('output_dir')
     alg.removeOutputFromName('output_dir')
     color = alg.getParameterFromName('color')
-    if color.value == 0:
-        alg.parameters.remove(color)
+    if new_parameters[color.name()] == 0:
+        del new_parameters[color.name()]
 
     # Handle rules
     txtRules = alg.getParameterFromName('rules_txt')
-    if txtRules.value:
+    if new_parameters[txtRules.name()]:
         # Creates a temporary txt file
         tempRulesName = alg.getTempFilename()
 
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
-            tempRules.write(txtRules.value)
+            tempRules.write(new_parameters[txtRules.name()])
 
         # Use temporary file as rules file
-        alg.setParameterValue('rules', tempRulesName)
-        alg.parameters.remove(txtRules)
+        new_parameters['rules'] = tempRulesName
+        del new_parameters[textRules.name()]
 
-    alg.processCommand()
-
-    # re-add the previous output
-    alg.addOutput(output)
-    alg.addParameter(color)
-    alg.addParameter(txtRules)
+    alg.processCommand(new_parameters)
 
 
 def processOutputs(alg):

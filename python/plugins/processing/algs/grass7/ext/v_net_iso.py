@@ -29,4 +29,4 @@ from .v_net import incorporatePoints
 
 
 def processCommand(alg, parameters):
-    incorporatePoints(alg)
+    incorporatePoints(alg, parameters)

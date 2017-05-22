@@ -30,7 +30,7 @@ from .v_net import incorporatePoints, variableOutput
 
 
 def processCommand(alg, parameters):
-    incorporatePoints(alg)
+    incorporatePoints(alg, parameters)
 
 
 def processOutputs(alg):

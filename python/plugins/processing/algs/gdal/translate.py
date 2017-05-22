@@ -109,7 +109,7 @@ class translate(GdalAlgorithm):
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = self.getParameterValue(self.NO_DATA)
-        expand = self.getParameterFromName(self.EXPAND).options[self.getParameterValue(self.EXPAND)][1]
+        expand = parameters[self.EXPAND].options[self.getParameterValue(self.EXPAND)][1]
         projwin = str(self.getParameterValue(self.PROJWIN))
         if not projwin:
             projwin = QgsProcessingUtils.combineLayerExtents([inLayer])

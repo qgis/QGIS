@@ -30,31 +30,31 @@ __copyright__ = '(C) 2015, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import os
+from copy import deepcopy
 
 
-def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):
+def incorporatePoints(alg, parameters, pointLayerName=u'points', networkLayerName=u'input'):
     """
     incorporate points with lines to form a GRASS network
     """
-    paramsToDelete = []
+    new_parameters = deepcopy(parameters)
 
     # Create an intermediate GRASS layer which is the combination of network + centers
     intLayer = alg.getTempFilename()
 
     # Grab the point layer and delete this parameter (not used by v.net.alloc)
-    pointLayer = alg.getParameterValue(pointLayerName)
+    pointLayer = new_parameters[pointLayerName]
     if pointLayer:
         pointLayer = alg.exportedLayers[pointLayer]
-        paramsToDelete.append(alg.getParameterFromName(u'points'))
+        new_parameters['points'] = pointLayer
 
     # Grab the network layer and tell to v.net.alloc to use the temp layer instead
-    lineLayer = alg.getParameterValue(networkLayerName)
+    lineLayer = new_parameters[networkLayerName]
     if lineLayer:
         lineLayer = alg.exportedLayers[lineLayer]
-        alg.setParameterValue(networkLayerName, intLayer)
+        new_parameters[networkLayerName] = lineLayer
 
-    threshold = alg.getParameterValue(u'threshold')
-    paramsToDelete.append(alg.getParameterFromName(u'threshold'))
+    threshold = parameters['threshold']
 
     # Create the v.net connect command for point layer integration
     command = u"v.net -s input={} points={} out={} op=connect threshold={}".format(
@@ -65,15 +65,7 @@ def incorporatePoints(alg, pointLayerName=u'points', networkLayerName=u'input'):
     command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
     alg.commands.append(command)
 
-    # Delete some unnecessary parameters
-    for param in paramsToDelete:
-        alg.parameters.remove(param)
-
-    alg.processCommand()
-
-    # Bring back the parameters:
-    for param in paramsToDelete:
-        alg.parameters.append(param)
+    alg.processCommand(new_parameters)
 
 
 def variableOutput(alg, params, nocats=True):

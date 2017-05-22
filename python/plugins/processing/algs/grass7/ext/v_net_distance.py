@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 
 from processing.core.parameters import getParameterFromString
+from copy import deepcopy
 
 
 def processCommand(alg, parameters):
@@ -36,12 +37,12 @@ def processCommand(alg, parameters):
     * Delete the threshold parameter.
     * If where statement, connect to the db
     """
-    paramsToDelete = []
+    new_parameters = deepcopy(parameters)
 
     # Grab the threshold value for our v.net connect command
     threshold = alg.getParameterValue(u'threshold')
     if threshold:
-        paramsToDelete.append(alg.getParameterFromName(u'threshold'))
+        del new_parameters['threshold']
 
     # Grab the network layer and tell to v.net.alloc to use the temp layer instead
     line_layer = alg.getParameterValue(u'input')
@@ -57,7 +58,7 @@ def processCommand(alg, parameters):
         point_layer = alg.getParameterValue(layer + u'_points')
         if point_layer:
             point_layer = alg.exportedLayers[point_layer]
-            paramsToDelete.append(alg.getParameterFromName(layer + u'_points'))
+            del new_parameters[layer + u'_points']
 
         # Create the v.net connect command for point layer integration
         command = u"v.net -s input={} points={} out={} op=connect threshold={} arc_layer=1 node_layer={}".format(line_layer, point_layer, intLayer, threshold, i + 2)
@@ -69,24 +70,11 @@ def processCommand(alg, parameters):
         if not parameter:
             parameter = getParameterFromString(u'ParameterNumber|{0}_layer|{0} layer number|1|3|2|False'.format(layer))
             alg.addParameter(parameter)
-        parameter.setValue(i + 2)
+        new_parameters[parameter.name()] = i + 2
 
         # Make the connection with attribute table
         command = u"v.db.connect -o map={} table={} layer={}".format(line_layer, point_layer, i + 2)
         alg.commands.append(command)
 
-    alg.setParameterValue(u'input', line_layer)
-
-    # Delete some unnecessary parameters
-    for param in paramsToDelete:
-        alg.parameters.remove(param)
-
-    alg.processCommand(parameters, context)
-
-    # Bring back the parameters:
-    for param in paramsToDelete:
-        alg.parameters.append(param)
-
-    # Delete from_layer and to_layer
-    for word in [u'from', u'to']:
-        alg.parameters.remove(alg.getParameterFromName(u'{}_layer'.format(word)))
+    new_parameters['input'] = line_layer
+    alg.processCommand(new_parameters, context)

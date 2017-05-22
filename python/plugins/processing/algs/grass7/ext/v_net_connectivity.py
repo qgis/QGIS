@@ -44,7 +44,7 @@ def checkParameterValuesBeforeExecuting(alg):
 
 
 def processCommand(alg, parameters):
-    incorporatePoints(alg)
+    incorporatePoints(alg, parameters)
 
 
 def processOutputs(alg):
