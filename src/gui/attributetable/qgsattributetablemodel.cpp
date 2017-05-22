@@ -67,7 +67,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableModel::attributeDeleted );
   connect( layer(), &QgsVectorLayer::updatedFields, this, &QgsAttributeTableModel::updatedFields );
   connect( layer(), &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
-  connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, &QgsAttributeTableModel::featureAdded );
+  connect( mLayerCache, &QgsVectorLayerCache::featureAdded, this, [ = ]( const QgsFeatureId fid ) { this->featureAdded( fid, false ); } );
   connect( mLayerCache, &QgsVectorLayerCache::cachedLayerDeleted, this, &QgsAttributeTableModel::layerDeleted );
 }
 
@@ -202,7 +202,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   return true;
 }
 
-void QgsAttributeTableModel::featureAdded( QgsFeatureId fid , bool resettingModel )
+void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel )
 {
   QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
