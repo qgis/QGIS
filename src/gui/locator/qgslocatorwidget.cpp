@@ -31,7 +31,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   , mLocator( new QgsLocator( this ) )
   , mLineEdit( new QgsFilterLineEdit() )
   , mLocatorModel( new QgsLocatorModel( this ) )
-  , mResultsView( new QgsLocatorResultsView( this ) )
+  , mResultsView( new QgsLocatorResultsView() )
 {
   mLineEdit->setShowClearButton( true );
 #ifdef Q_OS_MACX
@@ -63,7 +63,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsContainer->setAnchorPoint( QgsFloatingWidget::BottomLeft );
   mResultsContainer->setAnchorWidgetPoint( QgsFloatingWidget::TopLeft );
 
-  QHBoxLayout *containerLayout = new QHBoxLayout( this );
+  QHBoxLayout *containerLayout = new QHBoxLayout();
   containerLayout->setMargin( 0 );
   containerLayout->setContentsMargins( 0, 0, 0, 0 );
   containerLayout->addWidget( mResultsView );
