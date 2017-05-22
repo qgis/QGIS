@@ -3951,11 +3951,9 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
         //set friendly name for datasources with only one layer
-        QStringList sublayers = layer->dataProvider()->subLayers();
         QStringList elements = sublayers.at( 0 ).split( ':' );
 
-        Q_ASSERT( elements.size() >= 4 );
-        if ( layer->name() != elements.at( 1 ) )
+        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
         {
           layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
         }
@@ -9860,12 +9858,14 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
       //set friendly name for datasources with only one layer
       QStringList sublayers = layer->dataProvider()->subLayers();
-      QStringList elements = sublayers.at( 0 ).split( ':' );
-
-      Q_ASSERT( elements.size() >= 4 );
-      if ( layer->name() != elements.at( 1 ) )
+      if ( !sublayers.isEmpty() )
       {
-        layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+        QStringList elements = sublayers.at( 0 ).split( ':' );
+
+        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
+        {
+          layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+        }
       }
 
       myList << layer;
