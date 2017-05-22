@@ -24,9 +24,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-#ifndef SIP_RUN
-typedef QList<int> QgsAttributeList;
-#endif
+typedef QList<int> QgsAttributeList SIP_SKIP;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

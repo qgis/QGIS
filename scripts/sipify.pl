@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use File::Basename;
 use Getopt::Long;
+no if $] >= 5.018000, warnings => 'experimental::smartmatch';
 
 use constant PRIVATE => 0;
 use constant PROTECTED => 1;
@@ -55,6 +56,7 @@ close $handle;
 my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
+my @CLASSNAME = ();
 my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = 0;
 
@@ -62,7 +64,6 @@ my $comment = '';
 my $global_ifdef_nesting_index = 0;
 my @global_bracket_nesting_index = (0);
 my $private_section_line = '';
-my $classname = '';
 my $return_type = '';
 my $is_override = 0;
 my %qflag_hash;
@@ -215,7 +216,9 @@ sub detect_comment_block{
 while ($line_idx < $line_count){
     $line = $lines[$line_idx];
     $line_idx++;
-    $debug == 0 or print sprintf('%d DEP:%d ACC:%d BRC:%d SIP:%d MLT:%d ', $line_idx, $#ACCESS, $ACCESS[$#ACCESS], $global_bracket_nesting_index[$#global_bracket_nesting_index], $SIP_RUN, $MULTILINE_DEFINITION).$line."\n";
+    my $actual_class = '';
+    $actual_class = $CLASSNAME[$#CLASSNAME] unless $#CLASSNAME < 0;
+    $debug == 0 or print sprintf('L:%d DEP:%d ACC:%d BRC:%d SIP:%d MLT:%d CLSS: %d/', $line_idx, $#ACCESS, $ACCESS[$#ACCESS], $global_bracket_nesting_index[$#global_bracket_nesting_index], $SIP_RUN, $MULTILINE_DEFINITION, $#CLASSNAME).$actual_class." :: ".$line."\n";
 
     if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         push @output, dbg("SF1")."%Feature $1$2\n";
@@ -345,7 +348,8 @@ while ($line_idx < $line_count){
     }
 
     # Skip forward declarations
-    if ($line =~ m/^\s*(class|struct) \w+;$/){
+    if ($line =~ m/^\s*(class|struct) \w+;\s*(\/\/.*)?$/){
+        dbg_info('skipping forward declaration');
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
@@ -379,87 +383,9 @@ while ($line_idx < $line_count){
         next;
     }
 
-    # bracket balance in class/struct tree
-    if ($SIP_RUN == 0){
-        my $bracket_balance = 0;
-        $bracket_balance += $line =~ tr/\{//;
-        $bracket_balance -= $line =~ tr/\}//;
-        if ($bracket_balance != 0){
-            $global_bracket_nesting_index[$#global_bracket_nesting_index] += $bracket_balance;
-            if ($global_bracket_nesting_index[$#global_bracket_nesting_index] == 0){
-                dbg_info(" going up in class/struct tree");
-                if ($#ACCESS > 0){
-                    pop(@global_bracket_nesting_index);
-                    pop(@ACCESS);
-
-                    die "Class $classname in $headerfile should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
-                        if $EXPORTED[-1] == 0;
-
-                    pop @EXPORTED;
-                }
-                if ($#ACCESS == 0){
-                    dbg_info("reached top level");
-                    # top level should stasy public
-                    dbg_info
-                    $ACCESS[$#ACCESS] = PUBLIC;
-                }
-                $comment = '';
-                $return_type = '';
-                $private_section_line = '';
-            }
-            dbg_info("new bracket balance: @global_bracket_nesting_index");
-        }
-    }
-
-    # Private members (exclude SIP_RUN)
-    if ( $line =~ m/^\s*private( slots)?:/ ){
-        $ACCESS[$#ACCESS] = PRIVATE;
-        $private_section_line = $line;
-        $comment = '';
-        dbg_info("going private");
-        next;
-    }
-    elsif ( $line =~ m/^\s*(public( slots)?|signals):.*$/ ){
-        dbg_info("going public");
-        $ACCESS[$#ACCESS] = PUBLIC;
-        $comment = '';
-    }
-    elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
-        dbg_info("going protected");
-        $ACCESS[$#ACCESS] = PROTECTED;
-        $comment = '';
-    }
-    elsif ( $ACCESS[$#ACCESS] == PRIVATE && $line =~ m/SIP_FORCE/){
-        dbg_info("private with SIP_FORCE");
-        push @output, dbg("PRV3").$private_section_line."\n";
-    }
-    elsif ( $ACCESS[$#ACCESS] == PRIVATE && $SIP_RUN == 0 ) {
-        $comment = '';
-        next;
-    }
-    # Skip operators
-    if ( $line =~ m/operator(=|<<|>>|->)\s*\(/ ){
-        dbg_info("skip operator");
-        detect_and_remove_following_body_or_initializerlist();
-        next;
-    }
-
-    # save comments and do not print them, except in SIP_RUN
-    if ( $SIP_RUN == 0 ){
-        if ( $line =~ m/^\s*\/\// ){
-            if ($line =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
-                $comment = processDoxygenLine( $1 );
-                $comment =~ s/\n+$//;
-            }
-            elsif ($lines[$line_idx-1] !~ m/\*\/.*/) {
-                $comment = '';
-            }
-            next;
-        }
-    }
-
     if ( $line =~ m/^\s*struct(\s+\w+_EXPORT)?\s+\w+$/ ) {
         dbg_info("  going to struct => public");
+        push @CLASSNAME, $CLASSNAME[$#CLASSNAME]; # fake new class since struct has considered similarly
         push @ACCESS, PUBLIC;
         push @EXPORTED, $EXPORTED[-1];
         push @global_bracket_nesting_index, 0;
@@ -468,14 +394,15 @@ while ($line_idx < $line_count){
     # class declaration started
     # https://regex101.com/r/6FWntP/5
     if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
-        dbg_info("class definition started => private");
-        push @ACCESS, PRIVATE;
+        dbg_info("class definition started");
+        push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
         push @global_bracket_nesting_index, 0;
         my @template_inheritance_template = ();
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
-            $classname = $3;
+            push @CLASSNAME, $3;
+            dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
             $EXPORTED[-1]++ if $line =~ m/\b[A-Z]+_EXPORT\b/;
         };
         $line = "$1 $3";
@@ -518,9 +445,16 @@ while ($line_idx < $line_count){
             $line .= "\n#include \"" . lc $tpl  . ".h\"";
             $line .= "\ntypedef $tpl<$cls> ${tpl}${cls}Base;";
         }
+        if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){
+            # do not write anything in PRIVATE context and not top level
+            dbg_info("skipping class in private context");
+            next;
+        }
+        $ACCESS[$#ACCESS] = PRIVATE; # private by default
+
         push @output, dbg("CLS")."$line\n";
 
-        # Skip opening curly bracket, we already added that above
+        # Skip opening curly bracket, incrementing hereunder
         my $skip = $lines[$line_idx];
         $line_idx++;
         $skip =~ m/^\s*{\s*$/ || die "Unexpected content on line $skip";
@@ -530,6 +464,84 @@ while ($line_idx < $line_count){
         $HEADER_CODE = 1;
         $ACCESS[$#ACCESS] = PRIVATE;
         next;
+    }
+
+    # bracket balance in class/struct tree
+    if ($SIP_RUN == 0){
+        my $bracket_balance = 0;
+        $bracket_balance += $line =~ tr/\{//;
+        $bracket_balance -= $line =~ tr/\}//;
+        if ($bracket_balance != 0){
+            $global_bracket_nesting_index[$#global_bracket_nesting_index] += $bracket_balance;
+            if ($global_bracket_nesting_index[$#global_bracket_nesting_index] == 0){
+                dbg_info(" going up in class/struct tree");
+                if ($#ACCESS > 0){
+                    pop(@global_bracket_nesting_index);
+                    pop(@ACCESS);
+                    die "Class $CLASSNAME[$#CLASSNAME] in $headerfile at line $line_idx should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
+                        if $EXPORTED[-1] == 0 && $#CLASSNAME == 0;
+                    pop @EXPORTED;
+                }
+                pop(@CLASSNAME);
+                if ($#ACCESS == 0){
+                    dbg_info("reached top level");
+                    # top level should stasy public
+                    dbg_info
+                    $ACCESS[$#ACCESS] = PUBLIC;
+                }
+                $comment = '';
+                $return_type = '';
+                $private_section_line = '';
+            }
+            dbg_info("new bracket balance: @global_bracket_nesting_index");
+        }
+    }
+
+    # Private members (exclude SIP_RUN)
+    if ( $line =~ m/^\s*private( slots)?:/ ){
+        $ACCESS[$#ACCESS] = PRIVATE;
+        $private_section_line = $line;
+        $comment = '';
+        dbg_info("going private");
+        next;
+    }
+    elsif ( $line =~ m/^\s*(public( slots)?|signals):.*$/ ){
+        dbg_info("going public");
+        $ACCESS[$#ACCESS] = PUBLIC;
+        $comment = '';
+    }
+    elsif ( $line =~ m/^\s*(protected)( slots)?:.*$/ ){
+        dbg_info("going protected");
+        $ACCESS[$#ACCESS] = PROTECTED;
+        $comment = '';
+    }
+    elsif ( $ACCESS[$#ACCESS] == PRIVATE && $line =~ m/SIP_FORCE/){
+        dbg_info("private with SIP_FORCE");
+        push @output, dbg("PRV3").$private_section_line."\n";
+    }
+    elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
+        $comment = '';
+        next;
+    }
+    # Skip operators
+    if ( $line =~ m/operator(=|<<|>>|->)\s*\(/ ){
+        dbg_info("skip operator");
+        detect_and_remove_following_body_or_initializerlist();
+        next;
+    }
+
+    # save comments and do not print them, except in SIP_RUN
+    if ( $SIP_RUN == 0 ){
+        if ( $line =~ m/^\s*\/\// ){
+            if ($line =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
+                $comment = processDoxygenLine( $1 );
+                $comment =~ s/\n+$//;
+            }
+            elsif ($lines[$line_idx-1] !~ m/\*\/.*/) {
+                $comment = '';
+            }
+            next;
+        }
     }
 
     # Enum declaration
@@ -576,8 +588,17 @@ while ($line_idx < $line_count){
     }
 
     # remove static const value assignment
-    # https://regex101.com/r/DyWkgn/1
-    $line =~ s/^(\s*static const \w+(<([\w()<>, ]|::)+>)? \w+) = .*;\s*(\/\/.*)?$/$1;/;
+    # https://regex101.com/r/DyWkgn/4
+    $line !~ m/^\s*const static \w+/ or die "const static should be written static const in $CLASSNAME[$#CLASSNAME] at line $line_idx";
+    $line =~ s/^(\s*static const \w+(?:<(?:[\w()<>, ]|::)+>)? \w+) = .*([|;])\s*(\/\/.*)?$/$1;/;
+    if ( defined $2 && $2 =~ m/\|/ ){
+        dbg_info("multiline const static assignment");
+        my $skip = '';
+        while ( $skip !~ m/;\s*(\/\/.*?)?$/ ){
+            $skip = $lines[$line_idx];
+            $line_idx++;
+        }
+    }
 
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $line =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
@@ -587,8 +608,10 @@ while ($line_idx < $line_count){
 
     # catch Q_DECLARE_FLAGS
     if ( $line =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
-        $line = "$1typedef QFlags<$classname::$3> $2;\n";
-        $qflag_hash{"$classname::$2"} = "$classname::$3";
+        my $actual_class = $CLASSNAME[$#CLASSNAME];
+        dbg_info("Declare flags: $actual_class");
+        $line = "$1typedef QFlags<$actual_class::$3> $2;\n";
+        $qflag_hash{"$actual_class::$2"} = "$actual_class::$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $line =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){

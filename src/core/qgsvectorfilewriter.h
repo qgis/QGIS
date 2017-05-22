@@ -57,18 +57,18 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     class Option
     {
       public:
-        Option( const QString &docString, OptionType type )
+        Option( const QString &docString, QgsVectorFileWriter::OptionType type )
           : docString( docString )
           , type( type ) {}
         virtual ~Option() = default;
 
         QString docString;
-        OptionType type;
+        QgsVectorFileWriter::OptionType type;
     };
 
     /** \ingroup core
      */
-    class SetOption : public Option
+    class SetOption : public QgsVectorFileWriter::Option
     {
       public:
         SetOption( const QString &docString, const QStringList &values, const QString &defaultValue, bool allowNone = false )
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /** \ingroup core
      */
-    class StringOption: public Option
+    class StringOption: public QgsVectorFileWriter::Option
     {
       public:
         StringOption( const QString &docString, const QString &defaultValue = QString() )
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /** \ingroup core
      */
-    class IntOption: public Option
+    class IntOption: public QgsVectorFileWriter::Option
     {
       public:
         IntOption( const QString &docString, int defaultValue )
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /** \ingroup core
      */
-    class BoolOption : public SetOption
+    class BoolOption : public QgsVectorFileWriter::SetOption
     {
       public:
         BoolOption( const QString &docString, bool defaultValue )
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /** \ingroup core
      */
-    class HiddenOption : public Option
+    class HiddenOption : public QgsVectorFileWriter::Option
     {
       public:
         explicit HiddenOption( const QString &value )
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       MetaData()
       {}
 
-      MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, Option *> &driverOptions, const QMap<QString, Option *> &layerOptions, const QString &compulsoryEncoding = QString() )
+      MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, QgsVectorFileWriter::Option *> &driverOptions, const QMap<QString, QgsVectorFileWriter::Option *> &layerOptions, const QString &compulsoryEncoding = QString() )
         : longName( longName )
         , trLongName( trLongName )
         , glob( glob )
@@ -151,8 +151,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       QString trLongName;
       QString glob;
       QString ext;
-      QMap<QString, Option *> driverOptions;
-      QMap<QString, Option *> layerOptions;
+      QMap<QString, QgsVectorFileWriter::Option *> driverOptions;
+      QMap<QString, QgsVectorFileWriter::Option *> layerOptions;
       //! Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string
       QString compulsoryEncoding;
     };
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /** Enumeration to describe how to handle existing files
         \since QGIS 3.0
      */
-    typedef enum
+    enum ActionOnExistingFile
     {
       //! Create or overwrite file
       CreateOrOverwriteFile,
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
       //! Append features to existing layer, and create new fields if needed
       AppendToLayerAddFields
-    } ActionOnExistingFile;
+    };
 
     /** Write contents of vector layer to an (OGR supported) vector formt
      * \param layer layer to write
@@ -265,26 +265,26 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      */
-    static WriterError writeAsVectorFormat( QgsVectorLayer *layer,
-                                            const QString &fileName,
-                                            const QString &fileEncoding,
-                                            const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
-                                            const QString &driverName = "ESRI Shapefile",
-                                            bool onlySelected = false,
-                                            QString *errorMessage = nullptr,
-                                            const QStringList &datasourceOptions = QStringList(),
-                                            const QStringList &layerOptions = QStringList(),
-                                            bool skipAttributeCreation = false,
-                                            QString *newFilename = nullptr,
-                                            SymbologyExport symbologyExport = NoSymbology,
-                                            double symbologyScale = 1.0,
-                                            const QgsRectangle *filterExtent = nullptr,
-                                            QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
-                                            bool forceMulti = false,
-                                            bool includeZ = false,
-                                            const QgsAttributeList &attributes = QgsAttributeList(),
-                                            FieldValueConverter *fieldValueConverter = nullptr
-                                          );
+    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QString &fileEncoding,
+        const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
+        const QString &driverName = "ESRI Shapefile",
+        bool onlySelected = false,
+        QString *errorMessage = nullptr,
+        const QStringList &datasourceOptions = QStringList(),
+        const QStringList &layerOptions = QStringList(),
+        bool skipAttributeCreation = false,
+        QString *newFilename = nullptr,
+        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        double symbologyScale = 1.0,
+        const QgsRectangle *filterExtent = nullptr,
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        bool forceMulti = false,
+        bool includeZ = false,
+        const QgsAttributeList &attributes = QgsAttributeList(),
+        QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr
+                                                               );
 
     /** Writes a layer out to a vector file.
      * \param layer layer to write
@@ -310,26 +310,26 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param fieldValueConverter field value converter (added in QGIS 2.16)
      * \since QGIS 2.2
      */
-    static WriterError writeAsVectorFormat( QgsVectorLayer *layer,
-                                            const QString &fileName,
-                                            const QString &fileEncoding,
-                                            const QgsCoordinateTransform &ct,
-                                            const QString &driverName = "ESRI Shapefile",
-                                            bool onlySelected = false,
-                                            QString *errorMessage = nullptr,
-                                            const QStringList &datasourceOptions = QStringList(),
-                                            const QStringList &layerOptions = QStringList(),
-                                            bool skipAttributeCreation = false,
-                                            QString *newFilename = nullptr,
-                                            SymbologyExport symbologyExport = NoSymbology,
-                                            double symbologyScale = 1.0,
-                                            const QgsRectangle *filterExtent = nullptr,
-                                            QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
-                                            bool forceMulti = false,
-                                            bool includeZ = false,
-                                            const QgsAttributeList &attributes = QgsAttributeList(),
-                                            FieldValueConverter *fieldValueConverter = nullptr
-                                          );
+    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QString &fileEncoding,
+        const QgsCoordinateTransform &ct,
+        const QString &driverName = "ESRI Shapefile",
+        bool onlySelected = false,
+        QString *errorMessage = nullptr,
+        const QStringList &datasourceOptions = QStringList(),
+        const QStringList &layerOptions = QStringList(),
+        bool skipAttributeCreation = false,
+        QString *newFilename = nullptr,
+        QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+        double symbologyScale = 1.0,
+        const QgsRectangle *filterExtent = nullptr,
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown,
+        bool forceMulti = false,
+        bool includeZ = false,
+        const QgsAttributeList &attributes = QgsAttributeList(),
+        QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr
+                                                               );
 
 
     /** \ingroup core
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QString layerName;
 
         //! Action on existing file
-        ActionOnExistingFile actionOnExistingFile;
+        QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
 
         //! Encoding to use
         QString fileEncoding;
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsAttributeList attributes;
 
         //! Symbology to export
-        SymbologyExport symbologyExport;
+        QgsVectorFileWriter::SymbologyExport symbologyExport;
 
         //! Scale of symbology
         double symbologyScale;
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         bool includeZ;
 
         //! Field value converter
-        FieldValueConverter *fieldValueConverter = nullptr;
+        QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr;
 
         //! Optional feedback object allowing cancelation of layer save
         QgsFeedback *feedback = nullptr;
@@ -409,11 +409,11 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param errorMessage pointer to buffer fo error message
      * \since QGIS 3.0
      */
-    static WriterError writeAsVectorFormat( QgsVectorLayer *layer,
-                                            const QString &fileName,
-                                            const SaveVectorOptions &options,
-                                            QString *newFilename = nullptr,
-                                            QString *errorMessage = nullptr );
+    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        QString *newFilename = nullptr,
+        QString *errorMessage = nullptr );
 
     //! Create a new vector file writer
     QgsVectorFileWriter( const QString &vectorFileName,
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = nullptr,
-                         SymbologyExport symbologyExport = NoSymbology
+                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
                        );
 
     /** Create a new vector file writer.
@@ -453,10 +453,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          const QStringList &datasourceOptions,
                          const QStringList &layerOptions,
                          QString *newFilename,
-                         SymbologyExport symbologyExport,
-                         FieldValueConverter *fieldValueConverter,
+                         QgsVectorFileWriter::SymbologyExport symbologyExport,
+                         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                          const QString &layerName,
-                         ActionOnExistingFile action
+                         QgsVectorFileWriter::ActionOnExistingFile action
                        ) SIP_SKIP;
 
     //! QgsVectorFileWriter cannot be copied.
@@ -501,7 +501,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
     //! Checks whether there were any errors in constructor
-    WriterError hasError();
+    QgsVectorFileWriter::WriterError hasError();
 
     //! Retrieves error message
     QString errorMessage();
@@ -524,8 +524,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static bool deleteShapeFile( const QString &fileName );
 
-    SymbologyExport symbologyExport() const { return mSymbologyExport; }
-    void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
+    QgsVectorFileWriter::SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport ) { mSymbologyExport = symExport; }
 
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
     void setSymbologyScaleDenominator( double d );
@@ -558,7 +558,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * Return edition capabilities for an existing dataset name.
      * \since QGIS 3.0
      */
-    static EditionCapabilities editionCapabilities( const QString &datasetName );
+    static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );
 
     /**
      * Returns whether the target layer already exists.
@@ -611,14 +611,17 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     FieldValueConverter *mFieldValueConverter = nullptr;
 
   private:
+#ifdef SIP_RUN
+    QgsVectorFileWriter( const QgsVectorFileWriter &rh );
+#endif
 
     void init( QString vectorFileName, QString fileEncoding, const QgsFields &fields,
                QgsWkbTypes::Type geometryType, QgsCoordinateReferenceSystem srs,
                const QString &driverName, QStringList datasourceOptions,
                QStringList layerOptions, QString *newFilename,
-               FieldValueConverter *fieldValueConverter,
+               QgsVectorFileWriter::FieldValueConverter *fieldValueConverter,
                const QString &layerName,
-               ActionOnExistingFile action );
+               QgsVectorFileWriter::ActionOnExistingFile action );
     void resetMap( const QgsAttributeList &attributes );
 
     QgsRenderContext mRenderContext;
@@ -629,7 +632,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     //! Writes features considering symbol level order
-    WriterError exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
+    QgsVectorFileWriter::WriterError exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
     double mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
