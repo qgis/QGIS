@@ -1,0 +1,4 @@
+
+
+class_headerfile:
+  QgsAbstractFeatureIteratorFromSource: qgsfeatureiterator.h
