@@ -360,7 +360,7 @@ while ($line_idx < $line_count){
         next;
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
-    if ($line =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO).*?$/){
+    if ($line =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED).*?$/){
         next;
     }
 

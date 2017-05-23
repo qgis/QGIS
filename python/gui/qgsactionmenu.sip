@@ -1,19 +1,31 @@
-/**
- * This class is a menu that is populated automatically with the actions defined for a given layer.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsactionmenu.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsActionMenu : QMenu
 {
-%TypeHeaderCode
-#include <qgsactionmenu.h>
+%Docstring
+ This class is a menu that is populated automatically with the actions defined for a given layer.
 %End
 
+%TypeHeaderCode
+#include "qgsactionmenu.h"
+%End
   public:
     enum ActionType
     {
-      Invalid,        //!< Invalid
-      MapLayerAction, //!< Standard actions (defined by core or plugins)
-      AttributeAction //!< Custom actions (manually defined in layer properties)
+      Invalid,
+      MapLayerAction,
+      AttributeAction
     };
 
     struct ActionData
@@ -22,47 +34,52 @@ class QgsActionMenu : QMenu
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      QgsActionMenu::ActionType actionType;
+      ActionType actionType;
       QVariant actionData;
       QgsFeatureId featureId;
       QgsMapLayer *mapLayer;
     };
 
-    /**
-     * Constructs a new QgsActionMenu
-     *
-     * @param layer    The layer that this action will be run upon.
-     * @param feature  The feature that this action will be run upon. Make sure that this feature is available
-     *                 for the lifetime of this object.
-     * @param parent   The usual QWidget parent.
-     * @param actionScope The action scope this menu will run in
-     */
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructs a new QgsActionMenu
 
-    /**
-     * Constructs a new QgsActionMenu
-     *
-     * @param layer    The layer that this action will be run upon.
-     * @param fid      The feature id of the feature for which this action will be run.
-     * @param parent   The usual QWidget parent.
-     * @param actionScope The action scope this menu will run in
-     */
+ \param layer    The layer that this action will be run upon.
+ \param feature  The feature that this action will be run upon. Make sure that this feature is available
+                 for the lifetime of this object.
+ \param parent   The usual QWidget parent.
+ \param actionScope The action scope this menu will run in
+%End
+
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructs a new QgsActionMenu
 
-    /**
-     * Destructor
-     */
-    ~QgsActionMenu();
+ \param layer    The layer that this action will be run upon.
+ \param fid      The feature id of the feature for which this action will be run.
+ \param parent   The usual QWidget parent.
+ \param actionScope The action scope this menu will run in
+%End
 
-    /**
-     * Change the feature on which actions are performed
-     *
-     * @param feature  A feature. Will not take ownership. It's the callers responsibility to keep the feature
-     *                 as long as the menu is displayed and the action is running.
-     */
     void setFeature( const QgsFeature &feature );
+%Docstring
+ Change the feature on which actions are performed
+
+ \param feature  A feature. Will not take ownership. It's the callers responsibility to keep the feature
+                 as long as the menu is displayed and the action is running.
+%End
 
   signals:
     void reinit();
 
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsactionmenu.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
