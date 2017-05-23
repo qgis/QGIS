@@ -1591,8 +1591,8 @@ void QgisApp::dataSourceManager()
 {
   if ( ! mDataSourceManagerDialog )
   {
-    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( this );
-    // Forward signals
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
+    // Forward signals to this
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
@@ -2388,7 +2388,6 @@ void QgisApp::createToolBars()
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  bt->addAction( mActionDataSourceManager );
   bt->addAction( mActionNewVectorLayer );
   bt->addAction( mActionNewSpatiaLiteLayer );
   bt->addAction( mActionNewGeoPackageLayer );

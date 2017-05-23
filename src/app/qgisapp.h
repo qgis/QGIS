@@ -425,8 +425,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionDraw() { return mActionDraw; }
 
-    QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
+    QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
     QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
