@@ -2,7 +2,9 @@
 use strict;
 use warnings;
 use File::Basename;
+use File::Spec;
 use Getopt::Long;
+use YAML::Tiny;
 no if $] >= 5.018000, warnings => 'experimental::smartmatch';
 
 use constant PRIVATE => 0;
@@ -17,40 +19,15 @@ my $debug = 0;
 die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
-sub processDoxygenLine
-{
-    my $line = $_[0];
-    # remove \a formatting
-    $line =~ s/\\a (.+?)\b/``$1``/g;
-    # replace :: with . (changes c++ style namespace/class directives to Python style)
-    $line =~ s/::/./g;
-    # replace nullptr with None (nullptr means nothing to Python devs)
-    $line =~ s/\bnullptr\b/None/g;
-    # replace \returns with :return:
-    $line =~ s/\\return(s)?/:return:/g;
-
-    if ( $line =~ m/[\\@](ingroup|class)/ ) {
-        return ""
-    }
-    if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
-        return ".. versionadded:: $1\n";
-    }
-    if ( $line =~ m/\\see (.*)/ ) {
-        return ".. seealso:: $1\n";
-    }
-    if ( $line =~ m/[\\@]note (.*)/ ) {
-        return ".. note::\n\n   $1\n";
-    }
-    if ( $line =~ m/[\\@]brief (.*)/ ) {
-        return " $1\n";
-    }
-    return "$line\n";
-}
-
 # read file
 open(my $handle, "<", $headerfile) || die "Couldn't open '".$headerfile."' for reading because: ".$!;
 chomp(my @lines = <$handle>);
 close $handle;
+
+# config
+my $cfg_file = File::Spec->catfile( dirname(__FILE__), 'sipify.yaml' );
+my $yaml = YAML::Tiny->read( $cfg_file  );
+my $SIP_CONFIG = $yaml->[0];
 
 # contexts
 my $SIP_RUN = 0;
@@ -95,6 +72,36 @@ sub dbg_info
     push @output, $_[0]."\n";
     print $line_idx." ".@ACCESS." ".$SIP_RUN." ".$MULTILINE_DEFINITION." ".$_[0]."\n";
   }
+}
+
+sub processDoxygenLine
+{
+    my $line = $_[0];
+    # remove \a formatting
+    $line =~ s/\\a (.+?)\b/``$1``/g;
+    # replace :: with . (changes c++ style namespace/class directives to Python style)
+    $line =~ s/::/./g;
+    # replace nullptr with None (nullptr means nothing to Python devs)
+    $line =~ s/\bnullptr\b/None/g;
+    # replace \returns with :return:
+    $line =~ s/\\return(s)?/:return:/g;
+
+    if ( $line =~ m/[\\@](ingroup|class)/ ) {
+        return ""
+    }
+    if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
+        return ".. versionadded:: $1\n";
+    }
+    if ( $line =~ m/\\see (.*)/ ) {
+        return ".. seealso:: $1\n";
+    }
+    if ( $line =~ m/[\\@]note (.*)/ ) {
+        return ".. note::\n\n   $1\n";
+    }
+    if ( $line =~ m/[\\@]brief (.*)/ ) {
+        return " $1\n";
+    }
+    return "$line\n";
 }
 
 sub detect_and_remove_following_body_or_initializerlist {
@@ -441,8 +448,12 @@ while ($line_idx < $line_count){
         while (@template_inheritance_template) {
             my $tpl = pop @template_inheritance_template;
             my $cls = pop @template_inheritance_class;
+            my $tpl_header = lc $tpl . ".h";
+            if (exists $SIP_CONFIG->{class_headerfile}->{$tpl}){
+                $tpl_header = $SIP_CONFIG->{class_headerfile}->{$tpl};
+            }
             $line = "\ntypedef $tpl<$cls> ${tpl}${cls}Base;\n\n$line";
-            $line .= "\n#include \"" . lc $tpl  . ".h\"";
+            $line .= "\n#include \"" . $tpl_header . "\"";
             $line .= "\ntypedef $tpl<$cls> ${tpl}${cls}Base;";
         }
         if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){

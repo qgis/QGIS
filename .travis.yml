@@ -41,15 +41,13 @@ matrix:
 
 
     - os: linux
-      language: python # This lets us use newer python versions from virtualenv
+      language: python
       env:
         - TRAVIS_CONFIG=code_layout
       dist: trusty
       sudo: false
       cache:
         apt: true
-      #compiler: clang
-      #python: "3.3"
       addons:
         apt:
           sources:
@@ -59,10 +57,11 @@ matrix:
             - xvfb
             - flip
             # used for spell checks
-            - perl  # lookahead regex in spell check script
+            - perl  # sipify, lookahead regex in spell check script
             - silversearcher-ag
             - expect-dev  # unbuffer
             - coreutils
+            - libyaml-tiny-perl
     # OSX based build with QT4 and Python 2
     - os: osx
       osx_image: xcode8.3 # MacOS 10.12: Sierra
