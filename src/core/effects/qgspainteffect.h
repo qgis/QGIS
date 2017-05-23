@@ -51,6 +51,47 @@ class QgsRenderContext;
 class CORE_EXPORT QgsPaintEffect
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDrawSourceEffect;
+    }
+    else if ( sipCpp->type() == "effectStack" && dynamic_cast<QgsEffectStack *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsEffectStack;
+    }
+    else if ( sipCpp->type() == "blur" && dynamic_cast<QgsBlurEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsBlurEffect;
+    }
+    else if ( sipCpp->type() == "dropShadow" && dynamic_cast<QgsDropShadowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsDropShadowEffect;
+    }
+    else if ( sipCpp->type() == "outerGlow" && dynamic_cast<QgsOuterGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsOuterGlowEffect;
+    }
+    else if ( sipCpp->type() == "innerGlow" && dynamic_cast<QgsInnerGlowEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsInnerGlowEffect;
+    }
+    else if ( sipCpp->type() == "transform" && dynamic_cast<QgsTransformEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsTransformEffect;
+    }
+    else if ( sipCpp->type() == "color" && dynamic_cast<QgsColorEffect *>( sipCpp ) != NULL )
+    {
+      sipType = sipType_QgsColorEffect;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     /** Drawing modes for effects. These modes are used only when effects are
