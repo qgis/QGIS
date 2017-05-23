@@ -85,8 +85,9 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )();
  * \brief Convenience metadata class that uses static functions to create an effect and its widget.
  *
  * \since QGIS 2.9
+ * \note not available in Python bindings
  */
-class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
+class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
 {
 
   public:

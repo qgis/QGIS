@@ -1,199 +1,242 @@
-/** \ingroup core
- * \class QgsTransformEffect
- * \brief A paint effect which applies transformations (such as move,
- * scale and rotate) to a picture.
- *
- * \note Added in version 2.9
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgstransformeffect.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsTransformEffect : QgsPaintEffect
 {
-%TypeHeaderCode
-#include <qgstransformeffect.h>
+%Docstring
+ A paint effect which applies transformations (such as move,
+ scale and rotate) to a picture.
+
+.. versionadded:: 2.9
 %End
 
+%TypeHeaderCode
+#include "qgstransformeffect.h"
+%End
   public:
 
-    /** Creates a new QgsTransformEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsTransformEffect
-     */
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
+%Docstring
+ Creates a new QgsTransformEffect effect from a properties string map.
+ \param map encoded properties string map
+ :return: new QgsTransformEffect
+ :rtype: QgsPaintEffect
+%End
 
     QgsTransformEffect();
-    virtual ~QgsTransformEffect();
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap &props );
     virtual QgsTransformEffect *clone() const /Factory/;
 
-    /** Sets the transform x translation.
-     * @param translateX distance to translate along the x axis
-     * @see translateX
-     * @see setTranslateY
-     * @see setTranslateUnit
-     * @see setTranslateMapUnitScale
-     */
     void setTranslateX( const double translateX );
+%Docstring
+ Sets the transform x translation.
+ \param translateX distance to translate along the x axis
+.. seealso:: translateX
+.. seealso:: setTranslateY
+.. seealso:: setTranslateUnit
+.. seealso:: setTranslateMapUnitScale
+%End
 
-    /** Returns the transform x translation.
-     * @returns X distance translated along the x axis
-     * @see setTranslateX
-     * @see translateY
-     * @see translateUnit
-     * @see translateMapUnitScale
-     */
     double translateX() const;
+%Docstring
+ Returns the transform x translation.
+ :return: X distance translated along the x axis
+.. seealso:: setTranslateX
+.. seealso:: translateY
+.. seealso:: translateUnit
+.. seealso:: translateMapUnitScale
+ :rtype: float
+%End
 
-    /** Sets the transform y translation.
-     * @param translateY distance to translate along the y axis
-     * @see translateY
-     * @see setTranslateX
-     * @see setTranslateUnit
-     * @see setTranslateMapUnitScale
-     */
     void setTranslateY( const double translateY );
+%Docstring
+ Sets the transform y translation.
+ \param translateY distance to translate along the y axis
+.. seealso:: translateY
+.. seealso:: setTranslateX
+.. seealso:: setTranslateUnit
+.. seealso:: setTranslateMapUnitScale
+%End
 
-    /** Returns the transform y translation.
-     * @returns Y distance translated along the y axis
-     * @see setTranslateY
-     * @see translateX
-     * @see translateUnit
-     * @see translateMapUnitScale
-     */
     double translateY() const;
+%Docstring
+ Returns the transform y translation.
+ :return: Y distance translated along the y axis
+.. seealso:: setTranslateY
+.. seealso:: translateX
+.. seealso:: translateUnit
+.. seealso:: translateMapUnitScale
+ :rtype: float
+%End
 
-    /** Sets the units used for the transform translation.
-     * @param unit units for translation
-     * @see translateUnit
-     * @see setTranslateX
-     * @see setTranslateY
-     * @see setTranslateMapUnitScale
-     */
     void setTranslateUnit( const QgsUnitTypes::RenderUnit unit );
+%Docstring
+ Sets the units used for the transform translation.
+ \param unit units for translation
+.. seealso:: translateUnit
+.. seealso:: setTranslateX
+.. seealso:: setTranslateY
+.. seealso:: setTranslateMapUnitScale
+%End
 
-    /** Returns the units used for the transform translation.
-     * @returns units for translation
-     * @see setTranslateUnit
-     * @see translateX
-     * @see translateY
-     * @see translateMapUnitScale
-     */
     QgsUnitTypes::RenderUnit translateUnit() const;
+%Docstring
+ Returns the units used for the transform translation.
+ :return: units for translation
+.. seealso:: setTranslateUnit
+.. seealso:: translateX
+.. seealso:: translateY
+.. seealso:: translateMapUnitScale
+ :rtype: QgsUnitTypes.RenderUnit
+%End
 
-    /** Sets the map unit scale used for the transform translation.
-     * @param scale map unit scale for translation
-     * @see translateMapUnitScale
-     * @see setTranslateX
-     * @see setTranslateY
-     * @see setTranslateUnit
-     */
     void setTranslateMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+ Sets the map unit scale used for the transform translation.
+ \param scale map unit scale for translation
+.. seealso:: translateMapUnitScale
+.. seealso:: setTranslateX
+.. seealso:: setTranslateY
+.. seealso:: setTranslateUnit
+%End
 
-    /** Returns the map unit scale used for the transform translation.
-     * @returns map unit scale for translation
-     * @see setTranslateMapUnitScale
-     * @see translateX
-     * @see translateY
-     * @see translateUnit
-     */
     const QgsMapUnitScale &translateMapUnitScale() const;
+%Docstring
+ Returns the map unit scale used for the transform translation.
+ :return: map unit scale for translation
+.. seealso:: setTranslateMapUnitScale
+.. seealso:: translateX
+.. seealso:: translateY
+.. seealso:: translateUnit
+ :rtype: QgsMapUnitScale
+%End
 
-    /** Sets the x axis scaling factor.
-     * @param scaleX factor to scale x axis by, where 1.0 = no scaling
-     * @see scaleX
-     * @see setScaleY
-     */
     void setScaleX( const double scaleX );
+%Docstring
+ Sets the x axis scaling factor.
+ \param scaleX factor to scale x axis by, where 1.0 = no scaling
+.. seealso:: scaleX
+.. seealso:: setScaleY
+%End
 
-    /** Returns the x axis scaling factor.
-     * @returns x axis scaling factor, where 1.0 = no scaling
-     * @see setScaleX
-     * @see scaleY
-     */
     double scaleX() const;
+%Docstring
+ Returns the x axis scaling factor.
+ :return: x axis scaling factor, where 1.0 = no scaling
+.. seealso:: setScaleX
+.. seealso:: scaleY
+ :rtype: float
+%End
 
-    /** Sets the y axis scaling factor.
-     * @param scaleY factor to scale y axis by, where 1.0 = no scaling
-     * @see scaleX
-     */
     void setScaleY( const double scaleY );
+%Docstring
+ Sets the y axis scaling factor.
+ \param scaleY factor to scale y axis by, where 1.0 = no scaling
+.. seealso:: scaleX
+%End
 
-    /** Returns the y axis scaling factor.
-     * @returns y axis scaling factor, where 1.0 = no scaling
-     * @see setScaleY
-     * @see scaleX
-     */
     double scaleY() const;
+%Docstring
+ Returns the y axis scaling factor.
+ :return: y axis scaling factor, where 1.0 = no scaling
+.. seealso:: setScaleY
+.. seealso:: scaleX
+ :rtype: float
+%End
 
-    /** Sets the transform rotation.
-     * @param rotation degrees to rotate, clockwise
-     * @see rotation
-     */
     void setRotation( const double rotation );
+%Docstring
+ Sets the transform rotation.
+ \param rotation degrees to rotate, clockwise
+.. seealso:: rotation
+%End
 
-    /** Returns the transform rotation.
-     * @returns rotation in degrees clockwise
-     * @see setRotation
-     */
     double rotation() const;
+%Docstring
+ Returns the transform rotation.
+ :return: rotation in degrees clockwise
+.. seealso:: setRotation
+ :rtype: float
+%End
 
-    /** Sets the x axis shearing factor.
-     * @param shearX x axis shearing
-     * @see shearX
-     * @see setShearY
-     */
     void setShearX( const double shearX );
+%Docstring
+ Sets the x axis shearing factor.
+ \param shearX x axis shearing
+.. seealso:: shearX
+.. seealso:: setShearY
+%End
 
-    /** Returns the x axis shearing factor.
-     * @returns x axis shearing
-     * @see setShearX
-     * @see shearY
-     */
     double shearX() const;
+%Docstring
+ Returns the x axis shearing factor.
+ :return: x axis shearing
+.. seealso:: setShearX
+.. seealso:: shearY
+ :rtype: float
+%End
 
-    /** Sets the y axis shearing factor.
-     * @param shearY y axis shearing
-     * @see shearY
-     * @see setShearX
-     */
     void setShearY( const double shearY );
+%Docstring
+ Sets the y axis shearing factor.
+ \param shearY y axis shearing
+.. seealso:: shearY
+.. seealso:: setShearX
+%End
 
-    /** Returns the y axis shearing factor.
-     * @returns y axis shearing
-     * @see setShearY
-     * @see shearX
-     */
     double shearY() const;
+%Docstring
+ Returns the y axis shearing factor.
+ :return: y axis shearing
+.. seealso:: setShearY
+.. seealso:: shearX
+ :rtype: float
+%End
 
-    /** Sets whether to reflect along the x-axis
-     * @param reflectX true to reflect horizontally
-     * @see reflectX
-     * @see setReflectY
-     */
     void setReflectX( const bool reflectX );
+%Docstring
+ Sets whether to reflect along the x-axis
+ \param reflectX true to reflect horizontally
+.. seealso:: reflectX
+.. seealso:: setReflectY
+%End
 
-    /** Returns whether transform will be reflected along the x-axis
-     * @returns true if transform will reflect horizontally
-     * @see setReflectX
-     * @see reflectY
-     */
     bool reflectX() const;
+%Docstring
+ Returns whether transform will be reflected along the x-axis
+ :return: true if transform will reflect horizontally
+.. seealso:: setReflectX
+.. seealso:: reflectY
+ :rtype: bool
+%End
 
-    /** Sets whether to reflect along the y-axis
-     * @param reflectY true to reflect horizontally
-     * @see reflectY
-     * @see setReflectX
-     */
     void setReflectY( const bool reflectY );
+%Docstring
+ Sets whether to reflect along the y-axis
+ \param reflectY true to reflect horizontally
+.. seealso:: reflectY
+.. seealso:: setReflectX
+%End
 
-    /** Returns whether transform will be reflected along the y-axis
-     * @returns true if transform will reflect horizontally
-     * @see setReflectY
-     * @see reflectX
-     */
     bool reflectY() const;
+%Docstring
+ Returns whether transform will be reflected along the y-axis
+ :return: true if transform will reflect horizontally
+.. seealso:: setReflectY
+.. seealso:: reflectX
+ :rtype: bool
+%End
 
   protected:
 
@@ -201,3 +244,12 @@ class QgsTransformEffect : QgsPaintEffect
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/effects/qgstransformeffect.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
