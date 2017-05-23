@@ -128,8 +128,8 @@ double QgsScaleRangeWidget::maximumScaleDenom()
 
 void QgsScaleRangeWidget::setScaleRange( double min, double max )
 {
-  setMaximumScale( max );
   setMinimumScale( min );
+  setMaximumScale( max );
 }
 
 void QgsScaleRangeWidget::emitRangeChanged()
