@@ -30,7 +30,7 @@ QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 {
   if ( embeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
 
   // import/export of connections not supported yet

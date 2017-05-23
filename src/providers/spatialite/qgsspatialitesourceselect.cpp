@@ -45,6 +45,10 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
 
+  if ( embeddedMode )
+  {
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+  }
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
