@@ -42,11 +42,6 @@ core/composer/qgspaperitem.sip
 core/composer/qgsscalebarstyle.sip
 core/composer/qgssingleboxscalebarstyle.sip
 core/composer/qgsticksscalebarstyle.sip
-core/diagram/qgsdiagram.sip
-core/diagram/qgshistogramdiagram.sip
-core/diagram/qgspiediagram.sip
-core/diagram/qgstextdiagram.sip
-core/qgsdiagramrenderer.sip
 core/effects/qgsblureffect.sip
 core/effects/qgscoloreffect.sip
 core/effects/qgseffectstack.sip
