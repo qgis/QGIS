@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsAbstractFeatureIterator
 {
 %Docstring
@@ -123,6 +125,33 @@ Setup the simplification of geometries to fetch using the specified simplify met
 };
 
 
+template<T>
+class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
+{
+%Docstring
+ Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+.. note::
+
+   not available in Python bindings (although present in SIP file)
+%End
+
+%TypeHeaderCode
+#include "qgsfeatureiterator.h"
+%End
+  public:
+    QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request );
+
+    ~QgsAbstractFeatureIteratorFromSource();
+
+  protected:
+    void iteratorClosed();
+%Docstring
+to be called by from subclass in close()
+%End
+
+};
+
+
 class QgsFeatureIterator
 {
 %Docstring
@@ -194,6 +223,9 @@ find out whether the iterator is still valid or closed already
 .. versionadded:: 2.16
  :rtype: QgsAbstractFeatureIterator.CompileStatus
 %End
+
+
+  protected:
 
 
 };

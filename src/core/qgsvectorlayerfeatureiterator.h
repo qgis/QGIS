@@ -24,7 +24,7 @@
 #include <QSet>
 #include <memory>
 
-typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap SIP_SKIP;
 
 class QgsExpressionFieldBuffer;
 class QgsVectorLayer;
@@ -34,6 +34,12 @@ class QgsVectorLayerJoinInfo;
 class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsfeatureiterator.h"
+% End
+#endif
 
 /** \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
@@ -51,7 +57,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
-    friend class QgsVectorLayerFeatureIterator;
+    friend class QgsVectorLayerFeatureIterator SIP_SKIP;
 
     /**
      * Returns the fields that will be available for features that are retrieved from
@@ -101,7 +107,24 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
-    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
+    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
+
+    /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+     * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
+     */
+    struct FetchJoinInfo
+    {
+      const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
+      QgsAttributeList attributes;      //!< Attributes to fetch
+      int indexOffset;                  //!< At what position the joined fields start
+      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
+      int targetField;                  //!< Index of field (of this layer) that drives the join
+      int joinField;                    //!< Index of field (of the joined layer) must have equal value
+
+      void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
+      void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
+    };
+
 
   protected:
     //! fetch next feature, return true on success
@@ -173,22 +196,6 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void updateFeatureGeometry( QgsFeature &f ) SIP_SKIP;
 
-    /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
-     * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
-     */
-    struct FetchJoinInfo
-    {
-      const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
-      QgsAttributeList attributes;      //!< Attributes to fetch
-      int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
-      int targetField;                  //!< Index of field (of this layer) that drives the join
-      int joinField;                    //!< Index of field (of the joined layer) must have equal value
-
-      void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
-      void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
-    };
-
     QgsFeatureRequest mProviderRequest;
     QgsFeatureIterator mProviderIterator;
     QgsFeatureRequest mChangedFeaturesRequest;
@@ -203,13 +210,17 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /** Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
-    QMap<const QgsVectorLayerJoinInfo *, FetchJoinInfo> mFetchJoinInfo;
+    QMap<const QgsVectorLayerJoinInfo *, QgsVectorLayerFeatureIterator::FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression *> mExpressionFieldInfo;
 
     bool mHasVirtualAttributes;
 
   private:
+#ifdef SIP_RUN
+    QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
+#endif
+
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
     QgsInterruptionChecker *mInterruptionChecker = nullptr;

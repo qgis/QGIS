@@ -2,7 +2,6 @@ core/conversions.sip
 core/qgsexception.sip
 core/qgis.sip
 core/qgsrange.sip
-core/qgsvectorlayerfeatureiterator.sip
 core/composer/qgsaddremoveitemcommand.sip
 core/composer/qgsgroupungroupitemscommand.sip
 core/composer/qgsaddremovemultiframecommand.sip
