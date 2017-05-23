@@ -49,7 +49,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 SIP_FACTORY;
     //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) { return nullptr; }
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) { return nullptr; }
 

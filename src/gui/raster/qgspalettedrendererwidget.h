@@ -19,6 +19,7 @@
 #define QGSPALETTEDRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgscolorschemelist.h"
 #include "qgsrasterlayer.h"
@@ -183,7 +184,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget();
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsPalettedRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
 

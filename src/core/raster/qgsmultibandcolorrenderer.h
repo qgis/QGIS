@@ -41,7 +41,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & ) = delete;
 
-    QgsMultiBandColorRenderer *clone() const override;
+    QgsMultiBandColorRenderer *clone() const override SIP_FACTORY;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 

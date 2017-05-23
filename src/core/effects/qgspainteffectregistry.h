@@ -69,7 +69,7 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
      * if there's no GUI for the paint effect class.
      * \returns configuration widget
      */
-    virtual QgsPaintEffectWidget *createWidget() { return nullptr; }
+    virtual QgsPaintEffectWidget *createWidget() SIP_FACTORY { return nullptr; }
 
   protected:
     QString mName;
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffectWidget *createWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
+    virtual QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;

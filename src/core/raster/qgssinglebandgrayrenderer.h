@@ -45,7 +45,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & ) = delete;
 
-    QgsSingleBandGrayRenderer *clone() const override;
+    QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 

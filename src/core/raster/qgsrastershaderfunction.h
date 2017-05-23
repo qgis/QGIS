@@ -26,6 +26,7 @@ email                : ersts@amnh.org
  */
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QPair>
 
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsRasterShaderFunction
     double minimumValue() const { return mMinimumValue; }
     double maximumValue() const { return mMaximumValue; }
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
   protected:
     //! \brief User defineable maximum value for the shading function

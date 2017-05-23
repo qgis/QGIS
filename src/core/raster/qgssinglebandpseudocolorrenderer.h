@@ -44,7 +44,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & ) = delete;
 
-    QgsSingleBandPseudoColorRenderer *clone() const override;
+    QgsSingleBandPseudoColorRenderer *clone() const override SIP_FACTORY;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsRasterShader *shader() { return mShader.get(); }
 
     //! \note available in Python as constShader
-    const QgsRasterShader *shader() const { return mShader.get(); }
+    const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
     /** Creates a color ramp shader
      * \param colorRamp vector color ramp

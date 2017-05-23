@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
 
-    QgsVectorFieldSymbolLayer *clone() const override;
+    QgsVectorFieldSymbolLayer *clone() const override SIP_FACTORY;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;

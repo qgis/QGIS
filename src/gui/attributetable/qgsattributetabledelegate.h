@@ -17,6 +17,7 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsFeatureSelectionModel;
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * Constructor
      * \param parent parent object
      */
-    QgsAttributeTableDelegate( QObject *parent = nullptr )
+    QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = 0 )
       : QItemDelegate( parent )
       , mLayer( nullptr )
       , mFeatureSelectionModel( nullptr )

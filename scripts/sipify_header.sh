@@ -40,7 +40,8 @@ while read -r sipfile; do
 
 
         header=$(${GP}sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
-        echo "$header"
+        echo "*************"
+        echo "*** $header"
 
         # continue
 
@@ -61,31 +62,32 @@ while read -r sipfile; do
             #echo ${annot_head[$i]}
             while read -r line; do
                 echo $line
-                line=$(${GP}sed -r 's/^\s+//; s/\s+/ /g; s/\s+$//g;' <<< $line)
+                line=$(${GP}sed -r 's/^\s+//; s/\s+/ /g; s/\s+$//g; s/^virtual//;' <<< $line)
                 orig_line=$(${GP}sed -r "s@ /${annot_head[$i]}/@@g" <<< $line)
                 dest_line=$(${GP}sed -r "s@/${annot_head[$i]}/@${annot_sip[$i]}@g" <<< $line)
                 esc_orig_line=$(${GP}sed -r 's/([(){}*+?$^&])/\\\1/g' <<< $orig_line)
                 esc_dest_line=$(${GP}sed -r 's/([&])/\\\1/g' <<< $dest_line)
+                esc_dest_line=$(${GP}sed -r 's/;//g' <<< $esc_dest_line)
                 esc_orig_line=$(${GP}sed -r 's/0/(\?:0|nullptr)/g' <<< $esc_orig_line)
                 esc_orig_line=$(${GP}sed -r 's/""/(""|QString\(\))/g' <<< $esc_orig_line)
                 esc_dest_line=$(${GP}sed -r 's/(\*\w+) = 0/\1 = nullptr/g' <<< $esc_dest_line)
-                esc_orig_line=$(${GP}sed -r 's/((= 0)?;)/\(\\s\*override\)\?\\s\*\1/g' <<< $esc_orig_line)
-                esc_dest_line=$(${GP}sed -r 's/(( SIP_\w+)?( = 0)?;)/\\1\1/' <<< $esc_dest_line)
+                esc_orig_line=$(${GP}sed -r 's/((= 0)?);/\( \*override\)\? \*\?\1\( \*\\{.\*\\}\|;\|$\)/g' <<< $esc_orig_line)
+                esc_dest_line=$(${GP}sed -r 's/( SIP_\w+)?( = 0)?(;)?$/\\1\1\2\3\\2/' <<< $esc_dest_line)
                 echo "orig: $esc_orig_line"
                 echo "dest: $esc_dest_line"
-                #echo "${GP}sed -i -r \"s/$esc_orig_line/$esc_dest_line/\" $header"
+                echo "${GP}sed -i -r \"s/$esc_orig_line/$esc_dest_line/\" $header"
                 perl -pi.bak -e "s/$esc_orig_line/$esc_dest_line/" $header
             done < <(egrep "\/${annot_head[$i]}\/" python/$sipfile)
         done
 
-        # if [[ $sipfile =~ core/diagram/qgshistogramdiagram.sip ]]; then
+        # if [[ $sipfile =~ core/qgsdiagramrenderer.sip ]]; then
         #   exit
         # fi
 
 
         if ! cmp $header $m >/dev/null 2>&1; then
           if ! egrep -xq "#include \"qgis(_sip)?.h\"" $header; then
-              gawk -i inplace '{print} /^#include/ && !n {print "#include \"qgis.h\""; n++}' $header
+              gawk -i inplace '{print} /^#include/ && !n {print "#include \"qgis_sip.h\""; n++}' $header
           fi
         fi
         rm $m

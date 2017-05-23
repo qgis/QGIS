@@ -37,7 +37,7 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
     QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &provider = "gdal" );
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
-    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() { return mSaveOptionsWidget; }
+    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() SIP_FACTORY { return mSaveOptionsWidget; }
     const QList<int> overviewList() const { return mOverviewList; }
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const
     { return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() ); }

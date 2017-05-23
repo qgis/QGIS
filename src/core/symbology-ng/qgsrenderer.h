@@ -383,7 +383,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \see embeddedRenderer()
      * \since QGIS 2.16
      */
-    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer SIP_TRANSFER ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.

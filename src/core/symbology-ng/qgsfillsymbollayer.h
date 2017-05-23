@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSimpleFillSymbolLayer *clone() const override;
+    QgsSimpleFillSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsGradientFillSymbolLayer *clone() const override;
+    QgsGradientFillSymbolLayer *clone() const override SIP_FACTORY;
 
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsShapeburstFillSymbolLayer *clone() const override;
+    QgsShapeburstFillSymbolLayer *clone() const override SIP_FACTORY;
 
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
@@ -858,7 +858,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSVGFillSymbolLayer *clone() const override;
+    QgsSVGFillSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -964,7 +964,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsLinePatternFillSymbolLayer *clone() const override;
+    QgsLinePatternFillSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -1098,7 +1098,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsPointPatternFillSymbolLayer *clone() const override;
+    QgsPointPatternFillSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -1241,7 +1241,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsCentroidFillSymbolLayer *clone() const override;
+    QgsCentroidFillSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 

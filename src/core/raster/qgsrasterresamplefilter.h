@@ -33,7 +33,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
   public:
     QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
 
-    QgsRasterResampleFilter *clone() const override;
+    QgsRasterResampleFilter *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 

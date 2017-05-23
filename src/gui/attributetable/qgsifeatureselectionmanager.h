@@ -17,6 +17,7 @@
 #define QGSIFEATURESELECTIONMANAGER_H
 
 #include <QObject>
+#include "qgis_sip.h"
 
 #include "qgsfeature.h"
 #include "qgis_gui.h"
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     Q_OBJECT
 
   public:
-    QgsIFeatureSelectionManager( QObject *parent )
+    QgsIFeatureSelectionManager( QObject *parent SIP_TRANSFERTHIS )
       : QObject( parent ) {}
 
     /**
