@@ -21,9 +21,9 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
+#include "qgsvectorlayer.h"
 
 class QTextCodec;
-class QgsVectorLayer;
 
 /** \ingroup core
  * \class QgsJSONExporter
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsJSONExporter
      * \param precision maximum number of decimal places to use for geometry coordinates,
      *  the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
      */
-    QgsJSONExporter( const QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
+    QgsJSONExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsJSONExporter
      * \param vectorLayer vector layer
      * \see vectorLayer()
      */
-    void setVectorLayer( const QgsVectorLayer *vectorLayer );
+    void setVectorLayer( QgsVectorLayer *vectorLayer );
 
     /** Returns the associated vector layer, if set.
      * \see setVectorLayer()
@@ -193,8 +193,8 @@ class CORE_EXPORT QgsJSONExporter
     //! Whether to include attributes from related features in JSON export
     bool mIncludeRelatedAttributes;
 
-    //! Layer ID of associated vector layer. Required for related attribute export.
-    QString mLayerId;
+    //! Associated vector layer. Required for related attribute export.
+    QPointer< QgsVectorLayer > mLayer;
 
     QgsCoordinateReferenceSystem mCrs;
 

@@ -27,12 +27,12 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 
-QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer *vectorLayer, int precision )
+QgsJSONExporter::QgsJSONExporter(QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
   , mIncludeGeometry( true )
   , mIncludeAttributes( true )
   , mIncludeRelatedAttributes( false )
-  , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
+  , mLayer( vectorLayer )
 {
   if ( vectorLayer )
   {
@@ -42,9 +42,9 @@ QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer *vectorLayer, int precisi
   mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
-void QgsJSONExporter::setVectorLayer( const QgsVectorLayer *vectorLayer )
+void QgsJSONExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
 {
-  mLayerId = vectorLayer ? vectorLayer->id() : QString();
+  mLayer = vectorLayer;
   if ( vectorLayer )
   {
     mCrs = vectorLayer->crs();
@@ -54,7 +54,7 @@ void QgsJSONExporter::setVectorLayer( const QgsVectorLayer *vectorLayer )
 
 QgsVectorLayer *QgsJSONExporter::vectorLayer() const
 {
-  return qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( mLayerId ) );
+  return mLayer.data();
 }
 
 void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
@@ -151,10 +151,9 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
     }
 
     // related attributes
-    QgsVectorLayer *vl = vectorLayer();
-    if ( vl && mIncludeRelatedAttributes )
+    if ( mLayer.data() && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( vl );
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
       Q_FOREACH ( const QgsRelation &relation, relations )
       {
         if ( attributeCounter > 0 )
