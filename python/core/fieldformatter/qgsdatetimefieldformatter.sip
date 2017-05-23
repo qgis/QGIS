@@ -1,29 +1,50 @@
-/***************************************************************************
-  qgsdatetimefieldformatter.sip - QgsDateTimeFieldFormatter
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 2.12.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
 class QgsDateTimeFieldFormatter : QgsFieldFormatter
 {
+%Docstring
+ Field formatter for a date time field.
+ This represents a date, time or datetime value based on
+ the field configuration.
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsdatetimefieldformatter.h"
 %End
   public:
-    QgsDateTimeFieldFormatter();
+    static const QString DEFAULT_DATE_FORMAT;
+    static const QString DEFAULT_TIME_FORMAT;
+    static const QString DEFAULT_DATETIME_FORMAT;
 
-    QString id() const;
+    virtual QString id() const;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    static QString defaultFormat( const QVariant::Type type );
+    static QString defaultFormat( QVariant::Type type );
+%Docstring
+ Get the default format in function of the type.
+ The type is expected to be one of
+
+ - QVariant.DateTime
+ - QVariant.Date
+ - QVariant.Time
+ :rtype: str
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsdatetimefieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -47,7 +47,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
       QString value;
     };
 
-    typedef QVector < ValueRelationItem > ValueRelationCache;
+    typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
 
     QgsValueRelationFieldFormatter();
 
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      *
      * \since QGIS 3.0
      */
-    static ValueRelationCache createCache( const QVariantMap &config );
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

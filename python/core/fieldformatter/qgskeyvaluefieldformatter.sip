@@ -1,25 +1,37 @@
-/***************************************************************************
-  qgskeyvaluefieldformatter.sip - QgsKeyValueFieldFormatter
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgskeyvaluefieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 3.12.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
 class QgsKeyValueFieldFormatter : QgsFieldFormatter
 {
+%Docstring
+ Field formatter for a key value field.
+ This represents a list type value.
+ Values will be represented as a colon-delimited and
+ comma-separated list.
+
+ E.g. "color: yellow, amount: 5"
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgskeyvaluefieldformatter.h"
 %End
   public:
-    QgsKeyValueFieldFormatter();
-    QString id() const;
-    QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString id() const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgskeyvaluefieldformatter.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
