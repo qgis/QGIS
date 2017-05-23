@@ -43,7 +43,7 @@ class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 
-namespace pal { class Layer; }
+namespace pal { class Layer; } SIP_SKIP
 
 /** \ingroup core
  * \class QgsDiagramLayerSettings
@@ -212,8 +212,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /** Returns the diagram renderer associated with the layer.
      * \see setRenderer()
      * \since QGIS 2.16
+     * \note not available in Python bindings
      */
-    const QgsDiagramRenderer *renderer() const { return mRenderer; }
+    const QgsDiagramRenderer *renderer() const { return mRenderer; } SIP_SKIP
 
     /** Sets the diagram renderer associated with the layer.
      * \param diagramRenderer diagram renderer. Ownership is transferred to the object.
@@ -284,8 +285,9 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setProperties()
+     * \note not available in Python bindings
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the diagram's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
