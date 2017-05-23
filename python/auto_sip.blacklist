@@ -41,12 +41,6 @@ core/composer/qgspaperitem.sip
 core/composer/qgsscalebarstyle.sip
 core/composer/qgssingleboxscalebarstyle.sip
 core/composer/qgsticksscalebarstyle.sip
-core/gps/qgsgpsconnection.sip
-core/gps/qgsgpsconnectionregistry.sip
-core/gps/qgsgpsdconnection.sip
-core/gps/qgsgpsdetector.sip
-core/gps/qgsnmeaconnection.sip
-core/gps/qgsqtlocationconnection.sip
 core/symbology-ng/qgsrulebasedrenderer.sip
 core/symbology-ng/qgssinglesymbolrenderer.sip
 core/symbology-ng/qgsgeometrygeneratorsymbollayer.sip
