@@ -123,15 +123,24 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
+    /**
+     * Is a full width symbol, Is used when the text is above the legend graphics.
+     * \since QGIS 3.0
+     */
+    virtual bool fullWidth() const { return false; }
+
   signals:
+
     //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
 
   protected:
+
     //! Construct the node with pointer to its parent layer node
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
+
     QgsLayerTreeLayer *mLayerNode = nullptr;
     bool mEmbeddedInParent;
     QString mUserLabel;
@@ -150,6 +159,17 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
+
+    /**
+     * The SymbolMetrics struct:
+     * - size of the symbol
+     * - offset of the symbol (mainly right offsert)
+     */
+    struct SymbolMetrics
+    {
+      QSizeF size;
+      QSizeF offset;
+    };
 
     /**
      * Constructor for QgsSymbolLegendNode.
@@ -196,13 +216,15 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QSize minimumIconSize( QgsRenderContext *context ) const;
 
-    /** Returns the symbol used by the legend node.
+    /**
+     * Returns the symbol used by the legend node.
      * \see setSymbol()
      * \since QGIS 2.14
      */
     const QgsSymbol *symbol() const;
 
-    /** Sets the symbol to be used by the legend node. The symbol change is also propagated
+    /**
+     * Sets the symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
      * \param symbol new symbol for node. Ownership is transferred.
      * \see symbol()
@@ -210,24 +232,46 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setSymbol( QgsSymbol *symbol );
 
+    /**
+     * Is an editable symbol.
+     * \since QGIS 3.0
+     */
+    virtual bool editable() const { return true; }
+
   public slots:
 
-    /** Checks all items belonging to the same layer as this node.
+    /**
+     * Checks all items belonging to the same layer as this node.
      * \since QGIS 2.14
      * \see uncheckAllItems()
      */
     void checkAllItems();
 
-    /** Unchecks all items belonging to the same layer as this node.
+    /**
+     * Unchecks all items belonging to the same layer as this node.
      * \since QGIS 2.14
      * \see checkAllItems()
      */
     void uncheckAllItems();
 
-  private:
-    void updateLabel();
+  protected:
+
+    /**
+     * Get the symbol metrics
+     * \since added in QGIS 3.0
+     * \param settings
+     * \param context
+     * \param symbol
+     * \return width, height, widthOffset, heightOffset
+     */
+    virtual SymbolMetrics symbolMetrics(
+      const QgsLegendSettings &settings, const QgsRenderContext context,
+      QgsSymbol *symbol SIP_TRANSFER ) const;
 
   private:
+
+    void updateLabel();
+
     QgsLegendSymbolItem mItem;
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
@@ -240,7 +284,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     // return a temporary context or null if legendMapViewData are not valid
     QgsRenderContext *createTemporaryRenderContext() const;
 
-    /** Sets all items belonging to the same layer as this node to the same check state.
+    /**
+     * Sets all items belonging to the same layer as this node to the same check state.
      * \param state check state
      */
     void checkAll( bool state );

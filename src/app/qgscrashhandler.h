@@ -38,7 +38,7 @@ class APP_EXPORT QgsCrashHandler
 
     /**
      * Show the crash dialog.
-     * @param stack The current stack of the crash point.
+     * \param stack The current stack of the crash point.
      */
     static void showCrashDialog( const QgsStackLines &stack );
 

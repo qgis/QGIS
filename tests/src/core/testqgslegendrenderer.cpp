@@ -125,7 +125,10 @@ class TestQgsLegendRenderer : public QObject
     void testFilterByPolygon();
     void testFilterByExpression();
     void testDiagramAttributeLegend();
-    void testDiagramSizeLegend();
+    void testDiagramSizeLegendBottom();
+    void testDiagramSizeLegendTop();
+    void testDiagramSizeLegendCenter();
+    void testDiagramSizeLegendMultiple();
 
   private:
     QgsLayerTree *mRoot = nullptr;
@@ -685,7 +688,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   QgsProject::instance()->removeMapLayer( vl4 );
 }
 
-void TestQgsLegendRenderer::testDiagramSizeLegend()
+void TestQgsLegendRenderer::testDiagramSizeLegendBottom()
 {
   QgsVectorLayer *vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( vl4 );
@@ -695,6 +698,10 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"cat1\"" ) << QStringLiteral( "\"cat2\"" );
   ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
   ds.scaleByArea = false;
+  ds.sizeRules.append( 2 );
+  ds.sizeRules.append( 6 );
+  ds.sizeRules.append( 10 );
+  ds.sizeAttributeLabel = "A";
 
   QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
   dr->setLowerValue( 0.0 );
@@ -706,6 +713,144 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setDiagramSettings( ds );
   dr->setSizeLegend( true );
   dr->setAttributeLegend( false );
+  QgsStringMap symbol_properties;
+  symbol_properties.insert( "color", "255,255,255" );
+  dr->setSizeLegendSymbol( QgsMarkerSymbol::createSimple( symbol_properties ) );
+  vl4->setDiagramRenderer( dr );
+
+  QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+  dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  dls.setShowAllDiagrams( true );
+  vl4->setDiagramLayerSettings( dls );
+
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root.get() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( QStringLiteral( "legend_diagram_size_bottom" ), &legendModel, settings );
+  QVERIFY( _verifyImage( "legend_diagram_size_bottom", mReport ) );
+
+  QgsProject::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramSizeLegendTop()
+{
+  QgsVectorLayer *vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl4 );
+
+  QgsDiagramSettings ds;
+  ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
+  ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"cat1\"" ) << QStringLiteral( "\"cat2\"" );
+  ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
+  ds.scaleByArea = false;
+  ds.sizeAttributeLabel = "A";
+  ds.sizeDiagramLegendType = QgsDiagramSettings::ConcentricTop;
+
+  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  dr->setLowerValue( 0.0 );
+  dr->setLowerSize( QSizeF( 1, 1 ) );
+  dr->setUpperValue( 10 );
+  dr->setUpperSize( QSizeF( 20, 20 ) );
+  dr->setClassificationField( QString( "a" ) );
+  dr->setDiagram( new QgsPieDiagram() );
+  dr->setDiagramSettings( ds );
+  dr->setSizeLegend( true );
+  dr->setAttributeLegend( false );
+  QgsStringMap symbol_properties;
+  symbol_properties.insert( "color", "255,255,255" );
+  dr->setSizeLegendSymbol( QgsMarkerSymbol::createSimple( symbol_properties ) );
+  vl4->setDiagramRenderer( dr );
+
+  QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+  dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  dls.setShowAllDiagrams( true );
+  vl4->setDiagramLayerSettings( dls );
+
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root.get() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( QStringLiteral( "legend_diagram_size_top" ), &legendModel, settings );
+  QVERIFY( _verifyImage( "legend_diagram_size_top", mReport ) );
+
+  QgsProject::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramSizeLegendCenter()
+{
+  QgsVectorLayer *vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl4 );
+
+  QgsDiagramSettings ds;
+  ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
+  ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"cat1\"" ) << QStringLiteral( "\"cat2\"" );
+  ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
+  ds.scaleByArea = false;
+  ds.sizeAttributeLabel = "A";
+  ds.sizeDiagramLegendType = QgsDiagramSettings::ConcentricCenter;
+
+  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  dr->setLowerValue( 0.0 );
+  dr->setLowerSize( QSizeF( 1, 1 ) );
+  dr->setUpperValue( 10 );
+  dr->setUpperSize( QSizeF( 20, 20 ) );
+  dr->setClassificationField( QString( "a" ) );
+  dr->setDiagram( new QgsPieDiagram() );
+  dr->setDiagramSettings( ds );
+  dr->setSizeLegend( true );
+  dr->setAttributeLegend( false );
+  QgsStringMap symbol_properties;
+  symbol_properties.insert( "color", "255,255,255" );
+  dr->setSizeLegendSymbol( QgsMarkerSymbol::createSimple( symbol_properties ) );
+  vl4->setDiagramRenderer( dr );
+
+  QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+  dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  dls.setShowAllDiagrams( true );
+  vl4->setDiagramLayerSettings( dls );
+
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+  root->addLayer( vl4 );
+  QgsLayerTreeModel legendModel( root.get() );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( QStringLiteral( "legend_diagram_size_center" ), &legendModel, settings );
+  QVERIFY( _verifyImage( "legend_diagram_size_center", mReport ) );
+
+  QgsProject::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramSizeLegendMultiple()
+{
+  QgsVectorLayer *vl4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl4 );
+
+  QgsDiagramSettings ds;
+  ds.categoryColors = QList<QColor>() << QColor( 255, 0, 0 ) << QColor( 0, 255, 0 );
+  ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"cat1\"" ) << QStringLiteral( "\"cat2\"" );
+  ds.categoryLabels = QStringList() << QStringLiteral( "cat 1" ) << QStringLiteral( "cat 2" );
+  ds.scaleByArea = false;
+  ds.sizeAttributeLabel = "A";
+  ds.sizeDiagramLegendType = QgsDiagramSettings::Multiple;
+
+  QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+  dr->setLowerValue( 0.0 );
+  dr->setLowerSize( QSizeF( 1, 1 ) );
+  dr->setUpperValue( 10 );
+  dr->setUpperSize( QSizeF( 20, 20 ) );
+  dr->setClassificationField( QString( "a" ) );
+  dr->setDiagram( new QgsPieDiagram() );
+  dr->setDiagramSettings( ds );
+  dr->setSizeLegend( true );
+  dr->setAttributeLegend( false );
+  QgsStringMap symbol_properties;
+  symbol_properties.insert( "color", "255,255,255" );
+  dr->setSizeLegendSymbol( QgsMarkerSymbol::createSimple( symbol_properties ) );
   vl4->setDiagramRenderer( dr );
 
   QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();

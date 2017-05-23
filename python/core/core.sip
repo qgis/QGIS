@@ -276,6 +276,7 @@
 %Include layertree/qgslayertreelayer.sip
 %Include layertree/qgslayertreemodel.sip
 %Include layertree/qgslayertreemodellegendnode.sip
+%Include layertree/qgslayertreemodellegendfullwidthnode.sip
 %Include layertree/qgslayertreenode.sip
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
@@ -344,6 +345,7 @@
 %Include scalebar/qgsticksscalebarrenderer.sip
 
 %Include symbology-ng/qgscolorbrewerpalette.sip
+%Include symbology-ng/qgsconcentriclegendsymbol.sip
 %Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgsstyle.sip
 %Include symbology-ng/qgssvgcache.sip

@@ -248,6 +248,18 @@ class QgsDiagramSettings
       Right
     };
 
+    /**
+     * Diagram size legend type
+     * @note added in QGIS 3.0
+     */
+    enum SizeLegendType
+    {
+      ConcentricBottom,
+      ConcentricCenter,
+      ConcentricTop,
+      Multiple
+    };
+
     QgsDiagramSettings();
     bool enabled;
     QFont font;
@@ -421,6 +433,50 @@ class QgsDiagramRenderer
      */
     void setSizeLegendSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 
+    /**
+     * Set the label used as title or the size attribute
+     * @brief setSizeLabel
+     * @note added in QGIS 3.0
+     * @param label
+     */
+    void setSizeLabel( QString label );
+
+    /**
+     * @brief sizeLabel
+     * @note added in QGIS 3.0
+     * @return
+     */
+    QString sizeLabel( ) const;
+
+    /**
+     * The size class used for the legend (label, value)
+     * @brief setSizeRules
+     * @note added in QGIS 3.0
+     * @param rules
+     */
+    void setSizeRules( QList< double > rules );
+
+    /**
+     * @brief sizeRules
+     * @note added in QGIS 3.0
+     * @return
+     */
+    QList< double > sizeRules() const;
+
+    /**
+     * @brief setSizeLegendType
+     * @note added in QGIS 3.0
+     * @param type
+     */
+    void setSizeLegendType( QgsDiagramSettings::SizeLegendType type );
+
+    /**
+     * @brief sizeLegendType
+     * @note added in QGIS 3.0
+     * @return
+     */
+    QgsDiagramSettings::SizeLegendType sizeLegendType() const;
+
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
     //QgsDiagramRenderer &operator=( const QgsDiagramRenderer &other );
@@ -434,6 +490,13 @@ class QgsDiagramRenderer
 
     /** Returns size of the diagram (in painter units) or an invalid size in case of error*/
     virtual QSizeF diagramSize( const QgsFeature &features, const QgsRenderContext &c ) const = 0;
+
+    /**
+     * Create the symbol
+     * @param sizeLegendSymbolElem
+     * @return
+     */
+    virtual QgsMarkerSymbol* createSymbol( QDomElement sizeLegendSymbolElem, const QgsReadWriteContext &context ) const;
 
     /** Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;

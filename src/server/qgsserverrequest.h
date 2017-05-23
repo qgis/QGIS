@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsServerRequest
      *
      * \param url the url string
      * \param method the request method
-     * \param headers
+     * \param headers the request headers
      */
     QgsServerRequest( const QString &url, Method method = GetMethod, const Headers &headers = Headers( ) );
 
@@ -69,7 +69,7 @@ class SERVER_EXPORT QgsServerRequest
      *
      * \param url QUrl
      * \param method the request method
-     * \param headers
+     * \param headers the request headers
      */
     QgsServerRequest( const QUrl &url, Method method = GetMethod, const Headers &headers = Headers( ) );
 
@@ -109,27 +109,26 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
      * Return the header value
-     * @param name of the header
-     * @return the header value or an empty string
+     * \param name of the header
+     * \return the header value or an empty string
      */
     QString header( const QString &name ) const;
 
     /**
      * Set an header
-     * @param name
-     * @param value
+     * \param name
+     * \param value
      */
     void setHeader( const QString &name, const QString &value );
 
     /**
      * Return the header map
-     * @return the headers map
+     * \return the headers map
      */
     QMap<QString, QString> headers( ) const;
 
     /**
     * Remove an header
-    * @param name
     */
     void removeHeader( const QString &name );
 

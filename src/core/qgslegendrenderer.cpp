@@ -332,8 +332,12 @@ void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
     {
       if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( atom.nucleons.at( j ).item ) )
       {
-        QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
-        maxSymbolWidth[key] = qMax( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
+        Nucleon n = atom.nucleons.at( j );
+        if ( !n.fullWidth )
+        {
+          QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
+          maxSymbolWidth[key] = qMax( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
+        }
       }
     }
   }
@@ -508,6 +512,7 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
   nucleon.item = symbolItem;
   nucleon.symbolSize = im.symbolSize;
   nucleon.labelSize = im.labelSize;
+  nucleon.fullWidth = symbolItem->fullWidth();
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
   double width = qMax( static_cast< double >( im.symbolSize.width() ), labelXOffset ) + im.labelSize.width();
   double height = qMax( im.symbolSize.height(), im.labelSize.height() );

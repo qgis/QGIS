@@ -19,6 +19,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsarrowsymbollayer.cpp
   symbology-ng/qgscategorizedsymbolrenderer.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
+  symbology-ng/qgsconcentriclegendsymbol.cpp
   symbology-ng/qgscptcityarchive.cpp
   symbology-ng/qgsellipsesymbollayer.cpp
   symbology-ng/qgsfillsymbollayer.cpp
@@ -66,6 +67,7 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreelayer.cpp
   layertree/qgslayertreemodel.cpp
   layertree/qgslayertreemodellegendnode.cpp
+  layertree/qgslayertreemodellegendfullwidthnode.cpp
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
@@ -655,6 +657,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreelayer.h
   layertree/qgslayertreemodel.h
   layertree/qgslayertreemodellegendnode.h
+  layertree/qgslayertreemodellegendfullwidthnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
 )
