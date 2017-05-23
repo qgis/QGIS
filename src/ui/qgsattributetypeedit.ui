@@ -13,125 +13,181 @@
   <property name="windowTitle">
    <string>Edit Widget Properties</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
-   <item row="4" column="1">
-    <widget class="QgsCollapsibleGroupBox" name="groupBox">
-     <property name="title">
-      <string>Constraints</string>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <property name="leftMargin">
+    <number>8</number>
+   </property>
+   <property name="topMargin">
+    <number>8</number>
+   </property>
+   <property name="rightMargin">
+    <number>8</number>
+   </property>
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="selectionListWidget">
+     <property name="resizeMode">
+      <enum>QListView::Fixed</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QCheckBox" name="notNullCheckBox">
-        <property name="text">
-         <string>Not null</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Constraint</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Constraint description</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="leConstraintExpressionDescription"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QCheckBox" name="isFieldEditableCheckBox">
-     <property name="text">
-      <string>Editable</string>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="checked">
+     <property name="widgetResizable">
       <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>523</width>
+        <height>431</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="isFieldEditableCheckBox">
+         <property name="text">
+          <string>Editable</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QStackedWidget" name="stackedWidget"/>
+       </item>
+       <item row="3" column="2">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
+         <property name="title">
+          <string>Constraints</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="notNullCheckBox">
+            <property name="text">
+             <string>Not null</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Constraint</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsFieldExpressionWidget" name="constraintExpressionWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Constraint description</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="leConstraintExpressionDescription"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Defaults</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Default value</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Preview</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="mDefaultPreviewLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="labelOnTopCheckBox">
+         <property name="text">
+          <string>Label on top</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+      <zorder>groupBox_2</zorder>
+      <zorder>labelOnTopCheckBox</zorder>
+      <zorder>isFieldEditableCheckBox</zorder>
+      <zorder>notNullCheckBox</zorder>
+      <zorder>groupBox</zorder>
+      <zorder>stackedWidget</zorder>
+     </widget>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Defaults</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Default value</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Preview</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="mDefaultPreviewLabel">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QCheckBox" name="labelOnTopCheckBox">
-     <property name="text">
-      <string>Label on top</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="7">
-    <widget class="QListWidget" name="selectionListWidget"/>
-   </item>
-   <item row="6" column="1">
+   <item row="1" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -164,7 +220,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>selectionListWidget</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mExpressionWidget</tabstop>
