@@ -17,7 +17,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring
  Represents a vector layer which manages a vector based data sets.
@@ -890,7 +890,8 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
 %Docstring
  Query the layer for features specified in request.
  \param request feature request describing parameters of features to return

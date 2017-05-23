@@ -31,6 +31,7 @@ class QTextCodec;
 #include "qgsmaplayerdependency.h"
 #include "qgsrelation.h"
 #include "qgsfeaturesink.h"
+#include "qgsfeaturesource.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -50,7 +51,7 @@ class QgsFeedback;
  *
  *
  */
-class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink
+class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
