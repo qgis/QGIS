@@ -1,59 +1,90 @@
-/** \class QgsFieldValuesLineEdit
- * \ingroup gui
- * A line edit with an autocompleter which takes unique values from a vector layer's fields.
- * The autocompleter is populated from the vector layer in the background to ensure responsive
- * interaction with the widget.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldvalueslineedit.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsFieldValuesLineEdit: QgsFilterLineEdit
 {
+%Docstring
+ A line edit with an autocompleter which takes unique values from a vector layer's fields.
+ The autocompleter is populated from the vector layer in the background to ensure responsive
+ interaction with the widget.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgsfieldvalueslineedit.h>
+#include "qgsfieldvalueslineedit.h"
 %End
   public:
 
-    /** Constructor for QgsFieldValuesLineEdit
-     * @param parent parent widget
-     */
     QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsFieldValuesLineEdit
+ \param parent parent widget
+%End
 
     virtual ~QgsFieldValuesLineEdit();
 
-    /** Sets the layer containing the field that values will be shown from.
-     * @param layer vector layer
-     * @see layer()
-     * @see setAttributeIndex()
-     */
     void setLayer( QgsVectorLayer *layer );
+%Docstring
+ Sets the layer containing the field that values will be shown from.
+ \param layer vector layer
+.. seealso:: layer()
+.. seealso:: setAttributeIndex()
+%End
 
-    /** Returns the layer containing the field that values will be shown from.
-     * @see setLayer()
-     * @see attributeIndex()
-     */
     QgsVectorLayer *layer() const;
+%Docstring
+ Returns the layer containing the field that values will be shown from.
+.. seealso:: setLayer()
+.. seealso:: attributeIndex()
+ :rtype: QgsVectorLayer
+%End
 
-    /** Sets the attribute index for the field containing values to show in the widget.
-     * @param index index of attribute
-     * @see attributeIndex()
-     * @see setLayer()
-     */
     void setAttributeIndex( int index );
+%Docstring
+ Sets the attribute index for the field containing values to show in the widget.
+ \param index index of attribute
+.. seealso:: attributeIndex()
+.. seealso:: setLayer()
+%End
 
-    /** Returns the attribute index for the field containing values shown in the widget.
-     * @see setAttributeIndex()
-     * @see layer()
-     */
     int attributeIndex() const;
+%Docstring
+ Returns the attribute index for the field containing values shown in the widget.
+.. seealso:: setAttributeIndex()
+.. seealso:: layer()
+ :rtype: int
+%End
 
   signals:
 
-    /** Emitted when the layer associated with the widget changes.
-     * @param layer vector layer
-     */
     void layerChanged( QgsVectorLayer *layer );
+%Docstring
+ Emitted when the layer associated with the widget changes.
+ \param layer vector layer
+%End
 
-    /** Emitted when the field associated with the widget changes.
-     * @param index new attribute index for field
-     */
     void attributeIndexChanged( int index );
+%Docstring
+ Emitted when the field associated with the widget changes.
+ \param index new attribute index for field
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldvalueslineedit.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

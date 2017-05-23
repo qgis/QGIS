@@ -29,6 +29,9 @@
 
 class QgsFloatingWidget;
 
+
+#ifndef SIP_RUN
+
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
 
@@ -108,6 +111,8 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
 };
 
 ///@endcond
+
+#endif
 
 /** \class QgsFieldValuesLineEdit
  * \ingroup gui
