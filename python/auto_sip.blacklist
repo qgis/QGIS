@@ -42,15 +42,6 @@ core/composer/qgspaperitem.sip
 core/composer/qgsscalebarstyle.sip
 core/composer/qgssingleboxscalebarstyle.sip
 core/composer/qgsticksscalebarstyle.sip
-core/effects/qgsblureffect.sip
-core/effects/qgscoloreffect.sip
-core/effects/qgseffectstack.sip
-core/effects/qgsgloweffect.sip
-core/effects/qgsimageoperation.sip
-core/effects/qgspainteffect.sip
-core/effects/qgspainteffectregistry.sip
-core/effects/qgsshadoweffect.sip
-core/effects/qgstransformeffect.sip
 core/gps/qgsgpsconnection.sip
 core/gps/qgsgpsconnectionregistry.sip
 core/gps/qgsgpsdconnection.sip
