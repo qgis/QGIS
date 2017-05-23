@@ -77,6 +77,23 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
 
 };
 
+class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
+    virtual QString name() const override { return QStringLiteral( "features" ); }
+    virtual QString displayName() const override { return tr( "Active Layer Features" ); }
+    virtual Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "f" ); }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+};
+
+
 #endif // QGSINBUILTLOCATORFILTERS_H
 
 

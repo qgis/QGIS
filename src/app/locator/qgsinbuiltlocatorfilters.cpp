@@ -25,6 +25,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgscomposition.h"
 #include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include <QToolButton>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
@@ -162,4 +163,81 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       found << action;
     }
   }
+}
+
+QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{
+  setUseWithoutPrefix( false );
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  if ( string.length() < 3 )
+    return;
+
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( !layer )
+    return;
+
+  int i = 0;
+  int found = 0;
+  QgsExpression dispExpression( layer->displayExpression() );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  dispExpression.prepare( &context );
+
+  Q_FOREACH ( const QgsField &field, layer->fields() )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    QString exp = QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                  string );
+    QgsFeatureRequest req;
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+    QStringList attrs;
+    attrs << field.name();
+    attrs.append( dispExpression.referencedColumns().toList() );
+    req.setSubsetOfAttributes( attrs, layer->fields() );
+    req.setFilterExpression( exp );
+    req.setLimit( 30 );
+    QgsFeature f;
+    QgsFeatureIterator it = layer->getFeatures( req );
+    while ( it.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      QgsLocatorResult result;
+      result.filter = this;
+
+      context.setFeature( f );
+      result.displayString = dispExpression.evaluate( &context ).toString();
+      if ( result.displayString.isEmpty() )
+        result.displayString = f.attribute( i ).toString();
+      else
+        result.description = f.attribute( i ).toString();
+
+      result.userData = f.id();
+      result.icon = QgsMapLayerModel::iconForLayer( layer );
+      result.score = static_cast< double >( string.length() ) / f.attribute( i ).toString().size();
+      emit resultFetched( result );
+
+      found++;
+      if ( found >= 30 )
+        return;
+    }
+    i++;
+  }
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QgsFeatureId id = result.userData.toLongLong();
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( !layer )
+    return;
+
+  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
 }
