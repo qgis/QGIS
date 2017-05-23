@@ -45,7 +45,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     /** Load APIs from one or more files
      * \param filenames The list of apis files to load for the Python lexer
      */
-    void loadAPIs( QList<QString> const &filenames );
+    void loadAPIs( const QList<QString> &filenames );
 
     /** Load a script file
      * \param script The script file to load
