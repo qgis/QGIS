@@ -21,7 +21,7 @@
 #include <QDialog>
 class QgsBrowserDockWidget;
 class QgsRasterLayer;
-
+class QgsMapCanvas;
 
 namespace Ui
 {
@@ -33,7 +33,7 @@ class QgsDataSourceManagerDialog : public QDialog
     Q_OBJECT
 
   public:
-    explicit QgsDataSourceManagerDialog( QWidget *parent = 0 );
+    explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = 0 );
     ~QgsDataSourceManagerDialog();
 
   public slots:
@@ -50,7 +50,7 @@ class QgsDataSourceManagerDialog : public QDialog
     //! For signal forwarding to QgisApp
     void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
-    void addWfsLayer( const QString &uri, const QString &typeName );
+    void addFsLayer( const QString &uri, const QString &typeName );
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
@@ -59,8 +59,12 @@ class QgsDataSourceManagerDialog : public QDialog
   private:
     //! Return the dialog from the provider
     QDialog *providerDialog( QString const providerKey, QString const providerName, QString const icon );
+    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon );
+    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
+    //! Map canvas
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H
