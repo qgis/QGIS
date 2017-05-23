@@ -70,7 +70,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
 
-    ExtentState extentState() const { return mExtentState; }
+    QgsExtentGroupBox::ExtentState extentState() const { return mExtentState; }
 
     //! Set base part of title of the group box (will be appended with extent state)
     //! \since QGIS 2.12
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     void groupBoxClicked();
 
   protected:
-    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state );
+    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
 
