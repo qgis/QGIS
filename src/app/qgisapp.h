@@ -621,6 +621,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
 
+    //! Returns the active map layer.
+    QgsMapLayer *activeLayer();
+
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
@@ -1139,8 +1142,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void hideDeselectedLayers();
     //reimplements method from base (gui) class
     void showSelectedLayers();
-    //! Return pointer to the active layer
-    QgsMapLayer *activeLayer();
+
     //! Open the help contents in a browser
     void helpContents();
     //! Open the API documentation in a browser

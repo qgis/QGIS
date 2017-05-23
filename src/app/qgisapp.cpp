@@ -2672,7 +2672,7 @@ void QgisApp::createStatusBar()
                 << mSnappingToolBar;
 
   mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
-
+  mLocatorWidget->locator()->registerFilter( new QgsActiveLayerFeaturesLocatorFilter() );
 }
 
 void QgisApp::setIconSizes( int size )
