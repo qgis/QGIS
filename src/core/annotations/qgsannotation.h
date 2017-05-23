@@ -45,6 +45,21 @@
 
 class CORE_EXPORT QgsAnnotation : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsTextAnnotation;
+    else if ( dynamic_cast< QgsSvgAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsSvgAnnotation;
+    else if ( dynamic_cast< QgsHtmlAnnotation * >( sipCpp ) )
+      sipType = sipType_QgsHtmlAnnotation;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
     Q_OBJECT
     Q_PROPERTY( bool visible READ isVisible WRITE setVisible )
     Q_PROPERTY( bool hasFixedMapPosition READ hasFixedMapPosition WRITE setHasFixedMapPosition )
