@@ -52,7 +52,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     //! Direct copies are forbidden. Use clone() instead.
     QgsInvertedPolygonRenderer &operator=( const QgsInvertedPolygonRenderer & ) = delete;
 
-    virtual QgsInvertedPolygonRenderer *clone() const override;
+    virtual QgsInvertedPolygonRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
     /** Renders a given feature.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) override;
+    void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;

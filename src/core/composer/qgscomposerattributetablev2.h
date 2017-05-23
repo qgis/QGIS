@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
 
-    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
+    virtual void addFrame( QgsComposerFrame *frame SIP_TRANSFER, bool recalcFrameSizes = true ) override;
 
     /** Sets the source for attributes to show in table body.
      * \param source content source

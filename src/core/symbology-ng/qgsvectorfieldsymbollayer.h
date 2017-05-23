@@ -19,6 +19,7 @@
 #define QGSVECTORFIELDSYMBOLLAYER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgssymbollayer.h"
 
 /** \ingroup core
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override { return mLineSymbol.get(); }
 
     void setColor( const QColor &color ) override;

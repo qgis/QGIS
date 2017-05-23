@@ -206,7 +206,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void render( QPainter *p, const QRectF &renderExtent, const int frameIndex ) override;
     bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
-    void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
+    void addFrame( QgsComposerFrame *frame SIP_TRANSFER, bool recalcFrameSizes = true ) override;
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;
 

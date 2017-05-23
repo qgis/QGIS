@@ -19,6 +19,7 @@
 #define QGSPOINTDISTANCERENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrenderer.h"
 #include <QFont>
 
@@ -91,9 +92,9 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     void stopRender( QgsRenderContext &context ) override;
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
-    void setEmbeddedRenderer( QgsFeatureRenderer *r ) override;
+    void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
-    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state ) override;

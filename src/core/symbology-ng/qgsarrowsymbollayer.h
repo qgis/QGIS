@@ -42,9 +42,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual QgsArrowSymbolLayer *clone() const override;
+    virtual QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
     virtual QgsSymbol *subSymbol() override { return mSymbol.get(); }
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Get current arrow width

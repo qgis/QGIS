@@ -19,6 +19,7 @@
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }

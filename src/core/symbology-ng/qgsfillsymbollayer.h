@@ -590,7 +590,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     virtual QgsSymbol *subSymbol() override { return mStroke.get(); }
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /** Sets the units for the symbol's stroke width.
      * \param unit symbol units
@@ -666,7 +666,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbol *subSymbol() override { return nullptr; }
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /** Sets the path to the raster image used for the fill.
      * \param imagePath path to image file
@@ -1046,7 +1046,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
@@ -1117,7 +1117,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double displacementY() const { return mDisplacementY; }
     void setDisplacementY( double d ) { mDisplacementY = d; }
 
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QgsSymbol *subSymbol() override { return mMarkerSymbol; }
 
     /** Sets the units for the horizontal distance between points in the pattern.
@@ -1249,7 +1249,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     QColor color() const override;
 
     QgsSymbol *subSymbol() override;
-    bool setSubSymbol( QgsSymbol *symbol ) override;
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;

@@ -41,7 +41,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     virtual QString dump() const override;
 
-    virtual QgsSingleSymbolRenderer *clone() const override;
+    virtual QgsSingleSymbolRenderer *clone() const override SIP_FACTORY;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
 
     //! creates a QgsSingleSymbolRenderer from an existing renderer.
     //! \since QGIS 2.5
