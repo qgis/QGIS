@@ -257,7 +257,7 @@ void QgsAttributeTableModel::editCommandEnded()
 void QgsAttributeTableModel::attributeDeleted( int idx )
 {
   if ( mSortCacheAttributes.contains( idx ) )
-    prefetchSortData( QLatin1String( "" ) );
+    prefetchSortData( QString() );
 }
 
 void QgsAttributeTableModel::layerDeleted()
@@ -785,7 +785,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
 {
   if ( column == -1 || column >= mAttributes.count() )
   {
-    prefetchSortData( QLatin1String( "" ) );
+    prefetchSortData( QString() );
   }
   else
   {
