@@ -1,104 +1,131 @@
-/** \ingroup gui
- * \class QgsGradientStopEditor
- * An interactive editor for previewing a gradient color ramp and modifying the position of color
- * stops along the gradient.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgradientstopeditor.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsGradientStopEditor : QWidget
 {
-%TypeHeaderCode
-#include <qgsgradientstopeditor.h>
+%Docstring
+ An interactive editor for previewing a gradient color ramp and modifying the position of color
+ stops along the gradient.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsgradientstopeditor.h"
+%End
   public:
 
-    /** Constructor for QgsGradientStopEditor.
-     * @param parent parent widget
-     * @param ramp optional initial gradient ramp
-     */
     QgsGradientStopEditor( QWidget *parent /TransferThis/ = 0, QgsGradientColorRamp *ramp = 0 );
+%Docstring
+ Constructor for QgsGradientStopEditor.
+ \param parent parent widget
+ \param ramp optional initial gradient ramp
+%End
 
-    /** Sets the current ramp shown in the editor.
-     * @param ramp color ramp
-     * @see gradientRamp()
-     */
     void setGradientRamp( const QgsGradientColorRamp &ramp );
+%Docstring
+ Sets the current ramp shown in the editor.
+ \param ramp color ramp
+.. seealso:: gradientRamp()
+%End
 
-    /** Returns the current ramp created by the editor.
-     * @see setGradientRamp()
-     */
     QgsGradientColorRamp gradientRamp() const;
+%Docstring
+ Returns the current ramp created by the editor.
+.. seealso:: setGradientRamp()
+ :rtype: QgsGradientColorRamp
+%End
 
-    /** Sets the currently selected stop.
-     * @param index index of stop, where 0 corresponds to the first stop
-     * @see selectedStop()
-     */
     void selectStop( int index );
+%Docstring
+ Sets the currently selected stop.
+ \param index index of stop, where 0 corresponds to the first stop
+.. seealso:: selectedStop()
+%End
 
-    /** Returns details about the currently selected stop.
-     * @see selectStop()
-     */
     QgsGradientStop selectedStop() const;
+%Docstring
+ Returns details about the currently selected stop.
+.. seealso:: selectStop()
+ :rtype: QgsGradientStop
+%End
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent *event );
+    virtual void paintEvent( QPaintEvent *event );
+
 
   public slots:
 
-    /** Sets the color for the current selected stop.
-     * @param color new stop color
-     * @see setSelectedStopOffset()
-     * @see setSelectedStopDetails()
-     * @see setColor1()
-     * @see setColor2()
-     */
     void setSelectedStopColor( const QColor &color );
+%Docstring
+ Sets the color for the current selected stop.
+ \param color new stop color
+.. seealso:: setSelectedStopOffset()
+.. seealso:: setSelectedStopDetails()
+.. seealso:: setColor1()
+.. seealso:: setColor2()
+%End
 
-    /** Sets the offset for the current selected stop. This slot has no effect if either the
-     * first or last stop is selected, as they cannot be repositioned.
-     * @param offset new stop offset
-     * @see setSelectedStopColor()
-     * @see setSelectedStopDetails()
-     */
     void setSelectedStopOffset( double offset );
+%Docstring
+ Sets the offset for the current selected stop. This slot has no effect if either the
+ first or last stop is selected, as they cannot be repositioned.
+ \param offset new stop offset
+.. seealso:: setSelectedStopColor()
+.. seealso:: setSelectedStopDetails()
+%End
 
-    /** Sets the color and offset for the current selected stop.
-     * @param color new stop color
-     * @param offset new stop offset
-     * @see setSelectedStopColor()
-     * @see setSelectedStopOffset()
-     */
     void setSelectedStopDetails( const QColor &color, double offset );
+%Docstring
+ Sets the color and offset for the current selected stop.
+ \param color new stop color
+ \param offset new stop offset
+.. seealso:: setSelectedStopColor()
+.. seealso:: setSelectedStopOffset()
+%End
 
-    /** Deletes the current selected stop. This slot has no effect if either the
-     * first or last stop is selected, as they cannot be deleted.
-     */
     void deleteSelectedStop();
+%Docstring
+ Deletes the current selected stop. This slot has no effect if either the
+ first or last stop is selected, as they cannot be deleted.
+%End
 
-    /** Sets the color for the first stop.
-     * @param color new stop color
-     * @see setColor2()
-     * @see setSelectedStopColor()
-     */
     void setColor1( const QColor &color );
+%Docstring
+ Sets the color for the first stop.
+ \param color new stop color
+.. seealso:: setColor2()
+.. seealso:: setSelectedStopColor()
+%End
 
-    /** Sets the color for the last stop.
-     * @param color new stop color
-     * @see setColor1()
-     * @see setSelectedStopColor()
-     */
     void setColor2( const QColor &color );
+%Docstring
+ Sets the color for the last stop.
+ \param color new stop color
+.. seealso:: setColor1()
+.. seealso:: setSelectedStopColor()
+%End
 
   signals:
 
-    //! Emitted when the gradient ramp is changed by a user
     void changed();
+%Docstring
+Emitted when the gradient ramp is changed by a user
+%End
 
-    /** Emitted when the current selected stop changes.
-     * @param stop details about newly selected stop
-     */
     void selectedStopChanged( const QgsGradientStop &stop );
+%Docstring
+ Emitted when the current selected stop changes.
+ \param stop details about newly selected stop
+%End
 
   protected:
 
@@ -107,9 +134,18 @@ class QgsGradientStopEditor : QWidget
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent *event );
 
-    //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent *e );
+    virtual void dragEnterEvent( QDragEnterEvent *e );
 
-    //Reimplemented to accept dropped colors
-    void dropEvent( QDropEvent *e );
+
+    virtual void dropEvent( QDropEvent *e );
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgradientstopeditor.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

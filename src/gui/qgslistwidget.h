@@ -21,6 +21,8 @@
 #include <QVariant>
 #include "qgis_gui.h"
 
+
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /** \ingroup gui
@@ -52,6 +54,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
     QVariant::Type mSubType;
 };
 ///@endcond
+#endif
 
 
 /** \ingroup gui

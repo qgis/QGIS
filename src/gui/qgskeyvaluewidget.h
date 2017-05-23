@@ -22,6 +22,8 @@
 #include <QMap>
 #include "qgis_gui.h"
 
+
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /** \ingroup gui
@@ -53,7 +55,7 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     QVector<Line> mLines;
 };
 ///@endcond
-
+#endif
 
 /** \ingroup gui
  * Widget allowing to edit a QVariantMap, using a table.
