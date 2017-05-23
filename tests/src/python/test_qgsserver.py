@@ -187,7 +187,7 @@ class TestQgsServer(unittest.TestCase):
 
     def test_project_wms(self):
         """Test some WMS request"""
-        for request in ('GetCapabilities', 'GetProjectSettings'):
+        for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
             self.wms_request_compare(request)
 
         # Test getfeatureinfo response
@@ -236,6 +236,41 @@ class TestQgsServer(unittest.TestCase):
         """Test some WMS request"""
         for request in ('GetCapabilities',):
             self.wms_inspire_request_compare(request)
+
+    def wms_accesscontrol_request_compare(self, request, extra=None, reference_file=None):
+        project = self.projectPath
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
+        if extra is not None:
+            query_string += extra
+        header, body = [str(_v) for _v in self.server.handleRequest(query_string)]
+        response = header + body
+        f = open(self.testdata_path + request.lower() + '_accesscontrol.txt')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
+        f.write(response)
+        f.close()
+        """
+        response = re.sub(RE_STRIP_PATH, '', response)
+        expected = re.sub(RE_STRIP_PATH, '', expected)
+
+        # for older GDAL versions (<2.0), id field will be integer type
+        if int(osgeo.gdal.VersionInfo()[:1]) < 2:
+            expected = expected.replace('typeName="Integer64" precision="0" length="10" editType="TextEdit" type="qlonglong"', 'typeName="Integer" precision="0" length="10" editType="TextEdit" type="int"')
+
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
+
+    def test_project_accesscontrol_wms(self):
+        """Test some WMS request"""
+        for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
+            self.wms_accesscontrol_request_compare(request)
 
     # WFS tests
     def wfs_request_compare(self, request):
