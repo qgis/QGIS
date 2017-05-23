@@ -149,7 +149,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     bool shade( double, double, double, double, int *, int *, int *, int * ) override;
 
     //! \brief Get symbology items if provided by renderer
-    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }

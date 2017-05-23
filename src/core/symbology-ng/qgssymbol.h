@@ -657,7 +657,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbol *clone() const override;
+    virtual QgsMarkerSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -699,7 +699,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbol *clone() const override;
+    virtual QgsLineSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -724,7 +724,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     void setAngle( double angle );
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbol *clone() const override;
+    virtual QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
 

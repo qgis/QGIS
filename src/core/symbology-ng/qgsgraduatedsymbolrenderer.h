@@ -142,7 +142,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual void stopRender( QgsRenderContext &context ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     virtual QString dump() const override;
-    virtual QgsGraduatedSymbolRenderer *clone() const override;
+    virtual QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemsCheckable() const override;
     virtual bool legendSymbolItemChecked( const QString &key ) override;
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
     //! creates a QgsGraduatedSymbolRenderer from an existing renderer.

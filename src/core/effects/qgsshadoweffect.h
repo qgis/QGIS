@@ -200,7 +200,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
     QgsDropShadowEffect();
 
     virtual QString type() const override;
-    virtual QgsDropShadowEffect *clone() const override;
+    virtual QgsDropShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
     QgsInnerShadowEffect();
 
     virtual QString type() const override;
-    virtual QgsInnerShadowEffect *clone() const override;
+    virtual QgsInnerShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 

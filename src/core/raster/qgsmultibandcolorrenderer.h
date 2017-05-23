@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     int redBand() const { return mRedBand; }
     void setRedBand( int band ) { mRedBand = band; }
