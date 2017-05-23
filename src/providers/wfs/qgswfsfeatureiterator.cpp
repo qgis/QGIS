@@ -174,7 +174,11 @@ void QgsWFSFeatureDownloader::createProgressDialog()
   connect( mProgressDialog, SIGNAL( canceled() ), this, SLOT( stop() ) );
   connect( mProgressDialog, SIGNAL( hide() ), this, SLOT( hideProgressDialog() ) );
 
-  connect( this, SIGNAL( updateProgress( int ) ), mProgressDialog, SLOT( setValue( int ) ) );
+  // Make sure the progress dialog has not been deleted by another thread
+  if ( mProgressDialog )
+  {
+    connect( this, SIGNAL( updateProgress( int ) ), mProgressDialog, SLOT( setValue( int ) ) );
+  }
 }
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
