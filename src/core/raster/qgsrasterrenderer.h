@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QPair>
 
 #include "qgsrasterinterface.h"
@@ -73,7 +74,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     int alphaBand() const { return mAlphaBand; }
 
     //! Get symbology items if provided by renderer
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement &rendererElem ) override;

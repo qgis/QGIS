@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDCOLORDATARENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 
 class QDomElement;
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
     //! QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & ) = delete;
 
-    QgsSingleBandColorDataRenderer *clone() const override;
+    QgsSingleBandColorDataRenderer *clone() const override SIP_FACTORY;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 

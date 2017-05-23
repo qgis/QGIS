@@ -226,7 +226,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
-    QgsSimpleMarkerSymbolLayer *clone() const override;
+    QgsSimpleMarkerSymbolLayer *clone() const override SIP_FACTORY;
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
@@ -417,7 +417,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
-    QgsFilledMarkerSymbolLayer *clone() const override;
+    QgsFilledMarkerSymbolLayer *clone() const override SIP_FACTORY;
     virtual QgsSymbol *subSymbol() override;
     virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const override;
@@ -474,7 +474,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSvgMarkerSymbolLayer *clone() const override;
+    QgsSvgMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
@@ -575,7 +575,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsFontMarkerSymbolLayer *clone() const override;
+    QgsFontMarkerSymbolLayer *clone() const override SIP_FACTORY;
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 

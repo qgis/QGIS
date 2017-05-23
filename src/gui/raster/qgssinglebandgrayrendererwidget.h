@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 #include "qgis_gui.h"
 
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;

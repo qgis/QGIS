@@ -17,6 +17,7 @@
 #define QGSCOMPOSERINTERFACE_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include <QObject>
 
 class QgsComposerView;
@@ -41,7 +42,7 @@ class GUI_EXPORT QgsComposerInterface: public QObject
     /**
      * Constructor for QgsComposerInterface.
      */
-    QgsComposerInterface( QObject *parent = nullptr )
+    QgsComposerInterface( QObject *parent SIP_TRANSFERTHIS = 0 )
       : QObject( parent )
     {}
 

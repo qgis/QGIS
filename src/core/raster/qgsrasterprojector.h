@@ -24,6 +24,7 @@
 #define QGSRASTERPROJECTOR_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QVector>
 #include <QList>
 
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector();
 
-    QgsRasterProjector *clone() const override;
+    QgsRasterProjector *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 

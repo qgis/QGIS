@@ -42,7 +42,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
 
-    QgsHueSaturationFilter *clone() const override;
+    QgsHueSaturationFilter *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
