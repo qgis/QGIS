@@ -38,7 +38,7 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
-    QgsEllipseSymbolLayer *clone() const override;
+    QgsEllipseSymbolLayer *clone() const override SIP_FACTORY;
     QgsStringMap properties() const override;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;

@@ -562,7 +562,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * \see sizeLegendSymbol()
      * \see setSizeLegend()
      */
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol ) { mSizeLegendSymbol.reset( symbol ); }
+    void setSizeLegendSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER ) { mSizeLegendSymbol.reset( symbol ); }
 
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
@@ -619,7 +619,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
   public:
     QgsSingleCategoryDiagramRenderer();
 
-    QgsSingleCategoryDiagramRenderer *clone() const override;
+    QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
     QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
 
@@ -651,7 +651,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsLinearlyInterpolatedDiagramRenderer *clone() const override;
+    QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns list with all diagram settings in the renderer
     QList<QgsDiagramSettings> diagramSettings() const override;

@@ -19,6 +19,7 @@
 #define QGSCUBICRASTERRESAMPLER_H
 
 #include "qgsrasterresampler.h"
+#include "qgis_sip.h"
 #include <QColor>
 
 #include "qgis_core.h"
@@ -30,7 +31,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
 {
   public:
     QgsCubicRasterResampler();
-    QgsCubicRasterResampler *clone() const override;
+    QgsCubicRasterResampler *clone() const override SIP_FACTORY;
     void resample( const QImage &srcImage, QImage &dstImage ) override;
     QString type() const override { return QStringLiteral( "cubic" ); }
 

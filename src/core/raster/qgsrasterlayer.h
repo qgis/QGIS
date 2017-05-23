@@ -261,7 +261,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Returns the data provider in a const-correct manner
       \note available in Python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider *dataProvider() const override;
+    const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;

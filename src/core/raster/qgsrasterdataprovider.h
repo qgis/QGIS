@@ -253,7 +253,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 2.8
      *
      */
-    virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings )
+    virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) SIP_FACTORY
     {
       Q_UNUSED( mapSettings );
       return nullptr;

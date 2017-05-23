@@ -190,7 +190,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual QgsSymbol *subSymbol() { return nullptr; }
     //! set layer's subsymbol. takes ownership of the passed symbol
-    virtual bool setSubSymbol( QgsSymbol *symbol ) { delete symbol; return false; }
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) { delete symbol; return false; }
 
     QgsSymbol::SymbolType type() const { return mType; }
 

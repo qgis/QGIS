@@ -19,6 +19,7 @@
 #define QGSHILLSHADERENDERERWIDGET_H
 
 #include "ui_qgshillshaderendererwidget.h"
+#include "qgis_sip.h"
 
 #include <QDoubleSpinBox>
 
@@ -45,7 +46,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
     /**
       * Factory method to create the renderer for this type.
       */
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsHillshadeRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsHillshadeRendererWidget( layer, extent ); }
 
     /**
      * \brief The renderer for the widget.

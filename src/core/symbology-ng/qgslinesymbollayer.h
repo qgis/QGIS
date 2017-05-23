@@ -61,7 +61,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsSimpleLineSymbolLayer *clone() const override;
+    QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 

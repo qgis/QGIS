@@ -80,10 +80,10 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      * When using \a oldRenderer make sure to make a copy of it - it will be deleted afterwards.
      */
-    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer )
+    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
     { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
 
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType )
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY
     { Q_UNUSED( elem ); Q_UNUSED( geomType ); return nullptr; }
 
   protected:
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override
+    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override SIP_FACTORY
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! \note not available in Python bindings

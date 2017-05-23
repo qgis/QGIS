@@ -141,7 +141,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
-    virtual QWidget *paramWidget() { return nullptr; }
+    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction *> actions() { return QList<QAction *>(); }
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     ~QgsCptCityCollectionItem();
 
     void setPopulated() { mPopulated = true; }
-    void addChild( QgsCptCityDataItem *item ) { mChildren.append( item ); }
+    void addChild( QgsCptCityDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
   protected:
