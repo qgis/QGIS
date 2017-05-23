@@ -34,7 +34,7 @@ class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCha
     Q_OBJECT
 
   public:
-    QgsCharacterSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsCharacterSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
     const QChar &selectCharacter( bool *gotChar, const QFont &font, const QString &style );

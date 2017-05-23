@@ -38,11 +38,14 @@ class QgsCurveEditorPlotEventFilter;
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
 typedef QPointF QwtDoublePoint;
 
+#ifndef SIP_RUN
+
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
 
 /** \class QgsHistogramValuesGatherer
  * Calculates a histogram in a thread.
+ * \note not available in Python bindings
  */
 class QgsHistogramValuesGatherer: public QThread
 {
@@ -127,6 +130,8 @@ class QgsHistogramValuesGatherer: public QThread
 };
 
 ///@endcond
+
+#endif
 
 /** \ingroup gui
  * \class QgsCurveEditorWidget
@@ -242,6 +247,9 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 };
 
 
+
+
+#ifndef SIP_RUN
 //
 // NOTE:
 // For private only, not part of stable api or exposed to Python bindings
@@ -269,5 +277,6 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond
+#endif
 
 #endif // QGSCURVEEDITORWIDGET_H
