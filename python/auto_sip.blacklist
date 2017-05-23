@@ -57,13 +57,6 @@ core/gps/qgsgpsdconnection.sip
 core/gps/qgsgpsdetector.sip
 core/gps/qgsnmeaconnection.sip
 core/gps/qgsqtlocationconnection.sip
-core/fieldformatter/qgsdatetimefieldformatter.sip
-core/fieldformatter/qgsfallbackfieldformatter.sip
-core/fieldformatter/qgskeyvaluefieldformatter.sip
-core/fieldformatter/qgslistfieldformatter.sip
-core/fieldformatter/qgsrelationreferencefieldformatter.sip
-core/fieldformatter/qgsvaluemapfieldformatter.sip
-core/fieldformatter/qgsvaluerelationfieldformatter.sip
 core/raster/qgsbilinearrasterresampler.sip
 core/raster/qgsbrightnesscontrastfilter.sip
 core/raster/qgscliptominmaxenhancement.sip

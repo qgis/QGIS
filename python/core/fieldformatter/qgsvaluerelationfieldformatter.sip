@@ -1,24 +1,26 @@
-/***************************************************************************
-  qgsvaluerelationfieldformatter.sip - QgsValueRelationFieldFormatter
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 3.12.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
+
 class QgsValueRelationFieldFormatter : QgsFieldFormatter
 {
+%Docstring
+ Field formatter for a value relation field.
+ A value relation field formatter looks up the values from
+ features on another layer.
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsvaluerelationfieldformatter.h"
 %End
-
   public:
     struct ValueRelationItem
     {
@@ -34,12 +36,33 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 
     QgsValueRelationFieldFormatter();
 
-    QString id() const;
-    QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString id() const;
 
-    QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
-    QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
+
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
+
 
     static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
+%Docstring
+ Create a cache for a value relation field.
+ This can be used to keep the value map in the local memory
+ if doing multiple lookups in a loop.
+
+.. versionadded:: 3.0
+ :rtype: QgsValueRelationFieldFormatter.ValueRelationCache
+%End
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/fieldformatter/qgsvaluerelationfieldformatter.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
