@@ -57,6 +57,12 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     }
   }
 
+  if ( mTableModel->sortCacheExpression().isEmpty() )
+  {
+    //shortcut when no sort order set
+    return false;
+  }
+
   return qgsVariantLessThan( left.data( QgsAttributeTableModel::SortRole ),
                              right.data( QgsAttributeTableModel::SortRole ) );
 }
