@@ -61,13 +61,13 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
         MapThemeLayerRecord( QgsMapLayer *l = nullptr ): usingCurrentStyle( false ), usingLegendItems( false ), mLayer( l ) {}
 
-        bool operator==( const MapThemeLayerRecord &other ) const
+        bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
           return mLayer == other.mLayer &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
                  usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems;
         }
-        bool operator!=( const MapThemeLayerRecord &other ) const
+        bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
           return !( *this == other );
         }
@@ -101,30 +101,30 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     {
       public:
 
-        bool operator==( const MapThemeRecord &other ) const
+        bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
           return validLayerRecords() == other.validLayerRecords();
         }
-        bool operator!=( const MapThemeRecord &other ) const
+        bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
           return !( *this == other );
         }
 
         //! Returns a list of records for all visible layer belonging to the theme.
-        QList<MapThemeLayerRecord> layerRecords() const { return mLayerRecords; }
+        QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const { return mLayerRecords; }
 
         //! Sets layer records for the theme.
-        void setLayerRecords( const QList<MapThemeLayerRecord> &records ) { mLayerRecords = records; }
+        void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord> &records ) { mLayerRecords = records; }
 
         //! Removes a record for \a layer if present.
         void removeLayerRecord( QgsMapLayer *layer );
 
         //! Add a new record for a layer.
-        void addLayerRecord( const MapThemeLayerRecord &record );
+        void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
         //! Return set with only records for valid layers
         //! \note not available in Python bindings
-        QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
+        QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Inserts a new map theme to the collection.
      * \see update()
      */
-    void insert( const QString &name, const MapThemeRecord &state );
+    void insert( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 
     /**
      * Updates a map theme within the collection.
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \param state map theme record to replace existing map theme
      * \see insert()
      */
-    void update( const QString &name, const MapThemeRecord &state );
+    void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 
     /**
      * Remove an existing map theme from collection.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the recorded state of a map theme.
      * \since QGIS 3.0
      */
-    MapThemeRecord mapThemeState( const QString &name ) const { return mMapThemes[name]; }
+    QgsMapThemeCollection::MapThemeRecord mapThemeState( const QString &name ) const { return mMapThemes[name]; }
 
     /**
      * Returns the list of layer IDs that are visible for the specified map theme.
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * current style of layers and check state of legend items (from a layer tree model).
      * \since QGIS 3.0
      */
-    static MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
+    static QgsMapThemeCollection::MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
 
     /**
      * Apply theme given by its name and modify layer tree, current style of layers and checked
