@@ -65,7 +65,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     virtual ~QgsEffectStack();
 
     virtual QString type() const override { return QStringLiteral( "effectStack" ); }
-    virtual QgsEffectStack *clone() const override;
+    virtual QgsEffectStack *clone() const override SIP_FACTORY;
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
     virtual bool readProperties( const QDomElement &element ) override;
 

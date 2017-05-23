@@ -18,6 +18,7 @@
 #define DIAGRAM_NAME_TEXT "Text"
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     };
 
     QgsTextDiagram();
-    virtual QgsTextDiagram *clone() const override;
+    virtual QgsTextDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 

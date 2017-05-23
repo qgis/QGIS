@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation *d ) {mDecorator = d;}
     //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
-    void addLine( Line3D *line, bool breakline ) override;
+    void addLine( Line3D *line SIP_TRANSFER, bool breakline ) override;
     //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
     int addPoint( Point3D *p ) override;
     //! Performs a consistency check, remove this later
@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! \note not available in Python bindings
     virtual bool getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 ) override SIP_SKIP;
     //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 ) override;
+    virtual bool getTriangle( double x, double y, Point3D *p1 SIP_OUT, Point3D *p2 SIP_OUT, Point3D *p3 SIP_OUT ) override;
     //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
     QList<int> *getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box

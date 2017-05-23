@@ -430,7 +430,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     virtual bool filterNeedsGeometry() const override;
 
-    virtual QgsRuleBasedRenderer *clone() const override;
+    virtual QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     virtual bool legendSymbolItemChecked( const QString &key ) override;
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QString dump() const override;

@@ -48,7 +48,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     virtual QString type() const override { return QStringLiteral( "transform" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap &props ) override;
-    virtual QgsTransformEffect *clone() const override;
+    virtual QgsTransformEffect *clone() const override SIP_FACTORY;
 
     /** Sets the transform x translation.
      * \param translateX distance to translate along the x axis

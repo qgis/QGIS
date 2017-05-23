@@ -19,6 +19,7 @@
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -39,7 +40,7 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
   public:
     QgsHistogramDiagram();
 
-    virtual QgsHistogramDiagram *clone() const override;
+    virtual QgsHistogramDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
