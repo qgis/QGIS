@@ -3,10 +3,6 @@ core/qgsexception.sip
 core/qgis.sip
 core/qgsrange.sip
 core/qgsvectorlayerfeatureiterator.sip
-core/auth/qgsauthcertutils.sip
-core/auth/qgsauthconfig.sip
-core/auth/qgsauthmanager.sip
-core/auth/qgsauthmethod.sip
 core/composer/qgsaddremoveitemcommand.sip
 core/composer/qgsgroupungroupitemscommand.sip
 core/composer/qgsaddremovemultiframecommand.sip
