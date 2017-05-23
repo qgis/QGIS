@@ -1,50 +1,72 @@
-/** \ingroup gui
- * \class QgsFilterLegendButton
- * A tool button that allows enabling or disabling legend filter by contents of the map.
- * An additional pop down menu allows defining a boolean expression to refine the filtering.
- * @note added in 2.14
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendfilterbutton.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsLegendFilterButton: public QToolButton
+
+
+
+class QgsLegendFilterButton: QToolButton
 {
-%TypeHeaderCode
-#include <qgslegendfilterbutton.h>
+%Docstring
+ A tool button that allows enabling or disabling legend filter by contents of the map.
+ An additional pop down menu allows defining a boolean expression to refine the filtering.
+.. versionadded:: 2.14
 %End
 
+%TypeHeaderCode
+#include "qgslegendfilterbutton.h"
+%End
   public:
-    /**
-     * Construct a new filter legend button
-     *
-     * @param parent The parent QWidget
-     */
+
     QgsLegendFilterButton( QWidget *parent = 0 );
-    ~QgsLegendFilterButton();
+%Docstring
+ Construct a new filter legend button
 
-    /**
-     * Returns the current text used as filter expression
-     */
+ \param parent The parent QWidget
+%End
+
     QString expressionText() const;
+%Docstring
+ Returns the current text used as filter expression
+ :rtype: str
+%End
 
-    /**
-     * Sets the current text used as filter expression.
-     * This will update the menu
-     */
     void setExpressionText( const QString &expression );
+%Docstring
+ Sets the current text used as filter expression.
+ This will update the menu
+%End
 
-    /**
-     * Returns the current associated vectorLayer
-     * May be null
-     */
     QgsVectorLayer *vectorLayer() const;
-    /**
-     * Sets the associated vectorLayer
-     * May be null
-     */
+%Docstring
+ Returns the current associated vectorLayer
+ May be null
+ :rtype: QgsVectorLayer
+%End
+
     void setVectorLayer( QgsVectorLayer *layer );
+%Docstring
+ Sets the associated vectorLayer
+ May be null
+%End
 
   signals:
-    /**
-     * Emitted when the expression text changes
-     */
+
     void expressionTextChanged();
+%Docstring
+ Emitted when the expression text changes
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendfilterbutton.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

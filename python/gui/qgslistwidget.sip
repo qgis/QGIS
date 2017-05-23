@@ -1,32 +1,59 @@
-/** \ingroup gui
- * Widget allowing to edit a QVariantList, using a table.
- * @note added in QGIS 3.0
- */
-class QgsListWidget : public QgsTableWidgetBase
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslistwidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsListWidget: QgsTableWidgetBase
 {
+%Docstring
+ Widget allowing to edit a QVariantList, using a table.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgslistwidget.h"
 %End
   public:
-    /**
-     * Constructor.
-     */
+
     explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
+%Docstring
+ Constructor.
+%End
 
-    /**
-     * Set the initial value of the widget.
-     */
     void setList( const QVariantList &list );
+%Docstring
+ Set the initial value of the widget.
+%End
 
-    /**
-     * Get the edit value.
-     * @return the QVariantList
-     */
     QVariantList list() const;
+%Docstring
+ Get the edit value.
+ :return: the QVariantList
+ :rtype: QVariantList
+%End
 
-    /**
-     * Check the content is valid
-     * @return true if valid
-     */
     bool valid() const;
+%Docstring
+ Check the content is valid
+ :return: true if valid
+ :rtype: bool
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslistwidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
