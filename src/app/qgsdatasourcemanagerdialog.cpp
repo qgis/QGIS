@@ -46,16 +46,12 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   // Bind list index to the stacked dialogs
   connect( ui->mList, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentPage( int ) ) );
 
-  /////////////////////////////////////////////////////////////////////////////
   // BROWSER Add the browser widget to the first stacked widget page
-
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mStackedWidget->addWidget( mBrowserWidget );
 
-  /////////////////////////////////////////////////////////////////////////////
   // VECTOR Layers (completely different interface: it's not a provider)
-
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, true );
   ui->mStackedWidget->addWidget( ovl );
   QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mList );
@@ -64,7 +60,6 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
 
   // Add data provider dialogs
   QDialog *dlg;
-
 
 #ifdef HAVE_POSTGRESQL
   addDbProviderDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
@@ -83,13 +78,15 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   addRasterProviderDialog( QStringLiteral( "wcs" ), tr( "WCS" ), QStringLiteral( "/mActionAddWcsLayer.svg" ) );
 
   dlg = providerDialog( QStringLiteral( "WFS" ), tr( "WFS" ), QStringLiteral( "/mActionAddWfsLayer.svg" ) );
+
   if ( dlg )
   {
     // Forward (if only a common interface for the signals had been used in the providers ...)
-    connect( dlg, SIGNAL( addFsLayer( QString, QString ) ), this, SIGNAL( addFsLayer( QString, QString ) ) );
-    connect( this, &QgsDataSourceManagerDialog::addFsLayer,
-             this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
-    { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) ); } );
+    connect( dlg, SIGNAL( addWfsLayer( QString, QString ) ), this, SIGNAL( addWfsLayer( QString, QString ) ) );
+    connect( this, &QgsDataSourceManagerDialog::addWfsLayer, this,  [ = ]( const QString & vectorLayerPath, const QString & baseName )
+    {
+      this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) );
+    } );
   }
 
   QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( providerDialog( QStringLiteral( "arcgisfeatureserver" ),
@@ -99,8 +96,8 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   {
     afss->setCurrentExtentAndCrs( mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs() );
     // Forward (if only a common interface for the signals had been used in the providers ...)
-    connect( afss, SIGNAL( addLayer( QString, QString ) ), this, SIGNAL( addFsLayer( QString, QString ) ) );
-    connect( this, &QgsDataSourceManagerDialog::addFsLayer,
+    connect( afss, SIGNAL( addLayer( QString, QString ) ), this, SIGNAL( addAfsLayer( QString, QString ) ) );
+    connect( this, &QgsDataSourceManagerDialog::addAfsLayer,
              this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
     { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "arcgisfeatureserver" ) ); } );
   }

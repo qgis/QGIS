@@ -50,7 +50,8 @@ class QgsDataSourceManagerDialog : public QDialog
     //! For signal forwarding to QgisApp
     void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
-    void addFsLayer( const QString &uri, const QString &typeName );
+    void addWfsLayer( const QString &uri, const QString &typeName );
+    void addAfsLayer( const QString &uri, const QString &typeName );
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
