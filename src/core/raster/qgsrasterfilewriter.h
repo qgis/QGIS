@@ -74,9 +74,11 @@ class CORE_EXPORT QgsRasterFileWriter
      * \returns Instance of data provider in editing mode (on success) or nullptr on error.
      * \since QGIS 3.0
      */
-    QgsRasterDataProvider *createRaster( Qgis::DataType dataType,
-                                         int width, int height, const QgsRectangle &extent,
-                                         int nBands, const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
+    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
+        int width, int height,
+        const QgsRectangle &extent,
+        const QgsCoordinateReferenceSystem &crs,
+        int nBands ) SIP_FACTORY;
 
     /** Write raster file
         \param pipe raster pipe
