@@ -504,6 +504,7 @@ void QgsMapCanvas::refreshMap()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
+  mSettings.setOutputDpi( logicalDpiX() );
 
   if ( !mTheme.isEmpty() )
   {
