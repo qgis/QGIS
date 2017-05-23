@@ -53,9 +53,11 @@ class QgsRasterFileWriter
  :rtype: QgsRasterDataProvider
 %End
 
-    QgsRasterDataProvider *createRaster( Qgis::DataType dataType,
-                                         int width, int height, const QgsRectangle &extent,
-                                         int nBands, const QgsCoordinateReferenceSystem &crs ) /Factory/;
+    QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
+        int width, int height,
+        const QgsRectangle &extent,
+        const QgsCoordinateReferenceSystem &crs,
+        int nBands ) /Factory/;
 %Docstring
  Create a raster file with given number of bands without initializing the pixel data.
  Returned provider may be used to initialize the raster using writeBlock() calls.

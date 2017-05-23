@@ -41,7 +41,7 @@ QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType 
   return initOutput( width, height, crs, geoTransform, 1, dataType, QList<bool>(), QList<double>() );
 }
 
-QgsRasterDataProvider *QgsRasterFileWriter::createRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, int nBands, const QgsCoordinateReferenceSystem &crs )
+QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs, int nBands )
 {
   if ( mTiledMode )
     return nullptr;  // does not make sense with tiled mode
