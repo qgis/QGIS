@@ -1,9 +1,24 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayeractionregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMapLayerAction : QAction
 {
-%TypeHeaderCode
-#include <qgsmaplayeractionregistry.h>
+%Docstring
+ An action which can run on map layers
 %End
 
+%TypeHeaderCode
+#include "qgsmaplayeractionregistry.h"
+%End
   public:
     enum Target
     {
@@ -14,77 +29,142 @@ class QgsMapLayerAction : QAction
     };
     typedef QFlags<QgsMapLayerAction::Target> Targets;
 
-    //! Creates a map layer action which can run on any layer
-    //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Targets targets = AllActions, const QIcon &icon = QIcon() );
+%Docstring
+.. note::
 
-    //! Creates a map layer action which can run only on a specific layer
+   using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+%End
+
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
+%Docstring
+Creates a map layer action which can run only on a specific layer
+%End
 
-    //! Creates a map layer action which can run on a specific type of layer
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
+%Docstring
+Creates a map layer action which can run on a specific type of layer
+%End
 
     ~QgsMapLayerAction();
 
-    /** True if action can run using the specified layer */
     bool canRunUsingLayer( QgsMapLayer *layer ) const;
+%Docstring
+True if action can run using the specified layer
+ :rtype: bool
+%End
 
-    /** Triggers the action with the specified layer and list of feature. */
     void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+%Docstring
+Triggers the action with the specified layer and list of feature.
+%End
 
-    /** Triggers the action with the specified layer and feature. */
     void triggerForFeature( QgsMapLayer *layer, const QgsFeature *feature );
+%Docstring
+Triggers the action with the specified layer and feature.
+%End
 
-    /** Triggers the action with the specified layer. */
     void triggerForLayer( QgsMapLayer *layer );
+%Docstring
+Triggers the action with the specified layer.
+%End
 
-    /** Define the targets of the action */
     void setTargets( Targets targets );
-    /** Return availibity of action */
+%Docstring
+Define the targets of the action
+%End
     const Targets &targets() const;
+%Docstring
+Return availibity of action
+ :rtype: Targets
+%End
 
   signals:
-    /** Triggered when action has been run for a specific list of features */
     void triggeredForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
+%Docstring
+Triggered when action has been run for a specific list of features
+%End
 
-    /** Triggered when action has been run for a specific feature */
     void triggeredForFeature( QgsMapLayer *layer, const QgsFeature &feature );
+%Docstring
+Triggered when action has been run for a specific feature
+%End
 
-    /** Triggered when action has been run for a specific layer */
     void triggeredForLayer( QgsMapLayer *layer );
+%Docstring
+Triggered when action has been run for a specific layer
+%End
 
 };
 
 QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags<QgsMapLayerAction::Target> f2);
 
+
 class QgsMapLayerActionRegistry : QObject
 {
-%TypeHeaderCode
-#include <qgsmaplayeractionregistry.h>
+%Docstring
+ This class tracks map layer actions.
+
+ QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+ QgsGui.mapLayerActionRegistry().
 %End
 
+%TypeHeaderCode
+#include "qgsmaplayeractionregistry.h"
+%End
   public:
 
     QgsMapLayerActionRegistry( QObject *parent = 0 );
+%Docstring
+ Constructor for QgsMapLayerActionRegistry.
 
-    ~QgsMapLayerActionRegistry();
+ QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+ QgsGui.mapLayerActionRegistry().
+%End
 
-    /** Adds a map layer action to the registry*/
     void addMapLayerAction( QgsMapLayerAction *action );
+%Docstring
+Adds a map layer action to the registry
+%End
 
-    /** Returns the map layer actions which can run on the specified layer*/
     QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
+%Docstring
+Returns the map layer actions which can run on the specified layer
+ :rtype: list of QgsMapLayerAction
+%End
 
-    /** Removes a map layer action from the registry*/
     bool removeMapLayerAction( QgsMapLayerAction *action );
+%Docstring
+Removes a map layer action from the registry
+ :rtype: bool
+%End
 
-    /** Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer *layer, QgsMapLayerAction *action );
-    /** Returns the default action for a layer*/
+%Docstring
+Sets the default action for a layer
+%End
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
+%Docstring
+Returns the default action for a layer
+ :rtype: QgsMapLayerAction
+%End
+
+  protected:
+
 
   signals:
-    /** Triggered when an action is added or removed from the registry */
     void changed();
+%Docstring
+Triggered when an action is added or removed from the registry
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaplayeractionregistry.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

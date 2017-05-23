@@ -72,6 +72,16 @@ class QgsMapCanvasAnnotationItem;
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapCanvas;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
     Q_PROPERTY( QString theme READ theme WRITE setTheme NOTIFY themeChanged )
 

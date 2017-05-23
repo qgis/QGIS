@@ -170,16 +170,6 @@ gui/qgslimitedrandomcolorrampdialog.sip
 gui/qgslonglongvalidator.sip
 gui/qgsludialog.sip
 gui/qgsmanageconnectionsdialog.sip
-gui/qgsmapcanvas.sip
-gui/qgsmapcanvasannotationitem.sip
-gui/qgsmapcanvasitem.sip
-gui/qgsmapcanvassnappingutils.sip
-gui/qgsmapcanvastracer.sip
-gui/qgsmaplayeractionregistry.sip
-gui/qgsmaplayerconfigwidget.sip
-gui/qgsmaplayerconfigwidgetfactory.sip
-gui/qgsmapmouseevent.sip
-gui/qgsmapoverviewcanvas.sip
 gui/qgsmaptip.sip
 gui/qgsmaptool.sip
 gui/qgsmaptooladvanceddigitizing.sip
