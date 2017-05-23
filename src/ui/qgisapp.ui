@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -59,8 +59,6 @@
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
     <addaction name="mPrintComposersMenu"/>
-    <addaction name="separator"/>
-    <addaction name="mActionExit"/>
    </widget>
    <widget class="QMenu" name="mViewMenu">
     <property name="title">
@@ -216,13 +214,8 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="mActionProjectProperties"/>
-    <addaction name="mActionStyleManager"/>
-    <addaction name="mActionCustomProjection"/>
     <addaction name="separator"/>
-    <addaction name="mActionConfigureShortcuts"/>
-    <addaction name="mActionCustomization"/>
     <addaction name="separator"/>
-    <addaction name="mActionOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
     <property name="title">
@@ -303,6 +296,30 @@
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
    </widget>
+   <widget class="QMenu" name="mQGISMenu">
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>QGIS</string>
+    </property>
+    <property name="icon">
+     <iconset resource="../../images/images.qrc">
+      <normaloff>:/images/themes/default/providerQgis.svg</normaloff>:/images/themes/default/providerQgis.svg</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>false</bool>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="mActionOptions"/>
+    <addaction name="mActionConfigureShortcuts"/>
+    <addaction name="mActionCustomization"/>
+    <addaction name="separator"/>
+    <addaction name="mActionStyleManager"/>
+    <addaction name="mActionCustomProjection"/>
+    <addaction name="mActionExit"/>
+   </widget>
+   <addaction name="mQGISMenu"/>
    <addaction name="mProjectMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
