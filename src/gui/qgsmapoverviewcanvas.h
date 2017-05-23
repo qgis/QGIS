@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
+    QgsMapOverviewCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
     //! renders overview and updates panning widget
     void refresh();
@@ -121,6 +121,8 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 };
 
 
+#ifndef SIP_RUN
+
 /// @cond PRIVATE
 // Widget that serves as rectangle showing current extent in overview
 class QgsPanningWidget : public QWidget
@@ -138,5 +140,7 @@ class QgsPanningWidget : public QWidget
 
 };
 ///@endcond
+
+#endif
 
 #endif

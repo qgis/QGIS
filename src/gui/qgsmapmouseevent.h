@@ -33,6 +33,16 @@ class QgsMapToolAdvancedDigitizing;
  */
 class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsMapMouseEvent;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
 
     enum SnappingMode
