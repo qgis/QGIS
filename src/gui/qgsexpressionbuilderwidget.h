@@ -35,7 +35,7 @@ class QgsExpressionHighlighter;
 /** \ingroup gui
  * An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
-class QgsExpressionItem : public QStandardItem
+class GUI_EXPORT QgsExpressionItem : public QStandardItem
 {
   public:
     enum ItemType

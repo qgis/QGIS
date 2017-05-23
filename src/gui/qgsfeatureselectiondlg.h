@@ -27,6 +27,16 @@ class QgsGenericFeatureSelectionManager;
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
+      sipType = sipType_QgsFeatureSelectionDlg;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

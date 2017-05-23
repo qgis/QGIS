@@ -37,7 +37,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat = "yyyy-MM-dd" );
     ~QgsFieldValidator();
 
-    virtual State validate( QString &, int & ) const override;
+    virtual State validate( QString &SIP_CONSTRAINED, int &SIP_INOUT ) const override;
     virtual void fixup( QString & ) const override;
 
     QString dateFormat() const { return mDateFormat; }
