@@ -167,7 +167,8 @@ bool QgsDb2NewConnection::testConnection()
 
   if ( !rc )
   {
-    db2ConnectStatus -> setText( errMsg );
+    bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
+                      QgsMessageBar::WARNING );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
