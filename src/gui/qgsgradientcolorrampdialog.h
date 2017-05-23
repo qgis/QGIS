@@ -110,6 +110,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 };
 
 
+#ifndef SIP_RUN
 //
 // NOTE:
 // For private only, not part of stable api or exposed to Python bindings
@@ -137,5 +138,6 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond
+#endif
 
 #endif

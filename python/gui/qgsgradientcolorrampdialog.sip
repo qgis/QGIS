@@ -1,50 +1,78 @@
-/** \ingroup gui
- * \class QgsGradientColorRampDialog
- * A dialog which allows users to modify the properties of a QgsGradientColorRamp.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgradientcolorrampdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsGradientColorRampDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsgradientcolorrampdialog.h>
+%Docstring
+ A dialog which allows users to modify the properties of a QgsGradientColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsgradientcolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsGradientColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsGradientColorRampDialog.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
     ~QgsGradientColorRampDialog();
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsGradientColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsGradientColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsGradientColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
 
   public slots:
 
-    /** Sets the start color for the gradient ramp.
-     * @see setColor2()
-     */
     void setColor1( const QColor &color );
+%Docstring
+ Sets the start color for the gradient ramp.
+.. seealso:: setColor2()
+%End
 
-    /** Sets the end color for the gradient ramp.
-     * @see setColor1()
-     */
     void setColor2( const QColor &color );
+%Docstring
+ Sets the end color for the gradient ramp.
+.. seealso:: setColor1()
+%End
 
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgradientcolorrampdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

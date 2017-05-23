@@ -22,6 +22,7 @@
 #include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /** \ingroup gui
  * \class QgsManageConnectionsDialog
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     // constructor
     // mode argument must be 0 for export and 1 for import
     // type argument must be 0 for WMS and 1 for PostGIS
-    QgsManageConnectionsDialog( QWidget *parent = nullptr, Mode mode = Export, Type type = WMS, const QString &fileName = "" );
+    QgsManageConnectionsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export, Type type = WMS, const QString &fileName = "" );
 
   public slots:
     void doExportImport();

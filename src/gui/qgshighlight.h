@@ -44,8 +44,9 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * \param mapCanvas associated map canvas
      * \param geom initial geometry of highlight
      * \param layer associated map layer
+     * \note not available in Python bindings
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer ) SIP_SKIP;
 
     /** Constructor for QgsHighlight
      * \param mapCanvas associated map canvas
