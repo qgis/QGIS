@@ -1,26 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapoverviewcanvas.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 
 class QgsMapOverviewCanvas : QWidget
 {
-%TypeHeaderCode
-#include <qgsmapoverviewcanvas.h>
+%Docstring
+ A widget that displays an overview map.
 %End
 
+%TypeHeaderCode
+#include "qgsmapoverviewcanvas.h"
+%End
   public:
-    QgsMapOverviewCanvas( QWidget *parent /TransferThis/ = 0, QgsMapCanvas *mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget *parent /TransferThis/ = 0, QgsMapCanvas *mapCanvas = 0 );
 
-    ~QgsMapOverviewCanvas();
-
-    //! renders overview and updates panning widget
     void refresh();
+%Docstring
+renders overview and updates panning widget
+%End
 
-    //! changes background color
     void setBackgroundColor( const QColor &color );
+%Docstring
+changes background color
+%End
 
-    //! updates layer set for overview
-    void setLayers( const QList<QgsMapLayer*> &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+updates layer set for overview
+%End
 
-    //! Returns list of layers visible in the overview
-    QList<QgsMapLayer*> layers() const;
+    QList<QgsMapLayer *> layers() const;
+%Docstring
+Returns list of layers visible in the overview
+ :rtype: list of QgsMapLayer
+%End
 
     void enableAntiAliasing( bool flag );
 
@@ -28,36 +51,80 @@ class QgsMapOverviewCanvas : QWidget
 
   public slots:
 
-    // ### QGIS 3: make protected
-    //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
+%Docstring
+used for overview canvas to reflect changed extent in main map canvas
+%End
 
-    // ### QGIS 3: make protected
-    //! Should be called when the canvas destination CRS is changed
     void destinationCrsChanged();
+%Docstring
+Should be called when the canvas destination CRS is changed
+%End
 
   protected slots:
     void mapRenderingFinished();
-    void layerRepaintRequested();
+
+    void layerRepaintRequested( bool deferred = false );
+%Docstring
+ Triggered when a layer in the overview requests a repaint.
+%End
 
   protected:
 
-    //! Overridden paint event
-    void paintEvent( QPaintEvent *pe );
+    virtual void paintEvent( QPaintEvent *pe );
 
-    //! Overridden resize event
-    void resizeEvent( QResizeEvent *e );
+%Docstring
+Overridden paint event
+%End
 
-    //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent *e );
+    virtual void showEvent( QShowEvent *e );
 
-    //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent *e );
+%Docstring
+Overridden show event
+%End
 
-    //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent *e );
+    virtual void resizeEvent( QResizeEvent *e );
 
-    //! called when panning to reflect mouse movement
+%Docstring
+Overridden resize event
+%End
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+%Docstring
+Overridden mouse move event
+%End
+
+    virtual void mousePressEvent( QMouseEvent *e );
+
+%Docstring
+Overridden mouse press event
+%End
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+%Docstring
+Overridden mouse release event
+%End
+
     void updatePanningWidget( QPoint pos );
+%Docstring
+called when panning to reflect mouse movement
+%End
+
+
+
+
+
+
 };
 
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapoverviewcanvas.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
