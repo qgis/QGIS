@@ -1,41 +1,70 @@
-%Feature MOBILITY_LOCATION
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsqtlocationconnection.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-%If (MOBILITY_LOCATION)
-/**
- * \class QgsQtLocationConnection
- * \note may not be available in Python bindings on all platforms
-*/
+
+
+
+
+
+QTM_USE_NAMESPACE
+%Docstring
+*************************************************************************
+                                                                         *
+   This program is free software; you can redistribute it and/or modify  *
+   it under the terms of the GNU General Public License as published by  *
+   the Free Software Foundation; either version 2 of the License, or     *
+   (at your option) any later version.                                   *
+                                                                         *
+**************************************************************************
+%End
+
 class QgsQtLocationConnection: QgsGPSConnection
 {
+%Docstring
+.. note::
+
+   may not be available in Python bindings on all platforms
+%End
+
 %TypeHeaderCode
-#include <qgsqtlocationconnection.h>
+#include "qgsqtlocationconnection.h"
 %End
   public:
     QgsQtLocationConnection();
     ~QgsQtLocationConnection();
 
   protected slots:
-    /** Needed to make QtLocation detected*/
     void broadcastConnectionAvailable();
+%Docstring
+Needed to make QtLocation detected
+%End
 
-    /** Parse available data source content*/
     void parseData();
-
-    /** Called when the position updated.
-      * @note not available in python binding
-      */
-    // void positionUpdated( const QGeoPositionInfo &info );
-
-%If (!ANDROID)
-    /** Called when the number of satellites in view is updated.
-      * @note not available in python bindings on android
-      */
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
-
-    /** Called when the number of satellites in use is updated.
-      * @note not available in python bindings on android
-      */
-    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
+%Docstring
+Parse available data source content
 %End
+
+    void positionUpdated( const QGeoPositionInfo &info );
+%Docstring
+ Called when the position updated.
+.. note::
+
+   not available in Python binding
+%End
+
+
+
 };
-%End
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsqtlocationconnection.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
