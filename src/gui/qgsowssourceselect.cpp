@@ -54,7 +54,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QDialog( parent, fl )
   , mService( service )
   , mManagerMode( managerMode )
@@ -65,12 +65,13 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   if ( mEmbeddedMode )
   {
-    mDialogButtonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
+
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
 
-  mAddButton = mDialogButtonBox->button( QDialogButtonBox::Apply );
+  mAddButton = buttonBox->button( QDialogButtonBox::Apply );
   mAddButton->setText( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );

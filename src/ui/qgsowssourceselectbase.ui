@@ -3,7 +3,7 @@
  <class>QgsOWSSourceSelectBase</class>
  <widget class="QDialog" name="QgsOWSSourceSelectBase">
   <property name="geometry">
-   <rect>:
+   <rect>
     <x>0</x>
     <y>0</y>
     <width>743</width>
@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -26,7 +25,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="mDialogButtonBox">
+    <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
@@ -68,11 +67,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QPushButton" name="mConnectButton">
-           <property name="toolTip">
-            <string>Connect to selected service</string>
-           </property>
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Connect to selected service</string>
            </property>
            <property name="text">
             <string>C&amp;onnect</string>
@@ -91,11 +90,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="mEditButton">
-           <property name="toolTip">
-            <string>Edit selected service connection</string>
-           </property>
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Edit selected service connection</string>
            </property>
            <property name="text">
             <string>Edit</string>
@@ -104,11 +103,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="mDeleteButton">
-           <property name="toolTip">
-            <string>Remove connection to selected service</string>
-           </property>
            <property name="enabled">
             <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Remove connection to selected service</string>
            </property>
            <property name="text">
             <string>Remove</string>
@@ -202,7 +201,16 @@
        <item>
         <widget class="QWidget" name="mTimeWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -231,7 +239,16 @@
        <item>
         <widget class="QWidget" name="mCRSWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -273,7 +290,16 @@
        <item>
         <widget class="QWidget" name="mFormatWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -350,7 +376,16 @@
        <item>
         <widget class="QWidget" name="mCacheWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -585,12 +620,12 @@ Always network: always load from network and do not check if the cache has a val
   <tabstop>mSearchButton</tabstop>
   <tabstop>mSearchTableWidget</tabstop>
   <tabstop>mSearchAddButton</tabstop>
-  <tabstop>mDialogButtonBox</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>mDialogButtonBox</sender>
+   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsOWSSourceSelectBase</receiver>
    <slot>reject()</slot>

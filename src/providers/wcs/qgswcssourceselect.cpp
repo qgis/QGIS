@@ -30,6 +30,7 @@
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
   : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, embeddedMode, managerMode )
 {
+
   // Hide irrelevant widgets
   mWMSGroupBox->hide();
   mLayersTab->layout()->removeWidget( mWMSGroupBox );

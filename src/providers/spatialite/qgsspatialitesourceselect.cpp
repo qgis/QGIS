@@ -45,11 +45,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 {
   setupUi( this );
 
-  if ( embeddedMode )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
-
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
@@ -73,7 +68,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
 
   if ( mEmbeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->hide();
   }
   else
   {
@@ -423,7 +419,7 @@ void QgsSpatiaLiteSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( m_selectedTables, QStringLiteral( "spatialite" ) );
-    if ( !mHoldDialogOpen->isChecked() )
+    if ( !( mEmbeddedMode || mHoldDialogOpen->isChecked() ) )
     {
       accept();
     }
