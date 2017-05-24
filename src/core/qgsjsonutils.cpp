@@ -121,7 +121,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
 
     if ( mIncludeAttributes )
     {
-      QgsFields fields = mLayer.data() ? mLayer->fields() : feature.fields();
+      QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -132,7 +132,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
           properties += QLatin1String( ",\n" );
         QVariant val =  feature.attributes().at( i );
 
-        if ( mLayer.data() )
+        if ( mLayer )
         {
           QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
@@ -161,7 +161,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
     }
 
     // related attributes
-    if ( mLayer.data() && mIncludeRelatedAttributes )
+    if ( mLayer && mIncludeRelatedAttributes )
     {
       QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
       Q_FOREACH ( const QgsRelation &relation, relations )
@@ -177,11 +177,13 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
         {
           QgsFeatureIterator it = childLayer->getFeatures( req );
           QVector<QVariant> attributeWidgetCaches;
-          for ( int fieldIndex = 0; fieldIndex < childLayer->fields().count(); ++fieldIndex )
+          int fieldIndex = 0;
+          Q_FOREACH ( const QgsField &field, childLayer->fields() )
           {
-            QgsEditorWidgetSetup setup = childLayer->fields().at( fieldIndex ).editorWidgetSetup();
+            QgsEditorWidgetSetup setup = field.editorWidgetSetup();
             QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
             attributeWidgetCaches.append( fieldFormatter->createCache( childLayer, fieldIndex, setup.config() ) );
+            fieldIndex++;
           }
 
           QgsFeature relatedFet;
