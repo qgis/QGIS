@@ -34,7 +34,7 @@ class QgsActionMenu : QMenu
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      ActionType actionType;
+      QgsActionMenu::ActionType actionType;
       QVariant actionData;
       QgsFeatureId featureId;
       QgsMapLayer *mapLayer;

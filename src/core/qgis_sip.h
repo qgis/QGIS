@@ -82,6 +82,11 @@
 #define SIP_NODEFAULTCTORS
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=deprecated#function-annotation-Deprecated
+ */
+#define SIP_DEPRECATED
+
+/*
   * discard line
   */
 #define SIP_SKIP

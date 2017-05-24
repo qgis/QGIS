@@ -541,7 +541,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 %End
 
 
-    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 %Docstring
  Open a url in the users browser. By default the QGIS doc directory is used
  as the base for the URL. To open a URL that is not relative to the installed
@@ -551,7 +551,6 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  url to the QGIS documentation directory path (prefix/share/doc)
  \deprecated
 %End
-
 
 
 

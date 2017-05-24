@@ -434,7 +434,7 @@ class GUI_EXPORT QgisInterface : public QObject
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif
-    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
 
     /** Accessors for inserting items into menus and toolbars.

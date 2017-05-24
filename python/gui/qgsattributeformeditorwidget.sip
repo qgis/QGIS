@@ -41,6 +41,17 @@ class QgsAttributeFormEditorWidget : QWidget
 
     ~QgsAttributeFormEditorWidget();
 
+    void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
+                                     const QVariantMap &config );
+
+%Docstring
+ Creates the search widget wrappers for the widget used when the form is in
+ search mode.
+ \param widgetId id of the widget type to create a search wrapper for
+ \param fieldIdx index of field associated with widget
+ \param config configuration which should be used for the widget creation
+ \param context editor context (not available in Python bindings)
+%End
 
     void setMode( Mode mode );
 %Docstring

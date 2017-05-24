@@ -2053,6 +2053,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_ARRAY" \
                          "SIP_ARRAYSIZE" \
                          "SIP_CONVERT_TO_SUBCLASS_CODE" \
+                         "SIP_DEPRECATED" \
                          "SIP_END" \
                          "SIP_FACTORY" \
                          "SIP_FEATURE" \
