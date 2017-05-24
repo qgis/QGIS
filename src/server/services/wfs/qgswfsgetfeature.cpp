@@ -993,9 +993,9 @@ namespace QgsWfs
     {
       QString id = QStringLiteral( "%1.%2" ).arg( typeName, FID_TO_STRING( feat->id() ) );
 
-      QgsJSONExporter exporter;
+      QgsJsonExporter exporter;
       exporter.setSourceCrs( crs );
-      //QgsJSONExporter force transform geometry to ESPG:4326
+      //QgsJsonExporter force transform geometry to ESPG:4326
       //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
       Q_UNUSED( prec );
       //exporter.setPrecision( prec );

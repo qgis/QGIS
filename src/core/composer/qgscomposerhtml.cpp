@@ -551,7 +551,7 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   }
 
   // create JSON representation of feature
-  QgsJSONExporter exporter( layer );
+  QgsJsonExporter exporter( layer );
   exporter.setIncludeRelated( true );
   mAtlasFeatureJSON = exporter.exportFeature( feature );
 }
