@@ -34,8 +34,10 @@ class QgsAttributeForm : QWidget
       FilterOr,
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer *vl,
+                               const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+                               QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature &feature();
@@ -131,17 +133,6 @@ class QgsAttributeForm : QWidget
  \param value     The new value of the attribute.
 %End
 
-    void beforeSave( bool &ok );
-%Docstring
- Will be emitted before the feature is saved. Use this signal to perform sanity checks.
- You can set the parameter ok to false to notify the form that you don't want it to be saved.
- If you want the form to be saved, leave the parameter untouched.
-
- \param ok  Set this parameter to false if you don't want the form to be saved
-.. note::
-
-   not available  in Python bindings
-%End
 
     void featureSaved( const QgsFeature &feature );
 %Docstring
