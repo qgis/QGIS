@@ -71,12 +71,10 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
-  else
-  {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
-  }
+
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
 
   populateConnectionList();
 
