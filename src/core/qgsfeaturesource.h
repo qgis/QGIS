@@ -81,4 +81,6 @@ class CORE_EXPORT QgsFeatureSource
 
 };
 
+Q_DECLARE_METATYPE( QgsFeatureSource * )
+
 #endif // QGSFEATURESOURCE_H
