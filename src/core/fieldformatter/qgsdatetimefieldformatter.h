@@ -34,6 +34,11 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static const QString DEFAULT_TIME_FORMAT;
     static const QString DEFAULT_DATETIME_FORMAT;
 
+    /**
+      * Default constructor of field formatter for a date time field.
+      */
+    QgsDateTimeFieldFormatter() = default;
+
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;

@@ -25,6 +25,11 @@ class QgsDateTimeFieldFormatter : QgsFieldFormatter
     static const QString DEFAULT_TIME_FORMAT;
     static const QString DEFAULT_DATETIME_FORMAT;
 
+    QgsDateTimeFieldFormatter();
+%Docstring
+ Default constructor of field formatter for a date time field.
+%End
+
     virtual QString id() const;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;

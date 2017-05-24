@@ -20,6 +20,11 @@ class QgsFallbackFieldFormatter : QgsFieldFormatter
 #include "qgsfallbackfieldformatter.h"
 %End
   public:
+
+    QgsFallbackFieldFormatter();
+%Docstring
+ Default constructor of field formatter as a fallback when no specialized formatter is defined.
+%End
     virtual QString id() const;
 };
 
