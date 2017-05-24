@@ -92,6 +92,11 @@
 #define SIP_CONSTRAINED
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=external#class-annotation-External
+ */
+#define SIP_EXTERNAL
+
+/*
   * discard line
   */
 #define SIP_SKIP
