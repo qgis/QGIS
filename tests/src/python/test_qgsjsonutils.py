@@ -28,7 +28,8 @@ from qgis.core import (QgsJSONUtils,
                        QgsLineString,
                        NULL,
                        QgsVectorLayer,
-                       QgsRelation
+                       QgsRelation,
+                       QgsEditorWidgetSetup
                        )
 from qgis.PyQt.QtCore import QVariant, QTextCodec
 
@@ -144,6 +145,20 @@ class TestQgsJSONUtils(unittest.TestCase):
 "cost":6.8,
 "population":198}"""
         self.assertEqual(QgsJSONUtils.exportAttributes(feature), expected)
+
+        # test using field formatters
+        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "parent", "memory")
+        pf1 = QgsFeature()
+        pf1.setFields(source.fields())
+        pf1.setAttributes(["test1", 1])
+
+        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"one": 1, "two": 2, "three": 3}})
+        source.setEditorWidgetSetup(1, setup)
+
+        expected = """{"fldtxt":"test1",
+"fldint":"one"}"""
+        self.assertEqual(QgsJSONUtils.exportAttributes(pf1, source), expected)
 
     def testJSONExporter(self):
         """ test converting features to GeoJSON """
@@ -392,6 +407,38 @@ class TestQgsJSONUtils(unittest.TestCase):
         self.assertTrue(exp_f == expected or exp_f == expected2)
         exporter.setIncludeGeometry(True)
 
+    def testExportFeatureFieldFormatter(self):
+        """ Test exporting a feature with formatting fields """
+
+        # source layer
+        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                                "parent", "memory")
+        pr = source.dataProvider()
+        pf1 = QgsFeature()
+        pf1.setFields(source.fields())
+        pf1.setAttributes(["test1", 1])
+        pf2 = QgsFeature()
+        pf2.setFields(source.fields())
+        pf2.setAttributes(["test2", 2])
+        assert pr.addFeatures([pf1, pf2])
+
+        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"one": 1, "two": 2, "three": 3}})
+        source.setEditorWidgetSetup(1, setup)
+
+        exporter = QgsJSONExporter()
+        exporter.setVectorLayer(source)
+
+        expected = """{
+   "type":"Feature",
+   "id":0,
+   "geometry":null,
+   "properties":{
+      "fldtxt":"test1",
+      "fldint":"one"
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(pf1), expected)
+
     def testExportFeatureCrs(self):
         """ Test CRS transform when exporting features """
 
@@ -512,6 +559,27 @@ class TestQgsJSONUtils(unittest.TestCase):
    }
 }"""
         self.assertEqual(exporter.exportFeature(pf2), expected)
+
+        # with field formatter
+        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"apples": 123, "bananas": 124}})
+        child.setEditorWidgetSetup(1, setup)
+        expected = """{
+   "type":"Feature",
+   "id":0,
+   "geometry":null,
+   "properties":{
+      "fldtxt":"test1",
+      "fldint":67,
+      "foreignkey":123,
+      "relation one":[{"x":"foo",
+"y":"apples",
+"z":321},
+{"x":"bar",
+"y":"apples",
+"z":654}]
+   }
+}"""
+        self.assertEqual(exporter.exportFeature(pf1), expected)
 
         # test excluding related attributes
         exporter.setIncludeRelated(False)

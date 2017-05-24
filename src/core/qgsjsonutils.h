@@ -240,8 +240,13 @@ class CORE_EXPORT QgsJSONUtils
 
     /** Exports all attributes from a QgsFeature as a JSON map type.
      * \param feature feature to export
+     * \param layer optional associated vector layer. If specified, this allows
+     * richer export utilising settings like the layer's fields widget configuration.
+     * \param attributeWidgetCaches optional widget configuration cache. Can be used
+     * to speed up exporting the attributes for multiple features from the same layer.
      */
-    static QString exportAttributes( const QgsFeature &feature );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
 
     /** Parse a simple array (depth=1).
      * \param json the JSON to parse
