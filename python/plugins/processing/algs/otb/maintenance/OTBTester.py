@@ -120,7 +120,8 @@ class MakefileParser(object):
             self.fail(unicode(e))
 
     def add_make(self, previous_context, new_file):
-        input = open(new_file).read()
+        with open(new_file) as f:
+            input = f.read()
         output = parse(input)
         apps = [each for each in output if 'Command' in unicode(type(each))]
         setcommands = [each for each in apps if 'SET' in each.name.upper()]
@@ -163,21 +164,24 @@ class MakefileParser(object):
         return environment
 
     def get_apps(self, the_makefile, the_dict):
-        input = open(the_makefile).read()
+        with open(the_makefile) as f:
+            input = f.read()
         output = parse(input)
         apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_apps = [each for each in apps if 'OTB_TEST_APPLICATION' in each.name.upper()]
         return otb_apps
 
     def get_tests(self, the_makefile, the_dict):
-        input = open(the_makefile).read()
+        with open(the_makefile) as f:
+            input = f.read()
         output = parse(input)
         apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_tests = [each for each in apps if 'ADD_TEST' in each.name.upper()]
         return otb_tests
 
     def get_apps_with_context(self, the_makefile, the_dict):
-        input = open(the_makefile).read()
+        with open(the_makefile) as f:
+            input = f.read()
         output = parse(input)
 
         def is_a_command(item):
