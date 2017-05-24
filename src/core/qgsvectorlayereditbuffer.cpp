@@ -328,6 +328,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
         {
           commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
           success = false;
+          break;
         }
       }
     }
