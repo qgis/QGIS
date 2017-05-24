@@ -24,6 +24,11 @@ class QgsKeyValueFieldFormatter : QgsFieldFormatter
 #include "qgskeyvaluefieldformatter.h"
 %End
   public:
+
+    QgsKeyValueFieldFormatter();
+%Docstring
+ Default constructor of field formatter for a key value field.
+%End
     virtual QString id() const;
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 };

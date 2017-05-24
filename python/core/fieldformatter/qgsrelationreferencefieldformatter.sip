@@ -21,6 +21,12 @@ class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 #include "qgsrelationreferencefieldformatter.h"
 %End
   public:
+
+    QgsRelationReferenceFieldFormatter();
+%Docstring
+ Default constructor of field formatter for a relation reference field.
+%End
+
     virtual QString id() const;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
