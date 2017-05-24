@@ -410,7 +410,11 @@ while ($line_idx < $line_count){
         do {no warnings 'uninitialized';
             push @CLASSNAME, $3;
             dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
-            $EXPORTED[-1]++ if $line =~ m/\b[A-Z]+_EXPORT\b/;
+            if ($line =~ m/\b[A-Z]+_EXPORT\b/ || $#CLASSNAME != 0 || $lines[$line_idx-2] =~ m/^\s*template</){
+                # class should be exported except those not at top level or template classes
+                # if class is not exported, then its methods should be (checked whenever leaving out the class)
+                $EXPORTED[-1]++;
+            }
         };
         $line = "$1 $3";
         # Inheritance
@@ -490,7 +494,7 @@ while ($line_idx < $line_count){
                     pop(@global_bracket_nesting_index);
                     pop(@ACCESS);
                     die "Class $CLASSNAME[$#CLASSNAME] in $headerfile at line $line_idx should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
-                        if $EXPORTED[-1] == 0 && $#CLASSNAME == 0;
+                        if $EXPORTED[-1] == 0;
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
