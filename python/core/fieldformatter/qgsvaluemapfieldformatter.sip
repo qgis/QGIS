@@ -37,6 +37,11 @@ class QgsValueMapFieldFormatter : QgsFieldFormatter
  It's the magic UUID {2839923C-8B7D-419E-B84B-CA2FE9B80EC7}
 %End
 
+    QgsValueMapFieldFormatter();
+%Docstring
+ Default constructor of field formatter for a value map field.
+%End
+
     virtual QString id() const;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;

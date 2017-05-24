@@ -30,6 +30,11 @@
 class CORE_EXPORT QgsListFieldFormatter : public QgsFieldFormatter
 {
   public:
+
+    /**
+      * Default constructor of field formatter for a list field.
+      */
+    QgsListFieldFormatter() = default;
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;

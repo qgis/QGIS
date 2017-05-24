@@ -46,6 +46,11 @@ class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
      */
     static const QString NULL_VALUE;
 
+    /**
+      * Default constructor of field formatter for a value map field.
+      */
+    QgsValueMapFieldFormatter() = default;
+
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
