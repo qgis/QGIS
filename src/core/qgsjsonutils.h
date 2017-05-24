@@ -26,7 +26,7 @@
 class QTextCodec;
 
 /** \ingroup core
- * \class QgsJSONExporter
+ * \class QgsJsonExporter
  * \brief Handles exporting QgsFeature features to GeoJSON features.
  *
  * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
@@ -34,16 +34,16 @@ class QTextCodec;
  * \since QGIS 2.16
  */
 
-class CORE_EXPORT QgsJSONExporter
+class CORE_EXPORT QgsJsonExporter
 {
   public:
 
-    /** Constructor for QgsJSONExporter.
+    /** Constructor for QgsJsonExporter.
      * \param vectorLayer associated vector layer (required for related attribute export)
      * \param precision maximum number of decimal places to use for geometry coordinates,
      *  the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
      */
-    QgsJSONExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
+    QgsJsonExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
@@ -203,12 +203,12 @@ class CORE_EXPORT QgsJSONExporter
 };
 
 /** \ingroup core
- * \class QgsJSONUtils
+ * \class QgsJsonUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
  * \since QGIS 2.16
  */
 
-class CORE_EXPORT QgsJSONUtils
+class CORE_EXPORT QgsJsonUtils
 {
   public:
 

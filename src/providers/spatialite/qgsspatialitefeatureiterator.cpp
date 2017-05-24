@@ -543,7 +543,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     if ( type == QVariant::List || type == QVariant::StringList )
     {
       // assume arrays are stored as JSON
-      QVariant result = QVariant( QgsJSONUtils::parseArray( txt, subType ) );
+      QVariant result = QVariant( QgsJsonUtils::parseArray( txt, subType ) );
       result.convert( type );
       return result;
     }

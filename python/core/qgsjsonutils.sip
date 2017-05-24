@@ -10,7 +10,7 @@
 
 
 
-class QgsJSONExporter
+class QgsJsonExporter
 {
 %Docstring
  Handles exporting QgsFeature features to GeoJSON features.
@@ -25,9 +25,9 @@ class QgsJSONExporter
 %End
   public:
 
-    QgsJSONExporter( QgsVectorLayer *vectorLayer = 0, int precision = 6 );
+    QgsJsonExporter( QgsVectorLayer *vectorLayer = 0, int precision = 6 );
 %Docstring
- Constructor for QgsJSONExporter.
+ Constructor for QgsJsonExporter.
  \param vectorLayer associated vector layer (required for related attribute export)
  \param precision maximum number of decimal places to use for geometry coordinates,
   the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
@@ -199,7 +199,7 @@ class QgsJSONExporter
 };
 
 
-class QgsJSONUtils
+class QgsJsonUtils
 {
 %Docstring
  Helper utilities for working with JSON and GeoJSON conversions.
