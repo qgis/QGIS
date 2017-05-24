@@ -907,7 +907,8 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString& theProj4String
   // e.g if they lack a +ellps parameter, it will automatically add +ellps=WGS84, but as
   // we use the original mProj4 with QgsCoordinateTransform, it will fail to initialize
   // so better detect it now.
-  projPJ theProj = pj_init_plus( theProj4String.trimmed().toLatin1().constData() );
+  projCtx pContext = pj_ctx_alloc();
+  projPJ theProj = pj_init_plus_ctx( pContext, theProj4String.trimmed().toLatin1().constData() );
   if ( !theProj )
   {
     QgsDebugMsg( "proj.4 string rejected by pj_init_plus()" );
@@ -917,6 +918,7 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString& theProj4String
   {
     pj_free( theProj );
   }
+  pj_ctx_free( pContext );
   d->mWkt.clear();
   setMapUnits();
 
@@ -1858,6 +1860,8 @@ int QgsCoordinateReferenceSystem::syncDb()
                sqlite3_errmsg( database ) );
   }
 
+  projCtx pContext = pj_ctx_alloc();
+
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
   sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated AND NOT noupdate" );
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
@@ -1869,11 +1873,11 @@ int QgsCoordinateReferenceSystem::syncDb()
       const char *params    = reinterpret_cast< const char * >( sqlite3_column_text( select, 2 ) );
 
       QString input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower(), auth_id );
-      projPJ pj = pj_init_plus( input.toAscii() );
+      projPJ pj = pj_init_plus_ctx( pContext, input.toAscii() );
       if ( !pj )
       {
         input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toUpper(), auth_id );
-        pj = pj_init_plus( input.toAscii() );
+        pj = pj_init_plus_ctx( pContext, input.toAscii() );
       }
 
       if ( pj )
@@ -1936,6 +1940,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 #endif
 
   OSRDestroySpatialReference( crs );
+  pj_ctx_free( pContext );
 
   if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
