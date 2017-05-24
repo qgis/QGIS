@@ -116,6 +116,7 @@ def otbGeoidPath():
 def otbDescriptionPath():
     return os.path.join(os.path.dirname(__file__), "description")
 
+
 _installedVersion = None
 _installedVersionFound = False
 
