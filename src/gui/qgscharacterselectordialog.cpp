@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscharacterselectdialog.cpp - single font character selector dialog
+    qgscharacterselectordialog.cpp - single font character selector dialog
 
     ---------------------
     begin                : November 2012
@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "characterwidget.h"
-#include "qgscharacterselectdialog.h"
+#include "qgscharacterselectordialog.h"
 
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )

@@ -9,7 +9,6 @@
 
 
 
-typedef QPointF QwtDoublePoint;
 
 
 class QgsCurveEditorWidget : QWidget
