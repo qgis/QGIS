@@ -87,6 +87,11 @@
 #define SIP_DEPRECATED
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=constrained#argument-annotation-Constrained
+ */
+#define SIP_CONSTRAINED
+
+/*
   * discard line
   */
 #define SIP_SKIP
