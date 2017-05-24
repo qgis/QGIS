@@ -19,6 +19,9 @@
 
 #include <QList>
 #include <QDialog>
+#include "qgsoptionsdialogbase.h"
+#include "qgsguiutils.h"
+
 class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
@@ -28,12 +31,12 @@ namespace Ui
   class QgsDataSourceManagerDialog;
 }
 
-class QgsDataSourceManagerDialog : public QDialog
+class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = 0 );
+    explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
   public slots:
