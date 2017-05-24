@@ -61,6 +61,8 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
 
+    QString name() const { return mName; }
+
   signals:
     void toggled( bool t );
 
@@ -73,13 +75,12 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     //! Show the dialog box
     virtual void run() {}
 
-    virtual void setName( const char *name );
-    virtual QString name() { return mName; }
-
     //! Redraws the decoration
     void update();
 
   protected:
+
+    void setName( const char *name );
 
     //! True if decoration item has to be displayed
     bool mEnabled;
