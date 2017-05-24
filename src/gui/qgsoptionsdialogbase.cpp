@@ -391,7 +391,7 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
   QMessageBox::warning( nullptr, tr( "Missing objects" ),
                         tr( "Base options dialog could not be initialized.\n\n"
                             "Missing some of the .ui template objects:\n" )
-                        + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter",
+                        + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
                         QMessageBox::Ok,
                         QMessageBox::Ok );
 }

@@ -27,34 +27,30 @@
 #include "qgsmapcanvas.h"
 
 
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent ) :
-  QDialog( parent ),
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl ) :
+  QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
   ui( new Ui::QgsDataSourceManagerDialog ),
   mMapCanvas( mapCanvas )
 {
-  ui->setupUi( this );
 
-  // More setup
-  int size = QgsSettings().value( QStringLiteral( "/IconSize" ), 24 ).toInt();
-  // buffer size to match displayed icon size in toolbars, and expected geometry restore
-  // newWidth (above) may need adjusted if you adjust iconBuffer here
-  int iconBuffer = 4;
-  ui->mList->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
-  ui->mList->setFrameStyle( QFrame::NoFrame );
-  ui->mListFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  ui->setupUi( this );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( true );
 
   // Bind list index to the stacked dialogs
-  connect( ui->mList, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentPage( int ) ) );
+  connect( ui->mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentPage( int ) ) );
 
   // BROWSER Add the browser widget to the first stacked widget page
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
-  ui->mStackedWidget->addWidget( mBrowserWidget );
+  ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
 
   // VECTOR Layers (completely different interface: it's not a provider)
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, true );
-  ui->mStackedWidget->addWidget( ovl );
-  QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mList );
+  ui->mOptionsStackedWidget->addWidget( ovl );
+  QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mOptionsListWidget );
   ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
 
@@ -111,8 +107,8 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
-  ui->mStackedWidget->setCurrentIndex( index );
-  setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mList->currentItem()->text( ) ) );
+  ui->mOptionsStackedWidget->setCurrentIndex( index );
+  setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text( ) ) );
 }
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
@@ -141,8 +137,8 @@ QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, 
   }
   else
   {
-    ui->mStackedWidget->addWidget( dlg );
-    QListWidgetItem *wmsItem = new QListWidgetItem( providerName, ui->mList );
+    ui->mOptionsStackedWidget->addWidget( dlg );
+    QListWidgetItem *wmsItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
     wmsItem->setIcon( QgsApplication::getThemeIcon( icon ) );
     return dlg;
   }
