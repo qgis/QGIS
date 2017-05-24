@@ -1607,6 +1607,12 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
       {
         continue;
       }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !mAccessControl->layerReadPermission( currentLayer ) )
+      {
+        continue;
+      }
+#endif
       if ( nonIdentifiableLayers.contains( currentLayer->id() ) )
       {
         layerElem.setAttribute( "queryable", "false" );
