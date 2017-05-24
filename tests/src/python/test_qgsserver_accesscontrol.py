@@ -28,6 +28,7 @@ from PyQt4.QtCore import QSize
 import tempfile
 import urllib
 import base64
+import re
 
 
 XML_NS = \
@@ -236,6 +237,34 @@ class TestQgsServerAccessControl(unittest.TestCase):
         self.assertTrue(
             str(response).find("<LayerDrawingOrder>Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
             "LayerDrawingOrder in GetProjectSettings\n%s" % response)
+
+    def test_wms_getcontext(self):
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetContext"
+        }.items()])
+
+        response, headers = self._get_fullaccess(query_string)
+        self.assertTrue(
+            str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Hello\" name=\"Hello\">") != -1,
+            "No Hello layer in GetContext\n%s" % response)
+        self.assertTrue(
+            str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Country\" name=\"Country\">") != -1,
+            "No Country layer in GetContext\n%s" % response)
+        self.assertTrue(
+            str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Country\" name=\"Country\">")
+            < str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Hello\" name=\"Hello\">"),
+            "Hello layer not after Country layer\n%s" % response)
+
+        response, headers = self._get_restricted(query_string)
+        self.assertTrue(
+            str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Hello\" name=\"Hello\">") != -1,
+            "No Hello layer in GetContext\n%s" % response)
+        self.assertFalse(
+            str(response).find("<Layer opacity=\"1\" queryable=\"true\" hidden=\"false\" id=\"Country\" name=\"Country\">") != -1,
+            "Country layer in GetContext\n%s" % response)
 
     def test_wms_describelayer_hello(self):
         query_string = "&".join(["%s=%s" % i for i in {
