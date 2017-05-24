@@ -151,6 +151,7 @@ sub fix_annotations(){
   $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
   $line =~ s/\bSIP_DEPRECATED\b/\/Deprecated\//g;
   $line =~ s/\bSIP_CONSTRAINED\b/\/Constrained\//g;
+  $line =~ s/\bSIP_EXTERNAL\b/\/External\//g;
   $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
   $line =~ s/\bSIP_IN\b/\/In\//g;
   $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
@@ -357,9 +358,16 @@ while ($line_idx < $line_count){
     }
 
     # Skip forward declarations
-    if ($line =~ m/^\s*(class|struct) \w+;\s*(\/\/.*)?$/){
-        dbg_info('skipping forward declaration');
-        next;
+    if ($line =~ m/^\s*(class|struct) \w+(?<external> *SIP_EXTERNAL)?;\s*(\/\/.*)?$/){
+        if ($+{external}){
+            dbg_info('do not skip external forward declaration');
+            $comment = '';
+        }
+        else
+        {
+            dbg_info('skipping forward declaration');
+            next;
+        }
     }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
     if ($line =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED).*?$/){
@@ -401,8 +409,8 @@ while ($line_idx < $line_count){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/5
-    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_.*)?$/ ){
+    # https://regex101.com/r/6FWntP/6
+    if ( $line =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?(?!;)$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;

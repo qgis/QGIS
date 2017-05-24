@@ -8,6 +8,7 @@
 
 
 
+class QgsPaintEffectWidget /External/;
 
 class QgsPaintEffectAbstractMetadata
 {
@@ -73,8 +74,6 @@ class QgsPaintEffectAbstractMetadata
 
 };
 
-typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QgsStringMap & );
-typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )();
 
 
 
@@ -161,6 +160,8 @@ class QgsPaintEffectRegistry
  :rtype: bool
 %End
 
+  private:
+    QgsPaintEffectRegistry( const QgsPaintEffectRegistry &rh );
 };
 
 /************************************************************************
