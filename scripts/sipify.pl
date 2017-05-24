@@ -150,6 +150,7 @@ sub fix_annotations(){
   $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
   $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
   $line =~ s/\bSIP_DEPRECATED\b/\/Deprecated\//g;
+  $line =~ s/\bSIP_CONSTRAINED\b/\/Constrained\//g;
   $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
   $line =~ s/\bSIP_IN\b/\/In\//g;
   $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;

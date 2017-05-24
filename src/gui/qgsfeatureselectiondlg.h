@@ -22,6 +22,14 @@ class QgsGenericFeatureSelectionManager;
 #include "qgis.h"
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+% ModuleCode
+#include "qgsfeatureselectiondlg.h"
+% End
+#endif
+
 /** \ingroup gui
  * \class QgsFeatureSelectionDlg
  */
