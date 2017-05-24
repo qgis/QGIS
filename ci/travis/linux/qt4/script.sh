@@ -14,7 +14,7 @@
 ###########################################################################
 
 export PYTHONPATH=${HOME}/osgeo4travis/lib/python2.7/site-packages/
-export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${PATH}
+export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
 export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
 export CTEST_PARALLEL_LEVEL=1
 export CCACHE_CPP2=yes
@@ -23,5 +23,8 @@ if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
   export CCACHE_READONLY=yes
   chmod -R ugo-w ~/.ccache
 fi
+
+# Set OTB application path (installed in before_install.sh script)
+export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
 
 xvfb-run ctest -V -E 'qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|qgis_ziplayertest|PyQgsDBManagerGpkg' -S ./qgis-test-travis.ctest --output-on-failure
