@@ -248,7 +248,7 @@ void QgsAttributeTableModel::updatedFields()
 
 void QgsAttributeTableModel::editCommandEnded()
 {
-  // do not do releoad(...) due would trigger (dataChanged) row sort
+  // do not do reload(...) due would trigger (dataChanged) row sort
   // giving issue: https://issues.qgis.org/issues/15976
   mChangedCellBounds = QRect();
 }
