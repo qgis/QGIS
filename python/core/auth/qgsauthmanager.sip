@@ -464,6 +464,9 @@ class QgsAuthManager : QObject
     void authDatabaseChanged() const;
 
   public slots:
+    /** Rebuild various SSL authentication caches */
+    bool rebuildSslCaches();
+
     /** Clear all authentication configs from authentication method caches */
     void clearAllCachedConfigs();
 
