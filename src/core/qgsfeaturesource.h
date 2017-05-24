@@ -20,8 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
+
+class QgsFeatureIterator;
+class QgsFeatureRequest;
+class QgsCoordinateReferenceSystem;
+class QgsFields;
 
 /**
  * \class QgsFeatureSource
@@ -42,6 +45,39 @@ class CORE_EXPORT QgsFeatureSource
      * iterator, eg by restricting the returned attributes or geometry.
      */
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
+
+    /**
+     * Returns the coordinate reference system for features in the source.
+     */
+    virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
+
+    /**
+     * Returns the fields associated with features in the source.
+     */
+    virtual QgsFields fields() const = 0;
+
+    /**
+     * Returns the geometry type for features returned by this source.
+     */
+    virtual QgsWkbTypes::Type wkbType() const = 0;
+
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of features contained in the source, or -1
+     * if the feature count is unknown.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->featureCount();
+    % End
+#endif
+
+    /**
+     * Returns the number of features contained in the source, or -1
+     * if the feature count is unknown.
+     */
+    virtual long featureCount() const = 0;
 
 };
 

@@ -158,6 +158,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual QgsFields fields() const = 0;
 
+    QgsCoordinateReferenceSystem sourceCrs() const override;
+
     /**
      * Return a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).

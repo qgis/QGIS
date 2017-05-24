@@ -47,6 +47,11 @@ QString QgsVectorDataProvider::storageType() const
   return QStringLiteral( "Generic vector file" );
 }
 
+QgsCoordinateReferenceSystem QgsVectorDataProvider::sourceCrs() const
+{
+  return crs();
+}
+
 QString QgsVectorDataProvider::dataComment() const
 {
   return QString();
