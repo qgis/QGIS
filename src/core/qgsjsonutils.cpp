@@ -23,11 +23,13 @@
 #include "qgsproject.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
 
-QgsJSONExporter::QgsJSONExporter(QgsVectorLayer *vectorLayer, int precision )
+QgsJSONExporter::QgsJSONExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
   , mIncludeGeometry( true )
   , mIncludeAttributes( true )
@@ -119,7 +121,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
 
     if ( mIncludeAttributes )
     {
-      QgsFields fields = feature.fields();
+      QgsFields fields = mLayer.data() ? mLayer->fields() : feature.fields();
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -129,6 +131,14 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
         QVariant val =  feature.attributes().at( i );
+
+        if ( mLayer.data() )
+        {
+          QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
+          QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+            val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
+        }
 
         properties += QStringLiteral( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJSONUtils::encodeValue( val ) );
 
@@ -166,6 +176,14 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
         if ( childLayer )
         {
           QgsFeatureIterator it = childLayer->getFeatures( req );
+          QVector<QVariant> attributeWidgetCaches;
+          for ( int fieldIndex = 0; fieldIndex < childLayer->fields().count(); ++fieldIndex )
+          {
+            QgsEditorWidgetSetup setup = childLayer->fields().at( fieldIndex ).editorWidgetSetup();
+            QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+            attributeWidgetCaches.append( fieldFormatter->createCache( childLayer, fieldIndex, setup.config() ) );
+          }
+
           QgsFeature relatedFet;
           int relationFeatures = 0;
           while ( it.nextFeature( relatedFet ) )
@@ -173,7 +191,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
             if ( relationFeatures > 0 )
               relatedFeatureAttributes += QLatin1String( ",\n" );
 
-            relatedFeatureAttributes += QgsJSONUtils::exportAttributes( relatedFet );
+            relatedFeatureAttributes += QgsJSONUtils::exportAttributes( relatedFet, childLayer, attributeWidgetCaches );
             relationFeatures++;
           }
         }
@@ -267,7 +285,7 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJSONUtils::exportAttributes( const QgsFeature &feature )
+QString QgsJSONUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, QVector<QVariant> attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QString attrs;
@@ -277,6 +295,15 @@ QString QgsJSONUtils::exportAttributes( const QgsFeature &feature )
       attrs += QLatin1String( ",\n" );
 
     QVariant val = feature.attributes().at( i );
+
+    if ( layer )
+    {
+      QgsEditorWidgetSetup setup = layer->fields().at( i ).editorWidgetSetup();
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+        val = fieldFormatter->representValue( layer, i, setup.config(), attributeWidgetCaches.count() >= i ? attributeWidgetCaches.at( i ) : QVariant(), val );
+    }
+
     attrs += encodeValue( fields.at( i ).name() ) + ':' + encodeValue( val );
   }
   return attrs.prepend( '{' ).append( '}' );

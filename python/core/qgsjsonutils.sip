@@ -25,7 +25,7 @@ class QgsJSONExporter
 %End
   public:
 
-    QgsJSONExporter( const QgsVectorLayer *vectorLayer = 0, int precision = 6 );
+    QgsJSONExporter( QgsVectorLayer *vectorLayer = 0, int precision = 6 );
 %Docstring
  Constructor for QgsJSONExporter.
  \param vectorLayer associated vector layer (required for related attribute export)
@@ -94,7 +94,7 @@ class QgsJSONExporter
  :rtype: bool
 %End
 
-    void setVectorLayer( const QgsVectorLayer *vectorLayer );
+    void setVectorLayer( QgsVectorLayer *vectorLayer );
 %Docstring
  Sets the associated vector layer (required for related attribute export). This will automatically
  update the sourceCrs() to match.
@@ -247,10 +247,15 @@ class QgsJSONUtils
  :rtype: str
 %End
 
-    static QString exportAttributes( const QgsFeature &feature );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0,
+                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
  Exports all attributes from a QgsFeature as a JSON map type.
  \param feature feature to export
+ \param layer optional associated vector layer. If specified, this allows
+ richer export utilising settings like the layer's fields widget configuration.
+ \param attributeWidgetCaches optional widget configuration cache. Can be used
+ to speed up exporting the attributes for multiple features from the same layer.
  :rtype: str
 %End
 
