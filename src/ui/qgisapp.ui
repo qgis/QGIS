@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -82,6 +82,7 @@
      <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationCopyright"/>
+     <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
     <widget class="QMenu" name="mMenuPreviewMode">
      <property name="title">
@@ -2611,6 +2612,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Install plugin from ZIP...</string>
+   </property>
+  </action>
+  <action name="mActionDecorationLayoutExtent">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Layout Extents...</string>
    </property>
   </action>
  </widget>
