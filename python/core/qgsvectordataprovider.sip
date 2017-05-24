@@ -124,6 +124,9 @@ Bitmask of all provider's editing capabilities
  :rtype: QgsFields
 %End
 
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+
     virtual QString dataComment() const;
 %Docstring
  Return a short comment for the data that this provider is

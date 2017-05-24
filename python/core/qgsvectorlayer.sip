@@ -685,7 +685,8 @@ Returns true if this is a geometry layer and false in case of NoGeometry (table 
  :rtype: bool
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    virtual QgsWkbTypes::Type wkbType() const;
+
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
  :rtype: QgsWkbTypes.Type
@@ -696,6 +697,9 @@ Returns the WKBType or WKBUnknown in case of error
 Return the provider type for this layer
  :rtype: str
 %End
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 %Docstring
@@ -1104,7 +1108,7 @@ Return the extent of the layer
  :rtype: QgsRectangle
 %End
 
-    QgsFields fields() const;
+    virtual QgsFields fields() const;
 %Docstring
  Returns the list of fields of this layer.
  This also includes fields which have not yet been saved to the provider.
@@ -1157,7 +1161,8 @@ Returns list of attributes making up the primary key
  :rtype: long
 %End
 
-    long featureCount() const;
+    virtual long featureCount() const;
+
 %Docstring
  Returns feature count including changes which have not yet been committed
  If you need only the count of committed features call this method on this layer's provider.
