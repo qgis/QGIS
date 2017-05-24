@@ -180,7 +180,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
  * \note not available in Python bindings (although present in SIP file)
 */
 template<typename T>
-class CORE_EXPORT QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
+class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
     QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request )
