@@ -622,9 +622,9 @@ archtype:archetype
 archtypes:archetypes
 archvie:archive
 archvies:archives
-are'nt:aren't
 aready:already
 arent:aren't
+are'nt:aren't
 areodynamics:aerodynamics
 argment:argument
 argments:arguments
@@ -739,11 +739,11 @@ asthetically:aesthetically
 asume:assume
 asuming:assuming
 aswell:as well
-asynchroneously:asynchronously
 asychronously:asynchronously
 asycronous:asynchronous
 asynchonous:asynchronous
 asynchonously:asynchronously
+asynchroneously:asynchronously
 asyncronous:asynchronous
 asyncronously:asynchronously
 atain:attain
@@ -1297,7 +1297,6 @@ clinicaly:clinically
 clipoing:clipping
 closeing:closing
 cmoputer:computer
-co-incided:coincided
 Coca Cola:Coca-Cola
 coctail:cocktail
 codespel:codespell
@@ -1310,6 +1309,7 @@ cofiguring:configuring
 coform:conform
 cognizent:cognizant
 coincedentally:coincidentally
+co-incided:coincided
 colaboration:collaboration
 colaborations:collaborations
 colateral:collateral
@@ -2164,9 +2164,9 @@ dictionarys:dictionaries:*
 dictionay:dictionary
 dictionnary:dictionary
 dicussed:discussed
-did'nt:didn't
-didnt':didn't
 didnt:didn't
+didnt':didn't
+did'nt:didn't
 diea:idea
 dieing:dying
 dieties:deities
@@ -2340,7 +2340,6 @@ divison:division
 divisons:divisions
 divsion:division
 divsions:divisions
-do'nt:don't
 doccument:document
 doccumented:documented
 doccuments:documents
@@ -2358,14 +2357,14 @@ documention:documentation
 documetation:documentation
 documment:document
 documments:documents
-doens't:doesn't
 doens:does
-does'nt:doesn't
-does't:doesn't
+doens't:doesn't
 doesen't:doesn't
-doesnt':doesn't
-doesnt't:doesn't
 doesnt:doesn't
+doesnt':doesn't
+does'nt:doesn't
+doesnt't:doesn't
+does't:doesn't
 doign:doing
 doman:domain
 domans:domains
@@ -2374,15 +2373,16 @@ dominent:dominant
 dominiant:dominant
 donig:doing
 donnot:do not
-dont':don't
-dont't:don't
 dont:don't
+dont':don't
+do'nt:don't
+dont't:don't
 donwload:download
 donwloaded:downloaded
 donwloading:downloading
 donwloads:downloads
-dosen't:doesn't
 dosent':doesn't
+dosen't:doesn't
 doub:doubt
 doulbe:double
 dowloads:downloads
@@ -3154,8 +3154,8 @@ glyphes:glyphs
 gnawwed:gnawed
 godess:goddess
 godesses:goddesses
-goemetries:geometries
 Godounov:Godunov
+goemetries:geometries
 gogin:going
 goign:going
 goind:going
@@ -3274,12 +3274,12 @@ harrassing:harassing
 harrassment:harassment
 harrassments:harassments
 harware:hardware
-has'nt:hasn't
-hasnt':hasn't
 hasnt:hasn't
+hasnt':hasn't
+has'nt:hasn't
 Hatian:Haitian
-have'nt:haven't
 havent:haven't
+have'nt:haven't
 haviest:heaviest
 havn't:haven't
 hazzle:hassle
@@ -3804,7 +3804,6 @@ inprisonment:imprisonment
 inproper:improper:*
 inproperly:improperly
 inproving:improving
-ins't:isn't
 inscpeting:inspecting
 insde:inside
 insectiverous:insectivorous
@@ -3817,6 +3816,7 @@ insistance:insistence
 insitution:institution
 insitutions:institutions
 inspite:in spite
+ins't:isn't
 instade:instead
 instalation:installation
 instalations:installations
@@ -3997,9 +3997,9 @@ irrelevent:irrelevant
 irreplacable:irreplaceable
 irresistable:irresistible
 irresistably:irresistibly
-is'nt:isn't
-isnt':isn't
 isnt:isn't
+isnt':isn't
+is'nt:isn't
 isntance:instance
 isntances:instances
 Israelies:Israelis
@@ -4242,6 +4242,8 @@ mannual:manual
 mannually:manually
 manoeuverability:maneuverability
 manoeuvering:maneuvering
+manoeuvre:maneuver
+manoeuvres:maneuvers
 manouver:maneuver
 manouverability:manoeuvrability
 manouverable:maneuverable
@@ -4252,9 +4254,7 @@ mantainer:maintainer
 mantaining:maintaining
 mantains:maintains
 manuever:maneuver
-manoeuvre:maneuver
 manuevers:maneuvers
-manoeuvres:maneuvers
 manufacturedd:manufactured
 manufature:manufacture
 manufatured:manufactured
@@ -4659,7 +4659,6 @@ nusance:nuisance
 nutritent:nutrient
 nutritents:nutrients
 nuturing:nurturing
-o'caml:OCaml
 obediance:obedience
 obediant:obedient
 obession:obsession
@@ -4669,6 +4668,7 @@ obstacal:obstacle
 obstancles:obstacles
 obstruced:obstructed
 obsure:obscure
+o'caml:OCaml
 ocasion:occasion
 ocasional:occasional
 ocasionally:occasionally
@@ -5151,8 +5151,8 @@ porshon:portion
 portait:portrait
 portayed:portrayed
 portraing:portraying
-Portugese:Portuguese
 portugese:Portuguese
+Portugese:Portuguese
 portuguease:portuguese
 portugues:Portuguese
 posess:possess
@@ -5761,6 +5761,7 @@ relected:reelected
 releive:relieve
 releived:relieved
 releiver:reliever
+releoad:reload
 releses:releases
 reletive:relative
 reletively:relatively
@@ -6254,10 +6255,10 @@ shortwhile:short while
 shoud:should
 shoudl:should
 shoudln: shouldn't
+shouldnt:shouldn't
+shouldnt':shouldn't
 should'nt:shouldn't
 should't:shouldn't
-shouldnt':shouldn't
-shouldnt:shouldn't
 shoule:should
 shreak:shriek
 shrinked:shrunk
@@ -7414,8 +7415,8 @@ vulnerablility:vulnerability
 vyer:very
 vyre:very
 waht:what
-wan't:want
 wanna:want to
+wan't:want
 want's:wants
 warantee:warranty
 waranties:warranties
@@ -7424,9 +7425,9 @@ wardobe:wardrobe
 waring:warning
 warrent:warrant
 warrriors:warriors
-was'nt:weren't
-wasnt':wasn't
 wasnt:wasn't
+wasnt':wasn't
+was'nt:weren't
 wass:was
 watn:want
 wayword:wayward
@@ -7440,8 +7441,8 @@ weill:will
 weired:weird
 wendsay:Wednesday
 wensday:Wednesday
-were'nt:wasn't
 wereabouts:whereabouts
+were'nt:wasn't
 werent:weren't
 wether:whether
 whant:want
@@ -7513,9 +7514,9 @@ worstened:worsened
 woud:would
 woudl:would
 woudn't:wouldn't
+wouldnt:wouldn't
 would'nt:wouldn't
 would't:wouldn't
-wouldnt:wouldn't
 wresters:wrestlers
 wriet:write
 writeable:writable
