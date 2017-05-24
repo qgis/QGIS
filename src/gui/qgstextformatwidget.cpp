@@ -15,7 +15,7 @@
 
 #include "qgstextformatwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgscharacterselectdialog.h"
+#include "qgscharacterselectordialog.h"
 #include "qgslogger.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"

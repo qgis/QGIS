@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscharacterselectdialog.h                                   *
+ * src/gui/qgscharacterselectordialog.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -17,7 +17,7 @@ class QgsCharacterSelectorDialog : QDialog
 %End
 
 %TypeHeaderCode
-#include "qgscharacterselectdialog.h"
+#include "qgscharacterselectordialog.h"
 %End
   public:
     QgsCharacterSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
@@ -34,7 +34,7 @@ class QgsCharacterSelectorDialog : QDialog
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscharacterselectdialog.h                                   *
+ * src/gui/qgscharacterselectordialog.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

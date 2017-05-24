@@ -174,7 +174,7 @@ SET(QGIS_GUI_SRCS
   qgsblendmodecombobox.cpp
   qgsbrowsertreeview.cpp
   qgsbusyindicatordialog.cpp
-  qgscharacterselectdialog.cpp
+  qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
   qgscodeeditor.cpp
   qgscodeeditorcss.cpp
@@ -332,7 +332,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsblendmodecombobox.h
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
-  qgscharacterselectdialog.h
+  qgscharacterselectordialog.h
   qgscheckablecombobox.h
   qgscodeeditor.h
   qgscodeeditorcss.h
