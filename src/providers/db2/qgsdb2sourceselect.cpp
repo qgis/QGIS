@@ -129,7 +129,8 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   if ( mEmbeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->hide();
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
