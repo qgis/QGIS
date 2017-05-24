@@ -61,8 +61,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       FilterOr, //!< Filter should be combined using "OR"
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent = nullptr );
+    explicit QgsAttributeForm( QgsVectorLayer *vl,
+                               const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+                               QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAttributeForm();
 
     const QgsFeature &feature() { return mFeature; }
@@ -169,7 +171,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \param ok  Set this parameter to false if you don't want the form to be saved
      * \note not available  in Python bindings
      */
-    void beforeSave( bool &ok );
+    void beforeSave( bool &ok ) SIP_SKIP;
 
     /**
      * Is emitted, when a feature is changed or added
