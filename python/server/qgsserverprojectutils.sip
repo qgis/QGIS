@@ -127,7 +127,7 @@ namespace QgsServerProjectUtils
       * \param project the QGIS project
       * \returns if Inspire is activated.
       */
-    bool wmsInspireActivated( const QgsProject &project );
+    bool wmsInspireActivate( const QgsProject &project );
 
     /** Returns the Inspire language.
       * \param project the QGIS project

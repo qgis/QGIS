@@ -104,7 +104,7 @@ bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
   return false;
 }
 
-bool QgsServerProjectUtils::wmsInspireActivated( const QgsProject &project )
+bool QgsServerProjectUtils::wmsInspireActivate( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/activated" ) );
 }
