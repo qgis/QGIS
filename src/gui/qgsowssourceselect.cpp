@@ -54,16 +54,15 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
   , mService( service )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
+  , mWidgetMode( widgetMode )
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
-  if ( mEmbeddedMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
@@ -90,7 +89,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   // 'Prefer network' is the default noted in the combobox's tool tip
   mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
 
-  if ( !mManagerMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
   {
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available

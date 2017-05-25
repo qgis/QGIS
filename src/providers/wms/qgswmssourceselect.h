@@ -21,7 +21,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-
+#include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
 
 #include <QStringList>
@@ -48,7 +48,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embeddedMode = false, bool managerMode = false );
+    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsWMSSourceSelect();
 
@@ -112,7 +112,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     bool mManagerMode;
 
     //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     //! Selected CRS
     QString mCRS;

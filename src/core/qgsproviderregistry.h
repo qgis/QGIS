@@ -53,6 +53,15 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
+    //! Different ways a source select dialog can be used
+    //! (embedded is for the data source manager dialog)
+    enum WidgetMode
+    {
+      None,
+      Embedded,
+      Manager,
+    };
+
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
 
@@ -98,7 +107,9 @@ class CORE_EXPORT QgsProviderRegistry
      * responsible for deleting the returned widget.
      */
     QWidget *createSelectionWidget( const QString &providerKey,
-                                    QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), bool embeddedMode = false );
+                                    QWidget *parent = nullptr,
+                                    Qt::WindowFlags fl = Qt::WindowFlags(),
+                                    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     /**
      * Get pointer to provider function

@@ -31,13 +31,13 @@
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
-QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl ),
-    mEmbeddedMode( embeddedMode )
+    mWidgetMode( widgetMode )
 {
   setupUi( this );
 
-  if ( mEmbeddedMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
   }
@@ -387,7 +387,7 @@ void QgsOpenVectorLayerDialog::accept()
   // Save the used encoding
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
-  if ( ! mEmbeddedMode )
+  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
   {
     QDialog::accept();
   }

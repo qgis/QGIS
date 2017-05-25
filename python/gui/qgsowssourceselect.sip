@@ -23,7 +23,7 @@ class QgsOWSSourceSelect : QDialog
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None);
     //! Destructor
     ~QgsOWSSourceSelect();
 

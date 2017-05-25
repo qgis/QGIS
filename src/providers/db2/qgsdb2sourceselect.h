@@ -24,6 +24,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdb2tablemodel.h"
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QMap>
 #include <QPair>
@@ -97,7 +98,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     static void deleteConnection( const QString &key );
 
     //! Constructor
-    QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsDb2SourceSelect();
     //! Populate the connection list combo box
@@ -158,7 +159,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mManagerMode;
 
     //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &connectionName, const QgsDb2LayerProperty &layerProperty, bool estimateMetadata );

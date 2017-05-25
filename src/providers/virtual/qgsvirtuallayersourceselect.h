@@ -23,6 +23,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgis.h>
 #include "qgsguiutils.h"
 #include <qgsvirtuallayerdefinition.h>
+#include "qgsproviderregistry.h"
+
 
 class QgsVectorLayer;
 class QMainWindow;
@@ -33,7 +35,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embeddedMode = false );
+    QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   private slots:
     void on_buttonBox_accepted();
@@ -56,7 +58,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     long mSrid;
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
 };
 

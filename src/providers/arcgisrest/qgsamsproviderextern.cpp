@@ -45,9 +45,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsAmsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QGISEXTERN QgsAmsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsAmsSourceSelect( parent, fl, embeddedMode );
+  return new QgsAmsSourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN int dataCapabilities()
