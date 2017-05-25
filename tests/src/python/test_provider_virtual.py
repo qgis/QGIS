@@ -58,7 +58,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         d.setUid("pk")
         cls.vl = QgsVectorLayer(d.toString(), 'test', 'virtual')
         assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         shp_poly = os.path.join(TEST_DATA_DIR, 'provider/shapefile_poly.shp')
         d = QgsVirtualLayerDefinition()
