@@ -55,7 +55,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
 
   // Add data provider dialogs
-  QDialog *dlg;
+  QDialog *dlg = nullptr;
 
 #ifdef HAVE_POSTGRESQL
   addDbProviderDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
@@ -125,7 +125,6 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 {
   emit addVectorLayers( layerQStringList, enc, dataSourceType );
 }
-
 
 
 QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon )
