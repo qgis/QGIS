@@ -163,6 +163,19 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     mOrderByCompiled = false;
   }
 
+  // ensure that all attributes required for order by are fetched
+  if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    QgsAttributeList attrs = mRequest.subsetOfAttributes();
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      int attrIndex = mSource->mFields.lookupField( attr );
+      if ( !attrs.contains( attrIndex ) )
+        attrs << attrIndex;
+    }
+    mRequest.setSubsetOfAttributes( attrs );
+  }
+
   if ( !mOrderByCompiled )
     limitAtProvider = false;
 

@@ -109,6 +109,17 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
             mAttributes << attrIdx;
         }
       }
+
+      // also need attributes required by order by
+      if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+      {
+        Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+        {
+          int attrIdx = mSource->mFields.lookupField( attr );
+          if ( !mAttributes.contains( attrIdx ) )
+            mAttributes << attrIdx;
+        }
+      }
     }
     else
     {

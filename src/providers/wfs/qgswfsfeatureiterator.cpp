@@ -854,6 +854,21 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
       }
     }
 
+    // also need attributes required by order by
+    if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+    {
+      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      {
+        int idx = dataProviderFields.indexFromName( attr );
+        if ( idx >= 0 && !cacheSubSet.contains( idx ) )
+          cacheSubSet.append( idx );
+
+        idx = mShared->mFields.indexFromName( attr );
+        if ( idx >= 0  && !mSubSetAttributes.contains( idx ) )
+          mSubSetAttributes.append( idx );
+      }
+    }
+
     if ( mFetchGeometry )
     {
       int hexwkbGeomIdx = dataProviderFields.indexFromName( QgsWFSConstants::FIELD_HEXWKB_GEOM );
