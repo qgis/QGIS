@@ -20,6 +20,7 @@
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -33,13 +34,14 @@
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
   , mFile( new QgsDelimitedTextFile() )
   , mExampleRowCount( 20 )
   , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
   , mLastFileType( QLatin1String( "" ) )
+  , mWidgetMode( widgetMode )
 {
 
   setupUi( this );
@@ -47,10 +49,10 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
 
-  if ( embedded )
+  if ( mWidgetMode !=  QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Cancel )->hide();
-    buttonBox->button( QDialogButtonBox::Ok )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
+    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
   }
 
   bgFileFormat = new QButtonGroup( this );
@@ -198,8 +200,10 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
   // add the layer to the map
   emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
-
-  accept();
+  if ( mWidgetMode ==  QgsProviderRegistry::WidgetMode::None )
+  {
+    accept();
+  }
 }
 
 void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
