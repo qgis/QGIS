@@ -1972,9 +1972,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsMssqlSourceSelect( parent, fl, embeddedMode );
+  return new QgsMssqlSourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN int dataCapabilities()

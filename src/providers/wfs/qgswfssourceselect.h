@@ -21,6 +21,7 @@
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
 #include "qgswfscapabilities.h"
+#include "qgsproviderregistry.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -47,7 +48,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   public:
 
-    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode );
     ~QgsWFSSourceSelect();
 
   signals:
@@ -73,7 +74,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
     //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set

@@ -23,6 +23,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgspgtablemodel.h"
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QMap>
 #include <QPair>
@@ -63,7 +64,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   public:
     //! Constructor
-    QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
@@ -124,11 +125,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
-    //! Connections manager mode
-    bool mManagerMode;
-
     //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QgsPostgresLayerProperty &layerProperty );

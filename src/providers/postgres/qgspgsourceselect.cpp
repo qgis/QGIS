@@ -193,16 +193,15 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   }
 }
 
-QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode, bool managerMode )
+QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
-  , mManagerMode( managerMode )
-  , mEmbeddedMode( embeddedMode )
+  , mWidgetMode( widgetMode )
   , mColumnTypeThread( nullptr )
   , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
-  if ( mEmbeddedMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->setHidden( true );
@@ -220,7 +219,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( !mManagerMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::Manager )
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::addTables );
@@ -511,7 +510,7 @@ void QgsPgSourceSelect::addTables()
   else
   {
     emit addDatabaseLayers( mSelectedTables, QStringLiteral( "postgres" ) );
-    if ( !( mHoldDialogOpen->isChecked() || mEmbeddedMode ) )
+    if ( ! mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }

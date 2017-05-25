@@ -21,6 +21,7 @@
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QThread>
 #include <QMap>
@@ -50,7 +51,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     static bool newConnection( QWidget *parent );
 
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embeddedMode = false );
+    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
@@ -129,7 +130,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
     QPushButton *mStatsButton = nullptr;
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

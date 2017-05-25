@@ -36,11 +36,12 @@ email                : hugo dot mercier at oslandia dot com
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
   , mSrid( 0 )
-  , mEmbeddedMode( embeddedMode )
+  , mWidgetMode( widgetMode )
 {
+  Q_UNUSED( widgetMode );
   setupUi( this );
 
   QObject::connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onTestQuery );
@@ -330,8 +331,8 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
 }
 
-QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QGISEXTERN QgsVirtualLayerSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsVirtualLayerSourceSelect( parent, fl, embeddedMode );
+  return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
 }
 

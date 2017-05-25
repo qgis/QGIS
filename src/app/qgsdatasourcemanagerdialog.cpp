@@ -48,7 +48,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
 
   // VECTOR Layers (completely different interface: it's not a provider)
-  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, true );
+  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
   ui->mOptionsStackedWidget->addWidget( ovl );
   QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mOptionsListWidget );
   ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
@@ -129,7 +129,7 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 
 QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon )
 {
-  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, true ) );
+  QDialog *dlg = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded ) );
   if ( !dlg )
   {
     QMessageBox::warning( this, providerName, tr( "Cannot get %1 select dialog from provider %2." ).arg( providerName, providerKey ) );

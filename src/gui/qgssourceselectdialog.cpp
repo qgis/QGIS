@@ -50,7 +50,11 @@ class QgsSourceSelectItemDelegate : public QItemDelegate
 
 
 QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl ), mServiceName( serviceName ), mServiceType( serviceType ), mBuildQueryButton( 0 ), mImageEncodingGroup( 0 )
+  : QDialog( parent, fl ),
+    mServiceName( serviceName ),
+    mServiceType( serviceType ),
+    mBuildQueryButton( 0 ),
+    mImageEncodingGroup( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );

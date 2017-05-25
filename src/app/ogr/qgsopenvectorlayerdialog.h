@@ -22,6 +22,7 @@
 #include <ui_qgsopenvectorlayerdialogbase.h>
 #include <QDialog>
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 /**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
@@ -32,7 +33,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     Q_OBJECT
 
   public:
-    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, bool embeddedMode = false );
+    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsOpenVectorLayerDialog();
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
@@ -54,7 +55,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     //! Stores the datasource type
     QString mDataSourceType;
     //! Embedded dialog (do not call parent's accept) and emit signals
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
   private slots:
     //! Opens the create connection dialog to build a new connection

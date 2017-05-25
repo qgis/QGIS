@@ -55,7 +55,7 @@ QList<QAction *> QgsAfsRootItem::actions()
 
 QWidget *QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, true );
+  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
   return select;
 }
