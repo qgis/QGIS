@@ -37,12 +37,12 @@ extern "C"
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
 
-QThreadStorage< QgsCoordinateTransform::QgsProjContextStore* > QgsCoordinateTransform::mProjContext;
-
 QgsCoordinateTransform::QgsCoordinateTransform()
     : QObject()
     , mShortCircuit( false )
     , mInitialisedFlag( false )
+    , mSourceProjection( nullptr )
+    , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
     , mDestinationDatumTransform( -1 )
 {
@@ -53,6 +53,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
     : QObject()
     , mShortCircuit( false )
     , mInitialisedFlag( false )
+    , mSourceProjection( nullptr )
+    , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
     , mDestinationDatumTransform( -1 )
 {
@@ -67,6 +69,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDes
     , mInitialisedFlag( false )
     , mSourceCRS( QgsCRSCache::instance()->crsBySrsId( theSourceSrsId ) )
     , mDestCRS( QgsCRSCache::instance()->crsBySrsId( theDestSrsId ) )
+    , mSourceProjection( nullptr )
+    , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
     , mDestinationDatumTransform( -1 )
 {
@@ -76,6 +80,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDes
 QgsCoordinateTransform::QgsCoordinateTransform( const QString& theSourceCRS, const QString& theDestCRS )
     : QObject()
     , mInitialisedFlag( false )
+    , mSourceProjection( nullptr )
+    , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
     , mDestinationDatumTransform( -1 )
 {
@@ -94,6 +100,8 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
     QgsCoordinateReferenceSystem::CrsType theSourceCRSType )
     : QObject()
     , mInitialisedFlag( false )
+    , mSourceProjection( nullptr )
+    , mDestinationProjection( nullptr )
     , mSourceDatumTransform( -1 )
     , mDestinationDatumTransform( -1 )
 {
@@ -110,7 +118,15 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
 
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
-  freeProj();
+  // free the proj objects
+  if ( mSourceProjection )
+  {
+    pj_free( mSourceProjection );
+  }
+  if ( mDestinationProjection )
+  {
+    pj_free( mDestinationProjection );
+  }
 }
 
 QgsCoordinateTransform* QgsCoordinateTransform::clone() const
@@ -164,35 +180,37 @@ void QgsCoordinateTransform::initialise()
 
   bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
 
-  freeProj();
+  // init the projections (destination and source)
 
-  mSourceProjString = mSourceCRS.toProj4();
+  pj_free( mSourceProjection );
+  QString sourceProjString = mSourceCRS.toProj4();
   if ( !useDefaultDatumTransform )
   {
-    mSourceProjString = stripDatumTransform( mSourceProjString );
+    sourceProjString = stripDatumTransform( sourceProjString );
   }
   if ( mSourceDatumTransform != -1 )
   {
-    mSourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
+    sourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
   }
 
-  mDestProjString = mDestCRS.toProj4();
+  pj_free( mDestinationProjection );
+  QString destProjString = mDestCRS.toProj4();
   if ( !useDefaultDatumTransform )
   {
-    mDestProjString = stripDatumTransform( mDestProjString );
+    destProjString = stripDatumTransform( destProjString );
   }
   if ( mDestinationDatumTransform != -1 )
   {
-    mDestProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
+    destProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
   }
 
   if ( !useDefaultDatumTransform )
   {
-    addNullGridShifts( mSourceProjString, mDestProjString );
+    addNullGridShifts( sourceProjString, destProjString );
   }
 
-  // create proj projections for current thread
-  QPair< projPJ, projPJ > res = threadLocalProjData();
+  mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
+  mDestinationProjection = pj_init_plus( destProjString.toUtf8() );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
@@ -200,11 +218,11 @@ void QgsCoordinateTransform::initialise()
 #endif
 
   mInitialisedFlag = true;
-  if ( !res.second )
+  if ( !mDestinationProjection )
   {
     mInitialisedFlag = false;
   }
-  if ( !res.first )
+  if ( !mSourceProjection )
   {
     mInitialisedFlag = false;
   }
@@ -643,12 +661,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   QString dir;
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  QPair< projPJ, projPJ > projData = threadLocalProjData();
-  projPJ sourceProj = projData.first;
-  projPJ destProj = projData.second;
-
-  if (( pj_is_latlong( destProj ) && ( direction == ReverseTransform ) )
-      || ( pj_is_latlong( sourceProj ) && ( direction == ForwardTransform ) ) )
+  if (( pj_is_latlong( mDestinationProjection ) && ( direction == ReverseTransform ) )
+      || ( pj_is_latlong( mSourceProjection ) && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -660,13 +674,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult;
   if ( direction == ReverseTransform )
   {
-    projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );
+    projResult = pj_transform( mDestinationProjection, mSourceProjection, numPoints, 0, x, y, z );
   }
   else
   {
-    Q_ASSERT( sourceProj );
-    Q_ASSERT( destProj );
-    projResult = pj_transform( sourceProj, destProj, numPoints, 0, x, y, z );
+    Q_ASSERT( mSourceProjection );
+    Q_ASSERT( mDestinationProjection );
+    projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
   }
 
   if ( projResult != 0 )
@@ -688,8 +702,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     dir = ( direction == ForwardTransform ) ? tr( "forward transform" ) : tr( "inverse transform" );
 
-    char *srcdef = pj_get_def( sourceProj, 0 );
-    char *dstdef = pj_get_def( destProj, 0 );
+    char *srcdef = pj_get_def( mSourceProjection, 0 );
+    char *dstdef = pj_get_def( mDestinationProjection, 0 );
 
     QString msg = tr( "%1 of\n"
                       "%2"
@@ -714,8 +728,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the result is lat/long, convert the results from radians back
   // to degrees
-  if (( pj_is_latlong( destProj ) && ( direction == ForwardTransform ) )
-      || ( pj_is_latlong( sourceProj ) && ( direction == ReverseTransform ) ) )
+  if (( pj_is_latlong( mDestinationProjection ) && ( direction == ForwardTransform ) )
+      || ( pj_is_latlong( mSourceProjection ) && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -1040,57 +1054,4 @@ void QgsCoordinateTransform::addNullGridShifts( QString& srcProjString, QString&
   {
     destProjString += " +nadgrids=@null";
   }
-}
-
-QPair<projPJ, projPJ> QgsCoordinateTransform::threadLocalProjData() const
-{
-  mProjLock.lockForRead();
-  projCtx pContext = nullptr;
-  if ( mProjContext.hasLocalData() )
-    pContext = mProjContext.localData()->get();
-  else
-  {
-    mProjContext.setLocalData( new QgsProjContextStore() );
-    pContext = mProjContext.localData()->get();
-  }
-
-  QMap< uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t >( pContext ) );
-  if ( it != mProjProjections.constEnd() )
-  {
-    QPair< projPJ, projPJ > res = it.value();
-    mProjLock.unlock();
-    return res;
-  }
-
-  // proj projections don't exist yet, so we need to create
-  mProjLock.unlock();
-  mProjLock.lockForWrite();
-  QPair< projPJ, projPJ > res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
-                                pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
-  mProjProjections.insert( reinterpret_cast< uintptr_t >( pContext ), res );
-  mProjLock.unlock();
-  return res;
-}
-
-void QgsCoordinateTransform::freeProj()
-{
-  mProjLock.lockForWrite();
-  QMap< uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constBegin();
-  for ( ; it != mProjProjections.constEnd(); ++it )
-  {
-    pj_free( it.value().first );
-    pj_free( it.value().second );
-  }
-  mProjProjections.clear();
-  mProjLock.unlock();
-}
-
-QgsCoordinateTransform::QgsProjContextStore::QgsProjContextStore()
-{
-  context = pj_ctx_alloc();
-}
-
-QgsCoordinateTransform::QgsProjContextStore::~QgsProjContextStore()
-{
-  pj_ctx_free( context );
 }
