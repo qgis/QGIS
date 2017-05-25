@@ -52,6 +52,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   ui->mOptionsStackedWidget->addWidget( ovl );
   QListWidgetItem *ogrItem = new QListWidgetItem( tr( "Vector files" ), ui->mOptionsListWidget );
   ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
+  ogrItem->setToolTip( tr( "Add Vector layer" ) );
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
 
   // Add data provider dialogs
@@ -98,6 +99,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
     { this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "arcgisfeatureserver" ) ); } );
   }
 
+  dlg = providerDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
+
+  if ( dlg )
+  {
+    connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
+  }
+
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -138,8 +146,9 @@ QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, 
   else
   {
     ui->mOptionsStackedWidget->addWidget( dlg );
-    QListWidgetItem *wmsItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
-    wmsItem->setIcon( QgsApplication::getThemeIcon( icon ) );
+    QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
+    layerItem->setToolTip( tr( "Add %1 layer" ).arg( providerName ) );
+    layerItem->setIcon( QgsApplication::getThemeIcon( icon ) );
     return dlg;
   }
 }
