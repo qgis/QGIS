@@ -320,7 +320,8 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       for ( QgsFeature f : mAddedFeatures )
       {
-        if ( f.geometry().wkbType() == provider->wkbType() )
+        if ( ( ! f.hasGeometry() ) ||
+             ( f.geometry().wkbType() == provider->wkbType() ) )
           continue;
 
         std::unique_ptr<QgsGeometry> convertedGeom( provider->convertToProviderType( f.geometry() ) );
