@@ -87,6 +87,19 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     attrs = attributeIndexes.toList();
     mRequest.setSubsetOfAttributes( attrs );
   }
+  // also need attributes required by order by
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+  {
+    QSet<int> attributeIndexes;
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      attributeIndexes << mSource->mFields.lookupField( attr );
+    }
+    attributeIndexes += attrs.toSet();
+    attrs = attributeIndexes.toList();
+    mRequest.setSubsetOfAttributes( attrs );
+  }
+
   if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() )
   {
     mFetchGeometry = true;

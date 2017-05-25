@@ -342,6 +342,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
 
+    def testWkbType(self):
+        """N/A for WFS provider"""
+        pass
+
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
 

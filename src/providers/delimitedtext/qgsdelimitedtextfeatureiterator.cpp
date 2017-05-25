@@ -142,6 +142,18 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     attributeIndexes += attrs.toSet();
     mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
   }
+  // also need attributes required by order by
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+  {
+    QgsAttributeList attrs = request.subsetOfAttributes();
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      int attrIndex = mSource->mFields.lookupField( attr );
+      if ( !attrs.contains( attrIndex ) )
+        attrs << attrIndex;
+    }
+    mRequest.setSubsetOfAttributes( attrs );
+  }
 
   QgsDebugMsg( QString( "Iterator is scanning file: " ) + ( mMode == FileScan ? "Yes" : "No" ) );
   QgsDebugMsg( QString( "Iterator is loading geometries: " ) + ( mLoadGeometry ? "Yes" : "No" ) );
