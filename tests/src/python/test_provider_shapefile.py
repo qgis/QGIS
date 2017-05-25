@@ -63,7 +63,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
         cls.vl = QgsVectorLayer('{}|layerid=0'.format(cls.basetestfile), 'test', 'ogr')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer('{}|layerid=0'.format(cls.basetestpolyfile), 'test', 'ogr')
         assert (cls.vl_poly.isValid())
         cls.poly_provider = cls.vl_poly.dataProvider()
@@ -76,7 +76,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
-    def getEditableLayer(self):
+    def getSource(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
@@ -86,6 +86,9 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)

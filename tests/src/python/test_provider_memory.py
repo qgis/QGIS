@@ -83,7 +83,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         # poly layer
         cls.poly_vl = QgsVectorLayer('Polygon?crs=epsg:4326&field=pk:integer&key=pk',
@@ -415,7 +415,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         cls.vl = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
                                 'test', 'memory')
         assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         f1 = QgsFeature()
         f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
@@ -436,7 +436,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
-        cls.provider.addFeatures([f1, f2, f3, f4, f5])
+        cls.source.addFeatures([f1, f2, f3, f4, f5])
 
         # poly layer
         cls.poly_vl = QgsVectorLayer('Polygon?crs=epsg:4326&index=yes&field=pk:integer&key=pk',
