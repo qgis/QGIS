@@ -34,10 +34,10 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include "qgscsexception.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsmaplayerstylemanager.h"
 
 
 namespace QgsWms
@@ -180,7 +180,7 @@ namespace QgsWms
       schemaLocation += QLatin1String( " http://www.opengis.net/sld" );
       schemaLocation += QLatin1String( " http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd" );
       schemaLocation += QLatin1String( " http://www.qgis.org/wms" );
-      if ( QgsServerProjectUtils::wmsInspireActivated( *project ) )
+      if ( QgsServerProjectUtils::wmsInspireActivate( *project ) )
       {
         wmsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:inspire_common" ), QStringLiteral( "http://inspire.ec.europa.eu/schemas/common/1.0" ) );
         wmsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:inspire_vs" ), QStringLiteral( "http://inspire.ec.europa.eu/schemas/inspire_vs/1.0" ) );
@@ -533,7 +533,7 @@ namespace QgsWms
       elem.setAttribute( QStringLiteral( "RemoteWCS" ), QStringLiteral( "0" ) );
       capabilityElem.appendChild( elem );
 
-      if ( QgsServerProjectUtils::wmsInspireActivated( *project ) )
+      if ( QgsServerProjectUtils::wmsInspireActivate( *project ) )
       {
         capabilityElem.appendChild( getInspireCapabilitiesElement( doc, project ) );
       }
@@ -546,7 +546,7 @@ namespace QgsWms
   {
     QDomElement inspireCapabilitiesElem;
 
-    if ( !QgsServerProjectUtils::wmsInspireActivated( *project ) )
+    if ( !QgsServerProjectUtils::wmsInspireActivate( *project ) )
       return inspireCapabilitiesElem;
 
     inspireCapabilitiesElem = doc.createElement( QStringLiteral( "inspire_vs:ExtendedCapabilities" ) );
@@ -993,7 +993,7 @@ namespace QgsWms
           // add details about supported styles of the layer
           appendLayerStyles( doc, layerElem, l, project, version, request );
 
-          //min/max scale denominatormScaleBasedVisibility
+          //min/max scale denominatorScaleBasedVisibility
           if ( l->hasScaleBasedVisibility() )
           {
             if ( version == QLatin1String( "1.1.1" ) )
