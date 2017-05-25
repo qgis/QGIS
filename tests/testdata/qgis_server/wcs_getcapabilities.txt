@@ -6,9 +6,6 @@ Content-Type: text/xml; charset=utf-8
   <name>WCS</name>
   <label>QGIS Server test</label>
   <description><![CDATA[Simple test app.]]></description>
-  <keywords>
-   <keyword></keyword>
-  </keywords>
   <responsibleParty>
    <individualName>Stéphane Brunner</individualName>
    <organisationName>QGIS</organisationName>
