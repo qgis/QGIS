@@ -168,13 +168,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
 
-    /** Overloaded vesion of the private addRasterLayer()
-      Method that takes a list of file names instead of prompting
-      user with a dialog.
-      \returns true if successfully added layer(s)
-      */
-    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
-
     /** Open a raster layer for the given file
       \returns false if unable to open a raster layer for rasterFile
       \note
@@ -794,6 +787,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
+    /** Overloaded vesion of the private addRasterLayer()
+      Method that takes a list of file names instead of prompting
+      user with a dialog.
+      \returns true if successfully added layer(s)
+      */
+    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
+
+    /** \brief Open one or more raster layers and add to the map
+     *  Will prompt user for file names using a file selection dialog
+     */
+    void addRasterLayer();
+
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 
@@ -861,8 +866,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void sponsors();
     //! About QGIS
     void about();
-    //! Add a raster layer to the map (will prompt user for file name using dlg )
-    void addRasterLayer();
     //#ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
     void addDatabaseLayer();

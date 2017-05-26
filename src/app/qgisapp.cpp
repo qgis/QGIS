@@ -1603,6 +1603,7 @@ void QgisApp::dataSourceManager()
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
+    connect( mDataSourceManagerDialog, static_cast<void ( QgsDataSourceManagerDialog::* )()>( &QgsDataSourceManagerDialog::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
   }
   mDataSourceManagerDialog->exec();
 }
@@ -11559,8 +11560,8 @@ void QgisApp::renameView()
 /////////////////////////////////////////////////////////////////
 
 
-// this is a slot for action from GUI to add raster layer
-void QgisApp::addRasterLayer()
+// this is a slot for action from GUI to open and add raster layers
+void QgisApp::addRasterLayer( )
 {
   QStringList selectedFiles;
   QString e;//only for parameter correctness
@@ -11576,7 +11577,7 @@ void QgisApp::addRasterLayer()
 
   addRasterLayers( selectedFiles );
 
-}// QgisApp::addRasterLayer()
+}
 
 //
 // This is the method that does the actual work of adding a raster layer - the others

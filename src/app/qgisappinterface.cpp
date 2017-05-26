@@ -142,13 +142,13 @@ QgsVectorLayer *QgisAppInterface::addVectorLayer( const QString &vectorLayerPath
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &rasterLayerPath, const QString &baseName )
 {
-  QString nonNullBaseBame = baseName;
-  if ( nonNullBaseBame.isEmpty() )
+  QString nonNullBaseName = baseName;
+  if ( nonNullBaseName.isEmpty() )
   {
     QFileInfo fi( rasterLayerPath );
-    nonNullBaseBame = fi.completeBaseName();
+    nonNullBaseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseBame );
+  return qgis->addRasterLayer( rasterLayerPath, nonNullBaseName );
 }
 
 QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey )

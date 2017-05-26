@@ -54,6 +54,7 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
   signals:
     //! For signal forwarding to QgisApp
     void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
+    void addRasterLayer( );
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
@@ -66,13 +67,14 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
 
   private:
     //! Return the dialog from the provider
-    QDialog *providerDialog( QString const providerKey, QString const providerName, QString const icon );
-    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon );
-    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon );
+    QDialog *providerDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
+    void addDbProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
+    void addRasterProviderDialog( QString const providerKey, QString const providerName, QString const icon, QString title = QString( ) );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     //! Map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
+    int mPreviousCurrentRow;
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H
