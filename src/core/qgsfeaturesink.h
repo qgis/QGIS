@@ -94,5 +94,6 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *mSink;
 };
 
+Q_DECLARE_METATYPE( QgsFeatureSink * )
 
 #endif // QGSFEATURESINK_H

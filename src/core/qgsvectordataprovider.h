@@ -31,6 +31,7 @@ class QTextCodec;
 #include "qgsmaplayerdependency.h"
 #include "qgsrelation.h"
 #include "qgsfeaturesink.h"
+#include "qgsfeaturesource.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -50,7 +51,7 @@ class QgsFeedback;
  *
  *
  */
-class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink
+class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
@@ -139,23 +140,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param request feature request describing parameters of features to return
      * \returns iterator for matching features from provider
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override = 0;
 
     /**
      * Returns the geometry type which is returned by this layer
      */
-    virtual QgsWkbTypes::Type wkbType() const = 0;
+    virtual QgsWkbTypes::Type wkbType() const override = 0;
 
     /**
      * Number of features in the layer
      * \returns long containing number of features
      */
-    virtual long featureCount() const = 0;
+    virtual long featureCount() const override = 0;
 
     /**
      * Returns the fields associated with this data provider.
      */
-    virtual QgsFields fields() const = 0;
+    virtual QgsFields fields() const override = 0;
+
+    QgsCoordinateReferenceSystem sourceCrs() const override;
 
     /**
      * Return a short comment for the data that this provider is

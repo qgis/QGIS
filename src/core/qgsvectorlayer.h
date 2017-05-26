@@ -31,6 +31,7 @@
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
+#include "qgsfeaturesource.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorsimplifymethod.h"
@@ -346,7 +347,7 @@ typedef QSet<int> QgsAttributeIds;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
@@ -690,10 +691,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool hasGeometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const override;
 
     //! Return the provider type for this layer
     QString providerType() const;
+
+    QgsCoordinateReferenceSystem sourceCrs() const override;
 
     /** Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
@@ -859,7 +862,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param request feature request describing parameters of features to return
      * \returns iterator for matching features from provider
      */
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     /**
      * Query the layer for features matching a given expression.
@@ -1082,7 +1085,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns A list of fields
      */
-    inline QgsFields fields() const { return mFields; }
+    inline QgsFields fields() const override { return mFields; }
 
     /**
      * Returns the list of fields of this layer.
@@ -1124,7 +1127,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns feature count including changes which have not yet been committed
      * If you need only the count of committed features call this method on this layer's provider.
      */
-    long featureCount() const;
+    long featureCount() const override;
 
     /** Make layer read-only (editing disabled) or not
      *  \returns false if the layer is in editing yet

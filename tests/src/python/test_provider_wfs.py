@@ -130,7 +130,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         cls.vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'), 'wb') as f:
             f.write("""
@@ -341,6 +341,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
+
+    def testWkbType(self):
+        """N/A for WFS provider"""
+        pass
 
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""

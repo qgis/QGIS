@@ -13,7 +13,7 @@ typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 
 
-class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink
+class QgsVectorDataProvider : QgsDataProvider, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring
  This is the base class for vector data providers.
@@ -123,6 +123,9 @@ Bitmask of all provider's editing capabilities
  Returns the fields associated with this data provider.
  :rtype: QgsFields
 %End
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
 
     virtual QString dataComment() const;
 %Docstring

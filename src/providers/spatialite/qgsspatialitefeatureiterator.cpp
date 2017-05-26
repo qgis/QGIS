@@ -129,7 +129,6 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-
   whereClause = whereClauses.join( QStringLiteral( " AND " ) );
 
   // Setup the order by
@@ -174,6 +173,18 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( !mOrderByCompiled )
     limitAtProvider = false;
+
+  // also need attributes required by order by
+  if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+  {
+    QSet<int> attributeIndexes;
+    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    {
+      attributeIndexes << mSource->mFields.lookupField( attr );
+    }
+    attributeIndexes += mRequest.subsetOfAttributes().toSet();
+    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+  }
 
   // preparing the SQL statement
   bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );

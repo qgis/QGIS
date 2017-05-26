@@ -149,7 +149,7 @@ class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):
 
         cls.vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
@@ -175,7 +175,7 @@ class TestQgsDelimitedTextProviderWKT(unittest.TestCase, ProviderTestCase):
 
         cls.vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
         assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         cls.basetestpolyfile = os.path.join(srcpath, 'delimited_wkt_poly.csv')
 

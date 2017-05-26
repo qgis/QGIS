@@ -309,6 +309,11 @@ QString QgsVectorLayer::providerType() const
   return mProviderKey;
 }
 
+QgsCoordinateReferenceSystem QgsVectorLayer::sourceCrs() const
+{
+  return crs();
+}
+
 void QgsVectorLayer::reload()
 {
   if ( mDataProvider )
