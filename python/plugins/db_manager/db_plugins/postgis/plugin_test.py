@@ -1,0 +1,83 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    plugin_test.py
+    ---------------------
+    Date                 : May 2017
+    Copyright            : (C) 2017, Sandro Santilli
+    Email                : strk at kbt dot io
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Sandro Santilli'
+__date__ = 'May 2017'
+__copyright__ = '(C) 2017, Sandro Santilli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import os
+import re
+import qgis
+from qgis.testing import start_app, unittest
+from qgis.core import QgsDataSourceUri
+from qgis.utils import iface
+from qgis.PyQt.QtCore import QObject
+
+start_app()
+
+from db_manager.db_plugins.postgis.plugin import PostGisDBPlugin, PGRasterTable
+from db_manager.db_plugins.postgis.plugin import PGDatabase
+from db_manager.db_plugins.plugin import Table
+from db_manager.db_plugins.postgis.connector import PostGisDBConnector
+
+
+class TestDBManagerPostgisPlugin(unittest.TestCase):
+
+    # See https://issues.qgis.org/issues/16625
+    # and https://issues.qgis.org/issues/10600
+
+    def test_rasterTable(self):
+
+        #testdb = os.environ.get('QGIS_PGTEST_DB') or 'qgis_test'
+        #os.environ['PGDATABASE'] = testdb
+
+        obj = QObject() # needs to be kept alive
+        database = PGDatabase(obj, QgsDataSourceUri())
+        self.assertIsInstance(database, PGDatabase)
+
+        uri = database.uri()
+        self.assertEqual(uri.host(), '')
+        self.assertEqual(uri.username(), '')
+        expected_user = os.environ.get('PGUSER') or os.environ.get('USER')
+        expected_dbname = os.environ.get('PGDATABASE') or expected_user
+        self.assertEqual(uri.database(), expected_dbname)
+
+        tables = database.tables()
+        raster_tables_count = 0
+        for tab in tables:
+            if tab.type == Table.RasterType:
+                raster_tables_count += 1
+                gdalUri = tab.gdalUri()
+                m = re.search(' dbname=([^ ]*) ', gdalUri)
+                self.assertTrue(m)
+                actual_dbname = m.group(1)
+                self.assertEqual(actual_dbname, expected_dbname)
+            #print(tab.type)
+            #print(tab.quotedName())
+            #print(tab)
+
+        # We need to make sure a database is created with at
+        # least one raster table !
+        self.assertEqual(raster_tables_count, 1)
+
+
+if __name__ == '__main__':
+    unittest.main()
