@@ -799,6 +799,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
 
     /**
+     * Will delete the named style corresponding to style id provided from the database
+     */
+    virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError );
+
+    /**
      * Load a named style from file/local db/datasource db
      * @param theURI the URI of the style or the URI of the layer
      * @param theResultFlag will be set to true if a named style is correctly loaded

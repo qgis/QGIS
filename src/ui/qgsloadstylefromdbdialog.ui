@@ -82,6 +82,19 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="mDeleteButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Delete Style</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="mLoadButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
