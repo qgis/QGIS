@@ -245,7 +245,7 @@ namespace QgsServerProjectUtils
     * \param project the QGIS project
     * \returns the Layer ids list.
     */
-  SERVER_EXPORT QStringList wcsLayers( const QgsProject &project );
+  SERVER_EXPORT QStringList wcsLayerIds( const QgsProject &project );
 };
 
 #endif

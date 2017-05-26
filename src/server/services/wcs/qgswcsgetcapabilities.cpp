@@ -260,7 +260,7 @@ namespace QgsWcs
      */
     QDomElement contentMetadataElement = doc.createElement( QStringLiteral( "ContentMetadata" )/*wcs:ContentMetadata*/ );
 
-    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
+    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
     for ( int i = 0; i < wcsLayersId.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );

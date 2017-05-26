@@ -263,7 +263,7 @@ QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
   return project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
 }
 
-QStringList QgsServerProjectUtils::wcsLayers( const QgsProject &project )
+QStringList QgsServerProjectUtils::wcsLayerIds( const QgsProject &project )
 {
   return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 }
