@@ -65,7 +65,7 @@ class TestQgsServerWMS(QgsServerTestBase):
 
     def test_project_wms(self):
         """Test some WMS request"""
-        for request in ('GetCapabilities', 'GetProjectSettings'):
+        for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
             self.wms_request_compare(request)
 
         # Test getfeatureinfo response

@@ -34,7 +34,20 @@ QString QgsServerProjectUtils::owsServiceAbstract( const QgsProject &project )
 
 QStringList QgsServerProjectUtils::owsServiceKeywords( const QgsProject &project )
 {
-  return project.readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) );
+  QStringList keywordList;
+  QStringList list = project.readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), QStringList() );
+  if ( !list.isEmpty() )
+  {
+    for ( int i = 0; i < list.size(); ++i )
+    {
+      QString keyword = list.at( i );
+      if ( !keyword.isEmpty() )
+      {
+        keywordList.append( keyword );
+      }
+    }
+  }
+  return keywordList;
 }
 
 QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &project )
@@ -104,7 +117,7 @@ bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
   return false;
 }
 
-bool QgsServerProjectUtils::wmsInspireActivated( const QgsProject &project )
+bool QgsServerProjectUtils::wmsInspireActivate( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "WMSInspire" ), QStringLiteral( "/activated" ) );
 }
@@ -141,7 +154,19 @@ QStringList QgsServerProjectUtils::wmsRestrictedComposers( const QgsProject &pro
 
 QStringList QgsServerProjectUtils::wmsOutputCrsList( const QgsProject &project )
 {
-  QStringList crsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
+  QStringList crsList;
+  QStringList wmsCrsList = project.readListEntry( QStringLiteral( "WMSCrsList" ), QStringLiteral( "/" ), QStringList() );
+  if ( !wmsCrsList.isEmpty() )
+  {
+    for ( int i = 0; i < wmsCrsList.size(); ++i )
+    {
+      QString crs = wmsCrsList.at( i );
+      if ( !crs.isEmpty() )
+      {
+        crsList.append( crs );
+      }
+    }
+  }
   if ( crsList.isEmpty() )
   {
     QStringList valueList = project.readListEntry( QStringLiteral( "WMSEpsgList" ), QStringLiteral( "/" ), QStringList() );
