@@ -127,7 +127,7 @@ echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd src python i18n $textcpp
 
 echo Updating translations
-$LUPDATE -locations absolute -verbose qgis_ts.pro
+$LUPDATE -locations none -verbose qgis_ts.pro
 
 perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 

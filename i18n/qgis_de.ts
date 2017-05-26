@@ -54,11 +54,11 @@
     <name>ASCII2DTM</name>
     <message>
         <source>ASCII to DTM</source>
-        <translation type="obsolete">ASCII nach DTM</translation>
+        <translation>ASCII nach DTM</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="obsolete">Konvertierung</translation>
+        <translation>Konvertierung</translation>
     </message>
     <message>
         <source>Input ESRI ASCII layer</source>
@@ -131,7 +131,7 @@
     <name>AddTableField</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Integer</source>
@@ -171,146 +171,146 @@
     </message>
     <message>
         <source>Add field to attributes table</source>
-        <translation type="obsolete">Feld zu Attributtabelle hinzufügen</translation>
+        <translation>Feld zu Attributtabelle hinzufügen</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmClassification</name>
     <message>
         <source>Polygon intersection</source>
-        <translation type="obsolete">Polygonverschneidung</translation>
+        <translation>Polygonverschneidung</translation>
     </message>
     <message>
         <source>Vectorize raster layer</source>
-        <translation type="obsolete">Rasterlayer vektorisieren</translation>
+        <translation>Rasterlayer vektorisieren</translation>
     </message>
     <message>
         <source>Interpolate (Inverse distance weighting)</source>
-        <translation type="obsolete">Interpolation (Inverse Abstandsgewichtung)</translation>
+        <translation>Interpolation (Inverse Abstandsgewichtung)</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="obsolete">RGB nach PCT</translation>
+        <translation>RGB nach PCT</translation>
     </message>
     <message>
         <source>Rasterize vector layer</source>
-        <translation type="obsolete">Vektorlayer rastern</translation>
+        <translation>Vektorlayer rastern</translation>
     </message>
     <message>
         <source>Polygon identity</source>
-        <translation type="obsolete">Polygonidentität</translation>
+        <translation>Polygonidentität</translation>
     </message>
     <message>
         <source>Polygon dissolve (all polygons)</source>
-        <translation type="obsolete">Polygon auflösen (alle Polygone)</translation>
+        <translation>Polygon auflösen (alle Polygone)</translation>
     </message>
     <message>
         <source>Polygon union</source>
-        <translation type="obsolete">Polygonvereinigung</translation>
+        <translation>Polygonvereinigung</translation>
     </message>
     <message>
         <source>Interpolate (Natural neighbor)</source>
-        <translation type="obsolete">Interpolation (Natürlicher Nachbar)</translation>
+        <translation>Interpolation (Natürlicher Nachbar)</translation>
     </message>
     <message>
         <source>Merge raster layers</source>
-        <translation type="obsolete">Rasterlayer zusammenführen</translation>
+        <translation>Rasterlayer zusammenführen</translation>
     </message>
     <message>
         <source>Remove small pixel clumps (nearest neighbour)</source>
-        <translation type="obsolete">Kleine Pixelklumpen entfernen (nächster Nachbar)</translation>
+        <translation>Kleine Pixelklumpen entfernen (nächster Nachbar)</translation>
     </message>
     <message>
         <source>Interpolate (Nearest Neighbor)</source>
-        <translation type="obsolete">Interpolation (Nächster Nachbar)</translation>
+        <translation>Interpolation (Nächster Nachbar)</translation>
     </message>
     <message>
         <source>Interpolate (Cubic spline)</source>
-        <translation type="obsolete">Interpolieren (Kubisches Spline)</translation>
+        <translation>Interpolieren (Kubisches Spline)</translation>
     </message>
     <message>
         <source>Interpolate (Data metrics)</source>
-        <translation type="obsolete">Interpolation (Datenmetrik)</translation>
+        <translation>Interpolation (Datenmetrik)</translation>
     </message>
     <message>
         <source>Reproject raster layer</source>
-        <translation type="obsolete">Rasterlayer reprojizieren</translation>
+        <translation>Rasterlayer reprojizieren</translation>
     </message>
     <message>
         <source>Export raster layer</source>
-        <translation type="obsolete">Rasterlayer exportieren</translation>
+        <translation>Rasterlayer exportieren</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="obsolete">PCT nach RGB</translation>
+        <translation>PCT nach RGB</translation>
     </message>
     <message>
         <source>Export vector layer</source>
-        <translation type="obsolete">Vektorlayer exportieren</translation>
+        <translation>Vektorlayer exportieren</translation>
     </message>
     <message>
         <source>Polygon dissolve (by attribute)</source>
-        <translation type="obsolete">Polygon auflösen (nach Attribut)</translation>
+        <translation>Polygon auflösen (nach Attribut)</translation>
     </message>
     <message>
         <source>Remove small pixel clumps (to no-data)</source>
-        <translation type="obsolete">Kleine Pixelklumpen entfernen (zu Nullwerten)</translation>
+        <translation>Kleine Pixelklumpen entfernen (zu Nullwerten)</translation>
     </message>
     <message>
         <source>Interpolate (Modified quadratic shepard)</source>
-        <translation type="obsolete">Interpolieren (Modifizierte quadratische Shepard-Methode)</translation>
+        <translation>Interpolieren (Modifizierte quadratische Shepard-Methode)</translation>
     </message>
     <message>
         <source>Merge vector layers</source>
-        <translation type="obsolete">Vektorlayer zusammenführen</translation>
+        <translation>Vektorlayer zusammenführen</translation>
     </message>
     <message>
         <source>Reclassify (simple)</source>
-        <translation type="obsolete">Neuklassifizieren (einfach)</translation>
+        <translation>Neuklassifizieren (einfach)</translation>
     </message>
     <message>
         <source>Execute SQL on vector layer</source>
-        <translation type="obsolete">SQL auf Vektorlayer ausführen</translation>
+        <translation>SQL auf Vektorlayer ausführen</translation>
     </message>
     <message>
         <source>Raster layer information</source>
-        <translation type="obsolete">Rasterlayerinformation</translation>
+        <translation>Rasterlayerinformation</translation>
     </message>
     <message>
         <source>Contour lines</source>
-        <translation type="obsolete">Konturlinien</translation>
+        <translation>Konturlinien</translation>
     </message>
     <message>
         <source>Create graticule</source>
-        <translation type="obsolete">Gradnetz erzeugen</translation>
+        <translation>Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Fire spreading simulation</source>
-        <translation type="obsolete">Feuerausbreitungssimulation</translation>
+        <translation>Feuerausbreitungssimulation</translation>
     </message>
     <message>
         <source>Polygon difference</source>
-        <translation type="obsolete">Polygondifferenz</translation>
+        <translation>Polygondifferenz</translation>
     </message>
     <message>
         <source>Create graticule from extent</source>
-        <translation type="obsolete">Gradnetz aus Grenzen erzeugen</translation>
+        <translation>Gradnetz aus Grenzen erzeugen</translation>
     </message>
     <message>
         <source>Polygon symmetrical difference</source>
-        <translation type="obsolete">Symmetrische Polygondifferenz</translation>
+        <translation>Symmetrische Polygondifferenz</translation>
     </message>
     <message>
         <source>Vector layer information</source>
-        <translation type="obsolete">Vektorlayerinformation</translation>
+        <translation>Vektorlayerinformation</translation>
     </message>
     <message>
         <source>Polygon update</source>
-        <translation type="obsolete">Polygonaktualisierung</translation>
+        <translation>Polygonaktualisierung</translation>
     </message>
     <message>
         <source>Interpolate (Average)</source>
-        <translation type="obsolete">Interpolation (Durchschnitt)</translation>
+        <translation>Interpolation (Durchschnitt)</translation>
     </message>
 </context>
 <context>
@@ -398,11 +398,11 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     <name>AssignProjection</name>
     <message>
         <source>Assign projection</source>
-        <translation type="obsolete">Projektion zuweisen</translation>
+        <translation>Projektion zuweisen</translation>
     </message>
     <message>
         <source>[GDAL] Projections</source>
-        <translation type="obsolete">[GDAL] Projektionen</translation>
+        <translation>[GDAL] Projektionen</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -421,7 +421,7 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     <name>AutoincrementalField</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -433,14 +433,14 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Add autoincremental field</source>
-        <translation type="obsolete">Autoinkremetierendes Feld hinzufügen</translation>
+        <translation>Autoinkremetierendes Feld hinzufügen</translation>
     </message>
 </context>
 <context>
     <name>BarPlot</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input table</source>
@@ -463,7 +463,7 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     <name>BasicStatisticsNumbers</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -615,14 +615,14 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Basic statistics for numeric fields</source>
-        <translation type="obsolete">Grundstatistik für numerische Felder</translation>
+        <translation>Grundstatistik für numerische Felder</translation>
     </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -702,7 +702,7 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Basic statistics for text fields</source>
-        <translation type="obsolete">Grundstatistik für Textfelder</translation>
+        <translation>Grundstatistik für Textfelder</translation>
     </message>
 </context>
 <context>
@@ -823,7 +823,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -838,11 +838,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>BoundingBox</name>
     <message>
         <source>Bounding boxes</source>
-        <translation type="obsolete">Umgrenzungsrahmen</translation>
+        <translation>Umgrenzungsrahmen</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -907,11 +907,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>CanopyMaxima</name>
     <message>
         <source>Canopy Maxima</source>
-        <translation type="obsolete">Bodenbedeckungsmaxima</translation>
+        <translation>Bodenbedeckungsmaxima</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input FUSION canopy height model</source>
@@ -946,11 +946,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>CanopyModel</name>
     <message>
         <source>Canopy Model</source>
-        <translation type="obsolete">Bodenbedeckungsmodell</translation>
+        <translation>Bodenbedeckungsmodell</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -1001,11 +1001,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>Catalog</name>
     <message>
         <source>Catalog</source>
-        <translation type="obsolete">Katalog</translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -1036,7 +1036,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>Centroids</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -1052,7 +1052,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Polygonschwerpunkt</translation>
+        <translation>Polygonschwerpunkt</translation>
     </message>
 </context>
 <context>
@@ -1066,7 +1066,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>CheckValidity</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>The one selected in digitizing settings</source>
@@ -1094,14 +1094,14 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Check validity</source>
-        <translation type="obsolete">Gültigkeit prüfen</translation>
+        <translation>Gültigkeit prüfen</translation>
     </message>
 </context>
 <context>
     <name>Clip</name>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -1125,7 +1125,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Zuschneiden</translation>
+        <translation>Zuschneiden</translation>
     </message>
 </context>
 <context>
@@ -1180,11 +1180,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Clip raster by extent</source>
-        <translation type="obsolete">Raster auf Ausmaße zuschneiden</translation>
+        <translation>Raster auf Ausmaße zuschneiden</translation>
     </message>
     <message>
         <source>[GDAL] Extraction</source>
-        <translation type="obsolete">[GDAL] Extraktion</translation>
+        <translation>[GDAL] Extraktion</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -1255,11 +1255,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Clip raster by mask layer</source>
-        <translation type="obsolete">Raster auf Layermaske zuschneiden</translation>
+        <translation>Raster auf Layermaske zuschneiden</translation>
     </message>
     <message>
         <source>[GDAL] Extraction</source>
-        <translation type="obsolete">[GDAL] Extraktion</translation>
+        <translation>[GDAL] Extraktion</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -1270,11 +1270,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>ClipData</name>
     <message>
         <source>Clip Data</source>
-        <translation type="obsolete">Daten zuschneiden</translation>
+        <translation>Daten zuschneiden</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -1305,11 +1305,11 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>CloudMetrics</name>
     <message>
         <source>Cloud Metrics</source>
-        <translation type="obsolete">Wolkenmessung</translation>
+        <translation>Wolkenmessung</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -1340,7 +1340,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>ColorRelief</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -1398,7 +1398,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Creating Delaunay triangles...</source>
@@ -1492,7 +1492,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
@@ -1554,7 +1554,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>Cover</name>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -1589,7 +1589,7 @@ Verarbeite Algorithmus %d/%d...</translation>
     <name>CreateConstantRaster</name>
     <message>
         <source>Raster tools</source>
-        <translation type="obsolete">Rasterwerkzeuge</translation>
+        <translation>Rasterwerkzeuge</translation>
     </message>
     <message>
         <source>Reference layer</source>
@@ -1605,18 +1605,18 @@ Verarbeite Algorithmus %d/%d...</translation>
     </message>
     <message>
         <source>Create constant raster layer</source>
-        <translation type="obsolete">Konstanten Rasterlayer erzeugen</translation>
+        <translation>Konstanten Rasterlayer erzeugen</translation>
     </message>
 </context>
 <context>
     <name>Csv2Grid</name>
     <message>
         <source>Csv2Grid</source>
-        <translation type="obsolete">CSV nach Grid</translation>
+        <translation>CSV nach Grid</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>CSV Files</source>
@@ -2360,11 +2360,11 @@ Abfrage:
     <name>DTM2ASCII</name>
     <message>
         <source>DTM to ASCII</source>
-        <translation type="obsolete">DTM nach ASCII</translation>
+        <translation>DTM nach ASCII</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input canopy surface (.dtm)</source>
@@ -2379,11 +2379,11 @@ Abfrage:
     <name>DTM2TIF</name>
     <message>
         <source>DTM to TIF</source>
-        <translation type="obsolete">DTM nach TIF</translation>
+        <translation>DTM nach TIF</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="obsolete">Konvertierung</translation>
+        <translation>Konvertierung</translation>
     </message>
     <message>
         <source>Input .dtm layer</source>
@@ -2398,7 +2398,7 @@ Abfrage:
     <name>Datasources2Vrt</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input datasources</source>
@@ -2422,7 +2422,7 @@ Abfrage:
     </message>
     <message>
         <source>Build virtual vector</source>
-        <translation type="obsolete">Virtuellen Vektor erzeugen</translation>
+        <translation>Virtuellen Vektor erzeugen</translation>
     </message>
 </context>
 <context>
@@ -3025,11 +3025,11 @@ laden</translation>
     <name>DefineProjection</name>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Aktuelle Projektion festlegen</translation>
+        <translation>Aktuelle Projektion festlegen</translation>
     </message>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input Layer</source>
@@ -3052,7 +3052,7 @@ laden</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input file should contain at least 3 points. Choose another file and try again.</source>
@@ -3063,7 +3063,7 @@ laden</translation>
     <name>DeleteColumn</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -3079,14 +3079,14 @@ laden</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="obsolete">Spalte löschen</translation>
+        <translation>Spalte löschen</translation>
     </message>
 </context>
 <context>
     <name>DeleteDuplicateGeometries</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -3098,14 +3098,14 @@ laden</translation>
     </message>
     <message>
         <source>Delete duplicate geometries</source>
-        <translation type="obsolete">Doppelte Geometrien löschen</translation>
+        <translation>Doppelte Geometrien löschen</translation>
     </message>
 </context>
 <context>
     <name>DeleteHoles</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -3117,7 +3117,7 @@ laden</translation>
     </message>
     <message>
         <source>Delete holes</source>
-        <translation type="obsolete">Löcher löschen</translation>
+        <translation>Löcher löschen</translation>
     </message>
 </context>
 <context>
@@ -3169,7 +3169,7 @@ laden</translation>
     <name>DensifyGeometries</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -3185,14 +3185,14 @@ laden</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="obsolete">Geometrien verdichten</translation>
+        <translation>Geometrien verdichten</translation>
     </message>
 </context>
 <context>
     <name>DensifyGeometriesInterval</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -3208,7 +3208,7 @@ laden</translation>
     </message>
     <message>
         <source>Densify geometries given an interval</source>
-        <translation type="obsolete">Geometrien mit gegebenem Intervall verdichten</translation>
+        <translation>Geometrien mit gegebenem Intervall verdichten</translation>
     </message>
 </context>
 <context>
@@ -3370,18 +3370,18 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
 </context>
 <context>
     <name>DinfDistDown</name>
     <message>
         <source>D-Infinity Distance Down</source>
-        <translation type="obsolete">D-Infinity Entfernung nach unten</translation>
+        <translation>D-Infinity Entfernung nach unten</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3424,11 +3424,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfDistDownMulti</name>
     <message>
         <source>D-Infinity Distance Down (multifile)</source>
-        <translation type="obsolete">D-Infinity Entfernung nach unten (Mehrdatei)</translation>
+        <translation>D-Infinity Entfernung nach unten (Mehrdatei)</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3503,7 +3503,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
@@ -3514,11 +3514,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfDistUpMulti</name>
     <message>
         <source>D-Infinity Distance Up (multifile)</source>
-        <translation type="obsolete">D-Infinity Entfernung nach oben (Mehrdatei)</translation>
+        <translation>D-Infinity Entfernung nach oben (Mehrdatei)</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3561,11 +3561,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfTransLimAccum</name>
     <message>
         <source>D-Infinity Transport Limited Accumulation</source>
-        <translation type="obsolete">D-Infinity transportbegrenzte Akkumulation</translation>
+        <translation>D-Infinity transportbegrenzte Akkumulation</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3604,11 +3604,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfTransLimAccum2</name>
     <message>
         <source>D-Infinity Transport Limited Accumulation - 2</source>
-        <translation type="obsolete">D-Infinity transportbegrenzte Akkumulation - 2</translation>
+        <translation>D-Infinity transportbegrenzte Akkumulation - 2</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3655,11 +3655,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfTransLimAccum2Multi</name>
     <message>
         <source>D-Infinity Transport Limited Accumulation - 2 (multifile)</source>
-        <translation type="obsolete">D-Infinity transportbegrenzte Akkumulation - 2 (Mehrdatei)</translation>
+        <translation>D-Infinity transportbegrenzte Akkumulation - 2 (Mehrdatei)</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3706,11 +3706,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DinfTransLimAccumMulti</name>
     <message>
         <source>D-Infinity Transport Limited Accumulation (multifile)</source>
-        <translation type="obsolete">D-Infinity transportbegrenzte Akkumulation (Mehrdatei)</translation>
+        <translation>D-Infinity transportbegrenzte Akkumulation (Mehrdatei)</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -4385,11 +4385,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DropAnalysis</name>
     <message>
         <source>Stream Drop Analysis</source>
-        <translation type="obsolete">Gewässergefälleanalyse</translation>
+        <translation>Gewässergefälleanalyse</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>D8 Contributing Area Grid</source>
@@ -4440,11 +4440,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>DropAnalysisMulti</name>
     <message>
         <source>Stream Drop Analysis (multifile)</source>
-        <translation type="obsolete">Gewässergefälleanalyse (Mehrdatei)</translation>
+        <translation>Gewässergefälleanalyse (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>D8 Contributing Area Grid</source>
@@ -4524,7 +4524,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>Eliminate</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Largest area</source>
@@ -4608,18 +4608,18 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="obsolete">Splitterpolygone beseitigen</translation>
+        <translation>Splitterpolygone beseitigen</translation>
     </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
     <message>
         <source>Add unique value index field</source>
-        <translation type="obsolete">Feld mit eindeutigem Klassenindex hinzufügen</translation>
+        <translation>Feld mit eindeutigem Klassenindex hinzufügen</translation>
     </message>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4638,11 +4638,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>ExampleAlgorithm</name>
     <message>
         <source>Create copy of layer</source>
-        <translation type="obsolete">Layerkopie erzeugen</translation>
+        <translation>Layerkopie erzeugen</translation>
     </message>
     <message>
         <source>Algorithms for vector layers</source>
-        <translation type="obsolete">Algorithmen für Vektorlayer</translation>
+        <translation>Algorithmen für Vektorlayer</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4657,11 +4657,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>ExecuteSQL</name>
     <message>
         <source>Execute SQL</source>
-        <translation type="obsolete">SQL-Anweisung ausführen</translation>
+        <translation>SQL-Anweisung ausführen</translation>
     </message>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Additional input datasources (called input1, .., inputN in the query)</source>
@@ -4708,7 +4708,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>Explode</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4720,14 +4720,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Explode lines</source>
-        <translation type="obsolete">Linien sprengen</translation>
+        <translation>Linien sprengen</translation>
     </message>
 </context>
 <context>
     <name>ExportGeometryInfo</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Layer CRS</source>
@@ -4755,14 +4755,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Geometriespalte exportieren/hinzufügen</translation>
+        <translation>Geometriespalte exportieren/hinzufügen</translation>
     </message>
 </context>
 <context>
     <name>ExtentFromLayer</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4778,7 +4778,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Polygon aus Layergrenzen</translation>
+        <translation>Polygon aus Layergrenzen</translation>
     </message>
 </context>
 <context>
@@ -4820,7 +4820,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>ExtractByAttribute</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>begins with</source>
@@ -4860,7 +4860,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Extract by attribute</source>
-        <translation type="obsolete">Nach Attribut extrahieren</translation>
+        <translation>Nach Attribut extrahieren</translation>
     </message>
 </context>
 <context>
@@ -4883,11 +4883,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Extract by location</source>
-        <translation type="obsolete">Nach Position extrahieren</translation>
+        <translation>Nach Position extrahieren</translation>
     </message>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
@@ -4898,7 +4898,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>ExtractNodes</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -4910,14 +4910,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Knoten extrahieren</translation>
+        <translation>Knoten extrahieren</translation>
     </message>
 </context>
 <context>
     <name>ExtractProjection</name>
     <message>
         <source>[GDAL] Projections</source>
-        <translation type="obsolete">[GDAL] Projektionen</translation>
+        <translation>[GDAL] Projektionen</translation>
     </message>
     <message>
         <source>Input file</source>
@@ -4929,7 +4929,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Extract projection</source>
-        <translation type="obsolete">Projektion extrahieren</translation>
+        <translation>Projektion extrahieren</translation>
     </message>
 </context>
 <context>
@@ -4980,7 +4980,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Float</source>
@@ -5060,7 +5060,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>FieldsMapper</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -5090,14 +5090,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Refactor fields</source>
-        <translation type="obsolete">Felder überarbeiten</translation>
+        <translation>Felder überarbeiten</translation>
     </message>
 </context>
 <context>
     <name>FieldsPyculator</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Integer</source>
@@ -5167,7 +5167,7 @@ Feldcodeblock gibt nicht die &apos;%s1&apos; Variable zurück! Bitte deklarieren
     </message>
     <message>
         <source>Advanced Python field calculator</source>
-        <translation type="obsolete">Erweiterter Python-Feldrechner</translation>
+        <translation>Erweiterter Python-Feldrechner</translation>
     </message>
 </context>
 <context>
@@ -5204,11 +5204,11 @@ Feldcodeblock gibt nicht die &apos;%s1&apos; Variable zurück! Bitte deklarieren
     <name>FilterData</name>
     <message>
         <source>Filter Data outliers</source>
-        <translation type="obsolete">Datenausreißer filtern</translation>
+        <translation>Datenausreißer filtern</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -5231,11 +5231,11 @@ Feldcodeblock gibt nicht die &apos;%s1&apos; Variable zurück! Bitte deklarieren
     <name>FirstLastReturn</name>
     <message>
         <source>First&amp;Last Return</source>
-        <translation type="obsolete">Erste&amp;letzte Rückgabe</translation>
+        <translation>Erste&amp;letzte Rückgabe</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -5254,7 +5254,7 @@ Feldcodeblock gibt nicht die &apos;%s1&apos; Variable zurück! Bitte deklarieren
     <name>FixedDistanceBuffer</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -5278,7 +5278,7 @@ Feldcodeblock gibt nicht die &apos;%s1&apos; Variable zurück! Bitte deklarieren
     </message>
     <message>
         <source>Fixed distance buffer</source>
-        <translation type="obsolete">Puffer festen Abstands</translation>
+        <translation>Puffer festen Abstands</translation>
     </message>
 </context>
 <context>
@@ -6962,20 +6962,25 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <translation>Nicht erfasste Fehler bei der Ausführung von Algorithmus</translation>
     </message>
     <message>
+        <source> 
+See log for more details</source>
+        <translation>Mehr Details im Protokoll</translation>
+    </message>
+    <message>
         <source>Converting outputs</source>
         <translation>Konvertierung der Ausgabe</translation>
     </message>
     <message>
         <source>
 See log for more details</source>
-        <translation>Mehr Details im Protokoll.</translation>
+        <translation type="obsolete">Mehr Details im Protokoll.</translation>
     </message>
 </context>
 <context>
     <name>GeometryConvert</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Centroids</source>
@@ -7015,7 +7020,7 @@ See log for more details</source>
     </message>
     <message>
         <source>Convert geometry type</source>
-        <translation type="obsolete">Geometrietyp umwandeln</translation>
+        <translation>Geometrietyp umwandeln</translation>
     </message>
 </context>
 <context>
@@ -7241,1327 +7246,1327 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>v.surf.rst.line - Spatial approximation and topographic analysis using regularized spline with tension.</source>
-        <translation type="obsolete">v.surf.rst.line - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
+        <translation>v.surf.rst.line - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
     </message>
     <message>
         <source>v.clean.advanced - Toolset for cleaning topology of vector map (Advanced).</source>
-        <translation type="obsolete">v.clean.advanced - Werkzeugsatz für die Bereinigung der Topologie einer Vektorkarte (Fortgeschritten).</translation>
+        <translation>v.clean.advanced - Werkzeugsatz für die Bereinigung der Topologie einer Vektorkarte (Fortgeschritten).</translation>
     </message>
     <message>
         <source>r.slope - Generates raster maps of slope from a elevation raster map.</source>
-        <translation type="obsolete">r.slope - Erzeugt Rasterkarten mit Hangneigung aus einer Rasterkarte mit Höheninformationen.</translation>
+        <translation>r.slope - Erzeugt Rasterkarten mit Hangneigung aus einer Rasterkarte mit Höheninformationen.</translation>
     </message>
     <message>
         <source>r.contour.step - Create vector contours from raster at specified steps</source>
-        <translation type="obsolete">r.contour.step - Erstellen von Vektorkonturen von Rasterdaten an bestimmten Stufen</translation>
+        <translation>r.contour.step - Erstellen von Vektorkonturen von Rasterdaten an bestimmten Stufen</translation>
     </message>
     <message>
         <source>v.buffer.distance - Creates a buffer around features of given type.</source>
-        <translation type="obsolete">v.buffer.distance - Erzeugt einen Puffer um Objekte mit gegebenen Typ.</translation>
+        <translation>v.buffer.distance - Erzeugt einen Puffer um Objekte mit gegebenen Typ.</translation>
     </message>
     <message>
         <source>v.surf.bspline.lambda - Bicubic or bilinear spline interpolation with Tykhonov regularization.</source>
-        <translation type="obsolete">v.surf.bspline.lambda - Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
+        <translation>v.surf.bspline.lambda - Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
     </message>
     <message>
         <source>r.cost.full - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">r.cost.full - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>r.cost.full - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>r.lake.coords - Fills lake at given point to given level.</source>
-        <translation type="obsolete">r.lake.coords - See aus Quellenpunkt einer gegebenen Höhe füllen.</translation>
+        <translation>r.lake.coords - See aus Quellenpunkt einer gegebenen Höhe füllen.</translation>
     </message>
     <message>
         <source>v.to.rast.value - Converts (rasterize) a vector layer into a raster layer.</source>
-        <translation type="obsolete">v.to.rast.value - Konvertiert (rastert) eine Vektorkarte in eine Rasterkarte.</translation>
+        <translation>v.to.rast.value - Konvertiert (rastert) eine Vektorkarte in eine Rasterkarte.</translation>
     </message>
     <message>
         <source>v.distance.toattr - Finds the nearest element in vector map &apos;to&apos; for elements in vector map &apos;from&apos;.</source>
-        <translation type="obsolete">v.distance.toattr - Findet das nächstgelegene Element der Vektorkarte &apos;to&apos; für Elemente in der Vektorkarte &apos;from&apos;.</translation>
+        <translation>v.distance.toattr - Findet das nächstgelegene Element der Vektorkarte &apos;to&apos; für Elemente in der Vektorkarte &apos;from&apos;.</translation>
     </message>
     <message>
         <source>r.aspect - Generates raster maps of aspect from a elevation raster map.</source>
-        <translation type="obsolete">r.slope.apect - Erzeugt Rasterkarten mit Exposition aus einer Rasterkarte mit Höheninformationen.</translation>
+        <translation>r.slope.apect - Erzeugt Rasterkarten mit Exposition aus einer Rasterkarte mit Höheninformationen.</translation>
     </message>
     <message>
         <source>v.split.length - Split lines to shorter segments by length.</source>
-        <translation type="obsolete">v.split.length - Trenne Linien zu kürzeren Segmenten nach Länge.</translation>
+        <translation>v.split.length - Trenne Linien zu kürzeren Segmenten nach Länge.</translation>
     </message>
     <message>
         <source>r.reclass.area.greater - Reclassifies a raster layer, selecting areas larger than a user specified size</source>
-        <translation type="obsolete">r.reclass.area.greater -Reklassifiziere Rasterkarte durch Auswahl von Flächen größer eines gegeben Werts</translation>
+        <translation>r.reclass.area.greater -Reklassifiziere Rasterkarte durch Auswahl von Flächen größer eines gegeben Werts</translation>
     </message>
     <message>
         <source>r.horizon.height - Horizon angle computation from a digital elevation model.</source>
-        <translation type="obsolete">r.horizon.height - Berechnung des Horizontwinkel auf Grundlage eines digitalen Höhenmodells.</translation>
+        <translation>r.horizon.height - Berechnung des Horizontwinkel auf Grundlage eines digitalen Höhenmodells.</translation>
     </message>
     <message>
         <source>r.sunmask.datetime - Calculates cast shadow areas from sun position and elevation raster map.</source>
-        <translation type="obsolete">r.sunmask.datetime - Schattenkarten aus Sonnenposition und Rasterkarten mit Höheninformation berechnen.</translation>
+        <translation>r.sunmask.datetime - Schattenkarten aus Sonnenposition und Rasterkarten mit Höheninformation berechnen.</translation>
     </message>
     <message>
         <source>r.lake.layer - Fills lake at given point to given level.</source>
-        <translation type="obsolete">r.lake.layer - See aus Quellenpunkt einer gegebenen Höhe füllen.</translation>
+        <translation>r.lake.layer - See aus Quellenpunkt einer gegebenen Höhe füllen.</translation>
     </message>
     <message>
         <source>r.sunmask.position - Calculates cast shadow areas from sun position and elevation raster map.</source>
-        <translation type="obsolete">r.sunmask.position - Schattenkarten aus Sonnenposition und Rasterkarten mit Höheninformation berechnen.</translation>
+        <translation>r.sunmask.position - Schattenkarten aus Sonnenposition und Rasterkarten mit Höheninformation berechnen.</translation>
     </message>
     <message>
         <source>r.in.lidar.info - Extract information from LAS file</source>
-        <translation type="obsolete">r.in.lidar.info - Information aus LAS-Datei extrahieren</translation>
+        <translation>r.in.lidar.info - Information aus LAS-Datei extrahieren</translation>
     </message>
     <message>
         <source>r.drain.coordinate - Traces a flow through an elevation model on a raster map.</source>
-        <translation type="obsolete">r.drain.coordinate - Verfolgt einen Fluss durch ein Höhenmodell auf einer Rasterkarte.</translation>
+        <translation>r.drain.coordinate - Verfolgt einen Fluss durch ein Höhenmodell auf einer Rasterkarte.</translation>
     </message>
     <message>
         <source>v.transform.pointsfile - Performs an affine transformation on a vector layer, using a support point file.</source>
-        <translation type="obsolete">v.transform.pointsfile - Führt eine affine Transformation von Vektorkarten mit Hilfe einer Punktdatei durch.</translation>
+        <translation>v.transform.pointsfile - Führt eine affine Transformation von Vektorkarten mit Hilfe einer Punktdatei durch.</translation>
     </message>
     <message>
         <source>r.cost.full.raster - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">r.cost.full.raster - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>r.cost.full.raster - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>v.buffer.column - Creates a buffer around features of given type.</source>
-        <translation type="obsolete">v.buffer.column - Erzeugt einen Puffer um Objekte mit gegebenen Typ.</translation>
+        <translation>v.buffer.column - Erzeugt einen Puffer um Objekte mit gegebenen Typ.</translation>
     </message>
     <message>
         <source>Performs bilinear or bicubic spline interpolation with Tykhonov regularization.</source>
-        <translation type="obsolete">Führt bi-lineare oder bi-kubische oder Spline-Interpolation mit Tichonow-Regularisierung.</translation>
+        <translation>Führt bi-lineare oder bi-kubische oder Spline-Interpolation mit Tichonow-Regularisierung.</translation>
     </message>
     <message>
         <source>Outputs raster map layer values lying along user defined transect line(s).</source>
-        <translation type="obsolete">Gibt Rasterkartenlayerwerte entlang einer oder mehreren benutzerdefinierten Transektlinien aus.</translation>
+        <translation>Gibt Rasterkartenlayerwerte entlang einer oder mehreren benutzerdefinierten Transektlinien aus.</translation>
     </message>
     <message>
         <source>Calculates solar elevation, solar azimuth, and sun hours.</source>
-        <translation type="obsolete">Berechnet Sonnenhöhe, -winkel und -stunden.</translation>
+        <translation>Berechnet Sonnenhöhe, -winkel und -stunden.</translation>
     </message>
     <message>
         <source>r.li.shape.ascii - Calculates shape index on a raster map </source>
-        <translation type="obsolete">r.li.shape.ascii - Berechnet Shapeindex auf einer Rasterkarte</translation>
+        <translation>r.li.shape.ascii - Berechnet Shapeindex auf einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates patch number index on a raster map, using a 4 neighbour algorithm.</source>
-        <translation type="obsolete">Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>r.li.renyi.ascii - Calculates Renyi&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">r.li.renyi.ascii - Berechnet Renyi-Diversitäts-Index einer Rasterkarte</translation>
+        <translation>r.li.renyi.ascii - Berechnet Renyi-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.blend.combine - Blends color components of two raster maps by a given ratio and export into a unique raster.</source>
-        <translation type="obsolete">r.blend.combine - Farbkomponenten zweier Raster einem Verhältnis anpassen und in eine einziges Raster exportieren.</translation>
+        <translation>r.blend.combine - Farbkomponenten zweier Raster einem Verhältnis anpassen und in eine einziges Raster exportieren.</translation>
     </message>
     <message>
         <source>Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.</source>
-        <translation type="obsolete">Führt eine kontextbezogene Bildklassifizierung mittels sequentieller Maximum-Aposterori-Schätzung (SMAP) durch</translation>
+        <translation>Führt eine kontextbezogene Bildklassifizierung mittels sequentieller Maximum-Aposterori-Schätzung (SMAP) durch</translation>
     </message>
     <message>
         <source>Generates spectral signatures for land cover types in an image using a clustering algorithm.</source>
-        <translation type="obsolete">Generiert Spektralsignaturen für Bodenbedeckungstypen in eimem Bild mittels Häufungsalgorithmus</translation>
+        <translation>Generiert Spektralsignaturen für Bodenbedeckungstypen in eimem Bild mittels Häufungsalgorithmus</translation>
     </message>
     <message>
         <source>i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates</source>
-        <translation type="obsolete">i.eb.hsebal01.coords - Berechnet Sensible-Heat-Flux-Iteration. Inline-Koordinaten</translation>
+        <translation>i.eb.hsebal01.coords - Berechnet Sensible-Heat-Flux-Iteration. Inline-Koordinaten</translation>
     </message>
     <message>
         <source>v.to.rast.attribute - Converts (rasterize) a vector layer into a raster layer.</source>
-        <translation type="obsolete">v.to.rast.attribute - Konvertiert (rastert) eine Vektorkarte in eine Rasterkarte.</translation>
+        <translation>v.to.rast.attribute - Konvertiert (rastert) eine Vektorkarte in eine Rasterkarte.</translation>
     </message>
     <message>
         <source>Computes biomass growth, precursor of crop yield calculation.</source>
-        <translation type="obsolete">Berechnet Biomassenzuwachs, Vorläufer von Feldfruchtberechnungen</translation>
+        <translation>Berechnet Biomassenzuwachs, Vorläufer von Feldfruchtberechnungen</translation>
     </message>
     <message>
         <source>Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points. </source>
-        <translation type="obsolete">Berichtigt ein Bild durch die Berecnung der Koordinatentransformation für jedes Pixel des Bildes nach Kontrollpunkten.</translation>
+        <translation>Berichtigt ein Bild durch die Berecnung der Koordinatentransformation für jedes Pixel des Bildes nach Kontrollpunkten.</translation>
     </message>
     <message>
         <source>Calculates Optimum-Index-Factor table for spectral bands</source>
-        <translation type="obsolete">Optimale Indexfaktortabelle für Spektralkanäle berechnen</translation>
+        <translation>Optimale Indexfaktortabelle für Spektralkanäle berechnen</translation>
     </message>
     <message>
         <source>Computes potential evapotranspiration calculation with hourly Penman-Monteith.</source>
-        <translation type="obsolete">Berechnet potentielle Evapotranspiration mit stündlichem Penman-Monteith.</translation>
+        <translation>Berechnet potentielle Evapotranspiration mit stündlichem Penman-Monteith.</translation>
     </message>
     <message>
         <source>Identifies segments (objects) from imagery data.</source>
-        <translation type="obsolete">Identifiziert Segmente (Objekte) aus Bilddaten.</translation>
+        <translation>Identifiziert Segmente (Objekte) aus Bilddaten.</translation>
     </message>
     <message>
         <source>Computes topographic correction of reflectance.</source>
-        <translation type="obsolete">Berechnet topographische Korrektur der Reflektion.</translation>
+        <translation>Berechnet topographische Korrektur der Reflektion.</translation>
     </message>
     <message>
         <source>Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.</source>
-        <translation type="obsolete">Berechnet Evapotranspiration mit Priestley und Taylor Formulierung, 1972.</translation>
+        <translation>Berechnet Evapotranspiration mit Priestley und Taylor Formulierung, 1972.</translation>
     </message>
     <message>
         <source>Calculates different types of vegetation indices.</source>
-        <translation type="obsolete">Berechnet verschiedene Typen von Vegetationsindizes.</translation>
+        <translation>Berechnet verschiedene Typen von Vegetationsindizes.</translation>
     </message>
     <message>
         <source>Generates statistics for i.smap from raster map.</source>
-        <translation type="obsolete">Generiert Statistik für i.smap aus Rasterkarte.</translation>
+        <translation>Generiert Statistik für i.smap aus Rasterkarte.</translation>
     </message>
     <message>
         <source>Computes evaporative fraction (Bastiaanssen, 1995) and root zone soil moisture (Makin, Molden and Bastiaanssen, 2001).</source>
-        <translation type="obsolete">Berechnet evaporative Bruchteil (Bastiaanssen, 1995) und Bodenfeuchtigkeit der Wurzelzone (Makin, Molden und Bastiaanssen, 2001).</translation>
+        <translation>Berechnet evaporative Bruchteil (Bastiaanssen, 1995) und Bodenfeuchtigkeit der Wurzelzone (Makin, Molden und Bastiaanssen, 2001).</translation>
     </message>
     <message>
         <source>Actual evapotranspiration for diurnal period (Bastiaanssen, 1995). </source>
-        <translation type="obsolete">Tatsächliche Evapotranspiration für Tagperiode (Bastiaanssen, 1995).</translation>
+        <translation>Tatsächliche Evapotranspiration für Tagperiode (Bastiaanssen, 1995).</translation>
     </message>
     <message>
         <source>r.mask.rast - Creates a MASK for limiting raster operation.</source>
-        <translation type="obsolete">r.mask.rast - Maske (MASK) erzeugen, um Rasteroperationen zu begrenzen</translation>
+        <translation>r.mask.rast - Maske (MASK) erzeugen, um Rasteroperationen zu begrenzen</translation>
     </message>
     <message>
         <source>i.topo.coor.ill - Creates illumination model for topographic correction of reflectance.</source>
-        <translation type="obsolete">i.topo.coor.ill - Erzeugt Beleuchtungsmodel für topographische Reflektionskorrektur.</translation>
+        <translation>i.topo.coor.ill - Erzeugt Beleuchtungsmodel für topographische Reflektionskorrektur.</translation>
     </message>
     <message>
         <source>Calculates dominance&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Dominanzdiversitätsindex einer Rasterkarte.</translation>
+        <translation>Berechnet Dominanzdiversitätsindex einer Rasterkarte.</translation>
     </message>
     <message>
         <source>r.walk.points - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from point vector layers.</source>
-        <translation type="obsolete">r.walk.points - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten von Punktvektorlayern repräsentieren.</translation>
+        <translation>r.walk.points - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten von Punktvektorlayern repräsentieren.</translation>
     </message>
     <message>
         <source>Computes broad band albedo from surface reflectance. </source>
-        <translation type="obsolete">Berechnet Breitbandalbedo aus Oberflächenreflektion.</translation>
+        <translation>Berechnet Breitbandalbedo aus Oberflächenreflektion.</translation>
     </message>
     <message>
         <source>Imports SPOT VGT NDVI data into a raster map.</source>
-        <translation type="obsolete">Importiert SPOT VGT NDVI Daten in Rasterkarte.</translation>
+        <translation>Importiert SPOT VGT NDVI Daten in Rasterkarte.</translation>
     </message>
     <message>
         <source>Computes sensible heat flux iteration SEBAL 01.</source>
-        <translation type="obsolete">Berechnet Sensible-Heat-Flux-Iteration SEBAL 01.</translation>
+        <translation>Berechnet Sensible-Heat-Flux-Iteration SEBAL 01.</translation>
     </message>
     <message>
         <source>Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).</source>
-        <translation type="obsolete">Fürhrt TM/ETM+ automatische Wolkendeckenbewertung (ACCA) durch.</translation>
+        <translation>Fürhrt TM/ETM+ automatische Wolkendeckenbewertung (ACCA) durch.</translation>
     </message>
     <message>
         <source>Performs auto-balancing of colors for RGB images.</source>
-        <translation type="obsolete">Führt automatische Angleichung der Farben von RGB-Bildern durch.</translation>
+        <translation>Führt automatische Angleichung der Farben von RGB-Bildern durch.</translation>
     </message>
     <message>
         <source>Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.</source>
-        <translation type="obsolete">Berechnet Evapotranspiration mit modifizierter oder originaler Hargreaves-Formulierung, 2001.</translation>
+        <translation>Berechnet Evapotranspiration mit modifizierter oder originaler Hargreaves-Formulierung, 2001.</translation>
     </message>
     <message>
         <source>Principal components analysis (PCA) for image processing.</source>
-        <translation type="obsolete">Hauptbestandteilsanalyes (PCA) zur Bildverarbeitung.</translation>
+        <translation>Hauptbestandteilsanalyes (PCA) zur Bildverarbeitung.</translation>
     </message>
     <message>
         <source>Calculates top-of-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI</source>
-        <translation type="obsolete">Berechnet Abstrahlung der obersten Atmosphäre oder Reflektionen für Landsat MSS/TM/ETM+/OLI</translation>
+        <translation>Berechnet Abstrahlung der obersten Atmosphäre oder Reflektionen für Landsat MSS/TM/ETM+/OLI</translation>
     </message>
     <message>
         <source>Classifies the cell spectral reflectances in imagery data.</source>
-        <translation type="obsolete">Klassifiziert die Zellenspektralreflektionen in Bilddaten.</translation>
+        <translation>Klassifiziert die Zellenspektralreflektionen in Bilddaten.</translation>
     </message>
     <message>
         <source>Performs Tasseled Cap (Kauth Thomas) transformation.</source>
-        <translation type="obsolete">Führt Tasseled Cap (Kauth Thomas)-Transformation durch.</translation>
+        <translation>Führt Tasseled Cap (Kauth Thomas)-Transformation durch.</translation>
     </message>
     <message>
         <source>Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).</source>
-        <translation type="obsolete">Ermittelt zeitliche Integration der Satelliten-ET tatsächlichen (ETa) folgend der tägliche ET-Referenz (ETo) von meteorologische(r/en) Station(en).</translation>
+        <translation>Ermittelt zeitliche Integration der Satelliten-ET tatsächlichen (ETa) folgend der tägliche ET-Referenz (ETo) von meteorologische(r/en) Station(en).</translation>
     </message>
     <message>
         <source>Net radiation approximation (Bastiaanssen, 1995).</source>
-        <translation type="obsolete">Nettostrahlungsnährung (Bastiaanssen, 1995).</translation>
+        <translation>Nettostrahlungsnährung (Bastiaanssen, 1995).</translation>
     </message>
     <message>
         <source>Regroup multiple mono-band rasters into a single multiband raster.</source>
-        <translation type="obsolete">Mehrere einkanalige Raster in ein einzelnes Multibandraster regruppieren.</translation>
+        <translation>Mehrere einkanalige Raster in ein einzelnes Multibandraster regruppieren.</translation>
     </message>
     <message>
         <source>Image fusion algorithms to sharpen multispectral with high-res panchromatic channels</source>
-        <translation type="obsolete">Bildvereinigungsalgorithmus um multispektrale mit hochauflösenden-panchromatischen Kanälen zu schärfen</translation>
+        <translation>Bildvereinigungsalgorithmus um multispektrale mit hochauflösenden-panchromatischen Kanälen zu schärfen</translation>
     </message>
     <message>
         <source>Soil heat flux approximation (Bastiaanssen, 1995).</source>
-        <translation type="obsolete">Bodenwärmestromnährung (Bastiaanssen, 1995).</translation>
+        <translation>Bodenwärmestromnährung (Bastiaanssen, 1995).</translation>
     </message>
     <message>
         <source>Mosaics several images and extends colormap.</source>
-        <translation type="obsolete">Fügt mehrere Bilder zusammen und erweitert die Farbabbildung.</translation>
+        <translation>Fügt mehrere Bilder zusammen und erweitert die Farbabbildung.</translation>
     </message>
     <message>
         <source>Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.</source>
-        <translation type="obsolete">Berechnet Abstrahlung der obersten Atmosphäre/Reflektionen/Helligkeitstemperatur aus ASTER DN.</translation>
+        <translation>Berechnet Abstrahlung der obersten Atmosphäre/Reflektionen/Helligkeitstemperatur aus ASTER DN.</translation>
     </message>
     <message>
         <source>r.li.simpson.ascii - Calculates Simpson&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
     </message>
     <message>
         <source>r.stats.quantile.out - Compute category quantiles using two passes and output statistics</source>
-        <translation type="obsolete">r.stats.quantile.out - Berechne Kategoriequantile in zwei Durchgängen und Ausgabestatistik</translation>
+        <translation>r.stats.quantile.out - Berechne Kategoriequantile in zwei Durchgängen und Ausgabestatistik</translation>
     </message>
     <message>
         <source>r.li.pielou.ascii - Calculates Pielou&apos;s diversity index on a raster map </source>
-        <translation type="obsolete">r.li.pielou.ascii - Berechnet Pielou-Diversitäts-Index einer Rasterkarte</translation>
+        <translation>r.li.pielou.ascii - Berechnet Pielou-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates mean pixel attribute index on a raster map</source>
-        <translation type="obsolete">Berechnet den Mittelwert der Attribute (Rasterwerte) -Index einer Rasterkarte.</translation>
+        <translation>Berechnet den Mittelwert der Attribute (Rasterwerte) -Index einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Calculates multiple linear regression from raster maps.</source>
-        <translation type="obsolete">Berechnet eine lineare Regression von zwei Rasterkarten.</translation>
+        <translation>Berechnet eine lineare Regression von zwei Rasterkarten.</translation>
     </message>
     <message>
         <source>r.topmodel.topidxstats - Builds a TOPMODEL topographic index statistics file.</source>
-        <translation type="obsolete">r.topmodel.topidxstats - TOPMODEL topografische Indexstatistikdatei erzeugen.</translation>
+        <translation>r.topmodel.topidxstats - TOPMODEL topografische Indexstatistikdatei erzeugen.</translation>
     </message>
     <message>
         <source>Allows creation and/or modification of raster map layer support files (metadata).</source>
-        <translation type="obsolete">Erlaubt die Erzeugung und/oder Modifikation von Rasterkartenlayerunterstützungsdateien (Metadaten).</translation>
+        <translation>Erlaubt die Erzeugung und/oder Modifikation von Rasterkartenlayerunterstützungsdateien (Metadaten).</translation>
     </message>
     <message>
         <source>r.category.out - Exports category values and labels associated with user-specified raster map layers.</source>
-        <translation type="obsolete">r.category.out - Mit benutzerdefinierten Rasterkartenlayern verbundene Kategoriewerte und Beschriftungen exportieren.</translation>
+        <translation>r.category.out - Mit benutzerdefinierten Rasterkartenlayern verbundene Kategoriewerte und Beschriftungen exportieren.</translation>
     </message>
     <message>
         <source>Calculates Shannon&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
     </message>
     <message>
         <source>r.li.edgedensity.ascii - Calculates edge density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">r.li.edgedensity.ascii - Berechnet Kantendichteindex auf einer Rasterkarte mit einem 4-Nachbarn-Algorithmus</translation>
+        <translation>r.li.edgedensity.ascii - Berechnet Kantendichteindex auf einer Rasterkarte mit einem 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Raster map calculator. </source>
-        <translation type="obsolete">Rasterkartenrechner.</translation>
+        <translation>Rasterkartenrechner.</translation>
     </message>
     <message>
         <source>r.walk.coords - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from a list of coordinates.</source>
-        <translation type="obsolete">r.walk.coords - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten aus einer Koordinatenliste repräsentieren.</translation>
+        <translation>r.walk.coords - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten aus einer Koordinatenliste repräsentieren.</translation>
     </message>
     <message>
         <source>r.li.shannon.ascii - Calculates Shannon&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Calculates patch density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>Calculates mean patch size index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>Calculates standard deviation of patch area a raster map</source>
-        <translation type="obsolete">Berechnet den Standardabweichen eines Patchbereiches einer Rasterkarte</translation>
+        <translation>Berechnet den Standardabweichen eines Patchbereiches einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.what.coords - Queries raster maps on their category values and category labels on a point.</source>
-        <translation type="obsolete">r.what.coords - Rasterkarten nach Kategoriewerten und Kategoriebeschriftungen eines Punkt abfragen.</translation>
+        <translation>r.what.coords - Rasterkarten nach Kategoriewerten und Kategoriebeschriftungen eines Punkt abfragen.</translation>
     </message>
     <message>
         <source>Calculates shape index on a raster map </source>
-        <translation type="obsolete">Berechnet Shapeindex auf einer Rasterkarte</translation>
+        <translation>Berechnet Shapeindex auf einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates edge density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">Berechnet Kantendichteindex auf einer Rasterkarte mit einem 4-Nachbarn-Algorithmus</translation>
+        <translation>Berechnet Kantendichteindex auf einer Rasterkarte mit einem 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Creates/modifies the color table associated with a raster map.</source>
-        <translation type="obsolete">Erzeugt/Ändert die einer Rasterkarte zugeordnete Farbtabelle </translation>
+        <translation>Erzeugt/Ändert die einer Rasterkarte zugeordnete Farbtabelle </translation>
     </message>
     <message>
         <source>r.li.padcv.ascii - Calculates coefficient of variation of patch area on a raster map</source>
-        <translation type="obsolete">r.li.padcv.ascii - Berechnet Variationskoeffizientien eines Patchbereiches einer Rasterkarte</translation>
+        <translation>r.li.padcv.ascii - Berechnet Variationskoeffizientien eines Patchbereiches einer Rasterkarte</translation>
     </message>
     <message>
         <source>Splits a raster map into tiles</source>
-        <translation type="obsolete">Rasterkarte in Kacheln aufteilen</translation>
+        <translation>Rasterkarte in Kacheln aufteilen</translation>
     </message>
     <message>
         <source>Creates a fractal surface of a given fractal dimension.</source>
-        <translation type="obsolete">Fraktale Oberfläche einer gegeben Fraktaldimension erzeugen.</translation>
+        <translation>Fraktale Oberfläche einer gegeben Fraktaldimension erzeugen.</translation>
     </message>
     <message>
         <source>r.li.mps.ascii - Calculates mean patch size index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">r.li.mps.ascii - Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>r.li.mps.ascii - Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>Generates random surface(s) with spatial dependence.</source>
-        <translation type="obsolete">Erzeugt zufälltige Oberfläche(n) mit räumlicher Abhängigkeit.</translation>
+        <translation>Erzeugt zufälltige Oberfläche(n) mit räumlicher Abhängigkeit.</translation>
     </message>
     <message>
         <source>r.what.points - Queries raster maps on their category values and category labels on a layer of points.</source>
-        <translation type="obsolete">r.what.points - Rasterkarten nach Kategoriewerten und Kategoriebeschriftungen eines Punktlayers abfragen.</translation>
+        <translation>r.what.points - Rasterkarten nach Kategoriewerten und Kategoriebeschriftungen eines Punktlayers abfragen.</translation>
     </message>
     <message>
         <source>v.surf.rst.cvdev.line - Spatial approximation and topographic analysis using regularized spline with tension.</source>
-        <translation type="obsolete">v.surf.rst.cvdev.line - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
+        <translation>v.surf.rst.cvdev.line - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
     </message>
     <message>
         <source>Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values (low-memory alternative).</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte mit Pufferzonen um Zellen, die Nicht-NULL-Wert-Kategoriewerte haben (Alternative für wenig Speicher).</translation>
+        <translation>Erzeugt eine Rasterkarte mit Pufferzonen um Zellen, die Nicht-NULL-Wert-Kategoriewerte haben (Alternative für wenig Speicher).</translation>
     </message>
     <message>
         <source>Calculates contrast weighted edge density index on a raster map</source>
-        <translation type="obsolete">Berechnet den kontrastgewichteten Kantendichteindex einer Rasterkarte</translation>
+        <translation>Berechnet den kontrastgewichteten Kantendichteindex einer Rasterkarte</translation>
     </message>
     <message>
         <source>Manages category values and labels associated with user-specified raster map layers.</source>
-        <translation type="obsolete">Verwaltet mit benutzerdefinierten Rasterkartenlayern verbundene Katagoriewerte und -beschriftungen.</translation>
+        <translation>Verwaltet mit benutzerdefinierten Rasterkartenlayern verbundene Katagoriewerte und -beschriftungen.</translation>
     </message>
     <message>
         <source>Calculates range of patch area size on a raster map</source>
-        <translation type="obsolete">Berechnet Reichweite einer Patchbereichsgröße auf einer Rasterkarte</translation>
+        <translation>Berechnet Reichweite einer Patchbereichsgröße auf einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates richness index on a raster map</source>
-        <translation type="obsolete">Berechnet den Richness-Index einer Rasterkarte</translation>
+        <translation>Berechnet den Richness-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.stats.quantile.rast - Compute category quantiles using two passes and output rasters.</source>
-        <translation type="obsolete">r.stats.quantile.rast - Berechne Kategoriequantile in zwei Durchgängen und Ausgaberaster.</translation>
+        <translation>r.stats.quantile.rast - Berechne Kategoriequantile in zwei Durchgängen und Ausgaberaster.</translation>
     </message>
     <message>
         <source>Calculates Pielou&apos;s diversity index on a raster map </source>
-        <translation type="obsolete">Berechnet Pielou-Diversitäts-Index einer Rasterkarte</translation>
+        <translation>Berechnet Pielou-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.blend.rgb - Blends color components of two raster maps by a given ratio and exports into three rasters.</source>
-        <translation type="obsolete">r.blend.rgb - Paßt Farbkomponeten zwei Rasterkarten nach einem gegebenen Verhältnis an und exportiert sie in drei Raster.</translation>
+        <translation>r.blend.rgb - Paßt Farbkomponeten zwei Rasterkarten nach einem gegebenen Verhältnis an und exportiert sie in drei Raster.</translation>
     </message>
     <message>
         <source>Calculates coefficient of variation of patch area on a raster map</source>
-        <translation type="obsolete">Variationskoeffizienten eines Patchbereiches einer Rasterkarte berechnen.</translation>
+        <translation>Variationskoeffizienten eines Patchbereiches einer Rasterkarte berechnen.</translation>
     </message>
     <message>
         <source>Generates rate of spread raster maps.</source>
-        <translation type="obsolete">Erzeugt Rasterkarten mit Grad der Streung.</translation>
+        <translation>Erzeugt Rasterkarten mit Grad der Streung.</translation>
     </message>
     <message>
         <source>Calculates Simpson&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Makes each output cell value an accumulation function of the values assigned to the corresponding cells in the input raster map layers.</source>
-        <translation type="obsolete">Jede Ausgabezelle zur Akkumulationsfunktion der den korrespondierenden Zellen zugeordneten Werten des Eingaberasterkartenlayers machen.</translation>
+        <translation>Jede Ausgabezelle zur Akkumulationsfunktion der den korrespondierenden Zellen zugeordneten Werten des Eingaberasterkartenlayers machen.</translation>
     </message>
     <message>
         <source>Computes USLE R factor, Rainfall erosivity index.</source>
-        <translation type="obsolete">USLE-R-Faktor berechnen.  Niederschlagserosionsindex.</translation>
+        <translation>USLE-R-Faktor berechnen.  Niederschlagserosionsindex.</translation>
     </message>
     <message>
         <source>Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.</source>
-        <translation type="obsolete">Interpoliert Rasterkarten die (zeitlich oder räumlich) zwischen zwei Eingaberasterkarten an bestimmten Abtastpositionen liegen.</translation>
+        <translation>Interpoliert Rasterkarten die (zeitlich oder räumlich) zwischen zwei Eingaberasterkarten an bestimmten Abtastpositionen liegen.</translation>
     </message>
     <message>
         <source>Imagery (i.*)</source>
-        <translation type="obsolete">Bildbearbeitung (i.*)</translation>
+        <translation>Bildbearbeitung (i.*)</translation>
     </message>
     <message>
         <source>r.li.cwed.ascii - Calculates contrast weighted edge density index on a raster map</source>
-        <translation type="obsolete">r.li.cwed.ascii - Berechnet den kontrastgewichteten Kantendichteindex einer Rasterkarte</translation>
+        <translation>r.li.cwed.ascii - Berechnet den kontrastgewichteten Kantendichteindex einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.mask.vect - Creates a MASK for limiting raster operation with a vector layer.</source>
-        <translation type="obsolete">r.mask.vect - MASKe zur Begrenzung der Rasteroperation mit einem Vektorlayer erzeugen.</translation>
+        <translation>r.mask.vect - MASKe zur Begrenzung der Rasteroperation mit einem Vektorlayer erzeugen.</translation>
     </message>
     <message>
         <source>Creates topographic index layer from elevation raster layer</source>
-        <translation type="obsolete">Erstellt Karte mit topographischem Index auf Basis eines digitalen Höhenmodells</translation>
+        <translation>Erstellt Karte mit topographischem Index auf Basis eines digitalen Höhenmodells</translation>
     </message>
     <message>
         <source>Calculates Renyi&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">Berechnet Renyi-Diversitäts-Index einer Rasterkarte</translation>
+        <translation>Berechnet Renyi-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>Resamples raster map layers using an analytic kernel.</source>
-        <translation type="obsolete">Erzeugt eine neue Rasterkarte mit einem analytischen Kern.</translation>
+        <translation>Erzeugt eine neue Rasterkarte mit einem analytischen Kern.</translation>
     </message>
     <message>
         <source>Exports the color table associated with a raster map.</source>
-        <translation type="obsolete">Exportiert die einer Rasterkarte zugeordnete Farbtabelle.</translation>
+        <translation>Exportiert die einer Rasterkarte zugeordnete Farbtabelle.</translation>
     </message>
     <message>
         <source>Queries colors for a raster map layer. </source>
-        <translation type="obsolete">Fragt Farben einer Rasterkarte ab.</translation>
+        <translation>Fragt Farben einer Rasterkarte ab.</translation>
     </message>
     <message>
         <source>Splits a raster map into red, green and blue maps.</source>
-        <translation type="obsolete">Teilt einer Rasterkarte in rote grüne und blaue Karten.</translation>
+        <translation>Teilt einer Rasterkarte in rote grüne und blaue Karten.</translation>
     </message>
     <message>
         <source>Computes USLE Soil Erodibility Factor (K).</source>
-        <translation type="obsolete">Berechnet USLE-Bodenerosionsfaktor (K).</translation>
+        <translation>Berechnet USLE-Bodenerosionsfaktor (K).</translation>
     </message>
     <message>
         <source>r.li.dominance.ascii - Calculates dominance&apos;s diversity index on a raster map</source>
-        <translation type="obsolete">r.li.dominance.ascii - Berechnet Dominanzdiversitätsindex einer Rasterkarte</translation>
+        <translation>r.li.dominance.ascii - Berechnet Dominanzdiversitätsindex einer Rasterkarte</translation>
     </message>
     <message>
         <source>Locates the closest points between objects in two raster maps.</source>
-        <translation type="obsolete">Nächste Punkte zwischen Objekten in zwei Rasterkasten bestimmen</translation>
+        <translation>Nächste Punkte zwischen Objekten in zwei Rasterkasten bestimmen</translation>
     </message>
     <message>
         <source>r.li.padsd.ascii - Calculates standard deviation of patch area a raster map</source>
-        <translation type="obsolete">r.li.padsd.ascii - Berechnet den Standardabweichen eines Patchbereiches einer Rasterkarte</translation>
+        <translation>r.li.padsd.ascii - Berechnet den Standardabweichen eines Patchbereiches einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.walk.rast - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from a raster.</source>
-        <translation type="obsolete">r.walk.rast - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten aus einer Rasterkarte repräsentieren.</translation>
+        <translation>r.walk.rast - Rasterkarte aus der kommulierten Kosten für die Bewegung zwischen zwei verschiedenen geographischen Orten auf einer Eingaberasterkarte deren Zellen Kategoriewerte Kosten aus einer Rasterkarte repräsentieren.</translation>
     </message>
     <message>
         <source>r.li.patchnum.ascii - Calculates patch number index on a raster map, using a 4 neighbour algorithm.</source>
-        <translation type="obsolete">r.li.patchnum.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>r.li.patchnum.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>r.li.patchdensity.ascii - Calculates patch density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation type="obsolete">r.li.patchdensity.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>r.li.patchdensity.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
     </message>
     <message>
         <source>Numerical calculation program for transient, confined and unconfined solute transport in two dimensions</source>
-        <translation type="obsolete">Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen.</translation>
+        <translation>Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen.</translation>
     </message>
     <message>
         <source>Creates a latitude/longitude raster map.</source>
-        <translation type="obsolete">Erzeugt eine Breiten-/Längengrad-Rasterkarte.</translation>
+        <translation>Erzeugt eine Breiten-/Längengrad-Rasterkarte.</translation>
     </message>
     <message>
         <source>Simulates TOPMODEL which is a physically based hydrologic model.</source>
-        <translation type="obsolete">Simuliert TOPMODEL (physikbasiertes hydrologisches Modell)</translation>
+        <translation>Simuliert TOPMODEL (physikbasiertes hydrologisches Modell)</translation>
     </message>
     <message>
         <source>Simulates elliptically anisotropic spread.</source>
-        <translation type="obsolete">Simuliert elliptische antisotropische Streung.</translation>
+        <translation>Simuliert elliptische antisotropische Streung.</translation>
     </message>
     <message>
         <source>Drapes a color raster over an shaded relief or aspect map. </source>
-        <translation type="obsolete">Drapiert eine Rasterkarte mit Farbwerten über Schummerungs- oder Expositionskarte</translation>
+        <translation>Drapiert eine Rasterkarte mit Farbwerten über Schummerungs- oder Expositionskarte</translation>
     </message>
     <message>
         <source>Exports GRASS vector map layers to DXF file format.</source>
-        <translation type="obsolete">GRASS-Vektor in DXF-Datei exportieren.</translation>
+        <translation>GRASS-Vektor in DXF-Datei exportieren.</translation>
     </message>
     <message>
         <source>Generates a raster layer with contiguous areas grown by one cell.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte mit kontinuierlich um eine Zelle gewachsenen Flächen.</translation>
+        <translation>Erzeugt eine Rasterkarte mit kontinuierlich um eine Zelle gewachsenen Flächen.</translation>
     </message>
     <message>
         <source>Converts a raster layer to a PPM image file at the pixel resolution of the currently defined region.</source>
-        <translation type="obsolete">Wandelt einen Rasterlayer in eine PPM-Bilddatie in der Auflösung der aktuellen Region.</translation>
+        <translation>Wandelt einen Rasterlayer in eine PPM-Bilddatie in der Auflösung der aktuellen Region.</translation>
     </message>
     <message>
         <source>Generates random cell values with spatial dependence.</source>
-        <translation type="obsolete">Erzeugt zufällig Zellwerte mit räumlicher Abhängigkeit.</translation>
+        <translation>Erzeugt zufällig Zellwerte mit räumlicher Abhängigkeit.</translation>
     </message>
     <message>
         <source>Compares bit patterns with a raster map.</source>
-        <translation type="obsolete">Vergleicht Bitmuster mit Rastern.</translation>
+        <translation>Vergleicht Bitmuster mit Rastern.</translation>
     </message>
     <message>
         <source>Bilinear interpolation utility for raster map layers.</source>
-        <translation type="obsolete">Bilineare Interpolationswerkzeug für Rasterkarten.</translation>
+        <translation>Bilineare Interpolationswerkzeug für Rasterkarten.</translation>
     </message>
     <message>
         <source>Stream network extraction</source>
-        <translation type="obsolete">Stromnetzwerkextraktion</translation>
+        <translation>Stromnetzwerkextraktion</translation>
     </message>
     <message>
         <source>Miscellaneous (m.*)</source>
-        <translation type="obsolete">Verschiedenes (m.*)</translation>
+        <translation>Verschiedenes (m.*)</translation>
     </message>
     <message>
         <source>Create a new vector map layer by combining other vector map layers.</source>
-        <translation type="obsolete">Erzeugt eine neue Vektorkarte durch Kombination anderer Vektorkarten.</translation>
+        <translation>Erzeugt eine neue Vektorkarte durch Kombination anderer Vektorkarten.</translation>
     </message>
     <message>
         <source>Performs an affine transformation on a vector layer.</source>
-        <translation type="obsolete">Führt eine affine Transformation von Vektorkarten durch.</translation>
+        <translation>Führt eine affine Transformation von Vektorkarten durch.</translation>
     </message>
     <message>
         <source>Fills no-data areas in a raster layer using v.surf.rst splines interpolation or v.surf.bspline interpolation</source>
-        <translation type="obsolete">Leerflächen in Raster nach v.surf.rst oder v.surf.bspline Spline-Interpolation füllen</translation>
+        <translation>Leerflächen in Raster nach v.surf.rst oder v.surf.bspline Spline-Interpolation füllen</translation>
     </message>
     <message>
         <source>Reinterpolates using regularized spline with tension and smoothing.</source>
-        <translation type="obsolete">Reinterpoliert mit RST und Glättung.</translation>
+        <translation>Reinterpoliert mit RST und Glättung.</translation>
     </message>
     <message>
         <source>Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.</source>
-        <translation type="obsolete">Das Modul verfolgt den kürzesten Weg rekursiv zurück zu den Zellen, von denen der kumulative Weg bestimmt wurde.</translation>
+        <translation>Das Modul verfolgt den kürzesten Weg rekursiv zurück zu den Zellen, von denen der kumulative Weg bestimmt wurde.</translation>
     </message>
     <message>
         <source>Creates parallel line to input vector lines.</source>
-        <translation type="obsolete">Parallele Linien zu Eingabevektorlinien erzeugen.</translation>
+        <translation>Parallele Linien zu Eingabevektorlinien erzeugen.</translation>
     </message>
     <message>
         <source>Recodes categorical raster maps.</source>
-        <translation type="obsolete">Kodiert kategorische Rasterkarten um.</translation>
+        <translation>Kodiert kategorische Rasterkarten um.</translation>
     </message>
     <message>
         <source>Horizon angle computation from a digital elevation model.</source>
-        <translation type="obsolete">Berechnung des Horizontwinkel auf Grundlage eines digitalen Höhenmodells.</translation>
+        <translation>Berechnung des Horizontwinkel auf Grundlage eines digitalen Höhenmodells.</translation>
     </message>
     <message>
         <source>r.cost.points - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">r.rast.points - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>r.rast.points - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation type="obsolete">GRASS-Vektor in GRIDATB.FOR Kartendatei (TOPMODEL) speichern</translation>
+        <translation>GRASS-Vektor in GRIDATB.FOR Kartendatei (TOPMODEL) speichern</translation>
     </message>
     <message>
         <source>r.cost.raster - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">r.cost.raster - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>r.cost.raster - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>r.cost.coordinates - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">r.cost.coordinates - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>r.cost.coordinates - Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>Finds the average of values in a cover raster layer  within areas assigned the same category value in a user-specified base layer.</source>
-        <translation type="obsolete">Findet den Durchschnitt der Werte in einer Überlagerungskarte innerhalb gleicher Kategorien in einer benutzer-angegebenen Ausgangskarte.</translation>
+        <translation>Findet den Durchschnitt der Werte in einer Überlagerungskarte innerhalb gleicher Kategorien in einer benutzer-angegebenen Ausgangskarte.</translation>
     </message>
     <message>
         <source>Indices for quadrat counts of vector point lists.</source>
-        <translation type="obsolete">Indizes der Quadrat-Zählmethode aus Vektorpunktliste.</translation>
+        <translation>Indizes der Quadrat-Zählmethode aus Vektorpunktliste.</translation>
     </message>
     <message>
         <source>Detects the object&apos;s edges from a LIDAR data set.</source>
-        <translation type="obsolete">Bestimmt die Kanten eines Objekte aus einem LIDAR-Datensatz.</translation>
+        <translation>Bestimmt die Kanten eines Objekte aus einem LIDAR-Datensatz.</translation>
     </message>
     <message>
         <source>Thins non-zero cells that denote linear features in a raster layer.</source>
-        <translation type="obsolete">Dünne nicht-Null-Zellen aus, die Linieneigenschaften bezeichnen.</translation>
+        <translation>Dünne nicht-Null-Zellen aus, die Linieneigenschaften bezeichnen.</translation>
     </message>
     <message>
         <source>Import GetFeature from WFS</source>
-        <translation type="obsolete">Importiert GetFeature eines WFS</translation>
+        <translation>Importiert GetFeature eines WFS</translation>
     </message>
     <message>
         <source>Produces a raster layer of uniform random deviates whose range can be expressed by the user.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte mit zufälligen Werten einer Gleichverteilung, deren Spanne vom Benutzer angegeben werden kann.</translation>
+        <translation>Erzeugt eine Rasterkarte mit zufälligen Werten einer Gleichverteilung, deren Spanne vom Benutzer angegeben werden kann.</translation>
     </message>
     <message>
         <source>Produces the quantization file for a floating-point map.</source>
-        <translation type="obsolete">Quantisierungsdatei zu Fließkommaraster erzeugen.</translation>
+        <translation>Quantisierungsdatei zu Fließkommaraster erzeugen.</translation>
     </message>
     <message>
         <source>Creates a GRASS vector layer of a user-defined grid.</source>
-        <translation type="obsolete">Erzeugt eine GRASS Vektorkarte mit einem benutzerdefinierten Gitternetz.</translation>
+        <translation>Erzeugt eine GRASS Vektorkarte mit einem benutzerdefinierten Gitternetz.</translation>
     </message>
     <message>
         <source>Extracts terrain parameters from a DEM.</source>
-        <translation type="obsolete">Geländeparameter aus DEM extrahieren.</translation>
+        <translation>Geländeparameter aus DEM extrahieren.</translation>
     </message>
     <message>
         <source>Creates a composite raster layer by using one (or more) layer(s) to fill in areas of &quot;no data&quot; in another map layer.</source>
-        <translation type="obsolete">Erstellt eine Komposit-Karte, indem bekannte Kategorie-Werte einer (oder mehrerer) Rasterkarte(n) in &quot;NO DATA&quot;-Bereiche einer anderen Rasterkarte gefüllt werden.</translation>
+        <translation>Erstellt eine Komposit-Karte, indem bekannte Kategorie-Werte einer (oder mehrerer) Rasterkarte(n) in &quot;NO DATA&quot;-Bereiche einer anderen Rasterkarte gefüllt werden.</translation>
     </message>
     <message>
         <source>Raster (r.*)</source>
-        <translation type="obsolete">Raster (r.*)</translation>
+        <translation>Raster (r.*)</translation>
     </message>
     <message>
         <source>Spatial approximation and topographic analysis using regularized spline with tension.</source>
-        <translation type="obsolete">Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
+        <translation>Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
     </message>
     <message>
         <source>Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.</source>
-        <translation type="obsolete">Rastertransformationfunktion für HIS- (Hue-Intensity-Saturation) in RGB-Farbraum (Rot-Grün-Blau).</translation>
+        <translation>Rastertransformationfunktion für HIS- (Hue-Intensity-Saturation) in RGB-Farbraum (Rot-Grün-Blau).</translation>
     </message>
     <message>
         <source>Correction of the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.</source>
-        <translation type="obsolete">Korrektur der v.lidar.growing Ausgabe. Das ist der letzte von 3 Algorithmen um LIDAR zu filtern.</translation>
+        <translation>Korrektur der v.lidar.growing Ausgabe. Das ist der letzte von 3 Algorithmen um LIDAR zu filtern.</translation>
     </message>
     <message>
         <source>Generates watershed subbasins raster map.</source>
-        <translation type="obsolete">Erzeugt Rasterkarte mit Wassereinzugsgebieten.</translation>
+        <translation>Erzeugt Rasterkarte mit Wassereinzugsgebieten.</translation>
     </message>
     <message>
         <source>r.flow.aspect - Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).</source>
-        <translation type="obsolete">r.flow.aspect - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
+        <translation>r.flow.aspect - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
     </message>
     <message>
         <source>Outputs a covariance/correlation matrix for user-specified raster layer(s).</source>
-        <translation type="obsolete">Gibt eine Kovarianz/Korrelations-Matrix für (eine) benutzerdefiniert Rasterkarte(n) aus.</translation>
+        <translation>Gibt eine Kovarianz/Korrelations-Matrix für (eine) benutzerdefiniert Rasterkarte(n) aus.</translation>
     </message>
     <message>
         <source>Compute quantiles using two passes.</source>
-        <translation type="obsolete">Berechne Quantile in zwei Durchgängen.</translation>
+        <translation>Berechne Quantile in zwei Durchgängen.</translation>
     </message>
     <message>
         <source>Vector (v.*)</source>
-        <translation type="obsolete">Vektor (v.*)</translation>
+        <translation>Vektor (v.*)</translation>
     </message>
     <message>
         <source>Classifies attribute data, e.g. for thematic mapping.</source>
-        <translation type="obsolete">Klassifiziert Attributdaten, z.B. für thematische Karten.</translation>
+        <translation>Klassifiziert Attributdaten, z.B. für thematische Karten.</translation>
     </message>
     <message>
         <source>Random location perturbations of GRASS vector points</source>
-        <translation type="obsolete">Zufällige Positionsstörung von GRASS-Vektorpunkten</translation>
+        <translation>Zufällige Positionsstörung von GRASS-Vektorpunkten</translation>
     </message>
     <message>
         <source>Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.</source>
-        <translation type="obsolete">Ändert die Kategorien einer existierenden Vektorkarte entsprechend den Ergebnissen der SQL-Abfragen oder der Werte einer Spalte der Attributtabelle.</translation>
+        <translation>Ändert die Kategorien einer existierenden Vektorkarte entsprechend den Ergebnissen der SQL-Abfragen oder der Werte einer Spalte der Attributtabelle.</translation>
     </message>
     <message>
         <source>Reports statistics for raster layers.</source>
-        <translation type="obsolete">Gibt statistische Werte für eine Rasterkarte aus.</translation>
+        <translation>Gibt statistische Werte für eine Rasterkarte aus.</translation>
     </message>
     <message>
         <source>r.relief.scaling - Creates shaded relief from an elevation layer (DEM).</source>
-        <translation type="obsolete">r.relief.scaling - Erzeugt eine Schummerungskarte aus einem Höhenmodell (DGM).</translation>
+        <translation>r.relief.scaling - Erzeugt eine Schummerungskarte aus einem Höhenmodell (DGM).</translation>
     </message>
     <message>
         <source>Randomly generate a 2D/3D vector points map.</source>
-        <translation type="obsolete">Zufällige 2D/3D-Vektorpunktkarte erzeugen.</translation>
+        <translation>Zufällige 2D/3D-Vektorpunktkarte erzeugen.</translation>
     </message>
     <message>
         <source>Generates a raster density map from vector point data using a moving kernel or optionally generates a vector density map on a vector network.</source>
-        <translation type="obsolete">Erzeugt eine Raster-Dichtekarte aus Vektorpunkten unter Verwendung eines gleitenden Kerns. Optional kann eine Vektor-Dichtekarte basierend auf einem Vektornetzwerk erstellt werden.</translation>
+        <translation>Erzeugt eine Raster-Dichtekarte aus Vektorpunkten unter Verwendung eines gleitenden Kerns. Optional kann eine Vektor-Dichtekarte basierend auf einem Vektornetzwerk erstellt werden.</translation>
     </message>
     <message>
         <source>Resamples raster layers to a coarser grid using aggregation.</source>
-        <translation type="obsolete">Erzeugt eine neue Rasterkarte gröberer Auflösung mittels Aggregation.</translation>
+        <translation>Erzeugt eine neue Rasterkarte gröberer Auflösung mittels Aggregation.</translation>
     </message>
     <message>
         <source>Indices for quadrant counts of sites lists.</source>
-        <translation type="obsolete">Indizes der Quadrat-Zählmethode aus Siteliste.</translation>
+        <translation>Indizes der Quadrat-Zählmethode aus Siteliste.</translation>
     </message>
     <message>
         <source>Calculates category or object oriented statistics.</source>
-        <translation type="obsolete">Berechnet Kategorie- oder objektorientierte Statistik.</translation>
+        <translation>Berechnet Kategorie- oder objektorientierte Statistik.</translation>
     </message>
     <message>
         <source>Create points along input lines</source>
-        <translation type="obsolete">Punkte entlang von Eingabelinien erzeugen</translation>
+        <translation>Punkte entlang von Eingabelinien erzeugen</translation>
     </message>
     <message>
         <source>Computes minimum spanning tree for the network.</source>
-        <translation type="obsolete">Berechnet den minimalen Spannbaum eines Netzwerks.</translation>
+        <translation>Berechnet den minimalen Spannbaum eines Netzwerks.</translation>
     </message>
     <message>
         <source>Computes the shortest path between all pairs of nodes in the network</source>
-        <translation type="obsolete">Berechnet die kürzesten Pfad zwischen allen Knotenpaaren eines Netzwerkes.</translation>
+        <translation>Berechnet die kürzesten Pfad zwischen allen Knotenpaaren eines Netzwerkes.</translation>
     </message>
     <message>
         <source>Computes vertex connectivity between two sets of nodes in the network.</source>
-        <translation type="obsolete">Berechnet die Stützpunktverbindungen zwischen zwei Knotenmengen im Netzwerk.</translation>
+        <translation>Berechnet die Stützpunktverbindungen zwischen zwei Knotenmengen im Netzwerk.</translation>
     </message>
     <message>
         <source>Creates Steiner tree for the network and given terminals</source>
-        <translation type="obsolete">Erzeugt einen Steinerbaum für das Netzwerk und gegebenen Enden</translation>
+        <translation>Erzeugt einen Steinerbaum für das Netzwerk und gegebenen Enden</translation>
     </message>
     <message>
         <source>v.net.report - Reports lines information of a network</source>
-        <translation type="obsolete">v.net.report - Berichte zu Kanteninformationen eines Netzwerks</translation>
+        <translation>v.net.report - Berichte zu Kanteninformationen eines Netzwerks</translation>
     </message>
     <message>
         <source>Performs visibility graph construction.</source>
-        <translation type="obsolete">Erstellt Sichtbarkeitsgraphen</translation>
+        <translation>Erstellt Sichtbarkeitsgraphen</translation>
     </message>
     <message>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result.</source>
-        <translation type="obsolete">Fehlermatrix und Kappa-Parameter für Genauigkeitsbewertung von Klassifikationsergebnissen berechnen.</translation>
+        <translation>Fehlermatrix und Kappa-Parameter für Genauigkeitsbewertung von Klassifikationsergebnissen berechnen.</translation>
     </message>
     <message>
         <source>Flow computation for massive grids.</source>
-        <translation type="obsolete">Flußberechnung für massive Raster.</translation>
+        <translation>Flußberechnung für massive Raster.</translation>
     </message>
     <message>
         <source>r.aspect - Generates raster maps of aspect from an elevation raster map.</source>
-        <translation type="obsolete">r.slope.apect - Erzeugt Rasterkarten mit Exposition aus einer Rasterkarte mit Höheninformationen.</translation>
+        <translation>r.slope.apect - Erzeugt Rasterkarten mit Exposition aus einer Rasterkarte mit Höheninformationen.</translation>
     </message>
     <message>
         <source>Computes emissivity from NDVI, generic method for sparse land. </source>
-        <translation type="obsolete">Ermittelt Emissivität aus NDVI, generische Methode für karges Land.</translation>
+        <translation>Ermittelt Emissivität aus NDVI, generische Methode für karges Land.</translation>
     </message>
     <message>
         <source>Calculates univariate statistics from the non-null cells of a raster map.</source>
-        <translation type="obsolete">Eindimensionale Statistik des Nicht-Null-Zellen eines Rasters berechnen.</translation>
+        <translation>Eindimensionale Statistik des Nicht-Null-Zellen eines Rasters berechnen.</translation>
     </message>
     <message>
         <source>Surface interpolation from vector point data by Inverse Distance Squared Weighting.</source>
-        <translation type="obsolete">Oberflächeninterpolation mit auf Vektorpunkten basierender inverser quadratischer Abstandsgewichtung.</translation>
+        <translation>Oberflächeninterpolation mit auf Vektorpunkten basierender inverser quadratischer Abstandsgewichtung.</translation>
     </message>
     <message>
         <source>Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).</source>
-        <translation type="obsolete">r.flow.aspect - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
+        <translation>r.flow.aspect - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
     </message>
     <message>
         <source>A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system</source>
-        <translation type="obsolete">Ein einfaches Hilfsprogramm, dass Kurs- und Distanzwert in Koordinaten umrechnet und umgekehrt.  Es setzt ein kartesisches Koordinatensystem voraus</translation>
+        <translation>Ein einfaches Hilfsprogramm, dass Kurs- und Distanzwert in Koordinaten umrechnet und umgekehrt.  Es setzt ein kartesisches Koordinatensystem voraus</translation>
     </message>
     <message>
         <source>Surface generation.</source>
-        <translation type="obsolete">Oberflächenerzeugung.</translation>
+        <translation>Oberflächenerzeugung.</translation>
     </message>
     <message>
         <source>Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.</source>
-        <translation type="obsolete">Erzeugt Rasterkarten mit Hangneigung, Exposition, Wölbung und partiellen Ableitungen aus einer Rasterkarte mit Höheninformationen.</translation>
+        <translation>Erzeugt Rasterkarten mit Hangneigung, Exposition, Wölbung und partiellen Ableitungen aus einer Rasterkarte mit Höheninformationen.</translation>
     </message>
     <message>
         <source>Simulates elliptically anisotropic spread on a graphics window and generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins.</source>
-        <translation type="obsolete">Simuliert elliptische anisotrophe Ausbreitung in einem Grafikfenster und erzeugt eine Rasterkarte mit der kumulativen Ausbreitungszeit. Als Ausgangskarten dienen die Ausbreitungsgeschwindigkeit, Ausbreitungsrichtung und der Ursprung.</translation>
+        <translation>Simuliert elliptische anisotrophe Ausbreitung in einem Grafikfenster und erzeugt eine Rasterkarte mit der kumulativen Ausbreitungszeit. Als Ausgangskarten dienen die Ausbreitungsgeschwindigkeit, Ausbreitungsrichtung und der Ursprung.</translation>
     </message>
     <message>
         <source>Tests for normality for points.</source>
-        <translation type="obsolete">Tests der Normalität auf Vektor-Punkten.</translation>
+        <translation>Tests der Normalität auf Vektor-Punkten.</translation>
     </message>
     <message>
         <source>Calculates linear regression from two raster layers : y = a + b*x.</source>
-        <translation type="obsolete">Berechnet lineare Regression zweier Raster: y = a + b*x.</translation>
+        <translation>Berechnet lineare Regression zweier Raster: y = a + b*x.</translation>
     </message>
     <message>
         <source>Finds the mode of values in a cover layer within areas assigned the same category value in a user-specified base layer.</source>
-        <translation type="obsolete">Findet den Modalwert der Werte einer Bedeckungskarte innerhalb der Flächen mit gleichen Werten in einer benutzerdefinierten Basiskarte.</translation>
+        <translation>Findet den Modalwert der Werte einer Bedeckungskarte innerhalb der Flächen mit gleichen Werten in einer benutzerdefinierten Basiskarte.</translation>
     </message>
     <message>
         <source>r.flow.barrier - Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).</source>
-        <translation type="obsolete">r.flow.barrier - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
+        <translation>r.flow.barrier - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
     </message>
     <message>
         <source>Reports geometry statistics for vectors.</source>
-        <translation type="obsolete">Gibt statistische Werte für Geometrie der Vektorobjekte aus.</translation>
+        <translation>Gibt statistische Werte für Geometrie der Vektorobjekte aus.</translation>
     </message>
     <message>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization.</source>
-        <translation type="obsolete">Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
+        <translation>Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
     </message>
     <message>
         <source>Watershed basin creation program.</source>
-        <translation type="obsolete">Wassereinzugsgebietserzeugungsprogramm.</translation>
+        <translation>Wassereinzugsgebietserzeugungsprogramm.</translation>
     </message>
     <message>
         <source>Resamples raster map to a finer grid using interpolation.</source>
-        <translation type="obsolete">Erzeugt eine neue Rasterkarte mit feinerer Auflösung mittels Interpolation.</translation>
+        <translation>Erzeugt eine neue Rasterkarte mit feinerer Auflösung mittels Interpolation.</translation>
     </message>
     <message>
         <source>Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.</source>
-        <translation type="obsolete">Erzeugt rot, grün und blaue Rasterkarten durch Kombination des Farbtons, der Intensität und Sättigung (HIS) aus Eingabe-Rasterkarten.</translation>
+        <translation>Erzeugt rot, grün und blaue Rasterkarten durch Kombination des Farbtons, der Intensität und Sättigung (HIS) aus Eingabe-Rasterkarten.</translation>
     </message>
     <message>
         <source>Produces tilings of the source projection for use in the destination region and projection.</source>
-        <translation type="obsolete">Erzeugt Kacheln der Quellprojektion zur Verwendung in der Zielregion und Projektion.</translation>
+        <translation>Erzeugt Kacheln der Quellprojektion zur Verwendung in der Zielregion und Projektion.</translation>
     </message>
     <message>
         <source>r.li.richness.ascii - Calculates richness index on a raster map</source>
-        <translation type="obsolete">r.li.richness.ascii - Berechet Richness-Index einer Rasterkarte</translation>
+        <translation>r.li.richness.ascii - Berechet Richness-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.li.mpa.ascii - Calculates mean pixel attribute index on a raster map</source>
-        <translation type="obsolete">r.li.mpa.ascii - Ermittelt mittleren Pixelattributindex einer Rasterkarte</translation>
+        <translation>r.li.mpa.ascii - Ermittelt mittleren Pixelattributindex einer Rasterkarte</translation>
     </message>
     <message>
         <source>Sets color rules based on stddev from a raster map&apos;s mean value.</source>
-        <translation type="obsolete">Setzt Farbregeln basierend auf Standardabweichung des Mittelwerts eines Raster</translation>
+        <translation>Setzt Farbregeln basierend auf Standardabweichung des Mittelwerts eines Raster</translation>
     </message>
     <message>
         <source>Generate images with textural features from a raster map.</source>
-        <translation type="obsolete">Bilder mit Texteigenschaften einer Rasterkarte erzeugen.</translation>
+        <translation>Bilder mit Texteigenschaften einer Rasterkarte erzeugen.</translation>
     </message>
     <message>
         <source>r.li.padrange.ascii - Calculates range of patch area size on a raster map</source>
-        <translation type="obsolete">r.li.padrange.ascii - Berechnet Reichweite einer Patchbereichsgröße auf einer Rasterkarte</translation>
+        <translation>r.li.padrange.ascii - Berechnet Reichweite einer Patchbereichsgröße auf einer Rasterkarte</translation>
     </message>
     <message>
         <source>Creates a Delaunay triangulation from an input vector map containing points or centroids.</source>
-        <translation type="obsolete">Erzeugt eine Delaunay-Triangulation auf Basis einer Eingabe-Vektorkarte mit Punkten oder Zentroiden.</translation>
+        <translation>Erzeugt eine Delaunay-Triangulation auf Basis einer Eingabe-Vektorkarte mit Punkten oder Zentroiden.</translation>
     </message>
     <message>
         <source>Generates three, or four raster map layers showing 1) the base (perpendicular) rate of spread (ROS), 2) the maximum (forward) ROS, 3) the direction of the maximum ROS, and optionally 4) the maximum potential spotting distance.</source>
-        <translation type="obsolete">Erstellt drei oder vier Rasterkarten, die 1) die Basisrate der (rechtwinkligen) Ausbreitungsgeschwindigkeit, 2) die maximale (Vorwärts-) Geschwindigkeit, 3) die Richtung der größten Ausbreitungsgeschwindigkeit und optional 4) die maximale Entdeckungsentfernung.</translation>
+        <translation>Erstellt drei oder vier Rasterkarten, die 1) die Basisrate der (rechtwinkligen) Ausbreitungsgeschwindigkeit, 2) die maximale (Vorwärts-) Geschwindigkeit, 3) die Richtung der größten Ausbreitungsgeschwindigkeit und optional 4) die maximale Entdeckungsentfernung.</translation>
     </message>
     <message>
         <source>Resamples a raster map layer to a finer grid using interpolation.</source>
-        <translation type="obsolete">Erzeugt eine neue Rasterkarte mit feinerer Auflösung mittels Interpolation.</translation>
+        <translation>Erzeugt eine neue Rasterkarte mit feinerer Auflösung mittels Interpolation.</translation>
     </message>
     <message>
         <source>Generates area statistics for raster layers.</source>
-        <translation type="obsolete">Erzeugt Flächenstatistiken für Rasterkarten.</translation>
+        <translation>Erzeugt Flächenstatistiken für Rasterkarten.</translation>
     </message>
     <message>
         <source>Traces a flow through an elevation model on a raster map.</source>
-        <translation type="obsolete">Verfolge eine Strömung durch ein Höhenmodell auf einer Rasterkarte.</translation>
+        <translation>Verfolge eine Strömung durch ein Höhenmodell auf einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Finds the median of values in a cover layer within areas assigned the same category value in a user-specified base layer.</source>
-        <translation type="obsolete">Findet den Median der Werte einer Coverkarte innerhalb der Flächen mit gleichen Werten in einer benutzerdefinierten Basiskarte.</translation>
+        <translation>Findet den Median der Werte einer Coverkarte innerhalb der Flächen mit gleichen Werten in einer benutzerdefinierten Basiskarte.</translation>
     </message>
     <message>
         <source>Produces a convex hull for a given vector map.</source>
-        <translation type="obsolete">Erzeugt eine konvexe Hülle für eine Vektorkarte.</translation>
+        <translation>Erzeugt eine konvexe Hülle für eine Vektorkarte.</translation>
     </message>
     <message>
         <source>r.random.raster - Create random raster</source>
-        <translation type="obsolete">r.random.raster - Zufälliges Raster erzeugen</translation>
+        <translation>r.random.raster - Zufälliges Raster erzeugen</translation>
     </message>
     <message>
         <source>Creates points/segments from input vector lines and positions.</source>
-        <translation type="obsolete">Punkte/Segmente von Eingabevektorlinien und -positionen bilden.</translation>
+        <translation>Punkte/Segmente von Eingabevektorlinien und -positionen bilden.</translation>
     </message>
     <message>
         <source>Samples a raster layer at vector point locations.</source>
-        <translation type="obsolete">Fragt eine Rasterkarte an den Positionen von Vektorpunkten ab.</translation>
+        <translation>Fragt eine Rasterkarte an den Positionen von Vektorpunkten ab.</translation>
     </message>
     <message>
         <source>Creates a new map layer whose category values are based upon a reclassification of the categories in an existing raster map layer.</source>
-        <translation type="obsolete">Neue Karte erzeugen, deren Kategoriewerte auf einer Reklassifikation der Kategorien einer existierenden Rasterkarte basieren.</translation>
+        <translation>Neue Karte erzeugen, deren Kategoriewerte auf einer Reklassifikation der Kategorien einer existierenden Rasterkarte basieren.</translation>
     </message>
     <message>
         <source>Transforms raster maps from HIS (Hue-Intensity-Saturation) color space to RGB (Red-Green-Blue) color space.</source>
-        <translation type="obsolete">Rastertransformationfunktion für HIS- (Hue-Intensity-Saturation) in RGB-Farbraum (Rot-Grün-Blau).</translation>
+        <translation>Rastertransformationfunktion für HIS- (Hue-Intensity-Saturation) in RGB-Farbraum (Rot-Grün-Blau).</translation>
     </message>
     <message>
         <source>Toolset for cleaning topology of vector map.</source>
-        <translation type="obsolete">Werkzeugsatz für die Bereinigung der Topologie einer Vektorkarte.</translation>
+        <translation>Werkzeugsatz für die Bereinigung der Topologie einer Vektorkarte.</translation>
     </message>
     <message>
         <source>Calculates univariate statistics for attribute. Variance and standard deviation is calculated only for points if specified.</source>
-        <translation type="obsolete">Berechnet univariate Statistiken für die Attribute. Die Varianz und Standardabweichung wird nur für Punkte berechnet wenn angefragt.</translation>
+        <translation>Berechnet univariate Statistiken für die Attribute. Die Varianz und Standardabweichung wird nur für Punkte berechnet wenn angefragt.</translation>
     </message>
     <message>
         <source>Zero-crossing &quot;edge detection&quot; raster function for image processing.</source>
-        <translation type="obsolete">Nulldurchgangskantendetektionsrasterfunktion für die Bildverarbeitung.</translation>
+        <translation>Nulldurchgangskantendetektionsrasterfunktion für die Bildverarbeitung.</translation>
     </message>
     <message>
         <source>Prints vector map attributes</source>
-        <translation type="obsolete">Gebe Vektorattribute aus</translation>
+        <translation>Gebe Vektorattribute aus</translation>
     </message>
     <message>
         <source>r.contour.level - Create vector contour from raster at specified levels</source>
-        <translation type="obsolete">r.contour.level - Erstellen von Vektorkonturen von Rasterdaten an bestimmten Ebenen</translation>
+        <translation>r.contour.level - Erstellen von Vektorkonturen von Rasterdaten an bestimmten Ebenen</translation>
     </message>
     <message>
         <source>v.surf.bspline.sparse - Bicubic or bilinear spline interpolation with Tykhonov regularization.</source>
-        <translation type="obsolete">v.surf.bspline.sparse - Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
+        <translation>v.surf.bspline.sparse - Bikubische oder bi-lineare Spline-Interpolation mit Tichonow-Regularisierung.</translation>
     </message>
     <message>
         <source>r.reclass.area.lesser - Reclassifies a raster layer, selecting areas lower than a user specified size</source>
-        <translation type="obsolete">r.reclass.area.lesser -Reklassifiziere Rasterkarte durch Auswahl von Flächen kleiner eines gegeben Werts</translation>
+        <translation>r.reclass.area.lesser -Reklassifiziere Rasterkarte durch Auswahl von Flächen kleiner eines gegeben Werts</translation>
     </message>
     <message>
         <source>v.split.vert - Split lines to shorter segments by max number of vertices.</source>
-        <translation type="obsolete">v.split.vert - Trenne Linien zu kürzeren Segmenten nach Stützpunktanzahl.</translation>
+        <translation>v.split.vert - Trenne Linien zu kürzeren Segmenten nach Stützpunktanzahl.</translation>
     </message>
     <message>
         <source>Performs raster map matrix filter.</source>
-        <translation type="obsolete">Führt Matrixfilter auf einer Rasterkarte aus.</translation>
+        <translation>Führt Matrixfilter auf einer Rasterkarte aus.</translation>
     </message>
     <message>
         <source>Prints terse list of category values found in a raster layer.</source>
-        <translation type="obsolete">Gibt eine kurze Liste der Kategoriewerte einer Rasterkarte aus.</translation>
+        <translation>Gibt eine kurze Liste der Kategoriewerte einer Rasterkarte aus.</translation>
     </message>
     <message>
         <source>Overlays two vector maps.</source>
-        <translation type="obsolete">Überlagert zwei Vektorkarten.</translation>
+        <translation>Überlagert zwei Vektorkarten.</translation>
     </message>
     <message>
         <source>Builds polylines from lines or boundaries.</source>
-        <translation type="obsolete">Erstellt Polylinien aus Linien und Grenzen.</translation>
+        <translation>Erstellt Polylinien aus Linien und Grenzen.</translation>
     </message>
     <message>
         <source>Creates Linear Reference System</source>
-        <translation type="obsolete">Erzeugt ein lineares Bezugssystem</translation>
+        <translation>Erzeugt ein lineares Bezugssystem</translation>
     </message>
     <message>
         <source>Imports geonames.org country files into a GRASS vector points map.</source>
-        <translation type="obsolete">geonames.org-Länderdatei in eine GRASS-Vektorpunktkarte importieren.</translation>
+        <translation>geonames.org-Länderdatei in eine GRASS-Vektorpunktkarte importieren.</translation>
     </message>
     <message>
         <source>Converts vector polygons or points to lines.</source>
-        <translation type="obsolete">Vektorpolygone oder -punkte in Linien umwandeln.</translation>
+        <translation>Vektorpolygone oder -punkte in Linien umwandeln.</translation>
     </message>
     <message>
         <source>Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.</source>
-        <translation type="obsolete">LAS-LiDAR-Punktwolken in eine GRASS-Vektorkarte mit libLAS umwandeln.</translation>
+        <translation>LAS-LiDAR-Punktwolken in eine GRASS-Vektorkarte mit libLAS umwandeln.</translation>
     </message>
     <message>
         <source>Import ASCII x,y[,z] coordinates as a series of lines.</source>
-        <translation type="obsolete">ASCII-x,y[,z]-Koordinaten als Linienreihe importieren</translation>
+        <translation>ASCII-x,y[,z]-Koordinaten als Linienreihe importieren</translation>
     </message>
     <message>
         <source>Creates points/segments from input lines, linear reference system and positions read from stdin or a file.</source>
-        <translation type="obsolete">Erzeugt Punkte/Segmente aus Eingabevektorlinien, linearem Bezugssystem und Eingabepositionen aus Standardeingabe oder Datei.</translation>
+        <translation>Erzeugt Punkte/Segmente aus Eingabevektorlinien, linearem Bezugssystem und Eingabepositionen aus Standardeingabe oder Datei.</translation>
     </message>
     <message>
         <source>v.kernel.vector - Generates a vector density map from vector points on a vector network.</source>
-        <translation type="obsolete">v.kernel.vector - Erzeugt eine Vektordichtekarte aus Vektorpunkten in einem Vektornetzwerk.</translation>
+        <translation>v.kernel.vector - Erzeugt eine Vektordichtekarte aus Vektorpunkten in einem Vektornetzwerk.</translation>
     </message>
     <message>
         <source>Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.</source>
-        <translation type="obsolete">Berichtigt ein Bild durch die Berechnung der Koordinatentransformation für jedes Objekt im Vektor mittels Kontrollpunkten.</translation>
+        <translation>Berichtigt ein Bild durch die Berechnung der Koordinatentransformation für jedes Objekt im Vektor mittels Kontrollpunkten.</translation>
     </message>
     <message>
         <source>v.kernel.rast - Generates a raster density map from vector points map.</source>
-        <translation type="obsolete">v.kernel.rast - Erzeugt eine Rasterdichtekarte aus einer Vektorpunktkarte.</translation>
+        <translation>v.kernel.rast - Erzeugt eine Rasterdichtekarte aus einer Vektorpunktkarte.</translation>
     </message>
     <message>
         <source>Change the type of geometry elements.</source>
-        <translation type="obsolete">Typ der Geometrieelemente ändern</translation>
+        <translation>Typ der Geometrieelemente ändern</translation>
     </message>
     <message>
         <source>Finds line id and real km+offset for given points in vector map using linear reference system. </source>
-        <translation type="obsolete">Findet Linienkennung und echten km+Versatz für gegebene Punkte in Vektorkarten mit linearem Referenzsystem.</translation>
+        <translation>Findet Linienkennung und echten km+Versatz für gegebene Punkte in Vektorkarten mit linearem Referenzsystem.</translation>
     </message>
     <message>
         <source>v.in.ascii.points - Creates a vector map from an ASCII points file.</source>
-        <translation type="obsolete">v.in.ascii.points - Erzeugt eine Vektorkarte aus ASCII-Punktdatei</translation>
+        <translation>v.in.ascii.points - Erzeugt eine Vektorkarte aus ASCII-Punktdatei</translation>
     </message>
     <message>
         <source>Imports Mapgen or Matlab-ASCII vector maps into GRASS.</source>
-        <translation type="obsolete">MapGen- oder MatLab-Vektor in GRASS importieren.</translation>
+        <translation>MapGen- oder MatLab-Vektor in GRASS importieren.</translation>
     </message>
     <message>
         <source>Exports a vector map as GRASS GIS specific archive file.</source>
-        <translation type="obsolete">Exportiert eine Vektorkarte als GRASS GIS spezifische Archivdatei.</translation>
+        <translation>Exportiert eine Vektorkarte als GRASS GIS spezifische Archivdatei.</translation>
     </message>
     <message>
         <source>Removes outliers from vector point data.</source>
-        <translation type="obsolete">Entfernt Ausreißer aus einem Punkt-Vektordatensatz.</translation>
+        <translation>Entfernt Ausreißer aus einem Punkt-Vektordatensatz.</translation>
     </message>
     <message>
         <source>Edits a vector map, allows adding, deleting and modifying selected vector features.</source>
-        <translation type="obsolete">Bearbeitet eine Vektorkarte, erlaubt hinzufügen, löschen und Änderunge von gewählten Vektorobjekten.</translation>
+        <translation>Bearbeitet eine Vektorkarte, erlaubt hinzufügen, löschen und Änderunge von gewählten Vektorobjekten.</translation>
     </message>
     <message>
         <source>Calculate new raster map from a r.mapcalc expression.</source>
-        <translation type="obsolete">Berechne eine neue Rasterkarte mit einem r.mapcalc-Ausdruck.</translation>
+        <translation>Berechne eine neue Rasterkarte mit einem r.mapcalc-Ausdruck.</translation>
     </message>
     <message>
         <source>Converts a vector map to VTK ASCII output.</source>
-        <translation type="obsolete">Wandelt eine Vektorkarte in VTK ASCII um.</translation>
+        <translation>Wandelt eine Vektorkarte in VTK ASCII um.</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with defined height.</source>
-        <translation type="obsolete">Flaches Vektorobjekt mit definierter Höhe in 3D extrudieren</translation>
+        <translation>Flaches Vektorobjekt mit definierter Höhe in 3D extrudieren</translation>
     </message>
     <message>
         <source>v.in.ascii.standard - Creates a vector map from an ASCII vector file. </source>
-        <translation type="obsolete">v.in.ascii.standard - Erzeugt eine Vektorkarte aus einer ASCII Vektordatei. </translation>
+        <translation>v.in.ascii.standard - Erzeugt eine Vektorkarte aus einer ASCII Vektordatei. </translation>
     </message>
     <message>
         <source>Performs transformation of 2D vector features to 3D.</source>
-        <translation type="obsolete">Führt Transformation von 2D-Vektorobjekten zu 3D durch.</translation>
+        <translation>Führt Transformation von 2D-Vektorobjekten zu 3D durch.</translation>
     </message>
     <message>
         <source>v.build.check - Checks for topological errors.</source>
-        <translation type="obsolete">v.build.check - Überprüft auf topologische Fehler.</translation>
+        <translation>v.build.check - Überprüft auf topologische Fehler.</translation>
     </message>
     <message>
         <source>Creates a raster map from LAS LiDAR points using univariate statistics.</source>
-        <translation type="obsolete">Erzeugt Rasterkarte aus LAS-LiDAR-Punkten über univariante Statistik.</translation>
+        <translation>Erzeugt Rasterkarte aus LAS-LiDAR-Punkten über univariante Statistik.</translation>
     </message>
     <message>
         <source>Calculates univariate statistics from a raster map based on vector polygons and uploads statistics to new attribute columns.</source>
-        <translation type="obsolete">Univariante Statistik aus Rasterkarte über Vektorpolygone berechnen und Statistik in neuen Attributspalten ablegen.</translation>
+        <translation>Univariante Statistik aus Rasterkarte über Vektorpolygone berechnen und Statistik in neuen Attributspalten ablegen.</translation>
     </message>
     <message>
         <source>Count points in areas and calculate statistics.</source>
-        <translation type="obsolete">Ermittle Anzahl der Punkte in Bereichen und berechne Statistik.</translation>
+        <translation>Ermittle Anzahl der Punkte in Bereichen und berechne Statistik.</translation>
     </message>
     <message>
         <source>Line-of-sight raster analysis program.</source>
-        <translation type="obsolete">Sichtachsen-Rasteranalysemodul.</translation>
+        <translation>Sichtachsen-Rasteranalysemodul.</translation>
     </message>
     <message>
         <source>Uploads vector values at positions of vector points to the table.</source>
-        <translation type="obsolete">Lade Vektorwerte an den Positionen von Vektorpunkten in die Tabelle</translation>
+        <translation>Lade Vektorwerte an den Positionen von Vektorpunkten in die Tabelle</translation>
     </message>
     <message>
         <source>Selects vector objects from a vector layer a new layer containing only the selected objects.</source>
-        <translation type="obsolete">Selektiert Vektorobjekte einer existierenden Vektorkarte und erzeugt eine neue Karte nur mit den selektierten Objekten.</translation>
+        <translation>Selektiert Vektorobjekte einer existierenden Vektorkarte und erzeugt eine neue Karte nur mit den selektierten Objekten.</translation>
     </message>
     <message>
         <source>Surface area estimation for rasters.</source>
-        <translation type="obsolete">Oberflächensschätzungen für Raster.</translation>
+        <translation>Oberflächensschätzungen für Raster.</translation>
     </message>
     <message>
         <source>Combines red, green and blue raster maps into a single composite raster map.</source>
-        <translation type="obsolete">Kombiniert rote, grüne und blaue Rasterkarten zu einer zusammengesetzten Rasterkarte.</translation>
+        <translation>Kombiniert rote, grüne und blaue Rasterkarten zu einer zusammengesetzten Rasterkarte.</translation>
     </message>
     <message>
         <source>Converts a raster into a vector layer.</source>
-        <translation type="obsolete">Raster in Vektorlayer umwandeln.</translation>
+        <translation>Raster in Vektorlayer umwandeln.</translation>
     </message>
     <message>
         <source>Creates a cross product of the category values from multiple raster map layers.</source>
-        <translation type="obsolete">Kreuzprodukt der Kategoriewerte mehrerer Raster erzeugen.</translation>
+        <translation>Kreuzprodukt der Kategoriewerte mehrerer Raster erzeugen.</translation>
     </message>
     <message>
         <source>v.generalize.displacement - Vector based displacement generalization.</source>
-        <translation type="obsolete">v.generalize.displacement - Vektorbasierte Versatzgeneralisierung.</translation>
+        <translation>v.generalize.displacement - Vektorbasierte Versatzgeneralisierung.</translation>
     </message>
     <message>
         <source>Converts vector map to 3D by sampling of elevation raster map.</source>
-        <translation type="obsolete">Wandelt Vektorkarte in 3D durch Abtastung einer Rasterhöhenkarte.</translation>
+        <translation>Wandelt Vektorkarte in 3D durch Abtastung einer Rasterhöhenkarte.</translation>
     </message>
     <message>
         <source>r.slope - Generates raster maps of slope from an elevation raster map.</source>
-        <translation type="obsolete">r.slope - Erzeugt Rasterkarten mit Hangneigung aus einer Rasterkarte mit Höheninformationen.</translation>
+        <translation>r.slope - Erzeugt Rasterkarten mit Hangneigung aus einer Rasterkarte mit Höheninformationen.</translation>
     </message>
     <message>
         <source>Fills no-data areas in raster maps using spline interpolation.</source>
-        <translation type="obsolete">Füllt Bereiche mit Leerdaten in Rasterkarten mit Spline-Interpolation.</translation>
+        <translation>Füllt Bereiche mit Leerdaten in Rasterkarten mit Spline-Interpolation.</translation>
     </message>
     <message>
         <source>Visualization and animation tool for GRASS data.</source>
-        <translation type="obsolete">Visualisierungs- und Animationswerkzeug für GRASS-Daten.</translation>
+        <translation>Visualisierungs- und Animationswerkzeug für GRASS-Daten.</translation>
     </message>
     <message>
         <source>Construction of slope curves (flowlines), flowpath lengths, and flowline densities (upslope areas) from a raster digital elevation model (DEM).</source>
-        <translation type="obsolete">Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (upslope areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
+        <translation>Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (upslope areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
     </message>
     <message>
         <source>v.generalize.simplify - Vector based simplification generalization.</source>
-        <translation type="obsolete">v.generalize.simplify - Vektorbasierte Versatzgeneralisierung.</translation>
+        <translation>v.generalize.simplify - Vektorbasierte Versatzgeneralisierung.</translation>
     </message>
     <message>
         <source>v.generalize.smooth - Vector based smooth generalization.</source>
-        <translation type="obsolete">v.generalize.smooth - Vektorbasierte Versatzgeneralisierung.</translation>
+        <translation>v.generalize.smooth - Vektorbasierte Versatzgeneralisierung.</translation>
     </message>
     <message>
         <source>v.generalize.network - Vector based network generalization.</source>
-        <translation type="obsolete">v.generalize.network - Vektorbasierte Versatzgeneralisierung.</translation>
+        <translation>v.generalize.network - Vektorbasierte Versatzgeneralisierung.</translation>
     </message>
     <message>
         <source>Canonical components analysis (CCA) program for image processing.</source>
-        <translation type="obsolete">Kanonische Komponentenanalyseprogramm (CCA) für Bildverarbeitung.</translation>
+        <translation>Kanonische Komponentenanalyseprogramm (CCA) für Bildverarbeitung.</translation>
     </message>
     <message>
         <source>Extracts quality control parameters from MODIS QC layers.</source>
-        <translation type="obsolete">Extrahiert dies Qualitätskontrollparameter eines MODIS-QC-Layers.</translation>
+        <translation>Extrahiert dies Qualitätskontrollparameter eines MODIS-QC-Layers.</translation>
     </message>
     <message>
         <source>Generates statistics for i.maxlik from raster map.</source>
-        <translation type="obsolete">Generiert Statistik für i.maxlik aus Rasterkarte.</translation>
+        <translation>Generiert Statistik für i.maxlik aus Rasterkarte.</translation>
     </message>
     <message>
         <source>Computes the maximum flow between two sets of nodes in the network.</source>
-        <translation type="obsolete">Berechnet den maximalen Fluß zwischen zwei Knotenmengen im Netzwerk</translation>
+        <translation>Berechnet den maximalen Fluß zwischen zwei Knotenmengen im Netzwerk</translation>
     </message>
     <message>
         <source>v.net.nodes - Creates points for each network arcs</source>
-        <translation type="obsolete">v.net.nodes - Erzeugt Punkte für jeden Netzwerkbogen</translation>
+        <translation>v.net.nodes - Erzeugt Punkte für jeden Netzwerkbogen</translation>
     </message>
     <message>
         <source>v.net.nreport - Reports nodes information of a network</source>
-        <translation type="obsolete">v.net.nreport - Berichte zu Knoteninformationen eines Netzwerks</translation>
+        <translation>v.net.nreport - Berichte zu Knoteninformationen eines Netzwerks</translation>
     </message>
     <message>
         <source>Creates raster plane layer given dip (inclination), aspect (azimuth) and one point.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte mit einer Ebene mit gegebener Neigung (inclination), Ausrichtung (azimuth) und einem Punkt.</translation>
+        <translation>Erzeugt eine Rasterkarte mit einer Ebene mit gegebener Neigung (inclination), Ausrichtung (azimuth) und einem Punkt.</translation>
     </message>
     <message>
         <source>Computes bridges in the network.</source>
-        <translation type="obsolete">Berechnet Brücken im Netzwerk</translation>
+        <translation>Berechnet Brücken im Netzwerk</translation>
     </message>
     <message>
         <source>Splits network by cost isolines.</source>
-        <translation type="obsolete">Schnitt durch Netzwerk entlang veranschlagten Isolinien</translation>
+        <translation>Schnitt durch Netzwerk entlang veranschlagten Isolinien</translation>
     </message>
     <message>
         <source>Output basic information about a raster layer.</source>
-        <translation type="obsolete">Gibt grundlegende Informationen über eine Rasterkarte aus.</translation>
+        <translation>Gibt grundlegende Informationen über eine Rasterkarte aus.</translation>
     </message>
     <message>
         <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute.</source>
-        <translation type="obsolete">Löst die Grenzen zwischen anliegenden Gebieten auf die eine gemeinsame Kategorie-Nummer oder Attribut haben.</translation>
+        <translation>Löst die Grenzen zwischen anliegenden Gebieten auf die eine gemeinsame Kategorie-Nummer oder Attribut haben.</translation>
     </message>
     <message>
         <source>Allocates subnets for nearest centers (direction from center)</source>
-        <translation type="obsolete">Bestimmt Teilnetze für nächste Zentren (vom Zentrum gerichtet)</translation>
+        <translation>Bestimmt Teilnetze für nächste Zentren (vom Zentrum gerichtet)</translation>
     </message>
     <message>
         <source>Computes shortest distance via the network between the given sets of features.</source>
-        <translation type="obsolete">Berechnet die kürzesten Abstand zwischen zwei gegebenen Objektmengen im Netzwerk</translation>
+        <translation>Berechnet die kürzesten Abstand zwischen zwei gegebenen Objektmengen im Netzwerk</translation>
     </message>
     <message>
         <source>v.net.arcs - Creates arcs from a file of points</source>
-        <translation type="obsolete">v.net.arcs - Berechnet Bögen aus einer Punktdatei</translation>
+        <translation>v.net.arcs - Berechnet Bögen aus einer Punktdatei</translation>
     </message>
     <message>
         <source>Finds the nearest element in vector map &apos;to&apos; for elements in vector map &apos;from&apos;.</source>
-        <translation type="obsolete">Findet das nächstgelegene Element der Vektorkarte &apos;to&apos; für Elemente in der Vektorkarte &apos;from&apos;.</translation>
+        <translation>Findet das nächstgelegene Element der Vektorkarte &apos;to&apos; für Elemente in der Vektorkarte &apos;from&apos;.</translation>
     </message>
     <message>
         <source>Computes strongly and weakly connected components in the network.</source>
-        <translation type="obsolete">Berechnet stark und schwach verbundene Komponenten eines Netzwerks</translation>
+        <translation>Berechnet stark und schwach verbundene Komponenten eines Netzwerks</translation>
     </message>
     <message>
         <source>v.net.articulation - Computes articulation points in the network</source>
-        <translation type="obsolete">v.net.articulation - Berechnet Artikulationspunkte im Netzwerk</translation>
+        <translation>v.net.articulation - Berechnet Artikulationspunkte im Netzwerk</translation>
     </message>
     <message>
         <source>Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.</source>
-        <translation type="obsolete">Berechnet Degree, Centrality, Betweeness, Closeness und Eigenvektor centrality Werte im Netzwerk.</translation>
+        <translation>Berechnet Degree, Centrality, Betweeness, Closeness und Eigenvektor centrality Werte im Netzwerk.</translation>
     </message>
     <message>
         <source>v.net.connect - Connects points to nearest arcs in a network</source>
-        <translation type="obsolete">v.net.connect - Verbinde Punkte zu nächsten Bögen in einem Netzwerk</translation>
+        <translation>v.net.connect - Verbinde Punkte zu nächsten Bögen in einem Netzwerk</translation>
     </message>
     <message>
         <source>Creates a cycle connecting given nodes (Traveling salesman problem)</source>
-        <translation type="obsolete">Erzeugt eine Rundtour zu gegebenen Punkten (Travelling Salesman)</translation>
+        <translation>Erzeugt eine Rundtour zu gegebenen Punkten (Travelling Salesman)</translation>
     </message>
     <message>
         <source>Finds shortest path on vector network</source>
-        <translation type="obsolete">Kürzesten Weg in einem Vektornetzwerk finden</translation>
+        <translation>Kürzesten Weg in einem Vektornetzwerk finden</translation>
     </message>
     <message>
         <source>Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte mit Pufferzonen um Zellen, die keine NULL-Wert-Kategorien haben.</translation>
+        <translation>Erzeugt eine Rasterkarte mit Pufferzonen um Zellen, die keine NULL-Wert-Kategorien haben.</translation>
     </message>
     <message>
         <source>Filters and generates a depressionless elevation layer and a flow direction layer from a given elevation raster layer.</source>
-        <translation type="obsolete">Depressionsloses Höhenmodell filtern und generieren und eine Fließrichtungskarte auf Basis eines gegebenen Höhenmodells.</translation>
+        <translation>Depressionsloses Höhenmodell filtern und generieren und eine Fließrichtungskarte auf Basis eines gegebenen Höhenmodells.</translation>
     </message>
     <message>
         <source>GRASS raster map layer data resampling capability using nearest neighbors.</source>
-        <translation type="obsolete">GRASS-Rasterlayerdatenneuabtastungsfunktion nach nächstem Nachbarn.</translation>
+        <translation>GRASS-Rasterlayerdatenneuabtastungsfunktion nach nächstem Nachbarn.</translation>
     </message>
     <message>
         <source>Creates shaded relief from an elevation layer (DEM).</source>
-        <translation type="obsolete">Erzeugt eine Schummerungskarte aus einem Höhenmodell (DGM).</translation>
+        <translation>Erzeugt eine Schummerungskarte aus einem Höhenmodell (DGM).</translation>
     </message>
     <message>
         <source>Rescales histogram equalized the range of category values in a raster  layer.</source>
-        <translation type="obsolete">Reskaliert mit Histogrammnormalisierung die Kategoriewerte einer Rasterkarte.</translation>
+        <translation>Reskaliert mit Histogrammnormalisierung die Kategoriewerte einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Manages NULL-values of given raster map.</source>
-        <translation type="obsolete">NULL-Werte eine gegebenen Rasterkarte behandeln</translation>
+        <translation>NULL-Werte eine gegebenen Rasterkarte behandeln</translation>
     </message>
     <message>
         <source>Makes each cell category value a function of the category values assigned to the cells around it</source>
-        <translation type="obsolete">Jede Ausgabezelle zur Funktion der korrespondierenden Zellen des Eingaberasters machen</translation>
+        <translation>Jede Ausgabezelle zur Funktion der korrespondierenden Zellen des Eingaberasters machen</translation>
     </message>
     <message>
         <source>Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).</source>
-        <translation type="obsolete">Sedimenttransport und Erosions/Depositions Simulation unter Verwendung der &quot;path sampling&quot; Methode (SIMWE).</translation>
+        <translation>Sedimenttransport und Erosions/Depositions Simulation unter Verwendung der &quot;path sampling&quot; Methode (SIMWE).</translation>
     </message>
     <message>
         <source>v.what.rast.points - Uploads raster values at positions of vector points to the table.</source>
-        <translation type="obsolete">v.what.rast.points - Läd Rasterwerte an gegebenen Position von Vektorpunkten in eine Tabelle</translation>
+        <translation>v.what.rast.points - Läd Rasterwerte an gegebenen Position von Vektorpunkten in eine Tabelle</translation>
     </message>
     <message>
         <source>Generates a raster layer of distance to features in input layer.</source>
-        <translation type="obsolete">Raster aus Objektabständen in Eingabelayer erzeugen.</translation>
+        <translation>Raster aus Objektabständen in Eingabelayer erzeugen.</translation>
     </message>
     <message>
         <source>Sums up the raster cell values.</source>
-        <translation type="obsolete">Summiert die Rasterzellenwerte.</translation>
+        <translation>Summiert die Rasterzellenwerte.</translation>
     </message>
     <message>
         <source>Raster map matrix filter.</source>
-        <translation type="obsolete">Rasterkartenmatrixfilter.</translation>
+        <translation>Rasterkartenmatrixfilter.</translation>
     </message>
     <message>
         <source>Outputs a raster layer showing the anisotropic cumulative cost of moving based on friction cost.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte, die die anisotrophen kumulierten Kosten der Bewegung auf Basis der Reibungskosten zeigt.</translation>
+        <translation>Erzeugt eine Rasterkarte, die die anisotrophen kumulierten Kosten der Bewegung auf Basis der Reibungskosten zeigt.</translation>
     </message>
     <message>
         <source>Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.</source>
-        <translation type="obsolete">Tabelliere gemeinsames Auftreten (Koinzidenz) der Klassen für zwei Rasterlayer.</translation>
+        <translation>Tabelliere gemeinsames Auftreten (Koinzidenz) der Klassen für zwei Rasterlayer.</translation>
     </message>
     <message>
         <source>Watershed basin analysis program.</source>
-        <translation type="obsolete">Wassereinzugsgebietsanalyseprogramm.</translation>
+        <translation>Wassereinzugsgebietsanalyseprogramm.</translation>
     </message>
     <message>
         <source>Creates a raster layer of Gaussian deviates.</source>
-        <translation type="obsolete">Erzeugt eine Raster von Gauss&apos;schen Ableitungen.</translation>
+        <translation>Erzeugt eine Raster von Gauss&apos;schen Ableitungen.</translation>
     </message>
     <message>
         <source>v.what.rast.centroids - Uploads raster values at positions of vector centroids to the table.</source>
-        <translation type="obsolete">v.what.rast.centroids - Lade Rasterwerte an den Position von Vektorzentroiden in die Tabelle</translation>
+        <translation>v.what.rast.centroids - Lade Rasterwerte an den Position von Vektorzentroiden in die Tabelle</translation>
     </message>
     <message>
         <source>Creates a raster layer and vector point map containing randomly located points.</source>
-        <translation type="obsolete">Erstellt eine Rasterkarte und eine Vektorkarte, die zufällig angeordnete Punkte enthalten.</translation>
+        <translation>Erstellt eine Rasterkarte und eine Vektorkarte, die zufällig angeordnete Punkte enthalten.</translation>
     </message>
     <message>
         <source>Selects features from vector map (A) by features from other vector map (B).</source>
-        <translation type="obsolete">Selektiert Objekte der Vektorkarte (A) durch Objekte einer anderen Vektorkarte (B).</translation>
+        <translation>Selektiert Objekte der Vektorkarte (A) durch Objekte einer anderen Vektorkarte (B).</translation>
     </message>
     <message>
         <source>Creates a raster map containing concentric rings around a given point.</source>
-        <translation type="obsolete">Erzeugt eine Rasterkarte, die konzentrische Kreise um einen angegebenen Punkt ziehen.</translation>
+        <translation>Erzeugt eine Rasterkarte, die konzentrische Kreise um einen angegebenen Punkt ziehen.</translation>
     </message>
     <message>
         <source>Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.</source>
-        <translation type="obsolete">Re-Kategorisiert Daten einer Rasterkarte, indem Zellen physikalisch diskreter Areale zu eindeutigen Kategorie gruppiert werden.</translation>
+        <translation>Re-Kategorisiert Daten einer Rasterkarte, indem Zellen physikalisch diskreter Areale zu eindeutigen Kategorie gruppiert werden.</translation>
     </message>
     <message>
         <source>Creates a Voronoi diagram from an input vector layer containing points.</source>
-        <translation type="obsolete">Erstellt ein Voronoi Diagramm auf Basis einer Vektorkarte mit Punkten.</translation>
+        <translation>Erstellt ein Voronoi Diagramm auf Basis einer Vektorkarte mit Punkten.</translation>
     </message>
     <message>
         <source>Flow computation for massive grids (float version).</source>
-        <translation type="obsolete">Flußberechnung für massive Gitter (Fließkommaversion).</translation>
+        <translation>Flußberechnung für massive Gitter (Fließkommaversion).</translation>
     </message>
     <message>
         <source>Flow computation for massive grids (integer version).</source>
-        <translation type="obsolete">Flußberechnung für massive Gitter (Ganzzahkversion).</translation>
+        <translation>Flußberechnung für massive Gitter (Ganzzahkversion).</translation>
     </message>
     <message>
         <source>Outputs the raster layer values lying on user-defined line(s).</source>
-        <translation type="obsolete">Gibt eine Rasterkarte aus, deren Werte entlang einer (oder mehrerer) benutzerdefinierter Linien liegt.</translation>
+        <translation>Gibt eine Rasterkarte aus, deren Werte entlang einer (oder mehrerer) benutzerdefinierter Linien liegt.</translation>
     </message>
     <message>
         <source>Export a raster map to a text file as x,y,z values based on cell centers</source>
-        <translation type="obsolete">Raster in Textdatei als x-,y- und z-Werte der Zellzentren exportieren</translation>
+        <translation>Raster in Textdatei als x-,y- und z-Werte der Zellzentren exportieren</translation>
     </message>
     <message>
         <source>Outputs basic information about a user-specified vector map.</source>
-        <translation type="obsolete">Gibt grundlegende Informationen einer bestimmten Vektorkarte aus.</translation>
+        <translation>Gibt grundlegende Informationen einer bestimmten Vektorkarte aus.</translation>
     </message>
     <message>
         <source>Randomly partition points into test/train sets.</source>
-        <translation type="obsolete">Punkte zufällig in Test-/Trainingsdatensätze aufteilen.</translation>
+        <translation>Punkte zufällig in Test-/Trainingsdatensätze aufteilen.</translation>
     </message>
     <message>
         <source>Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.</source>
-        <translation type="obsolete">Nimm Vektordaten, wandle sie in Rasterdaten-und subtrahiere Tiefe aus der Ausgabe DEM.</translation>
+        <translation>Nimm Vektordaten, wandle sie in Rasterdaten-und subtrahiere Tiefe aus der Ausgabe DEM.</translation>
     </message>
     <message>
         <source>Building contour determination and Region Growing algorithm for determining the building inside</source>
-        <translation type="obsolete">Bestimmung des Gebäudeumriß und Anwendung des &apos;Region Growing&apos; Verfahrens zu Ermittelung des Gebäudeinneren</translation>
+        <translation>Bestimmung des Gebäudeumriß und Anwendung des &apos;Region Growing&apos; Verfahrens zu Ermittelung des Gebäudeinneren</translation>
     </message>
     <message>
         <source>Overland flow hydrologic simulation using path sampling method (SIMWE).</source>
-        <translation type="obsolete">Hydrologische Simulation des Oberflächenabfluß mittels der &quot;path sampling&quot;-Methode (SIMWE).</translation>
+        <translation>Hydrologische Simulation des Oberflächenabfluß mittels der &quot;path sampling&quot;-Methode (SIMWE).</translation>
     </message>
     <message>
         <source>Makes each output cell value a function of the values assigned to the corresponding cells in the input raster layers.</source>
-        <translation type="obsolete">Jede Ausgabezelle zur Funktion der korrespondierenden Zellen des Eingaberasters machen.</translation>
+        <translation>Jede Ausgabezelle zur Funktion der korrespondierenden Zellen des Eingaberasters machen.</translation>
     </message>
     <message>
         <source>Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.</source>
-        <translation type="obsolete">Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
+        <translation>Raster aus der kommulierten Kosten für die Bewegung über ein Raster erzeugen, dessen Zellen Kosten repräsentieren.</translation>
     </message>
     <message>
         <source>Rescales the range of category values in a raster layer.</source>
-        <translation type="obsolete">Reskaliert die Spanne der Kategoriewerte einer Rasterkarte.</translation>
+        <translation>Reskaliert die Spanne der Kategoriewerte einer Rasterkarte.</translation>
     </message>
     <message>
         <source>Solar irradiance and irradiation model.</source>
-        <translation type="obsolete">Solar- und Bestrahlungsmodell.</translation>
+        <translation>Solar- und Bestrahlungsmodell.</translation>
     </message>
     <message>
         <source>Computes the viewshed of a point on an elevation raster map.</source>
-        <translation type="obsolete">Berechnet den Sichtbarkeitsbereich eines Punkt auf einer Rasterhöhenkarte.</translation>
+        <translation>Berechnet den Sichtbarkeitsbereich eines Punkt auf einer Rasterhöhenkarte.</translation>
     </message>
     <message>
         <source>A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system </source>
@@ -8569,67 +8574,67 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates the volume of data &quot;clumps&quot;.</source>
-        <translation type="obsolete">Berechnet das Volumen Daten-&quot;Klumpen&quot;.</translation>
+        <translation>Berechnet das Volumen Daten-&quot;Klumpen&quot;.</translation>
     </message>
     <message>
         <source>Inverse Fast Fourier Transform (IFFT) for image processing.</source>
-        <translation type="obsolete">Inverse schnelle Fourier-Transformation (IFFT) zur Bildverarbeitung.</translation>
+        <translation>Inverse schnelle Fourier-Transformation (IFFT) zur Bildverarbeitung.</translation>
     </message>
     <message>
         <source>Vector based generalization.</source>
-        <translation type="obsolete">Vektorbasierte Generalisierung.</translation>
+        <translation>Vektorbasierte Generalisierung.</translation>
     </message>
     <message>
         <source>Surface generation program from rasterized contours.</source>
-        <translation type="obsolete">Oberflächeerzeugung aus Rasterkonturen.</translation>
+        <translation>Oberflächeerzeugung aus Rasterkonturen.</translation>
     </message>
     <message>
         <source>Create random raster</source>
-        <translation type="obsolete">Zufälliges Raster erzeugen</translation>
+        <translation>Zufälliges Raster erzeugen</translation>
     </message>
     <message>
         <source>Converts to POV-Ray format, GRASS x,y,z -&gt; POV-Ray x,z,y</source>
-        <translation type="obsolete">Wandelt in das POV-Ray-Format, GRASS x,y,z -&gt; POV-Ray x,z,y</translation>
+        <translation>Wandelt in das POV-Ray-Format, GRASS x,y,z -&gt; POV-Ray x,z,y</translation>
     </message>
     <message>
         <source>Surface interpolation utility for raster layers.</source>
-        <translation type="obsolete">Oberflächeninterpolationswerkzeug für Rasterlayer.</translation>
+        <translation>Oberflächeninterpolationswerkzeug für Rasterlayer.</translation>
     </message>
     <message>
         <source>Visualization(NVIZ)</source>
-        <translation type="obsolete">Visualisierung (NVIZ)</translation>
+        <translation>Visualisierung (NVIZ)</translation>
     </message>
     <message>
         <source>Makes each cell value a function of attribute values and stores in an output raster map.</source>
-        <translation type="obsolete">Jede Zelle zur Funktion von Attributwerten machen und in eine Ausgaberasterkarte speichern.</translation>
+        <translation>Jede Zelle zur Funktion von Attributwerten machen und in eine Ausgaberasterkarte speichern.</translation>
     </message>
     <message>
         <source>Converts files in DXF format to GRASS vector map format.</source>
-        <translation type="obsolete">Konvertiert Dateien im DXF-Format in das GRASS-Vektorkartenformat.</translation>
+        <translation>Konvertiert Dateien im DXF-Format in das GRASS-Vektorkartenformat.</translation>
     </message>
     <message>
         <source>Fast Fourier Transform (FFT) for image processing.</source>
-        <translation type="obsolete">Schnelle Fourier-Transformation (FFT) für Bildverarbeitung.</translation>
+        <translation>Schnelle Fourier-Transformation (FFT) für Bildverarbeitung.</translation>
     </message>
     <message>
         <source>Performs atmospheric correction using the 6S algorithm.</source>
-        <translation type="obsolete">Führt atmospherische Korrektur mit dem 6S-Algorithmus aus.</translation>
+        <translation>Führt atmospherische Korrektur mit dem 6S-Algorithmus aus.</translation>
     </message>
     <message>
         <source>Export a raster layer to the Virtual Reality Modeling Language (VRML)</source>
-        <translation type="obsolete">Raster in Virtual-Reality-Modeling-Language (VRML) exportieren</translation>
+        <translation>Raster in Virtual-Reality-Modeling-Language (VRML) exportieren</translation>
     </message>
     <message>
         <source>r.flow.aspect.barrier - Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).</source>
-        <translation type="obsolete">r.flow.aspect.barrier - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
+        <translation>r.flow.aspect.barrier - Erzeugt Hangkurven (flowlines), Fließlängen und Flussdichte (contributing areas) aus einem angegebenen digitalen Höhenmodell (DEM).</translation>
     </message>
     <message>
         <source>Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.</source>
-        <translation type="obsolete">Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen.</translation>
+        <translation>Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen.</translation>
     </message>
     <message>
         <source>v.surf.rst.cvdev - Spatial approximation and topographic analysis using regularized spline with tension.</source>
-        <translation type="obsolete">v.surf.rst.cvdev - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
+        <translation>v.surf.rst.cvdev - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
     </message>
 </context>
 <context>
@@ -8692,11 +8697,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>Grid</name>
     <message>
         <source>Create grid</source>
-        <translation type="obsolete">Gitter erzeugen</translation>
+        <translation>Gitter erzeugen</translation>
     </message>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Rectangle (line)</source>
@@ -8751,11 +8756,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridAverage</name>
     <message>
         <source>Grid (Moving average)</source>
-        <translation type="obsolete">Gitter (Beweglicher Mittelwert)</translation>
+        <translation>Gitter (Beweglicher Mittelwert)</translation>
     </message>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -8798,11 +8803,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridDataMetrics</name>
     <message>
         <source>Grid (Data metrics)</source>
-        <translation type="obsolete">Gitter (Datenkriterien)</translation>
+        <translation>Gitter (Datenkriterien)</translation>
     </message>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -8849,11 +8854,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridInvDist</name>
     <message>
         <source>Grid (Inverse distance to a power)</source>
-        <translation type="obsolete">Gitter (Inverse Distanz zu einer Potenz)</translation>
+        <translation>Gitter (Inverse Distanz zu einer Potenz)</translation>
     </message>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -8908,11 +8913,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridMetrics</name>
     <message>
         <source>Grid Metrics</source>
-        <translation type="obsolete">Datenkriterien</translation>
+        <translation>Datenkriterien</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -8959,11 +8964,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridNearest</name>
     <message>
         <source>Grid (Nearest neighbor)</source>
-        <translation type="obsolete">Gitter (Nächster Nachbar)</translation>
+        <translation>Gitter (Nächster Nachbar)</translation>
     </message>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -9002,11 +9007,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridNet</name>
     <message>
         <source>Grid Network</source>
-        <translation type="obsolete">Gitternetzwerk</translation>
+        <translation>Gitternetzwerk</translation>
     </message>
     <message>
         <source>Basic Grid Analysis tools</source>
-        <translation type="obsolete">Grundlegende Gitteranalysewerkzeuge</translation>
+        <translation>Grundlegende Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D8 Flow Direction Grid</source>
@@ -9045,11 +9050,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridNetMulti</name>
     <message>
         <source>Grid Network (multifile)</source>
-        <translation type="obsolete">Gitternetzwerk (Mehrdatei)</translation>
+        <translation>Gitternetzwerk (Mehrdatei)</translation>
     </message>
     <message>
         <source>Basic Grid Analysis tools</source>
-        <translation type="obsolete">Grundlegende Gitteranalysewerkzeuge</translation>
+        <translation>Grundlegende Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D8 Flow Direction Grid</source>
@@ -9088,11 +9093,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>GridSurfaceCreate</name>
     <message>
         <source>Grid Surface Create</source>
-        <translation type="obsolete">Gitteroberfläche erzeugen</translation>
+        <translation>Gitteroberfläche erzeugen</translation>
     </message>
     <message>
         <source>Surface</source>
-        <translation type="obsolete">Oberfläche</translation>
+        <translation>Oberfläche</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -9147,7 +9152,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>Gridify</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input Layer</source>
@@ -9175,18 +9180,18 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Snap points to grid</source>
-        <translation type="obsolete">Punkte auf Gitter fangen</translation>
+        <translation>Punkte auf Gitter fangen</translation>
     </message>
 </context>
 <context>
     <name>GroundFilter</name>
     <message>
         <source>Ground Filter</source>
-        <translation type="obsolete">Bodenfilter</translation>
+        <translation>Bodenfilter</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -9506,7 +9511,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>HubDistance</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Meters</source>
@@ -9558,7 +9563,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Distance to nearest hub</source>
-        <translation type="obsolete">Abstand zum nächsten Knoten</translation>
+        <translation>Abstand zum nächsten Knoten</translation>
     </message>
 </context>
 <context>
@@ -9585,7 +9590,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
@@ -9616,7 +9621,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Raster tools</source>
-        <translation type="obsolete">Rasterwerkzeuge</translation>
+        <translation>Rasterwerkzeuge</translation>
     </message>
     <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
@@ -9639,11 +9644,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>ImageCreate</name>
     <message>
         <source>ImageCreate</source>
-        <translation type="obsolete">ImageCreate</translation>
+        <translation>ImageCreate</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS</source>
@@ -9680,7 +9685,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="obsolete">Datenbank</translation>
+        <translation>Datenbank</translation>
     </message>
     <message>
         <source>Layer to import</source>
@@ -9732,7 +9737,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Import into PostGIS</source>
-        <translation type="obsolete">In PostGIS importieren</translation>
+        <translation>In PostGIS importieren</translation>
     </message>
 </context>
 <context>
@@ -9757,11 +9762,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>IntensityImage</name>
     <message>
         <source>IntensityImage</source>
-        <translation type="obsolete">IntensityImage</translation>
+        <translation>IntensityImage</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input file</source>
@@ -9796,7 +9801,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -9851,7 +9856,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <name>JoinAttributes</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -9875,7 +9880,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Join attributes table</source>
-        <translation type="obsolete">Attributtabellen verknüpfen</translation>
+        <translation>Attributtabellen verknüpfen</translation>
     </message>
 </context>
 <context>
@@ -10079,11 +10084,11 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
     <name>LengthArea</name>
     <message>
         <source>Length Area Stream Source</source>
-        <translation type="obsolete">Länge Fläche Strom Quelle</translation>
+        <translation>Länge Fläche Strom Quelle</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Length Grid</source>
@@ -10114,11 +10119,11 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
     <name>LengthAreaMulti</name>
     <message>
         <source>Length Area Stream Source (multifile)</source>
-        <translation type="obsolete">Länge Fläche Strom Quelle (Mehrdatei)</translation>
+        <translation>Länge Fläche Strom Quelle (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Length Grid</source>
@@ -10168,7 +10173,7 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
     <name>LinesIntersection</name>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -10192,14 +10197,14 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Linienschnittpunkte</translation>
+        <translation>Linienschnittpunkte</translation>
     </message>
 </context>
 <context>
     <name>LinesToPolygons</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -10211,7 +10216,7 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
-        <translation type="obsolete">Linien zu Polygonen</translation>
+        <translation>Linien zu Polygonen</translation>
     </message>
 </context>
 <context>
@@ -11482,7 +11487,7 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     <name>MeanAndStdDevPlot</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input table</source>
@@ -11506,14 +11511,14 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     </message>
     <message>
         <source>Mean and standard deviation plot</source>
-        <translation type="obsolete">Mittel- und Standardabweichungsplott</translation>
+        <translation>Mittel- und Standardabweichungsplott</translation>
     </message>
 </context>
 <context>
     <name>MeanCoords</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -11533,14 +11538,14 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Mittlere Koordinate(n)</translation>
+        <translation>Mittlere Koordinate(n)</translation>
     </message>
 </context>
 <context>
     <name>Merge</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Layers to merge</source>
@@ -11564,18 +11569,18 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     </message>
     <message>
         <source>Merge vector layers</source>
-        <translation type="obsolete">Vektorlayer zusammenführen</translation>
+        <translation>Vektorlayer zusammenführen</translation>
     </message>
 </context>
 <context>
     <name>MergeData</name>
     <message>
         <source>Merge LAS Files</source>
-        <translation type="obsolete">LAS-Dateien zusammenführen</translation>
+        <translation>LAS-Dateien zusammenführen</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Input LAS files</source>
@@ -11590,11 +11595,11 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     <name>MergeLines</name>
     <message>
         <source>Merge lines</source>
-        <translation type="obsolete">Linien zusammenführen</translation>
+        <translation>Linien zusammenführen</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12320,7 +12325,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>MultipartToSingleparts</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12332,7 +12337,7 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Mehr- zu einteilig</translation>
+        <translation>Mehr- zu einteilig</translation>
     </message>
 </context>
 <context>
@@ -12395,7 +12400,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>NearestNeighbourAnalysis</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Points</source>
@@ -12427,7 +12432,7 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Nächster Nachbaranalyse</translation>
+        <translation>Nächster Nachbaranalyse</translation>
     </message>
 </context>
 <context>
@@ -12615,7 +12620,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>Ogr2Ogr</name>
     <message>
         <source>[OGR] Conversion</source>
-        <translation type="obsolete">[OGR] Konvertierung</translation>
+        <translation>[OGR] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12635,14 +12640,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Convert format</source>
-        <translation type="obsolete">Format konvertieren</translation>
+        <translation>Format konvertieren</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrBuffer</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12678,14 +12683,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Buffer vectors</source>
-        <translation type="obsolete">Vektoren puffern</translation>
+        <translation>Vektoren puffern</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrClip</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12705,14 +12710,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Clip vectors by polygon</source>
-        <translation type="obsolete">Vektoren durch Polygon zuschneiden</translation>
+        <translation>Vektoren durch Polygon zuschneiden</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrClipExtent</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12732,14 +12737,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Clip vectors by extent</source>
-        <translation type="obsolete">Vektoren auf Ausmaße zuschneiden</translation>
+        <translation>Vektoren auf Ausmaße zuschneiden</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrDissolve</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12787,14 +12792,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Dissolve polygons</source>
-        <translation type="obsolete">Polygone auflösen</translation>
+        <translation>Polygone auflösen</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrOneSideBuffer</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12838,14 +12843,14 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Single sided buffers (and offset lines) for lines</source>
-        <translation type="obsolete">Einseitige Puffer (und Versatzlinien) für Linien</translation>
+        <translation>Einseitige Puffer (und Versatzlinien) für Linien</translation>
     </message>
 </context>
 <context>
     <name>Ogr2OgrPointsOnLines</name>
     <message>
         <source>[OGR] Geoprocessing</source>
-        <translation type="obsolete">[OGR] Geoverarbeitung</translation>
+        <translation>[OGR] Geoverarbeitung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -12869,7 +12874,7 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Create points along lines</source>
-        <translation type="obsolete">Punkte entlang von Linien erzeugen</translation>
+        <translation>Punkte entlang von Linien erzeugen</translation>
     </message>
 </context>
 <context>
@@ -12936,11 +12941,11 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Import layer/table as geometryless table into PostgreSQL database</source>
-        <translation type="obsolete">Layer/Tabelle als geometrielose Tabelle in PostgreSQL importieren</translation>
+        <translation>Layer/Tabelle als geometrielose Tabelle in PostgreSQL importieren</translation>
     </message>
     <message>
         <source>[OGR] Miscellaneous</source>
-        <translation type="obsolete">[OGR] Verschiedenes</translation>
+        <translation>[OGR] Verschiedenes</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
@@ -13047,11 +13052,11 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Import Vector into PostGIS database (new connection)</source>
-        <translation type="obsolete">Vektor in PostGIS-Datenbank importieren (neue Verbindung)</translation>
+        <translation>Vektor in PostGIS-Datenbank importieren (neue Verbindung)</translation>
     </message>
     <message>
         <source>[OGR] Miscellaneous</source>
-        <translation type="obsolete">[OGR] Verschiedenes</translation>
+        <translation>[OGR] Verschiedenes</translation>
     </message>
     <message>
         <source>Assign an output CRS</source>
@@ -13170,11 +13175,11 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Import Vector into PostGIS database (available connections)</source>
-        <translation type="obsolete">Vektor in PostGIS-Datenbank importieren (vorhandene Verbindungen)</translation>
+        <translation>Vektor in PostGIS-Datenbank importieren (vorhandene Verbindungen)</translation>
     </message>
     <message>
         <source>[OGR] Miscellaneous</source>
-        <translation type="obsolete">[OGR] Verschiedenes</translation>
+        <translation>[OGR] Verschiedenes</translation>
     </message>
     <message>
         <source>Assign an output CRS</source>
@@ -13213,7 +13218,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>OgrInfo</name>
     <message>
         <source>[OGR] Miscellaneous</source>
-        <translation type="obsolete">[OGR] Verschiedenes</translation>
+        <translation>[OGR] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13229,18 +13234,18 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Information</translation>
+        <translation>Information</translation>
     </message>
 </context>
 <context>
     <name>OgrSql</name>
     <message>
         <source>Execute SQL</source>
-        <translation type="obsolete">SQL-Anweisung ausführen</translation>
+        <translation>SQL-Anweisung ausführen</translation>
     </message>
     <message>
         <source>[OGR] Miscellaneous</source>
-        <translation type="obsolete">[OGR] Verschiedenes</translation>
+        <translation>[OGR] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13337,11 +13342,11 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>OrientedMinimumBoundingBox</name>
     <message>
         <source>Oriented minimum bounding box</source>
-        <translation type="obsolete">Minimaler gerichteter Umgrenzungsrahmen</translation>
+        <translation>Minimaler gerichteter Umgrenzungsrahmen</translation>
     </message>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13548,11 +13553,11 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>PeukerDouglas</name>
     <message>
         <source>Peuker Douglas</source>
-        <translation type="obsolete">Peuker-Douglas</translation>
+        <translation>Peuker-Douglas</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Elevation Grid</source>
@@ -13583,11 +13588,11 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>PeukerDouglasMulti</name>
     <message>
         <source>Peuker Douglas (multifile)</source>
-        <translation type="obsolete">Peuker-Douglas (Mehrdatei)</translation>
+        <translation>Peuker-Douglas (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Elevation Grid</source>
@@ -13618,7 +13623,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>PointDistance</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
@@ -13665,11 +13670,11 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>PointOnSurface</name>
     <message>
         <source>Point on surface</source>
-        <translation type="obsolete">Punkt auf Oberfläche</translation>
+        <translation>Punkt auf Oberfläche</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13688,7 +13693,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     <name>PointsDisplacement</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13708,14 +13713,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Points displacement</source>
-        <translation type="obsolete">Punktversatz</translation>
+        <translation>Punktversatz</translation>
     </message>
 </context>
 <context>
     <name>PointsFromLines</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Raster layer</source>
@@ -13731,14 +13736,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Generate points (pixel centroids) along line</source>
-        <translation type="obsolete">Punkte (Pixelzentren) entlang einer Linie erzeugen</translation>
+        <translation>Punkte (Pixelzentren) entlang einer Linie erzeugen</translation>
     </message>
 </context>
 <context>
     <name>PointsFromPolygons</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Raster layer</source>
@@ -13754,14 +13759,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Generate points (pixel centroids) inside polygons</source>
-        <translation type="obsolete">Punkte (Pixelzentren) in Polygonen erzeugen</translation>
+        <translation>Punkte (Pixelzentren) in Polygonen erzeugen</translation>
     </message>
 </context>
 <context>
     <name>PointsInPolygon</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Polygons</source>
@@ -13781,14 +13786,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Count points in polygon</source>
-        <translation type="obsolete">Punkte in Polygon zählen</translation>
+        <translation>Punkte in Polygon zählen</translation>
     </message>
 </context>
 <context>
     <name>PointsInPolygonUnique</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Polygons</source>
@@ -13812,14 +13817,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Count unique points in polygon</source>
-        <translation type="obsolete">Eindeutige Punkte in Polygon zählen</translation>
+        <translation>Eindeutige Punkte in Polygon zählen</translation>
     </message>
 </context>
 <context>
     <name>PointsInPolygonWeighted</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Polygons</source>
@@ -13843,14 +13848,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Count points in polygon(weighted)</source>
-        <translation type="obsolete">Punkte in Polygon zählen (gewichtet)</translation>
+        <translation>Punkte in Polygon zählen (gewichtet)</translation>
     </message>
 </context>
 <context>
     <name>PointsLayerFromTable</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -13874,14 +13879,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Points layer from table</source>
-        <translation type="obsolete">Punktlayer aus Tabelle</translation>
+        <translation>Punktlayer aus Tabelle</translation>
     </message>
 </context>
 <context>
     <name>PointsToPaths</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input point layer</source>
@@ -13909,14 +13914,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Points to path</source>
-        <translation type="obsolete">Punkte zu Weg</translation>
+        <translation>Punkte zu Weg</translation>
     </message>
 </context>
 <context>
     <name>PolarPlot</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input table</source>
@@ -13947,11 +13952,11 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Poly Clip Data</source>
-        <translation type="obsolete">Poly-Daten zuschneiden</translation>
+        <translation>Poly-Daten zuschneiden</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <source>Output clipped LAS file</source>
@@ -13990,7 +13995,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -14010,14 +14015,14 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="obsolete">Polygonbildung</translation>
+        <translation>Polygonbildung</translation>
     </message>
 </context>
 <context>
     <name>PolygonsToLines</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -14029,7 +14034,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Polygone zu Linien</translation>
+        <translation>Polygone zu Linien</translation>
     </message>
 </context>
 <context>
@@ -14050,7 +14055,7 @@ Bitte die Processing-Einstellung überprüfen.</translation>
     </message>
     <message>
         <source>PostGIS execute SQL</source>
-        <translation type="obsolete">PostGIS-SQL-Ausführen</translation>
+        <translation>PostGIS-SQL-Ausführen</translation>
     </message>
 </context>
 <context>
@@ -20437,6 +20442,10 @@ Current last modification date is: %2</source>
 
 Letztes Änderungsdatum beim Laden war: %1
 Aktuelles letztes Änderungsdateum ist: %2</translation>
+    </message>
+    <message>
+        <source>http://qgis.org/en/site/about/sponsorship.html</source>
+        <translation>http://qgis.org/de/site/about/sponsorship.html</translation>
     </message>
 </context>
 <context>
@@ -63505,18 +63514,18 @@ p, li { white-space: pre-wrap; }
     <name>QgsSponsors</name>
     <message>
         <source>&lt;p&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.&lt;/p&gt;&lt;p&gt;Please see the &lt;a href=&apos;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&apos;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details. In the &lt;a href=&apos;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&apos;&gt;Sponsors page&lt;/a&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? QGIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von QGIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;a href=&apos;http://qgis.org/de/site/getinvolved/governance/sponsorship/sponsorship.html&apos;&gt;QGIS-Sponsoren-Webseite&lt;/a&gt;.  Auf der &lt;a href=&apos;http://qgis.org/de/site/about/sponsorship.html#list-of-sponsors&apos;&gt;Sponsoren-Seite&lt;/a&gt; sehen Sie die guten Menschen und Firmen, die uns finanziell helfen - ein ganz großes Dankeschön ihnen allen!&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? QGIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von QGIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;a href=&apos;http://qgis.org/de/site/getinvolved/governance/sponsorship/sponsorship.html&apos;&gt;QGIS-Sponsoren-Webseite&lt;/a&gt;.  Auf der &lt;a href=&apos;http://qgis.org/de/site/about/sponsorship.html#list-of-sponsors&apos;&gt;Sponsoren-Seite&lt;/a&gt; sehen Sie die guten Menschen und Firmen, die uns finanziell helfen - ein ganz großes Dankeschön ihnen allen!&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsSponsorsBase</name>
     <message>
         <source>QGIS Sponsors</source>
-        <translation>QGIS-Sponsoren</translation>
+        <translation type="obsolete">QGIS-Sponsoren</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation>Beschriftung</translation>
+        <translation type="obsolete">Beschriftung</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -63524,7 +63533,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -68824,11 +68833,11 @@ Grund: %2</translation>
     <name>RAlgorithm</name>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="obsolete">[Unbenannte Algorithmen]</translation>
+        <translation>[Unbenannte Algorithmen]</translation>
     </message>
     <message>
         <source>User R scripts</source>
-        <translation type="obsolete">R-Benutzerskripte</translation>
+        <translation>R-Benutzerskripte</translation>
     </message>
     <message>
         <source>Could not load R script: %s.
@@ -68853,6 +68862,10 @@ Bitte vor der Ausführung von R-Skripten einstellen.</translation>
     <message>
         <source>&lt;p&gt;This algorithm requires R to be run. Unfortunately it seems that R is not installed in your system or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dieser Algorithmus erfordert die Ausführung von R. Leider scheint R nicht richtig für die Verwendung in QGIS installiert oder konfiguriert zu sein&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Hier klicken&lt;/a&gt; um mehr zur Installation und Konfiguration von R für QGIS zu erfahren&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>R Output values</source>
+        <translation>R-Ausgabewerte</translation>
     </message>
 </context>
 <context>
@@ -68906,7 +68919,7 @@ Bitte vor der Ausführung von R-Skripten einstellen.</translation>
     <name>RandomExtract</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Number of selected features</source>
@@ -68942,14 +68955,14 @@ Bitte vor der Ausführung von R-Skripten einstellen.</translation>
     </message>
     <message>
         <source>Random extract</source>
-        <translation type="obsolete">Zufälliger Ausschnitt</translation>
+        <translation>Zufälliger Ausschnitt</translation>
     </message>
 </context>
 <context>
     <name>RandomExtractWithinSubsets</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Number of selected features</source>
@@ -68989,14 +69002,14 @@ Bitte vor der Ausführung von R-Skripten einstellen.</translation>
     </message>
     <message>
         <source>Random extract within subsets</source>
-        <translation type="obsolete">Zufällige Auswahl in Untermengen</translation>
+        <translation>Zufällige Auswahl in Untermengen</translation>
     </message>
 </context>
 <context>
     <name>RandomPointsAlongLines</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69021,14 +69034,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random points along line</source>
-        <translation type="obsolete">Zufällige Punkte entlang einer Linie</translation>
+        <translation>Zufällige Punkte entlang einer Linie</translation>
     </message>
 </context>
 <context>
     <name>RandomPointsExtent</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input extent</source>
@@ -69053,14 +69066,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random points in extent</source>
-        <translation type="obsolete">Zufällige Punkte in Grenzen</translation>
+        <translation>Zufällige Punkte in Grenzen</translation>
     </message>
 </context>
 <context>
     <name>RandomPointsLayer</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69085,14 +69098,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random points in layer bounds</source>
-        <translation type="obsolete">Zufällige Punkte in den Layergrenzen</translation>
+        <translation>Zufällige Punkte in den Layergrenzen</translation>
     </message>
 </context>
 <context>
     <name>RandomPointsPolygonsFixed</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Points count</source>
@@ -69129,14 +69142,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random points inside polygons (fixed)</source>
-        <translation type="obsolete">Zufällige Punkte in Polygonen (festgelegt)</translation>
+        <translation>Zufällige Punkte in Polygonen (festgelegt)</translation>
     </message>
 </context>
 <context>
     <name>RandomPointsPolygonsVariable</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Points count</source>
@@ -69173,14 +69186,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random points inside polygons (variable)</source>
-        <translation type="obsolete">Zufällige Punkte in Polygonen (variable)</translation>
+        <translation>Zufällige Punkte in Polygonen (variable)</translation>
     </message>
 </context>
 <context>
     <name>RandomSelection</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Number of selected features</source>
@@ -69216,14 +69229,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Zufällige Auswahl</translation>
+        <translation>Zufällige Auswahl</translation>
     </message>
 </context>
 <context>
     <name>RandomSelectionWithinSubsets</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Number of selected features</source>
@@ -69263,7 +69276,7 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Zufällige Auswahl in Untermengen</translation>
+        <translation>Zufällige Auswahl in Untermengen</translation>
     </message>
 </context>
 <context>
@@ -69305,7 +69318,7 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>RasterLayerHistogram</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69325,14 +69338,14 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Raster layer histogram</source>
-        <translation type="obsolete">Rasterlayerhistogramm</translation>
+        <translation>Rasterlayerhistogramm</translation>
     </message>
 </context>
 <context>
     <name>RasterLayerStatistics</name>
     <message>
         <source>Raster tools</source>
-        <translation type="obsolete">Rasterwerkzeuge</translation>
+        <translation>Rasterwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69372,7 +69385,7 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Raster layer statistics</source>
-        <translation type="obsolete">Rasterlayerstatistik</translation>
+        <translation>Rasterlayerstatistik</translation>
     </message>
 </context>
 <context>
@@ -69386,11 +69399,11 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>RectanglesOvalsDiamondsFixed</name>
     <message>
         <source>Rectangles, ovals, diamonds (fixed)</source>
-        <translation type="obsolete">Rechtecke, Ovale, Rauten (fest)</translation>
+        <translation>Rechtecke, Ovale, Rauten (fest)</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Rectangles</source>
@@ -69437,11 +69450,11 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>RectanglesOvalsDiamondsVariable</name>
     <message>
         <source>Rectangles, ovals, diamonds (variable)</source>
-        <translation type="obsolete">Rechtecke, Ovale, Rauten (variabel)</translation>
+        <translation>Rechtecke, Ovale, Rauten (variabel)</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Rectangles</source>
@@ -69496,7 +69509,7 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>RegularPoints</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Input extent</source>
@@ -69527,11 +69540,11 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>RemoveNullGeometry</name>
     <message>
         <source>Remove null geometries</source>
-        <translation type="obsolete">NULL-Geometrien entfernen</translation>
+        <translation>NULL-Geometrien entfernen</translation>
     </message>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69557,7 +69570,7 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>ReprojectLayer</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69573,18 +69586,18 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>Reproject layer</source>
-        <translation type="obsolete">Layer reprojizieren</translation>
+        <translation>Layer reprojizieren</translation>
     </message>
 </context>
 <context>
     <name>ReverseLineDirection</name>
     <message>
         <source>Reverse line direction</source>
-        <translation type="obsolete">Linienrichtung umgekehren</translation>
+        <translation>Linienrichtung umgekehren</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -69830,1047 +69843,1047 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>SAGAAlgorithm</name>
     <message>
         <source>Slope Length</source>
-        <translation type="obsolete">Hanglänge</translation>
+        <translation>Hanglänge</translation>
     </message>
     <message>
         <source>Shapes Buffer (Attribute distance)|Shapes Buffer</source>
-        <translation type="obsolete">Shapepuffer (Attributabstand)|Shapepuffer</translation>
+        <translation>Shapepuffer (Attributabstand)|Shapepuffer</translation>
     </message>
     <message>
         <source>Representativeness|Representativeness (Grid)</source>
-        <translation type="obsolete">Repräsentativität|Repräsentativität (Raster)</translation>
+        <translation>Repräsentativität|Repräsentativität (Raster)</translation>
     </message>
     <message>
         <source>Gaussian Filter</source>
-        <translation type="obsolete">Gauss&apos;scher Filter</translation>
+        <translation>Gauss&apos;scher Filter</translation>
     </message>
     <message>
         <source>Flow Accumulation (Top-Down)</source>
-        <translation type="obsolete">Flußdichte (Oben-Unten)</translation>
+        <translation>Flußdichte (Oben-Unten)</translation>
     </message>
     <message>
         <source>Convex Hull</source>
-        <translation type="obsolete">Konvexe Hülle</translation>
+        <translation>Konvexe Hülle</translation>
     </message>
     <message>
         <source>Flow Accumulation (Recursive)</source>
-        <translation type="obsolete">Flußdichte (Rekursiv)</translation>
+        <translation>Flußdichte (Rekursiv)</translation>
     </message>
     <message>
         <source>Polygon Centroids</source>
-        <translation type="obsolete">Polygonschwerpunkt</translation>
+        <translation>Polygonschwerpunkt</translation>
     </message>
     <message>
         <source>Flow Accumulation (Flow Tracing)</source>
-        <translation type="obsolete">Flußdichte (Flußverfolgung)</translation>
+        <translation>Flußdichte (Flußverfolgung)</translation>
     </message>
     <message>
         <source>Point Statistics for Polygons</source>
-        <translation type="obsolete">Polygon-Punktstatistik</translation>
+        <translation>Polygon-Punktstatistik</translation>
     </message>
     <message>
         <source>Grid Values to Points (randomly)</source>
-        <translation type="obsolete">Gitterwerte zu Punkten (zufällig)</translation>
+        <translation>Gitterwerte zu Punkten (zufällig)</translation>
     </message>
     <message>
         <source>Clip Points with Polygons</source>
-        <translation type="obsolete">Punkte auf Polygon zuschneiden</translation>
+        <translation>Punkte auf Polygon zuschneiden</translation>
     </message>
     <message>
         <source>Gradient Vectors from Direction and Length</source>
-        <translation type="obsolete">Gradientenvektor aus Richtung und Länge</translation>
+        <translation>Gradientenvektor aus Richtung und Länge</translation>
     </message>
     <message>
         <source>Grid Statistics for Polygons</source>
-        <translation type="obsolete">Gitterstatistik für Polygone</translation>
+        <translation>Gitterstatistik für Polygone</translation>
     </message>
     <message>
         <source>Layer of extreme value</source>
-        <translation type="obsolete">Extrema-Layer</translation>
+        <translation>Extrema-Layer</translation>
     </message>
     <message>
         <source>Create Graticule</source>
-        <translation type="obsolete">Gradnetz erzeugen</translation>
+        <translation>Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Differenz</translation>
+        <translation>Differenz</translation>
     </message>
     <message>
         <source>Clip Grid with Polygon</source>
-        <translation type="obsolete">Punkte auf Polygon zuschneiden</translation>
+        <translation>Punkte auf Polygon zuschneiden</translation>
     </message>
     <message>
         <source>Crop to Data</source>
-        <translation type="obsolete">Auf Daten zuschneiden</translation>
+        <translation>Auf Daten zuschneiden</translation>
     </message>
     <message>
         <source>Close Gaps</source>
-        <translation type="obsolete">Lücken schließen</translation>
+        <translation>Lücken schließen</translation>
     </message>
     <message>
         <source>Polygon Clipping</source>
-        <translation type="obsolete">Polygonclipping</translation>
+        <translation>Polygonclipping</translation>
     </message>
     <message>
         <source>Multiresolution Index of Valley Bottom Flatness (MRVBF)</source>
-        <translation type="obsolete">Mehrauflösung-Talbodenebenheitsindex (MRVBF)</translation>
+        <translation>Mehrauflösung-Talbodenebenheitsindex (MRVBF)</translation>
     </message>
     <message>
         <source>Flatten Polygon Layer</source>
-        <translation type="obsolete">Polygonlayer glätten</translation>
+        <translation>Polygonlayer glätten</translation>
     </message>
     <message>
         <source>Shared Polygon Edges</source>
-        <translation type="obsolete">Gemeinsame Polygonkanten</translation>
+        <translation>Gemeinsame Polygonkanten</translation>
     </message>
     <message>
         <source>Add Point Attributes to Polygons</source>
-        <translation type="obsolete">Punktattribute zu Polygonen hinzufügen</translation>
+        <translation>Punktattribute zu Polygonen hinzufügen</translation>
     </message>
     <message>
         <source>Polygon Self-Intersection</source>
-        <translation type="obsolete">Polygonselbstüberschneidungen</translation>
+        <translation>Polygonselbstüberschneidungen</translation>
     </message>
     <message>
         <source>Gradient Vectors from Surface</source>
-        <translation type="obsolete">Gradientenvektor aus Oberfläche</translation>
+        <translation>Gradientenvektor aus Oberfläche</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictor Grids</source>
-        <translation type="obsolete">GWR für mehrere Vorsagegitter</translation>
+        <translation>GWR für mehrere Vorsagegitter</translation>
     </message>
     <message>
         <source>Multiple Regression Analysis (Points/Grids)</source>
-        <translation type="obsolete">Mehrfach-Regressionsanalyse (Punkt/Raster)</translation>
+        <translation>Mehrfach-Regressionsanalyse (Punkt/Raster)</translation>
     </message>
     <message>
         <source>Hypsometry</source>
-        <translation type="obsolete">Hypsometrie</translation>
+        <translation>Hypsometrie</translation>
     </message>
     <message>
         <source>Aggregation Index</source>
-        <translation type="obsolete">Aggregationsindex</translation>
+        <translation>Aggregationsindex</translation>
     </message>
     <message>
         <source>Identity</source>
-        <translation type="obsolete">Identität</translation>
+        <translation>Identität</translation>
     </message>
     <message>
         <source>LS Factor</source>
-        <translation type="obsolete">LS-Faktor</translation>
+        <translation>LS-Faktor</translation>
     </message>
     <message>
         <source>DTM Filter (slope-based)</source>
-        <translation type="obsolete">DTM-Filter (Hangbasiert)</translation>
+        <translation>DTM-Filter (Hangbasiert)</translation>
     </message>
     <message>
         <source>Effective Air Flow Heights</source>
-        <translation type="obsolete">Effektive Luftflußhöhen</translation>
+        <translation>Effektive Luftflußhöhen</translation>
     </message>
     <message>
         <source>Add Grid Values to Points</source>
-        <translation type="obsolete">Gitterwerte zu Punkten</translation>
+        <translation>Gitterwerte zu Punkten</translation>
     </message>
     <message>
         <source>Kernel Density Estimation</source>
-        <translation type="obsolete">Kerndichtenschätzung</translation>
+        <translation>Kerndichtenschätzung</translation>
     </message>
     <message>
         <source>Grid Cell Index</source>
-        <translation type="obsolete">Gitterzellenindex</translation>
+        <translation>Gitterzellenindex</translation>
     </message>
     <message>
         <source>Mass Balance Index</source>
-        <translation type="obsolete">Gleichgewichtsindex</translation>
+        <translation>Gleichgewichtsindex</translation>
     </message>
     <message>
         <source>Transform Shapes</source>
-        <translation type="obsolete">Shapes transformieren</translation>
+        <translation>Shapes transformieren</translation>
     </message>
     <message>
         <source>Regression analysis|Regression Analysis (Points/Grid)</source>
-        <translation type="obsolete">Regressionanalyse|Regressionsanalyse (Punkte/Raster)</translation>
+        <translation>Regressionanalyse|Regressionsanalyse (Punkte/Raster)</translation>
     </message>
     <message>
         <source>Polygon Properties</source>
-        <translation type="obsolete">Polygoneigenschaften</translation>
+        <translation>Polygoneigenschaften</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression</source>
-        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression</translation>
+        <translation>Geografischgewichtete Mehrfach-Regression</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictors (Gridded Model Output)</source>
-        <translation type="obsolete">GWR für mehrere Vorsagegitter (Gerasterte Modellausgabe)</translation>
+        <translation>GWR für mehrere Vorsagegitter (Gerasterte Modellausgabe)</translation>
     </message>
     <message>
         <source>Directional Statistics for Single Grid</source>
-        <translation type="obsolete">Richtungsstatistik für Einzelraster</translation>
+        <translation>Richtungsstatistik für Einzelraster</translation>
     </message>
     <message>
         <source>Fill Sinks|Fill Sinks (Planchon/Darboux, 2001)</source>
-        <translation type="obsolete">Senken füllen|Senken füllen (Planchon/Darboux, 2001)</translation>
+        <translation>Senken füllen|Senken füllen (Planchon/Darboux, 2001)</translation>
     </message>
     <message>
         <source>Grids Product</source>
-        <translation type="obsolete">Rasterprodukte</translation>
+        <translation>Rasterprodukte</translation>
     </message>
     <message>
         <source>Fill Gaps in Records</source>
-        <translation type="obsolete">Datensatzlücken füllen</translation>
+        <translation>Datensatzlücken füllen</translation>
     </message>
     <message>
         <source>Topographic Correction</source>
-        <translation type="obsolete">Topographische Korrektur</translation>
+        <translation>Topographische Korrektur</translation>
     </message>
     <message>
         <source>Grid Buffer</source>
-        <translation type="obsolete">Gitterpuffer</translation>
+        <translation>Gitterpuffer</translation>
     </message>
     <message>
         <source>Catchment Area (Flow Tracing)</source>
-        <translation type="obsolete">Einzugsbereich (Flußverfolgung)</translation>
+        <translation>Einzugsbereich (Flußverfolgung)</translation>
     </message>
     <message>
         <source>User Defined Filter</source>
-        <translation type="obsolete">Benutzerdefinierter Filter</translation>
+        <translation>Benutzerdefinierter Filter</translation>
     </message>
     <message>
         <source>Watershed Segmentation</source>
-        <translation type="obsolete">Niederschlagssegmentierung</translation>
+        <translation>Niederschlagssegmentierung</translation>
     </message>
     <message>
         <source>Line Simplification</source>
-        <translation type="obsolete">Linienvereinfachung</translation>
+        <translation>Linienvereinfachung</translation>
     </message>
     <message>
         <source>Convergence Index (Search Radius)</source>
-        <translation type="obsolete">Konvergenzindex (Suchradius)</translation>
+        <translation>Konvergenzindex (Suchradius)</translation>
     </message>
     <message>
         <source>Topographic Wetness Index (TWI)</source>
-        <translation type="obsolete">Topographischer Niederschlagsindex (TWI)</translation>
+        <translation>Topographischer Niederschlagsindex (TWI)</translation>
     </message>
     <message>
         <source>Upslope Area|4</source>
-        <translation type="obsolete">Anstieg Areal4</translation>
+        <translation>Anstieg Areal4</translation>
     </message>
     <message>
         <source>Laplacian Filter</source>
-        <translation type="obsolete">Laplace-Filter</translation>
+        <translation>Laplace-Filter</translation>
     </message>
     <message>
         <source>Grid Proximity Buffer</source>
-        <translation type="obsolete">Gitterannährungspuffer</translation>
+        <translation>Gitterannährungspuffer</translation>
     </message>
     <message>
         <source>Aggregate Point Observations</source>
-        <translation type="obsolete">Punktbeobachtung sammeln</translation>
+        <translation>Punktbeobachtung sammeln</translation>
     </message>
     <message>
         <source>Transpose Grids</source>
-        <translation type="obsolete">Gitter transponieren</translation>
+        <translation>Gitter transponieren</translation>
     </message>
     <message>
         <source>Topographic Position Index (TPI)</source>
-        <translation type="obsolete">Topographische Position (TPI)</translation>
+        <translation>Topographische Position (TPI)</translation>
     </message>
     <message>
         <source>Grid Masking</source>
-        <translation type="obsolete">Gittermaskierung</translation>
+        <translation>Gittermaskierung</translation>
     </message>
     <message>
         <source>Channel Network and Drainage Basins</source>
-        <translation type="obsolete">Kanalnetzwerk und Drainagebecken</translation>
+        <translation>Kanalnetzwerk und Drainagebecken</translation>
     </message>
     <message>
         <source>Real Surface Area</source>
-        <translation type="obsolete">Echte Oberfläche</translation>
+        <translation>Echte Oberfläche</translation>
     </message>
     <message>
         <source>Threshold Buffer</source>
-        <translation type="obsolete">Schwellenpuffer</translation>
+        <translation>Schwellenpuffer</translation>
     </message>
     <message>
         <source>Add Grid Values to Shapes</source>
-        <translation type="obsolete">Gitterwerte zu Shapes hinzufügen</translation>
+        <translation>Gitterwerte zu Shapes hinzufügen</translation>
     </message>
     <message>
         <source>QuadTree Structure to Shapes</source>
-        <translation type="obsolete">Quad-Tree-Struktur zu Shapes</translation>
+        <translation>Quad-Tree-Struktur zu Shapes</translation>
     </message>
     <message>
         <source>Analytical Hillshading</source>
-        <translation type="obsolete">Analytische Schummerung</translation>
+        <translation>Analytische Schummerung</translation>
     </message>
     <message>
         <source>Surface Specific Points</source>
-        <translation type="obsolete">Oberflächen spezifische Punkte</translation>
+        <translation>Oberflächen spezifische Punkte</translation>
     </message>
     <message>
         <source>Transect through polygon shapefile</source>
-        <translation type="obsolete">Durch Polygonshapedateien schneiden</translation>
+        <translation>Durch Polygonshapedateien schneiden</translation>
     </message>
     <message>
         <source>Convert Lines to Polygons</source>
-        <translation type="obsolete">Linien in Polygone umwandeln</translation>
+        <translation>Linien in Polygone umwandeln</translation>
     </message>
     <message>
         <source>Local Minima and Maxima</source>
-        <translation type="obsolete">Lokale Minima und Maxima</translation>
+        <translation>Lokale Minima und Maxima</translation>
     </message>
     <message>
         <source>Accumulated Cost (Isotropic)</source>
-        <translation type="obsolete">Aufgelaufenen Kosten (isotropisch)</translation>
+        <translation>Aufgelaufenen Kosten (isotropisch)</translation>
     </message>
     <message>
         <source>Line Dissolve</source>
-        <translation type="obsolete">Linien auflösen</translation>
+        <translation>Linien auflösen</translation>
     </message>
     <message>
         <source>Resampling</source>
-        <translation type="obsolete">Abtastung</translation>
+        <translation>Abtastung</translation>
     </message>
     <message>
         <source>Fuzzy Union (OR)</source>
-        <translation type="obsolete">Fuzzy-Vereinigung (ODER)</translation>
+        <translation>Fuzzy-Vereinigung (ODER)</translation>
     </message>
     <message>
         <source>Natural Neighbour</source>
-        <translation type="obsolete">Natürlicher Nachbar</translation>
+        <translation>Natürlicher Nachbar</translation>
     </message>
     <message>
         <source>Convert Lines to Points</source>
-        <translation type="obsolete">Linien in Punkten umwandeln</translation>
+        <translation>Linien in Punkten umwandeln</translation>
     </message>
     <message>
         <source>Thin Plate Spline (Global)</source>
-        <translation type="obsolete">Thin Plate Spline (global)</translation>
+        <translation>Thin Plate Spline (global)</translation>
     </message>
     <message>
         <source>Polygon dissolve (by attribute)|Polygon Dissolve</source>
-        <translation type="obsolete">Polygon auflösen (nach Attribut)|Polygon auflösen</translation>
+        <translation>Polygon auflösen (nach Attribut)|Polygon auflösen</translation>
     </message>
     <message>
         <source>Stream Power Index</source>
-        <translation type="obsolete">Stromstärkeindex</translation>
+        <translation>Stromstärkeindex</translation>
     </message>
     <message>
         <source>Global Moran&apos;s I for Grids</source>
-        <translation type="obsolete">Global Moran I für Raster</translation>
+        <translation>Global Moran I für Raster</translation>
     </message>
     <message>
         <source>Polynomial Regression</source>
-        <translation type="obsolete">Polynominalregression</translation>
+        <translation>Polynominalregression</translation>
     </message>
     <message>
         <source>Multiple Regression Analysis (Grid/Grids)</source>
-        <translation type="obsolete">Mehrfach-Regressionsanalyse (Gitter)</translation>
+        <translation>Mehrfach-Regressionsanalyse (Gitter)</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
-        <translation type="obsolete">Nächster Nachbar</translation>
+        <translation>Nächster Nachbar</translation>
     </message>
     <message>
         <source>Water Retention Capacity</source>
-        <translation type="obsolete">Bodenwasserspannungskapazität</translation>
+        <translation>Bodenwasserspannungskapazität</translation>
     </message>
     <message>
         <source>Gradient Vectors from Directional Components</source>
-        <translation type="obsolete">Gradientenvektoren aus gerichteten Komponenten</translation>
+        <translation>Gradientenvektoren aus gerichteten Komponenten</translation>
     </message>
     <message>
         <source>Majority Filter</source>
-        <translation type="obsolete">Mehrheitsfilter</translation>
+        <translation>Mehrheitsfilter</translation>
     </message>
     <message>
         <source>Flow Path Length</source>
-        <translation type="obsolete">Fließweglänge</translation>
+        <translation>Fließweglänge</translation>
     </message>
     <message>
         <source>Simple Region Growing</source>
-        <translation type="obsolete">Einfaches Region-Growing</translation>
+        <translation>Einfaches Region-Growing</translation>
     </message>
     <message>
         <source>Simulation</source>
-        <translation type="obsolete">Simulation</translation>
+        <translation>Simulation</translation>
     </message>
     <message>
         <source>Get Shapes Extents</source>
-        <translation type="obsolete">Shapeausmaße bestimmen</translation>
+        <translation>Shapeausmaße bestimmen</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Vereinigungen</translation>
+        <translation>Vereinigungen</translation>
     </message>
     <message>
         <source>Fill Sinks XXL (Wang &amp; Liu)</source>
-        <translation type="obsolete">Senken füllen XXL (Wang &amp; Liu)</translation>
+        <translation>Senken füllen XXL (Wang &amp; Liu)</translation>
     </message>
     <message>
         <source>B-Spline Approximation</source>
-        <translation type="obsolete">B-Spline-Approximation</translation>
+        <translation>B-Spline-Approximation</translation>
     </message>
     <message>
         <source>Polygon Parts to Separate Polygons</source>
-        <translation type="obsolete">Polygonteile in Einzelpolygone umwandeln</translation>
+        <translation>Polygonteile in Einzelpolygone umwandeln</translation>
     </message>
     <message>
         <source>Points Thinning</source>
-        <translation type="obsolete">Punkte ausdünnen</translation>
+        <translation>Punkte ausdünnen</translation>
     </message>
     <message>
         <source>Change Date Format</source>
-        <translation type="obsolete">Datumsformat ändern</translation>
+        <translation>Datumsformat ändern</translation>
     </message>
     <message>
         <source>Gradient Vector from Cartesian to Polar Coordinates</source>
-        <translation type="obsolete">Gradientenvektor aus kartesischen in Polar-Koordinaten</translation>
+        <translation>Gradientenvektor aus kartesischen in Polar-Koordinaten</translation>
     </message>
     <message>
         <source>Fragmentation Classes from Density and Connectivity</source>
-        <translation type="obsolete">Fragmentierungsklassen aus Dichte und Verbindungen</translation>
+        <translation>Fragmentierungsklassen aus Dichte und Verbindungen</translation>
     </message>
     <message>
         <source>Ordinary Kriging</source>
-        <translation type="obsolete">Normales Krigen</translation>
+        <translation>Normales Krigen</translation>
     </message>
     <message>
         <source>Grid Volume</source>
-        <translation type="obsolete">Rastervolumen</translation>
+        <translation>Rastervolumen</translation>
     </message>
     <message>
         <source>Patching</source>
-        <translation type="obsolete">Zusammenflicken</translation>
+        <translation>Zusammenflicken</translation>
     </message>
     <message>
         <source>Ordered Weighted Averaging|Ordered Weighted Averaging (OWA)</source>
-        <translation type="obsolete">Sortiertes gewichtetes Mitteln|Sortiertes gewichtetes Mitteln (OWA)</translation>
+        <translation>Sortiertes gewichtetes Mitteln|Sortiertes gewichtetes Mitteln (OWA)</translation>
     </message>
     <message>
         <source>Thin Plate Spline (TIN)</source>
-        <translation type="obsolete">Thin-Plate-Spline (TIN)</translation>
+        <translation>Thin-Plate-Spline (TIN)</translation>
     </message>
     <message>
         <source>SAGA Wetness Index</source>
-        <translation type="obsolete">SAGA Feuchtigkeitsindex</translation>
+        <translation>SAGA Feuchtigkeitsindex</translation>
     </message>
     <message>
         <source>Histogram Surface</source>
-        <translation type="obsolete">Histogramm-Oberfläche</translation>
+        <translation>Histogramm-Oberfläche</translation>
     </message>
     <message>
         <source>Merge Layers</source>
-        <translation type="obsolete">Layer zusammenführen</translation>
+        <translation>Layer zusammenführen</translation>
     </message>
     <message>
         <source>Grid Skeletonization</source>
-        <translation type="obsolete">Rasterskelettierung</translation>
+        <translation>Rasterskelettierung</translation>
     </message>
     <message>
         <source>Catchment Area|Catchment Area (Parallel)</source>
-        <translation type="obsolete">Einzugsgebiet|Einzugsgebiet (Parallel)</translation>
+        <translation>Einzugsgebiet|Einzugsgebiet (Parallel)</translation>
     </message>
     <message>
         <source>Geometric Figures</source>
-        <translation type="obsolete">Geometrische Figuren</translation>
+        <translation>Geometrische Figuren</translation>
     </message>
     <message>
         <source>Spatial Point Pattern Analysis</source>
-        <translation type="obsolete">Räumliche Punktmusteranalyse</translation>
+        <translation>Räumliche Punktmusteranalyse</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation type="obsolete">Aktualisieren</translation>
+        <translation>Aktualisieren</translation>
     </message>
     <message>
         <source>Sink Removal</source>
-        <translation type="obsolete">Ablauf entfernen</translation>
+        <translation>Ablauf entfernen</translation>
     </message>
     <message>
         <source>Convert Points to Line(s)</source>
-        <translation type="obsolete">Punkte in Linien umwandeln</translation>
+        <translation>Punkte in Linien umwandeln</translation>
     </message>
     <message>
         <source>Change Grid Values</source>
-        <translation type="obsolete">Gitterwert ändern</translation>
+        <translation>Gitterwert ändern</translation>
     </message>
     <message>
         <source>Line Properties</source>
-        <translation type="obsolete">Linieneigenschaften</translation>
+        <translation>Linieneigenschaften</translation>
     </message>
     <message>
         <source>Convert Multipoints to Points</source>
-        <translation type="obsolete">Multipunkt zu Punkt umwandeln</translation>
+        <translation>Multipunkt zu Punkt umwandeln</translation>
     </message>
     <message>
         <source>Cell Balance</source>
-        <translation type="obsolete">Zellengleichgewicht</translation>
+        <translation>Zellengleichgewicht</translation>
     </message>
     <message>
         <source>Fill Sinks (Wang &amp; Liu)</source>
-        <translation type="obsolete">Senken füllen (Wang &amp; Liu)</translation>
+        <translation>Senken füllen (Wang &amp; Liu)</translation>
     </message>
     <message>
         <source>Convert Data Storage Type</source>
-        <translation type="obsolete">Datenspeichertyp umwandeln</translation>
+        <translation>Datenspeichertyp umwandeln</translation>
     </message>
     <message>
         <source>Rank Filter</source>
-        <translation type="obsolete">Rangfilter</translation>
+        <translation>Rangfilter</translation>
     </message>
     <message>
         <source>Change Detection</source>
-        <translation type="obsolete">Erkennung ändern</translation>
+        <translation>Erkennung ändern</translation>
     </message>
     <message>
         <source>Strahler Order</source>
-        <translation type="obsolete">Strahler-Reihenfolge</translation>
+        <translation>Strahler-Reihenfolge</translation>
     </message>
     <message>
         <source>Inverse Distance Weighted</source>
-        <translation type="obsolete">gewichtete inverse Distanz (IDW)</translation>
+        <translation>gewichtete inverse Distanz (IDW)</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation (from Grid)</source>
-        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation (aus Gitter)</translation>
+        <translation>Mehrstufen-B-Spline-Interpolation (aus Gitter)</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression (Points/Grids)</source>
-        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression (Punkt/Gitter)</translation>
+        <translation>Geografischgewichtete Mehrfach-Regression (Punkt/Gitter)</translation>
     </message>
     <message>
         <source>Fast Region Growing Algorithm</source>
-        <translation type="obsolete">Schneller Regionswachstumalgorithmus</translation>
+        <translation>Schneller Regionswachstumalgorithmus</translation>
     </message>
     <message>
         <source>Terrain Ruggedness Index (TRI)</source>
-        <translation type="obsolete">Oberflächenrauhigkeit (TRI)</translation>
+        <translation>Oberflächenrauhigkeit (TRI)</translation>
     </message>
     <message>
         <source>GWR for Single Predictor Grid</source>
-        <translation type="obsolete">GWR für einzelnes Vorsagegitter</translation>
+        <translation>GWR für einzelnes Vorsagegitter</translation>
     </message>
     <message>
         <source>Points Filter</source>
-        <translation type="obsolete">Punktfilter</translation>
+        <translation>Punktfilter</translation>
     </message>
     <message>
         <source>Radius of Variance (Grid)</source>
-        <translation type="obsolete">Radius der Varianz (Gitter)</translation>
+        <translation>Radius der Varianz (Gitter)</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression (Points)</source>
-        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression (Punkte)</translation>
+        <translation>Geografischgewichtete Mehrfach-Regression (Punkte)</translation>
     </message>
     <message>
         <source>Sink Drainage Route Detection</source>
-        <translation type="obsolete">Ablaufdrainageweg bestimmen</translation>
+        <translation>Ablaufdrainageweg bestimmen</translation>
     </message>
     <message>
         <source>GWR for Single Predictor (Gridded Model Output)</source>
-        <translation type="obsolete">GWR für einzelnes Vorsagegitter (Gerasterte Modellausgabe)</translation>
+        <translation>GWR für einzelnes Vorsagegitter (Gerasterte Modellausgabe)</translation>
     </message>
     <message>
         <source>Cubic Spline Approximation</source>
-        <translation type="obsolete">Kubische Spline-Nährung</translation>
+        <translation>Kubische Spline-Nährung</translation>
     </message>
     <message>
         <source>Overland Flow Distance to Channel Network</source>
-        <translation type="obsolete">Überlandflußabstand zu Kanalnetzwerken</translation>
+        <translation>Überlandflußabstand zu Kanalnetzwerken</translation>
     </message>
     <message>
         <source>Shapes Buffer (Fixed distance)|Shapes Buffer</source>
-        <translation type="obsolete">Shapepuffer (fester Abstand)|Shapepuffer</translation>
+        <translation>Shapepuffer (fester Abstand)|Shapepuffer</translation>
     </message>
     <message>
         <source>Line-Polygon Intersection</source>
-        <translation type="obsolete">Linien-Polygon-Verschneidung</translation>
+        <translation>Linien-Polygon-Verschneidung</translation>
     </message>
     <message>
         <source>Accumulated Cost (Anisotropic)</source>
-        <translation type="obsolete">Aufgelaufenen Kosten (Anisotropisch)</translation>
+        <translation>Aufgelaufenen Kosten (Anisotropisch)</translation>
     </message>
     <message>
         <source>Fragmentation (Alternative)</source>
-        <translation type="obsolete">Fragmentierung (Alternative)</translation>
+        <translation>Fragmentierung (Alternative)</translation>
     </message>
     <message>
         <source>Principle Components Analysis</source>
-        <translation type="obsolete">Hauptkomponentenanalyse</translation>
+        <translation>Hauptkomponentenanalyse</translation>
     </message>
     <message>
         <source>Ordinary Kriging (Global)</source>
-        <translation type="obsolete">Normales Krigen (Global)</translation>
+        <translation>Normales Krigen (Global)</translation>
     </message>
     <message>
         <source>Multi-Band Variation</source>
-        <translation type="obsolete">Mehrkanalvariation</translation>
+        <translation>Mehrkanalvariation</translation>
     </message>
     <message>
         <source>Universal Kriging (Global)</source>
-        <translation type="obsolete">Universeles Krigen (Global)</translation>
+        <translation>Universeles Krigen (Global)</translation>
     </message>
     <message>
         <source>Analytical Hierarchy Process</source>
-        <translation type="obsolete">Analytischer Hierachieprozeß</translation>
+        <translation>Analytischer Hierachieprozeß</translation>
     </message>
     <message>
         <source>Diurnal Anisotropic Heating</source>
-        <translation type="obsolete">Anisotrope Erwärmung über Tag</translation>
+        <translation>Anisotrope Erwärmung über Tag</translation>
     </message>
     <message>
         <source>Variogram Surface</source>
-        <translation type="obsolete">Variogramm-Oberfläche</translation>
+        <translation>Variogramm-Oberfläche</translation>
     </message>
     <message>
         <source>Multi Direction Lee Filter</source>
-        <translation type="obsolete">Mehrrichtung-Lee-Filter</translation>
+        <translation>Mehrrichtung-Lee-Filter</translation>
     </message>
     <message>
         <source>Watershed Basins</source>
-        <translation type="obsolete">Einzugsgebietsbecken</translation>
+        <translation>Einzugsgebietsbecken</translation>
     </message>
     <message>
         <source>Supervised Classification</source>
-        <translation type="obsolete">Überwachte Klassifizierung</translation>
+        <translation>Überwachte Klassifizierung</translation>
     </message>
     <message>
         <source>Soil Texture Classification</source>
-        <translation type="obsolete">Bodentexturklassifizierung</translation>
+        <translation>Bodentexturklassifizierung</translation>
     </message>
     <message>
         <source>Vectorising Grid Classes</source>
-        <translation type="obsolete">Vektorisierende Gitter-Klassen</translation>
+        <translation>Vektorisierende Gitter-Klassen</translation>
     </message>
     <message>
         <source>Modified Quadratic Shepard</source>
-        <translation type="obsolete">Modifizierte quadratische Shepard-Methode</translation>
+        <translation>Modifizierte quadratische Shepard-Methode</translation>
     </message>
     <message>
         <source>Variogram Cloud</source>
-        <translation type="obsolete">Variogramm Wolke</translation>
+        <translation>Variogramm Wolke</translation>
     </message>
     <message>
         <source>Vectorising Raster Classes</source>
-        <translation type="obsolete">Vektorisierene Rasterklassen</translation>
+        <translation>Vektorisierene Rasterklassen</translation>
     </message>
     <message>
         <source>Morphometric Protection Index</source>
-        <translation type="obsolete">Morphometrischer Schutzindex</translation>
+        <translation>Morphometrischer Schutzindex</translation>
     </message>
     <message>
         <source>Universal Kriging</source>
-        <translation type="obsolete">Universeles Krigen</translation>
+        <translation>Universeles Krigen</translation>
     </message>
     <message>
         <source>Raster calculator|Grid Calculator</source>
-        <translation type="obsolete">Rasterrechner|Rasterrechner</translation>
+        <translation>Rasterrechner|Rasterrechner</translation>
     </message>
     <message>
         <source>Grid Orientation</source>
-        <translation type="obsolete">Gitterrichtung</translation>
+        <translation>Gitterrichtung</translation>
     </message>
     <message>
         <source>Convergence Index</source>
-        <translation type="obsolete">Konvergenzindex</translation>
+        <translation>Konvergenzindex</translation>
     </message>
     <message>
         <source>Shapes to Grid</source>
-        <translation type="obsolete">Shapes in Gitter</translation>
+        <translation>Shapes in Gitter</translation>
     </message>
     <message>
         <source>Land Surface Temperature</source>
-        <translation type="obsolete">Landoberflächentemperatur</translation>
+        <translation>Landoberflächentemperatur</translation>
     </message>
     <message>
         <source>Polygon dissolve (all polygons)|Polygon Dissolve</source>
-        <translation type="obsolete">Polygon auflösen (alle Polygone)|Polygon auflösen</translation>
+        <translation>Polygon auflösen (alle Polygone)|Polygon auflösen</translation>
     </message>
     <message>
         <source>Flow Width and Specific Catchment Area</source>
-        <translation type="obsolete">Flußbreite und spezifisches Einzugsgebiet</translation>
+        <translation>Flußbreite und spezifisches Einzugsgebiet</translation>
     </message>
     <message>
         <source>Random Terrain Generation</source>
-        <translation type="obsolete">Zufälliges Gelände erzeugen</translation>
+        <translation>Zufälliges Gelände erzeugen</translation>
     </message>
     <message>
         <source>Convert Polygons to Lines</source>
-        <translation type="obsolete">Polygon in Linien umwandeln</translation>
+        <translation>Polygon in Linien umwandeln</translation>
     </message>
     <message>
         <source>Fuzzy Intersection (AND)</source>
-        <translation type="obsolete">Fuzzy-Schnittmenge (UND)</translation>
+        <translation>Fuzzy-Schnittmenge (UND)</translation>
     </message>
     <message>
         <source>Polygon Shape Indices</source>
-        <translation type="obsolete">Polygonshapeindizes</translation>
+        <translation>Polygonshapeindizes</translation>
     </message>
     <message>
         <source>Cluster Analysis for Grids</source>
-        <translation type="obsolete">Häufungsanalyse für Gitter</translation>
+        <translation>Häufungsanalyse für Gitter</translation>
     </message>
     <message>
         <source>Burn Stream Network into DEM</source>
-        <translation type="obsolete">Stromnetzwerk in DEM brennen</translation>
+        <translation>Stromnetzwerk in DEM brennen</translation>
     </message>
     <message>
         <source>Relative Heights and Slope Positions</source>
-        <translation type="obsolete">Relative Höhen und Hangpositionen</translation>
+        <translation>Relative Höhen und Hangpositionen</translation>
     </message>
     <message>
         <source>Regression Kriging</source>
-        <translation type="obsolete">Regressionskrigen</translation>
+        <translation>Regressionskrigen</translation>
     </message>
     <message>
         <source>Simple Kriging</source>
-        <translation type="obsolete">Einfaches Krigen</translation>
+        <translation>Einfaches Krigen</translation>
     </message>
     <message>
         <source>Fuzzify</source>
-        <translation type="obsolete">Fuzzifizieren</translation>
+        <translation>Fuzzifizieren</translation>
     </message>
     <message>
         <source>Catchment Area (Recursive)</source>
-        <translation type="obsolete">Einzugsbereich (Rekursiv)</translation>
+        <translation>Einzugsbereich (Rekursiv)</translation>
     </message>
     <message>
         <source>Convert Polygon/Line Vertices to Points</source>
-        <translation type="obsolete">Polygon-/Linienstützpunkte in Punkte umwandeln</translation>
+        <translation>Polygon-/Linienstützpunkte in Punkte umwandeln</translation>
     </message>
     <message>
         <source>Least Cost Paths</source>
-        <translation type="obsolete">Pfad geringster Kosten</translation>
+        <translation>Pfad geringster Kosten</translation>
     </message>
     <message>
         <source>Split Shapes Layer Randomly</source>
-        <translation type="obsolete">Shapelayer zufällig aufteilen</translation>
+        <translation>Shapelayer zufällig aufteilen</translation>
     </message>
     <message>
         <source>Grid Standardisation</source>
-        <translation type="obsolete">Gitterstandardisierung</translation>
+        <translation>Gitterstandardisierung</translation>
     </message>
     <message>
         <source>Proximity Grid</source>
-        <translation type="obsolete">Näheraster</translation>
+        <translation>Näheraster</translation>
     </message>
     <message>
         <source>Contour Lines from Grid</source>
-        <translation type="obsolete">Umrandungslinien aus Raster</translation>
+        <translation>Umrandungslinien aus Raster</translation>
     </message>
     <message>
         <source>Fragmentation (Standard)</source>
-        <translation type="obsolete">Fragmentierung (Standard)</translation>
+        <translation>Fragmentierung (Standard)</translation>
     </message>
     <message>
         <source>Invert Data/No-Data</source>
-        <translation type="obsolete">Daten/Leerdaten invertieren</translation>
+        <translation>Daten/Leerdaten invertieren</translation>
     </message>
     <message>
         <source>Vegetation Index (Slope Based)</source>
-        <translation type="obsolete">Vegetationsindex (hangbasiert)</translation>
+        <translation>Vegetationsindex (hangbasiert)</translation>
     </message>
     <message>
         <source>Statistics for Grids</source>
-        <translation type="obsolete">Statistik für Gitter</translation>
+        <translation>Statistik für Gitter</translation>
     </message>
     <message>
         <source>Grids Sum</source>
-        <translation type="obsolete">Gittersumme</translation>
+        <translation>Gittersumme</translation>
     </message>
     <message>
         <source>Triangulation</source>
-        <translation type="obsolete">Triangulation</translation>
+        <translation>Triangulation</translation>
     </message>
     <message>
         <source>Grid Values to Points</source>
-        <translation type="obsolete">Gitterwerte in Punkte</translation>
+        <translation>Gitterwerte in Punkte</translation>
     </message>
     <message>
         <source>Add Coordinates to points</source>
-        <translation type="obsolete">Koordinaten zu Punkten hinzufügen</translation>
+        <translation>Koordinaten zu Punkten hinzufügen</translation>
     </message>
     <message>
         <source>Symmetrical Difference</source>
-        <translation type="obsolete">Symmetrische Differenz</translation>
+        <translation>Symmetrische Differenz</translation>
     </message>
     <message>
         <source>Flat Detection</source>
-        <translation type="obsolete">Flacherkennung</translation>
+        <translation>Flacherkennung</translation>
     </message>
     <message>
         <source>Aggregate</source>
-        <translation type="obsolete">Aggregieren</translation>
+        <translation>Aggregieren</translation>
     </message>
     <message>
         <source>Sky View Factor</source>
-        <translation type="obsolete">Himmelsichtfaktor</translation>
+        <translation>Himmelsichtfaktor</translation>
     </message>
     <message>
         <source>Grid Difference</source>
-        <translation type="obsolete">Gitterdifferenz</translation>
+        <translation>Gitterdifferenz</translation>
     </message>
     <message>
         <source>Vertical Distance to Channel Network</source>
-        <translation type="obsolete">Vertikale Distanz in Kanalnetzwerk</translation>
+        <translation>Vertikale Distanz in Kanalnetzwerk</translation>
     </message>
     <message>
         <source>Random Field</source>
-        <translation type="obsolete">Zufälliges Feld</translation>
+        <translation>Zufälliges Feld</translation>
     </message>
     <message>
         <source>Simple Filter</source>
-        <translation type="obsolete">Einfacher Filter</translation>
+        <translation>Einfacher Filter</translation>
     </message>
     <message>
         <source>Minimum Distance Analysis</source>
-        <translation type="obsolete">Minimumdistanzanalyse</translation>
+        <translation>Minimumdistanzanalyse</translation>
     </message>
     <message>
         <source>Shrink and Expand</source>
-        <translation type="obsolete">Verkleinern und Vergrößern</translation>
+        <translation>Verkleinern und Vergrößern</translation>
     </message>
     <message>
         <source>Cut Shapes Layer</source>
-        <translation type="obsolete">Shapelayer schneiden</translation>
+        <translation>Shapelayer schneiden</translation>
     </message>
     <message>
         <source>TPI Based Landform Classification</source>
-        <translation type="obsolete">TPI basierte Landformklassifikation</translation>
+        <translation>TPI basierte Landformklassifikation</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Schnittmengen</translation>
+        <translation>Schnittmengen</translation>
     </message>
     <message>
         <source>Profile from points table|Profile from points</source>
-        <translation type="obsolete">Profile aus Punkttabelle|Profil aus Punkten</translation>
+        <translation>Profile aus Punkttabelle|Profil aus Punkten</translation>
     </message>
     <message>
         <source>Downslope Distance Gradient</source>
-        <translation type="obsolete">Abwärtsabstandsgrendiente</translation>
+        <translation>Abwärtsabstandsgrendiente</translation>
     </message>
     <message>
         <source>Channel Network</source>
-        <translation type="obsolete">Kanalnetzwerk</translation>
+        <translation>Kanalnetzwerk</translation>
     </message>
     <message>
         <source>Pattern Analysis</source>
-        <translation type="obsolete">Musteranalyse</translation>
+        <translation>Musteranalyse</translation>
     </message>
     <message>
         <source>Fit N Points to shape</source>
-        <translation type="obsolete">N-Punkte in Shape einpassen</translation>
+        <translation>N-Punkte in Shape einpassen</translation>
     </message>
     <message>
         <source>Remove Duplicate Points</source>
-        <translation type="obsolete">Doppelte Punkte entfernen</translation>
+        <translation>Doppelte Punkte entfernen</translation>
     </message>
     <message>
         <source>Reclassify Grid Values</source>
-        <translation type="obsolete">Gitterwert neuklassifizieren</translation>
+        <translation>Gitterwert neuklassifizieren</translation>
     </message>
     <message>
         <source>Geographically Weighted Regression (Points/Grid)</source>
-        <translation type="obsolete">Geografischgewichtete Regression (Punkt/Gitter)</translation>
+        <translation>Geografischgewichtete Regression (Punkt/Gitter)</translation>
     </message>
     <message>
         <source>Close One Cell Gaps</source>
-        <translation type="obsolete">Einzellenlücken schließen</translation>
+        <translation>Einzellenlücken schließen</translation>
     </message>
     <message>
         <source>Slope, Aspect, Curvature</source>
-        <translation type="obsolete">Neigung, Exposition, Wölbung</translation>
+        <translation>Neigung, Exposition, Wölbung</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="obsolete">Funktion</translation>
+        <translation>Funktion</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictors</source>
-        <translation type="obsolete">GWR für mehrere Vorhersagen</translation>
+        <translation>GWR für mehrere Vorhersagen</translation>
     </message>
     <message>
         <source>Wind effect|Wind Effect (Windward / Leeward Index)</source>
-        <translation type="obsolete">Windeffekt|Wind Effekt (Windwärts / Leeindex)</translation>
+        <translation>Windeffekt|Wind Effekt (Windwärts / Leeindex)</translation>
     </message>
     <message>
         <source>Close Gaps with Spline</source>
-        <translation type="obsolete">Lücken mit Spline schließen</translation>
+        <translation>Lücken mit Spline schließen</translation>
     </message>
     <message>
         <source>Fill Sinks (QM of ESP)</source>
-        <translation type="obsolete">Senken füllen (QM von ESP)</translation>
+        <translation>Senken füllen (QM von ESP)</translation>
     </message>
     <message>
         <source>Diversity of Categories</source>
-        <translation type="obsolete">Kategorienvielfalt</translation>
+        <translation>Kategorienvielfalt</translation>
     </message>
     <message>
         <source>Create Polygons Graticule|Create Graticule</source>
-        <translation type="obsolete">Gradnetz als Polygone erzeugen|Gradnetz erzeugen</translation>
+        <translation>Gradnetz als Polygone erzeugen|Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Change Time Format</source>
-        <translation type="obsolete">Zeitformat ändern</translation>
+        <translation>Zeitformat ändern</translation>
     </message>
     <message>
         <source>Confusion Matrix (Polygons / Grid)</source>
-        <translation type="obsolete">Wahrheitsmatrix (Polygone / Gitter)</translation>
+        <translation>Wahrheitsmatrix (Polygone / Gitter)</translation>
     </message>
     <message>
         <source>Successive Flow Routing</source>
-        <translation type="obsolete">Aufeinanderfolgende Flußlenkung</translation>
+        <translation>Aufeinanderfolgende Flußlenkung</translation>
     </message>
     <message>
         <source>Thin Plate Spline (Local)</source>
-        <translation type="obsolete">Thin Plate Spline (Lokal)</translation>
+        <translation>Thin Plate Spline (Lokal)</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation for Categories</source>
-        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation für Kategorien</translation>
+        <translation>Mehrstufen-B-Spline-Interpolation für Kategorien</translation>
     </message>
     <message>
         <source>Diffusive Hillslope Evolution (FTCS)</source>
-        <translation type="obsolete">Diffusive Hillslope Evolution (FTCS)</translation>
+        <translation>Diffusive Hillslope Evolution (FTCS)</translation>
     </message>
     <message>
         <source>Diffusive Hillslope Evolution (ADI)</source>
-        <translation type="obsolete">Diffusive Hillslope Evolution (ADI)</translation>
+        <translation>Diffusive Hillslope Evolution (ADI)</translation>
     </message>
     <message>
         <source>Create Lines Graticule|Create Graticule</source>
-        <translation type="obsolete">Gradnetz als Linien erzeugen|Gradnetz erzeugen</translation>
+        <translation>Gradnetz als Linien erzeugen|Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Flow Accumulation (QM of ESP)</source>
-        <translation type="obsolete">Flußdichte (QM von ESP)</translation>
+        <translation>Flußdichte (QM von ESP)</translation>
     </message>
     <message>
         <source>Grid Normalisation</source>
-        <translation type="obsolete">Gitternormalisierung</translation>
+        <translation>Gitternormalisierung</translation>
     </message>
     <message>
         <source>Thin Plate Spline</source>
-        <translation type="obsolete">Thin Plate Spline</translation>
+        <translation>Thin Plate Spline</translation>
     </message>
     <message>
         <source>Seed Generation</source>
-        <translation type="obsolete">Saaterzeugung</translation>
+        <translation>Saaterzeugung</translation>
     </message>
     <message>
         <source>Polygon-Line Intersection</source>
-        <translation type="obsolete">Polygon-Linien-Verschneidung</translation>
+        <translation>Polygon-Linien-Verschneidung</translation>
     </message>
     <message>
         <source>Running Average</source>
-        <translation type="obsolete">Beweglicher Mittelwert</translation>
+        <translation>Beweglicher Mittelwert</translation>
     </message>
     <message>
         <source>Cross-Classification and Tabulation</source>
-        <translation type="obsolete">Kreuzklassifizierung und Tabellierung</translation>
+        <translation>Kreuzklassifizierung und Tabellierung</translation>
     </message>
     <message>
         <source>Gradient Vector from Polar to Cartesian Coordinates</source>
-        <translation type="obsolete">Gradientenvektor aus Polar- zu kartesischen Koordinaten</translation>
+        <translation>Gradientenvektor aus Polar- zu kartesischen Koordinaten</translation>
     </message>
     <message>
         <source>Metric Conversions</source>
-        <translation type="obsolete">Metrische Umwandlungen</translation>
+        <translation>Metrische Umwandlungen</translation>
     </message>
     <message>
         <source>RGB Composite</source>
-        <translation type="obsolete">RGB-Composite</translation>
+        <translation>RGB-Composite</translation>
     </message>
     <message>
         <source>Edge Contamination</source>
-        <translation type="obsolete">Kantenverunreinigung</translation>
+        <translation>Kantenverunreinigung</translation>
     </message>
     <message>
         <source>Curvature Classification</source>
-        <translation type="obsolete">Wölbungsklassifizierung</translation>
+        <translation>Wölbungsklassifizierung</translation>
     </message>
     <message>
         <source>Filter Clumps</source>
-        <translation type="obsolete">Klumpen filtern</translation>
+        <translation>Klumpen filtern</translation>
     </message>
     <message>
         <source>Overland Flow - Kinematic Wave D8</source>
-        <translation type="obsolete">Überlandfluß - Kinematische Welle D8</translation>
+        <translation>Überlandfluß - Kinematische Welle D8</translation>
     </message>
     <message>
         <source>Profiles from Lines</source>
-        <translation type="obsolete">Profile aus Linien</translation>
+        <translation>Profile aus Linien</translation>
     </message>
     <message>
         <source>Distance Matrix</source>
-        <translation type="obsolete">Distanzmatrix</translation>
+        <translation>Distanzmatrix</translation>
     </message>
     <message>
         <source>Residual analysis|Residual Analysis (Grid)</source>
-        <translation type="obsolete">Restanalyse|Restanalyse (Raster)</translation>
+        <translation>Restanalyse|Restanalyse (Raster)</translation>
     </message>
     <message>
         <source>Zonal Grid Statistics</source>
-        <translation type="obsolete">Zonengitterstatistik</translation>
+        <translation>Zonengitterstatistik</translation>
     </message>
     <message>
         <source>Grid Division</source>
-        <translation type="obsolete">Gitterteilung</translation>
+        <translation>Gitterteilung</translation>
     </message>
     <message>
         <source>Lake Flood</source>
-        <translation type="obsolete">Seeflut</translation>
+        <translation>Seeflut</translation>
     </message>
     <message>
         <source>Add Polygon Attributes to Points</source>
-        <translation type="obsolete">Polygonattribute zu Punkten hinzufügen</translation>
+        <translation>Polygonattribute zu Punkten hinzufügen</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation</source>
-        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation</translation>
+        <translation>Mehrstufen-B-Spline-Interpolation</translation>
     </message>
     <message>
         <source>Cross Profiles</source>
-        <translation type="obsolete">Kreuzprofile</translation>
+        <translation>Kreuzprofile</translation>
     </message>
     <message>
         <source>Polar to Cartesian Coordinates</source>
-        <translation type="obsolete">Polar- zu kartesischen Koordinaten</translation>
+        <translation>Polar- zu kartesischen Koordinaten</translation>
     </message>
     <message>
         <source>Mosaick raster layers|Mosaicking</source>
-        <translation type="obsolete">Stitching von Rasterlayern|Stitching</translation>
+        <translation>Stitching von Rasterlayern|Stitching</translation>
     </message>
     <message>
         <source>Fire Risk Analysis</source>
-        <translation type="obsolete">Feuerriskikoanalyse</translation>
+        <translation>Feuerriskikoanalyse</translation>
     </message>
     <message>
         <source>Geographically Weighted Regression</source>
-        <translation type="obsolete">Geografischgewichtete Regression</translation>
+        <translation>Geografischgewichtete Regression</translation>
     </message>
     <message>
         <source>Separate points by direction</source>
-        <translation type="obsolete">Punkte nach Richtung aufteilen</translation>
+        <translation>Punkte nach Richtung aufteilen</translation>
     </message>
     <message>
         <source>Polygons to Edges and Nodes</source>
-        <translation type="obsolete">Polygone zu Kanten und Knoten</translation>
+        <translation>Polygone zu Kanten und Knoten</translation>
     </message>
     <message>
         <source>Morphological Filter</source>
-        <translation type="obsolete">Morphologischer Filter</translation>
+        <translation>Morphologischer Filter</translation>
     </message>
     <message>
         <source>Vector Ruggedness Measure (VRM)</source>
-        <translation type="obsolete">Vektorrauhigkeitsmaß (VRM)</translation>
+        <translation>Vektorrauhigkeitsmaß (VRM)</translation>
     </message>
     <message>
         <source>Fast Representativeness</source>
-        <translation type="obsolete">Schnelle Repräsentativität</translation>
+        <translation>Schnelle Repräsentativität</translation>
     </message>
 </context>
 <context>
@@ -70972,7 +70985,7 @@ Mehrkanallayer werden von SAGA nicht unterstützt</translation>
     <name>SaveSelectedFeatures</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -70984,7 +70997,7 @@ Mehrkanallayer werden von SAGA nicht unterstützt</translation>
     </message>
     <message>
         <source>Save selected features</source>
-        <translation type="obsolete">Gewählte Objekt speichern</translation>
+        <translation>Gewählte Objekt speichern</translation>
     </message>
     <message>
         <source>There are no selected features in the input layer.</source>
@@ -71009,7 +71022,7 @@ Problem in Zeile: %s</translation>
     </message>
     <message>
         <source>[Unnamed algorithm]</source>
-        <translation type="obsolete">[Unbenannte Algorithmen]</translation>
+        <translation>[Unbenannte Algorithmen]</translation>
     </message>
     <message>
         <source>Could not load script: %s.
@@ -71115,7 +71128,7 @@ Fehler in Zeile %d</translation>
     <name>SelectByAttribute</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>begins with </source>
@@ -71155,14 +71168,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Select by attribute</source>
-        <translation type="obsolete">Nach Attribut wählen</translation>
+        <translation>Nach Attribut wählen</translation>
     </message>
 </context>
 <context>
     <name>SelectByAttributeSum</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>Input Layer</source>
@@ -71190,14 +71203,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Select by attribute sum</source>
-        <translation type="obsolete">Nach Attributsumme wählen</translation>
+        <translation>Nach Attributsumme wählen</translation>
     </message>
 </context>
 <context>
     <name>SelectByExpression</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>creating new selection</source>
@@ -71233,14 +71246,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Select by expression</source>
-        <translation type="obsolete">Nach Ausdruck wählen</translation>
+        <translation>Nach Ausdruck wählen</translation>
     </message>
 </context>
 <context>
     <name>SelectByLocation</name>
     <message>
         <source>Vector selection tools</source>
-        <translation type="obsolete">Vektorauswahlwerkzeuge</translation>
+        <translation>Vektorauswahlwerkzeuge</translation>
     </message>
     <message>
         <source>creating new selection</source>
@@ -71280,7 +71293,7 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Nach Position selektieren</translation>
+        <translation>Nach Position selektieren</translation>
     </message>
 </context>
 <context>
@@ -71330,7 +71343,7 @@ Fehler in Zeile %d</translation>
     <name>SetRasterStyle</name>
     <message>
         <source>Raster general tools</source>
-        <translation type="obsolete">Allgemeine Rasterwerkzeuge</translation>
+        <translation>Allgemeine Rasterwerkzeuge</translation>
     </message>
     <message>
         <source>Raster layer</source>
@@ -71346,14 +71359,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Set style for raster layer</source>
-        <translation type="obsolete">Setze Stil für Rasterlayer</translation>
+        <translation>Setze Stil für Rasterlayer</translation>
     </message>
 </context>
 <context>
     <name>SetVectorStyle</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Vector layer</source>
@@ -71369,7 +71382,7 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Set style for vector layer</source>
-        <translation type="obsolete">Setze Stil für Vektorlayer</translation>
+        <translation>Setze Stil für Vektorlayer</translation>
     </message>
 </context>
 <context>
@@ -71561,7 +71574,7 @@ Fehler in Zeile %d</translation>
     <name>SimplifyGeometries</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -71581,7 +71594,7 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Geometrien vereinfachen</translation>
+        <translation>Geometrien vereinfachen</translation>
     </message>
 </context>
 <context>
@@ -71615,7 +71628,7 @@ Fehler in Zeile %d</translation>
     <name>SinglePartsToMultiparts</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -71639,7 +71652,7 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Ein- zu mehrteilig</translation>
+        <translation>Ein- zu mehrteilig</translation>
     </message>
 </context>
 <context>
@@ -71677,11 +71690,11 @@ Fehler in Zeile %d</translation>
     <name>SlopeArea</name>
     <message>
         <source>Slope Area Combination</source>
-        <translation type="obsolete">Neigungsflächenkombination</translation>
+        <translation>Neigungsflächenkombination</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Slope Grid</source>
@@ -71712,11 +71725,11 @@ Fehler in Zeile %d</translation>
     <name>SlopeAreaMulti</name>
     <message>
         <source>Slope Area Combination (multifile)</source>
-        <translation type="obsolete">Neigungsflächenkombination (Mehrdatei)</translation>
+        <translation>Neigungsflächenkombination (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Slope Grid</source>
@@ -71747,11 +71760,11 @@ Fehler in Zeile %d</translation>
     <name>Smooth</name>
     <message>
         <source>Smooth geometry</source>
-        <translation type="obsolete">Geometrieglättung</translation>
+        <translation>Geometrieglättung</translation>
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -71778,11 +71791,11 @@ Fehler in Zeile %d</translation>
     <name>SpatialIndex</name>
     <message>
         <source>Create spatial index</source>
-        <translation type="obsolete">Räumlichen Index erzeugen</translation>
+        <translation>Räumlichen Index erzeugen</translation>
     </message>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input Layer</source>
@@ -71805,7 +71818,7 @@ Fehler in Zeile %d</translation>
     <name>SpatialJoin</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Take attributes of the first located feature</source>
@@ -71857,14 +71870,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Attribute nach Position zusammenfügen</translation>
+        <translation>Attribute nach Position zusammenfügen</translation>
     </message>
 </context>
 <context>
     <name>SplitLinesWithLines</name>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -71884,18 +71897,18 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Split lines with lines</source>
-        <translation type="obsolete">Linien with Linien teilen</translation>
+        <translation>Linien with Linien teilen</translation>
     </message>
 </context>
 <context>
     <name>SplitRGBBands</name>
     <message>
         <source>Split RGB bands</source>
-        <translation type="obsolete">RGB-Kanäle trennen</translation>
+        <translation>RGB-Kanäle trennen</translation>
     </message>
     <message>
         <source>Image tools</source>
-        <translation type="obsolete">Bildwerkzeuge</translation>
+        <translation>Bildwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -71941,7 +71954,7 @@ Fehler in Zeile %d</translation>
     <name>StatisticsByCategories</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -71961,14 +71974,14 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Statistics by categories</source>
-        <translation type="obsolete">Statistik nach Kategorien</translation>
+        <translation>Statistik nach Kategorien</translation>
     </message>
 </context>
 <context>
     <name>SumLines</name>
     <message>
         <source>Vector analysis tools</source>
-        <translation type="obsolete">Vektoranalysewerkzeuge</translation>
+        <translation>Vektoranalysewerkzeuge</translation>
     </message>
     <message>
         <source>Lines</source>
@@ -71992,7 +72005,7 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Linienlängen summieren</translation>
+        <translation>Linienlängen summieren</translation>
     </message>
 </context>
 <context>
@@ -72073,7 +72086,7 @@ Fehler in Zeile %d</translation>
     <name>SymmetricalDifference</name>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72101,179 +72114,179 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>TAUDEMAlgorithm</name>
     <message>
         <source>Basic Grid Analysis tools</source>
-        <translation type="obsolete">Grundlegende Gitteranalysewerkzeuge</translation>
+        <translation>Grundlegende Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Avalanche Runout (multifile)</source>
-        <translation type="obsolete">D-Unendlich Lawinenauslauf (Mehrdatei)</translation>
+        <translation>D-Unendlich Lawinenauslauf (Mehrdatei)</translation>
     </message>
     <message>
         <source>Move Outlets To Streams</source>
-        <translation type="obsolete">Abläufe zu Strömem verschieben</translation>
+        <translation>Abläufe zu Strömem verschieben</translation>
     </message>
     <message>
         <source>D8 Flow Directions (multifile)</source>
-        <translation type="obsolete">D8 Flußrichtungen (Mehrdatei)</translation>
+        <translation>D8 Flußrichtungen (Mehrdatei)</translation>
     </message>
     <message>
         <source>Topographic Wetness Index</source>
-        <translation type="obsolete">Topographischer Niederschlagsindex (TWI)</translation>
+        <translation>Topographischer Niederschlagsindex (TWI)</translation>
     </message>
     <message>
         <source>Stream Network Analysis tools</source>
-        <translation type="obsolete">Stromnetzwerkanalysewerkzeuge</translation>
+        <translation>Stromnetzwerkanalysewerkzeuge</translation>
     </message>
     <message>
         <source>Move Outlets To Streams (multifile)</source>
-        <translation type="obsolete">Abläufe zu Strömem verschieben (Mehrdatei)</translation>
+        <translation>Abläufe zu Strömem verschieben (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Reach and Watershed</source>
-        <translation type="obsolete">Flußausdehnung und Wasserscheiden</translation>
+        <translation>Flußausdehnung und Wasserscheiden</translation>
     </message>
     <message>
         <source>D-Infinity Reverse Accumulation</source>
-        <translation type="obsolete">D-Unendlich umgekehrte Akkumulation</translation>
+        <translation>D-Unendlich umgekehrte Akkumulation</translation>
     </message>
     <message>
         <source>Slope Over Area Ratio</source>
-        <translation type="obsolete">Gefälle-über-Flächenverhältnis</translation>
+        <translation>Gefälle-über-Flächenverhältnis</translation>
     </message>
     <message>
         <source>Select GT Threshold (multifile)</source>
-        <translation type="obsolete">GT-Schwelle wählen (Mehrdatei)</translation>
+        <translation>GT-Schwelle wählen (Mehrdatei)</translation>
     </message>
     <message>
         <source>D-Infinity Contributing Area (multifile)</source>
-        <translation type="obsolete">D8 beitragende Fläche</translation>
+        <translation>D8 beitragende Fläche</translation>
     </message>
     <message>
         <source>D-Infinity Concentration Limited Accumulation (multifile)</source>
-        <translation type="obsolete">D-Infinity konzentrationsbegrenzte Akkumulation (Mehrdatei)</translation>
+        <translation>D-Infinity konzentrationsbegrenzte Akkumulation (Mehrdatei)</translation>
     </message>
     <message>
         <source>D8 Distance To Streams</source>
-        <translation type="obsolete">D8 Abstand zu Strömen</translation>
+        <translation>D8 Abstand zu Strömen</translation>
     </message>
     <message>
         <source>D-Infinity Decaying Accumulation</source>
-        <translation type="obsolete">D-Unendlich abnehmende Akkumulation</translation>
+        <translation>D-Unendlich abnehmende Akkumulation</translation>
     </message>
     <message>
         <source>D-Infinity Flow Directions (multifile)</source>
-        <translation type="obsolete">D-Unendlich Flußrichtungen (Mehrdatei)</translation>
+        <translation>D-Unendlich Flußrichtungen (Mehrdatei)</translation>
     </message>
     <message>
         <source>Select GT Threshold</source>
-        <translation type="obsolete">GT-Schwelle wählen</translation>
+        <translation>GT-Schwelle wählen</translation>
     </message>
     <message>
         <source>D8 Contributing Area</source>
-        <translation type="obsolete">D8 beitragende Fläche</translation>
+        <translation>D8 beitragende Fläche</translation>
     </message>
     <message>
         <source>Stream Reach and Watershed (multifile)</source>
-        <translation type="obsolete">Flußausdehnung und Wasserscheiden (Mehrdatei)</translation>
+        <translation>Flußausdehnung und Wasserscheiden (Mehrdatei)</translation>
     </message>
     <message>
         <source>Gage Watershed - 2 (multifile)</source>
-        <translation type="obsolete">Einzugsgebiet messen - 2 (Mehrdatei)</translation>
+        <translation>Einzugsgebiet messen - 2 (Mehrdatei)</translation>
     </message>
     <message>
         <source>Specialized Grid Analysis tools</source>
-        <translation type="obsolete">Spezialisierte Gitteranalysewerkzeuge</translation>
+        <translation>Spezialisierte Gitteranalysewerkzeuge</translation>
     </message>
     <message>
         <source>D-Infinity Concentration Limited Accumulation</source>
-        <translation type="obsolete">D-Unendlich konzentrationsbegrenzte Akkumulation</translation>
+        <translation>D-Unendlich konzentrationsbegrenzte Akkumulation</translation>
     </message>
     <message>
         <source>D-Infinity Flow Directions</source>
-        <translation type="obsolete">D-Infinity Fließrichtungen</translation>
+        <translation>D-Infinity Fließrichtungen</translation>
     </message>
     <message>
         <source>Gage Watershed - 2</source>
-        <translation type="obsolete">Einzugsgebiet messen - 2</translation>
+        <translation>Einzugsgebiet messen - 2</translation>
     </message>
     <message>
         <source>D-Infinity Contributing Area</source>
-        <translation type="obsolete">D-Unendlich beitragende Fläche</translation>
+        <translation>D-Unendlich beitragende Fläche</translation>
     </message>
     <message>
         <source>Slope Over Area Ratio (multifile)</source>
-        <translation type="obsolete">Gefälle-über-Flächenverhältnis (Mehrdatei)</translation>
+        <translation>Gefälle-über-Flächenverhältnis (Mehrdatei)</translation>
     </message>
     <message>
         <source>D8 Extreme Upslope Value (multifile)</source>
-        <translation type="obsolete">D8 Extremer Aufwärtswert (Mehrdatei)</translation>
+        <translation>D8 Extremer Aufwärtswert (Mehrdatei)</translation>
     </message>
     <message>
         <source>D-Infinity Reverse Accumulation (multifile)</source>
-        <translation type="obsolete">D-Unendlich umgekehrte Akkumulation (Mehrdatei)</translation>
+        <translation>D-Unendlich umgekehrte Akkumulation (Mehrdatei)</translation>
     </message>
     <message>
         <source>Pit Remove</source>
-        <translation type="obsolete">Löcher entfernen</translation>
+        <translation>Löcher entfernen</translation>
     </message>
     <message>
         <source>Gage Watershed</source>
-        <translation type="obsolete">Einzugsgebiet messen</translation>
+        <translation>Einzugsgebiet messen</translation>
     </message>
     <message>
         <source>Stream Definition By Threshold</source>
-        <translation type="obsolete">Stromdefinition nach Schwelle</translation>
+        <translation>Stromdefinition nach Schwelle</translation>
     </message>
     <message>
         <source>D8 Extreme Upslope Value</source>
-        <translation type="obsolete">D8 Extremer Aufwärtswert</translation>
+        <translation>D8 Extremer Aufwärtswert</translation>
     </message>
     <message>
         <source>Slope Average Down</source>
-        <translation type="obsolete">Gemitteltes Gefälle</translation>
+        <translation>Gemitteltes Gefälle</translation>
     </message>
     <message>
         <source>D8 Contributing Area (multifile)</source>
-        <translation type="obsolete">D8 beitragende Fläche (Mehrdatei)</translation>
+        <translation>D8 beitragende Fläche (Mehrdatei)</translation>
     </message>
     <message>
         <source>D8 Distance To Streams (multifile)</source>
-        <translation type="obsolete">D8 Abstand zu Strömen (Mehrdatei)</translation>
+        <translation>D8 Abstand zu Strömen (Mehrdatei)</translation>
     </message>
     <message>
         <source>Gage Watershed (multifile)</source>
-        <translation type="obsolete">Einzugsgebiet messen (Mehrdatei)</translation>
+        <translation>Einzugsgebiet messen (Mehrdatei)</translation>
     </message>
     <message>
         <source>D-Infinity Avalanche Runout</source>
-        <translation type="obsolete">D-Unendlich Lawinenauslauf</translation>
+        <translation>D-Unendlich Lawinenauslauf</translation>
     </message>
     <message>
         <source>Slope Average Down (multifile)</source>
-        <translation type="obsolete">Gemitteltes Gefälle (Mehrdatei)</translation>
+        <translation>Gemitteltes Gefälle (Mehrdatei)</translation>
     </message>
     <message>
         <source>Pit Remove (multifile)</source>
-        <translation type="obsolete">Löcher entfernen (Mehrdatei)</translation>
+        <translation>Löcher entfernen (Mehrdatei)</translation>
     </message>
     <message>
         <source>D-Infinity Upslope Dependence (multifile)</source>
-        <translation type="obsolete">D-Unendlich Auswärtsabhängigkeit (Mehrdatei)</translation>
+        <translation>D-Unendlich Auswärtsabhängigkeit (Mehrdatei)</translation>
     </message>
     <message>
         <source>D-Infinity Upslope Dependence</source>
-        <translation type="obsolete">D-Unendlich Aufwärtsabhängigkeit</translation>
+        <translation>D-Unendlich Aufwärtsabhängigkeit</translation>
     </message>
     <message>
         <source>Topographic Wetness Index (multifile)</source>
-        <translation type="obsolete">Topographischer Niederschlagsindex (Mehrdatei)</translation>
+        <translation>Topographischer Niederschlagsindex (Mehrdatei)</translation>
     </message>
     <message>
         <source>Stream Definition By Threshold (multifile)</source>
-        <translation type="obsolete">Stromdefinition nach Schwelle (Mehrdatei)</translation>
+        <translation>Stromdefinition nach Schwelle (Mehrdatei)</translation>
     </message>
     <message>
         <source>D8 Flow Directions</source>
-        <translation type="obsolete">D8 Flußrichtungen</translation>
+        <translation>D8 Flußrichtungen</translation>
     </message>
 </context>
 <context>
@@ -72358,7 +72371,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>TextToFloat</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input Layer</source>
@@ -72374,18 +72387,18 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Text to float</source>
-        <translation type="obsolete">Text zu Fließkomma</translation>
+        <translation>Text zu Fließkomma</translation>
     </message>
 </context>
 <context>
     <name>TinSurfaceCreate</name>
     <message>
         <source>Tin Surface Create</source>
-        <translation type="obsolete">TIN-Oberflächenerzeugung</translation>
+        <translation>TIN-Oberflächenerzeugung</translation>
     </message>
     <message>
         <source>Surface</source>
-        <translation type="obsolete">Oberfläche</translation>
+        <translation>Oberfläche</translation>
     </message>
     <message>
         <source>Input LAS layer</source>
@@ -72438,7 +72451,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>Union</name>
     <message>
         <source>Vector overlay tools</source>
-        <translation type="obsolete">Vektorlayerüberlagerungswerkzeuge</translation>
+        <translation>Vektorlayerüberlagerungswerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72466,7 +72479,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>UniqueValues</name>
     <message>
         <source>Vector table tools</source>
-        <translation type="obsolete">Vektortabellenwerkzeuge</translation>
+        <translation>Vektortabellenwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72494,25 +72507,25 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Eindeutige Werte auflisten</translation>
+        <translation>Eindeutige Werte auflisten</translation>
     </message>
 </context>
 <context>
     <name>UserExpressions</name>
     <message>
         <source>User expressions</source>
-        <translation type="obsolete">Benutzerausdrücke</translation>
+        <translation>Benutzerausdrücke</translation>
     </message>
     <message>
         <source>The user expression {0} is not valid</source>
-        <translation type="obsolete">Benutzerausdruck {0} ist ungültig</translation>
+        <translation>Benutzerausdruck {0} ist ungültig</translation>
     </message>
 </context>
 <context>
     <name>VariableDistanceBuffer</name>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72536,7 +72549,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Variable distance buffer</source>
-        <translation type="obsolete">Puffer variabler Distanz</translation>
+        <translation>Puffer variabler Distanz</translation>
     </message>
 </context>
 <context>
@@ -72554,7 +72567,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>VectorGrid</name>
     <message>
         <source>Vector creation tools</source>
-        <translation type="obsolete">Vektorerzeugungswerkzeuge</translation>
+        <translation>Vektorerzeugungswerkzeuge</translation>
     </message>
     <message>
         <source>Output grid as polygons</source>
@@ -72586,7 +72599,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektorraster</translation>
+        <translation>Vektorraster</translation>
     </message>
 </context>
 <context>
@@ -72628,7 +72641,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>VectorLayerHistogram</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72648,14 +72661,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector layer histogram</source>
-        <translation type="obsolete">Vektorlayerhistogramm</translation>
+        <translation>Vektorlayerhistogramm</translation>
     </message>
 </context>
 <context>
     <name>VectorLayerScatterplot</name>
     <message>
         <source>Graphics</source>
-        <translation type="obsolete">Grafik</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72675,14 +72688,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector layer scatterplot</source>
-        <translation type="obsolete">Vektorlayerstreuungsplott</translation>
+        <translation>Vektorlayerstreuungsplott</translation>
     </message>
 </context>
 <context>
     <name>VectorSplit</name>
     <message>
         <source>Vector general tools</source>
-        <translation type="obsolete">Allgemeine Vektorwerkzeuge</translation>
+        <translation>Allgemeine Vektorwerkzeuge</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -72698,7 +72711,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Vektorlayer teilen</translation>
+        <translation>Vektorlayer teilen</translation>
     </message>
 </context>
 <context>
@@ -72717,7 +72730,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Vector geometry tools</source>
-        <translation type="obsolete">Vektorgeometriewerkzeuge</translation>
+        <translation>Vektorgeometriewerkzeuge</translation>
     </message>
     <message>
         <source>Input file should contain at least 3 points. Choose another file and try again.</source>
@@ -73908,7 +73921,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>ZonalStatistics</name>
     <message>
         <source>Raster tools</source>
-        <translation type="obsolete">Rasterwerkzeuge</translation>
+        <translation>Rasterwerkzeuge</translation>
     </message>
     <message>
         <source>Raster layer</source>
@@ -73936,7 +73949,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Zonal Statistics</source>
-        <translation type="obsolete">Räumliche Statistik</translation>
+        <translation>Räumliche Statistik</translation>
     </message>
 </context>
 <context>
@@ -74070,14 +74083,14 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Fusion</source>
-        <translation type="obsolete">Fusion</translation>
+        <translation>Fusion</translation>
     </message>
 </context>
 <context>
     <name>aspect</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -74112,11 +74125,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>blast2dem</name>
     <message>
         <source>blast2dem</source>
-        <translation type="obsolete">blast2dem</translation>
+        <translation>blast2dem</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Attribute</source>
@@ -74135,11 +74148,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>blast2demPro</name>
     <message>
         <source>blast2demPro</source>
-        <translation type="obsolete">blast2demPro</translation>
+        <translation>blast2demPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>Attribute</source>
@@ -74158,11 +74171,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>blast2iso</name>
     <message>
         <source>blast2iso</source>
-        <translation type="obsolete">blast2iso</translation>
+        <translation>blast2iso</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>smooth underlying TIN</source>
@@ -74189,11 +74202,11 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>blast2isoPro</name>
     <message>
         <source>blast2isoPro</source>
-        <translation type="obsolete">blast2isoPro</translation>
+        <translation>blast2isoPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>smooth underlying TIN</source>
@@ -74220,7 +74233,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <name>buildvrt</name>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layers</source>
@@ -74244,7 +74257,7 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
     <message>
         <source>Build Virtual Raster</source>
-        <translation type="obsolete">Virtuelles Raster generieren</translation>
+        <translation>Virtuelles Raster generieren</translation>
     </message>
 </context>
 <context>
@@ -78136,11 +78149,11 @@ Die folgenden Optionen können verwendet werden
     <name>contour</name>
     <message>
         <source>Contour</source>
-        <translation type="obsolete">Kontur</translation>
+        <translation>Kontur</translation>
     </message>
     <message>
         <source>[GDAL] Extraction</source>
-        <translation type="obsolete">[GDAL] Extraktion</translation>
+        <translation>[GDAL] Extraktion</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -78856,7 +78869,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fillnodata</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -78888,18 +78901,18 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Fill nodata</source>
-        <translation type="obsolete">&quot;Leerwert&quot; füllen</translation>
+        <translation>&quot;Leerwert&quot; füllen</translation>
     </message>
 </context>
 <context>
     <name>flightlinesToCHM</name>
     <message>
         <source>flightlinesToCHM</source>
-        <translation type="obsolete">flightlinesToCHM</translation>
+        <translation>flightlinesToCHM</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -78926,11 +78939,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>flightlinesToDTMandDSM</name>
     <message>
         <source>flightlinesToDTMandDSM</source>
-        <translation type="obsolete">flightlinesToDTMandDSM</translation>
+        <translation>flightlinesToDTMandDSM</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -78953,11 +78966,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>flightlinesToSingleCHMpitFree</name>
     <message>
         <source>flightlinesToSingleCHMpitFree</source>
-        <translation type="obsolete">flightlinesToSingleCHMpitFree</translation>
+        <translation>flightlinesToSingleCHMpitFree</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -78980,11 +78993,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>gdal2tiles</name>
     <message>
         <source>gdal2tiles</source>
-        <translation type="obsolete">gdal2tiles</translation>
+        <translation>gdal2tiles</translation>
     </message>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -79055,7 +79068,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>gdal2xyz</name>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -79071,14 +79084,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>gdal2xyz</source>
-        <translation type="obsolete">gdal2xyz</translation>
+        <translation>gdal2xyz</translation>
     </message>
 </context>
 <context>
     <name>gdaladdo</name>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -79106,14 +79119,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Build overviews (pyramids)</source>
-        <translation type="obsolete">Übersichten erzeugen (Pyramiden)</translation>
+        <translation>Übersichten erzeugen (Pyramiden)</translation>
     </message>
 </context>
 <context>
     <name>gdalcalc</name>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer A</source>
@@ -79185,14 +79198,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Raster calculator</source>
-        <translation type="obsolete">Rasterrechner</translation>
+        <translation>Rasterrechner</translation>
     </message>
 </context>
 <context>
     <name>gdaltindex</name>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layers</source>
@@ -79212,7 +79225,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Tile Index</source>
-        <translation type="obsolete">Kachelindex</translation>
+        <translation>Kachelindex</translation>
     </message>
 </context>
 <context>
@@ -81282,7 +81295,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>hillshade</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -81325,11 +81338,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>hugeFileClassify</name>
     <message>
         <source>hugeFileClassify</source>
-        <translation type="obsolete">hugeFileClassify</translation>
+        <translation>hugeFileClassify</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -81356,11 +81369,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>hugeFileGroundClassify</name>
     <message>
         <source>hugeFileGroundClassify</source>
-        <translation type="obsolete">hugeFileGroundClassify</translation>
+        <translation>hugeFileGroundClassify</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -81387,11 +81400,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>hugeFileNormalize</name>
     <message>
         <source>hugeFileNormalize</source>
-        <translation type="obsolete">hugeFileNormalize</translation>
+        <translation>hugeFileNormalize</translation>
     </message>
     <message>
         <source>LAStools Pipelines</source>
-        <translation type="obsolete">LAS-Tools Pipelines</translation>
+        <translation>LAS-Tools Pipelines</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -81418,7 +81431,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>information</name>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -81438,18 +81451,18 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Information</translation>
+        <translation>Information</translation>
     </message>
 </context>
 <context>
     <name>las2dem</name>
     <message>
         <source>las2dem</source>
-        <translation type="obsolete">las2dem</translation>
+        <translation>las2dem</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Attribute</source>
@@ -81468,11 +81481,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2demPro</name>
     <message>
         <source>las2demPro</source>
-        <translation type="obsolete">las2demPro</translation>
+        <translation>las2demPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>attribute (what to interpolate)</source>
@@ -81491,11 +81504,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2iso</name>
     <message>
         <source>las2iso</source>
-        <translation type="obsolete">las2iso</translation>
+        <translation>las2iso</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>smooth underlying TIN</source>
@@ -81522,22 +81535,22 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2lasPro_filter</name>
     <message>
         <source>las2lasPro_filter</source>
-        <translation type="obsolete">las2lasPro_filter</translation>
+        <translation>las2lasPro_filter</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
 </context>
 <context>
     <name>las2lasPro_project</name>
     <message>
         <source>las2lasPro_project</source>
-        <translation type="obsolete">las2lasPro_project</translation>
+        <translation>las2lasPro_project</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>source projection</source>
@@ -81568,11 +81581,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2lasPro_transform</name>
     <message>
         <source>las2lasPro_transform</source>
-        <translation type="obsolete">las2lasPro_transform</translation>
+        <translation>las2lasPro_transform</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>operations (first 8 need an argument)</source>
@@ -81587,22 +81600,22 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2las_filter</name>
     <message>
         <source>las2las_filter</source>
-        <translation type="obsolete">las2las_filter</translation>
+        <translation>las2las_filter</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
 </context>
 <context>
     <name>las2las_project</name>
     <message>
         <source>las2las_project</source>
-        <translation type="obsolete">las2las_project</translation>
+        <translation>las2las_project</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>source projection</source>
@@ -81633,11 +81646,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2las_transform</name>
     <message>
         <source>las2las_transform</source>
-        <translation type="obsolete">las2las_transform</translation>
+        <translation>las2las_transform</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>operations (first 8 need an argument)</source>
@@ -81652,11 +81665,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2shp</name>
     <message>
         <source>las2shp</source>
-        <translation type="obsolete">las2shp</translation>
+        <translation>las2shp</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>use PointZ instead of MultiPointZ</source>
@@ -81675,22 +81688,22 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2tin</name>
     <message>
         <source>las2tin</source>
-        <translation type="obsolete">las2tin</translation>
+        <translation>las2tin</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
 </context>
 <context>
     <name>las2txt</name>
     <message>
         <source>las2txt</source>
-        <translation type="obsolete">las2txt</translation>
+        <translation>las2txt</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>parse string</source>
@@ -81705,11 +81718,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>las2txtPro</name>
     <message>
         <source>las2txtPro</source>
-        <translation type="obsolete">las2txtPro</translation>
+        <translation>las2txtPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>parse string</source>
@@ -81720,11 +81733,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasboundary</name>
     <message>
         <source>lasboundary</source>
-        <translation type="obsolete">lasboundary</translation>
+        <translation>lasboundary</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>compute boundary based on</source>
@@ -81747,11 +81760,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasboundaryPro</name>
     <message>
         <source>lasboundaryPro</source>
-        <translation type="obsolete">lasboundaryPro</translation>
+        <translation>lasboundaryPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>compute boundary based on</source>
@@ -81774,11 +81787,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lascanopy</name>
     <message>
         <source>lascanopy</source>
-        <translation type="obsolete">lascanopy</translation>
+        <translation>lascanopy</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>square plot size</source>
@@ -81813,11 +81826,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lascanopyPro</name>
     <message>
         <source>lascanopyPro</source>
-        <translation type="obsolete">lascanopyPro</translation>
+        <translation>lascanopyPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>square plot size</source>
@@ -81852,33 +81865,33 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasclassify</name>
     <message>
         <source>lasclassify</source>
-        <translation type="obsolete">lasclassify</translation>
+        <translation>lasclassify</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
 </context>
 <context>
     <name>lasclassifyPro</name>
     <message>
         <source>lasclassifyPro</source>
-        <translation type="obsolete">lasclassifyPro</translation>
+        <translation>lasclassifyPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
 </context>
 <context>
     <name>lasclip</name>
     <message>
         <source>lasclip</source>
-        <translation type="obsolete">lasclip</translation>
+        <translation>lasclip</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Input polygon(s)</source>
@@ -81901,11 +81914,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lascolor</name>
     <message>
         <source>lascolor</source>
-        <translation type="obsolete">lascolor</translation>
+        <translation>lascolor</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Input ortho</source>
@@ -81916,11 +81929,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lascontrol</name>
     <message>
         <source>lascontrol</source>
-        <translation type="obsolete">lascontrol</translation>
+        <translation>lascontrol</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>ASCII text file of control points</source>
@@ -81943,11 +81956,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasdiff</name>
     <message>
         <source>lasdiff</source>
-        <translation type="obsolete">lasdiff</translation>
+        <translation>lasdiff</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>other input LAS/LAZ file</source>
@@ -81966,11 +81979,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasduplicate</name>
     <message>
         <source>lasduplicate</source>
-        <translation type="obsolete">lasduplicate</translation>
+        <translation>lasduplicate</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>keep duplicate with lowest z coordinate</source>
@@ -81993,11 +82006,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasduplicatePro</name>
     <message>
         <source>lasduplicatePro</source>
-        <translation type="obsolete">lasduplicatePro</translation>
+        <translation>lasduplicatePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>keep duplicate with lowest z coordinate</source>
@@ -82020,11 +82033,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasgrid</name>
     <message>
         <source>lasgrid</source>
-        <translation type="obsolete">lasgrid</translation>
+        <translation>lasgrid</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Attribute</source>
@@ -82043,11 +82056,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasgridPro</name>
     <message>
         <source>lasgridPro</source>
-        <translation type="obsolete">lasgridPro</translation>
+        <translation>lasgridPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>Attribute</source>
@@ -82066,11 +82079,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasground</name>
     <message>
         <source>lasground</source>
-        <translation type="obsolete">lasground</translation>
+        <translation>lasground</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>no triangle bulging during TIN refinement</source>
@@ -82093,11 +82106,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasgroundPro</name>
     <message>
         <source>lasgroundPro</source>
-        <translation type="obsolete">lasgroundPro</translation>
+        <translation>lasgroundPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>no triangle bulging during TIN refinement</source>
@@ -82116,11 +82129,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasgroundPro_new</name>
     <message>
         <source>lasgroundPro_new</source>
-        <translation type="obsolete">lasgroundPro_new</translation>
+        <translation>lasgroundPro_new</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>terrain type</source>
@@ -82155,11 +82168,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasground_new</name>
     <message>
         <source>lasground_new</source>
-        <translation type="obsolete">lasground_new</translation>
+        <translation>lasground_new</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>terrain type</source>
@@ -82194,11 +82207,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasheight</name>
     <message>
         <source>lasheight</source>
-        <translation type="obsolete">lasheight</translation>
+        <translation>lasheight</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>replace z</source>
@@ -82225,11 +82238,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasheightPro</name>
     <message>
         <source>lasheightPro</source>
-        <translation type="obsolete">lasheightPro</translation>
+        <translation>lasheightPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>replace z</source>
@@ -82256,11 +82269,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasheightPro_classify</name>
     <message>
         <source>lasheightPro_classify</source>
-        <translation type="obsolete">lasheightPro_classify</translation>
+        <translation>lasheightPro_classify</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>replace z</source>
@@ -82303,11 +82316,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasheight_classify</name>
     <message>
         <source>lasheight_classify</source>
-        <translation type="obsolete">lasheight_classify</translation>
+        <translation>lasheight_classify</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>replace z</source>
@@ -82350,11 +82363,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasindex</name>
     <message>
         <source>lasindex</source>
-        <translation type="obsolete">lasindex</translation>
+        <translation>lasindex</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>append *.lax file to *.laz file</source>
@@ -82369,11 +82382,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasindexPro</name>
     <message>
         <source>lasindexPro</source>
-        <translation type="obsolete">lasindexPro</translation>
+        <translation>lasindexPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>append *.lax file to *.laz file</source>
@@ -82388,11 +82401,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasinfo</name>
     <message>
         <source>lasinfo</source>
-        <translation type="obsolete">lasinfo</translation>
+        <translation>lasinfo</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>compute density</source>
@@ -82423,11 +82436,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasinfoPro</name>
     <message>
         <source>lasinfoPro</source>
-        <translation type="obsolete">lasinfoPro</translation>
+        <translation>lasinfoPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>compute density</source>
@@ -82454,11 +82467,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasmerge</name>
     <message>
         <source>lasmerge</source>
-        <translation type="obsolete">lasmerge</translation>
+        <translation>lasmerge</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>2nd file</source>
@@ -82489,22 +82502,22 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasmergePro</name>
     <message>
         <source>lasmergePro</source>
-        <translation type="obsolete">lasmergePro</translation>
+        <translation>lasmergePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
 </context>
 <context>
     <name>lasnoise</name>
     <message>
         <source>lasnoise</source>
-        <translation type="obsolete">lasnoise</translation>
+        <translation>lasnoise</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>isolated if surrounding cells have only</source>
@@ -82531,11 +82544,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasnoisePro</name>
     <message>
         <source>lasnoisePro</source>
-        <translation type="obsolete">lasnoisePro</translation>
+        <translation>lasnoisePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>isolated if surrounding cells have only</source>
@@ -82562,11 +82575,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasoverage</name>
     <message>
         <source>lasoverage</source>
-        <translation type="obsolete">lasoverage</translation>
+        <translation>lasoverage</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>size of grid used for scan angle check</source>
@@ -82581,11 +82594,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasoveragePro</name>
     <message>
         <source>lasoveragePro</source>
-        <translation type="obsolete">lasoveragePro</translation>
+        <translation>lasoveragePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>size of grid used for scan angle check</source>
@@ -82600,11 +82613,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasoverlap</name>
     <message>
         <source>lasoverlap</source>
-        <translation type="obsolete">lasoverlap</translation>
+        <translation>lasoverlap</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>size of grid used for overlap check</source>
@@ -82631,11 +82644,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasoverlapPro</name>
     <message>
         <source>lasoverlapPro</source>
-        <translation type="obsolete">lasoverlapPro</translation>
+        <translation>lasoverlapPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>size of grid used for overlap check</source>
@@ -82662,11 +82675,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasprecision</name>
     <message>
         <source>lasprecision</source>
-        <translation type="obsolete">lasprecision</translation>
+        <translation>lasprecision</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Output ASCII file</source>
@@ -82677,11 +82690,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>laspublish</name>
     <message>
         <source>laspublish</source>
-        <translation type="obsolete">laspublish</translation>
+        <translation>laspublish</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>type of portal</source>
@@ -82728,11 +82741,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>laspublishPro</name>
     <message>
         <source>laspublishPro</source>
-        <translation type="obsolete">laspublishPro</translation>
+        <translation>laspublishPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>type of portal</source>
@@ -82779,11 +82792,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasquery</name>
     <message>
         <source>lasquery</source>
-        <translation type="obsolete">lasquery</translation>
+        <translation>lasquery</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>area of interest</source>
@@ -82794,11 +82807,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lassort</name>
     <message>
         <source>lassort</source>
-        <translation type="obsolete">lassort</translation>
+        <translation>lassort</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>sort by GPS time</source>
@@ -82813,11 +82826,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lassortPro</name>
     <message>
         <source>lassortPro</source>
-        <translation type="obsolete">lassortPro</translation>
+        <translation>lassortPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>sort by GPS time</source>
@@ -82832,11 +82845,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lassplit</name>
     <message>
         <source>lassplit</source>
-        <translation type="obsolete">lassplit</translation>
+        <translation>lassplit</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>number of digits for file names</source>
@@ -82855,11 +82868,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasthin</name>
     <message>
         <source>lasthin</source>
-        <translation type="obsolete">lasthin</translation>
+        <translation>lasthin</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>size of grid used for thinning</source>
@@ -82890,11 +82903,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasthinPro</name>
     <message>
         <source>lasthinPro</source>
-        <translation type="obsolete">lasthinPro</translation>
+        <translation>lasthinPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>size of grid used for thinning</source>
@@ -82925,11 +82938,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lastile</name>
     <message>
         <source>lastile</source>
-        <translation type="obsolete">lastile</translation>
+        <translation>lastile</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -82952,11 +82965,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lastilePro</name>
     <message>
         <source>lastilePro</source>
-        <translation type="obsolete">lastilePro</translation>
+        <translation>lastilePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>tile size (side length of square tile)</source>
@@ -82983,11 +82996,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasvalidate</name>
     <message>
         <source>lasvalidate</source>
-        <translation type="obsolete">lasvalidate</translation>
+        <translation>lasvalidate</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>save report to &apos;*_LVS.xml&apos;</source>
@@ -83002,11 +83015,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasvalidatePro</name>
     <message>
         <source>lasvalidatePro</source>
-        <translation type="obsolete">lasvalidatePro</translation>
+        <translation>lasvalidatePro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>generate one &apos;*_LVS.xml&apos; report per file</source>
@@ -83021,11 +83034,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasview</name>
     <message>
         <source>lasview</source>
-        <translation type="obsolete">lasview</translation>
+        <translation>lasview</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>max number of points sampled</source>
@@ -83044,11 +83057,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>lasviewPro</name>
     <message>
         <source>lasviewPro</source>
-        <translation type="obsolete">lasviewPro</translation>
+        <translation>lasviewPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>max number of points sampled</source>
@@ -83067,11 +83080,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>laszip</name>
     <message>
         <source>laszip</source>
-        <translation type="obsolete">laszip</translation>
+        <translation>laszip</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>only report size</source>
@@ -83090,11 +83103,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>laszipPro</name>
     <message>
         <source>laszipPro</source>
-        <translation type="obsolete">laszipPro</translation>
+        <translation>laszipPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>only report size</source>
@@ -83113,11 +83126,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>merge</name>
     <message>
         <source>Merge</source>
-        <translation type="obsolete">Verschmelzen</translation>
+        <translation>Verschmelzen</translation>
     </message>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layers</source>
@@ -83144,7 +83157,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>nearblack</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83164,14 +83177,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="obsolete">Fast schwarz</translation>
+        <translation>Fast schwarz</translation>
     </message>
 </context>
 <context>
     <name>nviz</name>
     <message>
         <source>Visualization(NVIZ)</source>
-        <translation type="obsolete">Visualisierung (NVIZ)</translation>
+        <translation>Visualisierung (NVIZ)</translation>
     </message>
     <message>
         <source>Raster file(s) for elevation</source>
@@ -83195,18 +83208,18 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>nviz</source>
-        <translation type="obsolete">nviz</translation>
+        <translation>nviz</translation>
     </message>
 </context>
 <context>
     <name>nviz7</name>
     <message>
         <source>nviz7</source>
-        <translation type="obsolete">nviz7</translation>
+        <translation>nviz7</translation>
     </message>
     <message>
         <source>Visualization(NVIZ)</source>
-        <translation type="obsolete">Visualisierung (NVIZ)</translation>
+        <translation>Visualisierung (NVIZ)</translation>
     </message>
     <message>
         <source>Raster file(s) for elevation</source>
@@ -83275,7 +83288,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>pct2rgb</name>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83294,11 +83307,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>polygonize</name>
     <message>
         <source>Polygonize (raster to vector)</source>
-        <translation type="obsolete">Vektorisieren (Raster nach Vektor)</translation>
+        <translation>Vektorisieren (Raster nach Vektor)</translation>
     </message>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83317,7 +83330,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>proximity</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83353,14 +83366,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Proximity (raster distance)</source>
-        <translation type="obsolete">Nähe (Rasterabstand)</translation>
+        <translation>Nähe (Rasterabstand)</translation>
     </message>
 </context>
 <context>
     <name>rasterize</name>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83432,14 +83445,14 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Rasterize (vector to raster)</source>
-        <translation type="obsolete">Rastern (Vektor nach Raster)</translation>
+        <translation>Rastern (Vektor nach Raster)</translation>
     </message>
 </context>
 <context>
     <name>rasterize_over</name>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83455,18 +83468,18 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Rasterize (write over existing raster)</source>
-        <translation type="obsolete">Rastern (vorhandenes Raster überschreiben)</translation>
+        <translation>Rastern (vorhandenes Raster überschreiben)</translation>
     </message>
 </context>
 <context>
     <name>retile</name>
     <message>
         <source>Retile</source>
-        <translation type="obsolete">Neukacheln</translation>
+        <translation>Neukacheln</translation>
     </message>
     <message>
         <source>[GDAL] Miscellaneous</source>
-        <translation type="obsolete">[GDAL] Verschiedenes</translation>
+        <translation>[GDAL] Verschiedenes</translation>
     </message>
     <message>
         <source>Input layers</source>
@@ -83529,7 +83542,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>rgb2pct</name>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83548,7 +83561,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>roughness</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83633,11 +83646,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>shp2las</name>
     <message>
         <source>shp2las</source>
-        <translation type="obsolete">shp2las</translation>
+        <translation>shp2las</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Input SHP file</source>
@@ -83656,11 +83669,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>sieve</name>
     <message>
         <source>Sieve</source>
-        <translation type="obsolete">Sieben</translation>
+        <translation>Sieben</translation>
     </message>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83683,7 +83696,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>slope</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83871,7 +83884,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>tpi</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -83891,7 +83904,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>TPI (Topographic Position Index)</source>
-        <translation type="obsolete">Topographische Position (TPI)</translation>
+        <translation>Topographische Position (TPI)</translation>
     </message>
 </context>
 <context>
@@ -83942,11 +83955,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Translate (convert format)</source>
-        <translation type="obsolete">Umwandeln (Format konvertieren)</translation>
+        <translation>Umwandeln (Format konvertieren)</translation>
     </message>
     <message>
         <source>[GDAL] Conversion</source>
-        <translation type="obsolete">[GDAL] Konvertierung</translation>
+        <translation>[GDAL] Konvertierung</translation>
     </message>
     <message>
         <source>GeoTIFF options. Compression type:</source>
@@ -83981,7 +83994,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>tri</name>
     <message>
         <source>[GDAL] Analysis</source>
-        <translation type="obsolete">[GDAL] Analyse</translation>
+        <translation>[GDAL] Analyse</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -84001,18 +84014,18 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>TRI (Terrain Ruggedness Index)</source>
-        <translation type="obsolete">Oberflächenrauhigkeit (TRI)</translation>
+        <translation>Oberflächenrauhigkeit (TRI)</translation>
     </message>
 </context>
 <context>
     <name>txt2las</name>
     <message>
         <source>txt2las</source>
-        <translation type="obsolete">txt2las</translation>
+        <translation>txt2las</translation>
     </message>
     <message>
         <source>LAStools</source>
-        <translation type="obsolete">LAS-Tools</translation>
+        <translation>LAS-Tools</translation>
     </message>
     <message>
         <source>Input ASCII file</source>
@@ -84051,11 +84064,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>txt2lasPro</name>
     <message>
         <source>txt2lasPro</source>
-        <translation type="obsolete">txt2lasPro</translation>
+        <translation>txt2lasPro</translation>
     </message>
     <message>
         <source>LAStools Production</source>
-        <translation type="obsolete">LASTools-Produktion</translation>
+        <translation>LASTools-Produktion</translation>
     </message>
     <message>
         <source>parse lines as</source>
@@ -84301,11 +84314,11 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Warp (reproject)</source>
-        <translation type="obsolete">Transformieren (Reprojizieren)</translation>
+        <translation>Transformieren (Reprojizieren)</translation>
     </message>
     <message>
         <source>[GDAL] Projections</source>
-        <translation type="obsolete">[GDAL] Projektionen</translation>
+        <translation>[GDAL] Projektionen</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
