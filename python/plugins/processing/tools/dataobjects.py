@@ -102,7 +102,7 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
-def load(fileName, name=None, crs=None, style=None):
+def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """Loads a layer/table into the current project, given its file.
     """
 
@@ -116,8 +116,7 @@ def load(fileName, name=None, crs=None, style=None):
     if name is None:
         name = os.path.split(fileName)[1]
 
-    suffix = os.path.splitext(fileName)[1][1:]
-    if suffix in getSupportedOutputRasterLayerExtensions():
+    if isRaster:
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:

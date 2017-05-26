@@ -71,9 +71,11 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                         name = os.path.basename(out.value)
                     else:
                         name = out.description
+
+                    isRaster = True if isinstance(out, OutputRaster) else False
                     dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.id(),
-                                                              out.name))
+                                     RenderingStyles.getStyle(alg.id(), out.name),
+                                     isRaster)
             except Exception:
                 QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
                 wrongLayers.append(out.description)
