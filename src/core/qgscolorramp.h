@@ -240,6 +240,8 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     QgsStringMap mInfo;
 };
 
+Q_DECLARE_METATYPE( QgsGradientColorRamp )
+
 #define DEFAULT_RANDOM_COUNT   10
 #define DEFAULT_RANDOM_HUE_MIN 0
 #define DEFAULT_RANDOM_HUE_MAX 359

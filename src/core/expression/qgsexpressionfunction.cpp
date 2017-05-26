@@ -40,6 +40,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterbandstats.h"
+#include "qgscolorramp.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -2943,15 +2944,26 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
 
 QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
-  QString rampName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  const QgsColorRamp *mRamp = QgsStyle::defaultStyle()->colorRampRef( rampName );
-  if ( ! mRamp )
+  QgsGradientColorRamp expRamp;
+  const QgsColorRamp *ramp;
+  if ( values.at( 0 ).canConvert<QgsGradientColorRamp>() )
   {
-    parent->setEvalErrorString( QObject::tr( "\"%1\" is not a valid color ramp" ).arg( rampName ) );
-    return QColor( 0, 0, 0 ).name();
+    expRamp = QgsExpressionUtils::getRamp( values.at( 0 ), parent );
+    ramp = &expRamp;
   }
+  else
+  {
+    QString rampName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+    ramp = QgsStyle::defaultStyle()->colorRampRef( rampName );
+    if ( ! ramp )
+    {
+      parent->setEvalErrorString( QObject::tr( "\"%1\" is not a valid color ramp" ).arg( rampName ) );
+      return QVariant();
+    }
+  }
+
   double value = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  QColor color = mRamp->color( value );
+  QColor color = ramp->color( value );
   return QgsSymbolLayerUtils::encodeColor( color );
 }
 
@@ -3120,6 +3132,47 @@ static QVariant fncColorPart( const QVariantList &values, const QgsExpressionCon
 
   parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
   return QVariant();
+}
+
+static QVariant fcnCreateRamp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  const QVariantMap map = QgsExpressionUtils::getMapValue( values.at( 0 ), parent );
+  if ( map.count() < 1 )
+  {
+    parent->setEvalErrorString( QObject::tr( "A minimum of two colors is required to create a ramp" ) );
+    return QVariant();
+  }
+
+  QList< QColor > colors;
+  QgsGradientStopsList stops;
+  for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  {
+    colors << QgsSymbolLayerUtils::decodeColor( it.value().toString() );
+    if ( !colors.last().isValid() )
+    {
+      parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to color" ).arg( it.value().toString() ) );
+      return QVariant();
+    }
+
+    double step = it.key().toDouble();
+    if ( it == map.constBegin() )
+    {
+      if ( step != 0.0 )
+        stops << QgsGradientStop( step, colors.last() );
+    }
+    else if ( it == map.constEnd() )
+    {
+      if ( step != 1.0 )
+        stops << QgsGradientStop( step, colors.last() );
+    }
+    else
+    {
+      stops << QgsGradientStop( step, colors.last() );
+    }
+  }
+  bool discrete = values.at( 1 ).toBool();
+
+  return QVariant::fromValue( QgsGradientColorRamp( colors.first(), colors.last(), discrete, stops ) );
 }
 
 static QVariant fncSetColorPart( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -3825,6 +3878,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgb" ), 3, fcnColorRgb, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_rgba" ), 4, fncColorRgba, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color" ), 2, fcnRampColor, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "create_ramp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "discrete" ), true, false ), fcnCreateRamp, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_hsl" ), 3, fcnColorHsl, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_hsla" ), 4, fncColorHsla, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "color_hsv" ), 3, fcnColorHsv, QStringLiteral( "Color" ) )
