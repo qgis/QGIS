@@ -73,7 +73,7 @@ namespace QgsWcs
     }
 
     //get the raster layer
-    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
+    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
 
     QgsRasterLayer *rLayer = nullptr;
     for ( int i = 0; i < wcsLayersId.size(); ++i )
