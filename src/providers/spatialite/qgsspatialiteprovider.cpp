@@ -3956,7 +3956,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist )
           }
           else if ( type == QVariant::StringList || type == QVariant::List )
           {
-            const QByteArray ba = QgsJSONUtils::encodeValue( v ).toUtf8();
+            const QByteArray ba = QgsJsonUtils::encodeValue( v ).toUtf8();
             sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
           }
           else
@@ -4264,7 +4264,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         else if ( type == QVariant::StringList || type == QVariant::List )
         {
           // binding an array value
-          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ), quotedValue( QgsJSONUtils::encodeValue( val ) ) );
+          sql += QStringLiteral( "%1=%2" ).arg( quotedIdentifier( fld.name() ), quotedValue( QgsJsonUtils::encodeValue( val ) ) );
         }
         else
         {

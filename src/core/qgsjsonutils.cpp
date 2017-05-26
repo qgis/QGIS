@@ -23,16 +23,18 @@
 #include "qgsproject.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
 
-QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer *vectorLayer, int precision )
+QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
   , mIncludeGeometry( true )
   , mIncludeAttributes( true )
   , mIncludeRelatedAttributes( false )
-  , mLayerId( vectorLayer ? vectorLayer->id() : QString() )
+  , mLayer( vectorLayer )
 {
   if ( vectorLayer )
   {
@@ -42,9 +44,9 @@ QgsJSONExporter::QgsJSONExporter( const QgsVectorLayer *vectorLayer, int precisi
   mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
 }
 
-void QgsJSONExporter::setVectorLayer( const QgsVectorLayer *vectorLayer )
+void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
 {
-  mLayerId = vectorLayer ? vectorLayer->id() : QString();
+  mLayer = vectorLayer;
   if ( vectorLayer )
   {
     mCrs = vectorLayer->crs();
@@ -52,29 +54,29 @@ void QgsJSONExporter::setVectorLayer( const QgsVectorLayer *vectorLayer )
   }
 }
 
-QgsVectorLayer *QgsJSONExporter::vectorLayer() const
+QgsVectorLayer *QgsJsonExporter::vectorLayer() const
 {
-  return qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( mLayerId ) );
+  return mLayer.data();
 }
 
-void QgsJSONExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsJsonExporter::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
   mTransform.setSourceCrs( mCrs );
 }
 
-QgsCoordinateReferenceSystem QgsJSONExporter::sourceCrs() const
+QgsCoordinateReferenceSystem QgsJsonExporter::sourceCrs() const
 {
   return mCrs;
 }
 
-QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
+QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVariantMap &extraProperties,
                                         const QVariant &id ) const
 {
   QString s = QStringLiteral( "{\n   \"type\":\"Feature\",\n" );
 
   // ID
-  s += QStringLiteral( "   \"id\":%1,\n" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJSONUtils::encodeValue( id ) );
+  s += QStringLiteral( "   \"id\":%1,\n" ).arg( !id.isValid() ? QString::number( feature.id() ) : QgsJsonUtils::encodeValue( id ) );
 
   QgsGeometry geom = feature.geometry();
   if ( !geom.isNull() && mIncludeGeometry )
@@ -119,7 +121,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
 
     if ( mIncludeAttributes )
     {
-      QgsFields fields = feature.fields();
+      QgsFields fields = mLayer ? mLayer->fields() : feature.fields();
 
       for ( int i = 0; i < fields.count(); ++i )
       {
@@ -130,7 +132,15 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
           properties += QLatin1String( ",\n" );
         QVariant val =  feature.attributes().at( i );
 
-        properties += QStringLiteral( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJSONUtils::encodeValue( val ) );
+        if ( mLayer )
+        {
+          QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
+          QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+          if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+            val = fieldFormatter->representValue( mLayer.data(), i, setup.config(), QVariant(), val );
+        }
+
+        properties += QStringLiteral( "      \"%1\":%2" ).arg( fields.at( i ).name(), QgsJsonUtils::encodeValue( val ) );
 
         ++attributeCounter;
       }
@@ -144,17 +154,16 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
 
-        properties += QStringLiteral( "      \"%1\":%2" ).arg( it.key(), QgsJSONUtils::encodeValue( it.value() ) );
+        properties += QStringLiteral( "      \"%1\":%2" ).arg( it.key(), QgsJsonUtils::encodeValue( it.value() ) );
 
         ++attributeCounter;
       }
     }
 
     // related attributes
-    QgsVectorLayer *vl = vectorLayer();
-    if ( vl && mIncludeRelatedAttributes )
+    if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( vl );
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
       Q_FOREACH ( const QgsRelation &relation, relations )
       {
         if ( attributeCounter > 0 )
@@ -167,6 +176,16 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
         if ( childLayer )
         {
           QgsFeatureIterator it = childLayer->getFeatures( req );
+          QVector<QVariant> attributeWidgetCaches;
+          int fieldIndex = 0;
+          Q_FOREACH ( const QgsField &field, childLayer->fields() )
+          {
+            QgsEditorWidgetSetup setup = field.editorWidgetSetup();
+            QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+            attributeWidgetCaches.append( fieldFormatter->createCache( childLayer, fieldIndex, setup.config() ) );
+            fieldIndex++;
+          }
+
           QgsFeature relatedFet;
           int relationFeatures = 0;
           while ( it.nextFeature( relatedFet ) )
@@ -174,7 +193,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
             if ( relationFeatures > 0 )
               relatedFeatureAttributes += QLatin1String( ",\n" );
 
-            relatedFeatureAttributes += QgsJSONUtils::exportAttributes( relatedFet );
+            relatedFeatureAttributes += QgsJsonUtils::exportAttributes( relatedFet, childLayer, attributeWidgetCaches );
             relationFeatures++;
           }
         }
@@ -204,7 +223,7 @@ QString QgsJSONExporter::exportFeature( const QgsFeature &feature, const QVarian
   return s;
 }
 
-QString QgsJSONExporter::exportFeatures( const QgsFeatureList &features ) const
+QString QgsJsonExporter::exportFeatures( const QgsFeatureList &features ) const
 {
   QStringList featureJSON;
   Q_FOREACH ( const QgsFeature &feature, features )
@@ -218,20 +237,20 @@ QString QgsJSONExporter::exportFeatures( const QgsFeatureList &features ) const
 
 
 //
-// QgsJSONUtils
+// QgsJsonUtils
 //
 
-QgsFeatureList QgsJSONUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+QgsFeatureList QgsJsonUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
 {
   return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
 }
 
-QgsFields QgsJSONUtils::stringToFields( const QString &string, QTextCodec *encoding )
+QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encoding )
 {
   return QgsOgrUtils::stringToFields( string, encoding );
 }
 
-QString QgsJSONUtils::encodeValue( const QVariant &value )
+QString QgsJsonUtils::encodeValue( const QVariant &value )
 {
   if ( value.isNull() )
     return QStringLiteral( "null" );
@@ -268,7 +287,7 @@ QString QgsJSONUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJSONUtils::exportAttributes( const QgsFeature &feature )
+QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, QVector<QVariant> attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QString attrs;
@@ -278,12 +297,21 @@ QString QgsJSONUtils::exportAttributes( const QgsFeature &feature )
       attrs += QLatin1String( ",\n" );
 
     QVariant val = feature.attributes().at( i );
+
+    if ( layer )
+    {
+      QgsEditorWidgetSetup setup = layer->fields().at( i ).editorWidgetSetup();
+      QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      if ( fieldFormatter != QgsApplication::fieldFormatterRegistry()->fallbackFieldFormatter() )
+        val = fieldFormatter->representValue( layer, i, setup.config(), attributeWidgetCaches.count() >= i ? attributeWidgetCaches.at( i ) : QVariant(), val );
+    }
+
     attrs += encodeValue( fields.at( i ).name() ) + ':' + encodeValue( val );
   }
   return attrs.prepend( '{' ).append( '}' );
 }
 
-QVariantList QgsJSONUtils::parseArray( const QString &json, QVariant::Type type )
+QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type )
 {
   QJsonParseError error;
   const QJsonDocument jsonDoc = QJsonDocument::fromJson( json.toUtf8(), &error );

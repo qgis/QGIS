@@ -142,7 +142,7 @@ QString QgsClipboard::generateClipboardText() const
     }
     case GeoJSON:
     {
-      QgsJSONExporter exporter;
+      QgsJsonExporter exporter;
       exporter.setSourceCrs( mCRS );
       return exporter.exportFeatures( mFeatureClipboard );
     }

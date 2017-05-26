@@ -21,12 +21,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfields.h"
+#include "qgsvectorlayer.h"
 
 class QTextCodec;
-class QgsVectorLayer;
 
 /** \ingroup core
- * \class QgsJSONExporter
+ * \class QgsJsonExporter
  * \brief Handles exporting QgsFeature features to GeoJSON features.
  *
  * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
@@ -34,16 +34,16 @@ class QgsVectorLayer;
  * \since QGIS 2.16
  */
 
-class CORE_EXPORT QgsJSONExporter
+class CORE_EXPORT QgsJsonExporter
 {
   public:
 
-    /** Constructor for QgsJSONExporter.
+    /** Constructor for QgsJsonExporter.
      * \param vectorLayer associated vector layer (required for related attribute export)
      * \param precision maximum number of decimal places to use for geometry coordinates,
      *  the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
      */
-    QgsJSONExporter( const QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
+    QgsJsonExporter( QgsVectorLayer *vectorLayer = nullptr, int precision = 6 );
 
     /** Sets the maximum number of decimal places to use in geometry coordinates.
      * The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsJSONExporter
      * \param vectorLayer vector layer
      * \see vectorLayer()
      */
-    void setVectorLayer( const QgsVectorLayer *vectorLayer );
+    void setVectorLayer( QgsVectorLayer *vectorLayer );
 
     /** Returns the associated vector layer, if set.
      * \see setVectorLayer()
@@ -193,8 +193,8 @@ class CORE_EXPORT QgsJSONExporter
     //! Whether to include attributes from related features in JSON export
     bool mIncludeRelatedAttributes;
 
-    //! Layer ID of associated vector layer. Required for related attribute export.
-    QString mLayerId;
+    //! Associated vector layer. Required for related attribute export.
+    QPointer< QgsVectorLayer > mLayer;
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -203,12 +203,12 @@ class CORE_EXPORT QgsJSONExporter
 };
 
 /** \ingroup core
- * \class QgsJSONUtils
+ * \class QgsJsonUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
  * \since QGIS 2.16
  */
 
-class CORE_EXPORT QgsJSONUtils
+class CORE_EXPORT QgsJsonUtils
 {
   public:
 
@@ -240,8 +240,13 @@ class CORE_EXPORT QgsJSONUtils
 
     /** Exports all attributes from a QgsFeature as a JSON map type.
      * \param feature feature to export
+     * \param layer optional associated vector layer. If specified, this allows
+     * richer export utilising settings like the layer's fields widget configuration.
+     * \param attributeWidgetCaches optional widget configuration cache. Can be used
+     * to speed up exporting the attributes for multiple features from the same layer.
      */
-    static QString exportAttributes( const QgsFeature &feature );
+    static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
+                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
 
     /** Parse a simple array (depth=1).
      * \param json the JSON to parse
