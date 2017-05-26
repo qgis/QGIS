@@ -310,6 +310,7 @@ class PGRasterTable(PGTable, RasterTable):
     def gdalUri(self, uri=None):
         if not uri:
             uri = self.database().uri()
+        service = (u'service=%s' % self.service()) if self.service() else ''
         schema = (u'schema=%s' % self.schemaName()) if self.schemaName() else ''
         dbname = (u'dbname=%s' % uri.database()) if uri.database() else ''
         host = (u'host=%s' % uri.host()) if uri.host() else ''
@@ -324,8 +325,8 @@ class PGRasterTable(PGTable, RasterTable):
                 col = u'column=%s' % fld.name
                 break
 
-        gdalUri = u'PG: %s %s %s %s %s mode=2 %s %s table=%s' % \
-                  (dbname, host, user, passw, port, schema, col, self.name)
+        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=%s' % \
+                  (service dbname, host, user, passw, port, schema, col, self.name)
 
         return gdalUri
 
