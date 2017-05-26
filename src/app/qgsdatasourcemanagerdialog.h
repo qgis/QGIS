@@ -55,6 +55,8 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     //! For signal forwarding to QgisApp
     void addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
+    //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
+    void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
     void addWfsLayer( const QString &uri, const QString &typeName );
     void addAfsLayer( const QString &uri, const QString &typeName );
     void addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );

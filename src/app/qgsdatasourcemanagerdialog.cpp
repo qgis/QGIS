@@ -106,6 +106,13 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
     connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
   }
 
+  dlg = providerDialog( QStringLiteral( "virtual" ), tr( "Virtual" ), QStringLiteral( "/mActionAddVirtualLayer.svg" ) );
+
+  if ( dlg )
+  {
+    connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
+    connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ), this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
+  }
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()

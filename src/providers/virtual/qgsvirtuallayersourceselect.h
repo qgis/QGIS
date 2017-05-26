@@ -25,10 +25,10 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsvirtuallayerdefinition.h>
 #include "qgsproviderregistry.h"
 
-
 class QgsVectorLayer;
 class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
+class QgsLayerTreeView;
 
 class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerSourceSelectBase
 {
@@ -46,6 +46,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     void onRemoveLayer();
     void onImportLayer();
     void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void updateLayersList();
 
   signals:
     //! Source, name, provider
@@ -60,6 +61,7 @@ class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerS
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
+    QgsLayerTreeView *mTreeView  = nullptr;
 };
 
 #endif
