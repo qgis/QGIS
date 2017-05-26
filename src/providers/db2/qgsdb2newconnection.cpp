@@ -19,12 +19,9 @@
 #include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QLabel>
-#include <qgslogger.h>
-#include <qlistwidget.h>
-
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QRegExpValidator>
 
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
@@ -76,6 +73,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
     }
 
     txtName->setText( connName );
+    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
 }
 

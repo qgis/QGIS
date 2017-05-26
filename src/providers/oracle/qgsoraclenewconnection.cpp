@@ -18,6 +18,7 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
 #include "qgsoraclenewconnection.h"
 #include "qgscontexthelp.h"
@@ -79,6 +80,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     }
 
     txtName->setText( connName );
+    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
 }
 /** Autoconnected SLOTS **/
