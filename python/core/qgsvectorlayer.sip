@@ -489,7 +489,7 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual void saveStyleToDatabase( const QString& name, const QString& description,
                                       bool useAsDefault, const QString& uiFileContent,
-                                      QString &msgError );
+                                      QString &msgError /Out/ );
 
     /**
      * Lists all the style in db split into related to the layer and not related to
@@ -505,7 +505,12 @@ class QgsVectorLayer : QgsMapLayer
     /**
      * Will return the named style corresponding to style id provided
      */
-    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError );
+    virtual QString getStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
+
+    /**
+     * Will delete the named style corresponding to style id provided from the database
+     */
+    virtual bool deleteStyleFromDatabase( const QString& styleId, QString &msgError /Out/ );
 
     /**
      * Load a named style from file/local db/datasource db

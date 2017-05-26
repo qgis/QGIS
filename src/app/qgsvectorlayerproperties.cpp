@@ -173,7 +173,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     //for loading
     mLoadStyleMenu = new QMenu( this );
     mLoadStyleMenu->addAction( tr( "Load from file..." ) );
-    mLoadStyleMenu->addAction( tr( "Load from database" ) );
+    mLoadStyleMenu->addAction( tr( "Database styles manager" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
@@ -967,11 +967,11 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 
       if ( !msgError.isNull() )
       {
-        QMessageBox::warning( this, infoWindowTitle, msgError );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle , msgError, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
       }
       else
       {
-        QMessageBox::information( this, infoWindowTitle, tr( "Style saved" ) );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle , tr( "Style saved" ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
       }
 
     }
@@ -1106,6 +1106,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   }
 
   QgsLoadStyleFromDBDialog dialog;
+  dialog.setLayer( mLayer );
   dialog.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dialog.exec() == QDialog::Accepted )
