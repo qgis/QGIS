@@ -19,6 +19,7 @@
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QRegExpValidator>
 
 #include "qgssettings.h"
 #include "qgslogger.h"
@@ -71,6 +72,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     }
 
     txtName->setText( connName );
+    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
 }
 
