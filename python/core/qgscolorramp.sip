@@ -259,6 +259,7 @@ Creates a new QgsColorRamp from a map of properties
 };
 
 
+
 class QgsLimitedRandomColorRamp : QgsColorRamp
 {
 %Docstring

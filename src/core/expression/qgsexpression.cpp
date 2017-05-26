@@ -18,6 +18,7 @@
 #include "qgsexpressionprivate.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsfeaturerequest.h"
+#include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontext.h"
 #include "qgsgeometry.h"
@@ -762,6 +763,10 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
     return tr( "<i>&lt;interval: %1 days&gt;</i>" ).arg( interval.days() );
+  }
+  else if ( value.canConvert< QgsGradientColorRamp >() )
+  {
+    return tr( "<i>&lt;gradient ramp&gt;</i>" );
   }
   else if ( value.type() == QVariant::Date )
   {
