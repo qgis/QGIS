@@ -40,7 +40,6 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters parameters = request.parameters();
-    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
 
     if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {
@@ -64,6 +63,24 @@ namespace QgsWms
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
     }
+    QDomDocument myDocument = QDomDocument();
+
+    QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+    myDocument.appendChild( header );
+
+    // Create the root element
+    QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "DescribeLayerResponse" ) );
+    root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/DescribeLayer.xsd" ) );
+    root.setAttribute( QStringLiteral( "xmlns:ows" ), QStringLiteral( "http://www.opengis.net/ows" ) );
+    root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+    myDocument.appendChild( root );
+
+    // store the Version element
+    QDomElement versionNode = myDocument.createElement( QStringLiteral( "Version" ) );
+    versionNode.appendChild( myDocument.createTextNode( QStringLiteral( "1.1.0" ) ) );
+    root.appendChild( versionNode );
 
     // get the wms service url defined in project or keep the one from the
     // request url
@@ -85,7 +102,86 @@ namespace QgsWms
       wcsHrefString = wmsHrefString;
     }
 
-    return configParser->describeLayer( layersList, wfsHrefString, wcsHrefString );
+    // access control
+    QgsAccessControl *accessControl = serverIface->accessControls();
+    // Use layer ids
+    bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
+    // WMS restricted layers
+    QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+    // WFS layers
+    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    // WCS layers
+    QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
+
+    Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+    {
+      QString name = layer->name();
+      if ( useLayerIds )
+        name = layer->id();
+      else if ( !layer->shortName().isEmpty() )
+        name = layer->shortName();
+
+      if ( !layersList.contains( name ) )
+      {
+        continue;
+      }
+
+      //unpublished layer
+      if ( restrictedLayers.contains( layer->name() ) )
+      {
+        throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+      }
+
+      if ( accessControl && !accessControl->layerReadPermission( layer ) )
+      {
+        throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+      }
+
+      // Create the NamedLayer element
+      QDomElement layerNode = myDocument.createElement( QStringLiteral( "LayerDescription" ) );
+      root.appendChild( layerNode );
+
+      // store the owsType element
+      QDomElement typeNode = myDocument.createElement( QStringLiteral( "owsType" ) );
+      // store the se:OnlineResource element
+      QDomElement oResNode = myDocument.createElement( QStringLiteral( "se:OnlineResource" ) );
+      oResNode.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+      // store the TypeName element
+      QDomElement nameNode = myDocument.createElement( QStringLiteral( "TypeName" ) );
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wfs" ) ) );
+
+        if ( wfsLayerIds.indexOf( layer->id() ) != -1 )
+        {
+          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wfsHrefString );
+        }
+
+        // store the se:FeatureTypeName element
+        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:FeatureTypeName" ) );
+        typeNameNode.appendChild( myDocument.createTextNode( name ) );
+        nameNode.appendChild( typeNameNode );
+      }
+      else if ( layer->type() == QgsMapLayer::RasterLayer )
+      {
+        typeNode.appendChild( myDocument.createTextNode( QStringLiteral( "wcs" ) ) );
+
+        if ( wcsLayerIds.indexOf( layer->id() ) != -1 )
+        {
+          oResNode.setAttribute( QStringLiteral( "xlink:href" ), wcsHrefString );
+        }
+
+        // store the se:CoverageTypeName element
+        QDomElement typeNameNode = myDocument.createElement( QStringLiteral( "se:CoverageTypeName" ) );
+        typeNameNode.appendChild( myDocument.createTextNode( name ) );
+        nameNode.appendChild( typeNameNode );
+      }
+      layerNode.appendChild( typeNode );
+      layerNode.appendChild( oResNode );
+      layerNode.appendChild( nameNode );
+    }
+
+    return myDocument;
   }
 
 } // samespace QgsWms
