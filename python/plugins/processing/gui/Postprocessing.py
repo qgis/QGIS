@@ -70,9 +70,11 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                         name = os.path.basename(out.value)
                     else:
                         name = out.description
+
+                    isRaster = True if isinstance(out, OutputRaster) else False
                     dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.commandLineName(),
-                                                              out.name))
+                                     RenderingStyles.getStyle(alg.commandLineName(), out.name),
+                                     isRaster)
             except Exception:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                        "Error loading result layer:\n" + traceback.format_exc())
