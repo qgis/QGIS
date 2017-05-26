@@ -125,6 +125,12 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
                                  'wms_getfeatureinfo_filter_or_utf8')
 
+        # Test DescribeLayer
+        self.wms_request_compare('DescribeLayer',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'SLD_VERSION=1.1.0',
+                                 'describelayer')
+
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
         project = self.testdata_path + "test_project_inspire.qgs"
