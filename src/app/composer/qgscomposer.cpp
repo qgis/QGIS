@@ -2136,6 +2136,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
+    dlg.setOption( QFileDialog::DontUseNativeDialog, true );
     dlg.setDirectory( lastUsedDir );
 
     //
