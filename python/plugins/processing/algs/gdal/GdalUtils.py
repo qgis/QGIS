@@ -126,6 +126,8 @@ class GdalUtils:
             driver = gdal.GetDriver(i)
             if driver is None:
                 continue
+            if GdalUtils.version() >= 2000000 and 'DCAP_RASTER' not in driver.GetMetadata_Dict():
+                continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
             #===================================================================
