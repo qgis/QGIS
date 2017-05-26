@@ -19,6 +19,7 @@
 
 #include "qgsfeature.h"
 #include "qgsexpression.h"
+#include "qgscolorramp.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
@@ -289,6 +290,18 @@ class QgsExpressionUtils
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
 
       return QgsInterval();
+    }
+
+    static QgsGradientColorRamp getRamp( const QVariant &value, QgsExpression *parent, bool report_error = false )
+    {
+      if ( value.canConvert<QgsGradientColorRamp>() )
+        return value.value<QgsGradientColorRamp>();
+
+      // If we get here then we can't convert so we just error and return invalid.
+      if ( report_error )
+        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to QgsGradientColorRamp" ).arg( value.toString() ) );
+
+      return QgsGradientColorRamp();
     }
 
     static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
