@@ -31,7 +31,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
   ui( new Ui::QgsDataSourceManagerDialog ),
   mMapCanvas( mapCanvas ),
-  mPreviousCurrentRow( -1 )
+  mPreviousRow( -1 )
 {
 
   ui->setupUi( this );
@@ -57,6 +57,9 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
 
   // RASTER (forward to app)
+  // Note: the tricky solution here will not last long: the browser button is really the
+  // first that will disappear because its functionality can be replaced completely
+  // right now by the browser
   ui->mOptionsStackedWidget->addWidget( new QWidget() );
   QListWidgetItem *rasterItem = new QListWidgetItem( tr( "Raster" ), ui->mOptionsListWidget );
   rasterItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
@@ -64,14 +67,10 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   connect( ui->mOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int idx )
   {
     Q_UNUSED( idx );
-    if ( rasterItem->isSelected( ) )
+    if ( rasterItem->isSelected() )
     {
       emit addRasterLayer();
-      int prevPage = mPreviousCurrentRow != -1 ? mPreviousCurrentRow : 0;
-      ui->mOptionsListWidget->setCurrentRow( prevPage );
-      ui->mOptionsListWidget->item( prevPage )->setSelected( true );
-      ui->mOptionsListWidget->setFocus();
-      setCurrentPage( prevPage );
+      QTimer::singleShot( 0, this, &QgsDataSourceManagerDialog::setPreviousPage );
     }
   } );
 
@@ -135,7 +134,6 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
     connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ), this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
   }
 
-
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -145,9 +143,15 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
-  mPreviousCurrentRow = ui->mOptionsStackedWidget->currentIndex( );
+  mPreviousRow = ui->mOptionsStackedWidget->currentIndex( );
   ui->mOptionsStackedWidget->setCurrentIndex( index );
   setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text( ) ) );
+}
+
+void QgsDataSourceManagerDialog::setPreviousPage()
+{
+  int prevPage = mPreviousRow != -1 ? mPreviousRow : 0;
+  setCurrentPage( prevPage );
 }
 
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
