@@ -130,6 +130,10 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
                                  'SLD_VERSION=1.1.0',
                                  'describelayer')
+        # Test GetStyles
+        self.wms_request_compare('GetStyles',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&',
+                                 'getstyles')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
