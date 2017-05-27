@@ -958,10 +958,15 @@ QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObje
   if ( mComposition )
     setSourceModel( mComposition->itemsModel() );
 
+  // WARNING: the below code triggers a Qt bug (tested on Qt 4.8, can't reproduce on Qt5) whenever the QgsComposerModel source model
+  // calls beginInsertRows - since it's non functional anyway it's now disabled
+  // PLEASE verify that the Qt issue is fixed before reenabling
+#if 0
   // TODO doesn't seem to work correctly - not updated when item changes
   setDynamicSortFilter( true );
   setSortLocaleAware( true );
   sort( QgsComposerModel::ItemId );
+#endif
 }
 
 bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const

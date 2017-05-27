@@ -62,6 +62,8 @@ class TestQgsComposerModel : public QObject
     void reorderToTopWithRemoved(); //test reordering to top with removed items
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
 
+    void proxyCrash();
+
   private:
     QgsComposition *mComposition;
     QgsMapSettings *mMapSettings;
@@ -608,6 +610,28 @@ void TestQgsComposerModel::reorderToBottomWithRemoved()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.size(), 2 );
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 0 ), mItem1 );
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 1 ), mItem2 );
+}
+
+void TestQgsComposerModel::proxyCrash()
+{
+  // test for a possible crash when using QgsComposerProxyModel and reordering items
+  QgsMapSettings ms;
+  QgsComposition* composition = new QgsComposition( ms );
+
+  // create a proxy - it's not used, but will be watching...
+  QgsComposerProxyModel* proxy = new QgsComposerProxyModel( composition );
+  Q_UNUSED( proxy );
+
+  // add some items to composition
+  QgsComposerLabel* item1 = new QgsComposerLabel( composition );
+  composition->addItem( item1 );
+  QgsComposerLabel* item2 = new QgsComposerLabel( composition );
+  composition->addItem( item2 );
+  QgsComposerLabel* item3 = new QgsComposerLabel( composition );
+  composition->addItem( item3 );
+
+  // reorder items - expect no crash!
+  composition->itemsModel()->reorderItemUp( item1 );
 }
 
 QTEST_MAIN( TestQgsComposerModel )
