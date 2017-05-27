@@ -50,6 +50,8 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     void vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     void vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "TODO_PLACEHOLDER.html" ) ); }
+    //! Reset current page to previously selected page
+    void setPreviousPage();
 
   signals:
     //! For signal forwarding to QgisApp
@@ -74,7 +76,7 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     //! Map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
-    int mPreviousCurrentRow;
+    int mPreviousRow;
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H
