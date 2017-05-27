@@ -20,27 +20,35 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetstyles.h"
+#include "qgsserverprojectutils.h"
+
+#include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerstylemanager.h"
 
 namespace QgsWms
 {
 
-  void writeGetStyles( QgsServerInterface *serverIface, const QString &version,
+  namespace
+  {
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,
+        QStringList &layerList );
+  }
+
+  void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                        const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = getStyles( serverIface, version, request );
+    QDomDocument doc = getStyles( serverIface, project, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
-  QDomDocument getStyles( QgsServerInterface *serverIface, const QString &version,
+  QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                           const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
     QgsServerRequest::Parameters parameters = request.parameters();
-
-    QDomDocument doc;
 
     QString layersName = parameters.value( "LAYERS" );
 
@@ -50,14 +58,135 @@ namespace QgsWms
                                     QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
     }
 
-    QStringList layersList = layersName.split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    if ( layersList.size() < 1 )
+    QStringList layerList = layersName.split( ',', QString::SkipEmptyParts );
+    if ( layerList.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "LayerNotSpecified" ),
                                     QStringLiteral( "Layers is mandatory for GetStyles operation" ) );
     }
 
-    return configParser->getStyles( layersList );
+    return getStyledLayerDescriptorDocument( serverIface, project, layerList );
+  }
+
+  //GetStyle for compatibility with earlier QGIS versions
+  void writeGetStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                      const QgsServerRequest &request, QgsServerResponse &response )
+  {
+    QDomDocument doc = getStyle( serverIface, project, version, request );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
+    response.write( doc.toByteArray() );
+  }
+
+  QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                         const QgsServerRequest &request )
+  {
+    Q_UNUSED( version );
+
+    QgsServerRequest::Parameters parameters = request.parameters();
+
+    QDomDocument doc;
+
+    QString styleName = parameters.value( QStringLiteral( "STYLE" ) );
+    QString layerName = parameters.value( QStringLiteral( "LAYER" ) );
+
+    if ( styleName.isEmpty() )
+    {
+      throw QgsServiceException( QStringLiteral( "StyleNotSpecified" ),
+                                 QStringLiteral( "Style is mandatory for GetStyle operation" ), 400 );
+    }
+
+    if ( layerName.isEmpty() )
+    {
+      throw QgsServiceException( QStringLiteral( "LayerNotSpecified" ),
+                                 QStringLiteral( "Layer is mandatory for GetStyle operation" ), 400 );
+    }
+
+    QStringList layerList;
+    layerList.append( layerName );
+    return getStyledLayerDescriptorDocument( serverIface, project, layerList );
+  }
+
+  namespace
+  {
+    QDomDocument getStyledLayerDescriptorDocument( QgsServerInterface *serverIface, const QgsProject *project,
+        QStringList &layerList )
+    {
+      QDomDocument myDocument = QDomDocument();
+
+      QDomNode header = myDocument.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"UTF-8\"" ) );
+      myDocument.appendChild( header );
+
+      // Create the root element
+      QDomElement root = myDocument.createElementNS( QStringLiteral( "http://www.opengis.net/sld" ), QStringLiteral( "StyledLayerDescriptor" ) );
+      root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
+      root.setAttribute( QStringLiteral( "xsi:schemaLocation" ), QStringLiteral( "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" ) );
+      root.setAttribute( QStringLiteral( "xmlns:ogc" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
+      root.setAttribute( QStringLiteral( "xmlns:se" ), QStringLiteral( "http://www.opengis.net/se" ) );
+      root.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+      root.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
+      myDocument.appendChild( root );
+
+      // access control
+      QgsAccessControl *accessControl = serverIface->accessControls();
+      // Use layer ids
+      bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
+      // WMS restricted layers
+      QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
+
+      Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+      {
+        QString name = layer->name();
+        if ( useLayerIds )
+          name = layer->id();
+        else if ( !layer->shortName().isEmpty() )
+          name = layer->shortName();
+
+        if ( !layerList.contains( name ) )
+        {
+          continue;
+        }
+
+        //unpublished layer
+        if ( restrictedLayers.contains( layer->name() ) )
+        {
+          throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+        }
+
+        if ( accessControl && !accessControl->layerReadPermission( layer ) )
+        {
+          throw QgsSecurityException( QStringLiteral( "You are not allowed to access to this layer" ) );
+        }
+
+        // Create the NamedLayer element
+        QDomElement namedLayerNode = myDocument.createElement( QStringLiteral( "NamedLayer" ) );
+        root.appendChild( namedLayerNode );
+
+        // store the Name element
+        QDomElement nameNode = myDocument.createElement( QStringLiteral( "se:Name" ) );
+        nameNode.appendChild( myDocument.createTextNode( name ) );
+        namedLayerNode.appendChild( nameNode );
+
+        if ( layer->type() == QgsMapLayer::VectorLayer )
+        {
+          QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+          if ( vlayer->hasGeometryType() )
+          {
+            QString currentStyle = vlayer->styleManager()->currentStyle();
+            Q_FOREACH ( QString styleName, vlayer->styleManager()->styles() )
+            {
+              vlayer->styleManager()->setCurrentStyle( styleName );
+              if ( styleName.isEmpty() )
+                styleName = EMPTY_STYLE_NAME;
+              QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
+              namedLayerNode.appendChild( styleElem );
+            }
+            vlayer->styleManager()->setCurrentStyle( currentStyle );
+          }
+        }
+      }
+
+      return myDocument;
+    }
   }
 
 
