@@ -15,6 +15,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -129,3 +130,4 @@ ADD_QGIS_TEST(editorwidgetregistrytest testqgseditorwidgetregistry.cpp)
 ADD_QGIS_TEST(keyvaluewidgettest testqgskeyvaluewidget.cpp)
 ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
+ADD_QGIS_TEST(composergui testqgscomposergui.cpp)

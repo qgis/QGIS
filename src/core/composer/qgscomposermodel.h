@@ -289,6 +289,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     void rebuildSceneItemList();
 
     friend class TestQgsComposerModel;
+    friend class TestQgsComposerGui;
 };
 
 
