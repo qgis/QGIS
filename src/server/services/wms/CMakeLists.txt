@@ -14,7 +14,6 @@ SET (wms_SRCS
   qgswmsgetmap.cpp
   qgswmsgetprint.cpp
   qgswmsgetschemaextension.cpp
-  qgswmsgetstyle.cpp
   qgswmsgetstyles.cpp
   qgsmaprendererjobproxy.cpp
   qgsmediancut.cpp
