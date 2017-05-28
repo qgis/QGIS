@@ -987,6 +987,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsAtlas
   if ( atlas->enabled() && atlas->coverageLayer() )
   {
     scope->setFields( atlas->coverageLayer()->fields() );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layerid" ), atlas->coverageLayer()->id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layername" ), atlas->coverageLayer()->name(), true ) );
   }
 
   if ( atlas->enabled() )
