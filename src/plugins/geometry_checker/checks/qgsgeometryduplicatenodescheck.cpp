@@ -73,6 +73,11 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
 
   // Check if error still applies
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
+  if ( nVerts == 0 )
+  {
+    error->setObsolete();
+    return;
+  }
   QgsPointV2 pi = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + nVerts - 1 ) % nVerts ) );
   QgsPointV2 pj = geom->vertexAt( error->vidx() );
   if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) >= QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )

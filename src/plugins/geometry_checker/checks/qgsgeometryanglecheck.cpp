@@ -89,6 +89,11 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
 
   // Check if error still applies
   int n = QgsGeometryCheckerUtils::polyLineSize( geometry, vidx.part, vidx.ring );
+  if ( n == 0 )
+  {
+    error->setObsolete();
+    return;
+  }
   const QgsPointV2 &p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
   const QgsPointV2 &p2 = geometry->vertexAt( vidx );
   const QgsPointV2 &p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );

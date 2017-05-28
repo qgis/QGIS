@@ -79,6 +79,12 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
 
   // Check if error still applies
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
+  if ( nVerts == 0 )
+  {
+    error->setObsolete();
+    return;
+  }
+
   QgsPointV2 pi = geom->vertexAt( error->vidx() );
   QgsPointV2 pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );

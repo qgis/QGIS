@@ -110,7 +110,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
   // Check if error still applies
   bool ringIsClosed = false;
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
-  if ( inter.segment1 >= nVerts || inter.segment2 >= nVerts )
+  if ( nVerts == 0 || inter.segment1 >= nVerts || inter.segment2 >= nVerts )
   {
     error->setObsolete();
     return;
