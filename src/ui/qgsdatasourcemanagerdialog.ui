@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1010</width>
+    <width>1200</width>
     <height>600</height>
    </rect>
   </property>
@@ -27,7 +27,7 @@
      </property>
      <widget class="QFrame" name="mOptionsListFrame">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
         <horstretch>1</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -40,7 +40,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>200</width>
+        <width>350</width>
         <height>16777215</height>
        </size>
       </property>
@@ -79,7 +79,7 @@
          </property>
          <property name="maximumSize">
           <size>
-           <width>200</width>
+           <width>350</width>
            <height>16777215</height>
           </size>
          </property>
