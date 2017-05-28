@@ -56,6 +56,8 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QString mDataSourceType;
     //! Embedded dialog (do not call parent's accept) and emit signals
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
+    //! Add layer button
+    QPushButton *mAddButton = nullptr;
 
   private slots:
     //! Opens the create connection dialog to build a new connection
