@@ -528,6 +528,12 @@ QgsAuthMethod        {#qgis_api_break_3_0_QgsAuthMethod}
 - DataSourceURI has been renamed to DataSourceUri
 - GenericDataSourceURI has been renamed to GenericDataSourceUri
 
+QgsBlurEffect        {#qgis_api_break_3_0_QgsBlurEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsBrowserModel        {#qgis_api_break_3_0_QgsBrowserModel}
 ---------------
 
