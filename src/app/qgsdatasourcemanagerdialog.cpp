@@ -72,6 +72,10 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   addDbProviderDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
 #endif
 
+#ifdef HAVE_ORACLE
+  addDbProviderDialog( QStringLiteral( "oracle" ), tr( "Oracle" ), QStringLiteral( "/mActionAddOracleLayer.svg" ) );
+#endif
+
   addDbProviderDialog( QStringLiteral( "spatialite" ), tr( "Spatialite" ), QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) );
 
   addDbProviderDialog( QStringLiteral( "mssql" ), tr( "MSSQL" ), QStringLiteral( "/mActionAddMssqlLayer.svg" ) );
