@@ -47,6 +47,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
+  mPageNames.append( QStringLiteral( "browser" ) );
 
   // VECTOR Layers (completely different interface: it's not a provider)
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
@@ -55,6 +56,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   ogrItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ) );
   ogrItem->setToolTip( tr( "Add Vector layer" ) );
   connect( ovl, &QgsOpenVectorLayerDialog::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
+  mPageNames.append( QStringLiteral( "ogr" ) );
 
   // RASTER (forward to app)
   // Note: the tricky solution here will not last long: the browser button is really the
@@ -73,6 +75,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
       QTimer::singleShot( 0, this, &QgsDataSourceManagerDialog::setPreviousPage );
     }
   } );
+  mPageNames.append( QStringLiteral( "raster" ) );
 
 
   // Add data provider dialogs
@@ -141,6 +144,15 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
   delete ui;
 }
 
+void QgsDataSourceManagerDialog::openPage( QString pageName )
+{
+  int pageIdx = mPageNames.indexOf( pageName );
+  if ( pageIdx != -1 )
+  {
+    QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
+  }
+}
+
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex( );
@@ -180,6 +192,7 @@ QDialog *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, 
   }
   else
   {
+    mPageNames.append( providerKey );
     ui->mOptionsStackedWidget->addWidget( dlg );
     QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
     layerItem->setToolTip( title.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : title );
