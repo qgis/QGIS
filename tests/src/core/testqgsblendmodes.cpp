@@ -198,12 +198,12 @@ void TestQgsBlendModes::vectorLayerTransparency()
   mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
-  mpLinesLayer->setLayerTransparency( 50 );
+  mpLinesLayer->setOpacity( 0.50 );
   mMapSettings->setExtent( mExtent );
   bool res = imageCheck( QStringLiteral( "vector_layertransparency" ) );
 
   //Reset layers
-  mpLinesLayer->setLayerTransparency( 0 );
+  mpLinesLayer->setOpacity( 1.0 );
 
   QVERIFY( res );
 }

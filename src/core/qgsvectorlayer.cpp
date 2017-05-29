@@ -143,7 +143,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mLabeling( nullptr )
   , mLabelFontNotFoundNotified( false )
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
-  , mLayerTransparency( 0 )
   , mVertexMarkerOnlyForSelection( false )
   , mEditBuffer( nullptr )
   , mJoinBuffer( nullptr )
@@ -222,7 +221,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setExcludeAttributesWfs( excludeAttributesWfs() );
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
-  layer->setLayerTransparency( layerTransparency() );
+  layer->setOpacity( opacity() );
 
   Q_FOREACH ( const QgsAction &action, actions()->actions() )
   {
@@ -1887,7 +1886,13 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     if ( !layerTransparencyNode.isNull() )
     {
       QDomElement e = layerTransparencyNode.toElement();
-      setLayerTransparency( e.text().toInt() );
+      setOpacity( 1.0 - e.text().toInt() / 100.0 );
+    }
+    QDomNode layerOpacityNode = node.namedItem( QStringLiteral( "layerOpacity" ) );
+    if ( !layerOpacityNode.isNull() )
+    {
+      QDomElement e = layerOpacityNode.toElement();
+      setOpacity( e.text().toDouble() );
     }
 
     QDomElement e = node.toElement();
@@ -2153,11 +2158,11 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
     featureBlendModeElem.appendChild( featureBlendModeText );
     node.appendChild( featureBlendModeElem );
 
-    // add the layer transparency
-    QDomElement layerTransparencyElem  = doc.createElement( QStringLiteral( "layerTransparency" ) );
-    QDomText layerTransparencyText = doc.createTextNode( QString::number( layerTransparency() ) );
-    layerTransparencyElem.appendChild( layerTransparencyText );
-    node.appendChild( layerTransparencyElem );
+    // add the layer opacity
+    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
+    layerOpacityElem.appendChild( layerOpacityText );
+    node.appendChild( layerOpacityElem );
 
     if ( mDiagramRenderer )
     {
@@ -3535,16 +3540,16 @@ QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
   return mFeatureBlendMode;
 }
 
-void QgsVectorLayer::setLayerTransparency( int layerTransparency )
+void QgsVectorLayer::setOpacity( double opacity )
 {
-  mLayerTransparency = layerTransparency;
-  emit layerTransparencyChanged( layerTransparency );
+  mLayerOpacity = opacity;
+  emit opacityChanged( opacity );
   emit styleChanged();
 }
 
-int QgsVectorLayer::layerTransparency() const
+double QgsVectorLayer::opacity() const
 {
-  return mLayerTransparency;
+  return mLayerOpacity;
 }
 
 

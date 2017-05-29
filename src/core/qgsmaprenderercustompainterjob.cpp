@@ -354,7 +354,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
          ( ( vl->blendMode() != QPainter::CompositionMode_SourceOver )
            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-           || ( vl->layerTransparency() != 0 ) ) )
+           || ( !qgsDoubleNear( vl->opacity(), 1.0 ) ) ) )
     {
       //layer properties require rasterization
       return true;

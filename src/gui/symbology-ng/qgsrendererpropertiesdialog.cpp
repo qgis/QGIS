@@ -92,6 +92,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
+  mLayerOpacitySpnBx->setClearValue( 100.0 );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -115,9 +116,9 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererPropertiesDialog::onOK );
 
-  // connect layer transparency slider and spin box
-  connect( mLayerTransparencySlider, &QAbstractSlider::valueChanged, mLayerTransparencySpnBx, &QSpinBox::setValue );
-  connect( mLayerTransparencySpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mLayerTransparencySlider, &QAbstractSlider::setValue );
+  // connect layer opacity slider and spin box
+  connect( mLayerOpacitySlider, &QAbstractSlider::valueChanged, this, [ = ]( int value ) { mLayerOpacitySpnBx->setValue( value / 10.0 ); } );
+  connect( mLayerOpacitySpnBx, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { mLayerOpacitySlider->setValue( value * 10 ); } );
 
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRendererPropertiesDialog::rendererChanged );
   connect( checkboxEnableOrderBy, &QAbstractButton::toggled, btnOrderBy, &QWidget::setEnabled );
@@ -126,7 +127,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   syncToLayer();
 
   QList<QWidget *> widgets;
-  widgets << mLayerTransparencySpnBx
+  widgets << mLayerOpacitySpnBx
           << cboRenderers
           << checkboxEnableOrderBy
           << mBlendModeComboBox
@@ -294,8 +295,8 @@ void QgsRendererPropertiesDialog::apply()
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   mLayer->setFeatureBlendMode( mFeatureBlendComboBox->blendMode() );
 
-  // set transparency for the layer
-  mLayer->setLayerTransparency( mLayerTransparencySlider->value() );
+  // set opacity for the layer
+  mLayer->setOpacity( mLayerOpacitySlider->value() / 1000.0 );
 }
 
 void QgsRendererPropertiesDialog::onOK()
@@ -340,9 +341,9 @@ void QgsRendererPropertiesDialog::syncToLayer()
   // Feature blend mode
   mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
 
-  // Layer transparency
-  mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
-  mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
+  // Layer opacity
+  mLayerOpacitySlider->setValue( mLayer->opacity() * 1000.0 );
+  mLayerOpacitySpnBx->setValue( mLayer->opacity() * 100.0 );
 
   //paint effect widget
   if ( mLayer->renderer() )

@@ -1615,14 +1615,23 @@ Returns the current blending mode for features
  :rtype: QPainter.CompositionMode
 %End
 
-    void setLayerTransparency( int layerTransparency );
+    void setOpacity( double opacity );
 %Docstring
-Set the transparency for the vector layer
+ Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: opacity()
+.. seealso:: opacityChanged()
+.. versionadded:: 3.0
 %End
-    int layerTransparency() const;
+
+    double opacity() const;
 %Docstring
-Returns the current transparency for the vector layer
- :rtype: int
+ Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: setOpacity()
+.. seealso:: opacityChanged()
+.. versionadded:: 3.0
+ :rtype: float
 %End
 
     virtual QString htmlMetadata() const;
@@ -1952,9 +1961,13 @@ Emitted when the font family defined for labeling layer is not found on system
 Signal emitted when setFeatureBlendMode() is called
 %End
 
-    void layerTransparencyChanged( int layerTransparency );
+    void opacityChanged( double opacity );
 %Docstring
-Signal emitted when setLayerTransparency() is called
+ Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
+ and 1 (opaque).
+.. versionadded:: 3.0
+.. seealso:: setOpacity()
+.. seealso:: opacity()
 %End
 
     void editCommandStarted( const QString &text );
