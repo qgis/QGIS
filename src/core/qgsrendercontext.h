@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRenderContext
     {
       DrawEditingInfo          = 0x01,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x02,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x04,  //!< Enable layer transparency and blending effects
+      UseAdvancedEffects       = 0x04,  //!< Enable layer opacity and blending effects
       UseRenderingOptimization = 0x08,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x10,  //!< Whether vector selections should be shown in the rendered map
       DrawSymbolBounds         = 0x20,  //!< Draw bounds of symbols (for debugging/testing)
