@@ -115,6 +115,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     },
     { QgsPalLayerSettings::FontSizeUnit, QgsPropertyDefinition( "FontSizeUnit", QObject::tr( "Font size units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::FontTransp, QgsPropertyDefinition( "FontTransp", QObject::tr( "Text transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsPalLayerSettings::FontOpacity, QgsPropertyDefinition( "FontOpacity", QObject::tr( "Text opacity" ), QgsPropertyDefinition::Transparency ) },
     { QgsPalLayerSettings::FontCase, QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Capitalize</b>]" ) ) },
     { QgsPalLayerSettings::FontLetterSpacing, QgsPropertyDefinition( "FontLetterSpacing", QObject::tr( "Letter spacing" ), QgsPropertyDefinition::Double ) },
     { QgsPalLayerSettings::FontWordSpacing, QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double ) },
@@ -135,6 +136,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::BufferUnit, QgsPropertyDefinition( "BufferUnit", QObject::tr( "Buffer units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::BufferColor, QgsPropertyDefinition( "BufferColor", QObject::tr( "Buffer color" ), QgsPropertyDefinition::ColorNoAlpha ) },
     { QgsPalLayerSettings::BufferTransp, QgsPropertyDefinition( "BufferTransp", QObject::tr( "Buffer transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsPalLayerSettings::BufferOpacity, QgsPropertyDefinition( "BufferOpacity", QObject::tr( "Buffer opacity" ), QgsPropertyDefinition::Transparency ) },
     { QgsPalLayerSettings::BufferJoinStyle, QgsPropertyDefinition( "BufferJoinStyle", QObject::tr( "Buffer join style" ), QgsPropertyDefinition::PenJoinStyle ) },
     { QgsPalLayerSettings::BufferBlendMode, QgsPropertyDefinition( "BufferBlendMode", QObject::tr( "Buffer blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsPalLayerSettings::ShapeDraw, QgsPropertyDefinition( "ShapeDraw", QObject::tr( "Draw shape" ), QgsPropertyDefinition::Boolean ) },
@@ -154,6 +156,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ShapeRadii, QgsPropertyDefinition( "ShapeRadii", QObject::tr( "Shape radii" ), QgsPropertyDefinition::Size2D ) },
     { QgsPalLayerSettings::ShapeRadiiUnits, QgsPropertyDefinition( "ShapeRadiiUnits", QObject::tr( "Symbol radii units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::ShapeTransparency, QgsPropertyDefinition( "ShapeTransparency", QObject::tr( "Shape transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsPalLayerSettings::ShapeOpacity, QgsPropertyDefinition( "ShapeOpacity", QObject::tr( "Shape opacity" ), QgsPropertyDefinition::Transparency ) },
     { QgsPalLayerSettings::ShapeBlendMode, QgsPropertyDefinition( "ShapeBlendMode", QObject::tr( "Shape blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsPalLayerSettings::ShapeFillColor, QgsPropertyDefinition( "ShapeFillColor", QObject::tr( "Shape fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsPalLayerSettings::ShapeStrokeColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -171,6 +174,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ShadowRadius, QgsPropertyDefinition( "ShadowRadius", QObject::tr( "Shadow blur radius" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsPalLayerSettings::ShadowRadiusUnits, QgsPropertyDefinition( "ShadowRadiusUnits", QObject::tr( "Shadow blur units" ), QgsPropertyDefinition::RenderUnits ) },
     { QgsPalLayerSettings::ShadowTransparency, QgsPropertyDefinition( "ShadowTransparency", QObject::tr( "Shadow transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsPalLayerSettings::ShadowOpacity, QgsPropertyDefinition( "ShadowOpacity", QObject::tr( "Shadow opacity" ), QgsPropertyDefinition::Transparency ) },
     { QgsPalLayerSettings::ShadowScale, QgsPropertyDefinition( "ShadowScale", QObject::tr( "Shadow scale" ), QgsPropertyDefinition::IntegerPositive ) },
     { QgsPalLayerSettings::ShadowColor, QgsPropertyDefinition( "ShadowColor", QObject::tr( "Shadow color" ), QgsPropertyDefinition::ColorNoAlpha ) },
     { QgsPalLayerSettings::ShadowBlendMode, QgsPropertyDefinition( "ShadowBlendMode", QObject::tr( "Shadow blend mode" ), QgsPropertyDefinition::BlendMode ) },
@@ -666,6 +670,27 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     // read QGIS 2.x style data defined properties
     readOldDataDefinedPropertyMap( layer, nullptr );
   }
+  // upgrade older data defined settings
+  if ( mDataDefinedProperties.isActive( FontTransp ) )
+  {
+    mDataDefinedProperties.setProperty( FontOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( FontTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( FontTransp, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( BufferTransp ) )
+  {
+    mDataDefinedProperties.setProperty( BufferOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( BufferTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( BufferTransp, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( ShapeTransparency ) )
+  {
+    mDataDefinedProperties.setProperty( ShapeOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShapeTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( ShapeTransparency, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( ShadowTransparency ) )
+  {
+    mDataDefinedProperties.setProperty( ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShadowTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( ShadowTransparency, QgsProperty() );
+  }
 }
 
 void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
@@ -785,14 +810,33 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
     QDomElement ddElem = elem.firstChildElement( QStringLiteral( "data-defined" ) );
     readOldDataDefinedPropertyMap( nullptr, &ddElem );
   }
+  // upgrade older data defined settings
+  if ( mDataDefinedProperties.isActive( FontTransp ) )
+  {
+    mDataDefinedProperties.setProperty( FontOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( FontTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( FontTransp, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( BufferTransp ) )
+  {
+    mDataDefinedProperties.setProperty( BufferOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( BufferTransp ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( BufferTransp, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( ShapeTransparency ) )
+  {
+    mDataDefinedProperties.setProperty( ShapeOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShapeTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( ShapeTransparency, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( ShadowTransparency ) )
+  {
+    mDataDefinedProperties.setProperty( ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShadowTransparency ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( ShadowTransparency, QgsProperty() );
+  }
 }
 
 
 
 QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context )
 {
-
-
   QDomElement textStyleElem = mFormat.writeXml( doc, context );
 
   // text style
@@ -1976,10 +2020,10 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
         }
         return false;
       }
-      case DDTransparency:
+      case DDOpacity:
       {
         bool ok;
-        int size = exprVal.toInt( &ok );
+        int size = exprVal.toDouble( &ok );
         if ( ok && size >= 0 && size <= 100 )
         {
           dataDefinedValues.insert( p, QVariant( size ) );
@@ -2200,8 +2244,8 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
   // data defined font color?
   dataDefinedValEval( DDColor, QgsPalLayerSettings::Color, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeColor( mFormat.color() ) );
 
-  // data defined font transparency?
-  dataDefinedValEval( DDTransparency, QgsPalLayerSettings::FontTransp, exprVal, context.expressionContext(), 100 - mFormat.opacity() * 100 );
+  // data defined font opacity?
+  dataDefinedValEval( DDOpacity, QgsPalLayerSettings::FontOpacity, exprVal, context.expressionContext(), mFormat.opacity() * 100 );
 
   // data defined font blend mode?
   dataDefinedValEval( DDBlendMode, QgsPalLayerSettings::FontBlendMode, exprVal, context.expressionContext() );
@@ -2234,19 +2278,19 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   }
 
   // data defined buffer transparency?
-  int bufTransp = 100 - buffer.opacity() * 100;
-  if ( dataDefinedValEval( DDTransparency, QgsPalLayerSettings::BufferTransp, exprVal, context.expressionContext(), bufTransp ) )
+  double bufferOpacity = buffer.opacity() * 100;
+  if ( dataDefinedValEval( DDOpacity, QgsPalLayerSettings::BufferOpacity, exprVal, context.expressionContext(), bufferOpacity ) )
   {
-    bufTransp = exprVal.toInt();
+    bufferOpacity = exprVal.toDouble();
   }
 
-  drawBuffer = ( drawBuffer && bufrSize > 0.0 && bufTransp < 100 );
+  drawBuffer = ( drawBuffer && bufrSize > 0.0 && bufferOpacity > 0 );
 
   if ( !drawBuffer )
   {
     dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( false ) ); // trigger value
     dataDefinedValues.remove( QgsPalLayerSettings::BufferSize );
-    dataDefinedValues.remove( QgsPalLayerSettings::BufferTransp );
+    dataDefinedValues.remove( QgsPalLayerSettings::BufferOpacity );
     return; // don't bother evaluating values that won't be used
   }
 
@@ -2371,18 +2415,18 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   }
 
   // data defined shape transparency?
-  int shapeTransp = 100 - background.opacity() * 100;
-  if ( dataDefinedValEval( DDTransparency, QgsPalLayerSettings::ShapeTransparency, exprVal, context.expressionContext(), shapeTransp ) )
+  double shapeOpacity = background.opacity() * 100;
+  if ( dataDefinedValEval( DDOpacity, QgsPalLayerSettings::ShapeOpacity, exprVal, context.expressionContext(), shapeOpacity ) )
   {
-    shapeTransp = exprVal.toInt();
+    shapeOpacity = 100.0 * exprVal.toDouble();
   }
 
-  drawShape = ( drawShape && shapeTransp < 100 ); // size is not taken into account (could be)
+  drawShape = ( drawShape && shapeOpacity > 0 ); // size is not taken into account (could be)
 
   if ( !drawShape )
   {
     dataDefinedValues.insert( QgsPalLayerSettings::ShapeDraw, QVariant( false ) ); // trigger value
-    dataDefinedValues.remove( QgsPalLayerSettings::ShapeTransparency );
+    dataDefinedValues.remove( QgsPalLayerSettings::ShapeOpacity );
     return; // don't bother evaluating values that won't be used
   }
 
@@ -2490,7 +2534,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   if ( skip )
   {
     dataDefinedValues.insert( QgsPalLayerSettings::ShapeDraw, QVariant( false ) ); // trigger value
-    dataDefinedValues.remove( QgsPalLayerSettings::ShapeTransparency );
+    dataDefinedValues.remove( QgsPalLayerSettings::ShapeOpacity );
     dataDefinedValues.remove( QgsPalLayerSettings::ShapeKind );
     dataDefinedValues.remove( QgsPalLayerSettings::ShapeSVGFile );
     dataDefinedValues.remove( QgsPalLayerSettings::ShapeSizeX );
@@ -2579,10 +2623,10 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
   }
 
   // data defined shadow transparency?
-  int shadowTransp = 100 - shadow.opacity() * 100;
-  if ( dataDefinedValEval( DDTransparency, QgsPalLayerSettings::ShadowTransparency, exprVal, context.expressionContext(), shadowTransp ) )
+  double shadowOpacity = shadow.opacity() * 100;
+  if ( dataDefinedValEval( DDOpacity, QgsPalLayerSettings::ShadowOpacity, exprVal, context.expressionContext(), shadowOpacity ) )
   {
-    shadowTransp = exprVal.toInt();
+    shadowOpacity = exprVal.toDouble();
   }
 
   // data defined shadow offset distance?
@@ -2599,12 +2643,12 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
     shadowRad = exprVal.toDouble();
   }
 
-  drawShadow = ( drawShadow && shadowTransp < 100 && !( shadowOffDist == 0.0 && shadowRad == 0.0 ) );
+  drawShadow = ( drawShadow && shadowOpacity > 0 && !( shadowOffDist == 0.0 && shadowRad == 0.0 ) );
 
   if ( !drawShadow )
   {
     dataDefinedValues.insert( QgsPalLayerSettings::ShadowDraw, QVariant( false ) ); // trigger value
-    dataDefinedValues.remove( QgsPalLayerSettings::ShadowTransparency );
+    dataDefinedValues.remove( QgsPalLayerSettings::ShadowOpacity );
     dataDefinedValues.remove( QgsPalLayerSettings::ShadowOffsetDist );
     dataDefinedValues.remove( QgsPalLayerSettings::ShadowRadius );
     return; // don't bother evaluating values that won't be used
@@ -2861,9 +2905,9 @@ void QgsPalLabeling::dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
   }
 
   //font transparency
-  if ( ddValues.contains( QgsPalLayerSettings::FontTransp ) )
+  if ( ddValues.contains( QgsPalLayerSettings::FontOpacity ) )
   {
-    format.setOpacity( 1.0 - ddValues.value( QgsPalLayerSettings::FontTransp ).toInt() / 100.0 );
+    format.setOpacity( ddValues.value( QgsPalLayerSettings::FontOpacity ).toDouble() / 100.0 );
     changed = true;
   }
 
@@ -2968,10 +3012,10 @@ void QgsPalLabeling::dataDefinedTextBuffer( QgsPalLayerSettings &tmpLyr,
     changed = true;
   }
 
-  //buffer transparency
-  if ( ddValues.contains( QgsPalLayerSettings::BufferTransp ) )
+  //buffer opacity
+  if ( ddValues.contains( QgsPalLayerSettings::BufferOpacity ) )
   {
-    buffer.setOpacity( 1.0 - ddValues.value( QgsPalLayerSettings::BufferTransp ).toInt() / 100.0 );
+    buffer.setOpacity( ddValues.value( QgsPalLayerSettings::BufferOpacity ).toDouble() / 100.0 );
     changed = true;
   }
 
@@ -3132,9 +3176,9 @@ void QgsPalLabeling::dataDefinedShapeBackground( QgsPalLayerSettings &tmpLyr,
     changed = true;
   }
 
-  if ( ddValues.contains( QgsPalLayerSettings::ShapeTransparency ) )
+  if ( ddValues.contains( QgsPalLayerSettings::ShapeOpacity ) )
   {
-    background.setOpacity( 1.0 - ddValues.value( QgsPalLayerSettings::ShapeTransparency ).toInt() / 100.0 );
+    background.setOpacity( ddValues.value( QgsPalLayerSettings::ShapeOpacity ).toDouble() / 100.0 );
     changed = true;
   }
 
@@ -3231,9 +3275,9 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     changed = true;
   }
 
-  if ( ddValues.contains( QgsPalLayerSettings::ShadowTransparency ) )
+  if ( ddValues.contains( QgsPalLayerSettings::ShadowOpacity ) )
   {
-    shadow.setOpacity( 1.0 - ddValues.value( QgsPalLayerSettings::ShadowTransparency ).toInt() / 100.0 );
+    shadow.setOpacity( ddValues.value( QgsPalLayerSettings::ShadowOpacity ).toDouble() / 100.0 );
     changed = true;
   }
 

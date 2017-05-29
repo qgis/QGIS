@@ -445,7 +445,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mFontSizeDDBtn, QgsPalLayerSettings::Size );
   registerDataDefinedButton( mFontUnitsDDBtn, QgsPalLayerSettings::FontSizeUnit );
   registerDataDefinedButton( mFontColorDDBtn, QgsPalLayerSettings::Color );
-  registerDataDefinedButton( mFontTranspDDBtn, QgsPalLayerSettings::FontTransp );
+  registerDataDefinedButton( mFontOpacityDDBtn, QgsPalLayerSettings::FontOpacity );
   registerDataDefinedButton( mFontCaseDDBtn, QgsPalLayerSettings::FontCase );
   registerDataDefinedButton( mFontLetterSpacingDDBtn, QgsPalLayerSettings::FontLetterSpacing );
   registerDataDefinedButton( mFontWordSpacingDDBtn, QgsPalLayerSettings::FontWordSpacing );
@@ -475,7 +475,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mBufferSizeDDBtn, QgsPalLayerSettings::BufferSize );
   registerDataDefinedButton( mBufferUnitsDDBtn, QgsPalLayerSettings::BufferUnit );
   registerDataDefinedButton( mBufferColorDDBtn, QgsPalLayerSettings::BufferColor );
-  registerDataDefinedButton( mBufferTranspDDBtn, QgsPalLayerSettings::BufferTransp );
+  registerDataDefinedButton( mBufferOpacityDDBtn, QgsPalLayerSettings::BufferOpacity );
   registerDataDefinedButton( mBufferJoinStyleDDBtn, QgsPalLayerSettings::BufferJoinStyle );
   registerDataDefinedButton( mBufferBlendModeDDBtn, QgsPalLayerSettings::BufferBlendMode );
 
@@ -494,7 +494,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mShapeOffsetUnitsDDBtn, QgsPalLayerSettings::ShapeOffsetUnits );
   registerDataDefinedButton( mShapeRadiusDDBtn, QgsPalLayerSettings::ShapeRadii );
   registerDataDefinedButton( mShapeRadiusUnitsDDBtn, QgsPalLayerSettings::ShapeRadiiUnits );
-  registerDataDefinedButton( mShapeTranspDDBtn, QgsPalLayerSettings::ShapeTransparency );
+  registerDataDefinedButton( mShapeOpacityDDBtn, QgsPalLayerSettings::ShapeOpacity );
   registerDataDefinedButton( mShapeBlendModeDDBtn, QgsPalLayerSettings::ShapeBlendMode );
   registerDataDefinedButton( mShapeFillColorDDBtn, QgsPalLayerSettings::ShapeFillColor );
   registerDataDefinedButton( mShapeStrokeColorDDBtn, QgsPalLayerSettings::ShapeStrokeColor );
@@ -511,7 +511,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   registerDataDefinedButton( mShadowOffsetUnitsDDBtn, QgsPalLayerSettings::ShadowOffsetUnits );
   registerDataDefinedButton( mShadowRadiusDDBtn, QgsPalLayerSettings::ShadowRadius );
   registerDataDefinedButton( mShadowRadiusUnitsDDBtn, QgsPalLayerSettings::ShadowRadiusUnits );
-  registerDataDefinedButton( mShadowTranspDDBtn, QgsPalLayerSettings::ShadowTransparency );
+  registerDataDefinedButton( mShadowOpacityDDBtn, QgsPalLayerSettings::ShadowOpacity );
   registerDataDefinedButton( mShadowScaleDDBtn, QgsPalLayerSettings::ShadowScale );
   registerDataDefinedButton( mShadowColorDDBtn, QgsPalLayerSettings::ShadowColor );
   registerDataDefinedButton( mShadowBlendDDBtn, QgsPalLayerSettings::ShadowBlendMode );

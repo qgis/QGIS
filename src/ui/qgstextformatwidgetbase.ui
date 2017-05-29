@@ -112,7 +112,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>487</width>
+               <width>486</width>
                <height>300</height>
               </rect>
              </property>
@@ -620,8 +620,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>452</width>
+                       <height>466</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -721,7 +721,7 @@
                             <bool>true</bool>
                            </property>
                            <property name="text">
-                            <string>Transparency</string>
+                            <string>Opacity</string>
                            </property>
                           </widget>
                          </item>
@@ -1153,7 +1153,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="8" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontTranspDDBtn">
+                          <widget class="QgsPropertyOverrideButton" name="mFontOpacityDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
@@ -1194,7 +1194,7 @@ font-style: italic;</string>
                              <number>0</number>
                             </property>
                             <item>
-                             <widget class="QSlider" name="mFontTranspSlider">
+                             <widget class="QSlider" name="mFontOpacitySlider">
                               <property name="enabled">
                                <bool>true</bool>
                               </property>
@@ -1211,7 +1211,16 @@ font-style: italic;</string>
                                </size>
                               </property>
                               <property name="maximum">
+                               <number>1000</number>
+                              </property>
+                              <property name="singleStep">
+                               <number>10</number>
+                              </property>
+                              <property name="pageStep">
                                <number>100</number>
+                              </property>
+                              <property name="value">
+                               <number>1000</number>
                               </property>
                               <property name="orientation">
                                <enum>Qt::Horizontal</enum>
@@ -1219,7 +1228,7 @@ font-style: italic;</string>
                              </widget>
                             </item>
                             <item>
-                             <widget class="QgsSpinBox" name="mFontTranspSpinBox">
+                             <widget class="QgsDoubleSpinBox" name="mFontOpacitySpinBox">
                               <property name="enabled">
                                <bool>true</bool>
                               </property>
@@ -1229,11 +1238,20 @@ font-style: italic;</string>
                                 <verstretch>0</verstretch>
                                </sizepolicy>
                               </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>100</width>
+                                <height>0</height>
+                               </size>
+                              </property>
                               <property name="suffix">
                                <string> %</string>
                               </property>
-                              <property name="maximum">
-                               <number>100</number>
+                              <property name="decimals">
+                               <number>1</number>
+                              </property>
+                              <property name="value">
+                               <double>100.000000000000000</double>
                               </property>
                              </widget>
                             </item>
@@ -1443,8 +1461,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>293</width>
-                       <height>315</height>
+                       <width>452</width>
+                       <height>410</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -2078,8 +2096,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>466</width>
+                       <height>365</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2229,7 +2247,7 @@ font-style: italic;</string>
                               <bool>true</bool>
                              </property>
                              <property name="text">
-                              <string>Transparency</string>
+                              <string>Opacity</string>
                              </property>
                             </widget>
                            </item>
@@ -2241,7 +2259,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="4" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mBufferTranspDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mBufferOpacityDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2319,7 +2337,7 @@ font-style: italic;</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <widget class="QSlider" name="mBufferTranspSlider">
+                               <widget class="QSlider" name="mBufferOpacitySlider">
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
@@ -2342,7 +2360,16 @@ font-style: italic;</string>
                                  </size>
                                 </property>
                                 <property name="maximum">
+                                 <number>1000</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>10</number>
+                                </property>
+                                <property name="pageStep">
                                  <number>100</number>
+                                </property>
+                                <property name="value">
+                                 <number>1000</number>
                                 </property>
                                 <property name="orientation">
                                  <enum>Qt::Horizontal</enum>
@@ -2350,15 +2377,24 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QgsSpinBox" name="mBufferTranspSpinBox">
+                               <widget class="QgsDoubleSpinBox" name="mBufferOpacitySpinBox">
                                 <property name="enabled">
                                  <bool>true</bool>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>100</width>
+                                  <height>0</height>
+                                 </size>
                                 </property>
                                 <property name="suffix">
                                  <string> %</string>
                                 </property>
-                                <property name="maximum">
-                                 <number>100</number>
+                                <property name="decimals">
+                                 <number>1</number>
+                                </property>
+                                <property name="value">
+                                 <double>100.000000000000000</double>
                                 </property>
                                </widget>
                               </item>
@@ -2466,9 +2502,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>448</width>
-                       <height>613</height>
+                       <y>-351</y>
+                       <width>459</width>
+                       <height>782</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2762,7 +2798,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="14" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mShapeTranspDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mShapeOpacityDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -2805,7 +2841,7 @@ font-style: italic;</string>
                               <bool>true</bool>
                              </property>
                              <property name="text">
-                              <string>Transparency</string>
+                              <string>Opacity</string>
                              </property>
                             </widget>
                            </item>
@@ -2906,7 +2942,7 @@ font-style: italic;</string>
                            <item row="14" column="1">
                             <layout class="QHBoxLayout" name="horizontalLayout_38">
                              <item>
-                              <widget class="QSlider" name="mShapeTranspSlider">
+                              <widget class="QSlider" name="mShapeOpacitySlider">
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
@@ -2923,7 +2959,16 @@ font-style: italic;</string>
                                 </size>
                                </property>
                                <property name="maximum">
+                                <number>1000</number>
+                               </property>
+                               <property name="singleStep">
+                                <number>10</number>
+                               </property>
+                               <property name="pageStep">
                                 <number>100</number>
+                               </property>
+                               <property name="value">
+                                <number>1000</number>
                                </property>
                                <property name="orientation">
                                 <enum>Qt::Horizontal</enum>
@@ -2931,15 +2976,24 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QgsSpinBox" name="mShapeTranspSpinBox">
+                              <widget class="QgsDoubleSpinBox" name="mShapeOpacitySpinBox">
                                <property name="enabled">
                                 <bool>true</bool>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
                                </property>
                                <property name="suffix">
                                 <string> %</string>
                                </property>
-                               <property name="maximum">
-                                <number>100</number>
+                               <property name="decimals">
+                                <number>1</number>
+                               </property>
+                               <property name="value">
+                                <double>100.000000000000000</double>
                                </property>
                               </widget>
                              </item>
@@ -3313,8 +3367,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>465</width>
-                       <height>385</height>
+                       <width>452</width>
+                       <height>474</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3617,14 +3671,14 @@ font-style: italic;</string>
                            <item row="8" column="0">
                             <widget class="QLabel" name="label_28">
                              <property name="text">
-                              <string>Transparency</string>
+                              <string>Opacity</string>
                              </property>
                             </widget>
                            </item>
                            <item row="8" column="1">
                             <layout class="QHBoxLayout" name="horizontalLayout_28">
                              <item>
-                              <widget class="QSlider" name="mShadowTranspSlider">
+                              <widget class="QSlider" name="mShadowOpacitySlider">
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
@@ -3641,7 +3695,16 @@ font-style: italic;</string>
                                 </size>
                                </property>
                                <property name="maximum">
+                                <number>1000</number>
+                               </property>
+                               <property name="singleStep">
+                                <number>10</number>
+                               </property>
+                               <property name="pageStep">
                                 <number>100</number>
+                               </property>
+                               <property name="value">
+                                <number>1000</number>
                                </property>
                                <property name="orientation">
                                 <enum>Qt::Horizontal</enum>
@@ -3649,15 +3712,24 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QgsSpinBox" name="mShadowTranspSpnBx">
+                              <widget class="QgsDoubleSpinBox" name="mShadowOpacitySpnBx">
                                <property name="enabled">
                                 <bool>true</bool>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>100</width>
+                                 <height>0</height>
+                                </size>
                                </property>
                                <property name="suffix">
                                 <string> %</string>
                                </property>
-                               <property name="maximum">
-                                <number>100</number>
+                               <property name="decimals">
+                                <number>1</number>
+                               </property>
+                               <property name="value">
+                                <double>100.000000000000000</double>
                                </property>
                               </widget>
                              </item>
@@ -3706,7 +3778,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="8" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mShadowTranspDDBtn">
+                            <widget class="QgsPropertyOverrideButton" name="mShadowOpacityDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
@@ -3818,8 +3890,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>770</height>
+                       <width>452</width>
+                       <height>977</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5456,8 +5528,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>448</width>
-                       <height>665</height>
+                       <width>452</width>
+                       <height>881</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6441,28 +6513,15 @@ font-style: italic;</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -6475,9 +6534,9 @@ font-style: italic;</string>
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -6485,14 +6544,27 @@ font-style: italic;</string>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -6540,9 +6612,9 @@ font-style: italic;</string>
   <tabstop>mFontUnitsDDBtn</tabstop>
   <tabstop>btnTextColor</tabstop>
   <tabstop>mFontColorDDBtn</tabstop>
-  <tabstop>mFontTranspSlider</tabstop>
-  <tabstop>mFontTranspSpinBox</tabstop>
-  <tabstop>mFontTranspDDBtn</tabstop>
+  <tabstop>mFontOpacitySlider</tabstop>
+  <tabstop>mFontOpacitySpinBox</tabstop>
+  <tabstop>mFontOpacityDDBtn</tabstop>
   <tabstop>mFontCapitalsComboBox</tabstop>
   <tabstop>mFontCaseDDBtn</tabstop>
   <tabstop>mFontLetterSpacingSpinBox</tabstop>
@@ -6590,9 +6662,9 @@ font-style: italic;</string>
   <tabstop>btnBufferColor</tabstop>
   <tabstop>mBufferColorDDBtn</tabstop>
   <tabstop>mBufferTranspFillChbx</tabstop>
-  <tabstop>mBufferTranspSlider</tabstop>
-  <tabstop>mBufferTranspSpinBox</tabstop>
-  <tabstop>mBufferTranspDDBtn</tabstop>
+  <tabstop>mBufferOpacitySlider</tabstop>
+  <tabstop>mBufferOpacitySpinBox</tabstop>
+  <tabstop>mBufferOpacityDDBtn</tabstop>
   <tabstop>mBufferJoinStyleComboBox</tabstop>
   <tabstop>mBufferJoinStyleDDBtn</tabstop>
   <tabstop>comboBufferBlendMode</tabstop>
@@ -6627,9 +6699,9 @@ font-style: italic;</string>
   <tabstop>mShapeRadiusDDBtn</tabstop>
   <tabstop>mShapeRadiusUnitWidget</tabstop>
   <tabstop>mShapeRadiusUnitsDDBtn</tabstop>
-  <tabstop>mShapeTranspSlider</tabstop>
-  <tabstop>mShapeTranspSpinBox</tabstop>
-  <tabstop>mShapeTranspDDBtn</tabstop>
+  <tabstop>mShapeOpacitySlider</tabstop>
+  <tabstop>mShapeOpacitySpinBox</tabstop>
+  <tabstop>mShapeOpacityDDBtn</tabstop>
   <tabstop>mShapeBlendCmbBx</tabstop>
   <tabstop>mShapeBlendModeDDBtn</tabstop>
   <tabstop>mShapeSVGParamsBtn</tabstop>
@@ -6661,9 +6733,9 @@ font-style: italic;</string>
   <tabstop>mShadowRadiusUnitWidget</tabstop>
   <tabstop>mShadowRadiusUnitsDDBtn</tabstop>
   <tabstop>mShadowRadiusAlphaChkBx</tabstop>
-  <tabstop>mShadowTranspSlider</tabstop>
-  <tabstop>mShadowTranspSpnBx</tabstop>
-  <tabstop>mShadowTranspDDBtn</tabstop>
+  <tabstop>mShadowOpacitySlider</tabstop>
+  <tabstop>mShadowOpacitySpnBx</tabstop>
+  <tabstop>mShadowOpacityDDBtn</tabstop>
   <tabstop>mShadowScaleSpnBx</tabstop>
   <tabstop>mShadowScaleDDBtn</tabstop>
   <tabstop>mShadowColorBtn</tabstop>
