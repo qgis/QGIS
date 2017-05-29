@@ -117,6 +117,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
         case Default:
           return QVariant();
       }
+      break;
     }
 
     case Qt::CheckStateRole:
@@ -142,6 +143,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
           else
             return filterForIndex( index )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
       }
+      break;
   }
 
   return QVariant();
