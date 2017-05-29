@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsRectangle
 
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
@@ -126,6 +126,27 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
+
+    def testInvalidGeometries(self):
+        """ Test what happens when SQL Server is a POS and throws an exception on encountering an invalid geometry """
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        assert(vl.isValid())
+
+        #burn through features - don't want SQL server to trip up on the invalid ones
+        count = 0
+        for f in vl.dataProvider().getFeatures():
+            count += 1
+        self.assertEqual(count, 39)
+
+        count = 0
+
+        for f in vl.dataProvider().getFeatures(QgsFeatureRequest(QgsRectangle(173, -42, 174, -41))):
+            count += 1
+        # two invalid geometry features
+        self.assertEqual(count, 37)
+        # sorry... you get NO chance to see these features exist and repair them... because SQL server. Use PostGIS instead and live a happier life!
+
 
 if __name__ == '__main__':
     unittest.main()
