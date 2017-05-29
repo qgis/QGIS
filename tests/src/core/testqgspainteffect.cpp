@@ -632,8 +632,8 @@ void TestQgsPaintEffect::glow()
 void TestQgsPaintEffect::transform()
 {
   //create
-  QgsTransformEffect *effect = new QgsTransformEffect();
-  QVERIFY( effect );
+  std::unique_ptr< QgsTransformEffect > effect( new QgsTransformEffect() );
+  QVERIFY( effect.get() );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setTranslateX( 6 );
@@ -663,8 +663,8 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
 
   //copy constructor
-  QgsTransformEffect *copy = new QgsTransformEffect( *effect );
-  QVERIFY( copy );
+  std::unique_ptr< QgsTransformEffect > copy( new QgsTransformEffect( *effect ) );
+  QVERIFY( copy.get() );
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );
   QCOMPARE( copy->translateY(), 77.0 );
@@ -679,11 +679,11 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( copy->reflectX(), true );
   QCOMPARE( copy->reflectY(), true );
   QCOMPARE( copy->drawMode(), QgsPaintEffect::Modifier );
-  delete copy;
+  copy.reset( nullptr );
 
   //clone
-  QgsPaintEffect *clone = effect->clone();
-  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect * >( clone );
+  std::unique_ptr< QgsPaintEffect > clone( effect->clone() );
+  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect * >( clone.get() );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), false );
   QCOMPARE( cloneCast->translateX(), 6.0 );
@@ -699,12 +699,12 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( cloneCast->reflectX(), true );
   QCOMPARE( cloneCast->reflectY(), true );
   QCOMPARE( cloneCast->drawMode(), QgsPaintEffect::Modifier );
-  delete cloneCast;
+  clone.reset( nullptr );
 
   //read/write
   QgsStringMap props = effect->properties();
-  QgsPaintEffect *readEffect = QgsTransformEffect::create( props );
-  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect );
+  std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
+  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect.get() );
   QVERIFY( readCast );
   QCOMPARE( readCast->enabled(), false );
   QCOMPARE( readCast->translateX(), 6.0 );
@@ -720,9 +720,6 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( readCast->reflectX(), true );
   QCOMPARE( readCast->reflectY(), true );
   QCOMPARE( readCast->drawMode(), QgsPaintEffect::Modifier );
-  delete readCast;
-
-  delete effect;
 }
 
 void TestQgsPaintEffect::stack()
