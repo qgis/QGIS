@@ -26,7 +26,7 @@ class QgsAlignRaster
 %TypeHeaderCode
 #include "qgsalignraster.h"
 
-#include <gdal_version.h>"
+#include <gdal_version.h>
 %End
   public:
     QgsAlignRaster();
