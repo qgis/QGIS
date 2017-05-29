@@ -66,17 +66,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   QListWidgetItem *rasterItem = new QListWidgetItem( tr( "Raster" ), ui->mOptionsListWidget );
   rasterItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
   rasterItem->setToolTip( tr( "Open a GDAL Supported Raster Data Source" ) );
-  connect( ui->mOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int idx )
-  {
-    Q_UNUSED( idx );
-    if ( rasterItem->isSelected() )
-    {
-      emit addRasterLayer();
-      QTimer::singleShot( 0, this, &QgsDataSourceManagerDialog::setPreviousPage );
-    }
-  } );
   mPageNames.append( QStringLiteral( "raster" ) );
-
 
   // Add data provider dialogs
   QDialog *dlg = nullptr;
@@ -158,6 +148,11 @@ void QgsDataSourceManagerDialog::setCurrentPage( int index )
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex( );
   ui->mOptionsStackedWidget->setCurrentIndex( index );
   setWindowTitle( tr( "Data Source Manager | %1" ).arg( ui->mOptionsListWidget->currentItem()->text( ) ) );
+  if ( 0 <= index && index < mPageNames.size() && mPageNames.at( index ) == QStringLiteral( "raster" ) )
+  {
+    emit addRasterLayer();
+    QTimer::singleShot( 0, this, &QgsDataSourceManagerDialog::setPreviousPage );
+  }
 }
 
 void QgsDataSourceManagerDialog::setPreviousPage()
