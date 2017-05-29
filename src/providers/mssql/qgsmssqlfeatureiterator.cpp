@@ -301,8 +301,25 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     {
       QVariant v = mQuery->value( i );
       const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
-      if ( v.type() != fld.type() )
+
+      // special handling for time fields
+      if ( fld.type() == QVariant::Time && v.type() == QVariant::ByteArray )
+      {
+        QList<QByteArray> parts = v.toByteArray().split( '\0' );
+        if ( parts.count() >= 3 )
+        {
+          int hours = QString( parts.at( 0 ) ).at( 0 ).toAscii();
+          int minutes = QString( parts.at( 1 ) ).at( 0 ).toAscii();
+          int seconds = QString( parts.at( 2 ) ).at( 0 ).toAscii();
+          v = QTime( hours, minutes, seconds );
+        }
+        else
+          v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+      }
+      else if ( v.type() != fld.type() )
+      {
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+      }
       feature.setAttribute( mAttributesToFetch.at( i ), v );
     }
 
