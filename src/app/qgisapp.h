@@ -758,8 +758,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
 
-    //! Open the DataSourceManager dialog/dock
-    void dataSourceManager( );
+
+    /**
+     * \brief dataSourceManager Open the DataSourceManager dialog/dock
+     * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
+     *        or "ogr" (vector layers) or "raster" (raster layers)
+     */
+    void dataSourceManager( QString pageName = QString( ) );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -794,19 +799,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
-    /** \brief Open one or more raster layers and add to the map
-     *  Will prompt user for file names using a file selection dialog
-     */
-    void addRasterLayer();
-
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
-
-    void addWfsLayer( const QString &uri, const QString &typeName );
-
-    void addAfsLayer( const QString &uri, const QString &typeName );
-
-    void addAmsLayer( const QString &uri, const QString &typeName );
 
     void versionReplyFinished();
 
@@ -1292,6 +1286,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Is called from the legend when the current legend item has changed*/
     void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
 
+    /** \brief Open one or more raster layers and add to the map
+     *  Will prompt user for file names using a file selection dialog
+     */
+    void addRasterLayer();
+
     void selectionChanged( QgsMapLayer *layer );
 
     void extentChanged();
@@ -1304,20 +1303,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //    void debugHook();
     //! Add a Layer Definition file
     void addLayerDefinition();
-    //! Add a vector layer to the map
-    void addVectorLayer();
     //! Exit Qgis
     void fileExit();
-    //! Add a WMS layer to the map
-    void addWmsLayer();
-    //! Add a WCS layer to the map
-    void addWcsLayer();
-    //! Add a WFS layer to the map
-    void addWfsLayer();
-    //! Add a ArcGIS FeatureServer layer to the map
-    void addAfsLayer();
-    //! Add a ArcGIS MapServer layer to the map
-    void addAmsLayer();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in
