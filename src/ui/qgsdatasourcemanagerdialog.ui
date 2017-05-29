@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>1000</width>
     <height>600</height>
    </rect>
   </property>
@@ -184,7 +184,7 @@
       <item row="0" column="0">
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="standardButtons">
-         <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+         <set>QDialogButtonBox::Close</set>
         </property>
        </widget>
       </item>

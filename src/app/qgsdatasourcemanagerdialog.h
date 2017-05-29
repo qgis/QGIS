@@ -49,7 +49,6 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     void rasterLayerAdded( QString const &uri, QString const &baseName, QString const &providerKey );
     void vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
     void vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "TODO_PLACEHOLDER.html" ) ); }
     //! Reset current page to previously selected page
     void setPreviousPage();
 
