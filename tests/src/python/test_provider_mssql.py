@@ -56,6 +56,50 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
+    def uncompiledFilters(self):
+        filters = set(['"name" NOT LIKE \'Ap%\'',
+                       '"name" IS NULL',
+                       '"name" IS NOT NULL',
+                       '"name" NOT ILIKE \'QGIS\'',
+                       '"name" NOT ILIKE \'pEAR\'',
+                       'name <> \'Apple\'',
+                       '"name" <> \'apple\'',
+                       '(name = \'Apple\') is not null',
+                       '"name" || \' \' || "cnt" = \'Orange 100\'',
+                       '\'x\' || "name" IS NOT NULL',
+                       '\'x\' || "name" IS NULL',
+                       '"name" ~ \'[OP]ra[gne]+\'',
+                       'false and NULL',
+                       'true and NULL',
+                       'NULL and false',
+                       'NULL and true',
+                       'NULL and NULL',
+                       'false or NULL',
+                       'true or NULL',
+                       'NULL or false',
+                       'NULL or true',
+                       'NULL or NULL',
+                       'not null',
+                       'not name IS NULL',
+                       'not name = \'Apple\'',
+                       'not name = \'Apple\' or name = \'Apple\'',
+                       'not name = \'Apple\' or not name = \'Apple\'',
+                       'not name = \'Apple\' and pk = 4',
+                       'not name = \'Apple\' and not pk = 4',
+                       'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+        return filters
+
+    def partiallyCompiledFilters(self):
+        return set(['name ILIKE \'QGIS\'',
+                    'name = \'Apple\'',
+                    'name = \'apple\'',
+                    'name LIKE \'Apple\'',
+                    'name LIKE \'aPple\'',
+                    '"name"="name2"',
+                    'name ILIKE \'aPple\'',
+                    'name ILIKE \'%pp%\'',
+                    '"name" || \' \' || "name" = \'Orange Orange\''])
+
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' %
