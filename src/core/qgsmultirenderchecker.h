@@ -117,7 +117,7 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }

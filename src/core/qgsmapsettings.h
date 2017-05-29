@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMapSettings
       Antialiasing             = 0x01,  //!< Enable anti-aliasing for map rendering
       DrawEditingInfo          = 0x02,  //!< Enable drawing of vertex markers for layers in editing mode
       ForceVectorOutput        = 0x04,  //!< Vector graphics should not be cached and drawn as raster images
-      UseAdvancedEffects       = 0x08,  //!< Enable layer transparency and blending effects
+      UseAdvancedEffects       = 0x08,  //!< Enable layer opacity and blending effects
       DrawLabeling             = 0x10,  //!< Enable drawing of labels on top of the map
       UseRenderingOptimization = 0x20,  //!< Enable vector simplification and other rendering optimizations
       DrawSelection            = 0x40,  //!< Whether vector selections should be shown in the rendered map
