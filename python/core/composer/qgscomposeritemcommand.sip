@@ -112,7 +112,7 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,
-      ItemTransparency,
+      ItemOpacity,
       ItemZoomContent
     };
 

@@ -51,6 +51,7 @@ void QgsComposerObject::initPropertyDefinitions()
     { QgsComposerObject::ItemHeight, QgsPropertyDefinition( "dataDefinedHeight", QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsComposerObject::ItemRotation, QgsPropertyDefinition( "dataDefinedRotation", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
     { QgsComposerObject::Transparency, QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsComposerObject::Opacity, QgsPropertyDefinition( "dataDefinedOpacity", QObject::tr( "Opacity" ), QgsPropertyDefinition::Transparency ) },
     { QgsComposerObject::BlendMode, QgsPropertyDefinition( "dataDefinedBlendMode", QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsComposerObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
     { QgsComposerObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -141,6 +142,14 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   if ( !propsNode.isNull() )
   {
     mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );
+  }
+  if ( mDataDefinedProperties.isActive( QgsComposerObject::Transparency ) )
+  {
+    // upgrade transparency -> opacity
+    QString exp = mDataDefinedProperties.property( QgsComposerObject::Transparency ).asExpression();
+    exp = QStringLiteral( "100.0 - (%1)" ).arg( exp );
+    mDataDefinedProperties.setProperty( QgsComposerObject::Opacity, QgsProperty::fromExpression( exp ) );
+    mDataDefinedProperties.setProperty( QgsComposerObject::Transparency, QgsProperty() );
   }
 
   //custom properties

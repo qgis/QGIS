@@ -30,6 +30,7 @@ class QgsComposerObject : QObject, QgsExpressionContextGenerator
       ItemHeight, /*!< height of item */
       ItemRotation, /*!< rotation of item */
       Transparency, /*!< item transparency */
+      Opacity,
       BlendMode, /*!< item blend mode */
       ExcludeFromExports, /*!< exclude item from exports */
       FrameColor, //!< Item frame color

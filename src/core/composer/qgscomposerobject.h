@@ -57,7 +57,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       ItemWidth, //!< Width of item
       ItemHeight, //!< Height of item
       ItemRotation, //!< Rotation of item
-      Transparency, //!< Item transparency
+      Transparency, //!< Item transparency (deprecated)
+      Opacity, //!< Item opacity
       BlendMode, //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
       FrameColor, //!< Item frame color

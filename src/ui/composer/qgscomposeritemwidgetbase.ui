@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
-    <height>1017</height>
+    <width>309</width>
+    <height>1135</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -658,16 +658,25 @@
       <item row="1" column="0">
        <widget class="QLabel" name="labelTransparency">
         <property name="text">
-         <string>Transparency</string>
+         <string>Opacity</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QSlider" name="mTransparencySlider">
+         <widget class="QSlider" name="mOpacitySlider">
           <property name="maximum">
+           <number>1000</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
            <number>100</number>
+          </property>
+          <property name="value">
+           <number>1000</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -675,20 +684,29 @@
          </widget>
         </item>
         <item>
-         <widget class="QgsSpinBox" name="mTransparencySpnBx">
+         <widget class="QgsDoubleSpinBox" name="mOpacitySpnBx">
           <property name="minimumSize">
            <size>
-            <width>80</width>
+            <width>100</width>
             <height>25</height>
            </size>
           </property>
+          <property name="suffix">
+           <string> %</string>
+          </property>
+          <property name="decimals">
+           <number>1</number>
+          </property>
           <property name="maximum">
-           <number>100</number>
+           <double>100.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>100.000000000000000</double>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QgsPropertyOverrideButton" name="mTransparencyDDBtn">
+         <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
           <property name="text">
            <string>...</string>
           </property>
@@ -841,9 +859,9 @@
   <tabstop>groupRendering</tabstop>
   <tabstop>mBlendModeCombo</tabstop>
   <tabstop>mBlendModeDDBtn</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpnBx</tabstop>
-  <tabstop>mTransparencyDDBtn</tabstop>
+  <tabstop>mOpacitySlider</tabstop>
+  <tabstop>mOpacitySpnBx</tabstop>
+  <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mExcludeFromPrintsCheckBox</tabstop>
   <tabstop>mExcludePrintsDDBtn</tabstop>
  </tabstops>
