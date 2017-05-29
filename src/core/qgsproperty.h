@@ -59,7 +59,7 @@ class CORE_EXPORT QgsPropertyDefinition
       Double0To1, //!< Double value between 0-1 (inclusive)
       Rotation, //!< Rotation (value between 0-360 degrees)
       String, //!< Any string value
-      Transparency, //!< Transparency (0-100)
+      Opacity, //!< Opacity (0-100)
       RenderUnits, //!< Render units (eg mm/pixels/map units)
       ColorWithAlpha, //!< Color with alpha channel
       ColorNoAlpha, //!< Color with no alpha channel
