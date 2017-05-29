@@ -267,6 +267,26 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         geom = [f.geometry().asWkt() for f in new_layer.getFeatures()]
         self.assertEqual(geom, ['MultiPolygon (((0 0, 1 0, 1 1, 0 1, 0 0)),((10 0, 11 0, 11 1, 10 1, 10 0)))', 'MultiPolygon (((30 0, 31 0, 31 1, 30 1, 30 0)))'])
 
+    def testInvalidGeometries(self):
+        """ Test what happens when SQL Server is a POS and throws an exception on encountering an invalid geometry """
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        assert(vl.isValid())
+
+        #burn through features - don't want SQL server to trip up on the invalid ones
+        count = 0
+        for f in vl.dataProvider().getFeatures():
+            count += 1
+        self.assertEqual(count, 39)
+
+        count = 0
+
+        for f in vl.dataProvider().getFeatures(QgsFeatureRequest(QgsRectangle(173, -42, 174, -41))):
+            count += 1
+        # two invalid geometry features
+        self.assertEqual(count, 37)
+        # sorry... you get NO chance to see these features exist and repair them... because SQL server. Use PostGIS instead and live a happier life!
+
 
 if __name__ == '__main__':
     unittest.main()
