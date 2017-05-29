@@ -35,6 +35,7 @@ QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
   , mEffect( nullptr )
 {
   setupUi( this );
+  mOpacitySpnBx->setClearValue( 100.0 );
   initGui();
 }
 
@@ -57,8 +58,8 @@ void QgsDrawSourceWidget::initGui()
 
   blockSignals( true );
 
-  mTransparencySpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTransparencySlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacitySpnBx->setValue( mEffect->opacity() * 100.0 );
+  mOpacitySlider->setValue( mEffect->opacity() * 1000.0 );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
@@ -67,22 +68,22 @@ void QgsDrawSourceWidget::initGui()
 
 void QgsDrawSourceWidget::blockSignals( const bool block )
 {
-  mTransparencySlider->blockSignals( block );
-  mTransparencySpnBx->blockSignals( block );
+  mOpacitySlider->blockSignals( block );
+  mOpacitySpnBx->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
 
-void QgsDrawSourceWidget::on_mTransparencySpnBx_valueChanged( double value )
+void QgsDrawSourceWidget::on_mOpacitySpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value * 10.0 );
-  mTransparencySlider->blockSignals( false );
+  mOpacitySlider->blockSignals( true );
+  mOpacitySlider->setValue( value * 10.0 );
+  mOpacitySlider->blockSignals( false );
 
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value / 100.0 );
   emit changed();
 }
 
@@ -108,9 +109,9 @@ void QgsDrawSourceWidget::on_mBlendCmbBx_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
+void QgsDrawSourceWidget::on_mOpacitySlider_valueChanged( int value )
 {
-  mTransparencySpnBx->setValue( value / 10.0 );
+  mOpacitySpnBx->setValue( value / 10.0 );
 }
 
 

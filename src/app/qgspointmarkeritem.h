@@ -75,19 +75,19 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
      */
     void updateSize();
 
-    /** Sets the transparency for the marker.
-     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see transparency()
+    /** Sets the \a opacity for the marker.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( double transparency );
+    void setOpacity( double opacity );
 
-    /** Returns the transparency for the marker.
-     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see setTransparency()
+    /** Returns the opacity for the marker.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const;
+    double opacity() const;
 
   private:
 

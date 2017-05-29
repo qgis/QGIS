@@ -1032,6 +1032,12 @@ willUseEllipsoid() to determine whether ellipsoidal calculations will be perform
 - convertMeasurement was removed. Use QgsUnitTypes for conversion instead.
 
 
+QgsDrawSourceEffect        {#qgis_api_break_3_0_QgsDrawSourceEffect}
+-------------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsDxfExport        {#qgis_api_break_3_0_QgsDxfExport}
 ------------
 
