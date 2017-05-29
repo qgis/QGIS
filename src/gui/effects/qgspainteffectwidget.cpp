@@ -421,6 +421,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   mColorBtn->setAllowAlpha( false );
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
+  mOpacitySpnBx->setClearValue( 100.0 );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -455,8 +456,8 @@ void QgsGlowWidget::initGui()
   mSpreadUnitWidget->setUnit( mEffect->spreadUnit() );
   mSpreadUnitWidget->setMapUnitScale( mEffect->spreadMapUnitScale() );
   mBlurRadiusSpnBx->setValue( mEffect->blurLevel() );
-  mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacitySpnBx->setValue( mEffect->opacity() * 100.0 );
+  mOpacitySlider->setValue( mEffect->opacity() * 1000.0 );
   mColorBtn->setColor( mEffect->color() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
 
@@ -479,8 +480,8 @@ void QgsGlowWidget::blockSignals( const bool block )
   mSpreadSpnBx->blockSignals( block );
   mSpreadUnitWidget->blockSignals( block );
   mBlurRadiusSpnBx->blockSignals( block );
-  mTranspSpnBx->blockSignals( block );
-  mTranspSlider->blockSignals( block );
+  mOpacitySpnBx->blockSignals( block );
+  mOpacitySlider->blockSignals( block );
   mColorBtn->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   btnColorRamp->blockSignals( block );
@@ -529,16 +530,16 @@ void QgsGlowWidget::on_mSpreadUnitWidget_changed()
   emit changed();
 }
 
-void QgsGlowWidget::on_mTranspSpnBx_valueChanged( double value )
+void QgsGlowWidget::on_mOpacitySpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTranspSlider->blockSignals( true );
-  mTranspSlider->setValue( value * 10.0 );
-  mTranspSlider->blockSignals( false );
+  mOpacitySlider->blockSignals( true );
+  mOpacitySlider->setValue( value * 10.0 );
+  mOpacitySlider->blockSignals( false );
 
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value / 100.0 );
   emit changed();
 }
 
@@ -560,9 +561,9 @@ void QgsGlowWidget::on_mBlurRadiusSpnBx_valueChanged( int value )
   emit changed();
 }
 
-void QgsGlowWidget::on_mTranspSlider_valueChanged( int value )
+void QgsGlowWidget::on_mOpacitySlider_valueChanged( int value )
 {
-  mTranspSpnBx->setValue( value / 10.0 );
+  mOpacitySpnBx->setValue( value / 10.0 );
 }
 
 void QgsGlowWidget::on_mBlendCmbBx_currentIndexChanged( int index )

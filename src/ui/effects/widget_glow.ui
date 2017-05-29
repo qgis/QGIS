@@ -77,7 +77,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
         </item>
@@ -154,7 +154,7 @@
             <height>16777215</height>
            </size>
           </property>
-         </widget>         
+         </widget>
         </item>
         <item row="5" column="1" colspan="2">
          <widget class="QgsBlendModeComboBox" name="mBlendCmbBx"/>
@@ -162,7 +162,7 @@
         <item row="2" column="1" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_28">
           <item>
-           <widget class="QSlider" name="mTranspSlider">
+           <widget class="QSlider" name="mOpacitySlider">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -187,18 +187,24 @@
             <property name="pageStep">
              <number>100</number>
             </property>
+            <property name="value">
+             <number>1000</number>
+            </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QgsDoubleSpinBox" name="mTranspSpnBx">
+           <widget class="QgsDoubleSpinBox" name="mOpacitySpnBx">
             <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="suffix">
              <string> %</string>
@@ -207,6 +213,9 @@
              <number>1</number>
             </property>
             <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="value">
              <double>100.000000000000000</double>
             </property>
            </widget>
@@ -287,8 +296,8 @@
   <tabstop>mSpreadSpnBx</tabstop>
   <tabstop>mSpreadUnitWidget</tabstop>
   <tabstop>mBlurRadiusSpnBx</tabstop>
-  <tabstop>mTranspSlider</tabstop>
-  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>mOpacitySlider</tabstop>
+  <tabstop>mOpacitySpnBx</tabstop>
   <tabstop>radioSingleColor</tabstop>
   <tabstop>mColorBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
