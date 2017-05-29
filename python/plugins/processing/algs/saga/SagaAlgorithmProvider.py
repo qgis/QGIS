@@ -47,11 +47,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         self.activate = True
 
     def initializeSettings(self):
-        if (isWindows() or isMac()):
-            ProcessingConfig.addSetting(Setting("SAGA",
-                                                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'),
-                                                '',
-                                                valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                             self.tr('Enable SAGA Import/Export optimizations'), False))
@@ -67,9 +62,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if (isWindows() or isMac()):
-            ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
-
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
