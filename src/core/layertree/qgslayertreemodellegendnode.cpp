@@ -387,7 +387,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     int opacity = 255;
     if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
-      opacity = 255 - ( 255 * vectorLayer->layerTransparency() / 100 );
+      opacity = ( 255 * vectorLayer->opacity() );
 
     p->save();
     p->setRenderHint( QPainter::Antialiasing );

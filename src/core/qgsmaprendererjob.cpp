@@ -280,7 +280,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.opacity = 1.0;
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml ) )
     {
-      job.opacity = 1.0 - vl->layerTransparency() / 100.0;
+      job.opacity = vl->opacity();
     }
     job.layer = ml;
     job.renderingTime = -1;

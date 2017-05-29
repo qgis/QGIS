@@ -21,7 +21,7 @@
 QgsLayerTreeEmbeddedWidgetRegistry::QgsLayerTreeEmbeddedWidgetRegistry()
 {
   // populate with default implementations
-  addProvider( new QgsLayerTreeTransparencyWidget::Provider() );
+  addProvider( new QgsLayerTreeOpacityWidget::Provider() );
 }
 
 QgsLayerTreeEmbeddedWidgetRegistry::~QgsLayerTreeEmbeddedWidgetRegistry()

@@ -300,9 +300,9 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
                     &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
 
   QCOMPARE( receiver.transparency, 0 );
-  vLayer->setLayerTransparency( 50 );
+  vLayer->setOpacity( 0.5 );
   QCOMPARE( receiver.transparency, 50 );
-  QCOMPARE( vLayer->layerTransparency(), 50 );
+  QCOMPARE( vLayer->opacity(), 0.5 );
 }
 
 void TestQgsVectorLayer::uniqueValues()
