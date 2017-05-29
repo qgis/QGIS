@@ -109,7 +109,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement += QString( ",[%1]" ).arg( mSource->mGeometryColName );
   }
 
-  mStatement += QString( "FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  mStatement += QString( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
 
   bool filterAdded = false;
   // set spatial filter
@@ -247,7 +247,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mOrderByCompiled = false;
   }
 
-  if ( !mOrderByCompiled )
+  if ( !mOrderByCompiled && !request.orderBy().isEmpty() )
     limitAtProvider = false;
 
   if ( request.limit() >= 0 && limitAtProvider )

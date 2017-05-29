@@ -77,3 +77,12 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant& value, bool& ok
       return QgsSqlExpressionCompiler::quotedValue( value, ok );
   }
 }
+
+QString QgsMssqlExpressionCompiler::quotedIdentifier( const QString &identifier )
+{
+  QString quoted = identifier;
+  quoted.replace( '[', "[[" );
+  quoted.replace( ']', "]]" );
+  quoted = quoted.prepend( '[' ).append( ']' );
+  return quoted;
+}
