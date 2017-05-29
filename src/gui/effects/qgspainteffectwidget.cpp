@@ -126,6 +126,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 
   mBlurTypeCombo->addItem( tr( "Stack blur (fast)" ), QgsBlurEffect::StackBlur );
   mBlurTypeCombo->addItem( tr( "Gaussian blur (quality)" ), QgsBlurEffect::GaussianBlur );
+  mOpacitySpnBx->setClearValue( 100.0 );
 
   initGui();
 }
@@ -151,8 +152,8 @@ void QgsBlurWidget::initGui()
 
   mBlurTypeCombo->setCurrentIndex( mBlurTypeCombo->findData( mEffect->blurMethod() ) );
   mBlurStrengthSpnBx->setValue( mEffect->blurLevel() );
-  mTransparencySpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTransparencySlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacitySpnBx->setValue( mEffect->opacity() * 100.0 );
+  mOpacitySlider->setValue( mEffect->opacity() * 1000.0 );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
@@ -163,8 +164,8 @@ void QgsBlurWidget::blockSignals( const bool block )
 {
   mBlurTypeCombo->blockSignals( block );
   mBlurStrengthSpnBx->blockSignals( block );
-  mTransparencySlider->blockSignals( block );
-  mTransparencySpnBx->blockSignals( block );
+  mOpacitySpnBx->blockSignals( block );
+  mOpacitySlider->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
@@ -200,16 +201,16 @@ void QgsBlurWidget::on_mBlurStrengthSpnBx_valueChanged( int value )
   emit changed();
 }
 
-void QgsBlurWidget::on_mTransparencySpnBx_valueChanged( double value )
+void QgsBlurWidget::on_mOpacitySpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value * 10.0 );
-  mTransparencySlider->blockSignals( false );
+  mOpacitySlider->blockSignals( true );
+  mOpacitySlider->setValue( value * 10.0 );
+  mOpacitySlider->blockSignals( false );
 
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value / 100.0 );
   emit changed();
 }
 
@@ -235,9 +236,9 @@ void QgsBlurWidget::on_mBlendCmbBx_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
+void QgsBlurWidget::on_mOpacitySlider_valueChanged( int value )
 {
-  mTransparencySpnBx->setValue( value / 10.0 );
+  mOpacitySpnBx->setValue( value / 10.0 );
 }
 
 

@@ -357,8 +357,8 @@ void TestQgsPaintEffect::blur()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setBlurLevel( 6 );
@@ -372,7 +372,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *copy = new QgsBlurEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->blurLevel(), effect->blurLevel() );
   QCOMPARE( copy->blurMethod(), effect->blurMethod() );
@@ -384,7 +384,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *cloneCast = dynamic_cast<QgsBlurEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( cloneCast->blurMethod(), effect->blurMethod() );
@@ -397,7 +397,7 @@ void TestQgsPaintEffect::blur()
   QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->blurMethod(), effect->blurMethod() );

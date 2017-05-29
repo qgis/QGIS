@@ -165,6 +165,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   initializeDataDefinedButtons();
 
+  mOpacitySpnBx->setClearValue( 100.0 );
+
   setValuesForGuiElements();
   connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsComposerItem::sizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
