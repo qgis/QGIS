@@ -349,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>702</height>
+                <width>857</width>
+                <height>678</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -666,6 +666,13 @@
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
+                    <item>
+                     <widget class="QCheckBox" name="mDataSourceManagerNonModal">
+                      <property name="text">
+                       <string>Modeless data source manager dialog</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="QCheckBox" name="mCustomGroupBoxChkBx">
                       <property name="text">
@@ -1035,8 +1042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
-                <height>1110</height>
+                <width>561</width>
+                <height>1079</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1565,8 +1572,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>787</height>
+                <width>511</width>
+                <height>719</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1933,8 +1940,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>1110</height>
+                <width>692</width>
+                <height>994</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2684,8 +2691,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>151</width>
-                <height>239</height>
+                <width>146</width>
+                <height>241</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2835,8 +2842,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>523</width>
-                <height>370</height>
+                <width>514</width>
+                <height>334</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3178,8 +3185,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>660</height>
+                <width>625</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3622,8 +3629,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>623</height>
+                <width>487</width>
+                <height>588</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3891,8 +3898,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>828</height>
+                <width>556</width>
+                <height>740</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4469,8 +4476,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>435</width>
-                <height>402</height>
+                <width>427</width>
+                <height>380</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4608,8 +4615,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>437</width>
-                <height>584</height>
+                <width>429</width>
+                <height>549</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4821,8 +4828,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>292</width>
-                <height>258</height>
+                <width>282</width>
+                <height>234</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4930,8 +4937,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>534</width>
-                <height>790</height>
+                <width>509</width>
+                <height>723</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
