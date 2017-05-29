@@ -174,7 +174,7 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
   }
 
   mOffsetItem = new QgsPointMarkerItem( mCanvas );
-  mOffsetItem->setTransparency( 0.3 );
+  mOffsetItem->setOpacity( 0.7 );
   mOffsetItem->setSymbol( markerSymbol->clone() );
 }
 

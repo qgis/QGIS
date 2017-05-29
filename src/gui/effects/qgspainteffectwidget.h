@@ -84,10 +84,10 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
   private slots:
 
-    void on_mTransparencySpnBx_valueChanged( double value );
+    void on_mOpacitySpnBx_valueChanged( double value );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
+    void on_mOpacitySlider_valueChanged( int value );
 
 };
 
