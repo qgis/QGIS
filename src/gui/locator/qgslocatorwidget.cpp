@@ -407,6 +407,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
           else
             return QVariant();
       }
+      break;
     }
 
     case Qt::DecorationRole:
@@ -425,6 +426,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         case Description:
           return QVariant();
       }
+      break;
 
     case ResultDataRole:
       if ( !mResults.at( index.row() ).filter )
