@@ -615,6 +615,12 @@ Use the corresponding methods in QgsComposerUtils instead.
 instead.
 - lockSymbolSize(), imageSizeConsideringRotation(), cornerPointOnRotatedAndScaledRect(),
 sizeChangedByRotation() were removed. No replacement is offered for these methods.
+- transparency() and setTransparency() were removed. Use itemOpacity() and setItemOpacity() instead.
+
+QgsComposerItemCommand        {#qgis_api_break_3_0_QgsComposerItemCommand}
+----------------------
+
+- ItemTransparency was removed. Use ItemOpacity instead.
 
 
 QgsComposerLabel        {#qgis_api_break_3_0_QgsComposerLabel}

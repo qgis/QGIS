@@ -60,7 +60,6 @@ QgsComposerItem::QgsComposerItem( QgsComposition *composition, bool manageZValue
   , mEvaluatedItemRotation( 0 )
   , mBlendMode( QPainter::CompositionMode_SourceOver )
   , mEffectsEnabled( true )
-  , mTransparency( 0 )
   , mExcludeFromExports( false )
   , mEvaluatedExcludeFromExports( false )
   , mLastUsedPositionMode( UpperLeft )
@@ -89,7 +88,6 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   , mEvaluatedItemRotation( 0 )
   , mBlendMode( QPainter::CompositionMode_SourceOver )
   , mEffectsEnabled( true )
-  , mTransparency( 0 )
   , mExcludeFromExports( false )
   , mEvaluatedExcludeFromExports( false )
   , mLastUsedPositionMode( UpperLeft )
@@ -228,8 +226,8 @@ bool QgsComposerItem::_writeXml( QDomElement &itemElem, QDomDocument &doc ) cons
   //blend mode
   composerItemElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( mBlendMode ) );
 
-  //transparency
-  composerItemElem.setAttribute( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  //opacity
+  composerItemElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
 
   composerItemElem.setAttribute( QStringLiteral( "excludeFromExports" ), mExcludeFromExports );
 
@@ -386,8 +384,15 @@ bool QgsComposerItem::_readXml( const QDomElement &itemElem, const QDomDocument 
   //blend mode
   setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
-  //transparency
-  setTransparency( itemElem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() );
+  //opacity
+  if ( itemElem.hasAttribute( QStringLiteral( "opacity" ) ) )
+  {
+    setItemOpacity( itemElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
+  }
+  else
+  {
+    setItemOpacity( 1.0 - itemElem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
+  }
 
   mExcludeFromExports = itemElem.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
@@ -895,20 +900,20 @@ void QgsComposerItem::refreshBlendMode( const QgsExpressionContext &context )
   mEffect->setCompositionMode( blendMode );
 }
 
-void QgsComposerItem::setTransparency( const int transparency )
+void QgsComposerItem::setItemOpacity( const double opacity )
 {
-  mTransparency = transparency;
+  mOpacity = opacity;
   QgsExpressionContext context = createExpressionContext();
-  refreshTransparency( true, context );
+  refreshOpacity( true, context );
 }
 
-void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext &context )
+void QgsComposerItem::refreshOpacity( const bool updateItem, const QgsExpressionContext &context )
 {
-  //data defined transparency set?
-  int transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
+  //data defined opacity set?
+  double opacity = mDataDefinedProperties.valueAsDouble( QgsComposerObject::Opacity, context, mOpacity * 100.0 );
 
   // Set the QGraphicItem's opacity
-  setOpacity( 1. - ( transparency / 100. ) );
+  setOpacity( opacity / 100.0 );
 
   if ( updateItem )
   {
@@ -1140,9 +1145,9 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   {
     refreshRotation( false, true, *evalContext );
   }
-  if ( property == QgsComposerObject::Transparency || property == QgsComposerObject::AllProperties )
+  if ( property == QgsComposerObject::Opacity || property == QgsComposerObject::AllProperties )
   {
-    refreshTransparency( false, *evalContext );
+    refreshOpacity( false, *evalContext );
   }
   if ( property == QgsComposerObject::BlendMode || property == QgsComposerObject::AllProperties )
   {

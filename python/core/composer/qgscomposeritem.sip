@@ -404,17 +404,8 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
-    /** Returns the item's transparency
-     * @returns transparency as integer between 0 (transparent) and 255 (opaque)
-     * @see setTransparency
-     */
-    int transparency() const;
-
-    /** Sets the item's transparency
-     * @param transparency integer between 0 (transparent) and 255 (opaque)
-     * @see transparency
-     */
-    void setTransparency( const int transparency );
+    double itemOpacity() const;
+    void setItemOpacity( const double opacity );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
      * @returns true if effects are enabled

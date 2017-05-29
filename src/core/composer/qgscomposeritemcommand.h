@@ -154,7 +154,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,
-      ItemTransparency,
+      ItemOpacity, //!< Item opacity
       ItemZoomContent
     };
 
