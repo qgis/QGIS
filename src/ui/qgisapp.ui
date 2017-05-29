@@ -158,6 +158,7 @@
      <addaction name="mActionAddDelimitedText"/>
      <addaction name="mActionAddVirtualLayer"/>
     </widget>
+    <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
     <addaction name="mAddLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
@@ -352,7 +353,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionDataSourceManager"/>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
@@ -588,6 +588,25 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="mDataSourceManagerToolBar">
+   <property name="windowTitle">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Data Source Manager Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionDataSourceManager"/>
+   <addaction name="mActionNewVectorLayer"/>
+   <addaction name="mActionNewSpatiaLiteLayer"/>
+   <addaction name="mActionNewGeoPackageLayer"/>
+   <addaction name="mActionNewMemoryLayer"/>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">
@@ -2646,6 +2665,9 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Open Data Source Manager</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

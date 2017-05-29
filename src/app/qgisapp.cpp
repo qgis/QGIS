@@ -2239,6 +2239,7 @@ void QgisApp::createToolBars()
 
   QList<QToolBar *> toolbarMenuToolBars;
   toolbarMenuToolBars << mFileToolBar
+                      << mDataSourceManagerToolBar
                       << mLayerToolBar
                       << mDigitizeToolBar
                       << mAdvancedDigitizeToolBar
@@ -2703,6 +2704,7 @@ void QgisApp::createStatusBar()
   actionObjects << menuBar()
                 << mAdvancedDigitizeToolBar
                 << mFileToolBar
+                << mDataSourceManagerToolBar
                 << mLayerToolBar
                 << mDigitizeToolBar
                 << mMapNavToolBar
