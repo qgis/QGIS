@@ -328,12 +328,19 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mSource->isSpatial() )
     {
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
-      unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
-      if ( wkb )
+      if ( !ar.isEmpty() )
       {
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( wkb, mParser.GetWkbLen() );
-        feature.setGeometry( g );
+        unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
+        if ( wkb )
+        {
+          QgsGeometry *g = new QgsGeometry();
+          g->fromWkb( wkb, mParser.GetWkbLen() );
+          feature.setGeometry( g );
+        }
+        else
+        {
+          feature.setGeometry( nullptr );
+        }
       }
       else
       {
