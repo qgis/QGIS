@@ -247,8 +247,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
 
   if ( diagramLayerSettings() )
   {
-    QgsDiagramLayerSettings *dls = new QgsDiagramLayerSettings( *diagramLayerSettings() );
-    layer->setDiagramLayerSettings( *dls );
+    layer->setDiagramLayerSettings( *diagramLayerSettings() );
   }
 
   for ( int i = 0; i < fields().count(); i++ )
