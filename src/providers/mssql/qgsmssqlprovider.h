@@ -290,7 +290,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QGis::WkbType mWkbType;
 
     // The database object
-    QSqlDatabase mDatabase;
+    mutable QSqlDatabase mDatabase;
 
     // The current sql query
     QSqlQuery mQuery;
