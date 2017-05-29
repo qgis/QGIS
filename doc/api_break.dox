@@ -1223,6 +1223,12 @@ QgsGeometrySimplifier        {#qgis_api_break_3_0_QgsGeometrySimplifier}
 - simplifyGeometry() has been removed and simplify() must be used instead .
 
 
+QgsGlowEffect        {#qgis_api_break_3_0_QgsGlowEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsGradientColorRampDialog        {#qgis_api_break_3_0_QgsGradientColorRampDialog}
 ---------
 
