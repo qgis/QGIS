@@ -495,7 +495,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
-  bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
+  mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
   mConnInfo =  "dbname='" + database + '\'';
   if ( !host.isEmpty() )
@@ -585,7 +585,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       {
         if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
         {
-          addSearchGeometryColumn( connectionName, layer, estimateMetadata );
+          addSearchGeometryColumn( connectionName, layer, mUseEstimatedMetadata );
           type = "";
           srid = "";
         }
