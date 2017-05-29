@@ -59,9 +59,6 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   mPageNames.append( QStringLiteral( "ogr" ) );
 
   // RASTER (forward to app)
-  // Note: the tricky solution here will not last long: the browser button is really the
-  // first that will disappear because its functionality can be replaced completely
-  // right now by the browser
   ui->mOptionsStackedWidget->addWidget( new QWidget() );
   QListWidgetItem *rasterItem = new QListWidgetItem( tr( "Raster" ), ui->mOptionsListWidget );
   rasterItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ) );
