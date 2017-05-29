@@ -287,7 +287,7 @@ class QgsExpressionUtils
       }
       // If we get here then we can't convert so we just error and return invalid.
       if ( report_error )
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
+        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to interval" ).arg( value.toString() ) );
 
       return QgsInterval();
     }
@@ -299,7 +299,7 @@ class QgsExpressionUtils
 
       // If we get here then we can't convert so we just error and return invalid.
       if ( report_error )
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to QgsGradientColorRamp" ).arg( value.toString() ) );
+        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to gradient ramp" ).arg( value.toString() ) );
 
       return QgsGradientColorRamp();
     }
@@ -309,7 +309,7 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsGeometry>() )
         return value.value<QgsGeometry>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to QgsGeometry" ) );
+      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
       return QgsGeometry();
     }
 
@@ -318,7 +318,7 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsFeature>() )
         return value.value<QgsFeature>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to QgsFeature" ) );
+      parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
       return 0;
     }
 
@@ -327,7 +327,7 @@ class QgsExpressionUtils
       if ( value.canConvert<QgsExpressionNode *>() )
         return value.value<QgsExpressionNode *>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to Node" ) );
+      parent->setEvalErrorString( QStringLiteral( "Cannot convert to node" ) );
       return nullptr;
     }
 
