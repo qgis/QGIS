@@ -78,13 +78,13 @@ bool QgsVectorLayerSimpleLabeling::requiresAdvancedEffects() const
 
 QgsVectorLayerSimpleLabeling *QgsVectorLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  QgsPalLayerSettings *settings = nullptr;
   QDomElement settingsElem = element.firstChildElement( QStringLiteral( "settings" ) );
   if ( !settingsElem.isNull() )
   {
-    settings = new QgsPalLayerSettings;
-    settings->readXml( settingsElem, context );
+    QgsPalLayerSettings settings;
+    settings.readXml( settingsElem, context );
+    return new QgsVectorLayerSimpleLabeling( settings );
   }
 
-  return new QgsVectorLayerSimpleLabeling( *settings );
+  return new QgsVectorLayerSimpleLabeling( QgsPalLayerSettings() );
 }
