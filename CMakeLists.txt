@@ -630,9 +630,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-SET(PYTHON_VER 3 CACHE STRING "Python version")
-
-FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
+FIND_PACKAGE(PythonInterp 3 REQUIRED)
 
 #############################################################
 # Python bindings
