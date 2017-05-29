@@ -40,6 +40,10 @@ typedef void *GDALDatasetH SIP_SKIP;
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {
+#ifdef SIP_RUN
+#include <gdal_version.h>"
+#endif
+
   public:
     QgsAlignRaster();
 
@@ -91,6 +95,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
         int mBandCnt;
 
       private:
+#ifdef SIP_RUN
+        RasterInfo( const QgsAlignRaster::RasterInfo &rh );
+#endif
 
         friend class QgsAlignRaster;
     };
@@ -130,7 +137,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! filename of the newly created aligned raster (will be overwritten if exists already)
       QString outputFilename;
       //! resampling method to be used
-      ResampleAlg resampleMethod;
+      QgsAlignRaster::ResampleAlg resampleMethod;
       //! rescaling of values according to the change of pixel size
       bool rescaleValues;
 

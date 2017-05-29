@@ -39,8 +39,11 @@ class QgsZonalStatistics
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
 
 
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = "", int rasterBand = 1,
-                        Statistics stats = Statistics( Count | Sum | Mean ) );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterLayer *rasterLayer,
+                        const QString &attributePrefix = "",
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 %Docstring
  Constructor for QgsZonalStatistics.
 %End
