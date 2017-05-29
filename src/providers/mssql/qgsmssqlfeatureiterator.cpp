@@ -265,7 +265,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     mOrderByCompiled = false;
   }
 
-  if ( !mOrderByCompiled )
+  if ( !mOrderByCompiled && !request.orderBy().isEmpty() )
     limitAtProvider = false;
 
   if ( request.limit() >= 0 && limitAtProvider )

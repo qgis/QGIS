@@ -91,6 +91,15 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok
   }
 }
 
+QString QgsMssqlExpressionCompiler::quotedIdentifier( const QString &identifier )
+{
+  QString quoted = identifier;
+  quoted.replace( '[', "[[" );
+  quoted.replace( ']', "]]" );
+  quoted = quoted.prepend( '[' ).append( ']' );
+  return quoted;
+}
+
 QString QgsMssqlExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
