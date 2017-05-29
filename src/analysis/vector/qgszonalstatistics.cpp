@@ -29,7 +29,7 @@
 #include <QProgressDialog>
 #include <QFile>
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Statistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
   : mRasterLayer( rasterLayer )
   , mRasterBand( rasterBand )
   , mPolygonLayer( polygonLayer )

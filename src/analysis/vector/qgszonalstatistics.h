@@ -59,8 +59,11 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     /**
      * Constructor for QgsZonalStatistics.
      */
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = "", int rasterBand = 1,
-                        Statistics stats = Statistics( Count | Sum | Mean ) );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterLayer *rasterLayer,
+                        const QString &attributePrefix = "",
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
     /** Starts the calculation
       \returns 0 in case of success*/

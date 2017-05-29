@@ -25,6 +25,8 @@ class QgsAlignRaster
 
 %TypeHeaderCode
 #include "qgsalignraster.h"
+
+#include <gdal_version.h>"
 %End
   public:
     QgsAlignRaster();
@@ -94,6 +96,8 @@ Get raster value at the given coordinates (from the first band)
 
       protected:
 
+      private:
+        RasterInfo( const QgsAlignRaster::RasterInfo &rh );
     };
 
 
@@ -125,7 +129,7 @@ filename of the source raster
 %Docstring
 filename of the newly created aligned raster (will be overwritten if exists already)
 %End
-      ResampleAlg resampleMethod;
+      QgsAlignRaster::ResampleAlg resampleMethod;
 %Docstring
 resampling method to be used
 %End
