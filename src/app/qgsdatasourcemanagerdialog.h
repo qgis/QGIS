@@ -40,6 +40,13 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
+    /**
+     * @brief openPage open a given page in the dialog
+     * @param pageName the page name, usually the provider name or "browser" (for the browser panel)
+     *        or "ogr" (vector layers) or "raster" (raster layers)
+     */
+    void openPage( QString pageName );
+
   public slots:
 
     //! Sync current page with the leftbar list
@@ -76,6 +83,7 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     //! Map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
     int mPreviousRow;
+    QStringList mPageNames;
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H
