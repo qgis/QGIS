@@ -1,5 +1,0 @@
-Histogram Surface
-grid_visualisation
-ParameterRaster|GRID|Grid|False
-ParameterSelection|METHOD|Method|[0] rows;[1] columns;[2] circle
-OutputRaster|HIST|Histogram

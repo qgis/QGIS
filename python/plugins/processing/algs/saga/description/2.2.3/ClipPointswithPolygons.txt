@@ -1,7 +1,0 @@
-Clip Points with Polygons
-shapes_points
-ParameterVector|POINTS|Points|0|False
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterTableField|FIELD|Add Attribute to Clipped Points|POLYGONS|-1|False
-ParameterSelection|METHOD|Clipping Options|[0] one layer for all points;[1] separate layer for each polygon
-OutputVector|CLIPS|Clipped Points

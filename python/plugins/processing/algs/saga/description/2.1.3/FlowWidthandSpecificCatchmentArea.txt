@@ -1,7 +1,0 @@
-Flow Width and Specific Catchment Area
-ta_hydrology
-ParameterRaster|DEM|Elevation|False
-ParameterRaster|TCA|Total Catchment Area (TCA)|True
-ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Multiple Flow Direction (Quinn et al. 1991);[2] Aspect
-OutputRaster|WIDTH|Flow Width
-OutputRaster|SCA|Specific Catchment Area (SCA)

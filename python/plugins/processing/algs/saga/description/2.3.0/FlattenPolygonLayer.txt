@@ -1,4 +1,0 @@
-Flatten Polygon Layer
-shapes_polygons
-ParameterVector|INPUT|Input|2|False
-OutputVector|OUTPUT|Output

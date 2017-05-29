@@ -1,8 +1,0 @@
-Create Graticule
-shapes_tools
-ParameterVector|EXTENT|Extent|-1|True
-Extent X_EXTENT_MIN X_EXTENT_MAX Y_EXTENT_MIN Y_EXTENT_MAX
-ParameterNumber|DISTX|Division Width|None|None|1.0
-ParameterNumber|DISTY|Division Height|None|None|1.0
-ParameterSelection|TYPE|Type|[0] Lines;[1] Rectangles
-OutputVector|GRATICULE|Graticule

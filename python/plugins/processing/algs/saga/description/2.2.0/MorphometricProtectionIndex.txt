@@ -1,5 +1,0 @@
-Morphometric Protection Index
-ta_morphometry
-ParameterRaster|DEM|Elevation|False
-ParameterNumber|RADIUS|Radius|None|None|2000.0
-OutputRaster|PROTECTION|Protection Index
