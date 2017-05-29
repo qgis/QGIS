@@ -174,7 +174,15 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   backgroundColor.setAlpha( elem.attribute( QStringLiteral( "backgroundAlpha" ) ).toInt() );
   size.setWidth( elem.attribute( QStringLiteral( "width" ) ).toDouble() );
   size.setHeight( elem.attribute( QStringLiteral( "height" ) ).toDouble() );
-  transparency = elem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt();
+  if ( elem.hasAttribute( QStringLiteral( "transparency" ) ) )
+  {
+    opacity = 1 - elem.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 255.0;
+  }
+  else
+  {
+    opacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.00" ) ).toDouble();
+  }
+
   penColor.setNamedColor( elem.attribute( QStringLiteral( "penColor" ) ) );
   int penAlpha = elem.attribute( QStringLiteral( "penAlpha" ), QStringLiteral( "255" ) ).toInt();
   penColor.setAlpha( penAlpha );
@@ -261,7 +269,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
     {
       QDomElement attrElem = attributes.at( i ).toElement();
       QColor newColor( attrElem.attribute( QStringLiteral( "color" ) ) );
-      newColor.setAlpha( 255 - transparency );
+      newColor.setAlphaF( opacity );
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
       categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
@@ -280,7 +288,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
     for ( ; colorIt != colorList.constEnd(); ++colorIt )
     {
       QColor newColor( *colorIt );
-      newColor.setAlpha( 255 - transparency );
+      newColor.setAlphaF( opacity );
       categoryColors.append( QColor( newColor ) );
     }
 
@@ -311,7 +319,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   categoryElem.setAttribute( QStringLiteral( "scaleBasedVisibility" ), scaleBasedVisibility );
   categoryElem.setAttribute( QStringLiteral( "minScaleDenominator" ), QString::number( minScaleDenominator ) );
   categoryElem.setAttribute( QStringLiteral( "maxScaleDenominator" ), QString::number( maxScaleDenominator ) );
-  categoryElem.setAttribute( QStringLiteral( "transparency" ), QString::number( transparency ) );
+  categoryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( opacity ) );
 
   //diagram size unit type and scale
   categoryElem.setAttribute( QStringLiteral( "sizeType" ), QgsUnitTypes::encodeUnit( sizeType ) );

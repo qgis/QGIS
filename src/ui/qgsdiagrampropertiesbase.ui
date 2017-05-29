@@ -267,7 +267,7 @@
           <item>
            <widget class="QStackedWidget" name="mDiagramStackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="mDiagramPage_Attributes">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -539,7 +539,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>340</width>
+                   <width>630</width>
                    <height>484</height>
                   </rect>
                  </property>
@@ -595,14 +595,14 @@
                           </size>
                          </property>
                          <property name="text">
-                          <string>Transparency</string>
+                          <string>Opacity</string>
                          </property>
                         </widget>
                        </item>
                        <item row="0" column="1" colspan="2">
                         <layout class="QHBoxLayout" name="horizontalLayout_5">
                          <item>
-                          <widget class="QSlider" name="mTransparencySlider">
+                          <widget class="QSlider" name="mOpacitySlider">
                            <property name="enabled">
                             <bool>true</bool>
                            </property>
@@ -619,7 +619,16 @@
                             </size>
                            </property>
                            <property name="maximum">
+                            <number>1000</number>
+                           </property>
+                           <property name="singleStep">
+                            <number>10</number>
+                           </property>
+                           <property name="pageStep">
                             <number>100</number>
+                           </property>
+                           <property name="value">
+                            <number>1000</number>
                            </property>
                            <property name="orientation">
                             <enum>Qt::Horizontal</enum>
@@ -627,7 +636,7 @@
                           </widget>
                          </item>
                          <item>
-                          <widget class="QgsSpinBox" name="mTransparencySpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mOpacitySpinBox">
                            <property name="enabled">
                             <bool>true</bool>
                            </property>
@@ -637,11 +646,20 @@
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>100</width>
+                             <height>0</height>
+                            </size>
+                           </property>
                            <property name="suffix">
                             <string> %</string>
                            </property>
-                           <property name="maximum">
-                            <number>100</number>
+                           <property name="decimals">
+                            <number>1</number>
+                           </property>
+                           <property name="value">
+                            <double>100.000000000000000</double>
                            </property>
                           </widget>
                          </item>
@@ -2170,15 +2188,42 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2192,33 +2237,6 @@
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mDiagramTypeComboBox</tabstop>
@@ -2231,8 +2249,8 @@
   <tabstop>mRemoveCategoryPushButton</tabstop>
   <tabstop>mDiagramAttributesTreeWidget</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpinBox</tabstop>
+  <tabstop>mOpacitySlider</tabstop>
+  <tabstop>mOpacitySpinBox</tabstop>
   <tabstop>mBarWidthSpinBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mDiagramPenColorButton</tabstop>

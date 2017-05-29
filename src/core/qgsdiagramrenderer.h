@@ -372,7 +372,7 @@ class CORE_EXPORT QgsDiagramSettings
       , labelPlacementMethod( QgsDiagramSettings::Height )
       , diagramOrientation( QgsDiagramSettings::Up )
       , barWidth( 5.0 )
-      , transparency( 0 )
+      , opacity( 1.0 )
       , scaleByArea( true )
       , angleOffset( 90 * 16 ) //top
       , scaleBasedVisibility( false )
@@ -413,7 +413,10 @@ class CORE_EXPORT QgsDiagramSettings
     LabelPlacementMethod labelPlacementMethod;
     DiagramOrientation diagramOrientation;
     double barWidth;
-    int transparency; // 0 - 100
+
+    //! Opacity, from 0 (transparent) to 1.0 (opaque)
+    double opacity;
+
     bool scaleByArea;
     int angleOffset;
 
