@@ -264,10 +264,10 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
 
   private slots:
 
-    void on_mTranspSpnBx_valueChanged( double value );
+    void on_mOpacitySpnBx_valueChanged( double value );
     void on_mBlendCmbBx_currentIndexChanged( int index );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mTranspSlider_valueChanged( int value );
+    void on_mOpacitySlider_valueChanged( int value );
     void on_mBrightnessSpinBox_valueChanged( int value );
     void on_mContrastSpinBox_valueChanged( int value );
     void on_mSaturationSpinBox_valueChanged( int value );
