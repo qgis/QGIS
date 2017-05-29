@@ -1605,7 +1605,14 @@ void QgisApp::dataSourceManager()
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
     connect( mDataSourceManagerDialog, static_cast<void ( QgsDataSourceManagerDialog::* )()>( &QgsDataSourceManagerDialog::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
   }
-  mDataSourceManagerDialog->exec();
+  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool( ) )
+  {
+    mDataSourceManagerDialog->show();
+  }
+  else
+  {
+    mDataSourceManagerDialog->exec();
+  }
 }
 
 QgisAppStyleSheet *QgisApp::styleSheetBuilder()
