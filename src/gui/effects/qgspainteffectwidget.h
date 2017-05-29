@@ -155,12 +155,12 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     void on_mShadowOffsetAngleDial_valueChanged( int value );
     void on_mShadowOffsetSpnBx_valueChanged( double value );
     void on_mOffsetUnitWidget_changed();
-    void on_mShadowTranspSpnBx_valueChanged( double value );
+    void on_mShadowOpacitySpnBx_valueChanged( double value );
     void on_mShadowColorBtn_colorChanged( const QColor &color );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mShadowBlendCmbBx_currentIndexChanged( int index );
     void on_mShadowRadiuSpnBx_valueChanged( int value );
-    void on_mShadowTranspSlider_valueChanged( int value );
+    void on_mShadowOpacitySlider_valueChanged( int value );
 };
 
 

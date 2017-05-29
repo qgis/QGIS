@@ -314,14 +314,14 @@ class QgsDrawSourceEffect : QgsPaintEffect
     void setOpacity( const double opacity );
 %Docstring
  Sets the ``opacity`` for the effect.
- \param transparency double between 0 and 1 inclusive, where 0 is fully transparent
+ \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
 .. seealso:: opacity()
 %End
 
     double opacity() const;
 %Docstring
- Returns the transparency for the effect
+ Returns the opacity for the effect
  :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
 .. seealso:: setOpacity()

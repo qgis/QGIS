@@ -431,8 +431,8 @@ void TestQgsPaintEffect::dropShadow()
   QVERIFY( effect );
   effect->setBlendMode( QPainter::CompositionMode_ColorBurn );
   QCOMPARE( effect->blendMode(), QPainter::CompositionMode_ColorBurn );
-  effect->setTransparency( 0.5 );
-  QCOMPARE( effect->transparency(), 0.5 );
+  effect->setOpacity( 0.5 );
+  QCOMPARE( effect->opacity(), 0.5 );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
   effect->setBlurLevel( 6 );
@@ -455,7 +455,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *copy = new QgsDropShadowEffect( *effect );
   QVERIFY( copy );
   QCOMPARE( copy->blendMode(), effect->blendMode() );
-  QCOMPARE( copy->transparency(), effect->transparency() );
+  QCOMPARE( copy->opacity(), effect->opacity() );
   QCOMPARE( copy->enabled(), effect->enabled() );
   QCOMPARE( copy->blurLevel(), effect->blurLevel() );
   QCOMPARE( copy->offsetAngle(), effect->offsetAngle() );
@@ -472,7 +472,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *cloneCast = dynamic_cast<QgsDropShadowEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
-  QCOMPARE( cloneCast->transparency(), effect->transparency() );
+  QCOMPARE( cloneCast->opacity(), effect->opacity() );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( cloneCast->offsetAngle(), effect->offsetAngle() );
@@ -490,7 +490,7 @@ void TestQgsPaintEffect::dropShadow()
   QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
-  QCOMPARE( readCast->transparency(), effect->transparency() );
+  QCOMPARE( readCast->opacity(), effect->opacity() );
   QCOMPARE( readCast->enabled(), effect->enabled() );
   QCOMPARE( readCast->blurLevel(), effect->blurLevel() );
   QCOMPARE( readCast->offsetAngle(), effect->offsetAngle() );

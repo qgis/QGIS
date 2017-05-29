@@ -128,19 +128,19 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      */
     QColor color() const { return mColor; }
 
-    /** Sets the transparency for the effect
-     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see transparency
+    /** Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see setTransparency
+    /** Returns the opacity for the effect.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
     /** Sets the blend mode for the effect
      * \param mode blend mode used for drawing the effect on to a destination
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     double mOffsetDist;
     QgsUnitTypes::RenderUnit mOffsetUnit;
     QgsMapUnitScale mOffsetMapUnitScale;
-    double mTransparency;
+    double mOpacity = 1.0;
     QColor mColor;
     QPainter::CompositionMode mBlendMode;
 

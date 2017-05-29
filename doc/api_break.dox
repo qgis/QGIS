@@ -1985,6 +1985,13 @@ QgsServer       {#qgis_api_break_3_0_QgsServer}
 -  QgsServer::handleRequest( const QString &urlstr ) has been removed in favour of the new
 -  QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response ) has been added
 
+
+QgsShadowEffect        {#qgis_api_break_3_0_QgsShadowEffect}
+---------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsShortcutsManager       {#qgis_api_break_3_0_QgsShortcutsManager}
 -------------------
 

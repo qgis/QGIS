@@ -313,13 +313,13 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Sets the \a opacity for the effect.
-     * \param transparency double between 0 and 1 inclusive, where 0 is fully transparent
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see opacity()
      */
     void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
+    /** Returns the opacity for the effect
      * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see setOpacity()
