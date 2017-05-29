@@ -55,7 +55,7 @@
          </widget>
         </item>
         <item row="6" column="1">
-         <widget class="QSlider" name="mTranspSlider">
+         <widget class="QSlider" name="mOpacitySlider">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -79,6 +79,9 @@
           </property>
           <property name="pageStep">
            <number>100</number>
+          </property>
+          <property name="value">
+           <number>1000</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -220,7 +223,7 @@
         <item row="6" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
         </item>
@@ -245,12 +248,15 @@
          </widget>
         </item>
         <item row="6" column="2">
-         <widget class="QgsDoubleSpinBox" name="mTranspSpnBx">
+         <widget class="QgsDoubleSpinBox" name="mOpacitySpnBx">
           <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
           </property>
           <property name="suffix">
            <string> %</string>
@@ -259,6 +265,9 @@
            <number>1</number>
           </property>
           <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
+          <property name="value">
            <double>100.000000000000000</double>
           </property>
          </widget>
@@ -362,8 +371,8 @@
   <tabstop>mColorizeStrengthSpinBox</tabstop>
   <tabstop>mColorizeColorButton</tabstop>
   <tabstop>mGrayscaleCombo</tabstop>
-  <tabstop>mTranspSlider</tabstop>
-  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>mOpacitySlider</tabstop>
+  <tabstop>mOpacitySpnBx</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>
  </tabstops>

@@ -793,6 +793,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mBrightnessSpinBox->setClearValue( 0 );
   mContrastSpinBox->setClearValue( 0 );
   mSaturationSpinBox->setClearValue( 0 );
+  mOpacitySpnBx->setClearValue( 100.0 );
   mColorizeColorButton->setAllowAlpha( false );
 
   mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );
@@ -829,8 +830,8 @@ void QgsColorEffectWidget::initGui()
   mColorizeColorButton->setColor( mEffect->colorizeColor() );
   int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
   mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
-  mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacitySpnBx->setValue( mEffect->opacity() * 100.0 );
+  mOpacitySlider->setValue( mEffect->opacity() * 1000.0 );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
   enableColorizeControls( mEffect->colorizeOn() );
@@ -847,8 +848,8 @@ void QgsColorEffectWidget::blockSignals( const bool block )
   mColorizeCheck->blockSignals( block );
   mColorizeColorButton->blockSignals( block );
   mGrayscaleCombo->blockSignals( block );
-  mTranspSpnBx->blockSignals( block );
-  mTranspSlider->blockSignals( block );
+  mOpacitySpnBx->blockSignals( block );
+  mOpacitySlider->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
@@ -860,16 +861,16 @@ void QgsColorEffectWidget::enableColorizeControls( const bool enable )
   mColorizeColorButton->setEnabled( enable );
 }
 
-void QgsColorEffectWidget::on_mTranspSpnBx_valueChanged( double value )
+void QgsColorEffectWidget::on_mOpacitySpnBx_valueChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTranspSlider->blockSignals( true );
-  mTranspSlider->setValue( value * 10.0 );
-  mTranspSlider->blockSignals( false );
+  mOpacitySlider->blockSignals( true );
+  mOpacitySlider->setValue( value * 10.0 );
+  mOpacitySlider->blockSignals( false );
 
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value / 100.0 );
   emit changed();
 }
 
@@ -895,9 +896,9 @@ void QgsColorEffectWidget::on_mDrawModeComboBox_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsColorEffectWidget::on_mTranspSlider_valueChanged( int value )
+void QgsColorEffectWidget::on_mOpacitySlider_valueChanged( int value )
 {
-  mTranspSpnBx->setValue( value / 10.0 );
+  mOpacitySpnBx->setValue( value / 10.0 );
 }
 
 void QgsColorEffectWidget::on_mBrightnessSpinBox_valueChanged( int value )

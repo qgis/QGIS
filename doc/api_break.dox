@@ -580,6 +580,11 @@ QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 
 - Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
 
+QgsColorEffect        {#qgis_api_break_3_0_QgsColorEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
 
 QgsColorRampShader        {#qgis_api_break_3_0_QgsColorRampShader}
 ------------------
