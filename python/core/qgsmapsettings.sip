@@ -57,12 +57,18 @@ Set the size of the resulting map image
 
     double rotation() const;
 %Docstring
+ Returns the rotation of the resulting map image, in degrees clockwise.
 .. versionadded:: 2.8
+.. seealso:: setRotation()
  :rtype: float
 %End
-    void setRotation( double degrees );
+
+    void setRotation( double rotation );
 %Docstring
+ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 .. versionadded:: 2.8
+
+.. seealso:: rotation()
 %End
 
     double outputDpi() const;
