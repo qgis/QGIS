@@ -577,6 +577,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
+  mRotationSpinBox->setClearValue( 0 );
   mSpinShearX->setClearValue( 0 );
   mSpinShearY->setClearValue( 0 );
   mSpinScaleX->setClearValue( 100.0 );
