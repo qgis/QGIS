@@ -3768,7 +3768,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
         double rotation = rotationElem.text().toDouble( &ok );
         if ( ok )
         {
-          settings.angleOffset = rotation;
+          settings.angleOffset = 360 - rotation;
         }
       }
     }

@@ -36,6 +36,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
+  mRotationSpinBox->setClearValue( 0 );
   fillHaliComboBox();
   fillValiComboBox();
 
@@ -314,7 +315,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::Color:
         mFontColorButton->setColor( QColor( result.toString() ) );
         break;
-      case QgsPalLayerSettings::Rotation:
+      case QgsPalLayerSettings::LabelRotation:
       {
         double rot = result.toDouble( &ok );
         if ( ok )
@@ -407,7 +408,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::Color:
         mFontColorButton->setEnabled( true );
         break;
-      case QgsPalLayerSettings::Rotation:
+      case QgsPalLayerSettings::LabelRotation:
         mRotationSpinBox->setEnabled( true );
         break;
       //font related properties
@@ -618,7 +619,7 @@ void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
     //null value so that size is reset to default
     rotation.clear();
   }
-  insertChangedValue( QgsPalLayerSettings::Rotation, rotation );
+  insertChangedValue( QgsPalLayerSettings::LabelRotation, rotation );
 }
 
 void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor &color )

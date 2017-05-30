@@ -211,7 +211,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
       QgsPalLayerSettings::Vali, QgsPropertyDefinition( "Vali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Vertical alignment" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Bottom</b>|<b>Base</b>|<br>"
           "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) )
     },
-    { QgsPalLayerSettings::Rotation, QgsPropertyDefinition( "Rotation", QObject::tr( "Label rotation" ), QgsPropertyDefinition::Rotation ) },
+    { QgsPalLayerSettings::Rotation, QgsPropertyDefinition( "Rotation", QObject::tr( "Label rotation (deprecated)" ), QgsPropertyDefinition::Rotation ) },
+    { QgsPalLayerSettings::LabelRotation, QgsPropertyDefinition( "LabelRotation", QObject::tr( "Label rotation" ), QgsPropertyDefinition::Rotation ) },
     { QgsPalLayerSettings::ScaleVisibility, QgsPropertyDefinition( "ScaleVisibility", QObject::tr( "Scale based visibility" ), QgsPropertyDefinition::Boolean ) },
     { QgsPalLayerSettings::MinScale, QgsPropertyDefinition( "MinScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double ) },
     { QgsPalLayerSettings::MaxScale, QgsPropertyDefinition( "MaxScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double ) },
@@ -598,7 +599,18 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/labelOffsetMapUnitScale" ) ).toString() );
   }
-  angleOffset = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant( 0.0 ) ).toDouble();
+
+  QVariant tempAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant() );
+  if ( tempAngle.isValid() )
+  {
+    double oldAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant( 0.0 ) ).toDouble();
+    angleOffset = fmod( 360 - oldAngle, 360.0 );
+  }
+  else
+  {
+    angleOffset = layer->customProperty( QStringLiteral( "labeling/rotationAngle" ), QVariant( 0.0 ) ).toDouble();
+  }
+
   preserveRotation = layer->customProperty( QStringLiteral( "labeling/preserveRotation" ), QVariant( true ) ).toBool();
   maxCurvedCharAngleIn = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleIn" ), QVariant( 25.0 ) ).toDouble();
   maxCurvedCharAngleOut = layer->customProperty( QStringLiteral( "labeling/maxCurvedCharAngleOut" ), QVariant( -25.0 ) ).toDouble();
@@ -691,6 +703,11 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     mDataDefinedProperties.setProperty( ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShadowTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( ShadowTransparency, QgsProperty() );
   }
+  if ( mDataDefinedProperties.isActive( Rotation ) )
+  {
+    mDataDefinedProperties.setProperty( LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( Rotation ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( Rotation, QgsProperty() );
+  }
 }
 
 void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext &context )
@@ -755,7 +772,17 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   {
     labelOffsetMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "labelOffsetMapUnitScale" ) ) );
   }
-  angleOffset = placementElem.attribute( QStringLiteral( "angleOffset" ), QStringLiteral( "0" ) ).toDouble();
+
+  if ( placementElem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
+  {
+    double oldAngle = placementElem.attribute( QStringLiteral( "angleOffset" ), QStringLiteral( "0" ) ).toDouble();
+    angleOffset = fmod( 360 - oldAngle, 360.0 );
+  }
+  else
+  {
+    angleOffset = placementElem.attribute( QStringLiteral( "rotationAngle" ), QStringLiteral( "0" ) ).toDouble();
+  }
+
   preserveRotation = placementElem.attribute( QStringLiteral( "preserveRotation" ), QStringLiteral( "1" ) ).toInt();
   maxCurvedCharAngleIn = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleIn" ), QStringLiteral( "25" ) ).toDouble();
   maxCurvedCharAngleOut = placementElem.attribute( QStringLiteral( "maxCurvedCharAngleOut" ), QStringLiteral( "-25" ) ).toDouble();
@@ -831,6 +858,11 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
     mDataDefinedProperties.setProperty( ShadowOpacity, QgsProperty::fromExpression( QStringLiteral( "100 - (%1)" ).arg( mDataDefinedProperties.property( ShadowTransparency ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( ShadowTransparency, QgsProperty() );
   }
+  if ( mDataDefinedProperties.isActive( Rotation ) )
+  {
+    mDataDefinedProperties.setProperty( LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( Rotation ).asExpression() ) ) );
+    mDataDefinedProperties.setProperty( Rotation, QgsProperty() );
+  }
 }
 
 
@@ -878,7 +910,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   placementElem.setAttribute( QStringLiteral( "yOffset" ), yOffset );
   placementElem.setAttribute( QStringLiteral( "labelOffsetInMapUnits" ), labelOffsetInMapUnits );
   placementElem.setAttribute( QStringLiteral( "labelOffsetMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( labelOffsetMapUnitScale ) );
-  placementElem.setAttribute( QStringLiteral( "angleOffset" ), angleOffset );
+  placementElem.setAttribute( QStringLiteral( "rotationAngle" ), angleOffset );
   placementElem.setAttribute( QStringLiteral( "preserveRotation" ), preserveRotation );
   placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleIn" ), maxCurvedCharAngleIn );
   placementElem.setAttribute( QStringLiteral( "maxCurvedCharAngleOut" ), maxCurvedCharAngleOut );
@@ -1576,13 +1608,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( placement == QgsPalLayerSettings::OverPoint && !qgsDoubleNear( angleOffset, 0.0 ) )
   {
     layerDefinedRotation = true;
-    angle = angleOffset * M_PI / 180; // convert to radians
+    angle = ( 360 - angleOffset ) * M_PI / 180; // convert to radians counterclockwise
   }
 
   const QgsMapToPixel &m2p = context.mapToPixel();
   //data defined rotation?
   context.expressionContext().setOriginalValueVariable( angleOffset );
-  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::Rotation, context.expressionContext() );
+  exprVal = mDataDefinedProperties.value( QgsPalLayerSettings::LabelRotation, context.expressionContext() );
   if ( exprVal.isValid() )
   {
     bool ok;
@@ -1593,8 +1625,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
       dataDefinedRotation = true;
       // TODO: add setting to disable having data defined rotation follow
       //       map rotation ?
-      rotD -= m2p.mapRotation();
-      angle = rotD * M_PI / 180.0;
+      rotD += m2p.mapRotation();
+      angle = ( 360 - rotD ) * M_PI / 180.0;
     }
   }
 

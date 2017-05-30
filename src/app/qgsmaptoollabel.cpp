@@ -485,7 +485,7 @@ bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol
 
 bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const
 {
-  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::Rotation, settings );
+  QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings );
   rotationCol = layer->fields().lookupField( rColName );
   return rotationCol != -1;
 }
