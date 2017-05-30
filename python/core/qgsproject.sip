@@ -460,6 +460,7 @@ Convenience function to query topological editing status
  :rtype: QgsAnnotationManager
 %End
 
+
     void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
  Set a list of layers which should not be taken into account on map identification
