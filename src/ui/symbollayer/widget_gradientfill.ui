@@ -404,8 +404,14 @@
     <layout class="QHBoxLayout" name="horizontalLayout_9">
      <item>
       <widget class="QgsDoubleSpinBox" name="mSpinAngle">
+       <property name="wrapping">
+        <bool>true</bool>
+       </property>
        <property name="suffix">
         <string> °</string>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
        </property>
        <property name="maximum">
         <double>360.000000000000000</double>
@@ -517,6 +523,11 @@
     </spacer>
    </item>
   </layout>
+  <zorder>btnChangeColor2</zorder>
+  <zorder>btnColorRamp</zorder>
+  <zorder>btnChangeColor</zorder>
+  <zorder>checkRefPoint1Centroid</zorder>
+  <zorder>checkRefPoint2Centroid</zorder>
   <zorder>label_6</zorder>
   <zorder>label_3</zorder>
   <zorder>radioColorRamp</zorder>
@@ -547,12 +558,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorrampbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -566,6 +571,12 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

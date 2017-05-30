@@ -3409,14 +3409,17 @@ font-style: italic;</string>
                              </item>
                              <item>
                               <widget class="QgsSpinBox" name="mShadowOffsetAngleSpnBx">
+                               <property name="wrapping">
+                                <bool>true</bool>
+                               </property>
                                <property name="suffix">
                                 <string>˚</string>
                                </property>
                                <property name="minimum">
-                                <number>-180</number>
+                                <number>-360</number>
                                </property>
                                <property name="maximum">
-                                <number>180</number>
+                                <number>360</number>
                                </property>
                                <property name="showClearButton" stdset="0">
                                 <bool>false</bool>

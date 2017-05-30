@@ -320,17 +320,23 @@
            </property>
            <item>
             <widget class="QgsDoubleSpinBox" name="spinAngle">
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
              <property name="suffix">
               <string> °</string>
              </property>
              <property name="decimals">
               <number>2</number>
              </property>
+             <property name="minimum">
+              <double>-360.000000000000000</double>
+             </property>
              <property name="maximum">
               <double>360.000000000000000</double>
              </property>
              <property name="singleStep">
-              <double>0.500000000000000</double>
+              <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
