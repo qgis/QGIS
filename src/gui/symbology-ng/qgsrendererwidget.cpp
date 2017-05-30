@@ -113,14 +113,14 @@ void QgsRendererWidget::changeSymbolTransparency()
     return;
 
   bool ok;
-  double oldTransparency = ( 1 - firstSymbol->alpha() ) * 100; // convert to percents
+  double oldTransparency = ( 1 - firstSymbol->opacity() ) * 100; // convert to percents
   double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
     Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )
-        symbol->setAlpha( 1 - transparency / 100 );
+        symbol->setOpacity( 1 - transparency / 100 );
     }
     refreshSymbolView();
   }

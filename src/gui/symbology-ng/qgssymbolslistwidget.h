@@ -73,7 +73,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
     void on_mSymbolUnitWidget_changed();
-    void on_mTransparencySlider_valueChanged( int value );
 
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();
@@ -92,6 +91,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   private slots:
 
     void updateAssistantSymbol();
+    void on_mOpacitySlider_valueChanged( int value );
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -106,10 +106,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void populateSymbols( const QStringList &symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
-
-    //! Displays alpha value as transparency in mTransparencyLabel
-    void displayTransparency( double alpha );
-
     QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;

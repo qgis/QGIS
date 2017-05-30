@@ -874,7 +874,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     mapUnitScale.maxScale = element.attribute( QStringLiteral( "mapUnitMaxScale" ), QStringLiteral( "0.0" ) ).toDouble();
     symbol->setMapUnitScale( mapUnitScale );
   }
-  symbol->setAlpha( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );
+  symbol->setOpacity( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );
   symbol->setClipFeaturesToExtent( element.attribute( QStringLiteral( "clip_to_extent" ), QStringLiteral( "1" ) ).toInt() );
 
   return symbol;
@@ -945,7 +945,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
   QDomElement symEl = doc.createElement( QStringLiteral( "symbol" ) );
   symEl.setAttribute( QStringLiteral( "type" ), _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( QStringLiteral( "name" ), name );
-  symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->alpha() ) );
+  symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
   symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? "1" : "0" );
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
@@ -3373,7 +3373,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   return QColor();
 }
 
-void QgsSymbolLayerUtils::multiplyImageOpacity( QImage *image, qreal alpha )
+void QgsSymbolLayerUtils::multiplyImageOpacity( QImage *image, qreal opacity )
 {
   if ( !image )
   {
@@ -3396,9 +3396,9 @@ void QgsSymbolLayerUtils::multiplyImageOpacity( QImage *image, qreal alpha )
     {
       myRgb = scanLine[widthIndex];
       if ( format == QImage::Format_ARGB32_Premultiplied )
-        scanLine[widthIndex] = qRgba( alpha * qRed( myRgb ), alpha * qGreen( myRgb ), alpha * qBlue( myRgb ), alpha * qAlpha( myRgb ) );
+        scanLine[widthIndex] = qRgba( opacity * qRed( myRgb ), opacity * qGreen( myRgb ), opacity * qBlue( myRgb ), opacity * qAlpha( myRgb ) );
       else
-        scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), alpha * qAlpha( myRgb ) );
+        scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), opacity * qAlpha( myRgb ) );
     }
   }
 }

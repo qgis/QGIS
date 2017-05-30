@@ -802,8 +802,8 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   QColor brushColor = mColor;
   QColor penColor = mStrokeColor;
 
-  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
-  penColor.setAlphaF( mStrokeColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( mColor.alphaF() * context.opacity() );
+  penColor.setAlphaF( mStrokeColor.alphaF() * context.opacity() );
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
@@ -813,10 +813,10 @@ void QgsSimpleMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
   QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mStrokeColor;
-  if ( context.alpha() < 1 )
+  if ( context.opacity() < 1 )
   {
-    selBrushColor.setAlphaF( context.alpha() );
-    selPenColor.setAlphaF( context.alpha() );
+    selBrushColor.setAlphaF( context.opacity() );
+    selPenColor.setAlphaF( context.opacity() );
   }
   mSelBrush = QBrush( selBrushColor );
   mSelPen = QPen( selPenColor );
@@ -1979,10 +1979,10 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
-      if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
+      if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
       {
         QImage transparentImage = img.copy();
-        QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.alpha() );
+        QgsSymbolLayerUtils::multiplyImageOpacity( &transparentImage, context.opacity() );
         p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
         hwRatio = static_cast< double >( transparentImage.height() ) / static_cast< double >( transparentImage.width() );
       }
@@ -1996,7 +1996,7 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
 
   if ( usePict || !fitsInCache )
   {
-    p->setOpacity( context.alpha() );
+    p->setOpacity( context.opacity() );
     const QPicture &pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, strokeColor, strokeWidth,
                           context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput() );
 
@@ -2540,8 +2540,8 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   QColor brushColor = mColor;
   QColor penColor = mStrokeColor;
 
-  brushColor.setAlphaF( mColor.alphaF() * context.alpha() );
-  penColor.setAlphaF( mStrokeColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( mColor.alphaF() * context.opacity() );
+  penColor.setAlphaF( mStrokeColor.alphaF() * context.opacity() );
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
@@ -2667,7 +2667,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     brushColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyFillColor, context.renderContext().expressionContext(), brushColor );
   }
   brushColor = context.selected() ? context.renderContext().selectionColor() : brushColor;
-  brushColor.setAlphaF( brushColor.alphaF() * context.alpha() );
+  brushColor.setAlphaF( brushColor.alphaF() * context.opacity() );
   mBrush.setColor( brushColor );
 
   QColor penColor = mStrokeColor;
@@ -2676,7 +2676,7 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mStrokeColor ) );
     penColor = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), penColor );
   }
-  penColor.setAlphaF( penColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( penColor.alphaF() * context.opacity() );
 
   double penWidth = context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )

@@ -492,8 +492,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 
-    //! Multiplies opacity of image pixel values with a (global) transparency value
-    static void multiplyImageOpacity( QImage *image, qreal alpha );
+    /**
+     * Multiplies opacity of image pixel values with a (global) transparency value.
+     */
+    static void multiplyImageOpacity( QImage *image, qreal opacity );
 
     //! Blurs an image in place, e.g. creating Qt-independent drop shadows
     static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );

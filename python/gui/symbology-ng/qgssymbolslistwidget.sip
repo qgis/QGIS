@@ -35,7 +35,6 @@ class QgsSymbolsListWidget : QWidget
     void saveSymbol();
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
     void on_mSymbolUnitWidget_changed();
-    void on_mTransparencySlider_valueChanged( int value );
 
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();

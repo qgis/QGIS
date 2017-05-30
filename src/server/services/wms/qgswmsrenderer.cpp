@@ -2180,7 +2180,7 @@ namespace QgsWms
         QgsSymbolList symbolList = renderer->symbols( context );
         for ( auto symbolIt = symbolList.begin(); symbolIt != symbolList.end(); ++symbolIt )
         {
-          ( *symbolIt )->setAlpha( ( *symbolIt )->alpha() * opacityRatio );
+          ( *symbolIt )->setOpacity( ( *symbolIt )->opacity() * opacityRatio );
         }
 
         //labeling
