@@ -326,7 +326,7 @@ class PGRasterTable(PGTable, RasterTable):
                 break
 
         gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=%s' % \
-                  (service dbname, host, user, passw, port, schema, col, self.name)
+                  (service, dbname, host, user, passw, port, schema, col, self.name)
 
         return gdalUri
 
