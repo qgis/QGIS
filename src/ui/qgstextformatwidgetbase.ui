@@ -6572,7 +6572,6 @@ font-style: italic;</string>
   <tabstop>mPointOffsetUnitWidget</tabstop>
   <tabstop>mPointOffsetUnitsDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
-  <tabstop>mPointAngleDDBtn</tabstop>
   <tabstop>mRepeatDistanceSpinBox</tabstop>
   <tabstop>mRepeatDistanceDDBtn</tabstop>
   <tabstop>mRepeatDistanceUnitWidget</tabstop>
