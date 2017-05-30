@@ -94,7 +94,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent stroke" ) );
-  mOpacitySpinBox->setClearValue( 100.0 );
 
   mMaxValueSpinBox->setShowClearButton( false );
 
@@ -262,8 +261,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
-      mOpacitySpinBox->setValue( settingList.at( 0 ).opacity * 100.0 );
-      mOpacitySlider->setValue( mOpacitySpinBox->value() * 10 );
+      mOpacityWidget->setOpacity( settingList.at( 0 ).opacity );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
@@ -405,9 +403,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
-  connect( mOpacitySlider, &QSlider::valueChanged, this, [ = ]( int value ) { mOpacitySpinBox->setValue( value / 10.0 ); } );
-  connect( mOpacitySpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { mOpacitySlider->setValue( value * 10 ); } );
-
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
   registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
   registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
@@ -739,7 +734,7 @@ void QgsDiagramProperties::apply()
   QgsDiagramSettings ds;
   ds.enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
   ds.font = mDiagramFont;
-  ds.opacity = mOpacitySpinBox->value() / 100.0;
+  ds.opacity = mOpacityWidget->opacity();
 
   QList<QColor> categoryColors;
   QList<QString> categoryAttributes;

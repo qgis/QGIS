@@ -267,7 +267,7 @@
           <item>
            <widget class="QStackedWidget" name="mDiagramStackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="mDiagramPage_Attributes">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -540,7 +540,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>630</width>
-                   <height>484</height>
+                   <height>473</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
@@ -598,72 +598,6 @@
                           <string>Opacity</string>
                          </property>
                         </widget>
-                       </item>
-                       <item row="0" column="1" colspan="2">
-                        <layout class="QHBoxLayout" name="horizontalLayout_5">
-                         <item>
-                          <widget class="QSlider" name="mOpacitySlider">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="maximum">
-                            <number>1000</number>
-                           </property>
-                           <property name="singleStep">
-                            <number>10</number>
-                           </property>
-                           <property name="pageStep">
-                            <number>100</number>
-                           </property>
-                           <property name="value">
-                            <number>1000</number>
-                           </property>
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QgsDoubleSpinBox" name="mOpacitySpinBox">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>100</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="suffix">
-                            <string> %</string>
-                           </property>
-                           <property name="decimals">
-                            <number>1</number>
-                           </property>
-                           <property name="value">
-                            <double>100.000000000000000</double>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
                        </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="mBarWidthLabel">
@@ -873,6 +807,13 @@
                           </widget>
                          </item>
                         </layout>
+                       </item>
+                       <item row="0" column="1" colspan="2">
+                        <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+                         <property name="focusPolicy">
+                          <enum>Qt::StrongFocus</enum>
+                         </property>
+                        </widget>
                        </item>
                       </layout>
                      </widget>
@@ -2237,6 +2178,12 @@
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mDiagramTypeComboBox</tabstop>
@@ -2249,8 +2196,7 @@
   <tabstop>mRemoveCategoryPushButton</tabstop>
   <tabstop>mDiagramAttributesTreeWidget</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>mOpacitySlider</tabstop>
-  <tabstop>mOpacitySpinBox</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBarWidthSpinBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mDiagramPenColorButton</tabstop>

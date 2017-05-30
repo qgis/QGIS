@@ -91,7 +91,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   private slots:
 
     void updateAssistantSymbol();
-    void on_mOpacitySlider_valueChanged( int value );
+    void opacityChanged( double value );
 
   private:
     QgsSymbol *mSymbol = nullptr;

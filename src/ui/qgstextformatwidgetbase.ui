@@ -621,7 +621,7 @@
                        <x>0</x>
                        <y>0</y>
                        <width>452</width>
-                       <height>466</height>
+                       <height>470</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -664,90 +664,6 @@
                          <property name="bottomMargin">
                           <number>0</number>
                          </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="mFontLabel_2">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Text</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="7" column="1">
-                          <widget class="QgsColorButton" name="btnTextColor">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>120</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>120</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="9" column="0">
-                          <widget class="QLabel" name="mFontCapitalsLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Type case</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="8" column="0">
-                          <widget class="QLabel" name="mFontTranspLabel">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="text">
-                            <string>Opacity</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="7" column="0">
-                          <widget class="QLabel" name="mFontColorLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Color</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="11" column="0">
-                          <widget class="QLabel" name="label_10">
-                           <property name="text">
-                            <string>Spacing</string>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="5" column="1">
                           <widget class="QgsDoubleSpinBox" name="mFontSizeSpinBox">
                            <property name="sizePolicy">
@@ -770,6 +686,27 @@
                            </property>
                            <property name="showClearButton" stdset="0">
                             <bool>false</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="16" column="0">
+                          <widget class="QLabel" name="label_10">
+                           <property name="text">
+                            <string>Spacing</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="6" column="1">
+                          <widget class="QgsUnitSelectionWidget" name="mFontSizeUnitWidget" native="true">
+                           <property name="focusPolicy">
+                            <enum>Qt::StrongFocus</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="18" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontBlendModeDDBtn">
+                           <property name="text">
+                            <string>...</string>
                            </property>
                           </widget>
                          </item>
@@ -948,369 +885,14 @@
                            </item>
                           </layout>
                          </item>
-                         <item row="3" column="1">
-                          <widget class="QComboBox" name="mFontStyleComboBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>0</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="toolTip">
-                            <string>Available typeface styles</string>
-                           </property>
-                           <property name="sizeAdjustPolicy">
-                            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="1">
-                          <widget class="QFrame" name="mFontFamilyFrame">
-                           <layout class="QHBoxLayout" name="horizontalLayout_5">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <item>
-                             <widget class="QLabel" name="mFontMissingLabel">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">color: #990000;
-font-style: italic;</string>
-                              </property>
-                              <property name="text">
-                               <string>Font is missing.</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item row="13" column="1">
-                          <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
-                         </item>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="mFontLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Font</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontStyleDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="5" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontSizeDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="13" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontBlendModeDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="4" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontItalicDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="7" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontColorDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="11" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontLetterSpacingDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="6" column="1">
-                          <widget class="QgsUnitSelectionWidget" name="mFontSizeUnitWidget" native="true">
-                           <property name="focusPolicy">
-                            <enum>Qt::StrongFocus</enum>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="9" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontCaseDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
-                          <widget class="QFontComboBox" name="mFontFamilyCmbBx">
-                           <property name="editable">
-                            <bool>false</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="6" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontUnitsDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="13" column="0">
-                          <widget class="QLabel" name="labelBlendMode">
-                           <property name="text">
-                            <string>Blend mode</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="9" column="1">
-                          <widget class="QComboBox" name="mFontCapitalsComboBox">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>16777215</height>
-                            </size>
-                           </property>
-                           <property name="toolTip">
-                            <string>Capitalization style of text</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="5" column="0">
-                          <widget class="QLabel" name="mFontSizeLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Size</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="8" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mFontOpacityDDBtn">
-                           <property name="text">
-                            <string>...</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="3" column="0">
-                          <widget class="QLabel" name="mFontStyleLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Style</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="8" column="1">
-                          <widget class="QFrame" name="frame">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <layout class="QHBoxLayout" name="horizontalLayout_23">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <item>
-                             <widget class="QSlider" name="mFontOpacitySlider">
-                              <property name="enabled">
-                               <bool>true</bool>
-                              </property>
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                              <property name="maximumSize">
-                               <size>
-                                <width>16777215</width>
-                                <height>16777215</height>
-                               </size>
-                              </property>
-                              <property name="maximum">
-                               <number>1000</number>
-                              </property>
-                              <property name="singleStep">
-                               <number>10</number>
-                              </property>
-                              <property name="pageStep">
-                               <number>100</number>
-                              </property>
-                              <property name="value">
-                               <number>1000</number>
-                              </property>
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                             </widget>
-                            </item>
-                            <item>
-                             <widget class="QgsDoubleSpinBox" name="mFontOpacitySpinBox">
-                              <property name="enabled">
-                               <bool>true</bool>
-                              </property>
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="minimumSize">
-                               <size>
-                                <width>100</width>
-                                <height>0</height>
-                               </size>
-                              </property>
-                              <property name="suffix">
-                               <string> %</string>
-                              </property>
-                              <property name="decimals">
-                               <number>1</number>
-                              </property>
-                              <property name="value">
-                               <double>100.000000000000000</double>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item row="12" column="2">
+                         <item row="17" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontWordSpacingDDBtn">
                            <property name="text">
                             <string>...</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="12" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout_15">
-                           <item>
-                            <widget class="QLabel" name="mFontWordSpacingLabel">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>word</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsDoubleSpinBox" name="mFontWordSpacingSpinBox">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="toolTip">
-                              <string>Space in pixels or map units, relative to size unit choice</string>
-                             </property>
-                             <property name="decimals">
-                              <number>4</number>
-                             </property>
-                             <property name="minimum">
-                              <double>-1000.000000000000000</double>
-                             </property>
-                             <property name="maximum">
-                              <double>999999999.000000000000000</double>
-                             </property>
-                             <property name="singleStep">
-                              <double>0.100000000000000</double>
-                             </property>
-                             <property name="showClearButton" stdset="0">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
-                         </item>
-                         <item row="11" column="1">
+                         <item row="16" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_14">
                            <item>
                             <widget class="QLabel" name="mFontLetterSpacingLabel">
@@ -1355,7 +937,323 @@ font-style: italic;</string>
                            </item>
                           </layout>
                          </item>
-                         <item row="14" column="0" colspan="3">
+                         <item row="12" column="1">
+                          <widget class="QFrame" name="frame">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_23">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="6" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontUnitsDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="17" column="1">
+                          <layout class="QHBoxLayout" name="horizontalLayout_15">
+                           <item>
+                            <widget class="QLabel" name="mFontWordSpacingLabel">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>word</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QgsDoubleSpinBox" name="mFontWordSpacingSpinBox">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="toolTip">
+                              <string>Space in pixels or map units, relative to size unit choice</string>
+                             </property>
+                             <property name="decimals">
+                              <number>4</number>
+                             </property>
+                             <property name="minimum">
+                              <double>-1000.000000000000000</double>
+                             </property>
+                             <property name="maximum">
+                              <double>999999999.000000000000000</double>
+                             </property>
+                             <property name="singleStep">
+                              <double>0.100000000000000</double>
+                             </property>
+                             <property name="showClearButton" stdset="0">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </item>
+                         <item row="1" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="0">
+                          <widget class="QLabel" name="mFontStyleLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Style</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="1">
+                          <widget class="QComboBox" name="mFontStyleComboBox">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Available typeface styles</string>
+                           </property>
+                           <property name="sizeAdjustPolicy">
+                            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="5" column="0">
+                          <widget class="QLabel" name="mFontSizeLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Size</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="18" column="1">
+                          <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
+                         </item>
+                         <item row="16" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontLetterSpacingDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="3" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontStyleDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="4" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontItalicDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="7" column="1">
+                          <widget class="QgsColorButton" name="btnTextColor">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>120</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>120</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="7" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontColorDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="14" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontCaseDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="14" column="0">
+                          <widget class="QLabel" name="mFontCapitalsLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Type case</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="mFontLabel_2">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Text</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="14" column="1">
+                          <widget class="QComboBox" name="mFontCapitalsComboBox">
+                           <property name="enabled">
+                            <bool>true</bool>
+                           </property>
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>16777215</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Capitalization style of text</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="7" column="0">
+                          <widget class="QLabel" name="mFontColorLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Color</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="5" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontSizeDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="18" column="0">
+                          <widget class="QLabel" name="labelBlendMode">
+                           <property name="text">
+                            <string>Blend mode</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
+                          <widget class="QFrame" name="mFontFamilyFrame">
+                           <layout class="QHBoxLayout" name="horizontalLayout_5">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QLabel" name="mFontMissingLabel">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">color: #990000;
+font-style: italic;</string>
+                              </property>
+                              <property name="text">
+                               <string>Font is missing.</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="19" column="0" colspan="3">
                           <widget class="QFrame" name="mSubstitutionsFrame">
                            <property name="frameShape">
                             <enum>QFrame::NoFrame</enum>
@@ -1403,6 +1301,53 @@ font-style: italic;</string>
                              </widget>
                             </item>
                            </layout>
+                          </widget>
+                         </item>
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="mFontLabel">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="text">
+                            <string>Font</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
+                          <widget class="QFontComboBox" name="mFontFamilyCmbBx">
+                           <property name="editable">
+                            <bool>false</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="8" column="1">
+                          <widget class="QgsOpacityWidget" name="mTextOpacityWidget" native="true">
+                           <property name="focusPolicy">
+                            <enum>Qt::StrongFocus</enum>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="8" column="0">
+                          <widget class="QLabel" name="mFontTranspLabel">
+                           <property name="enabled">
+                            <bool>true</bool>
+                           </property>
+                           <property name="text">
+                            <string>Opacity</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="8" column="2">
+                          <widget class="QgsPropertyOverrideButton" name="mFontOpacityDDBtn">
+                           <property name="text">
+                            <string>...</string>
+                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -2097,7 +2042,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>466</width>
-                       <height>365</height>
+                       <height>322</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2163,27 +2108,150 @@ font-style: italic;</string>
                            <property name="bottomMargin">
                             <number>0</number>
                            </property>
-                           <item row="1" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mBufferUnitsDDBtn">
+                           <item row="2" column="2">
+                            <widget class="QgsPropertyOverrideButton" name="mBufferColorDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="6" column="2">
+                           <item row="7" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferBlendModeDDBtn">
                              <property name="text">
                               <string>...</string>
                              </property>
                             </widget>
                            </item>
+                           <item row="0" column="2">
+                            <widget class="QgsPropertyOverrideButton" name="mBufferSizeDDBtn">
+                             <property name="text">
+                              <string>...</string>
+                             </property>
+                            </widget>
+                           </item>
                            <item row="5" column="1">
+                            <widget class="QFrame" name="frame_5">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <layout class="QHBoxLayout" name="horizontalLayout_10">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                             </layout>
+                            </widget>
+                           </item>
+                           <item row="7" column="0">
+                            <widget class="QLabel" name="labelBufferBlend">
+                             <property name="text">
+                              <string>Blend mode</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="1">
+                            <widget class="QgsColorButton" name="btnBufferColor">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="minimumSize">
+                              <size>
+                               <width>120</width>
+                               <height>0</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>120</width>
+                               <height>16777215</height>
+                              </size>
+                             </property>
+                             <property name="text">
+                              <string/>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="6" column="0">
+                            <widget class="QLabel" name="label_5">
+                             <property name="text">
+                              <string>Pen join style</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="8" column="0" colspan="3">
+                            <widget class="QgsEffectStackCompactWidget" name="mBufferEffectWidget" native="true"/>
+                           </item>
+                           <item row="7" column="1">
+                            <widget class="QgsBlendModeComboBox" name="comboBufferBlendMode"/>
+                           </item>
+                           <item row="3" column="1">
+                            <widget class="QCheckBox" name="mBufferTranspFillChbx">
+                             <property name="text">
+                              <string>Color buffer's fill</string>
+                             </property>
+                             <property name="checked">
+                              <bool>true</bool>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_31">
+                             <property name="sizePolicy">
+                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                               <horstretch>0</horstretch>
+                               <verstretch>0</verstretch>
+                              </sizepolicy>
+                             </property>
+                             <property name="text">
+                              <string>Size</string>
+                             </property>
+                             <property name="alignment">
+                              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="1">
+                            <widget class="QgsUnitSelectionWidget" name="mBufferUnitWidget" native="true">
+                             <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="6" column="2">
+                            <widget class="QgsPropertyOverrideButton" name="mBufferJoinStyleDDBtn">
+                             <property name="text">
+                              <string>...</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="6" column="1">
                             <widget class="QgsPenJoinStyleComboBox" name="mBufferJoinStyleComboBox">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                                <horstretch>0</horstretch>
                                <verstretch>0</verstretch>
                               </sizepolicy>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="2">
+                            <widget class="QgsPropertyOverrideButton" name="mBufferUnitsDDBtn">
+                             <property name="text">
+                              <string>...</string>
                              </property>
                             </widget>
                            </item>
@@ -2200,13 +2268,6 @@ font-style: italic;</string>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="5" column="0">
-                            <widget class="QLabel" name="label_5">
-                             <property name="text">
-                              <string>Pen join style</string>
                              </property>
                             </widget>
                            </item>
@@ -2241,20 +2302,10 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="4" column="0">
-                            <widget class="QLabel" name="mBufferTranspLabel_2">
-                             <property name="enabled">
-                              <bool>true</bool>
-                             </property>
-                             <property name="text">
-                              <string>Opacity</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="6" column="0">
-                            <widget class="QLabel" name="labelBufferBlend">
-                             <property name="text">
-                              <string>Blend mode</string>
+                           <item row="4" column="1">
+                            <widget class="QgsOpacityWidget" name="mBufferOpacityWidget" native="true">
+                             <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
                              </property>
                             </widget>
                            </item>
@@ -2265,176 +2316,15 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="5" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mBufferJoinStyleDDBtn">
-                             <property name="text">
-                              <string>...</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="0" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mBufferSizeDDBtn">
-                             <property name="text">
-                              <string>...</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="2" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mBufferColorDDBtn">
-                             <property name="text">
-                              <string>...</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="0" column="0">
-                            <widget class="QLabel" name="label_31">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Size</string>
-                             </property>
-                             <property name="alignment">
-                              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="6" column="1">
-                            <widget class="QgsBlendModeComboBox" name="comboBufferBlendMode"/>
-                           </item>
-                           <item row="3" column="1">
-                            <widget class="QCheckBox" name="mBufferTranspFillChbx">
-                             <property name="text">
-                              <string>Color buffer's fill</string>
-                             </property>
-                             <property name="checked">
+                           <item row="4" column="0">
+                            <widget class="QLabel" name="mBufferTranspLabel_2">
+                             <property name="enabled">
                               <bool>true</bool>
                              </property>
-                            </widget>
-                           </item>
-                           <item row="4" column="1">
-                            <widget class="QFrame" name="frame_5">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <layout class="QHBoxLayout" name="horizontalLayout_10">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>0</number>
-                              </property>
-                              <item>
-                               <widget class="QSlider" name="mBufferOpacitySlider">
-                                <property name="enabled">
-                                 <bool>true</bool>
-                                </property>
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
-                                </property>
-                                <property name="minimumSize">
-                                 <size>
-                                  <width>0</width>
-                                  <height>0</height>
-                                 </size>
-                                </property>
-                                <property name="maximumSize">
-                                 <size>
-                                  <width>16777215</width>
-                                  <height>16777215</height>
-                                 </size>
-                                </property>
-                                <property name="maximum">
-                                 <number>1000</number>
-                                </property>
-                                <property name="singleStep">
-                                 <number>10</number>
-                                </property>
-                                <property name="pageStep">
-                                 <number>100</number>
-                                </property>
-                                <property name="value">
-                                 <number>1000</number>
-                                </property>
-                                <property name="orientation">
-                                 <enum>Qt::Horizontal</enum>
-                                </property>
-                               </widget>
-                              </item>
-                              <item>
-                               <widget class="QgsDoubleSpinBox" name="mBufferOpacitySpinBox">
-                                <property name="enabled">
-                                 <bool>true</bool>
-                                </property>
-                                <property name="minimumSize">
-                                 <size>
-                                  <width>100</width>
-                                  <height>0</height>
-                                 </size>
-                                </property>
-                                <property name="suffix">
-                                 <string> %</string>
-                                </property>
-                                <property name="decimals">
-                                 <number>1</number>
-                                </property>
-                                <property name="value">
-                                 <double>100.000000000000000</double>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </item>
-                           <item row="2" column="1">
-                            <widget class="QgsColorButton" name="btnBufferColor">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="minimumSize">
-                              <size>
-                               <width>120</width>
-                               <height>0</height>
-                              </size>
-                             </property>
-                             <property name="maximumSize">
-                              <size>
-                               <width>120</width>
-                               <height>16777215</height>
-                              </size>
-                             </property>
                              <property name="text">
-                              <string/>
+                              <string>Opacity</string>
                              </property>
                             </widget>
-                           </item>
-                           <item row="1" column="1">
-                            <widget class="QgsUnitSelectionWidget" name="mBufferUnitWidget" native="true">
-                             <property name="focusPolicy">
-                              <enum>Qt::StrongFocus</enum>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="7" column="0" colspan="3">
-                            <widget class="QgsEffectStackCompactWidget" name="mBufferEffectWidget" native="true"/>
                            </item>
                           </layout>
                          </widget>
@@ -2502,9 +2392,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-351</y>
+                       <y>-308</y>
                        <width>459</width>
-                       <height>782</height>
+                       <height>778</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2939,66 +2829,6 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="14" column="1">
-                            <layout class="QHBoxLayout" name="horizontalLayout_38">
-                             <item>
-                              <widget class="QSlider" name="mShapeOpacitySlider">
-                               <property name="enabled">
-                                <bool>true</bool>
-                               </property>
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>50</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="maximum">
-                                <number>1000</number>
-                               </property>
-                               <property name="singleStep">
-                                <number>10</number>
-                               </property>
-                               <property name="pageStep">
-                                <number>100</number>
-                               </property>
-                               <property name="value">
-                                <number>1000</number>
-                               </property>
-                               <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
-                               </property>
-                              </widget>
-                             </item>
-                             <item>
-                              <widget class="QgsDoubleSpinBox" name="mShapeOpacitySpinBox">
-                               <property name="enabled">
-                                <bool>true</bool>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>100</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="suffix">
-                                <string> %</string>
-                               </property>
-                               <property name="decimals">
-                                <number>1</number>
-                               </property>
-                               <property name="value">
-                                <double>100.000000000000000</double>
-                               </property>
-                              </widget>
-                             </item>
-                            </layout>
-                           </item>
                            <item row="9" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeOffsetDDBtn">
                              <property name="text">
@@ -3309,6 +3139,13 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
+                           <item row="14" column="1">
+                            <widget class="QgsOpacityWidget" name="mBackgroundOpacityWidget" native="true">
+                             <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
+                             </property>
+                            </widget>
+                           </item>
                           </layout>
                          </widget>
                         </item>
@@ -3366,9 +3203,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-105</y>
                        <width>452</width>
-                       <height>474</height>
+                       <height>470</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3675,66 +3512,6 @@ font-style: italic;</string>
                              </property>
                             </widget>
                            </item>
-                           <item row="8" column="1">
-                            <layout class="QHBoxLayout" name="horizontalLayout_28">
-                             <item>
-                              <widget class="QSlider" name="mShadowOpacitySlider">
-                               <property name="enabled">
-                                <bool>true</bool>
-                               </property>
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>50</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="maximum">
-                                <number>1000</number>
-                               </property>
-                               <property name="singleStep">
-                                <number>10</number>
-                               </property>
-                               <property name="pageStep">
-                                <number>100</number>
-                               </property>
-                               <property name="value">
-                                <number>1000</number>
-                               </property>
-                               <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
-                               </property>
-                              </widget>
-                             </item>
-                             <item>
-                              <widget class="QgsDoubleSpinBox" name="mShadowOpacitySpnBx">
-                               <property name="enabled">
-                                <bool>true</bool>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>100</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="suffix">
-                                <string> %</string>
-                               </property>
-                               <property name="decimals">
-                                <number>1</number>
-                               </property>
-                               <property name="value">
-                                <double>100.000000000000000</double>
-                               </property>
-                              </widget>
-                             </item>
-                            </layout>
-                           </item>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowUnderDDBtn">
                              <property name="text">
@@ -3814,6 +3591,13 @@ font-style: italic;</string>
                            </item>
                            <item row="6" column="1">
                             <widget class="QgsUnitSelectionWidget" name="mShadowRadiusUnitWidget" native="true">
+                             <property name="focusPolicy">
+                              <enum>Qt::StrongFocus</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="8" column="1">
+                            <widget class="QgsOpacityWidget" name="mShadowOpacityWidget" native="true">
                              <property name="focusPolicy">
                               <enum>Qt::StrongFocus</enum>
                              </property>
@@ -6583,10 +6367,15 @@ font-style: italic;</string>
    <header>effects/qgseffectstackpropertieswidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mFieldExpressionWidget</tabstop>
-  <tabstop>groupBox_mPreview</tabstop>
   <tabstop>mPreviewTextEdit</tabstop>
   <tabstop>mPreviewTextBtn</tabstop>
   <tabstop>mPreviewScaleComboBox</tabstop>
@@ -6612,8 +6401,7 @@ font-style: italic;</string>
   <tabstop>mFontUnitsDDBtn</tabstop>
   <tabstop>btnTextColor</tabstop>
   <tabstop>mFontColorDDBtn</tabstop>
-  <tabstop>mFontOpacitySlider</tabstop>
-  <tabstop>mFontOpacitySpinBox</tabstop>
+  <tabstop>mTextOpacityWidget</tabstop>
   <tabstop>mFontOpacityDDBtn</tabstop>
   <tabstop>mFontCapitalsComboBox</tabstop>
   <tabstop>mFontCaseDDBtn</tabstop>
@@ -6662,8 +6450,7 @@ font-style: italic;</string>
   <tabstop>btnBufferColor</tabstop>
   <tabstop>mBufferColorDDBtn</tabstop>
   <tabstop>mBufferTranspFillChbx</tabstop>
-  <tabstop>mBufferOpacitySlider</tabstop>
-  <tabstop>mBufferOpacitySpinBox</tabstop>
+  <tabstop>mBufferOpacityWidget</tabstop>
   <tabstop>mBufferOpacityDDBtn</tabstop>
   <tabstop>mBufferJoinStyleComboBox</tabstop>
   <tabstop>mBufferJoinStyleDDBtn</tabstop>
@@ -6699,8 +6486,7 @@ font-style: italic;</string>
   <tabstop>mShapeRadiusDDBtn</tabstop>
   <tabstop>mShapeRadiusUnitWidget</tabstop>
   <tabstop>mShapeRadiusUnitsDDBtn</tabstop>
-  <tabstop>mShapeOpacitySlider</tabstop>
-  <tabstop>mShapeOpacitySpinBox</tabstop>
+  <tabstop>mBackgroundOpacityWidget</tabstop>
   <tabstop>mShapeOpacityDDBtn</tabstop>
   <tabstop>mShapeBlendCmbBx</tabstop>
   <tabstop>mShapeBlendModeDDBtn</tabstop>
@@ -6733,8 +6519,7 @@ font-style: italic;</string>
   <tabstop>mShadowRadiusUnitWidget</tabstop>
   <tabstop>mShadowRadiusUnitsDDBtn</tabstop>
   <tabstop>mShadowRadiusAlphaChkBx</tabstop>
-  <tabstop>mShadowOpacitySlider</tabstop>
-  <tabstop>mShadowOpacitySpnBx</tabstop>
+  <tabstop>mShadowOpacityWidget</tabstop>
   <tabstop>mShadowOpacityDDBtn</tabstop>
   <tabstop>mShadowScaleSpnBx</tabstop>
   <tabstop>mShadowScaleDDBtn</tabstop>
@@ -6793,18 +6578,15 @@ font-style: italic;</string>
   <tabstop>mMaxCharAngleInDSpinBox</tabstop>
   <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
   <tabstop>mMaxCharAngleDDBtn</tabstop>
-  <tabstop>mPlacementDDGroupBox</tabstop>
   <tabstop>mCoordXDDBtn</tabstop>
   <tabstop>mCoordYDDBtn</tabstop>
   <tabstop>mCoordAlignmentHDDBtn</tabstop>
   <tabstop>mCoordAlignmentVDDBtn</tabstop>
   <tabstop>mCoordRotationDDBtn</tabstop>
   <tabstop>chkPreserveRotation</tabstop>
-  <tabstop>mPriorityGrpBx</tabstop>
   <tabstop>mPrioritySlider</tabstop>
   <tabstop>mPriorityDDBtn</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>mRenderingLabelGrpBx</tabstop>
   <tabstop>mScaleBasedVisibilityChkBx</tabstop>
   <tabstop>mScaleBasedVisibilityDDBtn</tabstop>
   <tabstop>mScaleBasedVisibilityMinSpnBx</tabstop>
@@ -6825,14 +6607,12 @@ font-style: italic;</string>
   <tabstop>mUpsidedownRadioOff</tabstop>
   <tabstop>mUpsidedownRadioDefined</tabstop>
   <tabstop>mUpsidedownRadioAll</tabstop>
-  <tabstop>mRenderingFeaturesGrpBx</tabstop>
   <tabstop>chkLabelPerFeaturePart</tabstop>
   <tabstop>chkMergeLines</tabstop>
   <tabstop>mLimitLabelChkBox</tabstop>
   <tabstop>mLimitLabelSpinBox</tabstop>
   <tabstop>mMinSizeSpinBox</tabstop>
   <tabstop>mFitInsidePolygonCheckBox</tabstop>
-  <tabstop>mObstaclesGroupBox</tabstop>
   <tabstop>mChkNoObstacle</tabstop>
   <tabstop>mIsObstacleDDBtn</tabstop>
   <tabstop>mObstacleFactorSlider</tabstop>

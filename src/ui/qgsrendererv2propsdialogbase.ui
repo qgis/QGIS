@@ -114,66 +114,7 @@
             <property name="rightMargin">
              <number>3</number>
             </property>
-            <item row="0" column="1" colspan="3">
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QSlider" name="mLayerOpacitySlider">
-                <property name="maximum">
-                 <number>1000</number>
-                </property>
-                <property name="singleStep">
-                 <number>10</number>
-                </property>
-                <property name="pageStep">
-                 <number>100</number>
-                </property>
-                <property name="value">
-                 <number>1000</number>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsDoubleSpinBox" name="mLayerOpacitySpnBx">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="suffix">
-                 <string> %</string>
-                </property>
-                <property name="decimals">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <double>100.000000000000000</double>
-                </property>
-                <property name="value">
-                 <double>100.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblTransparency">
-              <property name="text">
-               <string>Opacity</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lblBlend">
-              <property name="text">
-               <string>Blending mode</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="3">
+            <item row="1" column="1" colspan="2">
              <layout class="QGridLayout" name="gridLayout_1">
               <property name="leftMargin">
                <number>0</number>
@@ -220,7 +161,14 @@
               </item>
              </layout>
             </item>
-            <item row="3" column="0" colspan="4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblTransparency">
+              <property name="text">
+               <string>Opacity</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="3">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QCheckBox" name="checkboxEnableOrderBy">
@@ -242,13 +190,27 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0" colspan="4">
+            <item row="2" column="0" colspan="3">
              <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
               <property name="minimumSize">
                <size>
                 <width>16</width>
                 <height>16</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblBlend">
+              <property name="text">
+               <string>Blending mode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="2">
+             <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
               </property>
              </widget>
             </item>
@@ -272,11 +234,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
@@ -293,13 +250,20 @@
    <header>effects/qgseffectstackpropertieswidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
-  <tabstop>mLayerOpacitySlider</tabstop>
-  <tabstop>mLayerOpacitySpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mFeatureBlendComboBox</tabstop>
+  <tabstop>checkboxEnableOrderBy</tabstop>
+  <tabstop>btnOrderBy</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

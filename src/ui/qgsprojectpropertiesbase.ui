@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>783</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -770,8 +770,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>249</width>
-                <height>43</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -829,8 +829,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>109</width>
-                <height>100</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -915,8 +915,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>331</width>
-                <height>483</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1145,64 +1145,20 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,1">
                     <item>
-                     <widget class="QLabel" name="mTransparencyLabel">
+                     <widget class="QLabel" name="label_27">
                       <property name="text">
-                       <string>Transparency</string>
+                       <string>Opacity</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSlider" name="mTransparencySlider">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                      <property name="focusPolicy">
+                       <enum>Qt::StrongFocus</enum>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="mTransparencySpinBox">
-                      <property name="suffix">
-                       <string> %</string>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_5">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -1382,8 +1338,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
-                <height>2039</height>
+                <width>624</width>
+                <height>2451</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2462,8 +2418,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>127</width>
-                <height>43</height>
+                <width>165</width>
+                <height>57</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2607,9 +2563,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2625,15 +2581,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
@@ -2691,8 +2653,7 @@
   <tabstop>pbtnStyleFill</tabstop>
   <tabstop>cboStyleColorRamp</tabstop>
   <tabstop>pbtnStyleColorRamp</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpinBox</tabstop>
+  <tabstop>mDefaultOpacityWidget</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
   <tabstop>mButtonAddColor</tabstop>

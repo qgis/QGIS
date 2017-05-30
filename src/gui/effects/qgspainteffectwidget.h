@@ -84,10 +84,9 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
   private slots:
 
-    void on_mOpacitySpnBx_valueChanged( double value );
+    void opacityChanged( double value );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mOpacitySlider_valueChanged( int value );
 
 };
 
@@ -119,10 +118,9 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
     void on_mBlurTypeCombo_currentIndexChanged( int index );
     void on_mBlurStrengthSpnBx_valueChanged( int value );
-    void on_mOpacitySpnBx_valueChanged( double value );
+    void opacityChanged( double value );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mOpacitySlider_valueChanged( int value );
 
 };
 
@@ -155,12 +153,11 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     void on_mShadowOffsetAngleDial_valueChanged( int value );
     void on_mShadowOffsetSpnBx_valueChanged( double value );
     void on_mOffsetUnitWidget_changed();
-    void on_mShadowOpacitySpnBx_valueChanged( double value );
+    void opacityChanged( double value );
     void on_mShadowColorBtn_colorChanged( const QColor &color );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mShadowBlendCmbBx_currentIndexChanged( int index );
     void on_mShadowRadiuSpnBx_valueChanged( int value );
-    void on_mShadowOpacitySlider_valueChanged( int value );
 };
 
 
@@ -190,12 +187,11 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void colorModeChanged();
     void on_mSpreadSpnBx_valueChanged( double value );
     void on_mSpreadUnitWidget_changed();
-    void on_mOpacitySpnBx_valueChanged( double value );
+    void opacityChanged( double value );
     void on_mColorBtn_colorChanged( const QColor &color );
     void on_mBlendCmbBx_currentIndexChanged( int index );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mBlurRadiusSpnBx_valueChanged( int value );
-    void on_mOpacitySlider_valueChanged( int value );
     void applyColorRamp();
 
 };
@@ -264,10 +260,9 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
 
   private slots:
 
-    void on_mOpacitySpnBx_valueChanged( double value );
+    void opacityChanged( double value );
     void on_mBlendCmbBx_currentIndexChanged( int index );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mOpacitySlider_valueChanged( int value );
     void on_mBrightnessSpinBox_valueChanged( int value );
     void on_mContrastSpinBox_valueChanged( int value );
     void on_mSaturationSpinBox_valueChanged( int value );

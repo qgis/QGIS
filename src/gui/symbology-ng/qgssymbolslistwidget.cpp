@@ -54,7 +54,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mOpacitySpinBox->setClearValue( 100.0 );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -112,11 +111,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   btnColor->setAllowAlpha( true );
   btnColor->setColorDialogTitle( tr( "Select color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
-
-  connect( mOpacitySlider, &QSlider::valueChanged, this, [ = ]( int value ) { whileBlocking( mOpacitySpinBox )->setValue( value / 10.0 ); } );
-  connect( mOpacitySpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { mOpacitySlider->setValue( value * 10 ); } );
-
   connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -457,11 +454,10 @@ void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
   }
 }
 
-void QgsSymbolsListWidget::on_mOpacitySlider_valueChanged( int value )
+void QgsSymbolsListWidget::opacityChanged( double opacity )
 {
   if ( mSymbol )
   {
-    double opacity = value / 1000.0;
     mSymbol->setOpacity( opacity );
     emit changed();
   }
@@ -548,8 +544,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mSymbolUnitWidget->setMapUnitScale( mSymbol->mapUnitScale() );
   mSymbolUnitWidget->blockSignals( false );
 
-  whileBlocking( mOpacitySlider )->setValue( mSymbol->opacity() * 1000 );
-  whileBlocking( mOpacitySpinBox )->setValue( mSymbol->opacity() * 100 );
+  mOpacityWidget->setOpacity( mSymbol->opacity() );
 
   if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {

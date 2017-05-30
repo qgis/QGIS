@@ -499,7 +499,7 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void on_mBrowseToolButton_clicked();
     void on_mImageLineEdit_editingFinished();
     void setCoordinateMode( int index );
-    void on_mSpinOpacity_valueChanged( double value );
+    void opacityChanged( double value );
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
     void on_mRotationSpinBox_valueChanged( double d );
