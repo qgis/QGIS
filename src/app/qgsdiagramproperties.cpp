@@ -85,12 +85,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
-  mDiagramPenColorButton->setAllowAlpha( true );
+  mDiagramPenColorButton->setAllowOpacity( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent stroke" ) );

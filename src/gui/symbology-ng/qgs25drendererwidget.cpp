@@ -41,13 +41,13 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *sty
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mWallColorButton->setColorDialogTitle( tr( "Select wall color" ) );
-  mWallColorButton->setAllowAlpha( true );
+  mWallColorButton->setAllowOpacity( true );
   mWallColorButton->setContext( QStringLiteral( "symbology" ) );
   mRoofColorButton->setColorDialogTitle( tr( "Select roof color" ) );
-  mRoofColorButton->setAllowAlpha( true );
+  mRoofColorButton->setAllowOpacity( true );
   mRoofColorButton->setContext( QStringLiteral( "symbology" ) );
   mShadowColorButton->setColorDialogTitle( tr( "Select shadow color" ) );
-  mShadowColorButton->setAllowAlpha( true );
+  mShadowColorButton->setAllowOpacity( true );
   mShadowColorButton->setContext( QStringLiteral( "symbology" ) );
 
   if ( renderer )

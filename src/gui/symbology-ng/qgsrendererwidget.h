@@ -103,7 +103,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     //! Change color of selected symbols
     void changeSymbolColor();
     //! Change opacity of selected symbols
-    void changeSymbolTransparency();
+    void changeSymbolOpacity();
     //! Change units mm/map units of selected symbols
     void changeSymbolUnit();
     //! Change line widths of selected symbols

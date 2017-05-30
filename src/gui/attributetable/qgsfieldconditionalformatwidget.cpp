@@ -41,9 +41,9 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( btnChangeIcon, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::updateIcon );
   connect( btnBuildExpression, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::setExpression );
   connect( mPresetsList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldConditionalFormatWidget::presetSet );
-  btnBackgroundColor->setAllowAlpha( true );
+  btnBackgroundColor->setAllowOpacity( true );
   btnBackgroundColor->setShowNoColor( true );
-  btnTextColor->setAllowAlpha( true );
+  btnTextColor->setAllowOpacity( true );
   btnTextColor->setShowNoColor( true );
   mPresetsModel = new QStandardItemModel( listView );
   mModel = new QStandardItemModel( listView );

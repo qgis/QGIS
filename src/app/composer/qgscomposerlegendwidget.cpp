@@ -75,7 +75,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
-  mRasterStrokeColorButton->setAllowAlpha( true );
+  mRasterStrokeColorButton->setAllowOpacity( true );
   mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
 
   if ( legend )

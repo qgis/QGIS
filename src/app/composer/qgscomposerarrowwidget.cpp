@@ -43,12 +43,12 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsCo
   mainLayout->addWidget( itemPropertiesWidget );
 
   mArrowHeadStrokeColorButton->setColorDialogTitle( tr( "Select arrow head stroke color" ) );
-  mArrowHeadStrokeColorButton->setAllowAlpha( true );
+  mArrowHeadStrokeColorButton->setAllowOpacity( true );
   mArrowHeadStrokeColorButton->setContext( QStringLiteral( "composer" ) );
   mArrowHeadStrokeColorButton->setNoColorString( tr( "Transparent stroke" ) );
   mArrowHeadStrokeColorButton->setShowNoColor( true );
   mArrowHeadFillColorButton->setColorDialogTitle( tr( "Select arrow head fill color" ) );
-  mArrowHeadFillColorButton->setAllowAlpha( true );
+  mArrowHeadFillColorButton->setAllowOpacity( true );
   mArrowHeadFillColorButton->setContext( QStringLiteral( "composer" ) );
   mArrowHeadFillColorButton->setNoColorString( tr( "Transparent fill" ) );
   mArrowHeadFillColorButton->setShowNoColor( true );

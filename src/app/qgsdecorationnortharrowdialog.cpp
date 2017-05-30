@@ -56,12 +56,12 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
 
-  pbnChangeColor->setAllowAlpha( true );
+  pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select north arrow fill color" ) );
 
-  pbnChangeOutlineColor->setAllowAlpha( true );
+  pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select north arrow outline color" ) );

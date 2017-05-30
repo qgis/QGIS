@@ -58,7 +58,7 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   mAnnotationFormatComboBox->addItem( tr( "Custom" ), QgsComposerMapGrid::CustomFormat );
 
   mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mAnnotationFontColorButton->setAllowAlpha( true );
+  mAnnotationFontColorButton->setAllowOpacity( true );
   mAnnotationFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   insertAnnotationDisplayEntries( mAnnotationDisplayLeftComboBox );
@@ -77,19 +77,19 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
 
   mGridFramePenColorButton->setColorDialogTitle( tr( "Select grid frame color" ) );
-  mGridFramePenColorButton->setAllowAlpha( true );
+  mGridFramePenColorButton->setAllowOpacity( true );
   mGridFramePenColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFramePenColorButton->setNoColorString( tr( "Transparent frame" ) );
   mGridFramePenColorButton->setShowNoColor( true );
 
   mGridFrameFill1ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill1ColorButton->setAllowAlpha( true );
+  mGridFrameFill1ColorButton->setAllowOpacity( true );
   mGridFrameFill1ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill1ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill1ColorButton->setShowNoColor( true );
 
   mGridFrameFill2ColorButton->setColorDialogTitle( tr( "Select grid frame fill color" ) );
-  mGridFrameFill2ColorButton->setAllowAlpha( true );
+  mGridFrameFill2ColorButton->setAllowOpacity( true );
   mGridFrameFill2ColorButton->setContext( QStringLiteral( "composer" ) );
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );

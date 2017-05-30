@@ -50,7 +50,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // color
-  pbnColorChooser->setAllowAlpha( true );
+  pbnColorChooser->setAllowOpacity( true );
   pbnColorChooser->setColor( mDeco.mColor );
   pbnColorChooser->setContext( QStringLiteral( "gui" ) );
   pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );

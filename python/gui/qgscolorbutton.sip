@@ -54,20 +54,22 @@ class QgsColorButton : QToolButton
  :rtype: QColor
 %End
 
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 %Docstring
- Sets whether alpha modification (transparency) is permitted
+ Sets whether opacity modification (transparency) is permitted
  for the color. Defaults to false.
- \param allowAlpha set to true to allow alpha modification
-.. seealso:: allowAlpha
+ \param allowOpacity set to true to allow opacity modification
+.. seealso:: allowOpacity()
+.. versionadded:: 3.0
 %End
 
-    bool allowAlpha() const;
+    bool allowOpacity() const;
 %Docstring
- Returns whether alpha modification (transparency) is permitted
+ Returns whether opacity modification (transparency) is permitted
  for the color.
- :return: true if alpha modification is allowed
-.. seealso:: setAllowAlpha
+ :return: true if opacity modification is allowed
+.. seealso:: setAllowOpacity()
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -313,7 +315,7 @@ class QgsColorButton : QToolButton
  Sets color to a totally transparent color.
 .. note::
 
-   If the color button is not set to show an alpha channel in the color
+   If the color button is not set to show an opacity channel in the color
  dialog (see setColorDialogOptions) then the color will not be changed.
 .. seealso:: setToNull()
 %End
