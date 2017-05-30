@@ -33,7 +33,7 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 
     QgsPointClusterRenderer();
 
-    QgsPointClusterRenderer *clone() const override;
+    QgsPointClusterRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;

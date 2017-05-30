@@ -155,7 +155,7 @@ Creates a new QgsColorRamp from a map of properties
     virtual QColor color( double value ) const;
     virtual QString type() const;
     virtual void invert();
-    virtual QgsGradientColorRamp *clone() const;
+    virtual QgsGradientColorRamp *clone() const /Factory/;
     virtual QgsStringMap properties() const;
 
     QColor color1() const;

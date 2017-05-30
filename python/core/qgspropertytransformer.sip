@@ -345,7 +345,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %End
 
     virtual Type transformerType() const;
-    virtual QgsGenericNumericTransformer *clone();
+    virtual QgsGenericNumericTransformer *clone() /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;

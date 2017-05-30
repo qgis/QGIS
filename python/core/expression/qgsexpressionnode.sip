@@ -137,7 +137,7 @@ Takes ownership of the provided node
  :rtype: list of str
 %End
 
-        QgsExpressionNode::NodeList *clone() const;
+        QgsExpressionNode::NodeList *clone() const /Factory/;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
  :rtype: QgsExpressionNode.NodeList
