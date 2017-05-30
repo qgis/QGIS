@@ -44,7 +44,7 @@ class TestTransformer : public QgsPropertyTransformer
     }
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual TestTransformer *clone() override
+    virtual TestTransformer *clone() const override
     {
       return new TestTransformer( mMinValue, mMaxValue );
     }
