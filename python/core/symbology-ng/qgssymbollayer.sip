@@ -105,7 +105,7 @@ class QgsSymbolLayer
       PropertyDistanceY, //!< Vertical distance between points
       PropertyDisplacementX, //!< Horizontal displacement
       PropertyDisplacementY, //!< Vertical displacement
-      PropertyAlpha, //!< Alpha (opacity)
+      PropertyOpacity, //!< Alpha (opacity)
       PropertyCustomDash, //!< Custom dash pattern
       PropertyCapStyle, //!< Line cap style
       PropertyPlacement, //!< Line marker placement
