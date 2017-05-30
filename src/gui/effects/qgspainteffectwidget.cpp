@@ -235,6 +235,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
+  mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
