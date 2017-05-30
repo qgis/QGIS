@@ -196,7 +196,7 @@ class QgsPropertyTransformer
  :rtype: Type
 %End
 
-    virtual QgsPropertyTransformer *clone() = 0 /Factory/;
+    virtual QgsPropertyTransformer *clone() const = 0 /Factory/;
 %Docstring
  Returns a clone of the transformer.
  :rtype: QgsPropertyTransformer
@@ -345,7 +345,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
 %End
 
     virtual Type transformerType() const;
-    virtual QgsGenericNumericTransformer *clone() /Factory/;
+    virtual QgsGenericNumericTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
@@ -481,7 +481,7 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
 %End
 
     virtual Type transformerType() const;
-    virtual QgsSizeScaleTransformer *clone() /Factory/;
+    virtual QgsSizeScaleTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
@@ -621,7 +621,7 @@ Copy constructor
 
 
     virtual Type transformerType() const;
-    virtual QgsColorRampTransformer *clone() /Factory/;
+    virtual QgsColorRampTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;

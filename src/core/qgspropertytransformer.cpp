@@ -154,7 +154,7 @@ QgsGenericNumericTransformer &QgsGenericNumericTransformer::operator=( const Qgs
   return *this;
 }
 
-QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
+QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
   std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
       mMaxValue,
@@ -346,7 +346,7 @@ QgsSizeScaleTransformer &QgsSizeScaleTransformer::operator=( const QgsSizeScaleT
   return *this;
 }
 
-QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
+QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const
 {
   std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
       mMinValue,
@@ -587,7 +587,7 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
   return *this;
 }
 
-QgsColorRampTransformer *QgsColorRampTransformer::clone()
+QgsColorRampTransformer *QgsColorRampTransformer::clone() const
 {
   std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue,
       mGradientRamp ? mGradientRamp->clone() : nullptr,

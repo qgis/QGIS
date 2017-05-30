@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Returns a clone of the transformer.
      */
-    virtual QgsPropertyTransformer *clone() = 0 SIP_FACTORY;
+    virtual QgsPropertyTransformer *clone() const = 0 SIP_FACTORY;
 
     /**
      * Loads this transformer from a QVariantMap, wrapped in a QVariant.
@@ -367,7 +367,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const override { return GenericNumericTransformer; }
-    virtual QgsGenericNumericTransformer *clone() override SIP_FACTORY;
+    virtual QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual QgsSizeScaleTransformer *clone() SIP_FACTORY override;
+    virtual QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
@@ -640,7 +640,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const override { return ColorRampTransformer; }
-    virtual QgsColorRampTransformer *clone() SIP_FACTORY override;
+    virtual QgsColorRampTransformer *clone() const override SIP_FACTORY;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
