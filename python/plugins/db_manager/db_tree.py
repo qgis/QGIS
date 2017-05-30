@@ -164,7 +164,7 @@ class DBTree(QTreeView):
             layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
             if len(layers) != 1:
                 QgsMessageLog.logMessage(
-                    self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()))
+                    self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()), "DBManagerPlugin")
                 msgLabel = QLabel(self.tr(
                     "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").replace(
                     "%1", layer.publicSource()), self.mainWindow.infoBar)
