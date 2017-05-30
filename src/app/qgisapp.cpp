@@ -856,13 +856,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   startProfile( QStringLiteral( "Snapping dialog" ) );
-  mSnappingDialogWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, this );
+  mSnappingDialog = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, this );
+  connect( mSnappingDialog, &QgsSnappingWidget::snappingConfigChanged, QgsProject::instance(), [ = ] { QgsProject::instance()->setSnappingConfig( mSnappingDialog->config() ); } );
   QString mainSnappingWidgetMode = QgsSettings().value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString();
   if ( mainSnappingWidgetMode == QLatin1String( "dock" ) )
   {
     QgsDockWidget *dock = new QgsDockWidget( tr( "Snapping and Digitizing Options" ), QgisApp::instance() );
     dock->setAllowedAreas( Qt::AllDockWidgetAreas );
-    dock->setWidget( mSnappingDialogWidget );
+    dock->setWidget( mSnappingDialog );
     dock->setObjectName( QStringLiteral( "Snapping and Digitizing Options" ) );
     addDockWidget( Qt::LeftDockWidgetArea, dock );
     mSnappingDialogContainer = dock;
@@ -873,7 +874,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QDialog *dialog = new QDialog( this );
     dialog->setWindowTitle( tr( "Project snapping settings" ) );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
-    layout->addWidget( mSnappingDialogWidget );
+    layout->addWidget( mSnappingDialog );
     layout->setMargin( 0 );
     mSnappingDialogContainer = dialog;
   }
@@ -1273,7 +1274,7 @@ QgisApp::QgisApp()
   , mBookMarksDockWidget( nullptr )
   , mSnappingWidget( nullptr )
   , mSnappingDialogContainer( nullptr )
-  , mSnappingDialogWidget( nullptr )
+  , mSnappingDialog( nullptr )
   , mPluginManager( nullptr )
   , mMapStylingDock( nullptr )
   , mMapStyleWidget( nullptr )
