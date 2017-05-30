@@ -40,6 +40,20 @@ QgsConfigCache::QgsConfigCache()
   QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
 }
 
+const QgsProject *QgsConfigCache::project( const QString &path )
+{
+  if ( ! mProjectCache[ path ] )
+  {
+    std::unique_ptr<QgsProject> prj( new QgsProject() );
+    if ( prj->read( path ) )
+    {
+      mProjectCache.insert( path, prj.release() );
+    }
+  }
+
+  return mProjectCache[ path ];
+}
+
 QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &filePath )
 {
   QgsMessageLog::logMessage(

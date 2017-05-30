@@ -1980,6 +1980,11 @@ QgsAnnotationManager *QgsProject::annotationManager()
   return mAnnotationManager.get();
 }
 
+const QgsAnnotationManager *QgsProject::annotationManager() const
+{
+  return mAnnotationManager.get();
+}
+
 void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
 {
   QStringList currentLayers = nonIdentifiableLayers();

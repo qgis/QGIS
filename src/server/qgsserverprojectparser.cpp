@@ -29,10 +29,13 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgseditorwidgetsetup.h"
 #include "qgsgui.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsserverprojectutils.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -42,31 +45,34 @@
 
 QgsServerProjectParser::QgsServerProjectParser( QDomDocument *xmlDoc, const QString &filePath )
   : mXMLDoc( xmlDoc )
+  , mProject( QgsConfigCache::instance()->project( filePath ) )
   , mProjectPath( filePath )
-  , mUseLayerIDs( false )
 {
+  QMap<QString, QgsMapLayer *> layers = mProject->mapLayers();
+  mProjectLayerElements.reserve( layers.size() );
+  Q_FOREACH ( QgsMapLayer *layer, layers )
+  {
+    QDomDocument doc;
+    QDomElement el = doc.createElement( "maplayer" );
+    layer->writeLayerXml( el, doc, QgsReadWriteContext() );
+    mProjectLayerElements.push_back( el );
+
+    QString name = layer->shortName();
+    if ( name.isEmpty() )
+    {
+      name = layer->name();
+    }
+
+    mProjectLayerElementsByName.insert( name, el );
+    mProjectLayerElementsById.insert( layer->id(), el );
+  }
+
+  mRestrictedLayers = findRestrictedLayers();
+
   //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )
   {
-    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( QStringLiteral( "maplayer" ) );
-    QDomElement currentElement;
-    int nNodes = layerNodeList.size();
-    mProjectLayerElements.reserve( nNodes );
-    for ( int i = 0; i < nNodes; ++i )
-    {
-      currentElement = layerNodeList.at( i ).toElement();
-      mProjectLayerElements.push_back( currentElement );
-      QString lName = layerShortName( currentElement );
-      if ( lName.isEmpty() )
-        lName = layerName( currentElement );
-      mProjectLayerElementsByName.insert( lName, currentElement );
-      mProjectLayerElementsById.insert( layerId( currentElement ), currentElement );
-    }
-
     mLegendGroupElements = findLegendGroupElements();
-
-    mUseLayerIDs = findUseLayerIds();
-    mRestrictedLayers = findRestrictedLayers();
 
     mCustomLayerOrder.clear();
 
@@ -88,9 +94,31 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument *xmlDoc, const QStr
   }
 }
 
+bool QgsServerProjectParser::useLayerIds() const
+{
+  return QgsServerProjectUtils::wmsUseLayerIds( *mProject );
+}
+
+QStringList QgsServerProjectParser::layersNames() const
+{
+  QStringList names;
+  Q_FOREACH ( QgsMapLayer *layer, mProject->mapLayers() )
+  {
+    if ( ! layer->shortName().isEmpty() )
+    {
+      names.append( layer->shortName() );
+    }
+    else
+    {
+      names.append( layer->name() );
+    }
+  }
+
+  return names;
+}
+
 QgsServerProjectParser::QgsServerProjectParser()
   : mXMLDoc( nullptr )
-  , mUseLayerIDs( false )
 {
 }
 
@@ -347,21 +375,6 @@ QString QgsServerProjectParser::layerId( const QDomElement &layerElem ) const
     return layerElem.attribute( QStringLiteral( "id" ) );
   }
   return idElem.text();
-}
-
-QString QgsServerProjectParser::layerShortName( const QDomElement &layerElem ) const
-{
-  if ( layerElem.isNull() )
-  {
-    return QString();
-  }
-
-  QDomElement nameElem = layerElem.firstChildElement( QStringLiteral( "shortname" ) );
-  if ( nameElem.isNull() )
-  {
-    return QString();
-  }
-  return nameElem.text().replace( QLatin1String( "," ), QLatin1String( "%60" ) );
 }
 
 QgsRectangle QgsServerProjectParser::projectExtent() const
@@ -635,21 +648,6 @@ void QgsServerProjectParser::serviceCapabilities( QDomElement &parentElement, QD
     }
   }
   parentElement.appendChild( serviceElem );
-}
-
-QString QgsServerProjectParser::layerName( const QDomElement &layerElem ) const
-{
-  if ( layerElem.isNull() )
-  {
-    return QString();
-  }
-
-  QDomElement nameElem = layerElem.firstChildElement( QStringLiteral( "layername" ) );
-  if ( nameElem.isNull() )
-  {
-    return QString();
-  }
-  return nameElem.text().replace( QLatin1String( "," ), QLatin1String( "%60" ) ); //commas are not allowed in layer names
 }
 
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement &groupElem, QDomDocument &doc, bool considerMapExtent ) const
@@ -1048,130 +1046,54 @@ QDomElement QgsServerProjectParser::propertiesElem() const
 
 QSet<QString> QgsServerProjectParser::findRestrictedLayers() const
 {
-  QSet<QString> restrictedLayerSet;
+  // get name of restricted layers/groups in project
+  QStringList restricted = QgsServerProjectUtils::wmsRestrictedLayers( *mProject );
 
-  if ( !mXMLDoc )
+  // extract restricted layers from excluded groups
+  QStringList restrictedLayersNames;
+  QgsLayerTree *root = mProject->layerTreeRoot();
+
+  Q_FOREACH ( QString l, restricted )
   {
-    return restrictedLayerSet;
+    QgsLayerTreeGroup *group = root->findGroup( l );
+    if ( group )
+    {
+      QList<QgsLayerTreeLayer *> groupLayers = group->findLayers();
+      Q_FOREACH ( QgsLayerTreeLayer *treeLayer, groupLayers )
+      {
+        restrictedLayersNames.append( treeLayer->name() );
+      }
+    }
+    else
+    {
+      restrictedLayersNames.append( l );
+    }
   }
 
-  //names of unpublished layers / groups
-  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "properties" ) );
-  if ( !propertiesElem.isNull() )
+  // build output with names, ids or short name according to the configuration
+  QSet<QString> restrictedLayers;
+  QList<QgsLayerTreeLayer *> layers = root->findLayers();
+  Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
   {
-    QDomElement wmsLayerRestrictionElem = propertiesElem.firstChildElement( QStringLiteral( "WMSRestrictedLayers" ) );
-    if ( !wmsLayerRestrictionElem.isNull() )
+    if ( restrictedLayersNames.contains( layer->name() ) )
     {
-      QStringList restrictedLayersAndGroups;
-      QDomNodeList wmsLayerRestrictionValues = wmsLayerRestrictionElem.elementsByTagName( QStringLiteral( "value" ) );
-      for ( int i = 0; i < wmsLayerRestrictionValues.size(); ++i )
+      QString shortName = layer->layer()->shortName();
+      if ( QgsServerProjectUtils::wmsUseLayerIds( *mProject ) )
       {
-        restrictedLayerSet.insert( wmsLayerRestrictionValues.at( i ).toElement().text() );
+        restrictedLayers.insert( layer->layerId() );
+      }
+      else if ( ! shortName.isEmpty() )
+      {
+        restrictedLayers.insert( shortName );
+      }
+      else
+      {
+        restrictedLayers.insert( layer->name() );
       }
     }
   }
 
-  //get legend dom element
-  if ( restrictedLayerSet.size() < 1 || !mXMLDoc )
-  {
-    return restrictedLayerSet;
-  }
-
-  QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "legend" ) );
-  if ( legendElem.isNull() )
-  {
-    return restrictedLayerSet;
-  }
-
-  //go through all legend groups and insert names of subgroups / sublayers if there is a match
-  QDomNodeList legendGroupList = legendElem.elementsByTagName( QStringLiteral( "legendgroup" ) );
-  for ( int i = 0; i < legendGroupList.size(); ++i )
-  {
-    //get name
-    QDomElement groupElem = legendGroupList.at( i ).toElement();
-    QString groupName = groupElem.attribute( QStringLiteral( "name" ) );
-    if ( restrictedLayerSet.contains( groupName ) ) //match: add names of subgroups and sublayers to set
-    {
-      //embedded group? -> also get names of subgroups and sublayers from embedded projects
-      if ( groupElem.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
-      {
-        sublayersOfEmbeddedGroup( convertToAbsolutePath( groupElem.attribute( QStringLiteral( "project" ) ) ), groupName, restrictedLayerSet );
-      }
-      else //local group
-      {
-        QDomNodeList subgroupList = groupElem.elementsByTagName( QStringLiteral( "legendgroup" ) );
-        for ( int j = 0; j < subgroupList.size(); ++j )
-        {
-          restrictedLayerSet.insert( subgroupList.at( j ).toElement().attribute( QStringLiteral( "name" ) ) );
-        }
-        QDomNodeList sublayerList = groupElem.elementsByTagName( QStringLiteral( "legendlayer" ) );
-        for ( int k = 0; k < sublayerList.size(); ++k )
-        {
-          restrictedLayerSet.insert( sublayerList.at( k ).toElement().attribute( QStringLiteral( "name" ) ) );
-        }
-      }
-    }
-  }
-
-  // wmsLayerRestrictionValues contains LayerIDs
-  if ( mUseLayerIDs )
-  {
-    QDomNodeList legendLayerList = legendElem.elementsByTagName( QStringLiteral( "legendlayer" ) );
-    for ( int i = 0; i < legendLayerList.size(); ++i )
-    {
-      //get name
-      QDomElement layerElem = legendLayerList.at( i ).toElement();
-      QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
-      if ( restrictedLayerSet.contains( layerName ) ) //match: add layer id
-      {
-        // get legend layer file element
-        QDomNodeList layerfileList = layerElem.elementsByTagName( QStringLiteral( "legendlayerfile" ) );
-        if ( !layerfileList.isEmpty() )
-        {
-          // add layer id
-          restrictedLayerSet.insert( layerfileList.at( 0 ).toElement().attribute( QStringLiteral( "layerid" ) ) );
-        }
-      }
-    }
-  }
-  // Add short name in restricted layers
-  else
-  {
-    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
-    for ( int i = 0; i < layerNodeList.size(); ++i )
-    {
-      QDomElement layerElem = layerNodeList.at( i ).toElement();
-      // get name
-      QString lName = layerName( layerElem );
-      if ( restrictedLayerSet.contains( lName ) )
-      {
-        // get short name
-        lName = layerShortName( layerElem );
-        if ( !lName.isEmpty() )
-        {
-          // add short name
-          restrictedLayerSet.insert( lName );
-        }
-      }
-    }
-  }
-  return restrictedLayerSet;
-}
-
-bool QgsServerProjectParser::findUseLayerIds() const
-{
-  if ( !mXMLDoc )
-    return false;
-
-  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( QStringLiteral( "properties" ) );
-  if ( propertiesElem.isNull() )
-    return false;
-
-  QDomElement wktElem = propertiesElem.firstChildElement( QStringLiteral( "WMSUseLayerIDs" ) );
-  if ( wktElem.isNull() )
-    return false;
-
-  return wktElem.text().compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
+  return restrictedLayers;
 }
 
 void QgsServerProjectParser::layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache ) const
@@ -1304,6 +1226,11 @@ void QgsServerProjectParser::sublayersOfEmbeddedGroup( const QString &projectFil
   }
 }
 
+QStringList QgsServerProjectParser::wfsLayers() const
+{
+  return QgsServerProjectUtils::wfsLayerIds( *mProject );
+}
+
 QStringList QgsServerProjectParser::wfsLayerNames() const
 {
   QStringList layerNameList;
@@ -1312,7 +1239,7 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
   projectLayerMap( layerMap );
 
   QgsMapLayer *currentLayer = nullptr;
-  QStringList wfsIdList = wfsLayers();
+  QStringList wfsIdList = QgsServerProjectUtils::wfsLayerIds( *mProject );
   QStringList::const_iterator wfsIdIt = wfsIdList.constBegin();
   for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
   {
@@ -1322,7 +1249,8 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
       currentLayer = layerMapIt.value();
       if ( currentLayer )
       {
-        layerNameList.append( mUseLayerIDs ? currentLayer->id() : currentLayer->name() );
+        bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *mProject );
+        layerNameList.append( useLayerIds ? currentLayer->id() : currentLayer->name() );
       }
     }
   }
@@ -1348,7 +1276,8 @@ QStringList QgsServerProjectParser::wcsLayerNames() const
       currentLayer = layerMapIt.value();
       if ( currentLayer )
       {
-        layerNameList.append( mUseLayerIDs ? currentLayer->id() : currentLayer->name() );
+        bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *mProject );
+        layerNameList.append( useLayerIds ? currentLayer->id() : currentLayer->name() );
       }
     }
   }
@@ -1454,66 +1383,9 @@ QList< QPair< QString, QgsDatumTransformStore::Entry > > QgsServerProjectParser:
   return layerTransformList;
 }
 
-QStringList QgsServerProjectParser::wfsLayers() const
-{
-  QStringList wfsList;
-  if ( !mXMLDoc )
-  {
-    return wfsList;
-  }
-
-  QDomElement qgisElem = mXMLDoc->documentElement();
-  if ( qgisElem.isNull() )
-  {
-    return wfsList;
-  }
-  QDomElement propertiesElem = qgisElem.firstChildElement( QStringLiteral( "properties" ) );
-  if ( propertiesElem.isNull() )
-  {
-    return wfsList;
-  }
-  QDomElement wfsLayersElem = propertiesElem.firstChildElement( QStringLiteral( "WFSLayers" ) );
-  if ( wfsLayersElem.isNull() )
-  {
-    return wfsList;
-  }
-  QDomNodeList valueList = wfsLayersElem.elementsByTagName( QStringLiteral( "value" ) );
-  for ( int i = 0; i < valueList.size(); ++i )
-  {
-    wfsList << valueList.at( i ).toElement().text();
-  }
-  return wfsList;
-}
-
 QStringList QgsServerProjectParser::wcsLayers() const
 {
-  QStringList wcsList;
-  if ( !mXMLDoc )
-  {
-    return wcsList;
-  }
-
-  QDomElement qgisElem = mXMLDoc->documentElement();
-  if ( qgisElem.isNull() )
-  {
-    return wcsList;
-  }
-  QDomElement propertiesElem = qgisElem.firstChildElement( QStringLiteral( "properties" ) );
-  if ( propertiesElem.isNull() )
-  {
-    return wcsList;
-  }
-  QDomElement wcsLayersElem = propertiesElem.firstChildElement( QStringLiteral( "WCSLayers" ) );
-  if ( wcsLayersElem.isNull() )
-  {
-    return wcsList;
-  }
-  QDomNodeList valueList = wcsLayersElem.elementsByTagName( QStringLiteral( "value" ) );
-  for ( int i = 0; i < valueList.size(); ++i )
-  {
-    wcsList << valueList.at( i ).toElement().text();
-  }
-  return wcsList;
+  return QgsServerProjectUtils::wcsLayerIds( *mProject );
 }
 
 void QgsServerProjectParser::addJoinLayersForElement( const QDomElement &layerElem ) const

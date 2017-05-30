@@ -1746,25 +1746,9 @@ void QgsWmsProjectParser::addOWSLayers( QDomDocument &doc,
 
 int QgsWmsProjectParser::layersAndStyles( QStringList &layers, QStringList &styles ) const
 {
-  layers.clear();
+  layers = mProjectParser->layersNames();
   styles.clear();
-
-  const QList<QDomElement> &projectLayerElements = mProjectParser->projectLayerElements();
-  QList<QDomElement>::const_iterator elemIt = projectLayerElements.constBegin();
-
-  QString currentLayerName;
-
-  for ( ; elemIt != projectLayerElements.constEnd(); ++elemIt )
-  {
-    currentLayerName = mProjectParser->layerShortName( *elemIt );
-    if ( currentLayerName.isEmpty() )
-      currentLayerName = mProjectParser->layerName( *elemIt );
-    if ( !currentLayerName.isEmpty() )
-    {
-      layers << currentLayerName;
-      styles << QString();
-    }
-  }
+  styles.reserve( layers.size() );
   return 0;
 }
 
