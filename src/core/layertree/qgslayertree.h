@@ -183,7 +183,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 
     virtual void writeXml( QDomElement &parentElement ) override;
 
-    virtual QgsLayerTree *clone() const override;
+    virtual QgsLayerTree *clone() const override SIP_FACTORY;
 
     /**
      * Clear any information from this layer tree.
