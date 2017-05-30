@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
+    <width>334</width>
     <height>572</height>
    </rect>
   </property>
@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-275</y>
-        <width>316</width>
-        <height>827</height>
+        <y>-403</y>
+        <width>318</width>
+        <height>949</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -506,6 +506,9 @@
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="suffix">
              <string> °</string>
             </property>
@@ -526,6 +529,9 @@
           </item>
           <item row="3" column="1">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationOffsetSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="suffix">
              <string> °</string>
             </property>
@@ -549,22 +555,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -572,14 +571,21 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsComposerItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgscomposeritemcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
