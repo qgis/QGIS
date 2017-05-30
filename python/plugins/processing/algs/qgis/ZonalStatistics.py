@@ -265,7 +265,8 @@ class ZonalStatistics(GeoAlgorithm):
             v = float(numpy.ma.median(masked))
             attrs.insert(idxMedian, None if numpy.isnan(v) else v)
             if hasSciPy:
-                attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
+                v = float(mode(masked, axis=None)[0])
+                attrs.insert(idxMode, v if numpy.isscalar(v) else v[0])
 
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
