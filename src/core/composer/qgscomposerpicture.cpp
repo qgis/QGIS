@@ -622,10 +622,10 @@ void QgsComposerPicture::setSceneRect( const QRectF &rectangle )
   }
 }
 
-void QgsComposerPicture::setPictureRotation( double r )
+void QgsComposerPicture::setPictureRotation( double rotation )
 {
   double oldRotation = mPictureRotation;
-  mPictureRotation = r;
+  mPictureRotation = rotation;
 
   if ( mResizeMode == Zoom )
   {
