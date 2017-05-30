@@ -47,6 +47,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
 {
   setupUi( this );
   setPanelTitle( tr( "Map properties" ) );
+  mMapRotationSpinBox->setClearValue( 0 );
 
   //add widget for general composer item properties
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
@@ -116,7 +117,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   loadGridEntries();
   loadOverviewEntries();
 
-  connect( mMapRotationSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsComposerMapWidget::rotationChanged );
+  connect( mMapRotationSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsComposerMapWidget::rotationChanged );
 
   blockAllSignals( false );
 }
@@ -451,7 +452,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::rotationChanged()
+void QgsComposerMapWidget::rotationChanged( double value )
 {
   if ( !mComposerMap )
   {
@@ -459,7 +460,7 @@ void QgsComposerMapWidget::rotationChanged()
   }
 
   mComposerMap->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
-  mComposerMap->setMapRotation( mMapRotationSpinBox->value() );
+  mComposerMap->setMapRotation( value );
   mComposerMap->endCommand();
   mComposerMap->invalidateCache();
 }
