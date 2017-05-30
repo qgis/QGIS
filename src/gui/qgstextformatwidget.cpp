@@ -214,9 +214,6 @@ void QgsTextFormatWidget::initWidget()
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
-  // TODO: is this necessary? maybe just use the data defined-only rotation?
-  mPointAngleDDBtn->setVisible( false );
-
   // Global settings group for groupboxes' saved/restored collapsed state
   // maintains state across different dialogs
   Q_FOREACH ( QgsCollapsibleGroupBox *grpbox, findChildren<QgsCollapsibleGroupBox *>() )
@@ -359,7 +356,6 @@ void QgsTextFormatWidget::initWidget()
           << mObstacleTypeComboBox
           << mOffsetTypeComboBox
           << mPalShowAllLabelsForLayerChkBx
-          << mPointAngleDDBtn
           << mPointAngleSpinBox
           << mPointOffsetDDBtn
           << mPointOffsetUnitsDDBtn

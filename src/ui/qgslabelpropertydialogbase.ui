@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>431</width>
-        <height>622</height>
+        <y>-391</y>
+        <width>417</width>
+        <height>689</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mLabelPropertiesLayout">
@@ -576,11 +576,17 @@
           </item>
           <item row="5" column="1">
            <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="specialValueText">
              <string>Default</string>
             </property>
+            <property name="suffix">
+             <string>˚</string>
+            </property>
             <property name="minimum">
-             <double>-1.000000000000000</double>
+             <double>-360.000000000000000</double>
             </property>
             <property name="maximum">
              <double>360.000000000000000</double>
@@ -624,21 +630,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -650,6 +644,18 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

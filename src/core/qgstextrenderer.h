@@ -369,14 +369,15 @@ class CORE_EXPORT QgsTextBackgroundSettings
      */
     void setRotationType( RotationType type );
 
-    /** Returns the rotation for the background shape.
+    /**
+     * Returns the rotation for the background shape, in degrees clockwise.
      * \see rotationType()
      * \see setRotation()
      */
     double rotation() const;
 
-    /** Sets the rotation for the background shape.
-     * \param rotation angle in degrees to rotate
+    /**
+     * Sets the \a rotation for the background shape, in degrees clockwise.
      * \see rotation()
      * \see setRotationType()
      */

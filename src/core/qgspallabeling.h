@@ -353,7 +353,8 @@ class CORE_EXPORT QgsPalLayerSettings
       PositionY = 10, //!< Y-coordinate data defined label position
       Hali = 11, //!< Horizontal alignment for data defined label position (Left, Center, Right)
       Vali = 12, //!< Vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
-      Rotation = 14, //!< Label rotation
+      Rotation = 14, //!< Label rotation (deprecated, for old project compatibility only)
+      LabelRotation = 96, //!< Label rotation (deprecated, for old project compatibility only)
       RepeatDistance = 84,
       RepeatDistanceUnit = 86,
       Priority = 87,
@@ -463,7 +464,10 @@ class CORE_EXPORT QgsPalLayerSettings
     double yOffset; // offset from point in mm or map units
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     QgsMapUnitScale labelOffsetMapUnitScale;
-    double angleOffset; // rotation applied to offset labels
+
+    //! Label rotation, in degrees clockwise
+    double angleOffset;
+
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
     double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
