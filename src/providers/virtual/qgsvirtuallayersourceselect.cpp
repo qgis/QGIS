@@ -82,12 +82,14 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayerNameCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVirtualLayerSourceSelect::onLayerComboChanged );
   onLayerComboChanged( mLayerNameCombo->currentIndex() );
 
-  // prepare embedded layer selection dialog and
+  // Prepare embedded layer selection dialog and
   // connect to model changes in the treeview
   if ( mTreeView )
   {
     mEmbeddedSelectionDialog = new QgsEmbeddedLayerSelectDialog( this, mTreeView );
-    connect( mTreeView->model(), &QAbstractItemModel::rowsInserted, this, &QgsVirtualLayerSourceSelect::updateLayersList );
+    // Queued connection here prevents the updateLayerList to run before the tree layer
+    // pointer points to the effective layer.
+    connect( mTreeView->model(), &QAbstractItemModel::rowsInserted, this, &QgsVirtualLayerSourceSelect::updateLayersList, Qt::QueuedConnection );
     connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
     connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
   }
@@ -247,6 +249,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
     QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mTreeView->model() );
     Q_FOREACH ( QgsLayerTreeLayer *layer, model->rootGroup()->findLayers() )
     {
+      Q_ASSERT( layer->layer() );
       if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer->layer() )->providerType() == QLatin1String( "virtual" ) )
       {
         // store layer's id as user data
