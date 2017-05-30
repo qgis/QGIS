@@ -125,7 +125,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   mSaturationCurve->attach( mPlot );
 
   mAlphaCurve = new QwtPlotCurve();
-  mAlphaCurve->setTitle( QStringLiteral( "Alpha" ) );
+  mAlphaCurve->setTitle( QStringLiteral( "Opacity" ) );
   mAlphaCurve->setPen( QPen( QColor( 50, 50, 50 ), 0.0 ) ),
               mAlphaCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mAlphaCurve->attach( mPlot );

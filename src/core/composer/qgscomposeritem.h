@@ -378,7 +378,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * \param opacity double between 1.0 (opaque) and 0 (transparent).
      * \see itemOpacity()
      */
-    void setItemOpacity( const double itemOpacity );
+    void setItemOpacity( const double opacity );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
      * \returns true if effects are enabled
