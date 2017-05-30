@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>459</height>
+    <width>322</width>
+    <height>509</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,14 @@
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+       <property name="wrapping">
+        <bool>true</bool>
+       </property>
        <property name="suffix">
         <string> °</string>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
        </property>
        <property name="maximum">
         <double>360.000000000000000</double>
@@ -274,17 +280,17 @@
      </item>
      <item row="1" column="1">
       <widget class="QListView" name="mSvgListView">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>250</height>
-        </size>
-       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>5</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>250</height>
+        </size>
        </property>
        <property name="iconSize">
         <size>
@@ -328,6 +334,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -341,12 +353,6 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
