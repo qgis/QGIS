@@ -146,6 +146,13 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   QMap<QString, QgsPostgresConn *> &connections =
     readonly ? QgsPostgresConn::sConnectionsRO : QgsPostgresConn::sConnectionsRW;
 
+  // This is called from may places where shared parameter cannot be forced to false (QgsVectorLayerExporter)
+  // and which is run in a different thread (drag and drop in browser)
+  if ( QApplication::instance()->thread() != QThread::currentThread() )
+  {
+    shared = false;
+  }
+
   if ( shared )
   {
     // sharing connection between threads is not safe
