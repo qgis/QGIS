@@ -55,6 +55,7 @@ RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
 class QgsServerTestBase(unittest.TestCase):
+
     """Base class for QGIS server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
@@ -97,6 +98,9 @@ class QgsServerTestBase(unittest.TestCase):
 
         d = unitTestDataPath('qgis_server_accesscontrol') + '/'
         self.projectPath = os.path.join(d, "project.qgs")
+        self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
+        self.projectStatePath = os.path.join(d, "project_state.qgs")
+        self.projectUseLayerIdsPath = os.path.join(d, "project_use_layerids.qgs")
 
         # Clean env just to be sure
         env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
@@ -187,14 +191,14 @@ class QgsServerTestBase(unittest.TestCase):
         self.server.handleRequest(request, response)
         headers = []
         rh = response.headers()
-        rk = list(rh.keys())
-        rk.sort()
+        rk = sorted(rh.keys())
         for k in rk:
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
 
 class TestQgsServer(QgsServerTestBase):
+
     """Tests container"""
 
     # Set to True to re-generate reference files for this class
