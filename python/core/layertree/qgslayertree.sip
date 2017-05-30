@@ -143,7 +143,7 @@ class QgsLayerTree : QgsLayerTreeGroup
 
     virtual void writeXml( QDomElement &parentElement );
 
-    virtual QgsLayerTree *clone() const;
+    virtual QgsLayerTree *clone() const /Factory/;
 
     void clear();
 %Docstring
