@@ -226,11 +226,11 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
 
     /** Copy color ramp stops to a QGradient
      * \param gradient gradient to copy stops into
-     * \param alpha alpha multiplier. Opacity of colors will be multiplied
+     * \param opacity opacity multiplier. Opacity of colors will be multiplied
      * by this factor before adding to the gradient.
      * \since QGIS 2.1
      */
-    void addStopsToGradient( QGradient *gradient, double alpha = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 
   protected:
     QColor mColor1;
