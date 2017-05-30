@@ -190,7 +190,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
       if ( dynamicBuffer )
       {
         context.expressionContext().setFeature( f );
-        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, QStringLiteral( "DISTANCE" ), context );
+        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, context );
       }
 
       out.setGeometry( f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit ) );

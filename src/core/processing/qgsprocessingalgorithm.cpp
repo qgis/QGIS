@@ -177,92 +177,92 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsString( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsString( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsExpression( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsExpression( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsExpression( parameterDefinition( name ), parameters, context );
 }
 
 double QgsProcessingAlgorithm::parameterAsDouble( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsDouble( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsDouble( parameterDefinition( name ), parameters, context );
 }
 
 int QgsProcessingAlgorithm::parameterAsInt( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsInt( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsInt( parameterDefinition( name ), parameters, context );
 }
 
 int QgsProcessingAlgorithm::parameterAsEnum( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnum( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsEnum( parameterDefinition( name ), parameters, context );
 }
 
 QList<int> QgsProcessingAlgorithm::parameterAsEnums( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsEnums( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsEnums( parameterDefinition( name ), parameters, context );
 }
 
 bool QgsProcessingAlgorithm::parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );
 }
 
 QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
 }
 
 QgsVectorLayer *QgsProcessingAlgorithm::parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsVectorLayer( parameterDefinition( name ), parameters, context );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
 }
 
 QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context );
 }
 
 QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFile( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsFile( parameterDefinition( name ), parameters, context );
 }
 
 QVariantList QgsProcessingAlgorithm::parameterAsMatrix( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsMatrix( parameterDefinition( name ), parameters, context );
 }
 
 QList<QgsMapLayer *> QgsProcessingAlgorithm::parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsLayerList( parameterDefinition( name ), parameters, context );
 }
 
 QList<double> QgsProcessingAlgorithm::parameterAsRange( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRange( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsRange( parameterDefinition( name ), parameters, context );
 }
 
 QStringList QgsProcessingAlgorithm::parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, name, context );
+  return QgsProcessingParameters::parameterAsFields( parameterDefinition( name ), parameters, context );
 }
 
 
