@@ -45,11 +45,12 @@ class QgsCompoundColorWidget : QgsPanelWidget
  :rtype: QColor
 %End
 
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 %Docstring
- Sets whether alpha modification (transparency) is permitted
+ Sets whether opacity modification (transparency) is permitted
  for the color dialog. Defaults to true.
- \param allowAlpha set to false to disable alpha modification
+ \param allowOpacity set to false to disable opacity modification
+.. versionadded:: 3.0
 %End
 
     void setDiscarded( bool discarded );

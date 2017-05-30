@@ -1167,9 +1167,9 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
   mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
-  mShapeFillColorBtn->setAllowAlpha( !isSVG );
+  mShapeFillColorBtn->setAllowOpacity( !isSVG );
   mShapeFillColorBtn->setButtonBackground();
-  mShapeStrokeColorBtn->setAllowAlpha( !isSVG );
+  mShapeStrokeColorBtn->setAllowOpacity( !isSVG );
   mShapeStrokeColorBtn->setButtonBackground();
 
   // configure SVG parameter widgets

@@ -218,7 +218,7 @@ void QgsPalettedRendererWidget::changeColor()
   {
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select color" ) );
-    colorWidget->setAllowAlpha( true );
+    colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color ) { setSelectionColor( sel, color ); } );
     panel->openPanel( colorWidget );
   }

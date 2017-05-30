@@ -579,6 +579,14 @@ QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 --------------
 
 - Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
+- setAllowAlpha() and allowAlpha() were removed. Use setAllowOpacity() and allowOpacity() instead.
+
+
+QgsColorDialog     {#qgis_api_break_3_0_QgsColorDialog}
+--------------
+
+- setAllowAlpha() was removed. Use setAllowOpacity() instead.
+
 
 QgsColorEffect        {#qgis_api_break_3_0_QgsColorEffect}
 -------------
@@ -799,6 +807,12 @@ composerShapeAdded, and composerTableFrameAdded were removed. Use the general it
 all these item added events.
 - addComposerMap no longer takes a setDefaultPreviewStyle argument.
 - the mapsToRestore parameter has been removed from addItemsFromXml
+
+QgsCompoundColorWidget     {#qgis_api_break_3_0_QgsCompoundColorWidget}
+----------------------
+
+- setAllowAlpha() was removed. Use setAllowOpacity() instead.
+
 
 QgsConditionalLayerStyle      {#qgis_api_break_3_0_QgsConditionalLayerStyle}
 ------------------------

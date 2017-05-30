@@ -34,7 +34,7 @@
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
   , mPreviousColor( color )
-  , mAllowAlpha( true )
+  , mAllowOpacity( true )
 {
   setupUi( this );
 
@@ -53,7 +53,7 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
     mColorWidget->setPreviousColor( color );
   }
 
-  mColorWidget->setAllowAlpha( true );
+  mColorWidget->setAllowOpacity( true );
 
   connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorDialog::currentColorChanged );
   connect( this, &QDialog::rejected, this, &QgsColorDialog::discardColor );
@@ -69,13 +69,13 @@ void QgsColorDialog::setTitle( const QString &title )
   setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
 }
 
-void QgsColorDialog::setAllowAlpha( const bool allowAlpha )
+void QgsColorDialog::setAllowOpacity( const bool allowOpacity )
 {
-  mAllowAlpha = allowAlpha;
-  mColorWidget->setAllowAlpha( allowAlpha );
+  mAllowOpacity = allowOpacity;
+  mColorWidget->setAllowOpacity( allowOpacity );
 }
 
-QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowOpacity )
 {
   QColor returnColor( initialColor );
 
@@ -87,7 +87,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   {
     QColorDialog *liveDialog = new QColorDialog( initialColor, parent );
     liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    liveDialog->setOptions( allowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    liveDialog->setOptions( allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
 
     connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
              updateObject, updateSlot );
@@ -102,9 +102,9 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   {
     QgsColorDialog *liveDialog = new QgsColorDialog( parent, 0, initialColor );
     liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    if ( !allowAlpha )
+    if ( !allowOpacity )
     {
-      liveDialog->setAllowAlpha( false );
+      liveDialog->setAllowOpacity( false );
     }
 
     connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
@@ -120,7 +120,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   return returnColor;
 }
 
-QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowOpacity )
 {
   QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
 
@@ -129,13 +129,13 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
-    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
   }
   else
   {
     QgsColorDialog *dialog = new QgsColorDialog( parent, 0, initialColor );
     dialog->setWindowTitle( dialogTitle );
-    dialog->setAllowAlpha( allowAlpha );
+    dialog->setAllowOpacity( allowOpacity );
 
     QColor result;
     if ( dialog->exec() )
@@ -190,7 +190,7 @@ void QgsColorDialog::setColor( const QColor &color )
   }
 
   QColor fixedColor = QColor( color );
-  if ( !mAllowAlpha )
+  if ( !mAllowOpacity )
   {
     //alpha disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );

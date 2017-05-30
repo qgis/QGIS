@@ -232,7 +232,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mShadowColorBtn->setAllowAlpha( false );
+  mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
 
@@ -389,7 +389,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mColorBtn->setAllowAlpha( false );
+  mColorBtn->setAllowOpacity( false );
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
@@ -754,7 +754,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mBrightnessSpinBox->setClearValue( 0 );
   mContrastSpinBox->setClearValue( 0 );
   mSaturationSpinBox->setClearValue( 0 );
-  mColorizeColorButton->setAllowAlpha( false );
+  mColorizeColorButton->setAllowOpacity( false );
 
   mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );
   mGrayscaleCombo->addItem( tr( "By lightness" ), QgsImageOperation::GrayscaleLightness );
