@@ -1798,7 +1798,9 @@ QStringList QgsVectorFileWriter::defaultLayerOptions( const QString &driverName 
 
 OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type type )
 {
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,1,0)
   type = QgsWkbTypes::dropM( type );
+#endif
 
   OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
 
