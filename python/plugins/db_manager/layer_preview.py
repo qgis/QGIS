@@ -84,7 +84,7 @@ class LayerPreview(QgsMapCanvas):
             ## skip TypeError and generic Exceptions fixes #15868
             ## generally due the remove of self.item object or C++ referenced object
             except Exception as ex:
-                QgsMessageLog.logMessage(unicode(ex))
+                QgsMessageLog.logMessage(unicode(ex), "DBManagerPlugin")
 
         self.item = None
         self.dirty = False
