@@ -143,7 +143,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
-        QgsExpressionNode::NodeList *clone() const;
+        QgsExpressionNode::NodeList *clone() const SIP_FACTORY;
 
         virtual QString dump() const;
 

@@ -71,7 +71,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     /** Return a clone of the object
      * \returns A clone
      */
-    QgsFeatureFilterProvider *clone() const;
+    QgsFeatureFilterProvider *clone() const SIP_FACTORY;
 
     /** Return an additional subset string (typically SQL) filter
      * \param layer the layer to control

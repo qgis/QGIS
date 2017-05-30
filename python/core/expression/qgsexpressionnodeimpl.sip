@@ -49,7 +49,7 @@ class QgsExpressionNodeUnaryOperator : QgsExpressionNode
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
@@ -131,7 +131,7 @@ class QgsExpressionNodeBinaryOperator : QgsExpressionNode
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
     int precedence() const;
@@ -187,7 +187,7 @@ class QgsExpressionNodeInOperator : QgsExpressionNode
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 };
@@ -225,7 +225,7 @@ class QgsExpressionNodeFunction : QgsExpressionNode
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
@@ -259,7 +259,7 @@ The value of the literal.
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 };
@@ -288,7 +288,7 @@ The name of the column.
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
 
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 };
@@ -315,7 +315,7 @@ class QgsExpressionNodeCondition : QgsExpressionNode
         ~WhenThen();
 
 
-        QgsExpressionNodeCondition::WhenThen *clone() const;
+        QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
 %Docstring
  Get a deep copy of this WhenThen combination.
  :rtype: QgsExpressionNodeCondition.WhenThen
@@ -342,7 +342,7 @@ class QgsExpressionNodeCondition : QgsExpressionNode
     virtual QSet<QString> referencedColumns() const;
     virtual QSet<QString> referencedVariables() const;
     virtual bool needsGeometry() const;
-    virtual QgsExpressionNode *clone() const;
+    virtual QgsExpressionNode *clone() const /Factory/;
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
 
 };
