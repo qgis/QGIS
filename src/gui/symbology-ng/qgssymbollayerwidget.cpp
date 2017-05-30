@@ -2918,13 +2918,11 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
 
   mSpinOffsetX->setClearValue( 0.0 );
   mSpinOffsetY->setClearValue( 0.0 );
-  mSpinOpacity->setClearValue( 100.0 );
 
-  connect( mSliderOpacity, &QSlider::valueChanged, this, [ = ]( int value ) { mSpinOpacity->setValue( value / 10.0 ); } );
-  connect( mSpinOpacity, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { whileBlocking( mSliderOpacity )->setValue( value * 10 ); } );
   connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterFillSymbolLayerWidget::setCoordinateMode );
   connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
   connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsRasterFillSymbolLayerWidget::opacityChanged );
 }
 
 
@@ -2962,12 +2960,9 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
       break;
   }
   cboCoordinateMode->blockSignals( false );
-  mSpinOpacity->blockSignals( true );
-  mSpinOpacity->setValue( mLayer->opacity() * 100.0 );
-  mSpinOpacity->blockSignals( false );
-  mSliderOpacity->blockSignals( true );
-  mSliderOpacity->setValue( mLayer->opacity() * 1000.0 );
-  mSliderOpacity->blockSignals( false );
+  mOpacityWidget->blockSignals( true );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
+  mOpacityWidget->blockSignals( false );
   mRotationSpinBox->blockSignals( true );
   mRotationSpinBox->setValue( mLayer->angle() );
   mRotationSpinBox->blockSignals( false );
@@ -3079,14 +3074,14 @@ void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
   emit changed();
 }
 
-void QgsRasterFillSymbolLayerWidget::on_mSpinOpacity_valueChanged( double value )
+void QgsRasterFillSymbolLayerWidget::opacityChanged( double value )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  mLayer->setOpacity( value / 100.0 );
+  mLayer->setOpacity( value );
   emit changed();
   updatePreviewImage();
 }

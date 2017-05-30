@@ -92,7 +92,6 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
-  mLayerOpacitySpnBx->setClearValue( 100.0 );
 
   // can be embedded in vector layer properties
   if ( embedded )
@@ -117,9 +116,6 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererPropertiesDialog::onOK );
 
   // connect layer opacity slider and spin box
-  connect( mLayerOpacitySlider, &QAbstractSlider::valueChanged, this, [ = ]( int value ) { mLayerOpacitySpnBx->setValue( value / 10.0 ); } );
-  connect( mLayerOpacitySpnBx, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { mLayerOpacitySlider->setValue( value * 10 ); } );
-
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRendererPropertiesDialog::rendererChanged );
   connect( checkboxEnableOrderBy, &QAbstractButton::toggled, btnOrderBy, &QWidget::setEnabled );
   connect( btnOrderBy, &QAbstractButton::clicked, this, &QgsRendererPropertiesDialog::showOrderByDialog );
@@ -127,7 +123,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   syncToLayer();
 
   QList<QWidget *> widgets;
-  widgets << mLayerOpacitySpnBx
+  widgets << mOpacityWidget
           << cboRenderers
           << checkboxEnableOrderBy
           << mBlendModeComboBox
@@ -149,6 +145,10 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
     else if ( QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( widget ) )
     {
       connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
+    }
+    else if ( QgsOpacityWidget *w = qobject_cast<QgsOpacityWidget *>( widget ) )
+    {
+      connect( w, SIGNAL( opacityChanged( double ) ), this,  slot );
     }
     else if ( QComboBox *w =  qobject_cast<QComboBox *>( widget ) )
     {
@@ -296,7 +296,7 @@ void QgsRendererPropertiesDialog::apply()
   mLayer->setFeatureBlendMode( mFeatureBlendComboBox->blendMode() );
 
   // set opacity for the layer
-  mLayer->setOpacity( mLayerOpacitySlider->value() / 1000.0 );
+  mLayer->setOpacity( mOpacityWidget->opacity() );
 }
 
 void QgsRendererPropertiesDialog::onOK()
@@ -342,8 +342,7 @@ void QgsRendererPropertiesDialog::syncToLayer()
   mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
 
   // Layer opacity
-  mLayerOpacitySlider->setValue( mLayer->opacity() * 1000.0 );
-  mLayerOpacitySpnBx->setValue( mLayer->opacity() * 100.0 );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
 
   //paint effect widget
   if ( mLayer->renderer() )

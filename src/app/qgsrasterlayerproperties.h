@@ -84,8 +84,6 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //void on_btnResetNull_clicked();
 
     void pixelSelected( const QgsPoint & );
-    //! \brief slot executed when the transparency level changes.
-    void sliderTransparency_valueChanged( int );
 
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );

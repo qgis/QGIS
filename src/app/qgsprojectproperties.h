@@ -124,8 +124,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void on_pbtnStyleLine_clicked();
     void on_pbtnStyleFill_clicked();
     void on_pbtnStyleColorRamp_clicked();
-    void on_mTransparencySlider_valueChanged( int value );
-    void on_mTransparencySpinBox_valueChanged( int value );
 
     /**
      * Slot to show the context help for this dialog

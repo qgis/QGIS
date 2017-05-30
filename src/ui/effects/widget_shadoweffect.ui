@@ -139,69 +139,6 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
-           <widget class="QSlider" name="mShadowOpacitySlider">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="value">
-             <number>1000</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mShadowOpacitySpnBx">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="value">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item row="0" column="1" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_24">
           <item>
@@ -263,6 +200,13 @@
           </property>
          </widget>
         </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -316,6 +260,12 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mShadowOffsetAngleDial</tabstop>
@@ -323,8 +273,7 @@
   <tabstop>mShadowOffsetSpnBx</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mShadowRadiuSpnBx</tabstop>
-  <tabstop>mShadowOpacitySlider</tabstop>
-  <tabstop>mShadowOpacitySpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mShadowColorBtn</tabstop>
   <tabstop>mShadowBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>

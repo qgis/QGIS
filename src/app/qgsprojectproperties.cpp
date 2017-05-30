@@ -1133,7 +1133,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), cboStyleLine->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), cboStyleFill->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), cboStyleColorRamp->currentText() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0 - mTransparencySlider->value() / 100.0 );
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), mDefaultOpacityWidget->opacity() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), cbxStyleRandomColors->isChecked() );
   if ( mTreeProjectColors->isDirty() )
   {
@@ -1687,16 +1687,16 @@ void QgsProjectProperties::populateStyles()
   cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
 
   // alpha transparency
-  int transparencyInt = 255;
+  double opacity = 1.0;
   bool ok = false;
   double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
   if ( ok )
-    transparencyInt = alpha;
+    opacity = 1.0 - alpha / 255.0;
   double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
   if ( ok )
-    transparencyInt = 255 - newOpacity * 255.0;
+    opacity = newOpacity;
 
-  mTransparencySlider->setValue( transparencyInt );
+  mDefaultOpacityWidget->setOpacity( opacity );
 }
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
@@ -1726,20 +1726,6 @@ void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
   // TODO for now just open style manager
   // code in QgsStyleManagerDialog::editColorRamp()
   on_pbtnStyleManager_clicked();
-}
-
-void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
-{
-  mTransparencySpinBox->blockSignals( true );
-  mTransparencySpinBox->setValue( value );
-  mTransparencySpinBox->blockSignals( false );
-}
-
-void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
-{
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value );
-  mTransparencySlider->blockSignals( false );
 }
 
 void QgsProjectProperties::editSymbol( QComboBox *cbo )

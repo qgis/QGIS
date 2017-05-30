@@ -23,7 +23,7 @@ QgsOpacityWidget::QgsOpacityWidget( QWidget *parent )
 {
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
+  layout->setSpacing( 3 );
   setLayout( layout );
 
   mSlider = new QSlider();

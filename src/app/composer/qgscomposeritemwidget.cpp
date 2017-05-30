@@ -165,14 +165,11 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   initializeDataDefinedButtons();
 
-  mOpacitySpnBx->setClearValue( 100.0 );
-
   setValuesForGuiElements();
   connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsComposerItem::sizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsComposerObject::itemChanged, this, &QgsComposerItemWidget::setValuesForGuiNonPositionElements );
-
-  connect( mOpacitySlider, &QAbstractSlider::valueChanged, this, [ = ]( int value ) { mOpacitySpnBx->setValue( value / 10.0 ); } );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsComposerItemWidget::opacityChanged );
 
   updateVariables();
   connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsComposerItemWidget::variablesChanged );
@@ -506,8 +503,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
   mBlendModeCombo->blockSignals( true );
-  mOpacitySlider->blockSignals( true );
-  mOpacitySpnBx->blockSignals( true );
+  mOpacityWidget->blockSignals( true );
   mFrameColorButton->blockSignals( true );
   mFrameJoinStyleCombo->blockSignals( true );
   mBackgroundColorButton->blockSignals( true );
@@ -522,8 +518,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
-  mOpacitySlider->setValue( mItem->itemOpacity() * 1000.0 );
-  mOpacitySpnBx->setValue( mItem->itemOpacity() * 100.0 );
+  mOpacityWidget->setOpacity( mItem->itemOpacity() );
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
 
@@ -535,8 +530,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
   mBlendModeCombo->blockSignals( false );
-  mOpacitySlider->blockSignals( false );
-  mOpacitySpnBx->blockSignals( false );
+  mOpacityWidget->blockSignals( false );
   mItemRotationSpinBox->blockSignals( false );
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
@@ -593,15 +587,12 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   }
 }
 
-void QgsComposerItemWidget::on_mOpacitySpnBx_valueChanged( double value )
+void QgsComposerItemWidget::opacityChanged( double value )
 {
-  mOpacitySlider->blockSignals( true );
-  mOpacitySlider->setValue( value * 10 );
-  mOpacitySlider->blockSignals( false );
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item opacity changed" ), QgsComposerMergeCommand::ItemOpacity );
-    mItem->setItemOpacity( value / 100.0 );
+    mItem->setItemOpacity( value );
     mItem->endCommand();
   }
 }
