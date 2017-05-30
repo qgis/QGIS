@@ -420,6 +420,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsAnnotationManager *annotationManager();
 
     /**
+     * Returns a const pointer to the project's annotation manager.
+     * \since QGIS 3.0
+     */
+    const QgsAnnotationManager *annotationManager() const SIP_SKIP;
+
+    /**
      * Set a list of layers which should not be taken into account on map identification
      */
     void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );

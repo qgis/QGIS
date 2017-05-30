@@ -31,6 +31,7 @@
 
 class QgsServerProjectParser;
 class QgsAccessControl;
+class QgsProject;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
@@ -47,6 +48,14 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 
     void removeEntry( const QString &path );
 
+    /** If the project is not cached yet, then the project is read thank to the
+     *  path. If the project is not available, then a nullptr is returned.
+     * \param path the filename of the QGIS project
+     * \returns the project or nullptr if an error happened
+     * \since QGIS 3.0
+     */
+    const QgsProject *project( const QString &path );
+
   private:
     QgsConfigCache();
 
@@ -58,6 +67,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
     QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
+    QCache<QString, QgsProject> mProjectCache;
 
   private slots:
     //! Removes changed entry from this cache

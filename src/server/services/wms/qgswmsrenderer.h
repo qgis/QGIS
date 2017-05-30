@@ -22,6 +22,7 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsserversettings.h"
+#include "qgswmsparameters.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
@@ -93,10 +94,12 @@ namespace QgsWms
       of the image object). If an instance to existing hit test structure is passed, instead of rendering
       it will fill the structure with symbols that would be used for rendering */
       QImage *getMap( HitTest *hitTest = nullptr );
+      QImage *getMapOld( HitTest *hitTest = nullptr );
 
       /** Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
         \since QGIS 3.0 */
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
+      QImage *getMapOld( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
 
       /** Returns printed page as binary
@@ -110,6 +113,59 @@ namespace QgsWms
       QDomDocument getFeatureInfo( const QString &version = "1.3.0" );
 
     private:
+
+      // Init the restricted layers with nicknames
+      void initRestrictedLayers();
+
+      // Build and returns highlight layers
+      QList<QgsMapLayer *> highlightLayers();
+
+      // Init a map with nickname for layers' project
+      void initNicknameLayers();
+
+      // Return the nickname of the layer (short name, id or name according to
+      // the project configuration)
+      QString layerNickname( const QgsMapLayer &layer ) const;
+
+      // Return true if the layer has to be displayed according to he current
+      // scale
+      bool layerScaleVisibility( const QgsMapLayer &layer, double scaleDenominator ) const;
+
+      // Remove unwanted layers (restricted, not visible, etc)
+      void removeUnwantedLayers( QList<QgsMapLayer *> &layers, double scaleDenominator = -1 ) const;
+
+      // Rendering step for layers
+      QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest = nullptr ) const;
+
+      // Rendering step for annotations
+      void annotationsRendering( QPainter *painter ) const;
+
+      // Return a list of layers stylized with LAYERS/STYLES parameters
+      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const;
+
+      // Return a list of layers stylized with SLD parameter
+      QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
+
+      // Set layer opacity
+      void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
+
+      // Set layer filter
+      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter ) const;
+
+      // Set layer python filter
+      void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
+
+      // Set layer selection
+      void setLayerSelection( QgsMapLayer *layer, const QStringList &fids ) const;
+
+      // Combine map extent with layer extent
+      void updateExtent( const QgsMapLayer *layer, QgsMapSettings &mapSettings ) const;
+
+      // Scale image with WIDTH/HEIGHT if necessary
+      QImage *scaleImage( const QImage *image ) const;
+
+      // Check layer read permissions
+      void checkLayerReadPermissions( QgsMapLayer *layer ) const;
 
       /** Initializes WMS layers and configures rendering.
        * \param layersList out: list with WMS layer names
@@ -170,9 +226,9 @@ namespace QgsWms
       QStringList layerSet( const QStringList &layersList, const QStringList &stylesList, const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator = -1 ) const;
 
       //! Record which symbols would be used if the map was in the current configuration of renderer. This is useful for content-based legend
-      void runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest );
+      void runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const;
       //! Record which symbols within one layer would be rendered with the given renderer context
-      void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context );
+      void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const;
 
       //! Read legend parameter from the request or from the first print composer in the project
       void legendParameters( double &boxSpace, double &layerSpace, double &layerTitleSpace,
@@ -263,6 +319,9 @@ namespace QgsWms
 
       const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
+      QgsWmsParameters mWmsParameters;
+      QStringList mRestrictedLayers;
+      QMap<QString, QgsMapLayer *> mNicknameLayers;
 
     public:
 
