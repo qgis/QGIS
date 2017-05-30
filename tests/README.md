@@ -44,7 +44,7 @@ with something like this:
 ## Postgres
 
 Make sure that you have enabled building of postgres test in CMake.
-`cmake -DENABLE_PGTEST=ON ..`
+`cmake -DENABLE_TESTS=ON -DENABLE_PGTEST=ON ..`
 
 To test the postgres provider you will need to have a database available to
 which the postgres provider can connect. The server will need to have postgis
