@@ -246,107 +246,107 @@ class CORE_EXPORT QgsProcessingParameters
     static bool isDynamic( const QVariantMap &parameters, const QString &name );
 
     /**
-     * Evaluates the parameter with matching \a name to a static string value.
+     * Evaluates the parameter with matching \a definition to a static string value.
      */
-    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to an expression.
+     * Evaluates the parameter with matching \a definition to an expression.
      */
-    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static double value.
+     * Evaluates the parameter with matching \a definition to a static double value.
      */
-    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static integer value.
+     * Evaluates the parameter with matching \a definition to a static integer value.
      */
-    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a enum value.
+     * Evaluates the parameter with matching \a definition to a enum value.
      */
-    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to list of enum values.
+     * Evaluates the parameter with matching \a definition to list of enum values.
      */
-    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static boolean value.
+     * Evaluates the parameter with matching \a definition to a static boolean value.
      */
-    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a map layer.
+     * Evaluates the parameter with matching \a definition to a map layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a raster layer.
+     * Evaluates the parameter with matching \a definition to a raster layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a vector layer.
+     * Evaluates the parameter with matching \a definition to a vector layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a coordinate reference system.
+     * Evaluates the parameter with matching \a definition to a coordinate reference system.
      */
-    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a rectangular extent.
+     * Evaluates the parameter with matching \a definition to a rectangular extent.
      */
-    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a point.
+     * Evaluates the parameter with matching \a definition to a point.
      */
-    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a file/folder name.
+     * Evaluates the parameter with matching \a definition to a file/folder name.
      */
-    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a matrix/table of values.
+     * Evaluates the parameter with matching \a definition to a matrix/table of values.
      * Tables are collapsed to a 1 dimensional list.
      */
-    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a list of map layers.
+     * Evaluates the parameter with matching \a definition to a list of map layers.
      */
-    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a range of values.
+     * Evaluates the parameter with matching \a definition to a range of values.
      */
-    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a list of fields.
+     * Evaluates the parameter with matching \a definition to a list of fields.
      */
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
 };
 
