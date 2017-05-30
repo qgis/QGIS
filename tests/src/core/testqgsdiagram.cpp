@@ -153,7 +153,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -190,7 +190,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 5, 5 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
@@ -232,7 +232,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -269,7 +269,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -306,7 +306,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -342,7 +342,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -378,7 +378,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -414,7 +414,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -448,7 +448,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -484,7 +484,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 50, 50 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsPieDiagram() );
@@ -525,7 +525,7 @@ class TestQgsDiagram : public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsUnitTypes::RenderMillimeters;
       ds.size = QSizeF( 15, 15 );
-      ds.angleOffset = 0;
+      ds.rotationOffset = 270;
 
       QgsSingleCategoryDiagramRenderer *dr = new QgsSingleCategoryDiagramRenderer();
       dr->setDiagram( new QgsTextDiagram() );

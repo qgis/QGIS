@@ -374,7 +374,7 @@ class CORE_EXPORT QgsDiagramSettings
       , barWidth( 5.0 )
       , opacity( 1.0 )
       , scaleByArea( true )
-      , angleOffset( 90 * 16 ) //top
+      , rotationOffset( 270 ) //top
       , scaleBasedVisibility( false )
       , minScaleDenominator( -1 )
       , maxScaleDenominator( -1 )
@@ -418,7 +418,12 @@ class CORE_EXPORT QgsDiagramSettings
     double opacity;
 
     bool scaleByArea;
-    int angleOffset;
+
+    /**
+     * Rotation offset, in degrees clockwise from horizontal.
+     * \since QGIS 3.0
+     */
+    double rotationOffset;
 
     bool scaleBasedVisibility;
     //scale range (-1 if no lower / upper bound )

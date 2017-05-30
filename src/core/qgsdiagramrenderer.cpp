@@ -255,7 +255,10 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
 
   barWidth = elem.attribute( QStringLiteral( "barWidth" ) ).toDouble();
 
-  angleOffset = elem.attribute( QStringLiteral( "angleOffset" ) ).toInt();
+  if ( elem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
+    rotationOffset = fmod( 360.0 - elem.attribute( QStringLiteral( "angleOffset" ) ).toInt() / 16.0, 360.0 );
+  else
+    rotationOffset = elem.attribute( QStringLiteral( "rotationOffset" ) ).toDouble();
 
   minimumSize = elem.attribute( QStringLiteral( "minimumSize" ) ).toDouble();
 
@@ -374,7 +377,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
 
   categoryElem.setAttribute( QStringLiteral( "barWidth" ), QString::number( barWidth ) );
   categoryElem.setAttribute( QStringLiteral( "minimumSize" ), QString::number( minimumSize ) );
-  categoryElem.setAttribute( QStringLiteral( "angleOffset" ), QString::number( angleOffset ) );
+  categoryElem.setAttribute( QStringLiteral( "rotationOffset" ), QString::number( rotationOffset ) );
 
   int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
@@ -447,8 +450,8 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
     s.penColor = properties.valueAsColor( QgsDiagramLayerSettings::StrokeColor, c.expressionContext(), s.penColor );
     c.expressionContext().setOriginalValueVariable( s.penWidth );
     s.penWidth = properties.valueAsDouble( QgsDiagramLayerSettings::StrokeWidth, c.expressionContext(), s.penWidth );
-    c.expressionContext().setOriginalValueVariable( s.angleOffset / 16.0 );
-    s.angleOffset = 16.0 * properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.angleOffset / 16.0 );
+    c.expressionContext().setOriginalValueVariable( s.rotationOffset );
+    s.rotationOffset = properties.valueAsDouble( QgsDiagramLayerSettings::StartAngle, c.expressionContext(), s.rotationOffset );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );

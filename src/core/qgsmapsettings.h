@@ -76,14 +76,19 @@ class CORE_EXPORT QgsMapSettings
     //! Set the size of the resulting map image
     void setOutputSize( QSize size );
 
-    //! Return the rotation of the resulting map image
-    //! Units are clockwise degrees
-    //! \since QGIS 2.8
+    /**
+     * Returns the rotation of the resulting map image, in degrees clockwise.
+     * \since QGIS 2.8
+     * \see setRotation()
+     */
     double rotation() const;
-    //! Set the rotation of the resulting map image
-    //! Units are clockwise degrees
-    //! \since QGIS 2.8
-    void setRotation( double degrees );
+
+    /**
+     * Sets the \a rotation of the resulting map image, in degrees clockwise.
+     * \since QGIS 2.8
+     * \see rotation()
+     */
+    void setRotation( double rotation );
 
     //! Return DPI used for conversion between real world units (e.g. mm) and pixels
     //! Default value is 96
