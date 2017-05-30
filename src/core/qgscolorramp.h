@@ -149,7 +149,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "gradient" ); }
     virtual void invert() override;
-    virtual QgsGradientColorRamp *clone() const override;
+    virtual QgsGradientColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
 
     /** Returns the gradient start color.

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      */
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
-    QgsPointDisplacementRenderer *clone() const override;
+    QgsPointDisplacementRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;

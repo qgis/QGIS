@@ -367,7 +367,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const override { return GenericNumericTransformer; }
-    virtual QgsGenericNumericTransformer *clone() override;
+    virtual QgsGenericNumericTransformer *clone() override SIP_FACTORY;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;

@@ -254,7 +254,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         void setActive( bool state ) { mIsActive = state; }
 
         //! clone this rule, return new instance
-        Rule *clone() const;
+        Rule *clone() const SIP_FACTORY;
 
         void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 

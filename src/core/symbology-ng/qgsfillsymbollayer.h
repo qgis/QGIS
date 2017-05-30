@@ -661,7 +661,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
-    QgsRasterFillSymbolLayer *clone() const override;
+    QgsRasterFillSymbolLayer *clone() const override SIP_FACTORY;
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols

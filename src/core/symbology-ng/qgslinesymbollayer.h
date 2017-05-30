@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
     QgsStringMap properties() const override;
 
-    QgsMarkerLineSymbolLayer *clone() const override;
+    QgsMarkerLineSymbolLayer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
