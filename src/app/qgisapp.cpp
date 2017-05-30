@@ -2588,7 +2588,7 @@ void QgisApp::createStatusBar()
   mRotationEdit->setKeyboardTracking( false );
   mRotationEdit->setMaximumWidth( 120 );
   mRotationEdit->setDecimals( 1 );
-  mRotationEdit->setRange( -180.0, 180.0 );
+  mRotationEdit->setRange( -360.0, 360.0 );
   mRotationEdit->setWrapping( true );
   mRotationEdit->setSingleStep( 5.0 );
   mRotationEdit->setFont( myFont );
