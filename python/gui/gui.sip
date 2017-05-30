@@ -128,6 +128,7 @@
 %Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnewgeopackagelayerdialog.sip
+%Include qgsopacitywidget.sip
 %Include qgsoptionsdialogbase.sip
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
