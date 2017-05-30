@@ -50,7 +50,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
-    Q_PROPERTY( bool allowAlpha READ allowAlpha WRITE setAllowAlpha )
+    Q_PROPERTY( bool allowOpacity READ allowOpacity WRITE setAllowOpacity )
     Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
     Q_PROPERTY( Behavior behavior READ behavior WRITE setBehavior )
     Q_PROPERTY( QColor defaultColor READ defaultColor WRITE setDefaultColor )
@@ -84,19 +84,23 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QColor color() const;
 
-    /** Sets whether alpha modification (transparency) is permitted
+    /**
+     * Sets whether opacity modification (transparency) is permitted
      * for the color. Defaults to false.
-     * \param allowAlpha set to true to allow alpha modification
-     * \see allowAlpha
+     * \param allowOpacity set to true to allow opacity modification
+     * \see allowOpacity()
+     * \since QGIS 3.0
      */
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 
-    /** Returns whether alpha modification (transparency) is permitted
+    /**
+     * Returns whether opacity modification (transparency) is permitted
      * for the color.
-     * \returns true if alpha modification is allowed
-     * \see setAllowAlpha
+     * \returns true if opacity modification is allowed
+     * \see setAllowOpacity()
+     * \since QGIS 3.0
      */
-    bool allowAlpha() const { return mAllowAlpha; }
+    bool allowOpacity() const { return mAllowOpacity; }
 
     /** Set the title for the color chooser dialog window.
      * \param title Title for the color chooser dialog
@@ -291,7 +295,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void activatePicker();
 
     /** Sets color to a totally transparent color.
-     * \note If the color button is not set to show an alpha channel in the color
+     * \note If the color button is not set to show an opacity channel in the color
      * dialog (see setColorDialogOptions) then the color will not be changed.
      * \see setToNull()
      */
@@ -382,7 +386,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     QColor mDefaultColor;
     QString mContext;
-    bool mAllowAlpha;
+    bool mAllowOpacity;
     bool mAcceptLiveUpdates;
     bool mColorSet;
 

@@ -273,6 +273,7 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
+  qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
@@ -421,6 +422,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
   qgsnewgeopackagelayerdialog.h
+  qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h

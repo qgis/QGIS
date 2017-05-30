@@ -1764,17 +1764,17 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 'this is a test')
 
-    def onLayerTransparencyChanged(self, tr):
-        self.transparencyTest = tr
+    def onLayerOpacityChanged(self, tr):
+        self.opacityTest = tr
 
-    def test_setLayerTransparency(self):
+    def test_setLayerOpacity(self):
         layer = createLayerWithOnePoint()
 
-        self.transparencyTest = 0
-        layer.layerTransparencyChanged.connect(self.onLayerTransparencyChanged)
-        layer.setLayerTransparency(50)
-        self.assertEqual(self.transparencyTest, 50)
-        self.assertEqual(layer.layerTransparency(), 50)
+        self.opacityTest = 0
+        layer.opacityChanged.connect(self.onLayerOpacityChanged)
+        layer.setOpacity(0.5)
+        self.assertEqual(self.opacityTest, 0.5)
+        self.assertEqual(layer.opacity(), 0.5)
 
     def onRendererChanged(self):
         self.rendererChanged = True
@@ -2197,7 +2197,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.setCustomProperty('MyKey0', 'MyValue0')
         layer.setCustomProperty('MyKey1', 'MyValue1')
 
-        layer.setLayerTransparency(33)
+        layer.setOpacity(0.66)
         layer.setProviderEncoding('latin9')
         layer.setDisplayExpression('MyDisplayExpression')
         layer.setMapTipTemplate('MyMapTipTemplate')

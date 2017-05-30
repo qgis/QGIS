@@ -46,6 +46,8 @@ void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
 
   mEffect = static_cast<QgsDrawSourceEffect *>( effect );
   initGui();
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsDrawSourceWidget::opacityChanged );
 }
 
 void QgsDrawSourceWidget::initGui()
@@ -57,8 +59,7 @@ void QgsDrawSourceWidget::initGui()
 
   blockSignals( true );
 
-  mTransparencySpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTransparencySlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacityWidget->setOpacity( mEffect->opacity() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
@@ -67,22 +68,17 @@ void QgsDrawSourceWidget::initGui()
 
 void QgsDrawSourceWidget::blockSignals( const bool block )
 {
-  mTransparencySlider->blockSignals( block );
-  mTransparencySpnBx->blockSignals( block );
+  mOpacityWidget->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
 
-void QgsDrawSourceWidget::on_mTransparencySpnBx_valueChanged( double value )
+void QgsDrawSourceWidget::opacityChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value * 10.0 );
-  mTransparencySlider->blockSignals( false );
-
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value );
   emit changed();
 }
 
@@ -108,11 +104,6 @@ void QgsDrawSourceWidget::on_mBlendCmbBx_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
-{
-  mTransparencySpnBx->setValue( value / 10.0 );
-}
-
 
 //
 // blur
@@ -128,6 +119,7 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   mBlurTypeCombo->addItem( tr( "Gaussian blur (quality)" ), QgsBlurEffect::GaussianBlur );
 
   initGui();
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsBlurWidget::opacityChanged );
 }
 
 
@@ -151,8 +143,7 @@ void QgsBlurWidget::initGui()
 
   mBlurTypeCombo->setCurrentIndex( mBlurTypeCombo->findData( mEffect->blurMethod() ) );
   mBlurStrengthSpnBx->setValue( mEffect->blurLevel() );
-  mTransparencySpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTransparencySlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacityWidget->setOpacity( mEffect->opacity() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
@@ -163,8 +154,7 @@ void QgsBlurWidget::blockSignals( const bool block )
 {
   mBlurTypeCombo->blockSignals( block );
   mBlurStrengthSpnBx->blockSignals( block );
-  mTransparencySlider->blockSignals( block );
-  mTransparencySpnBx->blockSignals( block );
+  mOpacityWidget->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
@@ -200,16 +190,12 @@ void QgsBlurWidget::on_mBlurStrengthSpnBx_valueChanged( int value )
   emit changed();
 }
 
-void QgsBlurWidget::on_mTransparencySpnBx_valueChanged( double value )
+void QgsBlurWidget::opacityChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value * 10.0 );
-  mTransparencySlider->blockSignals( false );
-
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value );
   emit changed();
 }
 
@@ -235,11 +221,6 @@ void QgsBlurWidget::on_mBlendCmbBx_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
-{
-  mTransparencySpnBx->setValue( value / 10.0 );
-}
-
 
 //
 // Drop Shadow
@@ -251,7 +232,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mShadowColorBtn->setAllowAlpha( false );
+  mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
 
@@ -259,6 +240,8 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   initGui();
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsShadowEffectWidget::opacityChanged );
 }
 
 void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
@@ -285,8 +268,7 @@ void QgsShadowEffectWidget::initGui()
   mOffsetUnitWidget->setUnit( mEffect->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mEffect->offsetMapUnitScale() );
   mShadowRadiuSpnBx->setValue( mEffect->blurLevel() );
-  mShadowTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
-  mShadowTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacityWidget->setOpacity( mEffect->opacity() );
   mShadowColorBtn->setColor( mEffect->color() );
   mShadowBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
@@ -301,10 +283,9 @@ void QgsShadowEffectWidget::blockSignals( const bool block )
   mShadowOffsetSpnBx->blockSignals( block );
   mOffsetUnitWidget->blockSignals( block );
   mShadowRadiuSpnBx->blockSignals( block );
-  mShadowTranspSpnBx->blockSignals( block );
+  mOpacityWidget->blockSignals( block );
   mShadowColorBtn->blockSignals( block );
   mShadowBlendCmbBx->blockSignals( block );
-  mShadowTranspSlider->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
 
@@ -347,16 +328,12 @@ void QgsShadowEffectWidget::on_mOffsetUnitWidget_changed()
   emit changed();
 }
 
-void QgsShadowEffectWidget::on_mShadowTranspSpnBx_valueChanged( double value )
+void QgsShadowEffectWidget::opacityChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mShadowTranspSlider->blockSignals( true );
-  mShadowTranspSlider->setValue( value * 10.0 );
-  mShadowTranspSlider->blockSignals( false );
-
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value );
   emit changed();
 }
 
@@ -376,11 +353,6 @@ void QgsShadowEffectWidget::on_mShadowRadiuSpnBx_valueChanged( int value )
 
   mEffect->setBlurLevel( value );
   emit changed();
-}
-
-void QgsShadowEffectWidget::on_mShadowTranspSlider_valueChanged( int value )
-{
-  mShadowTranspSpnBx->setValue( value / 10.0 );
 }
 
 void QgsShadowEffectWidget::on_mDrawModeComboBox_currentIndexChanged( int index )
@@ -417,7 +389,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mColorBtn->setAllowAlpha( false );
+  mColorBtn->setAllowOpacity( false );
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
@@ -430,6 +402,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGlowWidget::applyColorRamp );
   connect( radioSingleColor, &QAbstractButton::toggled, this, &QgsGlowWidget::colorModeChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsGlowWidget::opacityChanged );
 }
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
@@ -454,8 +427,7 @@ void QgsGlowWidget::initGui()
   mSpreadUnitWidget->setUnit( mEffect->spreadUnit() );
   mSpreadUnitWidget->setMapUnitScale( mEffect->spreadMapUnitScale() );
   mBlurRadiusSpnBx->setValue( mEffect->blurLevel() );
-  mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacityWidget->setOpacity( mEffect->opacity() );
   mColorBtn->setColor( mEffect->color() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
 
@@ -478,8 +450,7 @@ void QgsGlowWidget::blockSignals( const bool block )
   mSpreadSpnBx->blockSignals( block );
   mSpreadUnitWidget->blockSignals( block );
   mBlurRadiusSpnBx->blockSignals( block );
-  mTranspSpnBx->blockSignals( block );
-  mTranspSlider->blockSignals( block );
+  mOpacityWidget->blockSignals( block );
   mColorBtn->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   btnColorRamp->blockSignals( block );
@@ -528,16 +499,12 @@ void QgsGlowWidget::on_mSpreadUnitWidget_changed()
   emit changed();
 }
 
-void QgsGlowWidget::on_mTranspSpnBx_valueChanged( double value )
+void QgsGlowWidget::opacityChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTranspSlider->blockSignals( true );
-  mTranspSlider->setValue( value * 10.0 );
-  mTranspSlider->blockSignals( false );
-
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value );
   emit changed();
 }
 
@@ -557,11 +524,6 @@ void QgsGlowWidget::on_mBlurRadiusSpnBx_valueChanged( int value )
 
   mEffect->setBlurLevel( value );
   emit changed();
-}
-
-void QgsGlowWidget::on_mTranspSlider_valueChanged( int value )
-{
-  mTranspSpnBx->setValue( value / 10.0 );
 }
 
 void QgsGlowWidget::on_mBlendCmbBx_currentIndexChanged( int index )
@@ -792,7 +754,7 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mBrightnessSpinBox->setClearValue( 0 );
   mContrastSpinBox->setClearValue( 0 );
   mSaturationSpinBox->setClearValue( 0 );
-  mColorizeColorButton->setAllowAlpha( false );
+  mColorizeColorButton->setAllowOpacity( false );
 
   mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );
   mGrayscaleCombo->addItem( tr( "By lightness" ), QgsImageOperation::GrayscaleLightness );
@@ -800,6 +762,8 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   mGrayscaleCombo->addItem( tr( "By average" ), QgsImageOperation::GrayscaleAverage );
 
   initGui();
+
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsColorEffectWidget::opacityChanged );
 }
 
 void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
@@ -828,8 +792,7 @@ void QgsColorEffectWidget::initGui()
   mColorizeColorButton->setColor( mEffect->colorizeColor() );
   int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
   mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
-  mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
-  mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mOpacityWidget->setOpacity( mEffect->opacity() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
   enableColorizeControls( mEffect->colorizeOn() );
@@ -846,8 +809,7 @@ void QgsColorEffectWidget::blockSignals( const bool block )
   mColorizeCheck->blockSignals( block );
   mColorizeColorButton->blockSignals( block );
   mGrayscaleCombo->blockSignals( block );
-  mTranspSpnBx->blockSignals( block );
-  mTranspSlider->blockSignals( block );
+  mOpacityWidget->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
 }
@@ -859,16 +821,12 @@ void QgsColorEffectWidget::enableColorizeControls( const bool enable )
   mColorizeColorButton->setEnabled( enable );
 }
 
-void QgsColorEffectWidget::on_mTranspSpnBx_valueChanged( double value )
+void QgsColorEffectWidget::opacityChanged( double value )
 {
   if ( !mEffect )
     return;
 
-  mTranspSlider->blockSignals( true );
-  mTranspSlider->setValue( value * 10.0 );
-  mTranspSlider->blockSignals( false );
-
-  mEffect->setTransparency( value / 100.0 );
+  mEffect->setOpacity( value );
   emit changed();
 }
 
@@ -892,11 +850,6 @@ void QgsColorEffectWidget::on_mDrawModeComboBox_currentIndexChanged( int index )
 
   mEffect->setDrawMode( mDrawModeComboBox->drawMode() );
   emit changed();
-}
-
-void QgsColorEffectWidget::on_mTranspSlider_valueChanged( int value )
-{
-  mTranspSpnBx->setValue( value / 10.0 );
 }
 
 void QgsColorEffectWidget::on_mBrightnessSpinBox_valueChanged( int value )

@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>494</height>
+        <height>492</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -280,7 +280,7 @@
             <item>
              <widget class="QCheckBox" name="mPlotAlphaCheckbox">
               <property name="text">
-               <string>Alpha</string>
+               <string>Opacity</string>
               </property>
              </widget>
             </item>
@@ -337,15 +337,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

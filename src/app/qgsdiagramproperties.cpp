@@ -85,12 +85,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
-  mDiagramPenColorButton->setAllowAlpha( true );
+  mDiagramPenColorButton->setAllowOpacity( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
   mDiagramPenColorButton->setNoColorString( tr( "Transparent stroke" ) );
@@ -261,8 +261,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
-      mTransparencySpinBox->setValue( settingList.at( 0 ).transparency * 100.0 / 255.0 );
-      mTransparencySlider->setValue( mTransparencySpinBox->value() );
+      mOpacityWidget->setOpacity( settingList.at( 0 ).opacity );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
@@ -404,9 +403,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
-  connect( mTransparencySlider, &QSlider::valueChanged, mTransparencySpinBox, &QgsSpinBox::setValue );
-  connect( mTransparencySpinBox, static_cast < void ( QgsSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTransparencySlider, &QSlider::setValue );
-
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
   registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
   registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
@@ -738,7 +734,7 @@ void QgsDiagramProperties::apply()
   QgsDiagramSettings ds;
   ds.enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
   ds.font = mDiagramFont;
-  ds.transparency = mTransparencySpinBox->value() * 255.0 / 100.0;
+  ds.opacity = mOpacityWidget->opacity();
 
   QList<QColor> categoryColors;
   QList<QString> categoryAttributes;
@@ -749,7 +745,7 @@ void QgsDiagramProperties::apply()
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
     QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
-    color.setAlpha( 255 - ds.transparency );
+    color.setAlphaF( ds.opacity );
     categoryColors.append( color );
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, RoleAttributeExpression ).toString() );
     categoryLabels.append( mDiagramAttributesTreeWidget->topLevelItem( i )->text( 2 ) );

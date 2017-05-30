@@ -43,7 +43,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   }
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
-  mFontColorButton->setAllowAlpha( true );
+  mFontColorButton->setAllowOpacity( true );
   mFontColorButton->setContext( QStringLiteral( "symbology" ) );
 
   setCurrentFontPropertiesToGui();

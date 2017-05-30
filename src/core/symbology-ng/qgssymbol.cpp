@@ -79,7 +79,6 @@ QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const Qg
 QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers )
   : mType( type )
   , mLayers( layers )
-  , mAlpha( 1.0 )
   , mRenderHints( 0 )
   , mClipFeaturesToExtent( true )
   , mLayer( nullptr )
@@ -296,8 +295,17 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
     }
   }
 
-  // set alpha transparency
-  s->setAlpha( QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255 ) / 255.0 );
+  // set opacity
+  double opacity = 1.0;
+  bool ok = false;
+  // upgrade old setting
+  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+  if ( ok )
+    opacity = alpha / 255.0;
+  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+  if ( ok )
+    opacity = newOpacity;
+  s->setOpacity( opacity );
 
   // set random color, it project prefs allow
   if ( defaultSymbol == QLatin1String( "" ) ||
@@ -375,9 +383,9 @@ bool QgsSymbol::changeSymbolLayer( int index, QgsSymbolLayer *layer )
 
 void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() ) );
+  mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, fields, mapUnitScale() ) );
 
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, fields, mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, fields, mapUnitScale() );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
   mSymbolRenderContext->setExpressionContextScope( scope.release() );
@@ -435,7 +443,7 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
 {
   QgsRenderContext context = customContext ? *customContext : QgsRenderContext::fromQPainter( painter );
   context.setForceVectorOutput( true );
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, nullptr, QgsFields(), mapUnitScale() );
 
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
   {
@@ -568,7 +576,7 @@ QString QgsSymbol::dump() const
 
 void QgsSymbol::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
-  props[ QStringLiteral( "alpha" )] = QString::number( alpha() );
+  props[ QStringLiteral( "alpha" )] = QString::number( opacity() );
   double scaleFactor = 1.0;
   props[ QStringLiteral( "uom" )] = QgsSymbolLayerUtils::encodeSldUom( outputUnit(), &scaleFactor );
   props[ QStringLiteral( "uomScale" )] = ( !qgsDoubleNear( scaleFactor, 1.0 ) ? qgsDoubleToString( scaleFactor ) : QLatin1String( "" ) );
@@ -991,11 +999,11 @@ void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int c
 ////////////////////
 
 
-QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha, bool selected, QgsSymbol::RenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
+QgsSymbolRenderContext::QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity, bool selected, QgsSymbol::RenderHints renderHints, const QgsFeature *f, const QgsFields &fields, const QgsMapUnitScale &mapUnitScale )
   : mRenderContext( c )
   , mOutputUnit( u )
   , mMapUnitScale( mapUnitScale )
-  , mAlpha( alpha )
+  , mOpacity( opacity )
   , mSelected( selected )
   , mRenderHints( renderHints )
   , mFeature( f )
@@ -1432,7 +1440,7 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
 
@@ -1469,7 +1477,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
 
 QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature ) const
 {
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints, &feature, feature.fields(), mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, false, mRenderHints, &feature, feature.fields(), mapUnitScale() );
 
   QRectF bound;
   Q_FOREACH ( QgsSymbolLayer *layer, mLayers )
@@ -1489,7 +1497,7 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
 QgsMarkerSymbol *QgsMarkerSymbol::clone() const
 {
   QgsMarkerSymbol *cloneSymbol = new QgsMarkerSymbol( cloneLayers() );
-  cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setOpacity( mOpacity );
   cloneSymbol->setLayer( mLayer );
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
@@ -1643,7 +1651,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 {
   //save old painter
   QPainter *renderPainter = context.painter();
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setOriginalGeometryType( QgsWkbTypes::LineGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
@@ -1706,7 +1714,7 @@ void QgsLineSymbol::renderPolylineUsingLayer( QgsLineSymbolLayer *layer, const Q
 QgsLineSymbol *QgsLineSymbol::clone() const
 {
   QgsLineSymbol *cloneSymbol = new QgsLineSymbol( cloneLayers() );
-  cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setOpacity( mOpacity );
   cloneSymbol->setLayer( mLayer );
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
@@ -1724,7 +1732,7 @@ QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList &layers )
 
 void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
-  QgsSymbolRenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
+  QgsSymbolRenderContext symbolContext( context, outputUnit(), mOpacity, selected, mRenderHints, f, QgsFields(), mapUnitScale() );
   symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
   symbolContext.setGeometryPartNum( symbolRenderContext()->geometryPartNum() );
@@ -1824,7 +1832,7 @@ QList<QPolygonF> *QgsFillSymbol::translateRings( const QList<QPolygonF> *rings, 
 QgsFillSymbol *QgsFillSymbol::clone() const
 {
   QgsFillSymbol *cloneSymbol = new QgsFillSymbol( cloneLayers() );
-  cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setOpacity( mOpacity );
   cloneSymbol->setLayer( mLayer );
   cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;

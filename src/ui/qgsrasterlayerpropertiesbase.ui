@@ -212,7 +212,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -241,8 +241,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>467</width>
-                <height>300</height>
+                <width>617</width>
+                <height>541</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1155,158 +1155,89 @@
                 <number>0</number>
                </property>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QgsCollapsibleGroupBox" name="gboxGlobalTransp">
-                   <property name="title">
-                    <string>Global transparency</string>
-                   </property>
-                   <property name="syncGroup" stdset="0">
-                    <string notr="true">rastertransp</string>
-                   </property>
-                   <layout class="QGridLayout" name="_3">
-                    <item row="0" column="0" colspan="5">
-                     <widget class="QSlider" name="sliderTransparency">
+                <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue_2">
+                 <property name="title">
+                  <string>Global opacity</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastertransp</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_13">
+                  <item row="0" column="0">
+                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
+                 <property name="title">
+                  <string>No data value</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastertransp</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_11">
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <property name="leftMargin">
+                     <number>1</number>
+                    </property>
+                    <item>
+                     <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
+                      <property name="toolTip">
+                       <string>Use original source no data value.</string>
+                      </property>
+                      <property name="text">
+                       <string>No data value</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="lblSrcNoDataValue">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
                       </property>
-                      <property name="maximum">
-                       <number>255</number>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="tickInterval">
-                       <number>25</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="textLabel3">
-                      <property name="text">
-                       <string>None</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <spacer>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="lblTransparencyPercent">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
+                      <property name="toolTip">
+                       <string>Original data source no data value, if exists.</string>
                       </property>
                       <property name="text">
-                       <string> 00%</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="3">
-                     <spacer>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item row="1" column="4">
-                     <widget class="QLabel" name="textLabel4">
-                      <property name="text">
-                       <string>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</string>
+                       <string>&lt;src no data value&gt;</string>
                       </property>
                      </widget>
                     </item>
                    </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QgsCollapsibleGroupBox" name="gboxNoDataValue">
-                   <property name="title">
-                    <string>No data value</string>
-                   </property>
-                   <property name="syncGroup" stdset="0">
-                    <string notr="true">rastertransp</string>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_11">
-                    <item row="0" column="0">
-                     <layout class="QHBoxLayout" name="horizontalLayout_5">
-                      <property name="leftMargin">
-                       <number>1</number>
+                  </item>
+                  <item row="1" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QLabel" name="lblUserNoDataValueLabel">
+                      <property name="toolTip">
+                       <string>Additional user defined no data value.</string>
                       </property>
-                      <item>
-                       <widget class="QCheckBox" name="mSrcNoDataValueCheckBox">
-                        <property name="toolTip">
-                         <string>Use original source no data value.</string>
-                        </property>
-                        <property name="text">
-                         <string>No data value</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLabel" name="lblSrcNoDataValue">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="toolTip">
-                         <string>Original data source no data value, if exists.</string>
-                        </property>
-                        <property name="text">
-                         <string>&lt;src no data value&gt;</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
+                      <property name="text">
+                       <string>Additional no data value</string>
+                      </property>
+                     </widget>
                     </item>
-                    <item row="1" column="0">
-                     <layout class="QHBoxLayout" name="horizontalLayout_6">
-                      <item>
-                       <widget class="QLabel" name="lblUserNoDataValueLabel">
-                        <property name="toolTip">
-                         <string>Additional user defined no data value.</string>
-                        </property>
-                        <property name="text">
-                         <string>Additional no data value</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QLineEdit" name="leNoDataValue">
-                        <property name="toolTip">
-                         <string>Additional user defined no data value.</string>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
+                    <item>
+                     <widget class="QLineEdit" name="leNoDataValue">
+                      <property name="toolTip">
+                       <string>Additional user defined no data value.</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
-                  </widget>
-                 </item>
-                </layout>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="gboxCustomTransparency">
@@ -1559,8 +1490,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>576</width>
-                <height>213</height>
+                <width>617</width>
+                <height>541</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1729,7 +1660,7 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
+                <width>86</width>
                 <height>47</height>
                </rect>
               </property>
@@ -2293,23 +2224,25 @@ p, li { white-space: pre-wrap; }
    <header>qgslayertreeembeddedconfigwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>mLayerInfoGrpBx</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
-  <tabstop>grpSRS</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mBandRenderingGrpBx</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
-  <tabstop>mColorRenderingGrpBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mSliderBrightness</tabstop>
@@ -2327,12 +2260,9 @@ p, li { white-space: pre-wrap; }
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>gboxGlobalTransp</tabstop>
-  <tabstop>sliderTransparency</tabstop>
-  <tabstop>gboxNoDataValue</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
-  <tabstop>gboxCustomTransparency</tabstop>
   <tabstop>cboxTransparencyBand</tabstop>
   <tabstop>pbnAddValuesManually</tabstop>
   <tabstop>pbnAddValuesFromDisplay</tabstop>
@@ -2349,25 +2279,21 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonBuildPyramids</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>mMetaDescriptionGrpBx</tabstop>
   <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
   <tabstop>mLayerKeywordListLineEdit</tabstop>
   <tabstop>mLayerDataUrlLineEdit</tabstop>
   <tabstop>mLayerDataUrlFormatComboBox</tabstop>
-  <tabstop>mMetaAttributionGrpBx</tabstop>
   <tabstop>mLayerAttributionLineEdit</tabstop>
   <tabstop>mLayerAttributionUrlLineEdit</tabstop>
-  <tabstop>mMetaMetaUrlGrpBx</tabstop>
   <tabstop>mLayerMetadataUrlLineEdit</tabstop>
   <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
-  <tabstop>mMetaLegendGrpBx</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
-  <tabstop>mMetaPropertiesGrpBx</tabstop>
   <tabstop>txtbMetadata</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

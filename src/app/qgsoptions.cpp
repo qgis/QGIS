@@ -126,7 +126,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( cmbUITheme, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::uiThemeChanged );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify highlight color" ) );
-  mIdentifyHighlightColorButton->setAllowAlpha( true );
+  mIdentifyHighlightColorButton->setAllowOpacity( true );
   mIdentifyHighlightColorButton->setContext( QStringLiteral( "gui" ) );
   mIdentifyHighlightColorButton->setDefaultColor( Qgis::DEFAULT_HIGHLIGHT_COLOR );
 
@@ -684,7 +684,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   int myAlpha = mSettings->value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
   pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
   pbnSelectionColor->setColorDialogTitle( tr( "Set selection color" ) );
-  pbnSelectionColor->setAllowAlpha( true );
+  pbnSelectionColor->setAllowOpacity( true );
   pbnSelectionColor->setContext( QStringLiteral( "gui" ) );
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
@@ -790,7 +790,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
   mGridColorButton->setColor( gridColor );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setAllowAlpha( true );
+  mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "gui" ) );
   mGridColorButton->setDefaultColor( QColor( 190, 190, 190, 100 ) );
 
@@ -844,7 +844,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
   myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
   mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mLineColorToolButton->setAllowAlpha( true );
+  mLineColorToolButton->setAllowOpacity( true );
   mLineColorToolButton->setContext( QStringLiteral( "gui" ) );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
@@ -853,7 +853,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt();
   myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt();
   mFillColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
-  mFillColorToolButton->setAllowAlpha( true );
+  mFillColorToolButton->setAllowOpacity( true );
   mFillColorToolButton->setContext( QStringLiteral( "gui" ) );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
 

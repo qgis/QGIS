@@ -28,7 +28,6 @@ QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 
 QgsColorEffect::QgsColorEffect()
   : QgsPaintEffect()
-  , mTransparency( 0.0 )
   , mBlendMode( QPainter::CompositionMode_SourceOver )
   , mBrightness( 0 )
   , mContrast( 0 )
@@ -58,7 +57,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   }
   QgsImageOperation::adjustHueSaturation( image, mSaturation, mColorizeOn ? mColorizeColor : QColor(), mColorizeStrength / 100.0 );
 
-  QgsImageOperation::multiplyOpacity( image, 1.0 - mTransparency );
+  QgsImageOperation::multiplyOpacity( image, mOpacity );
   painter->save();
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), image );
@@ -72,7 +71,7 @@ QgsStringMap QgsColorEffect::properties() const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "brightness" ), QString::number( mBrightness ) );
   props.insert( QStringLiteral( "contrast" ), QString::number( mContrast ) );
   props.insert( QStringLiteral( "saturation" ), QString::number( mSaturation ) );
@@ -92,10 +91,21 @@ void QgsColorEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
+  }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );

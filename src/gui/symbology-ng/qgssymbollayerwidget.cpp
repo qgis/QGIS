@@ -136,7 +136,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
   mDashPatternUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColor->setAllowAlpha( true );
+  btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select line color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
 
@@ -378,12 +378,12 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColorFill->setAllowAlpha( true );
+  btnChangeColorFill->setAllowOpacity( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
   btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
-  btnChangeColorStroke->setAllowAlpha( true );
+  btnChangeColorStroke->setAllowOpacity( true );
   btnChangeColorStroke->setColorDialogTitle( tr( "Select stroke color" ) );
   btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorStroke->setShowNoColor( true );
@@ -650,12 +650,12 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorL
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  btnChangeColor->setAllowAlpha( true );
+  btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select fill color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent fill" ) );
-  btnChangeStrokeColor->setAllowAlpha( true );
+  btnChangeStrokeColor->setAllowOpacity( true );
   btnChangeStrokeColor->setColorDialogTitle( tr( "Select stroke color" ) );
   btnChangeStrokeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeStrokeColor->setShowNoColor( true );
@@ -974,12 +974,12 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
 
   btnColorRamp->setShowGradientOnly( true );
 
-  btnChangeColor->setAllowAlpha( true );
+  btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
-  btnChangeColor2->setAllowAlpha( true );
+  btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
@@ -1308,12 +1308,12 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   QButtonGroup *group2 = new QButtonGroup( this );
   group2->addButton( mRadioUseMaxDistance );
   group2->addButton( mRadioUseWholeShape );
-  btnChangeColor->setAllowAlpha( true );
+  btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select gradient color" ) );
   btnChangeColor->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor->setShowNoColor( true );
   btnChangeColor->setNoColorString( tr( "Transparent" ) );
-  btnChangeColor2->setAllowAlpha( true );
+  btnChangeColor2->setAllowOpacity( true );
   btnChangeColor2->setColorDialogTitle( tr( "Select gradient color" ) );
   btnChangeColor2->setContext( QStringLiteral( "symbology" ) );
   btnChangeColor2->setShowNoColor( true );
@@ -1726,10 +1726,10 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   viewGroups->setHeaderHidden( true );
-  mChangeColorButton->setAllowAlpha( true );
+  mChangeColorButton->setAllowOpacity( true );
   mChangeColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mChangeColorButton->setContext( QStringLiteral( "symbology" ) );
-  mChangeStrokeColorButton->setAllowAlpha( true );
+  mChangeStrokeColorButton->setAllowOpacity( true );
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
@@ -1810,9 +1810,9 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
       hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
       hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
   mChangeColorButton->setEnabled( hasFillParam );
-  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
+  mChangeColorButton->setAllowOpacity( hasFillOpacityParam );
   mChangeStrokeColorButton->setEnabled( hasStrokeParam );
-  mChangeStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mChangeStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 
   if ( hasFillParam )
@@ -2316,7 +2316,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
     mChangeColorButton->setColor( fill );
   }
   mChangeColorButton->setEnabled( hasFillParam );
-  mChangeColorButton->setAllowAlpha( hasFillOpacityParam );
+  mChangeColorButton->setAllowOpacity( hasFillOpacityParam );
   if ( resetValues )
   {
     QColor stroke = mChangeStrokeColorButton->color();
@@ -2329,7 +2329,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
     mChangeStrokeColorButton->setColor( stroke );
   }
   mChangeStrokeColorButton->setEnabled( hasStrokeParam );
-  mChangeStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mChangeStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   if ( hasDefaultStrokeWidth && resetValues )
   {
     mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
@@ -2648,10 +2648,10 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   widgetChar = new CharacterWidget;
   scrollArea->setWidget( widgetChar );
 
-  btnColor->setAllowAlpha( true );
+  btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select symbol fill color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );
-  btnStrokeColor->setAllowAlpha( true );
+  btnStrokeColor->setAllowOpacity( true );
   btnStrokeColor->setColorDialogTitle( tr( "Select symbol stroke color" ) );
   btnStrokeColor->setContext( QStringLiteral( "symbology" ) );
 
@@ -2922,7 +2922,9 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
   connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterFillSymbolLayerWidget::setCoordinateMode );
   connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
   connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsRasterFillSymbolLayerWidget::opacityChanged );
 }
+
 
 void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -2958,12 +2960,9 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
       break;
   }
   cboCoordinateMode->blockSignals( false );
-  mSpinTransparency->blockSignals( true );
-  mSpinTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSpinTransparency->blockSignals( false );
-  mSliderTransparency->blockSignals( true );
-  mSliderTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSliderTransparency->blockSignals( false );
+  mOpacityWidget->blockSignals( true );
+  mOpacityWidget->setOpacity( mLayer->opacity() );
+  mOpacityWidget->blockSignals( false );
   mRotationSpinBox->blockSignals( true );
   mRotationSpinBox->setValue( mLayer->angle() );
   mRotationSpinBox->blockSignals( false );
@@ -2989,7 +2988,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyAlpha );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
 }
@@ -3075,14 +3074,14 @@ void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
   emit changed();
 }
 
-void QgsRasterFillSymbolLayerWidget::on_mSpinTransparency_valueChanged( int value )
+void QgsRasterFillSymbolLayerWidget::opacityChanged( double value )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  mLayer->setAlpha( value / 100.0 );
+  mLayer->setOpacity( value );
   emit changed();
   updatePreviewImage();
 }
@@ -3171,9 +3170,9 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   checkerBrush.setTexture( pix );
   p.fillRect( imageRect, checkerBrush );
 
-  if ( mLayer->alpha() < 1.0 )
+  if ( mLayer->opacity() < 1.0 )
   {
-    p.setOpacity( mLayer->alpha() );
+    p.setOpacity( mLayer->opacity() );
   }
 
   p.drawImage( imageRect.left(), imageRect.top(), image );

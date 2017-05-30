@@ -213,7 +213,7 @@ QgsComposerFrame *QgsComposerMultiFrame::createNewFrame( QgsComposerFrame *curre
   newFrame->setFrameStrokeColor( currentFrame->frameStrokeColor() );
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
   newFrame->setFrameStrokeWidth( currentFrame->frameStrokeWidth() );
-  newFrame->setTransparency( currentFrame->transparency() );
+  newFrame->setItemOpacity( currentFrame->itemOpacity() );
   newFrame->setHideBackgroundIfEmpty( currentFrame->hideBackgroundIfEmpty() );
 
   addFrame( newFrame, false );

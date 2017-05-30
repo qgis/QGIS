@@ -246,11 +246,11 @@ Creates a new QgsColorRamp from a map of properties
 .. seealso:: info()
 %End
 
-    void addStopsToGradient( QGradient *gradient, double alpha = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 %Docstring
  Copy color ramp stops to a QGradient
  \param gradient gradient to copy stops into
- \param alpha alpha multiplier. Opacity of colors will be multiplied
+ \param opacity opacity multiplier. Opacity of colors will be multiplied
  by this factor before adding to the gradient.
 .. versionadded:: 2.1
 %End

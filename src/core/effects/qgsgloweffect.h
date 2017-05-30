@@ -116,19 +116,19 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     int blurLevel() const { return mBlurLevel; }
 
-    /** Sets the transparency for the effect
-     * \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see transparency
+    /** Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * \returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * \see setTransparency
+    /** Returns the opacity for the effect.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity().
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
     /** Sets the color for the glow. This only applies if the colorType()
      * is set to SingleColor. The glow will fade between the specified color and
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     QgsMapUnitScale mSpreadMapUnitScale;
     QgsColorRamp *mRamp = nullptr;
     int mBlurLevel;
-    double mTransparency;
+    double mOpacity = 0.5;
     QColor mColor;
     QPainter::CompositionMode mBlendMode;
     GlowColorType mColorType;

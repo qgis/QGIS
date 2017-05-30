@@ -78,20 +78,20 @@ class QgsBlurEffect : QgsPaintEffect
  :rtype: BlurMethod
 %End
 
-    void setTransparency( const double transparency );
+    void setOpacity( const double opacity );
 %Docstring
- Sets the transparency for the effect
- \param transparency double between 0 and 1 inclusive, where 0 is fully opaque
- and 1 is fully transparent
-.. seealso:: transparency
+ Sets the ``opacity`` for the effect.
+ \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+ and 1 is fully opaque
+.. seealso:: opacity()
 %End
 
-    double transparency() const;
+    double opacity() const;
 %Docstring
- Returns the transparency for the effect
- :return: transparency value between 0 and 1 inclusive, where 0 is fully opaque
- and 1 is fully transparent
-.. seealso:: setTransparency
+ Returns the opacity for the effect.
+ :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
+ and 1 is fully opaque
+.. seealso:: setOpacity()
  :rtype: float
 %End
 

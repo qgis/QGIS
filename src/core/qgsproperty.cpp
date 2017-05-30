@@ -79,7 +79,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
       mHelpText = QObject::tr( "string of variable length" );
       break;
 
-    case Transparency:
+    case Opacity:
       mTypes = DataTypeNumeric;
       mHelpText = QObject::tr( "int [0-100]" );
       break;

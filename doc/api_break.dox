@@ -528,6 +528,12 @@ QgsAuthMethod        {#qgis_api_break_3_0_QgsAuthMethod}
 - DataSourceURI has been renamed to DataSourceUri
 - GenericDataSourceURI has been renamed to GenericDataSourceUri
 
+QgsBlurEffect        {#qgis_api_break_3_0_QgsBlurEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsBrowserModel        {#qgis_api_break_3_0_QgsBrowserModel}
 ---------------
 
@@ -573,6 +579,19 @@ QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 --------------
 
 - Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
+- setAllowAlpha() and allowAlpha() were removed. Use setAllowOpacity() and allowOpacity() instead.
+
+
+QgsColorDialog     {#qgis_api_break_3_0_QgsColorDialog}
+--------------
+
+- setAllowAlpha() was removed. Use setAllowOpacity() instead.
+
+
+QgsColorEffect        {#qgis_api_break_3_0_QgsColorEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
 
 
 QgsColorRampShader        {#qgis_api_break_3_0_QgsColorRampShader}
@@ -615,6 +634,12 @@ Use the corresponding methods in QgsComposerUtils instead.
 instead.
 - lockSymbolSize(), imageSizeConsideringRotation(), cornerPointOnRotatedAndScaledRect(),
 sizeChangedByRotation() were removed. No replacement is offered for these methods.
+- transparency() and setTransparency() were removed. Use itemOpacity() and setItemOpacity() instead.
+
+QgsComposerItemCommand        {#qgis_api_break_3_0_QgsComposerItemCommand}
+----------------------
+
+- ItemTransparency was removed. Use ItemOpacity instead.
 
 
 QgsComposerLabel        {#qgis_api_break_3_0_QgsComposerLabel}
@@ -782,6 +807,12 @@ composerShapeAdded, and composerTableFrameAdded were removed. Use the general it
 all these item added events.
 - addComposerMap no longer takes a setDefaultPreviewStyle argument.
 - the mapsToRestore parameter has been removed from addItemsFromXml
+
+QgsCompoundColorWidget     {#qgis_api_break_3_0_QgsCompoundColorWidget}
+----------------------
+
+- setAllowAlpha() was removed. Use setAllowOpacity() instead.
+
 
 QgsConditionalLayerStyle      {#qgis_api_break_3_0_QgsConditionalLayerStyle}
 ------------------------
@@ -992,6 +1023,8 @@ QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 
 - The SizeType enum was removed. Use QgsUnitTypes.RenderUnit instead.
 - readXml() and writeXml() do not take QgsVectorLayer as an argument anymore.
+- transparency was removed. Use opacity instead.
+
 
 QgsDial        {#qgis_api_break_3_0_QgsDial}
 -------
@@ -1013,6 +1046,12 @@ willUseEllipsoid() to determine whether ellipsoidal calculations will be perform
 - measure() has been removed. Use measureArea() or measureLength() instead.
 - textUnit() was removed. Use formatDistance() or formatArea() instead.
 - convertMeasurement was removed. Use QgsUnitTypes for conversion instead.
+
+
+QgsDrawSourceEffect        {#qgis_api_break_3_0_QgsDrawSourceEffect}
+-------------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
 
 
 QgsDxfExport        {#qgis_api_break_3_0_QgsDxfExport}
@@ -1204,6 +1243,12 @@ QgsGeometrySimplifier        {#qgis_api_break_3_0_QgsGeometrySimplifier}
 ---------------------
 
 - simplifyGeometry() has been removed and simplify() must be used instead .
+
+
+QgsGlowEffect        {#qgis_api_break_3_0_QgsGlowEffect}
+-------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
 
 
 QgsGradientColorRampDialog        {#qgis_api_break_3_0_QgsGradientColorRampDialog}
@@ -1806,6 +1851,12 @@ QProgressDialog argument will need to be updated using manually created connecti
 signals and the updates to the progress dialog.
 
 
+QgsRasterFillSymbolLayer       {#qgis_api_break_3_0_QgsRasterFillSymbolLayer}
+-----------------
+
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
+
+
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 ------------------
 
@@ -1956,6 +2007,13 @@ QgsServer       {#qgis_api_break_3_0_QgsServer}
 -  QgsServer::handleRequest( const QString &urlstr ) has been removed in favour of the new
 -  QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response ) has been added
 
+
+QgsShadowEffect        {#qgis_api_break_3_0_QgsShadowEffect}
+---------------
+
+- setTransparency and transparency were removed. Use setOpacity and opacity instead.
+
+
 QgsShortcutsManager       {#qgis_api_break_3_0_QgsShortcutsManager}
 -------------------
 
@@ -2070,6 +2128,7 @@ than an integer value
 - usedAttributes() now requires a QgsRenderContext argument.
 - setDataDefinedAngle(), dataDefinedAngle(), setDataDefinedSize(), dataDefinedSize(), setDataDefinedWidth() and dataDefinedWidth()
 now work with QgsProperty objects instead of QgsDataDefined.
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
 
 
 QgsSymbolLayer (renamed from QgsSymbolLayerV2)        {#qgis_api_break_3_0_QgsSymbolLayer}
@@ -2108,6 +2167,7 @@ QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)        {#qgis_api
 - The constructor, setRenderHints() and renderHints() now accept and return a QgsSymbol::RenderHints flag rather
 than an integer value
 - fields() now returns a QgsFields value, not a pointer.
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
 
 
 QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break_3_0_QgsSymbolLayerUtils}
@@ -2265,6 +2325,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addFeature() no longer accepts an alsoUpdateExtent boolean - this extra argument has been ignored for some time
 - addFeatures() no longer accepts a makeSelected boolean, and will not automatically select newly added features. If desired, features must be manually selected by calling selectByIds() after addFeatures()
 - annotationForm() and setAnnotationForm() have been removed. Form path is stored in individual QgsFormAnnotation objects.
+- setLayerTransparency, layerTransparency, and layerTransparencyChanged were removed. Use opacity, setOpacity and opacityChanged instead.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

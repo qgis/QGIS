@@ -216,7 +216,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnSelectionColor->setColor( myColor );
   pbnSelectionColor->setDefaultColor( defaultSelectionColor );
   pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
-  pbnSelectionColor->setAllowAlpha( true );
+  pbnSelectionColor->setAllowOpacity( true );
 
   //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
@@ -1133,7 +1133,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), cboStyleLine->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), cboStyleFill->currentText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), cboStyleColorRamp->currentText() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), ( int )( 255 - ( mTransparencySlider->value() * 2.55 ) ) );
+  QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), mDefaultOpacityWidget->opacity() );
   QgsProject::instance()->writeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), cbxStyleRandomColors->isChecked() );
   if ( mTreeProjectColors->isDirty() )
   {
@@ -1687,8 +1687,16 @@ void QgsProjectProperties::populateStyles()
   cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
 
   // alpha transparency
-  int transparencyInt = ( 255 - QgsProject::instance()->readNumEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255 ) ) / 2.55;
-  mTransparencySlider->setValue( transparencyInt );
+  double opacity = 1.0;
+  bool ok = false;
+  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+  if ( ok )
+    opacity = 1.0 - alpha / 255.0;
+  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+  if ( ok )
+    opacity = newOpacity;
+
+  mDefaultOpacityWidget->setOpacity( opacity );
 }
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
@@ -1718,20 +1726,6 @@ void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
   // TODO for now just open style manager
   // code in QgsStyleManagerDialog::editColorRamp()
   on_pbtnStyleManager_clicked();
-}
-
-void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
-{
-  mTransparencySpinBox->blockSignals( true );
-  mTransparencySpinBox->setValue( value );
-  mTransparencySpinBox->blockSignals( false );
-}
-
-void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
-{
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value );
-  mTransparencySlider->blockSignals( false );
 }
 
 void QgsProjectProperties::editSymbol( QComboBox *cbo )

@@ -71,12 +71,12 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
-  pbnChangeColor->setAllowAlpha( true );
+  pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select scale bar fill color" ) );
 
-  pbnChangeOutlineColor->setAllowAlpha( true );
+  pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select scale bar outline color" ) );

@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLegendSettings
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
     double mMmPerMapUnit;
 
-    //! Whether to use advanced effects like transparency for symbols - may require their rasterization
+    //! Whether to use advanced effects like opacity for symbols - may require their rasterization
     bool mUseAdvancedEffects;
 
     //! Denominator of map's scale

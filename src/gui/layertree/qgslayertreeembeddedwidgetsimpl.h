@@ -31,11 +31,11 @@ class QgsMapLayer;
  *
  * \note private class - not in QGIS API
  */
-class QgsLayerTreeTransparencyWidget : public QWidget
+class QgsLayerTreeOpacityWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsLayerTreeTransparencyWidget( QgsMapLayer *layer );
+    QgsLayerTreeOpacityWidget( QgsMapLayer *layer );
 
     virtual QSize sizeHint() const override;
 
@@ -44,13 +44,13 @@ class QgsLayerTreeTransparencyWidget : public QWidget
       public:
         virtual QString id() const override;
         virtual QString name() const override;
-        virtual QgsLayerTreeTransparencyWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
+        virtual QgsLayerTreeOpacityWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
         virtual bool supportsLayer( QgsMapLayer *layer ) override;
     };
 
   public slots:
     void sliderValueChanged( int value );
-    void updateTransparencyFromSlider();
+    void updateOpacityFromSlider();
     void layerTrChanged();
 
   private:

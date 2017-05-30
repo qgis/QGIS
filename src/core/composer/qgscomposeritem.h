@@ -364,22 +364,26 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void setBlendMode( const QPainter::CompositionMode blendMode );
 
-    /** Returns the item's transparency
-     * \returns transparency as integer between 0 (transparent) and 255 (opaque)
-     * \see setTransparency
+    /** Returns the item's opacity. This method should be used instead of
+     * QGraphicsItem::opacity() as any data defined overrides will be
+     * respected.
+     * \returns opacity as double between 1.0 (opaque) and 0 (transparent).
+     * \see setItemOpacity()
      */
-    int transparency() const { return mTransparency; }
+    double itemOpacity() const { return mOpacity; }
 
-    /** Sets the item's transparency
-     * \param transparency integer between 0 (transparent) and 255 (opaque)
-     * \see transparency
+    /** Sets the item's \a opacity. This method should be used instead of
+     * QGraphicsItem::setOpacity() as any data defined overrides will be
+     * respected.
+     * \param opacity double between 1.0 (opaque) and 0 (transparent).
+     * \see itemOpacity()
      */
-    void setTransparency( const int transparency );
+    void setItemOpacity( const double opacity );
 
     /** Returns whether effects (e.g., blend modes) are enabled for the item
      * \returns true if effects are enabled
      * \see setEffectsEnabled
-     * \see transparency
+     * \see itemOpacity()
      * \see blendMode
      */
     bool effectsEnabled() const { return mEffectsEnabled; }
@@ -387,7 +391,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Sets whether effects (e.g., blend modes) are enabled for the item
      * \param effectsEnabled set to true to enable effects
      * \see effectsEnabled
-     * \see setTransparency
+     * \see setItemOpacity()
      * \see setBlendMode
      */
     void setEffectsEnabled( const bool effectsEnabled );
@@ -621,8 +625,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     bool mEffectsEnabled;
     QgsComposerEffect *mEffect = nullptr;
 
-    //! Item transparency
-    int mTransparency;
+    //! Item opacity, between 0 and 1
+    double mOpacity = 1.0;
 
     //! Whether item should be excluded in exports
     bool mExcludeFromExports;
@@ -734,25 +738,25 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's transparency, considering data defined transparency
+    /** Refresh item's opacity, considering data defined opacity
       * \param updateItem set to false to prevent the item being automatically updated
-      * after the transparency is set
-      * \param context expression context for evaulating data defined transparency
+      * after the opacity is set
+      * \param context expression context for evaulating data defined opacity
       * \since QGIS 2.5
      */
-    void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
+    void refreshOpacity( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's frame color, considering data defined transparency
+    /** Refresh item's frame color, considering data defined colors
       * \param updateItem set to false to prevent the item being automatically updated
       * after the frame color is set
-      * \param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined color
      */
     void refreshFrameColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** Refresh item's transparency, considering data defined transparency
+    /** Refresh item's background color, considering data defined colors
       * \param updateItem set to false to prevent the item being automatically updated
       * after the background color is set
-      * \param context expression context for evaulating data defined transparency
+      * \param context expression context for evaulating data defined color
      */
     void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 

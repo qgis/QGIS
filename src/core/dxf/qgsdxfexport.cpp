@@ -897,7 +897,7 @@ void QgsDxfExport::writeBlocks()
       continue;
 
     // if point symbol layer and no data defined properties: write block
-    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, slIt->second->alpha(), false, slIt->second->renderHints(), nullptr );
+    QgsSymbolRenderContext ctx( ct, QgsUnitTypes::RenderMapUnits, slIt->second->opacity(), false, slIt->second->renderHints(), nullptr );
     ml->startRender( ctx );
 
     // markers with data defined properties are inserted inline

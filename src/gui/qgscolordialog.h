@@ -56,11 +56,12 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      */
     void setTitle( const QString &title );
 
-    /** Sets whether alpha modification (transparency) is permitted
+    /** Sets whether opacity modification (transparency) is permitted
      * for the color dialog. Defaults to true.
-     * \param allowAlpha set to false to disable alpha modification
+     * \param allowOpacity set to false to disable opacity modification
+     * \since QGIS 3.0
      */
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 
     /** Return a color selection from a color dialog, with live updating of interim selections.
      * \param initialColor the initial color of the selection dialog.
@@ -68,25 +69,25 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param updateSlot the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
      * \param parent parent widget
      * \param title the title of the dialog.
-     * \param allowAlpha set to true to allow modification of color alpha value (transparency)
+     * \param allowOpacity set to true to allow modification of color opacity value (transparency)
      * \returns Selected color on accepted() or initialColor on rejected().
      * \see getColor
      */
     static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
                                 QWidget *parent = nullptr,
                                 const QString &title = QString(),
-                                const bool allowAlpha = true );
+                                const bool allowOpacity = true );
 
     /** Return a color selection from a color dialog.
      * \param initialColor the initial color of the selection dialog.
      * \param parent parent widget
      * \param title the title of the dialog.
-     * \param allowAlpha set to true to allow modification of color alpha value (transparency)
+     * \param allowOpacity set to true to allow modification of color opacity value (transparency)
      * \returns Selected color on accepted() or initialColor on rejected().
      * \see getLiveColor
      */
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
-                            const bool allowAlpha = false );
+                            const bool allowOpacity = false );
 
   signals:
 
@@ -117,7 +118,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 
     QColor mPreviousColor;
 
-    bool mAllowAlpha;
+    bool mAllowOpacity;
 
     /** Saves all dialog and widget settings
      */

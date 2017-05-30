@@ -64,7 +64,18 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     bool usesTransparency() const;
 
+    /**
+     * Sets the \a opacity for the renderer, where \a opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see opacity()
+     */
     void setOpacity( double opacity ) { mOpacity = opacity; }
+
+    /**
+     * Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see setOpacity()
+     */
     double opacity() const { return mOpacity; }
 
     void setRasterTransparency( QgsRasterTransparency *t );
@@ -101,7 +112,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QString mType;
 
     //! Global alpha value (0-1)
-    double mOpacity;
+    double mOpacity = 1.0;
     //! Raster transparency per color or value. Overwrites global alpha value
     QgsRasterTransparency *mRasterTransparency = nullptr;
 

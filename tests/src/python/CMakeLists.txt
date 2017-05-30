@@ -91,6 +91,7 @@ ADD_PYTHON_TEST(PyQgsNewGeoPackageLayerDialog test_qgsnewgeopackagelayerdialog.p
 ADD_PYTHON_TEST(PyQgsNoApplication test_qgsnoapplication.py)
 ADD_PYTHON_TEST(PyQgsOGRProviderGpkg test_provider_ogr_gpkg.py)
 ADD_PYTHON_TEST(PyQgsOGRProviderSqlite test_provider_ogr_sqlite.py)
+ADD_PYTHON_TEST(PyQgsOpacityWidget test_qgsopacitywidget.py)
 ADD_PYTHON_TEST(PyQgsOptional test_qgsoptional.py)
 ADD_PYTHON_TEST(PyQgsPalLabelingBase test_qgspallabeling_base.py)
 ADD_PYTHON_TEST(PyQgsPalLabelingCanvas test_qgspallabeling_canvas.py)

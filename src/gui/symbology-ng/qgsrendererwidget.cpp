@@ -41,7 +41,7 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
 
   contextMenu->addSeparator();
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor() ) );
-  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
+  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeSymbolOpacity() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
 
   if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
@@ -92,7 +92,7 @@ void QgsRendererWidget::changeSymbolColor()
   }
 }
 
-void QgsRendererWidget::changeSymbolTransparency()
+void QgsRendererWidget::changeSymbolOpacity()
 {
   QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
@@ -113,14 +113,14 @@ void QgsRendererWidget::changeSymbolTransparency()
     return;
 
   bool ok;
-  double oldTransparency = ( 1 - firstSymbol->alpha() ) * 100; // convert to percents
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
+  double oldOpacity = firstSymbol->opacity() * 100; // convert to %
+  double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change symbol opacity [%]" ), oldOpacity, 0.0, 100.0, 1, &ok );
   if ( ok )
   {
     Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )
-        symbol->setAlpha( 1 - transparency / 100 );
+        symbol->setOpacity( opacity / 100.0 );
     }
     refreshSymbolView();
   }

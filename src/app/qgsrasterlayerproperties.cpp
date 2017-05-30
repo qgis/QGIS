@@ -112,8 +112,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
-  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterLayerProperties::sliderTransparency_valueChanged );
-
   // brightness/contrast controls
   connect( mSliderBrightness, &QAbstractSlider::valueChanged, mBrightnessSpinBox, &QSpinBox::setValue );
   connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderBrightness, &QAbstractSlider::setValue );
@@ -651,10 +649,7 @@ void QgsRasterLayerProperties::sync()
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( renderer )
   {
-    sliderTransparency->setValue( ( 1.0 - renderer->opacity() ) * 255 );
-    //update the transparency percentage label
-    sliderTransparency_valueChanged( ( 1.0 - renderer->opacity() ) * 255 );
-
+    mOpacityWidget->setOpacity( renderer->opacity() );
     cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
 
@@ -904,7 +899,7 @@ void QgsRasterLayerProperties::apply()
     rasterRenderer->setRasterTransparency( rasterTransparency );
 
     //set global transparency
-    rasterRenderer->setOpacity( ( 255 - sliderTransparency->value() ) / 255.0 );
+    rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
 
   QgsDebugMsg( "processing general tab" );
@@ -1612,13 +1607,6 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();
 }
-
-void QgsRasterLayerProperties::sliderTransparency_valueChanged( int value )
-{
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >( ( value / 255.0 ) * 100 ); //255.0 to prevent integer division
-  lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
-}//sliderTransparency_valueChanged
 
 void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )
 {

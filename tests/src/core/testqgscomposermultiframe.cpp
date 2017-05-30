@@ -109,7 +109,7 @@ void TestQgsComposerMultiFrame::addFrame()
   frame1->setBackgroundEnabled( true );
   frame1->setBackgroundColor( QColor( Qt::green ) );
   frame1->setBlendMode( QPainter::CompositionMode_ColorBurn );
-  frame1->setTransparency( 50 );
+  frame1->setItemOpacity( 0.5 );
 
   QgsComposerFrame *frame2 = htmlItem->createNewFrame( frame1, QPointF( 50, 55 ), QSizeF( 70, 120 ) );
 
@@ -126,7 +126,7 @@ void TestQgsComposerMultiFrame::addFrame()
   QCOMPARE( frame2->hasBackground(), frame1->hasBackground() );
   QCOMPARE( frame2->backgroundColor(), frame1->backgroundColor() );
   QCOMPARE( frame2->blendMode(), frame1->blendMode() );
-  QCOMPARE( frame2->transparency(), frame1->transparency() );
+  QCOMPARE( frame2->itemOpacity(), frame1->itemOpacity() );
 
   //check non-inherited properties
   QVERIFY( !frame2->hidePageIfEmpty() );
@@ -252,10 +252,10 @@ void TestQgsComposerMultiFrame::undoRedo()
   mComposition->endMultiFrameCommand();
 
   //another frame command
-  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsComposerMergeCommand::ItemTransparency );
+  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsComposerMergeCommand::ItemOpacity );
   frame1->setBackgroundColor( QColor( 255, 255, 0 ) );
   frame1->endCommand();
-  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsComposerMergeCommand::ItemTransparency );
+  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsComposerMergeCommand::ItemOpacity );
   frame1->setBackgroundColor( QColor( 255, 0, 0 ) );
   frame1->endCommand();
 

@@ -66,13 +66,13 @@ class TestQgsComposerEffects(unittest.TestCase):
     def testTransparency(self):
         """Test that transparency works for composer items."""
 
-        self.mComposerRect2.setTransparency(50)
+        self.mComposerRect2.setOpacity(0.5)
 
         checker = QgsCompositionChecker('composereffects_transparency', self.mComposition)
         checker.setControlPathPrefix("composer_effects")
         myTestResult, myMessage = checker.testComposition()
 
-        self.mComposerRect2.setTransparency(100)
+        self.mComposerRect2.setOpacity(0)
 
         assert myTestResult, myMessage
 

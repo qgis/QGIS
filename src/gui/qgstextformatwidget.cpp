@@ -124,16 +124,8 @@ void QgsTextFormatWidget::initWidget()
   mRefFont = lblFontPreview->font();
 
   // internal connections
-  connect( mFontTranspSlider, &QAbstractSlider::valueChanged, mFontTranspSpinBox, &QSpinBox::setValue );
-  connect( mFontTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mFontTranspSlider, &QAbstractSlider::setValue );
-  connect( mBufferTranspSlider, &QAbstractSlider::valueChanged, mBufferTranspSpinBox, &QSpinBox::setValue );
-  connect( mBufferTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mBufferTranspSlider, &QAbstractSlider::setValue );
-  connect( mShapeTranspSlider, &QAbstractSlider::valueChanged, mShapeTranspSpinBox, &QSpinBox::setValue );
-  connect( mShapeTranspSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShapeTranspSlider, &QAbstractSlider::setValue );
   connect( mShadowOffsetAngleDial, &QAbstractSlider::valueChanged, mShadowOffsetAngleSpnBx, &QSpinBox::setValue );
   connect( mShadowOffsetAngleSpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShadowOffsetAngleDial, &QAbstractSlider::setValue );
-  connect( mShadowTranspSlider, &QAbstractSlider::valueChanged, mShadowTranspSpnBx, &QSpinBox::setValue );
-  connect( mShadowTranspSpnBx, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mShadowTranspSlider, &QAbstractSlider::setValue );
   connect( mLimitLabelChkBox, &QAbstractButton::toggled, mLimitLabelSpinBox, &QWidget::setEnabled );
   connect( mCheckBoxSubstituteText, &QAbstractButton::toggled, mToolButtonConfigureSubstitutes, &QWidget::setEnabled );
 
@@ -293,9 +285,9 @@ void QgsTextFormatWidget::initWidget()
           << mBufferJoinStyleComboBox
           << mBufferJoinStyleDDBtn
           << mBufferSizeDDBtn
-          << mBufferTranspDDBtn
+          << mBufferOpacityDDBtn
           << mBufferTranspFillChbx
-          << mBufferTranspSpinBox
+          << mBufferOpacityWidget
           << mBufferUnitsDDBtn
           << mCentroidDDBtn
           << mCentroidInsideCheckBox
@@ -339,8 +331,8 @@ void QgsTextFormatWidget::initWidget()
           << mFontStrikeoutDDBtn
           << mFontStyleComboBox
           << mFontStyleDDBtn
-          << mFontTranspDDBtn
-          << mFontTranspSpinBox
+          << mFontOpacityDDBtn
+          << mTextOpacityWidget
           << mFontUnderlineDDBtn
           << mFontUnitsDDBtn
           << mFontWordSpacingDDBtn
@@ -410,8 +402,8 @@ void QgsTextFormatWidget::initWidget()
           << mShadowRadiusUnitWidget
           << mShadowScaleDDBtn
           << mShadowScaleSpnBx
-          << mShadowTranspDDBtn
-          << mShadowTranspSpnBx
+          << mShadowOpacityDDBtn
+          << mShadowOpacityWidget
           << mShadowUnderCmbBx
           << mShadowUnderDDBtn
           << mShapeBlendCmbBx
@@ -452,8 +444,8 @@ void QgsTextFormatWidget::initWidget()
           << mShapeSizeXSpnBx
           << mShapeSizeYDDBtn
           << mShapeSizeYSpnBx
-          << mShapeTranspDDBtn
-          << mShapeTranspSpinBox
+          << mShapeOpacityDDBtn
+          << mBackgroundOpacityWidget
           << mShapeTypeCmbBx
           << mShapeTypeDDBtn
           << mShowLabelDDBtn
@@ -563,6 +555,10 @@ void QgsTextFormatWidget::connectValueChanged( const QList<QWidget *> &widgets, 
     {
       connect( w, SIGNAL( fieldChanged( QString ) ), this,  slot );
     }
+    else if ( QgsOpacityWidget *w = qobject_cast< QgsOpacityWidget *>( widget ) )
+    {
+      connect( w, SIGNAL( opacityChanged( double ) ), this,  slot );
+    }
     else if ( QgsUnitSelectionWidget *w = qobject_cast<QgsUnitSelectionWidget *>( widget ) )
     {
       connect( w, SIGNAL( changed() ), this,  slot );
@@ -618,7 +614,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferUnitWidget->setUnit( buffer.sizeUnit() );
   mBufferUnitWidget->setMapUnitScale( buffer.sizeMapUnitScale() );
   btnBufferColor->setColor( buffer.color() );
-  mBufferTranspSpinBox->setValue( 100 - 100 * buffer.opacity() );
+  mBufferOpacityWidget->setOpacity( buffer.opacity() );
   mBufferJoinStyleComboBox->setPenJoinStyle( buffer.joinStyle() );
   mBufferTranspFillChbx->setChecked( buffer.fillBufferInterior() );
   comboBufferBlendMode->setBlendMode( buffer.blendMode() );
@@ -636,7 +632,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mRefFont = format.font();
   mFontSizeSpinBox->setValue( format.size() );
   btnTextColor->setColor( format.color() );
-  mFontTranspSpinBox->setValue( 100 - 100 * format.opacity() );
+  mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
@@ -694,7 +690,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShapeStrokeWidthUnitWidget->setMapUnitScale( background.strokeWidthMapUnitScale() );
   mShapePenStyleCmbBx->setPenJoinStyle( background.joinStyle() );
 
-  mShapeTranspSpinBox->setValue( 100 - background.opacity() * 100.0 );
+  mBackgroundOpacityWidget->setOpacity( background.opacity() );
   mShapeBlendCmbBx->setBlendMode( background.blendMode() );
 
   mLoadSvgParams = false;
@@ -722,7 +718,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShadowRadiusUnitWidget->setUnit( shadow.blurRadiusUnit() );
   mShadowRadiusUnitWidget->setMapUnitScale( shadow.blurRadiusMapUnitScale() );
   mShadowRadiusAlphaChkBx->setChecked( shadow.blurAlphaOnly() );
-  mShadowTranspSpnBx->setValue( 100 - shadow.opacity() * 100.0 );
+  mShadowOpacityWidget->setOpacity( shadow.opacity() );
   mShadowScaleSpnBx->setValue( shadow.scale() );
 
   mShadowColorBtn->setColor( shadow.color() );
@@ -745,7 +741,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   format.setFont( mRefFont );
   format.setSize( mFontSizeSpinBox->value() );
   format.setNamedStyle( mFontStyleComboBox->currentText() );
-  format.setOpacity( 1.0 - mFontTranspSpinBox->value() / 100.0 );
+  format.setOpacity( mTextOpacityWidget->opacity() );
   format.setBlendMode( comboBlendMode->blendMode() );
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
@@ -756,7 +752,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   buffer.setEnabled( mBufferDrawChkBx->isChecked() );
   buffer.setSize( spinBufferSize->value() );
   buffer.setColor( btnBufferColor->color() );
-  buffer.setOpacity( 1.0 - mBufferTranspSpinBox->value() / 100.0 );
+  buffer.setOpacity( mBufferOpacityWidget->opacity() );
   buffer.setSizeUnit( mBufferUnitWidget->unit() );
   buffer.setSizeMapUnitScale( mBufferUnitWidget->getMapUnitScale() );
   buffer.setJoinStyle( mBufferJoinStyleComboBox->penJoinStyle() );
@@ -792,7 +788,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   background.setStrokeWidthUnit( mShapeStrokeWidthUnitWidget->unit() );
   background.setStrokeWidthMapUnitScale( mShapeStrokeWidthUnitWidget->getMapUnitScale() );
   background.setJoinStyle( mShapePenStyleCmbBx->penJoinStyle() );
-  background.setOpacity( 1.0 - mShapeTranspSpinBox->value() / 100.0 );
+  background.setOpacity( mBackgroundOpacityWidget->opacity() );
   background.setBlendMode( mShapeBlendCmbBx->blendMode() );
   if ( mBackgroundEffect && !QgsPaintEffectRegistry::isDefaultStack( mBackgroundEffect.get() ) )
     background.setPaintEffect( mBackgroundEffect->clone() );
@@ -813,7 +809,7 @@ QgsTextFormat QgsTextFormatWidget::format() const
   shadow.setBlurRadiusUnit( mShadowRadiusUnitWidget->unit() );
   shadow.setBlurRadiusMapUnitScale( mShadowRadiusUnitWidget->getMapUnitScale() );
   shadow.setBlurAlphaOnly( mShadowRadiusAlphaChkBx->isChecked() );
-  shadow.setOpacity( 1.0 - mShadowTranspSpnBx->value() / 100.0 );
+  shadow.setOpacity( mShadowOpacityWidget->opacity() );
   shadow.setScale( mShadowScaleSpnBx->value() );
   shadow.setColor( mShadowColorBtn->color() );
   shadow.setBlendMode( mShadowBlendCmbBx->blendMode() );
@@ -1171,9 +1167,9 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
   mShapeSizeXLabel->setText( tr( "Size%1" ).arg( !isSVG ? tr( " X" ) : QLatin1String( "" ) ) );
 
   // SVG parameter setting doesn't support color's alpha component yet
-  mShapeFillColorBtn->setAllowAlpha( !isSVG );
+  mShapeFillColorBtn->setAllowOpacity( !isSVG );
   mShapeFillColorBtn->setButtonBackground();
-  mShapeStrokeColorBtn->setAllowAlpha( !isSVG );
+  mShapeStrokeColorBtn->setAllowOpacity( !isSVG );
   mShapeStrokeColorBtn->setButtonBackground();
 
   // configure SVG parameter widgets

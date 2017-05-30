@@ -45,9 +45,8 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
   syncToLayer();
 
-  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterTransparencyWidget::sliderTransparency_valueChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -77,9 +76,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
     cboxTransparencyBand->setShowNotSetOption( true, tr( "None" ) );
     cboxTransparencyBand->setLayer( mRasterLayer );
 
-    sliderTransparency->setValue( ( 1.0 - renderer->opacity() ) * 255 );
-    //update the transparency percentage label
-    sliderTransparency_valueChanged( ( 1.0 - renderer->opacity() ) * 255 );
+    mOpacityWidget->setOpacity( renderer->opacity() );
 
     cboxTransparencyBand->setBand( renderer->alphaBand() );
   }
@@ -151,13 +148,6 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
     }
   }
   emit widgetChanged();
-}
-
-void QgsRasterTransparencyWidget::sliderTransparency_valueChanged( int value )
-{
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >( ( value / 255.0 ) * 100 ); //255.0 to prevent integer division
-  lblTransparencyPercent->setText( QString::number( myInt ) + '%' );
 }
 
 void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
@@ -411,7 +401,7 @@ void QgsRasterTransparencyWidget::apply()
     rasterRenderer->setRasterTransparency( rasterTransparency );
 
     //set global transparency
-    rasterRenderer->setOpacity( ( 255 - sliderTransparency->value() ) / 255.0 );
+    rasterRenderer->setOpacity( mOpacityWidget->opacity() );
   }
 }
 

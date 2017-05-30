@@ -190,7 +190,7 @@ QString QgsSimpleLineSymbolLayer::layerType() const
 void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QColor penColor = mColor;
-  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.opacity() );
   mPen.setColor( penColor );
   double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
@@ -227,7 +227,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mSelPen = mPen;
   QColor selColor = context.renderContext().selectionColor();
   if ( ! SELECTION_IS_OPAQUE )
-    selColor.setAlphaF( context.alpha() );
+    selColor.setAlphaF( context.opacity() );
   mSelPen.setColor( selColor );
 }
 
@@ -800,7 +800,7 @@ QColor QgsMarkerLineSymbolLayer::color() const
 
 void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  mMarker->setAlpha( context.alpha() );
+  mMarker->setOpacity( context.opacity() );
 
   // if being rotated, it gets initialized with every line segment
   QgsSymbol::RenderHints hints = 0;

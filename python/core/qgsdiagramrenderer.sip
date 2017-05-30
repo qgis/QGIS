@@ -358,7 +358,12 @@ class QgsDiagramSettings
     LabelPlacementMethod labelPlacementMethod;
     DiagramOrientation diagramOrientation;
     double barWidth;
-    int transparency; // 0 - 100
+
+    double opacity;
+%Docstring
+Opacity, from 0 (transparent) to 1.0 (opaque)
+%End
+
     bool scaleByArea;
     int angleOffset;
 

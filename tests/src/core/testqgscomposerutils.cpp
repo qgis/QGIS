@@ -505,9 +505,9 @@ void TestQgsComposerUtils::readOldDataDefinedPropertyMap()
   QVERIFY( ( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).isActive() );
   QCOMPARE( ( dataDefinedProperties.property( QgsComposerObject::BlendMode ) ).propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( dataDefinedProperties.property( QgsComposerObject::BlendMode ).expressionString(), QString( "test expression" ) );
-  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).isActive() );
-  QCOMPARE( ( dataDefinedProperties.property( QgsComposerObject::Transparency ) ).propertyType(), QgsProperty::FieldBasedProperty );
-  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::Transparency ).field(), QString( "test field 2" ) );
+  QVERIFY( !( dataDefinedProperties.property( QgsComposerObject::Opacity ) ).isActive() );
+  QCOMPARE( ( dataDefinedProperties.property( QgsComposerObject::Opacity ) ).propertyType(), QgsProperty::FieldBasedProperty );
+  QCOMPARE( dataDefinedProperties.property( QgsComposerObject::Opacity ).field(), QString( "test field 2" ) );
   QVERIFY( ( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).isActive() );
   QCOMPARE( ( dataDefinedProperties.property( QgsComposerObject::TestProperty ) ).propertyType(), QgsProperty::FieldBasedProperty );
   QCOMPARE( dataDefinedProperties.property( QgsComposerObject::TestProperty ).field(), QString( "test field 3" ) );

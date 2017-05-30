@@ -272,7 +272,8 @@ class CORE_EXPORT QgsPalLayerSettings
       Family = 6, //!< Font family
       FontStyle = 21, //!< Font style name
       FontSizeUnit = 22, //!< Font size units
-      FontTransp = 18, //!< Text transparency
+      FontTransp = 18, //!< Text transparency (deprecated)
+      FontOpacity = 92, //!< Text opacity
       FontCase = 27, //!< Label text case
       FontLetterSpacing = 28, //!< Letter spacing
       FontWordSpacing = 29, //!< Word spacing
@@ -296,7 +297,8 @@ class CORE_EXPORT QgsPalLayerSettings
       BufferSize = 7,
       BufferUnit = 43,
       BufferColor = 8,
-      BufferTransp = 19,
+      BufferTransp = 19, //!< Buffer transparency (deprecated)
+      BufferOpacity = 94, //!< Buffer opacity
       BufferJoinStyle = 44,
       BufferBlendMode = 45,
 
@@ -314,7 +316,8 @@ class CORE_EXPORT QgsPalLayerSettings
       ShapeOffsetUnits = 55,
       ShapeRadii = 56,
       ShapeRadiiUnits = 57,
-      ShapeTransparency = 63,
+      ShapeTransparency = 63, //!< Shape transparency (deprecated)
+      ShapeOpacity = 93, //!< Shape opacity
       ShapeBlendMode = 64,
       ShapeFillColor = 58,
       ShapeStrokeColor = 59,
@@ -330,7 +333,8 @@ class CORE_EXPORT QgsPalLayerSettings
       ShadowOffsetUnits = 69,
       ShadowRadius = 70,
       ShadowRadiusUnits = 71,
-      ShadowTransparency = 72,
+      ShadowTransparency = 72, //!< Shadow transparency (deprecated)
+      ShadowOpacity = 94, //!< Shadow opacity
       ShadowScale = 73,
       ShadowColor = 74,
       ShadowBlendMode = 75,
@@ -604,7 +608,7 @@ class CORE_EXPORT QgsPalLayerSettings
       DDDouble,
       DDDoublePos,
       DDRotation180,
-      DDTransparency,
+      DDOpacity, //!< Data defined opacity (double between 0 and 100)
       DDString,
       DDUnits,
       DDColor,

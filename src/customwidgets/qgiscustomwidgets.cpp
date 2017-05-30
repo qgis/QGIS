@@ -28,6 +28,7 @@
 #include "qgsfilewidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
+#include "qgsopacitywidgetplugin.h"
 #include "qgsprojectionselectionwidgetplugin.h"
 #include "qgspropertyoverridebuttonplugin.h"
 #include "qgsrasterbandcomboboxplugin.h"
@@ -53,6 +54,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsFileWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
+  mWidgets.append( new QgsOpacityWidgetPlugin( this ) );
   mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
   mWidgets.append( new QgsPropertyOverrideButtonPlugin( this ) );
   mWidgets.append( new QgsRasterBandComboBoxPlugin( this ) );

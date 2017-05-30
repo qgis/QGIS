@@ -543,18 +543,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
   }
 
-#if 0
-  //read transparency level
-  QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
-  if ( ! transparencyNode.isNull() )
-  {
-    // set transparency level only if it's in project
-    // (otherwise it sets the layer transparent)
-    QDomElement myElement = transparencyNode.toElement();
-    setTransparency( myElement.text().toInt() );
-  }
-#endif
-
   mMetadata.readFromLayer( this );
 
   return true;
@@ -820,14 +808,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement mySrsElement = document.createElement( QStringLiteral( "srs" ) );
   mCRS.writeXml( mySrsElement, document );
   layerElement.appendChild( mySrsElement );
-
-#if 0
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-  maplayer.appendChild( transparencyLevelIntElement );
-#endif
 
   // now append layer node to map layer node
 
@@ -1212,18 +1192,6 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
   setMinimumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
   setMaximumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
 
-#if 0
-  //read transparency level
-  QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
-  if ( ! transparencyNode.isNull() )
-  {
-    // set transparency level only if it's in project
-    // (otherwise it sets the layer transparent)
-    QDomElement myElement = transparencyNode.toElement();
-    setTransparency( myElement.text().toInt() );
-  }
-#endif
-
   return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
 }
 
@@ -1240,14 +1208,6 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   myRootNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
   myRootNode.setAttribute( QStringLiteral( "minimumScale" ), QString::number( minimumScale() ) );
   myRootNode.setAttribute( QStringLiteral( "maximumScale" ), QString::number( maximumScale() ) );
-
-#if 0
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-  myRootNode.appendChild( transparencyLevelIntElement );
-#endif
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
   {

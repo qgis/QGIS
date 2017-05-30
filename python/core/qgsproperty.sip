@@ -37,7 +37,7 @@ class QgsPropertyDefinition
       Double0To1,
       Rotation,
       String,
-      Transparency,
+      Opacity,
       RenderUnits,
       ColorWithAlpha,
       ColorNoAlpha,

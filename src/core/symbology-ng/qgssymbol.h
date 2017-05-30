@@ -225,10 +225,19 @@ class CORE_EXPORT QgsSymbol
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    /**
+     * Returns the opacity for the symbol.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    qreal opacity() const { return mOpacity; }
+
+    /**
+     * Sets the \a opacity for the symbol.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
     /** Sets rendering hint flags for the symbol.
      * \see renderHints()
@@ -354,7 +363,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayerList mLayers;
 
     //! Symbol opacity (in the range 0 - 1)
-    qreal mAlpha;
+    qreal mOpacity = 1.0;
 
     RenderHints mRenderHints;
     bool mClipFeaturesToExtent;
@@ -383,14 +392,14 @@ class CORE_EXPORT QgsSymbolRenderContext
     /** Constructor for QgsSymbolRenderContext
      * \param c
      * \param u
-     * \param alpha
+     * \param opacity value between 0 (fully transparent) and 1 (fully opaque)
      * \param selected set to true if symbol should be drawn in a "selected" state
      * \param renderHints flags controlling rendering behavior
      * \param f
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; }
@@ -411,10 +420,19 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsMapUnitScale mapUnitScale() const { return mMapUnitScale; }
     void setMapUnitScale( const QgsMapUnitScale &scale ) { mMapUnitScale = scale; }
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const { return mAlpha; }
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+    /**
+     * Returns the opacity for the symbol.
+     * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see setOpacity()
+     */
+    qreal opacity() const { return mOpacity; }
+
+    /**
+     * Sets the \a opacity for the symbol.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
+     */
+    void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
@@ -503,7 +521,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
     QgsUnitTypes::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
-    qreal mAlpha;
+    qreal mOpacity = 1.0;
     bool mSelected;
     QgsSymbol::RenderHints mRenderHints;
     const QgsFeature *mFeature; //current feature

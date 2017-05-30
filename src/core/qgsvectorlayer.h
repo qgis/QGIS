@@ -355,6 +355,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_PROPERTY( QString mapTipTemplate READ mapTipTemplate WRITE setMapTipTemplate NOTIFY mapTipTemplateChanged )
     Q_PROPERTY( QgsEditFormConfig editFormConfig READ editFormConfig WRITE setEditFormConfig NOTIFY editFormConfigChanged )
     Q_PROPERTY( bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged )
+    Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
 
@@ -1508,10 +1509,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns the current blending mode for features
     QPainter::CompositionMode featureBlendMode() const;
 
-    //! Set the transparency for the vector layer
-    void setLayerTransparency( int layerTransparency );
-    //! Returns the current transparency for the vector layer
-    int layerTransparency() const;
+    /**
+     * Sets the \a opacity for the vector layer, where \a opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see opacity()
+     * \see opacityChanged()
+     * \since QGIS 3.0
+     */
+    void setOpacity( double opacity );
+
+    /**
+     * Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
+     * and 1.0 (fully opaque).
+     * \see setOpacity()
+     * \see opacityChanged()
+     * \since QGIS 3.0
+     */
+    double opacity() const;
 
     QString htmlMetadata() const override;
 
@@ -1795,8 +1809,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Signal emitted when setFeatureBlendMode() is called
     void featureBlendModeChanged( QPainter::CompositionMode blendMode );
 
-    //! Signal emitted when setLayerTransparency() is called
-    void layerTransparencyChanged( int layerTransparency );
+    /**
+     * Emitted when the layer's opacity is changed, where \a opacity is a value between 0 (transparent)
+     * and 1 (opaque).
+     * \since QGIS 3.0
+     * \see setOpacity()
+     * \see opacity()
+     */
+    void opacityChanged( double opacity );
 
     /**
      * Signal emitted when a new edit command has been started
@@ -1994,8 +2014,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Blend mode for features
     QPainter::CompositionMode mFeatureBlendMode;
 
-    //! Layer transparency
-    int mLayerTransparency;
+    //! Layer opacity
+    double mLayerOpacity = 1.0;
 
     //! Flag if the vertex markers should be drawn only for selection (true) or for all features (false)
     bool mVertexMarkerOnlyForSelection;

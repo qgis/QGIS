@@ -57,11 +57,12 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      */
     QColor color() const;
 
-    /** Sets whether alpha modification (transparency) is permitted
+    /** Sets whether opacity modification (transparency) is permitted
      * for the color dialog. Defaults to true.
-     * \param allowAlpha set to false to disable alpha modification
+     * \param allowOpacity set to false to disable opacity modification
+     * \since QGIS 3.0
      */
-    void setAllowAlpha( const bool allowAlpha );
+    void setAllowOpacity( const bool allowOpacity );
 
     /** Sets whether the widget's color has been "discarded" and the selected color should not
      * be stored in the recent color list.

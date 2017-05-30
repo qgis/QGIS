@@ -68,17 +68,17 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerAttributeTableWidget::composerMapChanged );
 
   mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
-  mHeaderFontColorButton->setAllowAlpha( true );
+  mHeaderFontColorButton->setAllowOpacity( true );
   mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
   mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
-  mContentFontColorButton->setAllowAlpha( true );
+  mContentFontColorButton->setAllowOpacity( true );
   mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
-  mGridColorButton->setAllowAlpha( true );
+  mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
-  mBackgroundColorButton->setAllowAlpha( true );
+  mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No background" ) );

@@ -44,11 +44,11 @@ class TestSignalReceiver : public QObject
       : QObject( 0 )
       , rendererChanged( false )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
-      , transparency( 0 )
+      , opacity( 1.0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;
-    int transparency;
+    double opacity;
   public slots:
     void onRendererChanged()
     {
@@ -58,9 +58,9 @@ class TestSignalReceiver : public QObject
     {
       featureBlendMode = blendMode;
     }
-    void onLayerTransparencyChanged( int layerTransparency )
+    void onLayerOpacityChanged( double layerOpacity )
     {
-      transparency = layerTransparency;
+      opacity = layerOpacity;
     }
 };
 
@@ -296,13 +296,13 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 {
   QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
   TestSignalReceiver receiver;
-  QObject::connect( vLayer, SIGNAL( layerTransparencyChanged( int ) ),
-                    &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
+  QObject::connect( vLayer, &QgsVectorLayer::opacityChanged,
+                    &receiver, &TestSignalReceiver::onLayerOpacityChanged );
 
-  QCOMPARE( receiver.transparency, 0 );
-  vLayer->setLayerTransparency( 50 );
-  QCOMPARE( receiver.transparency, 50 );
-  QCOMPARE( vLayer->layerTransparency(), 50 );
+  QCOMPARE( receiver.opacity, 1.0 );
+  vLayer->setOpacity( 0.5 );
+  QCOMPARE( receiver.opacity, 0.5 );
+  QCOMPARE( vLayer->opacity(), 0.5 );
 }
 
 void TestQgsVectorLayer::uniqueValues()
