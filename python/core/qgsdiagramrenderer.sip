@@ -365,7 +365,12 @@ Opacity, from 0 (transparent) to 1.0 (opaque)
 %End
 
     bool scaleByArea;
-    int angleOffset;
+
+    double rotationOffset;
+%Docstring
+ Rotation offset, in degrees clockwise from horizontal.
+.. versionadded:: 3.0
+%End
 
     bool scaleBasedVisibility;
     double minScaleDenominator;
