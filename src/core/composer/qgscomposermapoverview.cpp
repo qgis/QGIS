@@ -58,7 +58,7 @@ void QgsComposerMapOverview::createDefaultFrameSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol = QgsFillSymbol::createSimple( properties );
-  mFrameSymbol->setAlpha( 0.3 );
+  mFrameSymbol->setOpacity( 0.3 );
 }
 
 QgsComposerMapOverview::~QgsComposerMapOverview()

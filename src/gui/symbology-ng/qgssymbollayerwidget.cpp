@@ -2918,11 +2918,15 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
 
   mSpinOffsetX->setClearValue( 0.0 );
   mSpinOffsetY->setClearValue( 0.0 );
+  mSpinOpacity->setClearValue( 100.0 );
 
+  connect( mSliderOpacity, &QSlider::valueChanged, this, [ = ]( int value ) { mSpinOpacity->setValue( value / 10.0 ); } );
+  connect( mSpinOpacity, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { whileBlocking( mSliderOpacity )->setValue( value * 10 ); } );
   connect( cboCoordinateMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterFillSymbolLayerWidget::setCoordinateMode );
   connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
   connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterFillSymbolLayerWidget::offsetChanged );
 }
+
 
 void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
@@ -2958,12 +2962,12 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
       break;
   }
   cboCoordinateMode->blockSignals( false );
-  mSpinTransparency->blockSignals( true );
-  mSpinTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSpinTransparency->blockSignals( false );
-  mSliderTransparency->blockSignals( true );
-  mSliderTransparency->setValue( mLayer->alpha() * 100.0 );
-  mSliderTransparency->blockSignals( false );
+  mSpinOpacity->blockSignals( true );
+  mSpinOpacity->setValue( mLayer->opacity() * 100.0 );
+  mSpinOpacity->blockSignals( false );
+  mSliderOpacity->blockSignals( true );
+  mSliderOpacity->setValue( mLayer->opacity() * 1000.0 );
+  mSliderOpacity->blockSignals( false );
   mRotationSpinBox->blockSignals( true );
   mRotationSpinBox->setValue( mLayer->angle() );
   mRotationSpinBox->blockSignals( false );
@@ -2989,7 +2993,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   updatePreviewImage();
 
   registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyFile );
-  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyAlpha );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
 }
@@ -3075,14 +3079,14 @@ void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
   emit changed();
 }
 
-void QgsRasterFillSymbolLayerWidget::on_mSpinTransparency_valueChanged( int value )
+void QgsRasterFillSymbolLayerWidget::on_mSpinOpacity_valueChanged( double value )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  mLayer->setAlpha( value / 100.0 );
+  mLayer->setOpacity( value / 100.0 );
   emit changed();
   updatePreviewImage();
 }
@@ -3171,9 +3175,9 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   checkerBrush.setTexture( pix );
   p.fillRect( imageRect, checkerBrush );
 
-  if ( mLayer->alpha() < 1.0 )
+  if ( mLayer->opacity() < 1.0 )
   {
-    p.setOpacity( mLayer->alpha() );
+    p.setOpacity( mLayer->opacity() );
   }
 
   p.drawImage( imageRect.left(), imageRect.top(), image );

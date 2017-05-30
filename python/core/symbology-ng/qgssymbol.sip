@@ -175,10 +175,8 @@ class QgsSymbol
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const;
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha );
+    qreal opacity() const;
+    void setOpacity( qreal opacity );
 
     /** Sets rendering hint flags for the symbol.
      * @see renderHints()
@@ -303,17 +301,7 @@ class QgsSymbolRenderContext
 
   public:
 
-    /** Constructor for QgsSymbolRenderContext
-     * @param c
-     * @param u
-     * @param alpha
-     * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints flags controlling rendering behavior
-     * @param f
-     * @param fields
-     * @param mapUnitScale
-     */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal alpha = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = 0, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolRenderContext();
 
     QgsRenderContext &renderContext();
@@ -335,10 +323,8 @@ class QgsSymbolRenderContext
     QgsMapUnitScale mapUnitScale() const;
     void setMapUnitScale( const QgsMapUnitScale &scale );
 
-    //! Get alpha transparency 1 for opaque, 0 for invisible
-    qreal alpha() const;
-    //! Set alpha transparency 1 for opaque, 0 for invisible
-    void setAlpha( qreal alpha );
+    qreal opacity() const;
+    void setOpacity( qreal opacity );
 
     bool selected() const;
     void setSelected( bool selected );

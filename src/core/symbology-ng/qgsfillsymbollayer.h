@@ -694,17 +694,19 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      */
     FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
 
-    /** Sets the opacity for the raster image used in the fill.
-     * \param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
-     * \see alpha
+    /**
+     * Sets the \a opacity for the raster image used in the fill.
+     * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * \see opacity()
      */
-    void setAlpha( const double alpha );
+    void setOpacity( const double opacity );
 
-    /** The opacity for the raster image used in the fill.
+    /**
+     * Returns the opacity for the raster image used in the fill.
      * \returns opacity value between 0 (fully transparent) and 1 (fully opaque)
-     * \see setAlpha
+     * \see setOpacity()
      */
-    double alpha() const { return mAlpha; }
+    double opacity() const { return mOpacity; }
 
     /** Sets the offset for the fill.
      * \param offset offset for fill
@@ -809,7 +811,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     //! Path to the image file
     QString mImageFilePath;
     FillCoordinateMode mCoordinateMode;
-    double mAlpha;
+    double mOpacity = 1.0;
 
     QPointF mOffset;
     QgsUnitTypes::RenderUnit mOffsetUnit;
@@ -824,7 +826,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
   private:
 
     //! Applies the image pattern to the brush
-    void applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha,
+    void applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double opacity,
                        const QgsSymbolRenderContext &context );
 };
 

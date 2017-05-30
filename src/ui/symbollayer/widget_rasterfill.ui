@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
-    <height>417</height>
+    <width>310</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -242,7 +242,7 @@
       <string>Opacity</string>
      </property>
      <property name="buddy">
-      <cstring>mSliderTransparency</cstring>
+      <cstring>mSliderOpacity</cstring>
      </property>
     </widget>
    </item>
@@ -291,7 +291,7 @@
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
      <item>
-      <widget class="QSlider" name="mSliderTransparency">
+      <widget class="QSlider" name="mSliderOpacity">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -299,10 +299,16 @@
         </sizepolicy>
        </property>
        <property name="maximum">
+        <number>1000</number>
+       </property>
+       <property name="singleStep">
+        <number>10</number>
+       </property>
+       <property name="pageStep">
         <number>100</number>
        </property>
        <property name="value">
-        <number>100</number>
+        <number>1000</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -310,18 +316,21 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="mSpinTransparency">
+      <widget class="QgsDoubleSpinBox" name="mSpinOpacity">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="suffix">
-        <string>%</string>
+        <string> %</string>
        </property>
-       <property name="minimum">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <number>100</number>
+       <property name="decimals">
+        <number>1</number>
        </property>
        <property name="value">
-        <number>100</number>
+        <double>100.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -366,44 +375,11 @@
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
-  <tabstop>mSliderTransparency</tabstop>
-  <tabstop>mSpinTransparency</tabstop>
+  <tabstop>mSliderOpacity</tabstop>
+  <tabstop>mSpinOpacity</tabstop>
   <tabstop>mSpinOffsetX</tabstop>
   <tabstop>mSpinOffsetY</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>mSliderTransparency</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>mSpinTransparency</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>311</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>392</x>
-     <y>160</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mSpinTransparency</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>mSliderTransparency</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>392</x>
-     <y>160</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>311</x>
-     <y>160</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

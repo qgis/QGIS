@@ -1837,6 +1837,12 @@ QProgressDialog argument will need to be updated using manually created connecti
 signals and the updates to the progress dialog.
 
 
+QgsRasterFillSymbolLayer       {#qgis_api_break_3_0_QgsRasterFillSymbolLayer}
+-----------------
+
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
+
+
 QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 ------------------
 
@@ -2108,6 +2114,7 @@ than an integer value
 - usedAttributes() now requires a QgsRenderContext argument.
 - setDataDefinedAngle(), dataDefinedAngle(), setDataDefinedSize(), dataDefinedSize(), setDataDefinedWidth() and dataDefinedWidth()
 now work with QgsProperty objects instead of QgsDataDefined.
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
 
 
 QgsSymbolLayer (renamed from QgsSymbolLayerV2)        {#qgis_api_break_3_0_QgsSymbolLayer}
@@ -2146,6 +2153,7 @@ QgsSymbolRenderContext (renamed from QgsSymbolV2RenderContext)        {#qgis_api
 - The constructor, setRenderHints() and renderHints() now accept and return a QgsSymbol::RenderHints flag rather
 than an integer value
 - fields() now returns a QgsFields value, not a pointer.
+- alpha() and setAlpha() were removed. Use opacity() and setOpacity() instead.
 
 
 QgsSymbolLayerUtils (renamed from QgsSymbolLayerUtilsV2)        {#qgis_api_break_3_0_QgsSymbolLayerUtils}

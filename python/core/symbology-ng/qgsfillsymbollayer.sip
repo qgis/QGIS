@@ -550,16 +550,8 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
      */
     FillCoordinateMode coordinateMode() const;
 
-    /** Sets the opacity for the raster image used in the fill.
-     * @param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
-     * @see alpha
-     */
-    void setAlpha( const double alpha );
-    /** The opacity for the raster image used in the fill.
-     * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
-     * @see setAlpha
-     */
-    double alpha() const;
+    void setOpacity( const double opacity );
+    double opacity() const;
 
     /** Sets the offset for the fill.
      * @param offset offset for fill
