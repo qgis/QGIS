@@ -265,7 +265,7 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
 
 void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
 {
-  if ( !vl || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
+  if ( !vl || !vl->hasGeometryType() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
   {
     return;
   }
@@ -382,7 +382,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   Q_FOREACH ( QgsMapLayer *ml, layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl )
+    if ( vl && vl->hasGeometryType() )
     {
       mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
       changed = true;
@@ -408,8 +408,8 @@ bool QgsSnappingConfig::removeLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsSnappingConfig::readLegacySettings()
 {
+  //
   mMode = ActiveLayer;
-  mIndividualLayerSettings.clear();
 
   QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 

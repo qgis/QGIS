@@ -1913,7 +1913,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! snapping widget
     QgsSnappingWidget *mSnappingWidget = nullptr;
     QWidget *mSnappingDialogContainer = nullptr;
-    QgsSnappingWidget *mSnappingDialogWidget = nullptr;
+    QgsSnappingWidget *mSnappingDialog = nullptr;
 
     QgsPluginManager *mPluginManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;

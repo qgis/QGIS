@@ -119,7 +119,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   // units
   mUnitsComboBox = new QComboBox();
   mUnitsComboBox->addItem( tr( "px" ), QgsTolerance::Pixels );
-  mUnitsComboBox->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
+  mUnitsComboBox->addItem( QgsUnitTypes::toString( mProject->distanceUnits() ), QgsTolerance::ProjectUnits );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Map Units (mu)" ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
   connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeUnit );
@@ -199,7 +199,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
     mLayerTreeView = new QTreeView();
     QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, this );
-    model->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), model ) );
+    model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
 
     connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
     connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
@@ -310,9 +310,9 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
 
 void QgsSnappingWidget::projectTopologicalEditingChanged()
 {
-  if ( QgsProject::instance()->topologicalEditing() != mTopologicalEditingAction->isChecked() )
+  if ( mProject->topologicalEditing() != mTopologicalEditingAction->isChecked() )
   {
-    mTopologicalEditingAction->setChecked( QgsProject::instance()->topologicalEditing() );
+    mTopologicalEditingAction->setChecked( mProject->topologicalEditing() );
   }
 }
 
@@ -355,7 +355,7 @@ void QgsSnappingWidget::changeUnit( int idx )
 
 void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 {
-  QgsProject::instance()->setTopologicalEditing( enabled );
+  mProject->setTopologicalEditing( enabled );
 }
 
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
