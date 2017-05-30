@@ -67,7 +67,6 @@ Set the size of the resulting map image
 %Docstring
  Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 .. versionadded:: 2.8
-
 .. seealso:: rotation()
 %End
 
