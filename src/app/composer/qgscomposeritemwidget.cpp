@@ -150,6 +150,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   setupUi( this );
 
+  mItemRotationSpinBox->setClearValue( 0 );
+
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->addButton( mUpperLeftCheckBox );

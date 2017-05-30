@@ -1009,13 +1009,10 @@ double QgsComposerItem::rectHandlerBorderTolerance() const
 
 void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition )
 {
-  if ( r >= 360 )
+  mItemRotation = r;
+  if ( mItemRotation >= 360.0 || mItemRotation <= -360.0 )
   {
-    mItemRotation = ( static_cast< int >( r ) ) % 360;
-  }
-  else
-  {
-    mItemRotation = r;
+    mItemRotation = fmod( mItemRotation, 360.0 );
   }
 
   QgsExpressionContext context = createExpressionContext();
