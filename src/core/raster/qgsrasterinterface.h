@@ -75,7 +75,67 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
  * Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
+#ifdef SIP_RUN
+// QgsRasterInterface subclasses
+#include <qgsbrightnesscontrastfilter.h>
+#include <qgshuesaturationfilter.h>
+#include <qgsrasterdataprovider.h>
+#include <qgsrasternuller.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterresamplefilter.h>
+
+// QgsRasterRenderer subclasses
+#include <qgshillshaderenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgspalettedrasterrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#endif
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
+      sipType = sipType_QgsBrightnessContrastFilter;
+    else if ( dynamic_cast<QgsHueSaturationFilter *>( sipCpp ) )
+      sipType = sipType_QgsHueSaturationFilter;
+    else if ( dynamic_cast<QgsRasterDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProvider;
+      // use static cast because QgsRasterDataProvider has multiple inheritance
+      // and we would end up with bad pointer otherwise!
+      *sipCppRet = static_cast<QgsRasterDataProvider *>( sipCpp );
+    }
+    else if ( dynamic_cast<QgsRasterNuller *>( sipCpp ) )
+      sipType = sipType_QgsRasterNuller;
+    else if ( dynamic_cast<QgsRasterProjector *>( sipCpp ) )
+      sipType = sipType_QgsRasterProjector;
+    else if ( dynamic_cast<QgsRasterRenderer *>( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsHillshadeRenderer *>( sipCpp ) )
+        sipType = sipType_QgsHillshadeRenderer;
+      else if ( dynamic_cast<QgsMultiBandColorRenderer *>( sipCpp ) )
+        sipType = sipType_QgsMultiBandColorRenderer;
+      else if ( dynamic_cast<QgsPalettedRasterRenderer *>( sipCpp ) )
+        sipType = sipType_QgsPalettedRasterRenderer;
+      else if ( dynamic_cast<QgsSingleBandColorDataRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandColorDataRenderer;
+      else if ( dynamic_cast<QgsSingleBandGrayRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandGrayRenderer;
+      else if ( dynamic_cast<QgsSingleBandPseudoColorRenderer *>( sipCpp ) )
+        sipType = sipType_QgsSingleBandPseudoColorRenderer;
+      else
+        sipType = sipType_QgsRasterRenderer;
+    }
+    else if ( dynamic_cast<QgsRasterResampleFilter *>( sipCpp ) )
+      sipType = sipType_QgsRasterResampleFilter;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface )
 
   public:

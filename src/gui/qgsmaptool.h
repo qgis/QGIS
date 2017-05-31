@@ -41,6 +41,18 @@ class QPoint;
 class QAction;
 class QAbstractButton;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// fix to allow compilation with sip 4.7 that for some reason
+// doesn't add these includes to the file where the code from
+// ConvertToSubClassCode goes.
+#include <qgsmaptoolzoom.h>
+#include <qgsmaptoolpan.h>
+#include <qgsmaptoolemitpoint.h>
+#include <qgsmaptoolidentify.h>
+% End
+#endif
+
 /** \ingroup gui
  * Abstract base class for all map tools.
  * Map tools are user interactive tools for manipulating the
@@ -49,6 +61,21 @@ class QAbstractButton;
  */
 class GUI_EXPORT QgsMapTool : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolZoom;
+    else if ( dynamic_cast<QgsMapToolPan *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolPan;
+    else if ( dynamic_cast<QgsMapToolEmitPoint *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolEmitPoint;
+    else if ( dynamic_cast<QgsMapToolIdentify *>( sipCpp ) != NULL )
+      sipType = sipType_QgsMapToolIdentify;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
 
     Q_OBJECT
 

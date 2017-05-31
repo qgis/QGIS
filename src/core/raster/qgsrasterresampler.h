@@ -27,7 +27,23 @@ class QImage;
   * Interface for resampling rasters (e.g. to have a smoother appearance)
   */
 class QgsRasterResampler
+#ifdef SIP_RUN
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+#endif
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsBilinearRasterResampler;
+    else if ( dynamic_cast<QgsCubicRasterResampler *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCubicRasterResampler;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     virtual ~QgsRasterResampler() = default;
     virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0;
