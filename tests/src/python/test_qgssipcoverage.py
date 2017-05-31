@@ -15,7 +15,8 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.testing import unittest
 
-from utilities import printImportant, DoxygenParser
+from utilities import printImportant
+from doxygen_parser import DoxygenParser
 
 from termcolor import colored
 
