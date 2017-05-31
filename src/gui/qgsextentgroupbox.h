@@ -25,6 +25,7 @@
 #include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
+class QgsMapLayerModel;
 
 /** \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
@@ -49,6 +50,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
       OriginalExtent,  //!< Layer's extent
       CurrentExtent,   //!< Map canvas extent
       UserExtent,      //!< Extent manually entered/modified by the user
+      ProjectLayerExtent, //!< Extent taken from a layer within the project
     };
 
     //! Setup original extent - should be called as part of initialization
@@ -119,6 +121,21 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     QgsRectangle mOriginalExtent;
     QgsCoordinateReferenceSystem mOriginalCrs;
+
+  private slots:
+
+    void layerMenuAboutToShow();
+
+  private:
+
+    QMenu *mLayerMenu = nullptr;
+    QgsMapLayerModel *mMapLayerModel = nullptr;
+    QList< QAction * > mMenuActions;
+    QString mExtentLayerId;
+    QString mExtentLayerName;
+
+    void setExtentToLayerExtent( const QString &layerId );
+
 };
 
 #endif // QGSEXTENTGROUPBOX_H

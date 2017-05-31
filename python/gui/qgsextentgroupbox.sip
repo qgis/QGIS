@@ -34,6 +34,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
       OriginalExtent,
       CurrentExtent,
       UserExtent,
+      ProjectLayerExtent,
     };
 
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
@@ -125,6 +126,7 @@ emitted when extent is changed
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
+
 
 
 
