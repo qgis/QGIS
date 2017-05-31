@@ -5224,14 +5224,14 @@ void QgisApp::enableProjectMacros()
   */
 bool QgisApp::addProject( const QString &projectFile )
 {
+  // close the previous opened project if any
+  closeProject();
+
   QFileInfo pfi( projectFile );
   mStatusBar->showMessage( tr( "Loading project: %1" ).arg( pfi.fileName() ) );
   qApp->processEvents();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  // close the previous opened project if any
-  closeProject();
 
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
