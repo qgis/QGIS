@@ -20,6 +20,7 @@
 #include "qgscsexception.h"
 #include "qgsproject.h"
 #include <QMenu>
+#include <QAction>
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -162,8 +163,9 @@ void QgsExtentGroupBox::layerMenuAboutToShow()
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
     QModelIndex index = mMapLayerModel->index( i, 0 );
-    QAction *act = new QAction( qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) ),
-                                mMapLayerModel->data( index, Qt::DisplayRole ).toString() );
+    QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
+    QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
+    QAction *act = new QAction( icon, text, mLayerMenu );
     act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
     QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
     if ( mExtentState == ProjectLayerExtent && mExtentLayerId == layerId )
