@@ -16,7 +16,6 @@ SET(QGIS_APP_SRCS
   qgsattributetypedialog.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
-  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
@@ -204,7 +203,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetabledialog.h
   qgsbookmarks.h
-  qgsbrowserdockwidget.h
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
