@@ -208,8 +208,8 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation& relation, const Q
 
   if ( mNmRelation.isValid() )
   {
-    connect( mNmRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-    connect( mNmRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+    connect( mNmRelation.referencedLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
+    connect( mNmRelation.referencedLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
   }
 
   setTitle( relation.name() );
