@@ -1,26 +1,49 @@
-/**
- * @brief Widget to control a layers transparency and related options
- */
-class QgsRasterTransparencyWidget: QgsMapLayerConfigWidget
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrastertransparencywidget.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 {
+%Docstring
+ Widget to control a layers transparency and related options
+%End
+
 %TypeHeaderCode
-#include <qgsrastertransparencywidget.h>
+#include "qgsrastertransparencywidget.h"
 %End
   public:
-    /**
-     * @brief Widget to control a layers transparency and related options
-     */
+
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
-    ~QgsRasterTransparencyWidget();
+%Docstring
+ Widget to control a layers transparency and related options
+%End
 
   public slots:
-    /**
-     * Sync the widget state to the layer set for the widget.
-     */
-    void syncToLayer();
 
-    /**
-     * Apply any changes on the widget to the set layer.
-     */
+    void syncToLayer();
+%Docstring
+ Sync the widget state to the layer set for the widget.
+%End
+
     void apply();
+%Docstring
+ Apply any changes on the widget to the set layer.
+%End
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrastertransparencywidget.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -29,6 +29,7 @@
 
 class QgsRasterLayer;
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /** \class QgsPalettedRendererClassGatherer
@@ -172,6 +173,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
 };
 ///@endcond PRIVATE
+#endif
 
 /** \ingroup gui
  * \class QgsPalettedRendererWidget

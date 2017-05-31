@@ -101,6 +101,11 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider *> mProviders;
 
+  private:
+#ifdef SIP_RUN
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
+#endif
+
 };
 
 
