@@ -104,8 +104,10 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
      * Should be called as part of initialization and whenever the the output CRS is changed.
+     * If \a reprojectCurrentExtent is true then the current extent will be reproject into the
+     * new output CRS.
      */
-    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent = true );
 
     /**
      * Returns the extent shown in the widget - in output CRS coordinates.

@@ -435,7 +435,7 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
 {
   if ( outputCrs() != mPreviousCrs )
   {
-    mExtentGroupBox->setOutputCrs( outputCrs() );
+    mExtentGroupBox->setOutputCrs( outputCrs(), false );
     QgsExtentGroupBox::ExtentState state = mExtentGroupBox->extentState();
 
     // Reset extent
