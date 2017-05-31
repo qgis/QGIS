@@ -16,7 +16,7 @@
 #ifndef QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 #define QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 
-#include "ui_qgslayertreeembeddedconfigwidget.h"
+#include "ui_qgslayertreeembeddedconfigwidgetbase.h"
 #include "qgis.h"
 #include "qgis_gui.h"
 
@@ -27,7 +27,7 @@ class QgsMapLayer;
  * A widget to configure layer tree embedded widgets for a particular map layer.
  * \since QGIS 2.16
  */
-class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidget
+class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
 {
     Q_OBJECT
   public:

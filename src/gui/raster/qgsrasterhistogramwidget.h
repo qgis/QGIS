@@ -31,7 +31,7 @@ class QwtPlotMarker;
 class QwtPlotZoomer;
 
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-typedef QPointF QwtDoublePoint;
+typedef QPointF QwtDoublePoint SIP_SKIP;
 
 /** \ingroup gui
  * Histogram widget

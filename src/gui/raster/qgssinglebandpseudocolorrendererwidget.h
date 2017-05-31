@@ -30,8 +30,7 @@ class QgsRasterMinMaxWidget;
 /** \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
  */
-class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
-  private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
 
     Q_OBJECT

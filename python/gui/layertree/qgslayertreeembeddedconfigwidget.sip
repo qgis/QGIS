@@ -9,12 +9,16 @@
 
 
 
-class QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidget
+class QgsLayerTreeEmbeddedConfigWidget : QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
+{
 %Docstring
  A widget to configure layer tree embedded widgets for a particular map layer.
 .. versionadded:: 2.16
 %End
-{
+
+%TypeHeaderCode
+#include "qgslayertreeembeddedconfigwidget.h"
+%End
   public:
 
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
