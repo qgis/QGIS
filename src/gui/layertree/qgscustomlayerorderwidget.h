@@ -65,6 +65,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 };
 
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 class CustomLayerOrderModel : public QAbstractListModel
 {
@@ -102,5 +103,6 @@ class CustomLayerOrderModel : public QAbstractListModel
     QStringList mOrder;
 };
 /// @endcond
+#endif
 
 #endif // QGSCUSTOMLAYERORDERWIDGET_H

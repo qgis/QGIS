@@ -1,26 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandgrayrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
 {
+
 %TypeHeaderCode
-#include <qgssinglebandgrayrendererwidget.h>
+#include "qgssinglebandgrayrendererwidget.h"
 %End
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandGrayRendererWidget();
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
+%Docstring
+ :rtype: QgsRasterRendererWidget
+%End
 
-    QgsRasterRenderer *renderer();
-    void setMapCanvas( QgsMapCanvas *canvas );
+    virtual QgsRasterRenderer *renderer();
+
+    virtual void setMapCanvas( QgsMapCanvas *canvas );
+
 
     void setFromRenderer( const QgsRasterRenderer *r );
 
-    QString min( int index = 0 );
-    QString max( int index = 0 );
-    void setMin( const QString &value, int index = 0 );
-    void setMax( const QString &value, int index = 0 );
-    int selectedBand( int index = 0 );
-    void doComputations();
+    virtual QString min( int index = 0 );
+    virtual QString max( int index = 0 );
+    virtual void setMin( const QString &value, int index = 0 );
+
+    virtual void setMax( const QString &value, int index = 0 );
+
+    virtual int selectedBand( int index = 0 );
+    virtual void doComputations();
+
+    virtual QgsRasterMinMaxWidget *minMaxWidget();
 
   public slots:
     void loadMinMax( int bandNo, double min, double max );
+%Docstring
+called when new min/max values are loaded
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandgrayrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
