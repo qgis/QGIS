@@ -130,7 +130,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
-    void rotationChanged();
+    void rotationChanged( double value );
 
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text );

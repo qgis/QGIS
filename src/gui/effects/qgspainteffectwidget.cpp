@@ -235,6 +235,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setAllowOpacity( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
+  mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -577,6 +578,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
+  mRotationSpinBox->setClearValue( 0 );
   mSpinShearX->setClearValue( 0 );
   mSpinShearY->setClearValue( 0 );
   mSpinScaleX->setClearValue( 100.0 );

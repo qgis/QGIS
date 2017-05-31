@@ -239,6 +239,7 @@ class QgsPalLayerSettings
       Hali,
       Vali,
       Rotation,
+      LabelRotation,
       RepeatDistance,
       RepeatDistanceUnit,
       Priority,
@@ -346,7 +347,12 @@ Offset type for layer (only applies in certain placement modes)
     double yOffset; // offset from point in mm or map units
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     QgsMapUnitScale labelOffsetMapUnitScale;
-    double angleOffset; // rotation applied to offset labels
+
+    double angleOffset;
+%Docstring
+Label rotation, in degrees clockwise
+%End
+
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
     double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)

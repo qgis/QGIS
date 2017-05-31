@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>305</width>
+    <width>334</width>
     <height>680</height>
    </rect>
   </property>
@@ -228,6 +228,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_10">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+       <property name="wrapping">
+        <bool>true</bool>
+       </property>
        <property name="suffix">
         <string> °</string>
        </property>
@@ -600,15 +603,15 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenStyleComboBox</class>

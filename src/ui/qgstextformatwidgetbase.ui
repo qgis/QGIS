@@ -2647,14 +2647,17 @@ font-style: italic;</string>
                              <property name="enabled">
                               <bool>false</bool>
                              </property>
+                             <property name="wrapping">
+                              <bool>true</bool>
+                             </property>
                              <property name="suffix">
                               <string notr="true">˚</string>
                              </property>
                              <property name="minimum">
-                              <double>-180.000000000000000</double>
+                              <double>-360.000000000000000</double>
                              </property>
                              <property name="maximum">
-                              <double>180.000000000000000</double>
+                              <double>360.000000000000000</double>
                              </property>
                             </widget>
                            </item>
@@ -3406,14 +3409,17 @@ font-style: italic;</string>
                              </item>
                              <item>
                               <widget class="QgsSpinBox" name="mShadowOffsetAngleSpnBx">
+                               <property name="wrapping">
+                                <bool>true</bool>
+                               </property>
                                <property name="suffix">
                                 <string>˚</string>
                                </property>
                                <property name="minimum">
-                                <number>-180</number>
+                                <number>-360</number>
                                </property>
                                <property name="maximum">
-                                <number>180</number>
+                                <number>360</number>
                                </property>
                                <property name="showClearButton" stdset="0">
                                 <bool>false</bool>
@@ -4781,6 +4787,9 @@ font-style: italic;</string>
                              <verstretch>0</verstretch>
                             </sizepolicy>
                            </property>
+                           <property name="wrapping">
+                            <bool>true</bool>
+                           </property>
                            <property name="suffix">
                             <string>˚</string>
                            </property>
@@ -4789,13 +4798,6 @@ font-style: italic;</string>
                            </property>
                            <property name="maximum">
                             <double>360.000000000000000</double>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mPointAngleDDBtn">
-                           <property name="text">
-                            <string>...</string>
                            </property>
                           </widget>
                          </item>
@@ -6570,7 +6572,6 @@ font-style: italic;</string>
   <tabstop>mPointOffsetUnitWidget</tabstop>
   <tabstop>mPointOffsetUnitsDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
-  <tabstop>mPointAngleDDBtn</tabstop>
   <tabstop>mRepeatDistanceSpinBox</tabstop>
   <tabstop>mRepeatDistanceDDBtn</tabstop>
   <tabstop>mRepeatDistanceUnitWidget</tabstop>

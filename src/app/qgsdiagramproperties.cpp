@@ -147,10 +147,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mScaleDependencyComboBox->addItem( tr( "Area" ), true );
   mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
 
-  mAngleOffsetComboBox->addItem( tr( "Top" ), 90 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Top" ), 270 );
   mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
-  mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
-  mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Bottom" ), 90 );
+  mAngleOffsetComboBox->addItem( tr( "Left" ), 180 );
 
   QgsSettings settings;
 
@@ -283,7 +283,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
-      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).angleOffset ) );
+      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).rotationOffset ) );
 
       mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
       mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
@@ -779,7 +779,7 @@ void QgsDiagramProperties::apply()
   ds.scaleBasedVisibility = mScaleVisibilityGroupBox->isChecked();
 
   // Diagram angle offset (pie)
-  ds.angleOffset = mAngleOffsetComboBox->currentData().toInt();
+  ds.rotationOffset = mAngleOffsetComboBox->currentData().toInt();
 
   // Diagram orientation (histogram)
   ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );

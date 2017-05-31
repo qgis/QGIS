@@ -901,12 +901,12 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
-void QgsComposerMap::setMapRotation( double r )
+void QgsComposerMap::setMapRotation( double rotation )
 {
-  mMapRotation = r;
+  mMapRotation = rotation;
   mEvaluatedMapRotation = mMapRotation;
   invalidateCache();
-  emit mapRotationChanged( r );
+  emit mapRotationChanged( rotation );
   emit itemChanged();
 }
 

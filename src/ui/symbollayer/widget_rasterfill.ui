@@ -77,8 +77,14 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="wrapping">
+        <bool>true</bool>
+       </property>
        <property name="suffix">
         <string> °</string>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
        </property>
        <property name="maximum">
         <double>360.000000000000000</double>

@@ -138,7 +138,7 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
         }
         else
         {
-          p->drawPie( baseX, baseY, w, h, totalAngle + s.angleOffset, currentAngle );
+          p->drawPie( baseX, baseY, w, h, totalAngle - s.rotationOffset * 16.0, currentAngle );
         }
         totalAngle += currentAngle;
       }

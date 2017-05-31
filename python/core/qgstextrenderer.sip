@@ -405,7 +405,7 @@ class QgsTextBackgroundSettings
 
     double rotation() const;
 %Docstring
- Returns the rotation for the background shape.
+ Returns the rotation for the background shape, in degrees clockwise.
 .. seealso:: rotationType()
 .. seealso:: setRotation()
  :rtype: float
@@ -413,8 +413,7 @@ class QgsTextBackgroundSettings
 
     void setRotation( double rotation );
 %Docstring
- Sets the rotation for the background shape.
- \param rotation angle in degrees to rotate
+ Sets the ``rotation`` for the background shape, in degrees clockwise.
 .. seealso:: rotation()
 .. seealso:: setRotationType()
 %End

@@ -427,13 +427,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     bool positionLock() const { return mItemPositionLocked; }
 
-    /** Returns the current rotation for the composer item.
-     * \returns rotation for composer item
+    /**
+     * Returns the current rotation for the composer item, in degrees clockwise.
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
      * \since QGIS 2.1
-     * \see setItemRotation
+     * \see setItemRotation()
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
@@ -555,14 +555,15 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
   public slots:
 
-    /** Sets the item rotation
-     * \param r item rotation in degrees
+    /**
+     * Sets the item \a rotation, in degrees clockwise.
+     * \param rotation item rotation in degrees
      * \param adjustPosition set to true if item should be shifted so that rotation occurs
      * around item center. If false, rotation occurs around item origin
      * \since QGIS 2.1
      * \see itemRotation
      */
-    virtual void setItemRotation( const double r, const bool adjustPosition = false );
+    virtual void setItemRotation( const double rotation, const bool adjustPosition = false );
 
     void repaint() override;
 

@@ -91,11 +91,17 @@
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinAngle">
+       <property name="wrapping">
+        <bool>true</bool>
+       </property>
        <property name="suffix">
         <string> °</string>
        </property>
        <property name="decimals">
         <number>2</number>
+       </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
        </property>
        <property name="maximum">
         <double>360.000000000000000</double>
@@ -526,6 +532,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -539,12 +551,6 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

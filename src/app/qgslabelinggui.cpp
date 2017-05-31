@@ -545,7 +545,7 @@ void QgsLabelingGui::populateDataDefinedButtons()
   mCoordAlignmentHDDBtn->setUsageInfo( ddPlaceInfo );
   registerDataDefinedButton( mCoordAlignmentVDDBtn, QgsPalLayerSettings::Vali );
   mCoordAlignmentVDDBtn->setUsageInfo( ddPlaceInfo );
-  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::Rotation );
+  registerDataDefinedButton( mCoordRotationDDBtn, QgsPalLayerSettings::LabelRotation );
   mCoordRotationDDBtn->setUsageInfo( ddPlaceInfo );
 
   // rendering

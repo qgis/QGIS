@@ -157,16 +157,14 @@ class QgsTransformEffect : QgsPaintEffect
 
     void setRotation( const double rotation );
 %Docstring
- Sets the transform rotation.
- \param rotation degrees to rotate, clockwise
-.. seealso:: rotation
+ Sets the transform ``rotation``, in degrees clockwise.
+.. seealso:: rotation()
 %End
 
     double rotation() const;
 %Docstring
- Returns the transform rotation.
- :return: rotation in degrees clockwise
-.. seealso:: setRotation
+ Returns the transform rotation, in degrees clockwise.
+.. seealso:: setRotation()
  :rtype: float
 %End
 
