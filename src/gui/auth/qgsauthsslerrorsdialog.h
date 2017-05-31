@@ -22,6 +22,7 @@
 #include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QNetworkReply;
 class QPushButton;
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
      */
     QgsAuthSslErrorsDialog( QNetworkReply *reply,
                             const QList<QSslError> &sslErrors,
-                            QWidget *parent = nullptr,
+                            QWidget *parent SIP_TRANSFERTHIS = nullptr,
                             const QString &digest = QString(),
                             const QString &hostport = QString() );
 
