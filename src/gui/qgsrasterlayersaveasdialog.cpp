@@ -435,24 +435,7 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
 {
   if ( outputCrs() != mPreviousCrs )
   {
-    mExtentGroupBox->setOutputCrs( outputCrs(), false );
-    QgsExtentGroupBox::ExtentState state = mExtentGroupBox->extentState();
-
-    // Reset extent
-    // We could reproject previous but that would add additional space also if
-    // it is was not necessary or at leas it could decrease accuracy
-    if ( state == QgsExtentGroupBox::OriginalExtent )
-    {
-      mExtentGroupBox->setOutputExtentFromOriginal();
-    }
-    else if ( state == QgsExtentGroupBox::CurrentExtent )
-    {
-      mExtentGroupBox->setOutputExtentFromCurrent();
-    }
-    else
-    {
-      mExtentGroupBox->setOutputExtentFromUser( mExtentGroupBox->outputExtent(), mPreviousCrs );
-    }
+    mExtentGroupBox->setOutputCrs( outputCrs() );
 
     // Reset resolution
     if ( mResolutionRadioButton->isChecked() )

@@ -62,25 +62,45 @@ void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, con
   mCurrentCrs = currentCrs;
 }
 
-void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent )
+void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
-  if ( reprojectCurrentExtent && mOutputCrs != outputCrs )
+  if ( mOutputCrs != outputCrs )
   {
-    try
+    switch ( mExtentState )
     {
-      QgsCoordinateTransform ct( mOutputCrs, outputCrs );
-      QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
-      mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
-      mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
-      mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
-      mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
+      case CurrentExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromCurrent();
+        break;
+
+      case OriginalExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromOriginal();
+        break;
+
+      case ProjectLayerExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromLayer( mExtentLayer.data() );
+        break;
+
+      case UserExtent:
+        try
+        {
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs );
+          QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
+          mOutputCrs = outputCrs;
+          setOutputExtentFromUser( extent, outputCrs );
+        }
+        catch ( QgsCsException & )
+        {
+          // can't reproject
+          mOutputCrs = outputCrs;
+        }
+        break;
     }
-    catch ( QgsCsException & )
-    {
-      // can't reproject
-    }
+
   }
-  mOutputCrs = outputCrs;
+
 }
 
 void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
@@ -168,7 +188,7 @@ void QgsExtentGroupBox::layerMenuAboutToShow()
     QAction *act = new QAction( icon, text, mLayerMenu );
     act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
     QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
-    if ( mExtentState == ProjectLayerExtent && mExtentLayerId == layerId )
+    if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
     {
       act->setCheckable( true );
       act->setChecked( true );
@@ -212,7 +232,7 @@ void QgsExtentGroupBox::setOutputExtentFromLayer( const QgsMapLayer *layer )
   if ( !layer )
     return;
 
-  mExtentLayerId = layer->id();
+  mExtentLayer = layer;
   mExtentLayerName = layer->name();
 
   setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );

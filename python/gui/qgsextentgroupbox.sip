@@ -67,13 +67,15 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 %Docstring
  Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
+ The current extent is usually set to match the current map canvas extent.
 .. seealso:: currentExtent()
 .. seealso:: currentCrs()
 %End
 
     QgsRectangle currentExtent() const;
 %Docstring
- Returns the current extent set for the widget.
+ Returns the current extent set for the widget. The current extent is usually set to match the
+ current map canvas extent.
 .. seealso:: setCurrentExtent()
 .. seealso:: currentCrs()
  :rtype: QgsRectangle
@@ -81,18 +83,18 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 
     QgsCoordinateReferenceSystem currentCrs() const;
 %Docstring
- Returns the coordinate reference system for the current extent set for the widget.
+ Returns the coordinate reference system for the current extent set for the widget. The current
+ extent and CRS usually reflects the map canvas extent and CRS.
 .. seealso:: setCurrentExtent()
 .. seealso:: currentExtent()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent = true );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 %Docstring
  Sets the output CRS - may need to be used for transformation from original/current extent.
  Should be called as part of initialization and whenever the the output CRS is changed.
- If ``reprojectCurrentExtent`` is true then the current extent will be reproject into the
- new output CRS.
+ The current extent will be reprojected into the new output CRS.
 %End
 
     QgsRectangle outputExtent() const;

@@ -82,20 +82,23 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     /**
      * Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
+     * The current extent is usually set to match the current map canvas extent.
      * \see currentExtent()
      * \see currentCrs()
      */
     void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 
     /**
-     * Returns the current extent set for the widget.
+     * Returns the current extent set for the widget. The current extent is usually set to match the
+     * current map canvas extent.
      * \see setCurrentExtent()
      * \see currentCrs()
      */
     QgsRectangle currentExtent() const { return mCurrentExtent; }
 
     /**
-     * Returns the coordinate reference system for the current extent set for the widget.
+     * Returns the coordinate reference system for the current extent set for the widget. The current
+     * extent and CRS usually reflects the map canvas extent and CRS.
      * \see setCurrentExtent()
      * \see currentExtent()
      */
@@ -104,10 +107,9 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     /**
      * Sets the output CRS - may need to be used for transformation from original/current extent.
      * Should be called as part of initialization and whenever the the output CRS is changed.
-     * If \a reprojectCurrentExtent is true then the current extent will be reproject into the
-     * new output CRS.
+     * The current extent will be reprojected into the new output CRS.
      */
-    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent = true );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 
     /**
      * Returns the extent shown in the widget - in output CRS coordinates.
@@ -194,7 +196,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     QMenu *mLayerMenu = nullptr;
     QgsMapLayerModel *mMapLayerModel = nullptr;
     QList< QAction * > mMenuActions;
-    QString mExtentLayerId;
+    QPointer< const QgsMapLayer > mExtentLayer;
     QString mExtentLayerName;
 
     void setExtentToLayerExtent( const QString &layerId );
