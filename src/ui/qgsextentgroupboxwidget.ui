@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>380</width>
-    <height>164</height>
+    <height>202</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -151,7 +151,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Calculate from layer...</string>
+         <string>Calculate from layer</string>
         </property>
        </widget>
       </item>
