@@ -171,10 +171,7 @@ void QgsExtentGroupBox::setExtentToLayerExtent( const QString &layerId )
   if ( !layer )
     return;
 
-  mExtentLayerId = layerId;
-  mExtentLayerName = layer->name();
-
-  setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );
+  setOutputExtentFromLayer( layer );
 }
 
 void QgsExtentGroupBox::setOutputExtentFromCurrent()
@@ -191,6 +188,17 @@ void QgsExtentGroupBox::setOutputExtentFromOriginal()
 void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   setOutputExtent( extent, crs, UserExtent );
+}
+
+void QgsExtentGroupBox::setOutputExtentFromLayer( const QgsMapLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  mExtentLayerId = layer->id();
+  mExtentLayerName = layer->name();
+
+  setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );
 }
 
 void QgsExtentGroupBox::groupBoxClicked()
