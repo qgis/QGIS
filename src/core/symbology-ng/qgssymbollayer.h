@@ -50,7 +50,70 @@ class QgsPaintEffect;
  * \class QgsSymbolLayer
  */
 class CORE_EXPORT QgsSymbolLayer
+#ifdef SIP_RUN
+#include <qgslinesymbollayer.h>
+#endif
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsSymbol::Marker:
+        if ( sipCpp->layerType() == "EllipseMarker" )
+          sipType = sipType_QgsEllipseSymbolLayer;
+        else if ( sipCpp->layerType() == "FontMarker" )
+          sipType = sipType_QgsFontMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "SimpleMarker" )
+          sipType = sipType_QgsSimpleMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "FilledMarker" )
+          sipType = sipType_QgsFilledMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "SvgMarker" )
+          sipType = sipType_QgsSvgMarkerSymbolLayer;
+        else if ( sipCpp->layerType() == "VectorField" )
+          sipType = sipType_QgsVectorFieldSymbolLayer;
+        else
+          sipType = sipType_QgsMarkerSymbolLayer;
+        break;
+
+      case QgsSymbol::Line:
+        if ( sipCpp->layerType() == "MarkerLine" )
+          sipType = sipType_QgsMarkerLineSymbolLayer;
+        else if ( sipCpp->layerType() == "SimpleLine" )
+          sipType = sipType_QgsSimpleLineSymbolLayer;
+        else if ( sipCpp->layerType() == "ArrowLine" )
+          sipType = sipType_QgsArrowSymbolLayer;
+        else
+          sipType = sipType_QgsLineSymbolLayer;
+        break;
+
+      case QgsSymbol::Fill:
+        if ( sipCpp->layerType() == "SimpleFill" )
+          sipType = sipType_QgsSimpleFillSymbolLayer;
+        else if ( sipCpp->layerType() == "LinePatternFill" )
+          sipType = sipType_QgsLinePatternFillSymbolLayer;
+        else if ( sipCpp->layerType() == "PointPatternFill" )
+          sipType = sipType_QgsPointPatternFillSymbolLayer;
+        else if ( sipCpp->layerType() == "SVGFill" )
+          sipType = sipType_QgsSVGFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RasterFill" )
+          sipType = sipType_QgsRasterFillSymbolLayer;
+        else if ( sipCpp->layerType() == "CentroidFill" )
+          sipType = sipType_QgsCentroidFillSymbolLayer;
+        else if ( sipCpp->layerType() == "GradientFill" )
+          sipType = sipType_QgsGradientFillSymbolLayer;
+        else if ( sipCpp->layerType() == "ShapeburstFill" )
+          sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else
+          sipType = sipType_QgsFillSymbolLayer;
+        break;
+
+      case QgsSymbol::Hybrid:
+        sipType = sipType_QgsGeometryGeneratorSymbolLayer;
+        break;
+    }
+    SIP_END
+#endif
   public:
 
     /**

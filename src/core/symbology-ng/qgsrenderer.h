@@ -86,6 +86,34 @@ typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
  */
 class CORE_EXPORT QgsFeatureRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "singleSymbol" )
+      sipType = sipType_QgsSingleSymbolRenderer;
+    else if ( sipCpp->type() == "categorizedSymbol" )
+      sipType = sipType_QgsCategorizedSymbolRenderer;
+    else if ( sipCpp->type() == "graduatedSymbol" )
+      sipType = sipType_QgsGraduatedSymbolRenderer;
+    else if ( sipCpp->type() == "RuleRenderer" )
+      sipType = sipType_QgsRuleBasedRenderer;
+    else if ( sipCpp->type() == "heatmapRenderer" )
+      sipType = sipType_QgsHeatmapRenderer;
+    else if ( sipCpp->type() == "invertedPolygonRenderer" )
+      sipType = sipType_QgsInvertedPolygonRenderer;
+    else if ( sipCpp->type() == "pointCluster" )
+      sipType = sipType_QgsPointClusterRenderer;
+    else if ( sipCpp->type() == "pointDisplacement" )
+      sipType = sipType_QgsPointDisplacementRenderer;
+    else if ( sipCpp->type() == "25dRenderer" )
+      sipType = sipType_Qgs25DRenderer;
+    else if ( sipCpp->type() == "nullSymbol" )
+      sipType = sipType_QgsNullSymbolRenderer;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     // renderer takes ownership of its symbols!
 

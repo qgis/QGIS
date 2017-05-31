@@ -59,6 +59,19 @@ typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
  */
 class CORE_EXPORT QgsSymbol
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->type() )
+    {
+      case QgsSymbol::Marker: sipType = sipType_QgsMarkerSymbol; break;
+      case QgsSymbol::Line: sipType = sipType_QgsLineSymbol; break;
+      case QgsSymbol::Fill: sipType = sipType_QgsFillSymbol; break;
+      default: sipType = 0; break;
+    }
+    SIP_END
+#endif
+
     friend class QgsFeatureRenderer;
 
   public:
