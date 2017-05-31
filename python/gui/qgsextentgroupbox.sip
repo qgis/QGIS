@@ -87,10 +87,12 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent = true );
 %Docstring
  Sets the output CRS - may need to be used for transformation from original/current extent.
  Should be called as part of initialization and whenever the the output CRS is changed.
+ If ``reprojectCurrentExtent`` is true then the current extent will be reproject into the
+ new output CRS.
 %End
 
     QgsRectangle outputExtent() const;

@@ -82,6 +82,23 @@ class TestQgsExtentGroupBox(unittest.TestCase):
         self.assertEqual(w.extentState(), QgsExtentGroupBox.ProjectLayerExtent)
         self.assertEqual(len(spy), 4)
 
+    def testSetOutputCrs(self):
+        w = qgis.gui.QgsExtentGroupBox()
+
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
+        w.setCurrentExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))
+        w.setOutputExtentFromCurrent()
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
+
+        # no reprojection
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:3785'), False)
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'), False)
+
+        # with reprojection
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:3785'), True)
+        self.assertEqual(w.outputExtent().toString(4), QgsRectangle(111319.4908, 222684.2085, 333958.4724, 445640.1097).toString(4))
+
 
 if __name__ == '__main__':
     unittest.main()

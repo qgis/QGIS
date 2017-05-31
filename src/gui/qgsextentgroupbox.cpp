@@ -61,11 +61,26 @@ void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, con
   mCurrentCrs = currentCrs;
 }
 
-void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
+void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs, bool reprojectCurrentExtent )
 {
+  if ( reprojectCurrentExtent && mOutputCrs != outputCrs )
+  {
+    try
+    {
+      QgsCoordinateTransform ct( mOutputCrs, outputCrs );
+      QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
+      mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
+      mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
+      mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
+      mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
+    }
+    catch ( QgsCsException & )
+    {
+      // can't reproject
+    }
+  }
   mOutputCrs = outputCrs;
 }
-
 
 void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
 {
