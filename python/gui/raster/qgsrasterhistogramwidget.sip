@@ -10,7 +10,6 @@
 
 
 
-typedef QPointF QwtDoublePoint;
 
 
 class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
