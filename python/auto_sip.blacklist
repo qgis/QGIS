@@ -193,11 +193,8 @@ gui/layertree/qgslayertreeembeddedwidgetregistry.sip
 gui/layertree/qgslayertreemapcanvasbridge.sip
 gui/layertree/qgslayertreeview.sip
 gui/layertree/qgslayertreeviewdefaultactions.sip
-gui/raster/qgsmultibandcolorrendererwidget.sip
 gui/raster/qgspalettedrendererwidget.sip
 gui/raster/qgsrasterhistogramwidget.sip
-gui/raster/qgsrasterminmaxwidget.sip
-gui/raster/qgsrasterrendererwidget.sip
 gui/raster/qgssinglebandgrayrendererwidget.sip
 gui/raster/qgssinglebandpseudocolorrendererwidget.sip
 gui/raster/qgsrendererrasterpropertieswidget.sip
