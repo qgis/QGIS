@@ -947,7 +947,7 @@ namespace QgsWms
           //keyword list
           if ( !l->keywordList().isEmpty() )
           {
-            QStringList keywordStringList = l->keywordList().split( QStringLiteral( "," ) );
+            QStringList keywordStringList = l->keywordList().split( ',' );
 
             QDomElement keywordListElem = doc.createElement( QStringLiteral( "KeywordList" ) );
             for ( int i = 0; i < keywordStringList.size(); ++i )
@@ -1619,7 +1619,7 @@ namespace QgsWms
           reversedList << layerList[ i ];
 
         QDomElement layerDrawingOrderElem = doc.createElement( QStringLiteral( "LayerDrawingOrder" ) );
-        QDomText drawingOrderText = doc.createTextNode( reversedList.join( QStringLiteral( "," ) ) );
+        QDomText drawingOrderText = doc.createTextNode( reversedList.join( ',' ) );
         layerDrawingOrderElem.appendChild( drawingOrderText );
         parentElem.appendChild( layerDrawingOrderElem );
       }

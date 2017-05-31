@@ -45,7 +45,7 @@ namespace QgsWcs
     QString name = layer->name();
     if ( !layer->shortName().isEmpty() )
       name = layer->shortName();
-    name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+    name = name.replace( ' ', '_' );
     QDomText nameText = doc.createTextNode( name );
     nameElem.appendChild( nameText );
     layerElem.appendChild( nameElem );
@@ -260,7 +260,7 @@ namespace QgsWcs
 
   QgsRectangle parseBbox( const QString &bboxStr )
   {
-    QStringList lst = bboxStr.split( QStringLiteral( "," ) );
+    QStringList lst = bboxStr.split( ',' );
     if ( lst.count() != 4 )
       return QgsRectangle();
 
@@ -268,7 +268,7 @@ namespace QgsWcs
     bool ok;
     for ( int i = 0; i < 4; i++ )
     {
-      lst[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+      lst[i].replace( ' ', '+' );
       d[i] = lst[i].toDouble( &ok );
       if ( !ok )
         return QgsRectangle();

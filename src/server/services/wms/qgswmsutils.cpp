@@ -109,10 +109,10 @@ namespace QgsWms
   void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList )
   {
     //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
-    layersList = parameters.value( QStringLiteral( "LAYER" ) ).split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    layersList = layersList + parameters.value( QStringLiteral( "LAYERS" ) ).split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    stylesList = parameters.value( QStringLiteral( "STYLE" ) ).split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    stylesList = stylesList + parameters.value( QStringLiteral( "STYLES" ) ).split( QStringLiteral( "," ), QString::SkipEmptyParts );
+    layersList = parameters.value( QStringLiteral( "LAYER" ) ).split( ',', QString::SkipEmptyParts );
+    layersList = layersList + parameters.value( QStringLiteral( "LAYERS" ) ).split( ',', QString::SkipEmptyParts );
+    stylesList = parameters.value( QStringLiteral( "STYLE" ) ).split( ',', QString::SkipEmptyParts );
+    stylesList = stylesList + parameters.value( QStringLiteral( "STYLES" ) ).split( ',', QString::SkipEmptyParts );
   }
 
 
@@ -179,7 +179,7 @@ namespace QgsWms
 
   QgsRectangle parseBbox( const QString &bboxStr )
   {
-    QStringList lst = bboxStr.split( QStringLiteral( "," ) );
+    QStringList lst = bboxStr.split( ',' );
     if ( lst.count() != 4 )
       return QgsRectangle();
 
@@ -187,7 +187,7 @@ namespace QgsWms
     bool ok;
     for ( int i = 0; i < 4; i++ )
     {
-      lst[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+      lst[i].replace( ' ', '+' );
       d[i] = lst[i].toDouble( &ok );
       if ( !ok )
         return QgsRectangle();
