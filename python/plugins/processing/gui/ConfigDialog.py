@@ -256,6 +256,8 @@ class ConfigDialog(BASE, WIDGET):
         for provider in providers:
             for alg in provider.algs:
                 d = defaultMenuEntries.get(alg.commandLineName(), "")
+                if "MENU_" + alg.commandLineName() not in ProcessingConfig.settings:
+                    continue
                 setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
                 item = self.items[setting]
                 item.setData(d, Qt.EditRole)
