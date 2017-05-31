@@ -40,6 +40,22 @@ class QPainter;
 
 class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsComposerHtml *>( sipCpp ) != NULL )
+      sipType = sipType_QgsComposerHtml;
+    else if ( dynamic_cast<QgsComposerAttributeTableV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsComposerAttributeTableV2;
+    else if ( dynamic_cast<QgsComposerTableV2 *>( sipCpp ) != NULL )
+      sipType = sipType_QgsComposerTableV2;
+    else if ( dynamic_cast<QgsComposerMultiFrame *>( sipCpp ) != NULL )
+      sipType = sipType_QgsComposerMultiFrame;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

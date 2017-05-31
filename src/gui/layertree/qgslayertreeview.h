@@ -47,6 +47,17 @@ class QgsMapLayer;
  */
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
+      sipType = sipType_QgsLayerTreeView;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
+
     Q_OBJECT
   public:
     explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );

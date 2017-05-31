@@ -31,7 +31,19 @@ email                : ersts@amnh.org
 #include <QPair>
 
 class CORE_EXPORT QgsRasterShaderFunction
+#ifdef SIP_RUN
+#include <qgscolorrampshader.h>
+#endif
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsColorRampShader *>( sipCpp ) != NULL )
+      sipType = sipType_QgsColorRampShader;
+    else
+      sipType = 0;
+    SIP_END
+#endif
 
   public:
     QgsRasterShaderFunction( double minimumValue = 0.0, double maximumValue = 255.0 );
