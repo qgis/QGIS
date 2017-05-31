@@ -23,7 +23,6 @@
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
-#include "qgisapp.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
@@ -337,9 +336,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   if ( !mModel )
   {
     mModel = new QgsBrowserModel( mBrowserView );
-
-    connect( QgisApp::instance(), &QgisApp::newProject, mModel, &QgsBrowserModel::updateProjectHome );
-
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
@@ -515,7 +511,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
   QgsMimeDataUtils::UriList list;
   list << layerItem->mimeUri();
-  QgisApp::instance()->handleDropUriList( list );
+  emit handleDropUriList( list );
 }
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
@@ -529,7 +525,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      QgisApp::instance()->openFile( projectItem->path() );
+      emit openFile( projectItem->path() );
       QApplication::restoreOverrideCursor();
     }
   }
@@ -561,7 +557,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
-        QgisApp::instance()->openFile( projectItem->path() );
+        emit openFile( projectItem->path() );
 
       QApplication::restoreOverrideCursor();
       return;
@@ -655,6 +651,11 @@ void QgsBrowserDockWidget::setFilter()
   QString filter = mLeFilter->text();
   if ( mProxyModel )
     mProxyModel->setFilter( filter );
+}
+
+void QgsBrowserDockWidget::updateProjectHome()
+{
+  if (mModel) mModel->updateProjectHome();
 }
 
 void QgsBrowserDockWidget::setFilterSyntax( QAction *action )

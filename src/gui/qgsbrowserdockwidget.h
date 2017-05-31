@@ -23,8 +23,8 @@
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
+#include "qgis_gui.h"
 #include <QSortFilterProxyModel>
-#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -101,7 +101,7 @@ class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropert
     QString mSettingsSection;
 };
 
-class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase
+class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
@@ -124,6 +124,8 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void setFilterSyntax( QAction * );
     void setCaseSensitive( bool caseSensitive );
     void setFilter();
+    void updateProjectHome();
+
 
     // layer menu items
     void addSelectedLayers();
@@ -133,6 +135,12 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void splitterMoved();
+
+  signals:
+    // A file needs to be opened
+    void openFile( const QString );
+    // Drop uri list needs to be handled
+    void handleDropUriList( QgsMimeDataUtils::UriList );
 
   protected:
     void refreshModel( const QModelIndex &index );

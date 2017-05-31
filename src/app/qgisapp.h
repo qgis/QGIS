@@ -232,9 +232,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool addProject( const QString &projectFile );
 
-    /** Convenience function to open either a project or a layer file.
-      */
-    void openFile( const QString &fileName );
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( const QString &, QPixmap * );
 
@@ -618,6 +615,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
 
+  public slots:
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
 
@@ -625,6 +623,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapLayer *activeLayer();
 
   public slots:
+    //! Convenience function to open either a project or a layer file.
+    void openFile( const QString &fileName );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();
