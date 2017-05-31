@@ -14,10 +14,14 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
-from qgis.testing import unittest
+try:
+    from qgis.static_testing import unittest
+except ImportError:
+    from nose2.compat import unittest
+
 from termcolor import colored
 
-from utilities import DoxygenParser
+from doxygen_parser import DoxygenParser
 from acceptable_missing_doc import ACCEPTABLE_MISSING_DOCS, ACCEPTABLE_MISSING_ADDED_NOTE, ACCEPTABLE_MISSING_BRIEF
 
 # TO regenerate the list:
