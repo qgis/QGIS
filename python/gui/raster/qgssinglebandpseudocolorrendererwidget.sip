@@ -10,11 +10,12 @@
 
 
 
-class QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
-  private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
 {
 
-
+%TypeHeaderCode
+#include "qgssinglebandpseudocolorrendererwidget.h"
+%End
   public:
 
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
