@@ -18,7 +18,7 @@ IF(TXT2TAGS_EXECUTABLE)
   ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES})
 ELSE(TXT2TAGS_EXECUTABLE)
   SET(QGIS_DOC_FILES
-    ${CMAKE_SOURCE_DIR}/INSTALL
+    ${CMAKE_CURRENT_SOURCE_DIR}/../INSTALL
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
@@ -46,65 +46,65 @@ IF(WITH_APIDOC)
     ENDIF(GENERATE_QHP)
 
     SET(DOXYGEN_INCLUDE_PATH
-      ${CMAKE_SOURCE_DIR}/src/core
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core
     )
     STRING(REPLACE ";" " " DOXYGEN_INCLUDE_PATH "${DOXYGEN_INCLUDE_PATH}")
 
     SET(DOXYGEN_INPUT
-      ${CMAKE_SOURCE_DIR}/doc
-      ${CMAKE_SOURCE_DIR}/src/core
-      ${CMAKE_SOURCE_DIR}/src/core/annotations
-      ${CMAKE_SOURCE_DIR}/src/core/auth
-      ${CMAKE_SOURCE_DIR}/src/core/composer
-      ${CMAKE_SOURCE_DIR}/src/core/diagram
-      ${CMAKE_SOURCE_DIR}/src/core/dxf
-      ${CMAKE_SOURCE_DIR}/src/core/effects
-      ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
-      ${CMAKE_SOURCE_DIR}/src/core/geometry
-      ${CMAKE_SOURCE_DIR}/src/core/gps
-      ${CMAKE_SOURCE_DIR}/src/core/layertree
-      ${CMAKE_SOURCE_DIR}/src/core/metadata
-      ${CMAKE_SOURCE_DIR}/src/core/pal
-      ${CMAKE_SOURCE_DIR}/src/core/processing
-      ${CMAKE_SOURCE_DIR}/src/core/providers
-      ${CMAKE_SOURCE_DIR}/src/core/providers/memory
-      ${CMAKE_SOURCE_DIR}/src/core/raster
-      ${CMAKE_SOURCE_DIR}/src/core/scalebar
-      ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
-      ${CMAKE_SOURCE_DIR}/src/gui
-      ${CMAKE_SOURCE_DIR}/src/gui/auth
-      ${CMAKE_SOURCE_DIR}/src/gui/attributetable
-      ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
-      ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
-      ${CMAKE_SOURCE_DIR}/src/gui/effects
-      ${CMAKE_SOURCE_DIR}/src/gui/layertree
-      ${CMAKE_SOURCE_DIR}/src/gui/locator
-      ${CMAKE_SOURCE_DIR}/src/gui/raster
-      ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
-      ${CMAKE_SOURCE_DIR}/src/analysis
-      ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-      ${CMAKE_SOURCE_DIR}/src/analysis/network
-      ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
-      ${CMAKE_SOURCE_DIR}/src/analysis/raster
-      ${CMAKE_SOURCE_DIR}/src/analysis/vector
-      ${CMAKE_SOURCE_DIR}/src/plugins
+      ${CMAKE_CURRENT_SOURCE_DIR}/../doc
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/annotations
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/auth
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/composer
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/diagram
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/dxf
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/effects
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/fieldformatter
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/geometry
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/gps
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/layertree
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/metadata
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/pal
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/processing
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/providers
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/providers/memory
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/raster
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/scalebar
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/core/symbology-ng
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/auth
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/attributetable
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/editorwidgets
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/editorwidgets/core
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/effects
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/layertree
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/locator
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/raster
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/gui/symbology-ng
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis/interpolation
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis/network
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis/openstreetmap
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis/raster
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/analysis/vector
+      ${CMAKE_CURRENT_SOURCE_DIR}/../src/plugins
     )
 
     IF(WITH_SERVER_PLUGINS)
       SET(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverexception.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverresponse.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsservice.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserviceregistry.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserver.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgscapabilitiescache.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverexception.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsrequesthandler.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverfilter.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsaccesscontrolfilter.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverinterface.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverrequest.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverresponse.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserverrequest.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsservice.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/server/qgsserviceregistry.h
       )
     ENDIF(WITH_SERVER_PLUGINS)
 
@@ -120,7 +120,7 @@ IF(WITH_APIDOC)
 
     STRING(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
 
-    CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
     SET (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be build on demand only")
 

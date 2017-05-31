@@ -22,26 +22,27 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-precise-3.8
-            - george-edison55-precise-backports # doxygen 1.8.3
+            - george-edison55-precise-backports # doxygen 1.8.3 # TODO: remove
             - ubuntu-toolchain-r-test
           packages:
-            - doxygen
+            - doxygen # TODO: remove
             - bison
             - flex
-            - graphviz
+            - graphviz  # TODO: remove
             - libpq-dev
             - libfcgi-dev
             - libfftw3-3
             - libgsl0-dev
             - pkg-config
             - poppler-utils
-            - txt2tags
+            - txt2tags # TODO: remove
             - xvfb
             - clang-3.8
 
 
     - os: linux
       language: python
+      python: "3.5"
       env:
         - TRAVIS_CONFIG=code_layout
       dist: trusty
@@ -51,8 +52,12 @@ matrix:
       addons:
         apt:
           sources:
+            - george-edison55-precise-backports # doxygen 1.8.3
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
           packages:
+            - doxygen
+            - graphviz
+            - txt2tags
             - pkg-config
             - xvfb
             - flip
