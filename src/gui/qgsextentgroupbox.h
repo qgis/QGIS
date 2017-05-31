@@ -26,6 +26,7 @@
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerModel;
+class QgsMapLayer;
 
 /** \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
@@ -43,8 +44,8 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
+    //! Available states for the current extent selection in the widget
     enum ExtentState
     {
       OriginalExtent,  //!< Layer's extent
@@ -53,49 +54,114 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
       ProjectLayerExtent, //!< Extent taken from a layer within the project
     };
 
-    //! Setup original extent - should be called as part of initialization
+    /**
+     * Constructor for QgsExtentGroupBox.
+     */
+    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
+     * \see originalExtent()
+     * \see originalCrs()
+     */
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 
+    /**
+     * Returns the original extent set for the widget.
+     * \see setOriginalExtent()
+     * \see originalCrs()
+     */
     QgsRectangle originalExtent() const { return mOriginalExtent; }
-    const QgsCoordinateReferenceSystem &originalCrs() const { return mOriginalCrs; }
 
-    //! Setup current extent - should be called as part of initialization (or whenever current extent changes)
+    /**
+     * Returns the original coordinate reference system set for the widget.
+     * \see originalExtent()
+     * \see setOriginalExtent()
+     */
+    QgsCoordinateReferenceSystem originalCrs() const { return mOriginalCrs; }
+
+    /**
+     * Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
+     * \see currentExtent()
+     * \see currentCrs()
+     */
     void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 
+    /**
+     * Returns the current extent set for the widget.
+     * \see setCurrentExtent()
+     * \see currentCrs()
+     */
     QgsRectangle currentExtent() const { return mCurrentExtent; }
-    const QgsCoordinateReferenceSystem &currentCrs() const { return mCurrentCrs; }
 
-    //! Set the output CRS - may need to be used for transformation from original/current extent.
-    //! Should be called as part of initialization and whenever the the output CRS is changed
+    /**
+     * Returns the coordinate reference system for the current extent set for the widget.
+     * \see setCurrentExtent()
+     * \see currentExtent()
+     */
+    QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
+
+    /**
+     * Sets the output CRS - may need to be used for transformation from original/current extent.
+     * Should be called as part of initialization and whenever the the output CRS is changed.
+     */
     void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 
-    //! Get the resulting extent - in output CRS coordinates
+    /**
+     * Returns the extent shown in the widget - in output CRS coordinates.
+     */
     QgsRectangle outputExtent() const;
 
+    /**
+     * Returns the currently selected state for the widget's extent.
+     */
     QgsExtentGroupBox::ExtentState extentState() const { return mExtentState; }
 
-    //! Set base part of title of the group box (will be appended with extent state)
-    //! \since QGIS 2.12
+    /**
+     * Sets the base part of \a title of the group box (will be appended with extent state)
+     * \since QGIS 2.12
+     * \see titleBase()
+     */
     void setTitleBase( const QString &title );
-    //! Set base part of title of the group box (will be appended with extent state)
-    //! \since QGIS 2.12
+
+    /**
+     * Returns the base part of title of the group box (will be appended with extent state).
+     * \since QGIS 2.12
+     * \see setTitleBase()
+     */
     QString titleBase() const;
 
   public slots:
-    //! set output extent to be the same as original extent (may be transformed to output CRS)
+
+    /**
+     * Sets the output extent to be the same as original extent (may be transformed to output CRS).
+     */
     void setOutputExtentFromOriginal();
 
-    //! set output extent to be the same as current extent (may be transformed to output CRS)
+    /**
+     * Sets the output extent to be the same as current extent (may be transformed to output CRS).
+     */
     void setOutputExtentFromCurrent();
 
-    //! set output extent to custom extent (may be transformed to output CRS)
+    /**
+     * Sets the output extent to a custom extent (may be transformed to output CRS).
+     */
     void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Sets the output extent to match a \a layer's extent (may be transformed to output CRS).
+     * \since QGIS 3.0
+     */
+    void setOutputExtentFromLayer( const QgsMapLayer *layer );
+
   signals:
-    //! emitted when extent is changed
+
+    /**
+     * Emitted when the widget's extent is changed.
+     */
     void extentChanged( const QgsRectangle &r );
 
-  protected slots:
+  private slots:
 
     void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
     void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
@@ -103,8 +169,9 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
 
     void groupBoxClicked();
+    void layerMenuAboutToShow();
 
-  protected:
+  private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
@@ -121,12 +188,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     QgsRectangle mOriginalExtent;
     QgsCoordinateReferenceSystem mOriginalCrs;
-
-  private slots:
-
-    void layerMenuAboutToShow();
-
-  private:
 
     QMenu *mLayerMenu = nullptr;
     QgsMapLayerModel *mMapLayerModel = nullptr;
