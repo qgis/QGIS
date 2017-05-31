@@ -87,7 +87,7 @@ namespace QgsWcs
     QStringList coveNameList;
     if ( !coveNames.isEmpty() )
     {
-      coveNameList = coveNames.split( QStringLiteral( "," ) );
+      coveNameList = coveNames.split( ',' );
       for ( int i = 0; i < coveNameList.size(); ++i )
       {
         coveNameList.replace( i, coveNameList.at( i ).trimmed() );
@@ -111,7 +111,7 @@ namespace QgsWcs
       QString name = layer->name();
       if ( !layer->shortName().isEmpty() )
         name = layer->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( ' ', '_' );
 
       if ( coveNameList.size() == 0 || coveNameList.contains( name ) )
       {

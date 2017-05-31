@@ -90,8 +90,8 @@ namespace QgsWfs
           if ( docChildElem.tagName() == QLatin1String( "TypeName" ) )
           {
             QString typeName = docChildElem.text().trimmed();
-            if ( typeName.contains( QLatin1String( ":" ) ) )
-              typeNameList << typeName.section( QStringLiteral( ":" ), 1, 1 );
+            if ( typeName.contains( ':' ) )
+              typeNameList << typeName.section( ':', 1, 1 );
             else
               typeNameList << typeName;
           }
@@ -103,12 +103,12 @@ namespace QgsWfs
       QString typeNames = request.parameter( QStringLiteral( "TYPENAME" ) );
       if ( !typeNames.isEmpty() )
       {
-        QStringList typeNameSplit = typeNames.split( QStringLiteral( "," ) );
+        QStringList typeNameSplit = typeNames.split( ',' );
         for ( int i = 0; i < typeNameSplit.size(); ++i )
         {
           QString typeName = typeNameSplit.at( i ).trimmed();
-          if ( typeName.contains( QLatin1String( ":" ) ) )
-            typeNameList << typeName.section( QStringLiteral( ":" ), 1, 1 );
+          if ( typeName.contains( ':' ) )
+            typeNameList << typeName.section( ':', 1, 1 );
           else
             typeNameList << typeName;
         }
@@ -127,7 +127,7 @@ namespace QgsWfs
       QString name = layer->name();
       if ( !layer->shortName().isEmpty() )
         name = layer->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( ' ', '_' );
 
       if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
       {
@@ -168,7 +168,7 @@ namespace QgsWfs
     QString typeName = layer->name();
     if ( !layer->shortName().isEmpty() )
       typeName = layer->shortName();
-    typeName = typeName.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+    typeName = typeName.replace( ' ', '_' );
 
     //xsd:element
     QDomElement elementElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
