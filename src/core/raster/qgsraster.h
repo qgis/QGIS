@@ -34,40 +34,23 @@ class CORE_EXPORT QgsRaster
     enum ColorInterpretation
     {
       UndefinedColorInterpretation = 0,
-
-      /** Greyscale */                                      GrayIndex = 1,
-
-      /** Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
-
-      /** Red band of RGBA image */                         RedBand = 3,
-
-      /** Green band of RGBA image */                       GreenBand = 4,
-
-      /** Blue band of RGBA image */                        BlueBand = 5,
-
-      /** Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
-
-      /** Hue band of HLS image */                          HueBand = 7,
-
-      /** Saturation band of HLS image */                   SaturationBand = 8,
-
-      /** Lightness band of HLS image */                    LightnessBand = 9,
-
-      /** Cyan band of CMYK image */                        CyanBand = 10,
-
-      /** Magenta band of CMYK image */                     MagentaBand = 11,
-
-      /** Yellow band of CMYK image */                      YellowBand = 12,
-
-      /** Black band of CMLY image */                       BlackBand = 13,
-
-      /** Y Luminance */                                    YCbCr_YBand = 14,
-
-      /** Cb Chroma */                                      YCbCr_CbBand = 15,
-
-      /** Cr Chroma */                                      YCbCr_CrBand = 16,
-
-      /** Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17
+      GrayIndex = 1,          //!< Greyscale
+      PaletteIndex = 2,       //!< Paletted (see associated color table)
+      RedBand = 3,            //!< Red band of RGBA image
+      GreenBand = 4,          //!< Green band of RGBA image
+      BlueBand = 5,           //!< Blue band of RGBA image
+      AlphaBand = 6,          //!< Alpha (0=transparent, 255=opaque)
+      HueBand = 7,            //!< Hue band of HLS image
+      SaturationBand = 8,     //!< Saturation band of HLS image
+      LightnessBand = 9,      //!< Lightness band of HLS image
+      CyanBand = 10,          //!< Cyan band of CMYK image
+      MagentaBand = 11,       //!< Magenta band of CMYK image
+      YellowBand = 12,        //!< Yellow band of CMYK image
+      BlackBand = 13,         //!< Black band of CMLY image
+      YCbCr_YBand = 14,       //!< Y Luminance
+      YCbCr_CbBand = 15,      //!< Cb Chroma
+      YCbCr_CrBand = 16,      //!< Cr Chroma
+      ContinuousPalette = 17  //!< Continuous palette, QGIS addition, GRASS
     };
 
     enum IdentifyFormat
