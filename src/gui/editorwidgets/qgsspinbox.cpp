@@ -68,6 +68,27 @@ void QgsSpinBox::paintEvent( QPaintEvent *event )
   QSpinBox::paintEvent( event );
 }
 
+void QgsSpinBox::wheelEvent( QWheelEvent *event )
+{
+  int step = singleStep();
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    // ctrl modifier results in finer increments - 10% of usual step
+    int newStep = step / 10;
+    // step should be at least 1
+    newStep = qMax( newStep, 1 );
+
+    setSingleStep( newStep );
+
+    // clear control modifier before handing off event - Qt uses it for unwanted purposes
+    // (*increasing* step size, whereas QGIS UX convention is that control modifier
+    // results in finer changes!)
+    event->setModifiers( event->modifiers() & ~Qt::ControlModifier );
+  }
+  QSpinBox::wheelEvent( event );
+  setSingleStep( step );
+}
+
 void QgsSpinBox::changed( int value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
