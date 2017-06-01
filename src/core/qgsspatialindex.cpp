@@ -253,23 +253,37 @@ SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle &rect )
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id )
 {
-  if ( !f.hasGeometry() )
+  QgsRectangle rect;
+  if ( !featureInfo( f, rect, id ) )
     return false;
 
-  QgsGeometry g = f.geometry();
-
-  id = f.id();
-  r = rectToRegion( g.boundingBox() );
+  r = rectToRegion( rect );
   return true;
 }
 
+bool QgsSpatialIndex::featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id )
+{
+  if ( !f.hasGeometry() )
+    return false;
+
+  id = f.id();
+  rect = f.geometry().boundingBox();
+  return true;
+}
 
 bool QgsSpatialIndex::insertFeature( const QgsFeature &f )
 {
-  SpatialIndex::Region r;
+  QgsRectangle rect;
   QgsFeatureId id;
-  if ( !featureInfo( f, r, id ) )
+  if ( !featureInfo( f, rect, id ) )
     return false;
+
+  return insertFeature( id, rect );
+}
+
+bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &rect )
+{
+  SpatialIndex::Region r( rectToRegion( rect ) );
 
   // TODO: handle possible exceptions correctly
   try

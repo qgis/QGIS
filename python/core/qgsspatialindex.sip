@@ -54,6 +54,14 @@ Add feature to index
  :rtype: bool
 %End
 
+    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+ Add a feature ``id`` to the index with a specified bounding box.
+ :return: true if feature was successfully added to index.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     bool deleteFeature( const QgsFeature &f );
 %Docstring
 Remove feature from index
@@ -82,6 +90,19 @@ get reference count - just for debugging!
 %End
 
   protected:
+
+
+    static bool featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id );
+%Docstring
+ Calculates feature info to insert into index.
+ \param f input feature
+ \param rect will be set to feature's geometry bounding box
+ \param id will be set to feature's ID
+ :return: true if feature info was successfully retrieved and the feature can be added to
+ the index
+.. versionadded:: 3.0
+ :rtype: bool
+%End
 
 
 };
