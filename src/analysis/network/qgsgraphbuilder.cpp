@@ -35,12 +35,12 @@ QgsGraphBuilder::~QgsGraphBuilder()
   delete mGraph;
 }
 
-void QgsGraphBuilder::addVertex( int, const QgsPoint &pt )
+void QgsGraphBuilder::addVertex( int, const QgsPointXY &pt )
 {
   mGraph->addVertex( pt );
 }
 
-void QgsGraphBuilder::addEdge( int pt1id, const QgsPoint &, int pt2id, const QgsPoint &, const QVector< QVariant > &prop )
+void QgsGraphBuilder::addEdge( int pt1id, const QgsPointXY &, int pt2id, const QgsPointXY &, const QVector< QVariant > &prop )
 {
   mGraph->addEdge( pt1id, pt2id, prop );
 }

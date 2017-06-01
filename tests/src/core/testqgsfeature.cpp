@@ -392,7 +392,7 @@ void TestQgsFeature::equality()
   feature.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature.setValid( true );
   feature.setId( 1 );
-  feature.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
 
   QgsFeature feature2 = feature;
   QVERIFY( feature == feature2 );
@@ -410,7 +410,7 @@ void TestQgsFeature::equality()
   feature3.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature3.setValid( true );
   feature3.setId( 1 );
-  feature3.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature3.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QVERIFY( feature == feature3 );
 
   QgsFeature feature4;
@@ -420,7 +420,7 @@ void TestQgsFeature::equality()
   feature4.setAttribute( 2, 3 );
   feature4.setValid( true );
   feature4.setId( 1 );
-  feature4.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature4.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QVERIFY( feature != feature4 );
 
   QgsFeature feature5;
@@ -429,7 +429,7 @@ void TestQgsFeature::equality()
   feature5.setAttribute( 1, QStringLiteral( "attr2" ) );
   feature5.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature5.setId( 1 );
-  feature5.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature5.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   feature5.setValid( false );
 
   QVERIFY( feature != feature5 );
@@ -441,7 +441,7 @@ void TestQgsFeature::equality()
   feature6.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature6.setValid( true );
   feature6.setId( 2 );
-  feature6.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature6.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
 
   QVERIFY( feature != feature6 );
 
@@ -452,7 +452,7 @@ void TestQgsFeature::equality()
   feature7.setAttribute( 2, QStringLiteral( "attr3" ) );
   feature7.setValid( true );
   feature7.setId( 1 );
-  feature7.setGeometry( QgsGeometry( new QgsPointV2( 1, 3 ) ) );
+  feature7.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
 
   QVERIFY( feature != feature7 );
 }

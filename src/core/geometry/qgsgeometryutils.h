@@ -42,7 +42,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Returns the closest vertex to a geometry for a specified point.
      * On error null point will be returned and "id" argument will be invalid.
      */
-    static QgsPointV2 closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id SIP_OUT );
+    static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id SIP_OUT );
 
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns the squared 2D distance between two points.
      */
-    static double sqrDistance2D( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /** Returns the squared distance between a point and a line.
      */
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param inter Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter SIP_OUT );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter SIP_OUT );
 
     /**
      * \brief Compute the intersection between two segments
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param tolerance The tolerance to use
      * \returns  Whether the segments intersect
      */
-    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter SIP_OUT, double tolerance );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter SIP_OUT, double tolerance );
 
     /**
      * \brief Project the point on a segment
@@ -109,12 +109,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \param s2 The segment end point
      * \returns The projection of the point on the segment
      */
-    static QgsPointV2 projPointOnSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
+    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
     {
       double nx = s2.y() - s1.y();
       double ny = -( s2.x() - s1.x() );
       double t = ( p.x() * ny - p.y() * nx - s1.x() * ny + s1.y() * nx ) / ( ( s2.x() - s1.x() ) * ny - ( s2.y() - s1.y() ) * nx );
-      return t < 0. ? s1 : t > 1. ? s2 : QgsPointV2( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
+      return t < 0. ? s1 : t > 1. ? s2 : QgsPoint( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
     }
 
     //! \note not available in Python bindings
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsGeometryUtils
     {
       int segment1;
       int segment2;
-      QgsPointV2 point;
+      QgsPoint point;
     };
 
     /**
@@ -142,13 +142,13 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Returns a point a specified distance toward a second point.
      */
-    static QgsPointV2 pointOnLineWithDistance( const QgsPointV2 &startPoint, const QgsPointV2 &directionPoint, double distance );
+    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 
     //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
     static double ccwAngle( double dy, double dx );
 
     //! Returns radius and center of the circle through pt1, pt2, pt3
-    static void circleCenterRadius( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double &radius SIP_OUT,
+    static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
                                     double &centerX SIP_OUT, double &centerY SIP_OUT );
 
     //! Returns true if circle is ordered clockwise
@@ -169,16 +169,16 @@ class CORE_EXPORT QgsGeometryUtils
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
     //! Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
-    static bool segmentMidPoint( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &result SIP_OUT, double radius, const QgsPointV2 &mousePos );
+    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
-    static double circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1, const QgsPointV2 &cp2, const QgsPointV2 &cp3 );
+    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
 
     /** Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
      * \since 3.0
      */
-    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3,
-                               QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPointV2> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+    static void segmentizeArc( const QgsPoint &p1, const QgsPointV2 &p2, const QgsPoint &p3,
+                               QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
      * \since 3.0
      */
-    static int segmentSide( const QgsPointV2 &pt1, const QgsPointV2 &pt3, const QgsPointV2 &pt2 );
+    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
 
     /** Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
      * \since 3.0
@@ -299,19 +299,19 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns New point at middle between points pt1 and pt2.
      * * Example:
      * \code{.py}
-     *   p = QgsPointV2( 4, 6 ) # 2D point
-     *   pr = midpoint ( p, QgsPointV2( 2, 2 ) )
+     *   p = QgsPoint( 4, 6 ) # 2D point
+     *   pr = midpoint ( p, QgsPoint( 2, 2 ) )
      *   # pr is a 2D point: 'Point (3 4)'
-     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZ (3 4 1)'
-     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
      *   # pr is a 3D point: 'PointM (3 4 1)'
-     *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+     *   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
      * \since QGIS 3.0
      */
-    static QgsPointV2 midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /** Return the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns The gradient of this linear entity, or infinity if vertical
      * \since QGIS 3.0
      */
-    static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param c Output parameter, c coefficient of the equation.
      * \since QGIS 3.0
      */
-    static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2,
+    static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a SIP_OUT, double &b SIP_OUT, double &c SIP_OUT );
 
     /**
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param s2 The segment end point
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
-    static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
+    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;

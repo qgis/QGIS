@@ -44,7 +44,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setRenderHint( QPainter::Antialiasing );
 
   bool enabled = true;
-  QgsPoint worldCoords;
+  QgsPointXY worldCoords;
   int id = -1;
 
   if ( mDataPoint )

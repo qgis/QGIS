@@ -293,7 +293,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
+  QgsPointXY layerCoords = toLayerCoordinates( vlayer, canvasPoint );
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
@@ -324,8 +324,8 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 void QgsMapToolSimplify::selectFeaturesInRect()
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPoint pt1 = toMapCoordinates( mSelectionRect.topLeft() );
-  QgsPoint pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
+  QgsPointXY pt1 = toMapCoordinates( mSelectionRect.topLeft() );
+  QgsPointXY pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
   QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );
 
   QgsFeature f;

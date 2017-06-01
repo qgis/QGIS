@@ -23,7 +23,7 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
   public:
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
                                   QgsFeatureId featureId,
-                                  const QgsPointV2 &errorLocation,
+                                  const QgsPoint &errorLocation,
                                   const QVariant &value,
                                   QgsFeatureId otherId )
       : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), value, ValueArea )

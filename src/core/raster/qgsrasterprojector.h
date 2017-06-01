@@ -35,7 +35,7 @@
 
 #include <cmath>
 
-class QgsPoint;
+class QgsPointXY;
 
 /** \ingroup core
  * \brief QgsRasterProjector implements approximate projection support for
@@ -181,7 +181,7 @@ class ProjectorData
     bool checkRows( const QgsCoordinateTransform &ct );
 
     //! Calculate array of src helper points
-    void calcHelper( int matrixRow, QgsPoint *points );
+    void calcHelper( int matrixRow, QgsPointXY *points );
 
     //! Calc / switch helper
     void nextHelper();
@@ -236,7 +236,7 @@ class ProjectorData
     double mDestColsPerMatrixCol;
 
     //! Grid of source control points
-    QList< QList<QgsPoint> > mCPMatrix;
+    QList< QList<QgsPointXY> > mCPMatrix;
 
     //! Grid of source control points transformation possible indicator
     /* Same size as mCPMatrix */
@@ -244,11 +244,11 @@ class ProjectorData
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperTop = nullptr;
+    QgsPointXY *pHelperTop = nullptr;
 
     //! Array of source points for each destination column on bottom of current CPMatrix grid row
     /* Warning: using QList is slow on access */
-    QgsPoint *pHelperBottom = nullptr;
+    QgsPointXY *pHelperBottom = nullptr;
 
     //! Current mHelperTop matrix row
     int mHelperTopRow;

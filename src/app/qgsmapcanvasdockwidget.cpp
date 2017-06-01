@@ -402,7 +402,7 @@ void QgsMapCanvasDockWidget::settingsMenuAboutToShow()
   whileBlocking( mActionShowAnnotations )->setChecked( mMapCanvas->annotationsVisible() );
 }
 
-void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
+void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
 {
   if ( !mXyMarker->isVisible() )
     return;
@@ -410,7 +410,7 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
   // reproject point
   QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
                              mMapCanvas->mapSettings().destinationCrs() );
-  QgsPoint t = p;
+  QgsPointXY t = p;
   try
   {
     t = ct.transform( p );

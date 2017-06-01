@@ -23,9 +23,9 @@
 #include "qgsleastsquares.h"
 
 
-void QgsLeastSquares::linear( const QVector<QgsPoint> &mapCoords,
-                              const QVector<QgsPoint> &pixelCoords,
-                              QgsPoint &origin, double &pixelXSize, double &pixelYSize )
+void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
+                              const QVector<QgsPointXY> &pixelCoords,
+                              QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
 {
   int n = mapCoords.size();
   if ( n < 2 )
@@ -62,9 +62,9 @@ void QgsLeastSquares::linear( const QVector<QgsPoint> &mapCoords,
 }
 
 
-void QgsLeastSquares::helmert( const QVector<QgsPoint> &mapCoords,
-                               const QVector<QgsPoint> &pixelCoords,
-                               QgsPoint &origin, double &pixelSize,
+void QgsLeastSquares::helmert( const QVector<QgsPointXY> &mapCoords,
+                               const QVector<QgsPointXY> &pixelCoords,
+                               QgsPointXY &origin, double &pixelSize,
                                double &rotation )
 {
   int n = mapCoords.size();
@@ -119,8 +119,8 @@ void QgsLeastSquares::helmert( const QVector<QgsPoint> &mapCoords,
 }
 
 
-void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
-                              QVector<QgsPoint> pixelCoords )
+void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
+                              QVector<QgsPointXY> pixelCoords )
 {
   int n = mapCoords.size();
   if ( n < 4 )
@@ -178,7 +178,7 @@ void QgsLeastSquares::affine( QVector<QgsPoint> mapCoords,
  *
  * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
  */
-void normalizeCoordinates( const QVector<QgsPoint> &coords, QVector<QgsPoint> &normalizedCoords,
+void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY> &normalizedCoords,
                            double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity
@@ -206,7 +206,7 @@ void normalizeCoordinates( const QVector<QgsPoint> &coords, QVector<QgsPoint> &n
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
   {
-    normalizedCoords[i] = QgsPoint( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
+    normalizedCoords[i] = QgsPointXY( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
   normalizeMatrix[0] =   D;
@@ -232,8 +232,8 @@ void normalizeCoordinates( const QVector<QgsPoint> &coords, QVector<QgsPoint> &n
 
 // Fits a homography to the given corresponding points, and
 // return it in H (row-major format).
-void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
-                                  QVector<QgsPoint> pixelCoords,
+void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
+                                  QVector<QgsPointXY> pixelCoords,
                                   double H[9] )
 {
   Q_ASSERT( mapCoords.size() == pixelCoords.size() );
@@ -243,8 +243,8 @@ void QgsLeastSquares::projective( QVector<QgsPoint> mapCoords,
     throw std::domain_error( QObject::tr( "Fitting a projective transform requires at least 4 corresponding points." ).toLocal8Bit().constData() );
   }
 
-  QVector<QgsPoint> mapCoordsNormalized;
-  QVector<QgsPoint> pixelCoordsNormalized;
+  QVector<QgsPointXY> mapCoordsNormalized;
+  QVector<QgsPointXY> pixelCoordsNormalized;
 
   double normMap[9], denormMap[9];
   double normPixel[9], denormPixel[9];

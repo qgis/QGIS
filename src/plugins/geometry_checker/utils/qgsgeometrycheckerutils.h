@@ -42,8 +42,8 @@ namespace QgsGeometryCheckerUtils
     if ( !geom->isEmpty() )
     {
       int nVerts = geom->vertexCount( iPart, iRing );
-      QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-      QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+      QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+      QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
       bool closed = back == front;
       if ( isClosed )
         *isClosed = closed;
@@ -66,7 +66,7 @@ namespace QgsGeometryCheckerUtils
      * \param tol The tolerance
      * \returns Whether the points are equal
      */
-  inline bool pointsFuzzyEqual( const QgsPointV2 &p1, const QgsPointV2 &p2, double tol )
+  inline bool pointsFuzzyEqual( const QgsPoint &p1, const QgsPoint &p2, double tol )
   {
     double dx = p1.x() - p2.x(), dy = p1.y() - p2.y();
     return ( dx * dx + dy * dy ) < tol * tol;
@@ -75,8 +75,8 @@ namespace QgsGeometryCheckerUtils
   inline bool canDeleteVertex( const QgsAbstractGeometry *geom, int iPart, int iRing )
   {
     int nVerts = geom->vertexCount( iPart, iRing );
-    QgsPointV2 front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
-    QgsPointV2 back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
+    QgsPoint front = geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) );
+    QgsPoint back = geom->vertexAt( QgsVertexId( iPart, iRing, nVerts - 1 ) );
     bool closed = back == front;
     return closed ? nVerts > 4 : nVerts > 2;
   }

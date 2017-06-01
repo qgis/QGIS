@@ -1041,7 +1041,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, Qg
     const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
 
     QgsVertexId vId;
-    QgsPointV2 vPoint;
+    QgsPoint vPoint;
     double x, y, z;
     QPointF mapPoint;
     int pointNum = 0;

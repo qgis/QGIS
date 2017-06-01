@@ -35,7 +35,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
 
-        box = QgsBox3d(QgsPointV2(QgsWkbTypes.PointZ, 5, 6, 7), QgsPointV2(QgsWkbTypes.PointZ, 10, 11, 12))
+        box = QgsBox3d(QgsPoint(QgsWkbTypes.PointZ, 5, 6, 7), QgsPoint(QgsWkbTypes.PointZ, 10, 11, 12))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
         self.assertEqual(box.zMinimum(), 7.0)
@@ -44,7 +44,7 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.zMaximum(), 12.0)
 
         # point constructor should normalize
-        box = QgsBox3d(QgsPointV2(QgsWkbTypes.PointZ, 10, 11, 12), QgsPointV2(QgsWkbTypes.PointZ, 5, 6, 7))
+        box = QgsBox3d(QgsPoint(QgsWkbTypes.PointZ, 10, 11, 12), QgsPoint(QgsWkbTypes.PointZ, 5, 6, 7))
         self.assertEqual(box.xMinimum(), 5.0)
         self.assertEqual(box.yMinimum(), 6.0)
         self.assertEqual(box.zMinimum(), 7.0)
@@ -137,14 +137,14 @@ class TestQgsBox3d(unittest.TestCase):
 
     def testContainsPoint(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
-        self.assertTrue(box.contains(QgsPointV2(QgsWkbTypes.PointZ, 6, 7, 8)))
-        self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.PointZ, 16, 7, 8)))
-        self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.PointZ, 6, 17, 8)))
-        self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.PointZ, 6, 7, 18)))
+        self.assertTrue(box.contains(QgsPoint(QgsWkbTypes.PointZ, 6, 7, 8)))
+        self.assertFalse(box.contains(QgsPoint(QgsWkbTypes.PointZ, 16, 7, 8)))
+        self.assertFalse(box.contains(QgsPoint(QgsWkbTypes.PointZ, 6, 17, 8)))
+        self.assertFalse(box.contains(QgsPoint(QgsWkbTypes.PointZ, 6, 7, 18)))
         # 2d containment
-        self.assertTrue(box.contains(QgsPointV2(QgsWkbTypes.Point, 6, 7)))
-        self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.Point, 16, 7)))
-        self.assertFalse(box.contains(QgsPointV2(QgsWkbTypes.Point, 6, 17)))
+        self.assertTrue(box.contains(QgsPoint(QgsWkbTypes.Point, 6, 7)))
+        self.assertFalse(box.contains(QgsPoint(QgsWkbTypes.Point, 16, 7)))
+        self.assertFalse(box.contains(QgsPoint(QgsWkbTypes.Point, 6, 17)))
 
     def testVolume(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)

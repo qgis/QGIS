@@ -6,10 +6,10 @@ struct QgsRasterViewPort
 %End
   /** \brief Coordinate (in output device coordinate system) of top left corner
    *   of the part of the raster that is to be rendered.*/
-  QgsPoint mTopLeftPoint;
+  QgsPointXY mTopLeftPoint;
   /** \brief Coordinate (in output device coordinate system) of bottom right corner
    *   of the part of the raster that is to be rendered.*/
-  QgsPoint mBottomRightPoint;
+  QgsPointXY mBottomRightPoint;
 
   /** \brief Width, number of columns to be rendered */
   int mWidth;

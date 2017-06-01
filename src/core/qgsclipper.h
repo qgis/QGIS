@@ -129,9 +129,9 @@ class CORE_EXPORT QgsClipper
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
-    static QgsPoint intersect( const double x1, const double y1,
-                               const double x2, const double y2,
-                               Boundary b );
+    static QgsPointXY intersect( const double x1, const double y1,
+                                 const double x2, const double y2,
+                                 Boundary b );
 
     static QPointF intersectRect( QPointF pt1,
                                   QPointF pt2,
@@ -255,7 +255,7 @@ inline void QgsClipper::trimFeatureToBoundary(
         // store both ends of the new edge
         if ( !( i2 == 0 && shapeOpen ) )
         {
-          QgsPoint p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
+          QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
           outX.push_back( p.x() );
           outY.push_back( p.y() );
         }
@@ -271,7 +271,7 @@ inline void QgsClipper::trimFeatureToBoundary(
       {
         if ( !( i2 == 0 && shapeOpen ) )
         {
-          QgsPoint p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
+          QgsPointXY p = intersect( inX[i1], inY[i1], inX[i2], inY[i2], b );
           outX.push_back( p.x() );
           outY.push_back( p.y() );
         }
@@ -363,9 +363,9 @@ inline bool QgsClipper::inside( QPointF pt, Boundary b, double val )
 // returns the intersection of the line defined by the given points
 // and the given boundary.
 
-inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
-                                       const double x2, const double y2,
-                                       Boundary b )
+inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
+    const double x2, const double y2,
+    Boundary b )
 {
   // This function assumes that the two given points (x1, y1), and
   // (x2, y2) cross the given boundary. Making this assumption allows
@@ -393,7 +393,7 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
       break;
   }
 
-  QgsPoint p;
+  QgsPointXY p;
 
   if ( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM )
   {

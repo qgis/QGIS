@@ -275,7 +275,7 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
   for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPointV2 p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPoint p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
@@ -310,7 +310,7 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
     //TODO - remove when labeling is refactored to use screen units
     for ( int i = 0; i < boundLineString->numPoints(); ++i )
     {
-      QgsPoint point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
+      QgsPointXY point = context.mapToPixel().toMapCoordinates( boundLineString->xAt( i ), boundLineString->yAt( i ) );
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
@@ -464,7 +464,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     if ( drawType != QgsTextRenderer::Text )
       return;
 
-    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
     QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing, false );
@@ -502,8 +502,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   {
     // get rotated label's center point
     QPointF centerPt( outPt );
-    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
-                                       label->getY() + label->getHeight() / 2 );
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
+                                         label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();

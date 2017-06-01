@@ -43,7 +43,7 @@ from qgis.PyQt.QtWidgets import (QApplication, QDialog, QComboBox,
 from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform, QgsGeometry, QgsPoint,
+                       QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
 
@@ -407,10 +407,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
             xform = QgsCoordinateTransform(src, dest)
-            minxy = xform.transform(QgsPoint(extent.xMinimum(),
-                                             extent.yMinimum()))
-            maxxy = xform.transform(QgsPoint(extent.xMaximum(),
-                                             extent.yMaximum()))
+            minxy = xform.transform(QgsPointXY(extent.xMinimum(),
+                                               extent.yMinimum()))
+            maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
+                                               extent.yMaximum()))
             minx, miny = minxy
             maxx, maxy = maxxy
         else:  # 4326
@@ -980,7 +980,7 @@ def _get_field_value(field):
 
 
 def bbox_to_polygon(bbox):
-    """converts OWSLib bbox object to list of QgsPoint objects"""
+    """converts OWSLib bbox object to list of QgsPointXY objects"""
 
     if all([bbox.minx is not None,
             bbox.maxx is not None,

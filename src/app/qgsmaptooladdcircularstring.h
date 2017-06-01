@@ -56,7 +56,7 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     QgsGeometryRubberBand *mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();
-    void updateCenterPointRubberBand( const QgsPointV2 &pt );
+    void updateCenterPointRubberBand( const QgsPoint &pt );
     void removeCenterPointRubberBand();
 };
 

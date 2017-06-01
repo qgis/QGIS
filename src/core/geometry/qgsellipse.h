@@ -47,7 +47,7 @@ class CORE_EXPORT QgsEllipse
      * \param semiMinorAxis Semi-minor axis of the ellipse.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsEllipse( const QgsPointV2 &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 
     /**
      * Constructs an ellipse by foci (\a pt1 and \a pt2) and a point \a pt3.
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsEllipse
      * \param pt2 Second focus.
      * \param pt3 A point to calculate the axes.
      */
-    static QgsEllipse fromFoci( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3 );
+    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
 
     /**
      * Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsEllipse
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsEllipse fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
      * Constructs an ellipse by a center point and a another point.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsEllipse
      * \param ptc Center point.
      * \param pt1 First point.
      */
-    static QgsEllipse fromCenterPoint( const QgsPointV2 &ptc, const QgsPointV2 &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
 
     /**
      * Constructs an ellipse by a central point and two other points.
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsEllipse
      * \param pt1 First point.
      * \param pt2 Second point.
      */
-    static QgsEllipse fromCenter2Points( const QgsPointV2 &ptc, const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
 
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsEllipse
      * \see setCenter()
      * \see rcenter()
      */
-    QgsPointV2 center() const {return mCenter; }
+    QgsPoint center() const {return mCenter; }
 
     /** Returns the semi-major axis.
      * \see setSemiMajorAxis()
@@ -124,13 +124,13 @@ class CORE_EXPORT QgsEllipse
      * \see setCenter()
      * \note not available in Python bindings
      */
-    QgsPointV2 &rcenter() SIP_SKIP { return mCenter; }
+    QgsPoint &rcenter() SIP_SKIP { return mCenter; }
 
     /** Sets the center point.
      * \see center()
      * \see rcenter()
      */
-    void setCenter( const QgsPointV2 &center ) {mCenter = center; }
+    void setCenter( const QgsPoint &center ) {mCenter = center; }
 
     /** Sets the semi-major axis.
      * \see semiMajorAxis()
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsEllipse
      * \see focusDistance()
      * \return the two foci.
      */
-    virtual QVector<QgsPointV2> foci() const;
+    virtual QVector<QgsPoint> foci() const;
 
     /** The eccentricity of the ellipse.
      * nan is returned if the ellipse is empty.
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsEllipse
      * They are oriented and started always from semi-major axis.
      * \return quadrants defined by four points.
      */
-    virtual QVector<QgsPointV2> quadrant() const;
+    virtual QVector<QgsPoint> quadrant() const;
 
     /** Returns a list of points with segmentation from \a segments.
      * \param segments Number of segments used to segment geometry.
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsEllipse
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
   protected:
-    QgsPointV2 mCenter;
+    QgsPoint mCenter;
     double mSemiMajorAxis;
     double mSemiMinorAxis;
     double mAzimuth;

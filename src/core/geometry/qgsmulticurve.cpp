@@ -136,8 +136,8 @@ QgsAbstractGeometry *QgsMultiCurve::boundary() const
     {
       if ( !curve->isClosed() )
       {
-        multiPoint->addGeometry( new QgsPointV2( curve->startPoint() ) );
-        multiPoint->addGeometry( new QgsPointV2( curve->endPoint() ) );
+        multiPoint->addGeometry( new QgsPoint( curve->startPoint() ) );
+        multiPoint->addGeometry( new QgsPoint( curve->endPoint() ) );
       }
     }
   }

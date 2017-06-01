@@ -24,7 +24,7 @@
 #include "qgsunittypes.h"
 #include <cassert>
 
-class QgsPoint;
+class QgsPointXY;
 class QPoint;
 
 /** \ingroup core
@@ -73,20 +73,20 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transform the point from map (world) coordinates to device coordinates
      * \param p Point to transform
-     * \returns QgsPoint in device coordinates
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( const QgsPoint &p ) const;
+    QgsPointXY transform( const QgsPointXY &p ) const;
 
-    void transform( QgsPoint *p ) const;
+    void transform( QgsPointXY *p ) const;
 
     /**
      * Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
      * \param x x cordinate o point to transform
      * \param y y coordinate of point to transform
-     * \returns QgsPoint in device coordinates
+     * \returns QgsPointXY in device coordinates
      */
-    QgsPoint transform( qreal x, qreal y ) const;
+    QgsPointXY transform( qreal x, qreal y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -115,19 +115,19 @@ class CORE_EXPORT QgsMapToPixel
     }
 #endif
 
-    QgsPoint toMapCoordinates( int x, int y ) const;
+    QgsPointXY toMapCoordinates( int x, int y ) const;
 
     //! Transform device coordinates to map (world) coordinates
-    QgsPoint toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinatesF( double x, double y ) const;
 
     /**
      * Transform device coordinates to map (world) coordinates
      * \param p Point to be converted to map cooordinates
-     * \returns QgsPoint in map coorndiates
+     * \returns QgsPointXY in map coorndiates
      */
-    QgsPoint toMapCoordinates( QPoint p ) const;
+    QgsPointXY toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( double x, double y ) const;
+    QgsPointXY toMapPoint( double x, double y ) const;
 
     /**
      * Set map units per pixel

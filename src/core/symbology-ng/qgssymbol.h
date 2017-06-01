@@ -315,9 +315,9 @@ class CORE_EXPORT QgsSymbol
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers SIP_TRANSFER ); // can't be instantiated
 
     /**
-     * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
+     * Creates a point in screen coordinates from a QgsPoint in map coordinates
      */
-    static inline QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point )
+    static inline QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point )
     {
       QPointF pt;
       if ( context.coordinateTransform().isValid() )

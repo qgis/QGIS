@@ -66,11 +66,11 @@ class QgsGeometryEngine
 %Docstring
  :rtype: QgsAbstractGeometry
 %End
-    virtual bool centroid( QgsPointV2 &pt, QString *errorMsg = 0 ) const = 0;
+    virtual bool centroid( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
 %Docstring
  :rtype: bool
 %End
-    virtual bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = 0 ) const = 0;
+    virtual bool pointOnSurface( QgsPoint &pt, QString *errorMsg = 0 ) const = 0;
 %Docstring
  :rtype: bool
 %End

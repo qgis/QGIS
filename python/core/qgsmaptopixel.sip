@@ -58,24 +58,24 @@ class QgsMapToPixel
  Use setParameters to fill
 %End
 
-    QgsPoint transform( const QgsPoint &p ) const;
+    QgsPointXY transform( const QgsPointXY &p ) const;
 %Docstring
  Transform the point from map (world) coordinates to device coordinates
  \param p Point to transform
- :return: QgsPoint in device coordinates
- :rtype: QgsPoint
+ :return: QgsPointXY in device coordinates
+ :rtype: QgsPointXY
 %End
 
-    void transform( QgsPoint *p ) const;
+    void transform( QgsPointXY *p ) const;
 
-    QgsPoint transform( qreal x, qreal y ) const;
+    QgsPointXY transform( qreal x, qreal y ) const;
 %Docstring
  Transform the point specified by x,y from map (world)
  coordinates to device coordinates
  \param x x cordinate o point to transform
  \param y y coordinate of point to transform
- :return: QgsPoint in device coordinates
- :rtype: QgsPoint
+ :return: QgsPointXY in device coordinates
+ :rtype: QgsPointXY
 %End
 
     void transformInPlace( double &x, double &y ) const;
@@ -87,28 +87,28 @@ class QgsMapToPixel
 
 
 
-    QgsPoint toMapCoordinates( int x, int y ) const;
+    QgsPointXY toMapCoordinates( int x, int y ) const;
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint toMapCoordinatesF( double x, double y ) const;
+    QgsPointXY toMapCoordinatesF( double x, double y ) const;
 %Docstring
 Transform device coordinates to map (world) coordinates
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint toMapCoordinates( QPoint p ) const;
+    QgsPointXY toMapCoordinates( QPoint p ) const;
 %Docstring
  Transform device coordinates to map (world) coordinates
  \param p Point to be converted to map cooordinates
- :return: QgsPoint in map coorndiates
- :rtype: QgsPoint
+ :return: QgsPointXY in map coorndiates
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint toMapPoint( double x, double y ) const;
+    QgsPointXY toMapPoint( double x, double y ) const;
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );

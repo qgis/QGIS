@@ -957,7 +957,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   return QgsRasterDataProvider::generateBandName( bandNumber );
 }
 
-QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
 

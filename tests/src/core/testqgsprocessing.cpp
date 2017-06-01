@@ -594,7 +594,7 @@ void TestQgsProcessing::features()
   for ( int i = 1; i < 6; ++i )
   {
     QgsFeature f( i );
-    f.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+    f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
@@ -750,7 +750,7 @@ void TestQgsProcessing::createIndex()
   for ( int i = 1; i < 6; ++i )
   {
     QgsFeature f( i );
-    f.setGeometry( QgsGeometry( new QgsPointV2( i, 2 ) ) );
+    f.setGeometry( QgsGeometry( new QgsPoint( i, 2 ) ) );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
@@ -758,25 +758,25 @@ void TestQgsProcessing::createIndex()
   // disable selected features check
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
   QgsSpatialIndex index = QgsProcessingUtils::createSpatialIndex( layer, context );
-  QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
   // selected features check, but none selected
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   index = QgsProcessingUtils::createSpatialIndex( layer, context );
-  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
   index = QgsProcessingUtils::createSpatialIndex( layer, context );
-  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
 
   // selection but not using selection mode
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
   index = QgsProcessingUtils::createSpatialIndex( layer, context );
-  ids = index.nearestNeighbor( QgsPoint( 2.1, 2 ), 1 );
+  ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
 }
@@ -1228,7 +1228,7 @@ void TestQgsProcessing::parameterPoint()
   // string representing a point
   QVariantMap params;
   params.insert( "non_optional", QString( "1.1,2.2" ) );
-  QgsPoint point = QgsProcessingParameters::parameterAsPoint( def.get(), params, QStringLiteral( "non_optional" ), context );
+  QgsPointXY point = QgsProcessingParameters::parameterAsPoint( def.get(), params, QStringLiteral( "non_optional" ), context );
   QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
   QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
 

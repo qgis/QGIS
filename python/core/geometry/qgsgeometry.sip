@@ -15,15 +15,15 @@
 
 
 
-typedef QVector<QgsPoint> QgsPolyline;
+typedef QVector<QgsPointXY> QgsPolyline;
 
-typedef QVector<QVector<QgsPoint>> QgsPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsPolygon;
 
-typedef QVector<QgsPoint> QgsMultiPoint;
+typedef QVector<QgsPointXY> QgsMultiPoint;
 
-typedef QVector<QVector<QgsPoint>> QgsMultiPolyline;
+typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
 
-typedef QVector<QVector<QVector<QgsPoint>>> QgsMultiPolygon;
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
 
 
 
@@ -95,9 +95,9 @@ Copy constructor will prompt a deep copy of the object
 Creates a new geometry from a WKT string
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPoint( const QgsPoint &point );
+    static QgsGeometry fromPoint( const QgsPointXY &point );
 %Docstring
-Creates a new geometry from a QgsPoint object
+Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
 %End
     static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
@@ -224,9 +224,9 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    QgsPoint closestVertex( const QgsPoint &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
+    QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     double distanceToVertex( int vertex ) const;
@@ -277,7 +277,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    bool insertVertex( const QgsPointV2 &point, int beforeVertex );
+    bool insertVertex( const QgsPoint &point, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex index,
   ring and item (first number is index 0)
@@ -302,7 +302,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    bool moveVertex( const QgsPointV2 &p, int atVertex );
+    bool moveVertex( const QgsPoint &p, int atVertex );
 %Docstring
  Moves the vertex at the given position number
   and item (first number is index 0)
@@ -326,15 +326,15 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: bool
 %End
 
-    QgsPoint vertexAt( int atVertex ) const;
+    QgsPointXY vertexAt( int atVertex ) const;
 %Docstring
   Returns coordinates of a vertex.
   \param atVertex index of the vertex
-  :return: Coordinates of the vertex or QgsPoint(0,0) on error
- :rtype: QgsPoint
+  :return: Coordinates of the vertex or QgsPointXY(0,0) on error
+ :rtype: QgsPointXY
 %End
 
-    double sqrDistToVertexAt( QgsPoint &point /In/, int atVertex ) const;
+    double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
 %Docstring
   Returns the squared cartesian distance between the given point
   to the given vertex index (vertex at the given position number,
@@ -358,7 +358,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
-    double closestVertexWithContext( const QgsPoint &point, int &atVertex /Out/ ) const;
+    double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
 %Docstring
  Searches for the closest vertex in this geometry to the given point.
  \param point Specifiest the point for search
@@ -367,7 +367,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    double closestSegmentWithContext( const QgsPoint &point, QgsPoint &minDistPoint /Out/, int &afterVertex /Out/ ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/ ) const;
 %Docstring
  Searches for the closest segment of geometry to the given point
  \param point Specifies the point for search
@@ -380,7 +380,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    int addRing( const QList<QgsPoint> &ring );
+    int addRing( const QList<QgsPointXY> &ring );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
 :return: 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -396,7 +396,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: int
 %End
 
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    int addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -470,7 +470,7 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int rotate( double rotation, const QgsPoint &center );
+    int rotate( double rotation, const QgsPointXY &center );
 %Docstring
  Rotate this geometry around the Z axis
 .. versionadded:: 2.8
@@ -480,15 +480,15 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int splitGeometry( const QList<QgsPoint> &splitLine,
+    int splitGeometry( const QList<QgsPointXY> &splitLine,
                        QList<QgsGeometry> &newGeometries /Out/,
                        bool topological,
-                       QList<QgsPoint> &topologyTestPoints /Out/ );
+                       QList<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
  :rtype: int
 %End
 
-    int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
+    int reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine );
 %Docstring
  Replaces a part of this geometry with another line
  :return: 0 in case of success
@@ -554,7 +554,7 @@ Test for intersection with a geometry (uses GEOS)
  :rtype: bool
 %End
 
-    bool contains( const QgsPoint *p ) const;
+    bool contains( const QgsPointXY *p ) const;
 %Docstring
 Test for containment of a point (uses GEOS)
  :rtype: bool
@@ -916,11 +916,11 @@ Returns an extruded version of this geometry.
 %End
 
 
-    QgsPoint asPoint() const;
+    QgsPointXY asPoint() const;
 %Docstring
  Return contents of the geometry as a point
  if wkbType is WKBPoint, otherwise returns [0,0]
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsPolyline asPolyline() const;
@@ -1062,14 +1062,14 @@ Ring 0 is outer ring and can't be deleted.
       public:
         Error();
         explicit Error( const QString &m );
-        Error( const QString &m, const QgsPoint &p );
+        Error( const QString &m, const QgsPointXY &p );
         QString what();
 %Docstring
  :rtype: str
 %End
-        QgsPoint where();
+        QgsPointXY where();
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
         bool hasWhere();
 %Docstring
@@ -1231,19 +1231,19 @@ Ring 0 is outer ring and can't be deleted.
         if ( o0 && o1 )
         {
           // compare polyline - polyline
-          if ( sipCanConvertToType( o0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( o1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a1, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+               sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
             QgsPolyline *p0;
             QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
-              sipReleaseType( p0, sipType_QVector_0100QgsPoint, state0 );
-              sipReleaseType( p1, sipType_QVector_0100QgsPoint, state1 );
+              sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
+              sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
             }
             else
             {
@@ -1258,19 +1258,19 @@ Ring 0 is outer ring and can't be deleted.
             if ( oo0 && oo1 )
             {
               // compare polygon - polygon
-              if ( sipCanConvertToType( oo0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( oo1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) )
+              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
                 QgsPolygon *p0;
                 QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
-                  sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPoint, state0 );
-                  sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPoint, state1 );
+                  sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
+                  sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
                 }
                 else
                 {
@@ -1285,19 +1285,19 @@ Ring 0 is outer ring and can't be deleted.
                 if ( ooo0 && ooo1 )
                 {
                   // compare multipolygon - multipolygon
-                  if ( sipCanConvertToType( ooo0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( ooo1, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, SIP_NOT_NONE ) )
+                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
+                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
                     QgsMultiPolygon *p0;
                     QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
-                      sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, state0 );
-                      sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPoint, state1 );
+                      sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
+                      sipReleaseType( p1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state1 );
                     }
                     else
                     {
@@ -1335,17 +1335,17 @@ Ring 0 is outer ring and can't be deleted.
  :rtype: QgsGeometryEngine
 %End
 
-    static void convertPointList( const QList<QgsPoint> &input, QgsPointSequence &output );
+    static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
- Upgrades a point list from QgsPoint to QgsPointV2
- \param input list of QgsPoint objects to be upgraded
+ Upgrades a point list from QgsPointXY to QgsPointV2
+ \param input list of QgsPointXY objects to be upgraded
  \param output destination for list of points converted to QgsPointV2
 %End
 
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPoint> &output );
+    static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
 %Docstring
- Downgrades a point list from QgsPointV2 to QgsPoint
- \param input list of QgsPointV2 objects to be downgraded
+ Downgrades a point list from QgsPoint to QgsPoint
+ \param input list of QgsPoint objects to be downgraded
  \param output destination for list of points converted to QgsPoint
 %End
 

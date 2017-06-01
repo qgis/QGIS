@@ -374,7 +374,7 @@ QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   return new QgsAmsLegendFetcher( this );
 }
 
-QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
+QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent, int width, int height, int dpi )
 {
   // http://resources.arcgis.com/en/help/rest/apiref/identify.html
   QgsDataSourceUri dataSource( dataSourceUri() );

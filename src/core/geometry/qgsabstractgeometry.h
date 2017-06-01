@@ -28,19 +28,19 @@ class QgsMapToPixel;
 class QgsCurve;
 class QgsMultiCurve;
 class QgsMultiPointV2;
-class QgsPointV2;
+class QgsPoint;
 struct QgsVertexId;
 class QPainter;
 class QDomDocument;
 class QDomElement;
 
-typedef QList< QgsPointV2 > QgsPointSequence;
+typedef QList< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
 typedef QList< QgsPointSequence > QgsRingSequence;
 typedef QList< QgsRingSequence > QgsCoordinateSequence;
 #else
-typedef QList< QList< QgsPointV2 > > QgsRingSequence;
-typedef QList< QList< QList< QgsPointV2 > > > QgsCoordinateSequence;
+typedef QList< QList< QgsPoint > > QgsRingSequence;
+typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
 #endif
 
 /** \ingroup core
@@ -53,8 +53,8 @@ class CORE_EXPORT QgsAbstractGeometry
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsPointV2 *>( sipCpp ) != NULL )
-      sipType = sipType_QgsPointV2;
+    if ( dynamic_cast<QgsPoint *>( sipCpp ) != NULL )
+      sipType = sipType_QgsPoint;
     else if ( dynamic_cast<QgsLineString *>( sipCpp ) != NULL )
       sipType = sipType_QgsLineString;
     else if ( dynamic_cast<QgsCircularString *>( sipCpp ) != NULL )
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vertex container for found node
      * \returns false if at end
      */
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const = 0;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
      * \returns coordinate sequence
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns the point corresponding to a specified vertex id
      */
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const = 0;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
 
     /** Searches for the closest segment of the geometry to a given point.
      * \param pt specifies the point to find closest segment to
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
                                    bool *leftOf SIP_OUT, double epsilon ) const = 0;
 
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see moveVertex
      * \see deleteVertex
      */
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) = 0;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) = 0;
 
     /** Moves a vertex within the geometry
      * \param position vertex id for vertex to move
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see insertVertex
      * \see deleteVertex
      */
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) = 0;
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) = 0;
 
     /** Deletes a vertex within the geometry
      * \param position vertex id for vertex to delete
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual double area() const;
 
     //! Returns the centroid of the geometry
-    virtual QgsPointV2 centroid() const;
+    virtual QgsPoint centroid() const;
 
     /** Returns true if the geometry is empty
      */

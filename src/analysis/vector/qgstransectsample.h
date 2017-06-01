@@ -24,7 +24,7 @@ class QgsDistanceArea;
 class QgsGeometry;
 class QgsSpatialIndex;
 class QgsVectorLayer;
-class QgsPoint;
+class QgsPointXY;
 class QProgressDialog;
 
 /** \ingroup analysis
@@ -83,9 +83,9 @@ class ANALYSIS_EXPORT QgsTransectSample
         \param pt1 out: closest point on first geometry
         \param pt2 out: closest point on secont geometry
         \returns true in case of success*/
-    static bool closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPoint &pt1, QgsPoint &pt2 );
+    static bool closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPointXY &pt1, QgsPointXY &pt2 );
     //! Returns a copy of the multiline element closest to a point (caller takes ownership)
-    static QgsGeometry closestMultilineElement( const QgsPoint &pt, const QgsGeometry &multiLine );
+    static QgsGeometry closestMultilineElement( const QgsPointXY &pt, const QgsGeometry &multiLine );
 
     /** Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line
         \param stratumGeom stratum polygon

@@ -56,7 +56,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QgsGCPList::const_iterator gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
@@ -84,7 +84,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
     if ( ( *gcpIt )->isEnabled() )

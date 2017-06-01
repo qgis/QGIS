@@ -196,11 +196,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Set the center of the map canvas, in geographical coordinates
     //! \since QGIS 2.8
-    void setCenter( const QgsPoint &center );
+    void setCenter( const QgsPointXY &center );
 
     //! Get map center, in geographical coordinates
     //! \since QGIS 2.8
-    QgsPoint center() const;
+    QgsPointXY center() const;
 
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
@@ -370,7 +370,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
     //! If point is given, re-center on it
-    void zoomByFactor( double scaleFactor, const QgsPoint *center = nullptr );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = nullptr );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -590,7 +590,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Emits current mouse position
         \note changed in 1.3 */
-    void xyCoordinates( const QgsPoint &p );
+    void xyCoordinates( const QgsPointXY &p );
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );

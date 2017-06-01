@@ -90,7 +90,7 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
   }
 
   double searchDistance = context.convertToMapUnits( mTolerance, mToleranceUnit, mToleranceMapUnitScale );
-  QgsPoint point = transformedFeature.geometry().asPoint();
+  QgsPointXY point = transformedFeature.geometry().asPoint();
   QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
   if ( intersectList.empty() )
   {
@@ -123,8 +123,8 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
     ClusteredGroup &group = mClusteredGroups[groupIdx];
 
     // calculate new centroid of group
-    QgsPoint oldCenter = mGroupLocations.value( minDistFeatureId );
-    mGroupLocations[ minDistFeatureId ] = QgsPoint( ( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
+    QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
+    mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
                                           ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
 
     // add to a group
@@ -350,7 +350,7 @@ QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems( double scaleDen
 }
 
 
-QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint &p, double distance ) const
+QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPointXY &p, double distance ) const
 {
   return QgsRectangle( p.x() - distance, p.y() - distance, p.x() + distance, p.y() + distance );
 }

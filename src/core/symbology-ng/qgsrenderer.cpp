@@ -40,7 +40,7 @@
 #include <QDomDocument>
 #include <QPolygonF>
 
-QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPointV2 &point )
+QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPoint &point )
 {
   return QgsSymbol::_getPoint( context, point );
 }

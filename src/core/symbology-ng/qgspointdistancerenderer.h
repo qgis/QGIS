@@ -240,7 +240,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QMap<QgsFeatureId, int> mGroupIndex;
 
     //! Mapping of feature ID to approximate group location
-    QMap<QgsFeatureId, QgsPoint > mGroupLocations;
+    QMap<QgsFeatureId, QgsPointXY > mGroupLocations;
 
     //! Spatial index for fast lookup of nearby points.
     QgsSpatialIndex *mSpatialIndex = nullptr;
@@ -264,7 +264,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
 
     //! Creates a search rectangle with specified distance tolerance.
-    QgsRectangle searchRect( const QgsPoint &p, double distance ) const;
+    QgsRectangle searchRect( const QgsPointXY &p, double distance ) const;
 
     //! Debugging function to check the entries in the clustered groups
     void printGroupInfo() const;

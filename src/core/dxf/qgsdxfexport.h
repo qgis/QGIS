@@ -30,7 +30,7 @@
 #include <QTextStream>
 
 class QgsMapLayer;
-class QgsPoint;
+class QgsPointXY;
 class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsDxfExport
      * \note available in Python bindings as writeGroupPointV2
      * \since QGIS 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p ) SIP_PYNAME( writeGroupPointV2 );
+    void writeGroup( int code, const QgsPoint &p ) SIP_PYNAME( writeGroupPointV2 );
 
     /**
      * Write a group code with color value
@@ -273,32 +273,32 @@ class CORE_EXPORT QgsDxfExport
 
     //! Write line (as a polyline)
     //! \since QGIS 2.15
-    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
     //! Write point
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt ) SIP_PYNAME( writePointV2 );
+    void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) SIP_PYNAME( writePointV2 );
 
     //! Write filled circle (as hatch)
     //! \note available in Python bindings as writePointV2
     //! \since QGIS 2.15
-    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
 
     //! Write circle (as polyline)
     //! \note available in Python bindings as writeCircleV2
     //! \since QGIS 2.15
-    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
+    void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
 
     //! Write text (TEXT)
     //! \note available in Python bindings as writeTextV2
     //! \since QGIS 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
 
     //! Write mtext (MTEXT)
     //! \note available in Python bindings as writeMTextV2
     //! \since QGIS 2.15
-    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color );
+    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 
     //! Calculates a scaling factor to convert from map units to a specified symbol unit.
     static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsDxfExport
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPointV2 &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
+    void writePoint( const QgsPoint &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle );
     void writeDefaultLinetypes();
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );

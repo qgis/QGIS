@@ -69,11 +69,11 @@ point features or be used to define the path of a way.
 %End
   public:
     QgsOSMNode();
-    QgsOSMNode( QgsOSMId id, const QgsPoint &point );
+    QgsOSMNode( QgsOSMId id, const QgsPointXY &point );
 
-    QgsPoint point() const;
+    QgsPointXY point() const;
 %Docstring
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
 };

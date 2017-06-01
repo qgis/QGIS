@@ -734,7 +734,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsPointV2 *point = static_cast< const QgsPointV2 * >( segmentizedGeometry.geometry() );
+      const QgsPoint *point = static_cast< const QgsPoint * >( segmentizedGeometry.geometry() );
       const QPointF pt = _getPoint( context, *point );
       static_cast<QgsMarkerSymbol *>( this )->renderPoint( pt, &feature, context, layer, selected );
 
@@ -819,7 +819,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         mSymbolRenderContext->setGeometryPartNum( i + 1 );
         mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
-        const QgsPointV2 &point = static_cast< const QgsPointV2 & >( *mp.geometryN( i ) );
+        const QgsPoint &point = static_cast< const QgsPoint & >( *mp.geometryN( i ) );
         const QPointF pt = _getPoint( context, point );
         static_cast<QgsMarkerSymbol *>( this )->renderPoint( pt, &feature, context, layer, selected );
 
@@ -963,7 +963,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       QgsCoordinateTransform ct = context.coordinateTransform();
       const QgsMapToPixel &mtp = context.mapToPixel();
 
-      QgsPointV2 vertexPoint;
+      QgsPoint vertexPoint;
       QgsVertexId vertexId;
       double x, y, z;
       QPointF mapPoint;

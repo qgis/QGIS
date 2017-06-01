@@ -37,7 +37,7 @@ void QgsGpsMarker::setSize( int size )
   mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPoint &point )
+void QgsGpsMarker::setCenter( const QgsPointXY &point )
 {
   //transform to map crs
   if ( mMapCanvas )

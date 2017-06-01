@@ -119,7 +119,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
   QgsMultiPoint multiPoints;
   if ( !featureGeometry.isMultipart() )
   {
-    QgsPoint p = featureGeometry.asPoint();
+    QgsPointXY p = featureGeometry.asPoint();
     // avoiding any empty points or out of extent points
     if ( !mBounds.contains( p ) )
       return Success;

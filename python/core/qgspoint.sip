@@ -12,7 +12,7 @@
 
 
 
-class QgsPoint
+class QgsPointXY
 {
 %Docstring
  A class to represent a point.
@@ -23,35 +23,35 @@ class QgsPoint
 #include "qgspoint.h"
 %End
   public:
-    QgsPoint();
+    QgsPointXY();
 
-    QgsPoint( const QgsPoint &p );
+    QgsPointXY( const QgsPointXY &p );
 %Docstring
 Create a point from another point
 %End
 
-    QgsPoint( double x, double y );
+    QgsPointXY( double x, double y );
 %Docstring
  Create a point from x,y coordinates
  \param x x coordinate
  \param y y coordinate
 %End
 
-    QgsPoint( QPointF point );
+    QgsPointXY( QPointF point );
 %Docstring
  Create a point from a QPointF
  \param point QPointF source
 .. versionadded:: 2.7
 %End
 
-    QgsPoint( QPoint point );
+    QgsPointXY( QPoint point );
 %Docstring
  Create a point from a QPoint
  \param point QPoint source
 .. versionadded:: 2.7
 %End
 
-    QgsPoint( const QgsPointV2 &point );
+    QgsPointXY( const QgsPoint &point );
 %Docstring
  Create a new point.
  Z and M values will be dropped.
@@ -59,7 +59,7 @@ Create a point from another point
 .. versionadded:: 3.0
 %End
 
-    ~QgsPoint();
+    ~QgsPointXY();
 
     void setX( double x );
 %Docstring
@@ -154,7 +154,7 @@ As above but with precision for string representation of a point
  :rtype: float
 %End
 
-    double sqrDist( const QgsPoint &other ) const;
+    double sqrDist( const QgsPointXY &other ) const;
 %Docstring
  Returns the squared distance between this point another point.
 .. seealso:: distance()
@@ -171,7 +171,7 @@ As above but with precision for string representation of a point
  :rtype: float
 %End
 
-    double distance( const QgsPoint &other ) const;
+    double distance( const QgsPointXY &other ) const;
 %Docstring
  Returns the distance between this point and another point.
  \param other other point
@@ -180,29 +180,29 @@ As above but with precision for string representation of a point
  :rtype: float
 %End
 
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
 Returns the minimum distance between this point and a segment
  :rtype: float
 %End
 
-    double azimuth( const QgsPoint &other ) const;
+    double azimuth( const QgsPointXY &other ) const;
 %Docstring
 Calculates azimuth between this point and other one (clockwise in degree, starting from north)
  :rtype: float
 %End
 
-    QgsPoint project( double distance, double bearing ) const;
+    QgsPointXY project( double distance, double bearing ) const;
 %Docstring
  Returns a new point which corresponds to this point projected by a specified distance
  in a specified bearing.
  \param distance distance to project
  \param bearing angle to project in, clockwise in degrees starting from north
 .. versionadded:: 2.16
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
 %Docstring
  Compares this point with another point with a fuzzy tolerance
  \param other point to compare with
@@ -212,9 +212,9 @@ Calculates azimuth between this point and other one (clockwise in degree, starti
  :rtype: bool
 %End
 
-    bool operator==( const QgsPoint &other );
+    bool operator==( const QgsPointXY &other );
 
-    bool operator!=( const QgsPoint &other ) const;
+    bool operator!=( const QgsPointXY &other ) const;
 %Docstring
 Inequality operator
  :rtype: bool
@@ -226,58 +226,58 @@ Multiply x and y by the given value
 %End
 
 
-    QgsVector operator-( const QgsPoint &p ) const;
+    QgsVector operator-( const QgsPointXY &p ) const;
 %Docstring
 Calculates the vector obtained by subtracting a point from this point
  :rtype: QgsVector
 %End
 
-    QgsPoint &operator+=( QgsVector v );
+    QgsPointXY &operator+=( QgsVector v );
 %Docstring
 Adds a vector to this point in place
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint &operator-=( QgsVector v );
+    QgsPointXY &operator-=( QgsVector v );
 %Docstring
 Subtracts a vector from this point in place
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint operator+( QgsVector v ) const;
+    QgsPointXY operator+( QgsVector v ) const;
 %Docstring
 Adds a vector to this point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint operator-( QgsVector v ) const;
+    QgsPointXY operator-( QgsVector v ) const;
 %Docstring
 Subtracts a vector from this point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint operator*( double scalar ) const;
+    QgsPointXY operator*( double scalar ) const;
 %Docstring
 Multiplies the coordinates in this point by a scalar quantity
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint operator/( double scalar ) const;
+    QgsPointXY operator/( double scalar ) const;
 %Docstring
 Divides the coordinates in this point by a scalar quantity
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint &operator*=( double scalar );
+    QgsPointXY &operator*=( double scalar );
 %Docstring
 Multiplies the coordinates in this point by a scalar quantity in place
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint &operator/=( double scalar );
+    QgsPointXY &operator/=( double scalar );
 %Docstring
 Divides the coordinates in this point by a scalar quantity in place
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     SIP_PYOBJECT __repr__();

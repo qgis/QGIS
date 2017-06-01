@@ -109,15 +109,15 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 
 
-    QgsPoint savePoint; //point in layer coordinates
+    QgsPointXY savePoint; //point in layer coordinates
     try
     {
-      QgsPointV2 fetchPoint;
+      QgsPoint fetchPoint;
       int res;
       res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
       if ( res == 0 )
       {
-        savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+        savePoint = QgsPointXY( fetchPoint.x(), fetchPoint.y() );
       }
       else
       {
@@ -146,7 +146,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
-        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
+        g = QgsGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
@@ -155,7 +155,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
         QgsMultiPointV2 *mp = new QgsMultiPointV2();
-        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
+        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else

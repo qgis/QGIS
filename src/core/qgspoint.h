@@ -28,13 +28,13 @@
 #include <QPoint>
 #include <QObject>
 
-class QgsPointV2;
+class QgsPoint;
 
 /** \ingroup core
  * A class to represent a point.
  * For Z and M support prefer QgsPointV2.
  */
-class CORE_EXPORT QgsPoint
+class CORE_EXPORT QgsPointXY
 {
     Q_GADGET
 
@@ -43,19 +43,19 @@ class CORE_EXPORT QgsPoint
 
   public:
     /// Default constructor
-    QgsPoint()
+    QgsPointXY()
       : mX( 0.0 )
       , mY( 0.0 )
     {}
 
     //! Create a point from another point
-    QgsPoint( const QgsPoint &p );
+    QgsPointXY( const QgsPointXY &p );
 
     /** Create a point from x,y coordinates
      * \param x x coordinate
      * \param y y coordinate
      */
-    QgsPoint( double x, double y )
+    QgsPointXY( double x, double y )
       : mX( x )
       , mY( y )
     {}
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsPoint
      * \param point QPointF source
      * \since QGIS 2.7
      */
-    QgsPoint( QPointF point )
+    QgsPointXY( QPointF point )
       : mX( point.x() )
       , mY( point.y() )
     {}
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsPoint
      * \param point QPoint source
      * \since QGIS 2.7
      */
-    QgsPoint( QPoint point )
+    QgsPointXY( QPoint point )
       : mX( point.x() )
       , mY( point.y() )
     {}
@@ -84,9 +84,9 @@ class CORE_EXPORT QgsPoint
      *
      * \since QGIS 3.0
      */
-    QgsPoint( const QgsPointV2 &point );
+    QgsPointXY( const QgsPoint &point );
 
-    ~QgsPoint()
+    ~QgsPointXY()
     {}
 
     /** Sets the x value of the point
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsPoint
     /** Returns the squared distance between this point another point.
      * \see distance()
     */
-    double sqrDist( const QgsPoint &other ) const;
+    double sqrDist( const QgsPointXY &other ) const;
 
     /** Returns the distance between this point and a specified x, y coordinate.
      * \param x x-coordniate
@@ -192,13 +192,13 @@ class CORE_EXPORT QgsPoint
      * \see sqrDist()
      * \since QGIS 2.16
     */
-    double distance( const QgsPoint &other ) const;
+    double distance( const QgsPointXY &other ) const;
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-    double azimuth( const QgsPoint &other ) const;
+    double azimuth( const QgsPointXY &other ) const;
 
     /** Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsPoint
      * \param bearing angle to project in, clockwise in degrees starting from north
      * \since QGIS 2.16
      */
-    QgsPoint project( double distance, double bearing ) const;
+    QgsPointXY project( double distance, double bearing ) const;
 
     /** Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
@@ -214,46 +214,46 @@ class CORE_EXPORT QgsPoint
      * \returns true if points are equal within specified tolerance
      * \since QGIS 2.9
      */
-    bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
 
     //! equality operator
-    bool operator==( const QgsPoint &other );
+    bool operator==( const QgsPointXY &other );
 
     //! Inequality operator
-    bool operator!=( const QgsPoint &other ) const;
+    bool operator!=( const QgsPointXY &other ) const;
 
     //! Multiply x and y by the given value
     void multiply( double scalar );
 
     //! Assignment
-    QgsPoint &operator=( const QgsPoint &other );
+    QgsPointXY &operator=( const QgsPointXY &other );
 
     //! Calculates the vector obtained by subtracting a point from this point
-    QgsVector operator-( const QgsPoint &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+    QgsVector operator-( const QgsPointXY &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     //! Adds a vector to this point in place
-    QgsPoint &operator+=( QgsVector v ) { *this = *this + v; return *this; }
+    QgsPointXY &operator+=( QgsVector v ) { *this = *this + v; return *this; }
 
     //! Subtracts a vector from this point in place
-    QgsPoint &operator-=( QgsVector v ) { *this = *this - v; return *this; }
+    QgsPointXY &operator-=( QgsVector v ) { *this = *this - v; return *this; }
 
     //! Adds a vector to this point
-    QgsPoint operator+( QgsVector v ) const { return QgsPoint( mX + v.x(), mY + v.y() ); }
+    QgsPointXY operator+( QgsVector v ) const { return QgsPointXY( mX + v.x(), mY + v.y() ); }
 
     //! Subtracts a vector from this point
-    QgsPoint operator-( QgsVector v ) const { return QgsPoint( mX - v.x(), mY - v.y() ); }
+    QgsPointXY operator-( QgsVector v ) const { return QgsPointXY( mX - v.x(), mY - v.y() ); }
 
     //! Multiplies the coordinates in this point by a scalar quantity
-    QgsPoint operator*( double scalar ) const { return QgsPoint( mX * scalar, mY * scalar ); }
+    QgsPointXY operator*( double scalar ) const { return QgsPointXY( mX * scalar, mY * scalar ); }
 
     //! Divides the coordinates in this point by a scalar quantity
-    QgsPoint operator/( double scalar ) const { return QgsPoint( mX / scalar, mY / scalar ); }
+    QgsPointXY operator/( double scalar ) const { return QgsPointXY( mX / scalar, mY / scalar ); }
 
     //! Multiplies the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator*=( double scalar ) { mX *= scalar; mY *= scalar; return *this; }
+    QgsPointXY &operator*=( double scalar ) { mX *= scalar; mY *= scalar; return *this; }
 
     //! Divides the coordinates in this point by a scalar quantity in place
-    QgsPoint &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
+    QgsPointXY &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -300,12 +300,12 @@ class CORE_EXPORT QgsPoint
     //! y coordinate
     double mY;
 
-    friend uint qHash( const QgsPoint &pnt );
+    friend uint qHash( const QgsPointXY &pnt );
 
 }; // class QgsPoint
 
 
-inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 ) SIP_SKIP
+inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
 {
   if ( qgsDoubleNear( p1.x(), p2.x() ) && qgsDoubleNear( p1.y(), p2.y() ) )
   { return true; }
@@ -313,14 +313,14 @@ inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 ) SIP_SKIP
   { return false; }
 }
 
-inline std::ostream &operator << ( std::ostream &os, const QgsPoint &p ) SIP_SKIP
+inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_SKIP
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
   return os;
 }
 
-inline uint qHash( const QgsPoint &p ) SIP_SKIP
+inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 {
   uint hash;
   uint h1 = qHash( static_cast< quint64 >( p.mX ) );

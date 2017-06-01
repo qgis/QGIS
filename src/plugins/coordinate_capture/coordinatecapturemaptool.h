@@ -51,8 +51,8 @@ class CoordinateCaptureMapTool : public QgsMapTool
   public slots:
 
   signals:
-    void mouseMoved( const QgsPoint & );
-    void mouseClicked( const QgsPoint & );
+    void mouseMoved( const QgsPointXY & );
+    void mouseClicked( const QgsPointXY & );
   private:
 
     //! Rubber band for highlighting identified feature

@@ -31,18 +31,18 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual QgsCurve *clone() const = 0 /Factory/;
 
-    virtual QgsPointV2 startPoint() const = 0;
+    virtual QgsPoint startPoint() const = 0;
 %Docstring
  Returns the starting point of the curve.
 .. seealso:: endPoint
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    virtual QgsPointV2 endPoint() const = 0;
+    virtual QgsPoint endPoint() const = 0;
 %Docstring
  Returns the end point of the curve.
 .. seealso:: startPoint
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     virtual bool isClosed() const;
@@ -94,9 +94,9 @@ class QgsCurve: QgsAbstractGeometry
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const;
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex /Out/ ) const;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
-    virtual bool pointAt( int node, QgsPointV2 &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
+    virtual bool pointAt( int node, QgsPoint &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
 %Docstring
  Returns the point and vertex id of a point within the curve.
  \param node node number, where the first node is 0
@@ -127,7 +127,7 @@ class QgsCurve: QgsAbstractGeometry
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
     virtual int ringCount( int part = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
     virtual QgsRectangle boundingBox() const;
 

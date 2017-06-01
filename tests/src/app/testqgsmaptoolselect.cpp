@@ -109,7 +109,7 @@ QgsFeatureList
 TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolSelect > tool( new QgsMapToolSelect( canvas ) );
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   // make given vector layer current
   canvas->setCurrentLayer( layer );

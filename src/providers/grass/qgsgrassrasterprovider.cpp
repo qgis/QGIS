@@ -412,7 +412,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   Q_UNUSED( boundingBox );
   Q_UNUSED( width );

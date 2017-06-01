@@ -180,15 +180,15 @@ Set the extent of the map canvas
 .. versionadded:: 2.8
 %End
 
-    void setCenter( const QgsPoint &center );
+    void setCenter( const QgsPointXY &center );
 %Docstring
 .. versionadded:: 2.8
 %End
 
-    QgsPoint center() const;
+    QgsPointXY center() const;
 %Docstring
 .. versionadded:: 2.8
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     void zoomToFullExtent();
@@ -408,7 +408,7 @@ set wheel zoom factor (should be greater than 1)
 Zoom to a specific scale
 %End
 
-    void zoomByFactor( double scaleFactor, const QgsPoint *center = 0 );
+    void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );
 %Docstring
 If point is given, re-center on it
 %End
@@ -669,7 +669,7 @@ Zoom out with fixed factor
 
   signals:
 
-    void xyCoordinates( const QgsPoint &p );
+    void xyCoordinates( const QgsPointXY &p );
 %Docstring
  Emits current mouse position
 .. note::

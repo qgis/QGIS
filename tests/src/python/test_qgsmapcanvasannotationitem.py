@@ -40,7 +40,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a = QgsTextAnnotation()
         a.setFrameSize(QSizeF(300, 200))
         a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
-        a.setMapPosition(QgsPoint(12, 34))
+        a.setMapPosition(QgsPointXY(12, 34))
         a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
 
         canvas = QgsMapCanvas()
@@ -60,7 +60,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         self.assertAlmostEqual(i.pos().y(), 110, 1)
 
         # shift annotation map position, check that item is moved
-        a.setMapPosition(QgsPoint(14, 32))
+        a.setMapPosition(QgsPointXY(14, 32))
         self.assertAlmostEqual(i.pos().x(), 240, 1)
         self.assertAlmostEqual(i.pos().y(), 230, 1)
 
@@ -126,7 +126,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
         a.setFrameSize(QSizeF(300, 200))
         a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
         a.setHasFixedMapPosition(True)
-        a.setMapPosition(QgsPoint(12, 34))
+        a.setMapPosition(QgsPointXY(12, 34))
         a.setMapPositionCrs(QgsCoordinateReferenceSystem(4326))
 
         canvas = QgsMapCanvas()
@@ -142,18 +142,18 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
                                'test', "memory")
         canvas.setLayers([layer])
         f = QgsFeature(layer.fields())
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(14, 31)))
+        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(14, 31)))
         f.setValid(True)
         f.setAttributes(['hurstbridge', 'somewhere'])
         self.assertTrue(layer.dataProvider().addFeatures([f]))
         a.setMapLayer(layer)
         self.assertFalse(a.associatedFeature().isValid())
 
-        a.setMapPosition(QgsPoint(14, 31))
+        a.setMapPosition(QgsPointXY(14, 31))
         self.assertTrue(a.associatedFeature().isValid())
         self.assertEqual(a.associatedFeature().attributes()[0], 'hurstbridge')
 
-        a.setMapPosition(QgsPoint(17, 31))
+        a.setMapPosition(QgsPointXY(17, 31))
         self.assertFalse(a.associatedFeature().isValid())
 
 

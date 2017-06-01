@@ -131,7 +131,7 @@ Default constructor
 
     bool operator==( const QgsSipifyHeader other );
 
-    void multilineMethod( const QgsPoint &startPoint,
+    void multilineMethod( const QgsPointXY &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
                           QgsSnappingResult::SnappingType snap_to ) const;
@@ -335,7 +335,7 @@ remove argument
     }
     else
     {
-      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+      sipCpp = new sipQgsPoint( a0, a1, a2, a3, a4 );
     }
 %End
 

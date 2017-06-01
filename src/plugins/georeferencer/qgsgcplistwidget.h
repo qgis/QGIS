@@ -26,7 +26,7 @@ class QgsGCPList;
 class QgsGCPListModel;
 class QgsGeorefTransform;
 class QgsGeorefDataPoint;
-class QgsPoint;
+class QgsPointXY;
 
 class QgsGCPListWidget : public QTableView
 {

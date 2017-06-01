@@ -259,8 +259,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.hasGeometryType())
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPoint(0.75, -0.5), QgsPoint(0.75, 1.5)], 0), 0)
-        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.25), QgsPoint(1.5, 0.25)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.75, -0.5), QgsPointXY(0.75, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.25), QgsPointXY(1.5, 0.25)], 0), 0)
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 4)
 
@@ -270,8 +270,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.hasGeometryType())
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0), 0)
-        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.5), QgsPointXY(1.5, 0.5)], 0), 0)
         self.assertTrue(layer.commitChanges())
 
     def test_queries(self):

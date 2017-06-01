@@ -931,7 +931,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     QList< QPair< double, QPolygonF > > mTransformedXLines;
     QList< QPair< double, QPolygonF > > mTransformedYLines;
-    QList< QgsPoint > mTransformedIntersections;
+    QList< QgsPointXY > mTransformedIntersections;
     QRectF mPrevPaintRect;
     QPolygonF mPrevMapPolygon;
 

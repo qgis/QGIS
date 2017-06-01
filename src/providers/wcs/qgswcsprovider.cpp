@@ -211,7 +211,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   }
   double xRes = box.width() / width;
   double yRes = box.height() / height;
-  QgsPoint p = box.center();
+  QgsPointXY p = box.center();
 
   // width and height different to recognize rotation
   int requestWidth = 6;
@@ -1338,7 +1338,7 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );

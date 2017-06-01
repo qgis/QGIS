@@ -21,8 +21,8 @@
 #include <memory>
 
 QgsRegularPolygon::QgsRegularPolygon()
-  : mCenter( QgsPointV2() )
-  , mFirstVertex( QgsPointV2() )
+  : mCenter( QgsPoint() )
+  , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
   , mRadius( 0.0 )
 {
@@ -30,9 +30,9 @@ QgsRegularPolygon::QgsRegularPolygon()
 }
 
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const double radius, const double azimuth, const int numSides, const ConstructionOption circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const int numSides, const ConstructionOption circle )
   : mCenter( center )
-  , mFirstVertex( QgsPointV2() )
+  , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
   , mRadius( 0.0 )
 {
@@ -64,9 +64,9 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const double rad
 
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const QgsPointV2 &pt1, const int numSides, const ConstructionOption circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const int numSides, const ConstructionOption circle )
   : mCenter( center )
-  , mFirstVertex( QgsPointV2() )
+  , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
   , mRadius( 0.0 )
 {
@@ -98,9 +98,9 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &center, const QgsPointV2
 
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const int numSides )
-  : mCenter( QgsPointV2() )
-  , mFirstVertex( QgsPointV2() )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const int numSides )
+  : mCenter( QgsPoint() )
+  , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
   , mRadius( 0.0 )
 {
@@ -109,7 +109,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPointV2 &pt1, const QgsPointV2 &p
     mNumberSides = numSides;
 
     double azimuth = pt1.azimuth( pt2 );
-    QgsPointV2 pm = QgsGeometryUtils::midpoint( pt1, pt2 );
+    QgsPoint pm = QgsGeometryUtils::midpoint( pt1, pt2 );
     double length = pt1.distance( pm );
 
     double angle = ( 180 - ( 360 / numSides ) ) / 2.0;
@@ -142,7 +142,7 @@ bool QgsRegularPolygon::isEmpty() const
          );
 }
 
-void QgsRegularPolygon::setCenter( const QgsPointV2 &center )
+void QgsRegularPolygon::setCenter( const QgsPoint &center )
 {
   double azimuth = mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(mFirstVertex);
@@ -158,7 +158,7 @@ void QgsRegularPolygon::setRadius( const double radius )
   mFirstVertex = mCenter.project( mRadius, azimuth );
 }
 
-void QgsRegularPolygon::setFirstVertex( const QgsPointV2 &firstVertex )
+void QgsRegularPolygon::setFirstVertex( const QgsPoint &firstVertex )
 {
   double azimuth = mCenter.azimuth( mFirstVertex );
   // TODO: double inclination = mCenter.inclination(firstVertex);

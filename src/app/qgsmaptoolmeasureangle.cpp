@@ -50,7 +50,7 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsPoint point = snapPoint( e->pos() );
+  QgsPointXY point = snapPoint( e->pos() );
   mRubberBand->movePoint( point );
   if ( mAnglePoints.size() == 2 )
   {
@@ -104,7 +104,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( mAnglePoints.size() < 3 )
   {
-    QgsPoint newPoint = snapPoint( e->pos() );
+    QgsPointXY newPoint = snapPoint( e->pos() );
     mAnglePoints.push_back( newPoint );
     mRubberBand->addPoint( newPoint );
   }
@@ -143,7 +143,7 @@ void QgsMapToolMeasureAngle::createRubberBand()
   mRubberBand->setWidth( 3 );
 }
 
-QgsPoint QgsMapToolMeasureAngle::snapPoint( QPoint p )
+QgsPointXY QgsMapToolMeasureAngle::snapPoint( QPoint p )
 {
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
   return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );

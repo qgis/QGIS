@@ -275,7 +275,7 @@ void GlobePlugin::initGui()
 
   connect( mActionToggleGlobe, SIGNAL( triggered( bool ) ), this, SLOT( setGlobeEnabled( bool ) ) );
   connect( mLayerPropertiesFactory, SIGNAL( layerSettingsChanged( QgsMapLayer * ) ), this, SLOT( layerChanged( QgsMapLayer * ) ) );
-  connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
+  connect( this, SIGNAL( xyCoordinates( const QgsPointXY & ) ), mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPointXY & ) ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
 }
 
@@ -618,7 +618,7 @@ QgsRectangle GlobePlugin::getQGISLayerExtent() const
 void GlobePlugin::showCurrentCoordinates( const osgEarth::GeoPoint &geoPoint )
 {
   osg::Vec3d pos = geoPoint.vec3d();
-  emit xyCoordinates( QgsCoordinateTransformCache::instance()->transform( GEO_EPSG_CRS_AUTHID, mQGisIface->mapCanvas()->mapSettings().destinationCrs().authid() ).transform( QgsPoint( pos.x(), pos.y() ) ) );
+  emit xyCoordinates( QgsCoordinateTransformCache::instance()->transform( GEO_EPSG_CRS_AUTHID, mQGisIface->mapCanvas()->mapSettings().destinationCrs().authid() ).transform( QgsPointXY( pos.x(), pos.y() ) ) );
 }
 
 void GlobePlugin::setSelectedCoordinates( const osg::Vec3d &coords )
@@ -626,7 +626,7 @@ void GlobePlugin::setSelectedCoordinates( const osg::Vec3d &coords )
   mSelectedLon = coords.x();
   mSelectedLat = coords.y();
   mSelectedElevation = coords.z();
-  emit newCoordinatesSelected( QgsPoint( mSelectedLon, mSelectedLat ) );
+  emit newCoordinatesSelected( QgsPointXY( mSelectedLon, mSelectedLat ) );
 }
 
 osg::Vec3d GlobePlugin::getSelectedCoordinates()
@@ -655,8 +655,8 @@ void GlobePlugin::syncExtent()
   dist.setEllipsoidalMode( true );
   dist.setEllipsoid( "WGS84" );
 
-  QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
-  QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
+  QgsPointXY ll = QgsPointXY( extent.xMinimum(), extent.yMinimum() );
+  QgsPointXY ul = QgsPointXY( extent.xMinimum(), extent.yMaximum() );
   double height = dist.measureLine( ll, ul );
 //  double height = dist.computeDistanceBearing( ll, ul );
 
@@ -1098,8 +1098,8 @@ void GlobePlugin::unload()
   delete mSettingsDialog;
   mSettingsDialog = 0;
 
-  disconnect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
-              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
+  disconnect( this, SIGNAL( xyCoordinates( const QgsPointXY & ) ),
+              mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPointXY & ) ) );
 }
 
 void GlobePlugin::enableFrustumHighlight( bool status )

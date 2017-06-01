@@ -34,7 +34,7 @@
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
+class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {
     Q_GADGET
 
@@ -49,15 +49,15 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \param x x-coordinate of point
      * \param y y-coordinate of point
      */
-    QgsPointV2( double x = 0.0, double y = 0.0 );
+    QgsPoint( double x = 0.0, double y = 0.0 );
 
-    /** Construct a QgsPointV2 from a QgsPoint object
+    /** Construct a QgsPoint from a QgsPointXY object
      */
-    explicit QgsPointV2( const QgsPoint &p );
+    explicit QgsPoint( const QgsPointXY &p );
 
-    /** Construct a QgsPointV2 from a QPointF
+    /** Construct a QgsPoint from a QPointF
      */
-    explicit QgsPointV2( QPointF p );
+    explicit QgsPoint( QPointF p );
 
     /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
      * \param type point type
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \param z z-coordinate of point, for PointZ or PointZM types
      * \param m m-value of point, for PointM or PointZM types
      */
-    QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+    QgsPoint( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 #ifdef SIP_RUN
     % MethodCode
     if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
@@ -77,13 +77,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     }
     else
     {
-      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+      sipCpp = new sipQgsPoint( a0, a1, a2, a3, a4 );
     }
     % End
 #endif
 
-    bool operator==( const QgsPointV2 &pt ) const;
-    bool operator!=( const QgsPointV2 &pt ) const;
+    bool operator==( const QgsPoint &pt ) const;
+    bool operator!=( const QgsPoint &pt ) const;
 
     /** Returns the point's x-coordinate.
      * \see setX()
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance( const QgsPointV2 &other ) const;
+    double distance( const QgsPoint &other ) const;
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate. Calling
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPointV2 &other ) const;
+    double distanceSquared( const QgsPoint &other ) const;
 
     /**
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance3D( const QgsPointV2 &other ) const;
+    double distance3D( const QgsPoint &other ) const;
 
     /**
      * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
@@ -242,20 +242,20 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( const QgsPointV2 &other ) const;
+    double distanceSquared3D( const QgsPoint &other ) const;
 
     /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
      * \since QGIS 3.0
      */
-    double azimuth( const QgsPointV2 &other ) const;
+    double azimuth( const QgsPoint &other ) const;
 
     /**
      * Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
      * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
      * \since QGIS 3.0
      */
-    double inclination( const QgsPointV2 &other ) const;
+    double inclination( const QgsPoint &other ) const;
 
     /** Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
@@ -267,14 +267,14 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:
      * \code{.py}
-     *   p = QgsPointV2( 1, 2 ) # 2D point
+     *   p = QgsPoint( 1, 2 ) # 2D point
      *   pr = p.project ( 1, 0 )
      *   # pr is a 2D point: 'Point (1 3)'
      *   pr = p.project ( 1, 0, 90 )
      *   # pr is a 2D point: 'Point (1 3)'
      *   pr = p.project (1, 0, 0 )
      *   # pr is a 3D point: 'PointZ (1 2 1)'
-     *   p = QgsPointV2( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+     *   p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
      *   pr = p.project ( 1, 0 )
      *   # pr is a 3D point: 'PointZ (1 3 2)'
      *   pr = p.project ( 1, 0, 90 )
@@ -284,44 +284,44 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * \endcode
      * \since QGIS 3.0
      */
-    QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
+    QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
      * \since QGIS 3.0
      */
-    QgsVector operator-( const QgsPointV2 &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+    QgsVector operator-( const QgsPoint &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
      * \since QGIS 3.0
      */
-    QgsPointV2 &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
+    QgsPoint &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
 
     /**
      * Subtracts a vector from this point in place.
      * \since QGIS 3.0
      */
-    QgsPointV2 &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
+    QgsPoint &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
 
     /**
      * Adds a vector to this point.
      * \since QGIS 3.0
      */
-    QgsPointV2 operator+( QgsVector v ) const { QgsPointV2 r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
+    QgsPoint operator+( QgsVector v ) const { QgsPoint r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
 
     /**
      * Subtracts a vector from this point.
      * \since QGIS 3.0
      */
-    QgsPointV2 operator-( QgsVector v ) const { QgsPointV2 r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
+    QgsPoint operator-( QgsVector v ) const { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
     bool isEmpty() const override { return false; }
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
-    virtual QgsPointV2 *clone() const override SIP_FACTORY;
+    virtual QgsPoint *clone() const override SIP_FACTORY;
     void clear() override;
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
     virtual bool fromWkt( const QString &wkt ) override;
@@ -339,14 +339,14 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
                                    double epsilon ) const override;
-    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     /** Angle undefined. Always returns 0.0
         \param vertex the vertex id
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
     virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
     virtual int partCount() const override { return 1; }
-    virtual QgsPointV2 vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes, QgsProcessingUtils, QgsFields
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils, QgsFields
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -138,7 +138,7 @@ class MeanCoords(GeoAlgorithm):
             outFeat = QgsFeature()
             cx = values[0] / values[2]
             cy = values[1] / values[2]
-            meanPoint = QgsPoint(cx, cy)
+            meanPoint = QgsPointXY(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([cx, cy, clazz])

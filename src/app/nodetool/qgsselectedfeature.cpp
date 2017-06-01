@@ -280,7 +280,7 @@ void QgsSelectedFeature::createVertexMap()
   }
 
   QgsVertexId vertexId;
-  QgsPointV2 pt;
+  QgsPoint pt;
   while ( geom->nextVertex( vertexId, pt ) )
   {
     mVertexMap.append( new QgsVertexEntry( mCanvas, mVlayer, pt, vertexId, tr( "ring %1, vertex %2" ).arg( vertexId.ring ).arg( vertexId.vertex ) ) );

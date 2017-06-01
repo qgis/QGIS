@@ -95,13 +95,13 @@ Whether the internal data structures have been initialized
       ErrNoPath,
     };
 
-    QVector<QgsPoint> findShortestPath( const QgsPoint &p1, const QgsPoint &p2, PathError *error /Out/ = 0 );
+    QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error /Out/ = 0 );
 %Docstring
 :return: array of points - trace of linestrings of other features (empty array one error)
- :rtype: list of QgsPoint
+ :rtype: list of QgsPointXY
 %End
 
-    bool isPointSnapped( const QgsPoint &pt );
+    bool isPointSnapped( const QgsPointXY &pt );
 %Docstring
 Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
  :rtype: bool

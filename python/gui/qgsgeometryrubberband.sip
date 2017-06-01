@@ -49,7 +49,7 @@ Sets geometry (takes ownership). Geometry is expected to be in map coordinates
 Returns a pointer to the geometry
  :rtype: QgsAbstractGeometry
 %End
-    void moveVertex( QgsVertexId id, const QgsPointV2 &newPos );
+    void moveVertex( QgsVertexId id, const QgsPoint &newPos );
 %Docstring
 Moves vertex to new position (in map coordinates)
 %End

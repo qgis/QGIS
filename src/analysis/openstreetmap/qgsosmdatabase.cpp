@@ -150,7 +150,7 @@ QgsOSMNode QgsOSMDatabase::node( QgsOSMId id ) const
   double lon = sqlite3_column_double( mStmtNode, 0 );
   double lat = sqlite3_column_double( mStmtNode, 1 );
 
-  QgsOSMNode node( id, QgsPoint( lon, lat ) );
+  QgsOSMNode node( id, QgsPointXY( lon, lat ) );
 
   sqlite3_reset( mStmtNode );
   return node;
@@ -244,7 +244,7 @@ QgsPolyline QgsOSMDatabase::wayPoints( QgsOSMId id ) const
       return QgsPolyline(); // missing some nodes
     double lon = sqlite3_column_double( mStmtWayNodePoints, 0 );
     double lat = sqlite3_column_double( mStmtWayNodePoints, 1 );
-    points.append( QgsPoint( lon, lat ) );
+    points.append( QgsPointXY( lon, lat ) );
   }
 
   sqlite3_reset( mStmtWayNodePoints );
@@ -577,7 +577,7 @@ QgsOSMNode QgsOSMNodeIterator::next()
   double lon = sqlite3_column_double( mStmt, 1 );
   double lat = sqlite3_column_double( mStmt, 2 );
 
-  return QgsOSMNode( id, QgsPoint( lon, lat ) );
+  return QgsOSMNode( id, QgsPointXY( lon, lat ) );
 }
 
 void QgsOSMNodeIterator::close()

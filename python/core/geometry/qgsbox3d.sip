@@ -31,7 +31,7 @@ class QgsBox3d
  Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
 %End
 
-    QgsBox3d( const QgsPointV2 &p1, const QgsPointV2 &p2 );
+    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
 %Docstring
  Constructs a QgsBox3D from two points representing opposite corners of the box.
  The box is normalized after construction.
@@ -187,7 +187,7 @@ class QgsBox3d
  :rtype: bool
 %End
 
-    bool contains( const QgsPointV2 &point ) const;
+    bool contains( const QgsPoint &point ) const;
 %Docstring
  Returns true when box contains a ``point``.
 

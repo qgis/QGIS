@@ -29,7 +29,7 @@ class QgsCircle : QgsEllipse
   public:
     QgsCircle();
 
-    QgsCircle( const QgsPointV2 &center, double radius, double azimuth = 0 );
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 );
 %Docstring
  Constructs a circle by defining all the members.
  \param center The center of the circle.
@@ -37,7 +37,7 @@ class QgsCircle : QgsEllipse
  \param azimuth Angle in degrees started from the North to the first quadrant.
 %End
 
-    static QgsCircle from2Points( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Constructs a circle by 2 points on the circle.
  The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
@@ -48,7 +48,7 @@ class QgsCircle : QgsEllipse
  :rtype: QgsCircle
 %End
 
-    static QgsCircle from3Points( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double epsilon = 1E-8 );
+    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
 %Docstring
  Constructs a circle by 3 points on the circle.
  Z and m values are dropped for the center point.
@@ -61,7 +61,7 @@ class QgsCircle : QgsEllipse
  :rtype: QgsCircle
 %End
 
-    static QgsCircle fromCenterDiameter( const QgsPointV2 &center, double diameter, double azimuth = 0 );
+    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 );
 %Docstring
  Constructs a circle by a center point and a diameter.
  The center point keeps z and m values from ``center``.
@@ -72,7 +72,7 @@ class QgsCircle : QgsEllipse
 %End
 
 
-    static QgsCircle fromCenterPoint( const QgsPointV2 &center, const QgsPointV2 &pt1 );
+    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 );
 %Docstring
  Constructs a circle by a center point and another point.
  The center point keeps z and m values from ``center``.
@@ -84,9 +84,9 @@ class QgsCircle : QgsEllipse
 %End
 
 
-    static QgsCircle from3Tangents( const QgsPointV2 &pt1_tg1, const QgsPointV2 &pt2_tg1,
-                                    const QgsPointV2 &pt1_tg2, const QgsPointV2 &pt2_tg2,
-                                    const QgsPointV2 &pt1_tg3, const QgsPointV2 &pt2_tg3, double epsilon = 1E-8 );
+    static QgsCircle from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
+                                    const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
+                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 );
 %Docstring
  Constructs a circle by 3 tangents on the circle (aka inscribed circle of a triangle).
  Z and m values are dropped for the center point.
@@ -101,7 +101,7 @@ class QgsCircle : QgsEllipse
  :rtype: QgsCircle
 %End
 
-    static QgsCircle fromExtent( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Constructs a circle by an extent (aka bounding box / QgsRectangle).
  The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
@@ -143,13 +143,13 @@ Returns the radius of the circle
 Set the radius of the circle
 %End
 
-    QVector<QgsPointV2> northQuadrant() const /Factory/;
+    QVector<QgsPoint> northQuadrant() const /Factory/;
 %Docstring
  The four quadrants of the ellipse.
  They are oriented and started from North.
  :return: quadrants defined by four points.
 .. seealso:: quadrant()
- :rtype: list of QgsPointV2
+ :rtype: list of QgsPoint
 %End
 
     QgsCircularString *toCircularString( bool oriented = false ) const;

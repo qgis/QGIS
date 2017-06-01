@@ -413,7 +413,7 @@ QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &
       QgsGeometry point = geom.pointOnSurface();
       if ( point )
       {
-        QgsPoint pt = point.asPoint();
+        QgsPointXY pt = point.asPoint();
         fet.setAttribute( 1, pt.x() );
         fet.setAttribute( 2, pt.y() );
         fet.setAttribute( 3, "Center" );

@@ -389,7 +389,7 @@ static bool ring_make_geos_friendly( QgsCurve &ring )
 
   // close the ring if not already closed (2d only)
 
-  QgsPointV2 p1 = linestring.startPoint(), p2 = linestring.endPoint();
+  QgsPoint p1 = linestring.startPoint(), p2 = linestring.endPoint();
   if ( p1.x() != p2.x() || p1.y() != p2.y() )
     linestring.addVertex( p1 );
 

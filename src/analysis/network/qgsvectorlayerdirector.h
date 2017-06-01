@@ -73,8 +73,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPoint > &additionalPoints,
-                    QVector< QgsPoint> &snappedPoints SIP_OUT ) const override;
+                    const QVector< QgsPointXY > &additionalPoints,
+                    QVector< QgsPointXY> &snappedPoints SIP_OUT ) const override;
 
     QString name() const override;
 

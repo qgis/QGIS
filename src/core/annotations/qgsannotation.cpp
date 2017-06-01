@@ -55,7 +55,7 @@ void QgsAnnotation::setHasFixedMapPosition( bool fixed )
   emit moved();
 }
 
-void QgsAnnotation::setMapPosition( const QgsPoint &position )
+void QgsAnnotation::setMapPosition( const QgsPointXY &position )
 {
   mMapPosition = position;
   emit moved();
@@ -177,13 +177,13 @@ void QgsAnnotation::updateBalloon()
   double minEdgeDist = DBL_MAX;
   int minEdgeIndex = -1;
   QLineF minEdge;
-  QgsPoint minEdgePoint;
-  QgsPoint origin( 0, 0 );
+  QgsPointXY minEdgePoint;
+  QgsPointXY origin( 0, 0 );
 
   for ( int i = 0; i < 4; ++i )
   {
     QLineF currentSegment = segmentList.at( i );
-    QgsPoint currentMinDistPoint;
+    QgsPointXY currentMinDistPoint;
     double currentMinDist = origin.sqrDistToSegment( currentSegment.x1(), currentSegment.y1(), currentSegment.x2(), currentSegment.y2(), currentMinDistPoint );
     if ( currentMinDist < minEdgeDist )
     {
@@ -368,7 +368,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
     mRelativePosition = QPointF();
   else
     mRelativePosition = pos;
-  QgsPoint mapPos;
+  QgsPointXY mapPos;
   mapPos.setX( annotationElem.attribute( QStringLiteral( "mapPosX" ), QStringLiteral( "0" ) ).toDouble() );
   mapPos.setY( annotationElem.attribute( QStringLiteral( "mapPosY" ), QStringLiteral( "0" ) ).toDouble() );
   mMapPosition = mapPos;

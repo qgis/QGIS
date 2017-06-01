@@ -64,7 +64,7 @@ class TestQgsRectangle(unittest.TestCase):
 
         myMessage = ('Expected: %s\nGot: %s\n' %
                      ("5.0, 5.0", rect.center().toString()))
-        assert rect.center() == QgsPoint(5.0, 5.0), myMessage
+        assert rect.center() == QgsPointXY(5.0, 5.0), myMessage
 
         rect.scale(2.0)
 
@@ -103,8 +103,8 @@ class TestQgsRectangle(unittest.TestCase):
     def testContains(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect2 = QgsRectangle(2.0, 2.0, 7.0, 7.0)
-        pnt1 = QgsPoint(4.0, 4.0)
-        pnt2 = QgsPoint(6.0, 2.0)
+        pnt1 = QgsPointXY(4.0, 4.0)
+        pnt2 = QgsPointXY(6.0, 2.0)
 
         rect3 = rect1.intersect(rect2)
 
@@ -148,7 +148,7 @@ class TestQgsRectangle(unittest.TestCase):
     def testUnion(self):
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
         rect2 = QgsRectangle(2.0, 2.0, 7.0, 7.0)
-        pnt1 = QgsPoint(6.0, 2.0)
+        pnt1 = QgsPointXY(6.0, 2.0)
 
         rect1.combineExtentWith(rect2)
         myMessage = ('Expected: %s\nGot: %s\n' %

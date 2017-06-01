@@ -30,7 +30,7 @@ class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsPoint;
+class QgsPointXY;
 
 // tolerances for soft constraints (last values, and common angles)
 // for angles, both tolerance in pixels and degrees are used for better performance
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! performs the intersection of a circle and a line
     //! \note from the two solutions, the intersection will be set to the closest point
-    static bool lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection );
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
 
     /**
      * Create an advanced digitizing dock widget
@@ -288,21 +288,21 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint currentPoint( bool *exists  = nullptr ) const;
+    QgsPointXY currentPoint( bool *exists  = nullptr ) const;
 
     /**
      * The previous point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint previousPoint( bool *exists = nullptr ) const;
+    QgsPointXY previousPoint( bool *exists = nullptr ) const;
 
     /**
      * The penultimate point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint penultimatePoint( bool *exists = nullptr ) const;
+    QgsPointXY penultimatePoint( bool *exists = nullptr ) const;
 
     /**
      * The number of points in the CAD point helper list
@@ -317,7 +317,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     /**
      * Snapped to a segment
      */
-    QList<QgsPoint> snappedSegment() const { return mSnappedSegment; }
+    QList<QgsPointXY> snappedSegment() const { return mSnappedSegment; }
 
     //! return the action used to enable/disable the tools
     QAction *enableAction() { return mEnableAction; }
@@ -355,7 +355,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
      */
-    void pointChanged( const QgsPoint &point );
+    void pointChanged( const QgsPointXY &point );
 
   private slots:
     //! set the additional constraint by clicking on the perpendicular/parallel buttons
@@ -405,16 +405,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! defines the additional constraint to be used (no/parallel/perpendicular)
     void lockAdditionalConstraint( AdditionalConstraint constraint );
 
-    QList<QgsPoint> snapSegment( const QgsPointLocator::Match &snapMatch );
+    QList<QgsPointXY> snapSegment( const QgsPointLocator::Match &snapMatch );
 
     //! align to segment for additional constraint.
     //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
     bool alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode = CadConstraint::HardLock );
 
     //! add point to the CAD point list
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPointXY &point );
     //! update the current point in the CAD point list
-    void updateCurrentPoint( const QgsPoint &point );
+    void updateCurrentPoint( const QgsPointXY &point );
     //! remove previous point in the CAD point list
     void removePreviousPoint();
     //! remove all points from the CAD point list
@@ -466,8 +466,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     int mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
-    QList<QgsPoint> mCadPointList;
-    QList<QgsPoint> mSnappedSegment;
+    QList<QgsPointXY> mCadPointList;
+    QList<QgsPointXY> mSnappedSegment;
     bool mSnappedToVertex;
 
     bool mSessionActive;

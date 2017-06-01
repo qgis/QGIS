@@ -196,7 +196,7 @@ void QgsHighlight::setWidth( int width )
   mPen.setWidth( width );
 }
 
-void QgsHighlight::paintPoint( QPainter *p, const QgsPoint &point )
+void QgsHighlight::paintPoint( QPainter *p, const QgsPointXY &point )
 {
   QPolygonF r( 5 );
 
@@ -413,7 +413,7 @@ void QgsHighlight::updateRect()
     // This is an hack to pass QgsMapCanvasItem::setRect what it
     // expects (encoding of position and size of the item)
     const QgsMapToPixel &m2p = mMapCanvas->mapSettings().mapToPixel();
-    QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+    QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
     double res = m2p.mapUnitsPerPixel();
     QSizeF imageSize = mMapCanvas->mapSettings().outputSize();
     QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );

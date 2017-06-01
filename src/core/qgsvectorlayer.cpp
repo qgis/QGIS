@@ -1005,7 +1005,7 @@ bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId,
 }
 
 
-bool QgsVectorLayer::insertVertex( const QgsPointV2 &point, QgsFeatureId atFeatureId, int beforeVertex )
+bool QgsVectorLayer::insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
@@ -1031,7 +1031,7 @@ bool QgsVectorLayer::moveVertex( double x, double y, QgsFeatureId atFeatureId, i
   return result;
 }
 
-bool QgsVectorLayer::moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex )
+bool QgsVectorLayer::moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
@@ -1090,7 +1090,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   return deleted == count;
 }
 
-int QgsVectorLayer::addRing( const QList<QgsPoint> &ring, QgsFeatureId *featureId )
+int QgsVectorLayer::addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 6;
@@ -1151,7 +1151,7 @@ int QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatureId *featureId )
   return result;
 }
 
-int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
+int QgsVectorLayer::addPart( const QList<QgsPointXY> &points )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 7;
@@ -1242,7 +1242,7 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
   return result;
 }
 
-int QgsVectorLayer::splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing )
+int QgsVectorLayer::splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;
@@ -1251,7 +1251,7 @@ int QgsVectorLayer::splitParts( const QList<QgsPoint> &splitLine, bool topologic
   return utils.splitParts( splitLine, topologicalEditing );
 }
 
-int QgsVectorLayer::splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing )
+int QgsVectorLayer::splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;
@@ -1269,7 +1269,7 @@ int QgsVectorLayer::addTopologicalPoints( const QgsGeometry &geom )
   return utils.addTopologicalPoints( geom );
 }
 
-int QgsVectorLayer::addTopologicalPoints( const QgsPoint &p )
+int QgsVectorLayer::addTopologicalPoints( const QgsPointXY &p )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;

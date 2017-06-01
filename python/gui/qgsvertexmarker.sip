@@ -31,7 +31,7 @@ class QgsVertexMarker : QgsMapCanvasItem
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );
 
-    void setCenter( const QgsPoint &point );
+    void setCenter( const QgsPointXY &point );
 
     void setIconType( int iconType );
 

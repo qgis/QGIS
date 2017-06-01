@@ -23,7 +23,7 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
   public:
     QgsGeometryContainedCheckError( const QgsGeometryCheck *check,
                                     QgsFeatureId featureId,
-                                    const QgsPointV2 &errorLocation,
+                                    const QgsPoint &errorLocation,
                                     QgsFeatureId otherId
                                   )
       : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )

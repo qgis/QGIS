@@ -29,7 +29,7 @@ class QString;
 
 class QgsExpression;
 class QgsGeometry;
-class QgsPoint;
+class QgsPointXY;
 class QgsRectangle;
 
 #include "qgsgeometry.h"

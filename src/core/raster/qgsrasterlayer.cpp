@@ -1297,8 +1297,8 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
   double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
   double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
 
-  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
-  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->mTopLeftPoint = QgsPointXY( myX, myY );
+  myRasterViewPort->mBottomRightPoint = QgsPointXY( myPixelWidth, myPixelHeight );
   myRasterViewPort->mWidth = myQImage.width();
   myRasterViewPort->mHeight = myQImage.height();
 

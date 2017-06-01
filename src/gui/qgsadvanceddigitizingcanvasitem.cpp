@@ -45,11 +45,11 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   bool previousPointExist, penulPointExist;
-  const QgsPoint curPoint = mAdvancedDigitizingDockWidget->currentPoint();
-  const QgsPoint prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
-  const QgsPoint penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
+  const QgsPointXY curPoint = mAdvancedDigitizingDockWidget->currentPoint();
+  const QgsPointXY prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
+  const QgsPointXY penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
   const bool snappedToVertex = mAdvancedDigitizingDockWidget->snappedToVertex();
-  const QList<QgsPoint> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
+  const QList<QgsPointXY> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
   const bool hasSnappedSegment = snappedSegment.count() == 2;
 
   const bool curPointExist = mapRect.contains( curPoint );
@@ -185,7 +185,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      x = toCanvasCoordinates( QgsPoint( mAdvancedDigitizingDockWidget->constraintX()->value(), 0 ) ).x();
+      x = toCanvasCoordinates( QgsPointXY( mAdvancedDigitizingDockWidget->constraintX()->value(), 0 ) ).x();
     }
     if ( draw )
     {
@@ -216,7 +216,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      y = toCanvasCoordinates( QgsPoint( 0, mAdvancedDigitizingDockWidget->constraintY()->value() ) ).y();
+      y = toCanvasCoordinates( QgsPointXY( 0, mAdvancedDigitizingDockWidget->constraintY()->value() ) ).y();
     }
     if ( draw )
     {

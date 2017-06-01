@@ -105,10 +105,10 @@ class QgsMapToolIdentify : QgsMapTool
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer*> &layerList, LayerType layerType = AllLayers );
 
     /** Call the right method depending on layer type */
-    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint &point );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
   private:
 

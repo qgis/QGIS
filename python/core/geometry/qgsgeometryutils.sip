@@ -30,11 +30,11 @@ class QgsGeometryUtils
  :rtype: list of QgsLineString
 %End
 
-    static QgsPointV2 closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id /Out/ );
+    static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id /Out/ );
 %Docstring
  Returns the closest vertex to a geometry for a specified point.
  On error null point will be returned and "id" argument will be invalid.
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
@@ -71,7 +71,7 @@ class QgsGeometryUtils
  Returns vertices adjacent to a specified vertex within a geometry.
 %End
 
-    static double sqrDistance2D( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Returns the squared 2D distance between two points.
  :rtype: float
@@ -83,7 +83,7 @@ class QgsGeometryUtils
  :rtype: float
 %End
 
-    static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter /Out/ );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter /Out/ );
 %Docstring
  Compute the intersection between two lines
  \param p1 Point on the first line
@@ -95,7 +95,7 @@ class QgsGeometryUtils
  :rtype: bool
 %End
 
-    static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter /Out/, double tolerance );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter /Out/, double tolerance );
 %Docstring
  Compute the intersection between two segments
  \param p1 First segment start point
@@ -108,14 +108,14 @@ class QgsGeometryUtils
  :rtype: bool
 %End
 
-    static QgsPointV2 projPointOnSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
+    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
  Project the point on a segment
  \param p The point
  \param s1 The segment start point
  \param s2 The segment end point
  :return: The projection of the point on the segment
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
 
@@ -126,10 +126,10 @@ Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
  :rtype: float
 %End
 
-    static QgsPointV2 pointOnLineWithDistance( const QgsPointV2 &startPoint, const QgsPointV2 &directionPoint, double distance );
+    static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 %Docstring
  Returns a point a specified distance toward a second point.
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     static double ccwAngle( double dy, double dx );
@@ -138,7 +138,7 @@ Returns the counter clockwise angle between a line with components dx, dy and th
  :rtype: float
 %End
 
-    static void circleCenterRadius( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double &radius /Out/,
+    static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius /Out/,
                                     double &centerX /Out/, double &centerY /Out/ );
 %Docstring
 Returns radius and center of the circle through pt1, pt2, pt3
@@ -175,20 +175,20 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
  :rtype: float
 %End
 
-    static bool segmentMidPoint( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &result /Out/, double radius, const QgsPointV2 &mousePos );
+    static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos );
 %Docstring
 Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
  :rtype: bool
 %End
 
-    static double circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1, const QgsPointV2 &cp2, const QgsPointV2 &cp3 );
+    static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
 %Docstring
 Calculates the direction angle of a circle tangent (clockwise from north in radians)
  :rtype: float
 %End
 
-    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3,
-                               QList<QgsPointV2>  &points /Out/, double tolerance = M_PI_2 / 90,
+    static void segmentizeArc( const QgsPoint &p1, const QgsPointV2 &p2, const QgsPoint &p3,
+                               QList<QgsPoint>  &points /Out/, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 %Docstring
@@ -197,7 +197,7 @@ Calculates the direction angle of a circle tangent (clockwise from north in radi
  :rtype: QgsPointSequence
 %End
 
-    static int segmentSide( const QgsPointV2 &pt1, const QgsPointV2 &pt3, const QgsPointV2 &pt2 );
+    static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
 %Docstring
  For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
  Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
@@ -281,7 +281,7 @@ Angle between two linear segments
 
 
 
-    static QgsPointV2 midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Returns a middle point between points pt1 and pt2.
  Z value is computed if one of this point have Z.
@@ -291,21 +291,21 @@ Angle between two linear segments
  :return: New point at middle between points pt1 and pt2.
  * Example:
  \code{.py}
-   p = QgsPointV2( 4, 6 ) # 2D point
-   pr = midpoint ( p, QgsPointV2( 2, 2 ) )
+   p = QgsPoint( 4, 6 ) # 2D point
+   pr = midpoint ( p, QgsPoint( 2, 2 ) )
    # pr is a 2D point: 'Point (3 4)'
-   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
    # pr is a 3D point: 'PointZ (3 4 1)'
-   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
    # pr is a 3D point: 'PointM (3 4 1)'
-   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+   pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
    # pr is a 3D point: 'PointZM (3 4 1 1)'
  \endcode
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+    static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Return the gradient of a line defined by points ``pt1`` and ``pt2``.
  \param pt1 first point.
@@ -315,7 +315,7 @@ Angle between two linear segments
  :rtype: float
 %End
 
-    static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2,
+    static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a /Out/, double &b /Out/, double &c /Out/ );
 %Docstring
  Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
@@ -327,7 +327,7 @@ Angle between two linear segments
 .. versionadded:: 3.0
 %End
 
-    static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
+    static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
  Create a perpendicular line segment from p to segment [s1, s2]
  \param p The point

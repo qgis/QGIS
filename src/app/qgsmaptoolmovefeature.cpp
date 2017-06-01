@@ -57,7 +57,7 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mRubberBand )
   {
-    QgsPoint pointCanvasCoords = e->mapPoint();
+    QgsPointXY pointCanvasCoords = e->mapPoint();
     double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
     double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mRubberBand->setTranslationOffset( offsetX, offsetY );
@@ -82,7 +82,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
 
     //find first geometry under mouse cursor and store iterator to it
-    QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
+    QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->pos() );
     double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
     QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                              layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
@@ -159,8 +159,8 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    QgsPoint startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
-    QgsPoint stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
+    QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
+    QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
 
     double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
     double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();

@@ -69,11 +69,11 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      * \param builder the graph builder
      * \param additionalPoints list of points that should be snapped to the graph
      * \param snappedPoints list of snapped points
-     * \note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
+     * \note if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint > &snappedPoints SIP_OUT ) const
+                            const QVector< QgsPointXY > &additionalPoints,
+                            QVector< QgsPointXY > &snappedPoints SIP_OUT ) const
     {
       Q_UNUSED( builder );
       Q_UNUSED( additionalPoints );

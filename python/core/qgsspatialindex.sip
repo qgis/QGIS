@@ -76,7 +76,7 @@ Returns features that intersect the specified rectangle
  :rtype: list of QgsFeatureId
 %End
 
-    QList<QgsFeatureId> nearestNeighbor( const QgsPoint &point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 %Docstring
 Returns nearest neighbors (their count is specified by second parameter)
  :rtype: list of QgsFeatureId

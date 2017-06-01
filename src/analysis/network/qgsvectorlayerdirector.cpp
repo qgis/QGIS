@@ -42,7 +42,7 @@ class QgsPointCompare
       : mTolerance( tolerance )
     {  }
 
-    bool operator()( const QgsPoint &p1, const QgsPoint &p2 ) const
+    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 ) const
     {
       if ( mTolerance <= 0 )
         return p1.x() == p2.x() ? p1.y() < p2.y() : p1.x() < p2.x();
@@ -88,10 +88,10 @@ template <typename RandIter, typename Type, typename CompareOp > RandIter my_bin
 
 struct TiePointInfo
 {
-  QgsPoint mTiedPoint;
+  QgsPointXY mTiedPoint;
   double mLength;
-  QgsPoint mFirstPoint;
-  QgsPoint mLastPoint;
+  QgsPointXY mFirstPoint;
+  QgsPointXY mLastPoint;
 };
 
 bool TiePointInfoCompare( const TiePointInfo &a, const TiePointInfo &b )
@@ -123,8 +123,8 @@ QString QgsVectorLayerDirector::name() const
   return QStringLiteral( "Vector line" );
 }
 
-void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint > &additionalPoints,
-                                        QVector< QgsPoint > &snappedPoints ) const
+void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY > &additionalPoints,
+                                        QVector< QgsPointXY > &snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;
 
@@ -145,7 +145,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     ct.setDestinationCrs( vl->crs() );
   }
 
-  snappedPoints = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
+  snappedPoints = QVector< QgsPointXY >( additionalPoints.size(), QgsPointXY( 0.0, 0.0 ) );
 
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
@@ -154,7 +154,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QVector< TiePointInfo >::iterator pointLengthIt;
 
   //Graph's points;
-  QVector< QgsPoint > points;
+  QVector< QgsPointXY > points;
 
   QgsFeatureIterator fit = vl->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
@@ -172,7 +172,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
-      QgsPoint pt1, pt2;
+      QgsPointXY pt1, pt2;
       bool isFirstPoint = true;
       QgsPolyline::iterator pointIt;
       for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
@@ -220,7 +220,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   int i = 0;
   for ( i = 0; i < snappedPoints.size(); ++i )
   {
-    if ( snappedPoints[ i ] != QgsPoint( 0.0, 0.0 ) )
+    if ( snappedPoints[ i ] != QgsPointXY( 0.0, 0.0 ) )
     {
       points.push_back( snappedPoints [ i ] );
     }
@@ -229,7 +229,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QgsPointCompare pointCompare( builder->topologyTolerance() );
 
   std::sort( points.begin(), points.end(), pointCompare );
-  QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
+  QVector< QgsPointXY >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
   for ( i = 0; i < points.size(); ++i )
@@ -306,7 +306,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
-      QgsPoint pt1, pt2;
+      QgsPointXY pt1, pt2;
 
       bool isFirstPoint = true;
       QgsPolyline::iterator pointIt;
@@ -316,7 +316,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
         if ( !isFirstPoint )
         {
-          QMap< double, QgsPoint > pointsOnArc;
+          QMap< double, QgsPointXY > pointsOnArc;
           pointsOnArc[ 0.0 ] = pt1;
           pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
 
@@ -345,9 +345,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             }
           }
 
-          QMap< double, QgsPoint >::iterator pointsIt;
-          QgsPoint pt1;
-          QgsPoint pt2;
+          QMap< double, QgsPointXY >::iterator pointsIt;
+          QgsPointXY pt1;
+          QgsPointXY pt2;
           int pt1idx = -1, pt2idx = -1;
           bool isFirstPoint = true;
           for ( pointsIt = pointsOnArc.begin(); pointsIt != pointsOnArc.end(); ++pointsIt )
@@ -389,4 +389,4 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     }
     emit buildProgress( ++step, featureCount );
   } // while( vl->nextFeature(feature) )
-} // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints, QVector< QgsPoint >& tiedPoint )
+} // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY >& additionalPoints, QVector< QgsPointXY >& tiedPoint )

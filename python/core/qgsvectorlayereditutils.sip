@@ -27,7 +27,7 @@ class QgsVectorLayerEditUtils
  :rtype: bool
 %End
 
-    bool insertVertex( const QgsPointV2 &point, QgsFeatureId atFeatureId, int beforeVertex );
+    bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
  Insert a new vertex before the given vertex number,
   in the given ring, item (first number is index 0), and feature
@@ -43,7 +43,7 @@ class QgsVectorLayerEditUtils
  :rtype: bool
 %End
 
-    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
  Moves the vertex at the given position number,
   ring and item (first number is index 0), and feature
@@ -63,7 +63,7 @@ class QgsVectorLayerEditUtils
  :rtype: QgsVectorLayer.EditResult
 %End
 
-    int addRing( const QList<QgsPoint> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+    int addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
  :rtype: int
 %End
@@ -73,7 +73,7 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    int addPart( const QList<QgsPoint> &ring, QgsFeatureId featureId );
+    int addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
 %Docstring
  :rtype: int
 %End
@@ -98,12 +98,12 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End
 
-    int splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End
@@ -119,7 +119,7 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    int addTopologicalPoints( const QgsPoint &p );
+    int addTopologicalPoints( const QgsPointXY &p );
 %Docstring
  Adds a vertex to segments which intersect point p but don't
  already have a vertex there. If a feature already has a vertex at position p,
@@ -132,7 +132,7 @@ class QgsVectorLayerEditUtils
 
   protected:
 
-    int boundingBoxFromPointList( const QList<QgsPoint> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+    int boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 %Docstring
  Little helper function that gives bounding box from a list of points.
 :return: 0 in case of success *

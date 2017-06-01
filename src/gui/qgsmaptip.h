@@ -19,7 +19,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QPoint;
 class QString;
-class QgsPoint;
+class QgsPointXY;
 class QgsVectorLayer;
 class QgsWebView;
 
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
      * \param mpMapCanvas a map canvas on which the tip is drawn
      */
     void showMapTip( QgsMapLayer *thepLayer,
-                     QgsPoint &mapPosition,
+                     QgsPointXY &mapPosition,
                      QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
     QString fetchFeature( QgsMapLayer *thepLayer,
-                          QgsPoint &mapPosition,
+                          QgsPointXY &mapPosition,
                           QgsMapCanvas *mapCanvas );
 
     QString replaceText(

@@ -220,7 +220,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
+    QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->pos() );
     double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
     QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                              layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
@@ -350,7 +350,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
   //calculations for affine transformation
   double angle = -1 * mRotation * ( PI / 180 );
-  QgsPoint anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
+  QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
   double a = cos( angle );
   double b = -1 * sin( angle );
   double c = anchorPoint.x() - cos( angle ) * anchorPoint.x() + sin( angle ) * anchorPoint.y();
@@ -378,8 +378,8 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     QgsGeometry geom = feat.geometry();
     i = start;
 
-    QgsPoint vertex = geom.vertexAt( i );
-    while ( vertex != QgsPoint( 0, 0 ) )
+    QgsPointXY vertex = geom.vertexAt( i );
+    while ( vertex != QgsPointXY( 0, 0 ) )
     {
       double newX = a * vertex.x() + b * vertex.y() + c;
       double newY = d * vertex.x() + ee * vertex.y() + f;
@@ -394,7 +394,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   double anchorX = a * anchorPoint.x() + b * anchorPoint.y() + c;
   double anchorY = d * anchorPoint.x() + ee * anchorPoint.y() + f;
 
-  mAnchorPoint->setCenter( QgsPoint( anchorX, anchorY ) );
+  mAnchorPoint->setCenter( QgsPointXY( anchorX, anchorY ) );
 
   deleteRotationWidget();
   deleteRubberband();

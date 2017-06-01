@@ -35,7 +35,7 @@ class QgsRegularPolygon
 
     QgsRegularPolygon();
 
-    QgsRegularPolygon( const QgsPointV2 &center, const double radius, const double azimuth, const int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const int numberSides, const ConstructionOption circle );
 %Docstring
  Constructs a regular polygon by ``center`` and parameters for the first vertex. An empty regular polygon is returned if ``numberSides`` < 3 or ``ConstructionOption`` isn't valid.
  \param center The center of the regular polygon.
@@ -45,7 +45,7 @@ class QgsRegularPolygon
 .. seealso:: ConstructionOption
 %End
 
-    QgsRegularPolygon( const QgsPointV2 &center, const QgsPointV2 &pt1, const int  numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const int  numberSides, const ConstructionOption circle );
 %Docstring
  Constructs a regular polygon by ``center`` and another point.
  \param center The center of the regular polygon.
@@ -54,7 +54,7 @@ class QgsRegularPolygon
  \param circle Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
 %End
 
-    QgsRegularPolygon( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const int  numberSides );
+    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const int  numberSides );
 %Docstring
  Constructs a regular polygon by two points of the first side.
  \param pt1 The first vertex of the first side, also first vertex of the regular polygon.
@@ -71,11 +71,11 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: bool
 %End
 
-    QgsPointV2 center() const;
+    QgsPoint center() const;
 %Docstring
  Returns the center point of the regular polygon.
 .. seealso:: setCenter()
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     double radius() const;
@@ -87,11 +87,11 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: float
 %End
 
-    QgsPointV2 firstVertex() const;
+    QgsPoint firstVertex() const;
 %Docstring
  Returns the first vertex (corner) of the regular polygon.
 .. seealso:: setFirstVertex()
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     double apothem() const;
@@ -109,7 +109,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: int
 %End
 
-    void setCenter( const QgsPointV2 &center );
+    void setCenter( const QgsPoint &center );
 %Docstring
  Sets the center point.
  Radius is unchanged. The first vertex is reprojected from the new center.
@@ -123,7 +123,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 .. seealso:: radius()
 %End
 
-    void setFirstVertex( const QgsPointV2 &firstVertex );
+    void setFirstVertex( const QgsPoint &firstVertex );
 %Docstring
  Sets the first vertex.
  Radius is unchanged. The center is reprojected from the new first vertex.

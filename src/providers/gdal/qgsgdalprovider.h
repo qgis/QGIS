@@ -81,7 +81,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;
     bool isValid() const override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     int capabilities() const override;

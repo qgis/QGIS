@@ -270,14 +270,14 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   return QgsRectangle();
 }
 
-QgsPoint QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
   QString pointText = parameterAsString( definition, parameters, name, context );
   if ( pointText.isEmpty() )
     pointText = definition->defaultValue().toString();
 
   if ( pointText.isEmpty() )
-    return QgsPoint();
+    return QgsPointXY();
 
   QStringList parts = pointText.split( ',' );
   if ( parts.count() == 2 )
@@ -287,10 +287,10 @@ QgsPoint QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameter
     bool yOk = false;
     double y = parts.at( 1 ).toDouble( &yOk );
     if ( xOk && yOk )
-      return QgsPoint( x, y );
+      return QgsPointXY( x, y );
   }
 
-  return QgsPoint();
+  return QgsPointXY();
 }
 
 QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )

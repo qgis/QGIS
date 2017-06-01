@@ -26,7 +26,7 @@
 
 
 class QgsAbstractGeometry;
-class QgsPointV2;
+class QgsPoint;
 struct QgsVertexId;
 
 /** \ingroup gui
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     //! Returns a pointer to the geometry
     const QgsAbstractGeometry *geometry() { return mGeometry; }
     //! Moves vertex to new position (in map coordinates)
-    void moveVertex( QgsVertexId id, const QgsPointV2 &newPos );
+    void moveVertex( QgsVertexId id, const QgsPoint &newPos );
     //! Sets fill color for vertex markers
     void setFillColor( const QColor &c );
     //! Sets stroke color for vertex markers

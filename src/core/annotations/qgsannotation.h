@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     Q_OBJECT
     Q_PROPERTY( bool visible READ isVisible WRITE setVisible )
     Q_PROPERTY( bool hasFixedMapPosition READ hasFixedMapPosition WRITE setHasFixedMapPosition )
-    Q_PROPERTY( QgsPoint mapPosition READ mapPosition WRITE setMapPosition )
+    Q_PROPERTY( QgsPointXY mapPosition READ mapPosition WRITE setMapPosition )
     Q_PROPERTY( QSizeF frameSize READ frameSize WRITE setFrameSize )
 
   public:
@@ -115,14 +115,14 @@ class CORE_EXPORT QgsAnnotation : public QObject
      * \see hasFixedMapPosition()
      * \see mapPositionCrs()
      */
-    QgsPoint mapPosition() const { return mMapPosition; }
+    QgsPointXY mapPosition() const { return mMapPosition; }
 
     /**
      * Sets the map position of the annotation, if it is attached to a fixed map
      * position.
      * \see mapPosition()
      */
-    void setMapPosition( const QgsPoint &position );
+    void setMapPosition( const QgsPointXY &position );
 
     /**
      * Returns the CRS of the map position, or an invalid CRS if the annotation does
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     bool mHasFixedMapPosition = true;
 
     //! Map position (for fixed position items)
-    QgsPoint mMapPosition;
+    QgsPointXY mMapPosition;
 
     //! CRS of the map position
     QgsCoordinateReferenceSystem mMapPositionCrs;

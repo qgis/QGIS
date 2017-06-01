@@ -50,8 +50,8 @@ class QgsVectorLayerDirector : QgsGraphDirector
     virtual ~QgsVectorLayerDirector();
 
      virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPoint > &additionalPoints,
-                    QVector< QgsPoint> &snappedPoints /Out/ ) const;
+                    const QVector< QgsPointXY > &additionalPoints,
+                    QVector< QgsPointXY> &snappedPoints /Out/ ) const;
 %Docstring
  MANDATORY DIRECTOR PROPERTY DECLARATION
 %End

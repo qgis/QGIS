@@ -145,8 +145,8 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
   if ( lineEdit )
   {
     double value = lineEdit->text().toDouble();
-    QgsPoint newMapCoords( dataPoint->mapCoords() );
-    QgsPoint newPixelCoords( dataPoint->pixelCoords() );
+    QgsPointXY newMapCoords( dataPoint->mapCoords() );
+    QgsPointXY newPixelCoords( dataPoint->pixelCoords() );
     if ( mPrevColumn == 2 ) // srcX
     {
       newPixelCoords.setX( value );

@@ -57,7 +57,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
        diagramMoveable( vlayer, xCol, yCol ) )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
-    QgsPoint referencePoint;
+    QgsPointXY referencePoint;
     if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
     {
       referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
@@ -73,7 +73,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPoint pointCanvasCoords = toMapCoordinates( e->pos() );
+    QgsPointXY pointCanvasCoords = toMapCoordinates( e->pos() );
     double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
     double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
@@ -100,7 +100,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  QgsPoint releaseCoords = toMapCoordinates( e->pos() );
+  QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
   double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
   double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
@@ -124,7 +124,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     //transform to map crs first, because xdiff,ydiff are in map coordinates
     const QgsMapSettings &ms = mCanvas->mapSettings();
-    QgsPoint transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
+    QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
     xPosOrig = transformedPoint.x();
     yPosOrig = transformedPoint.y();
     xPosNew = xPosOrig + xdiff;
@@ -135,7 +135,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( mCanvas )
   {
     const QgsMapSettings &s = mCanvas->mapSettings();
-    QgsPoint transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPoint( xPosNew, yPosNew ) );
+    QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
     xPosNew = transformedPoint.x();
     yPosNew = transformedPoint.y();
   }

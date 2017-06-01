@@ -94,7 +94,7 @@ Indicate whether the data have been already indexed
 construct invalid match
 %End
 
-        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPoint &pt, int vertexIndex = 0, QgsPoint *edgePoints = 0 );
+        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
 
         QgsPointLocator::Type type() const;
 %Docstring
@@ -124,10 +124,10 @@ units depending on what class returns it (geom.cache: layer units, map canvas sn
  :rtype: float
 %End
 
-        QgsPoint point() const;
+        QgsPointXY point() const;
 %Docstring
 coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
         int vertexIndex() const;
@@ -149,7 +149,7 @@ for vertex / edge match (first vertex of the edge)
  :rtype: QgsFeatureId
 %End
 
-        void edgePoints( QgsPoint &pt1 /Out/, QgsPoint &pt2 /Out/ ) const;
+        void edgePoints( QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) const;
 %Docstring
 Only for a valid edge match - obtain endpoints of the edge
 %End
@@ -171,12 +171,12 @@ Only for a valid edge match - obtain endpoints of the edge
     };
 
 
-    Match nearestVertex( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Optional filter may discard unwanted matches.
  :rtype: Match
 %End
-    Match nearestEdge( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Optional filter may discard unwanted matches.
  :rtype: Match
@@ -186,14 +186,14 @@ Optional filter may discard unwanted matches.
 Optional filter may discard unwanted matches.
  :rtype: MatchList
 %End
-    MatchList edgesInRect( const QgsPoint &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Override of edgesInRect that construct rectangle from a center point and tolerance
  :rtype: MatchList
 %End
 
 
-    MatchList pointInPolygon( const QgsPoint &point );
+    MatchList pointInPolygon( const QgsPointXY &point );
 %Docstring
 find out if the point is in any polygons
  :rtype: MatchList

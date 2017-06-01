@@ -269,7 +269,7 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsgLevel( "Entered", 4 );
   QMap<int, QVariant> results;

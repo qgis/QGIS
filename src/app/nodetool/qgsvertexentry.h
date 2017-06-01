@@ -24,7 +24,7 @@
 class QgsVertexEntry
 {
     bool mSelected;
-    QgsPointV2 mPoint;
+    QgsPoint mPoint;
     QgsVertexId mVertexId;
     int mPenWidth;
     QString mToolTip;
@@ -36,7 +36,7 @@ class QgsVertexEntry
   public:
     QgsVertexEntry( QgsMapCanvas *canvas,
                     QgsMapLayer *layer,
-                    const QgsPointV2 &p,
+                    const QgsPoint &p,
                     QgsVertexId vertexId,
                     const QString &tooltip = QString::null,
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
@@ -46,8 +46,8 @@ class QgsVertexEntry
     QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
     QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
 
-    const QgsPointV2 &point() const { return mPoint; }
-    QgsPoint pointV1() const { return QgsPoint( mPoint.x(), mPoint.y() ); }
+    const QgsPoint &point() const { return mPoint; }
+    QgsPointXY pointV1() const { return QgsPointXY( mPoint.x(), mPoint.y() ); }
     QgsVertexId vertexId() const { return mVertexId; }
     bool isSelected() const { return mSelected; }
 
