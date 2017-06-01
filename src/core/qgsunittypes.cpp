@@ -1744,3 +1744,32 @@ QgsUnitTypes::RenderUnit QgsUnitTypes::decodeRenderUnit( const QString &string, 
   // millimeters are default
   return RenderMillimeters;
 }
+
+QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
+{
+  switch ( unit )
+  {
+    case RenderMillimeters:
+      return QObject::tr( "millimeters", "render" );
+
+    case RenderMapUnits:
+      return QObject::tr( "map units", "render" );
+
+    case RenderPixels:
+      return QObject::tr( "pixels", "render" );
+
+    case RenderPercentage:
+      return QObject::tr( "percent", "render" );
+
+    case RenderPoints:
+      return QObject::tr( "points", "render" );
+
+    case RenderInches:
+      return QObject::tr( "inches", "render" );
+
+    case RenderUnknownUnit:
+      return QObject::tr( "<unknown>", "render" );
+
+  }
+  return QString();
+}

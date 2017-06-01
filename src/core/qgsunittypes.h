@@ -349,6 +349,11 @@ class CORE_EXPORT QgsUnitTypes
      */
     Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = 0 );
 
+    /**
+     * Returns a translated string representing a render \a unit.
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toString( RenderUnit unit );
 };
 
 #endif // QGSUNITTYPES_H

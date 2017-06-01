@@ -362,6 +362,12 @@ class QgsUnitTypes
  :rtype: RenderUnit
 %End
 
+    static QString toString( RenderUnit unit );
+%Docstring
+ Returns a translated string representing a render ``unit``.
+.. versionadded:: 3.0
+ :rtype: str
+%End
 };
 
 /************************************************************************
