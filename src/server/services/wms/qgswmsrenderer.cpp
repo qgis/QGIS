@@ -2967,7 +2967,7 @@ namespace QgsWms
     if ( !sld.isEmpty() )
     {
       QDomDocument doc;
-      doc.setContent( sld, true );
+      ( void )doc.setContent( sld, true );
       QDomElement docEl = doc.documentElement();
 
       QDomElement root = doc.firstChildElement( "StyledLayerDescriptor" );
