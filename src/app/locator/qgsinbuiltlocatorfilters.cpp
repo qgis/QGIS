@@ -176,6 +176,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   if ( string.length() < 3 )
     return;
 
+  bool allowNumeric = false;
+  double numericValue = string.toDouble( &allowNumeric );
+
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
     return;
@@ -190,9 +193,15 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   QStringList expressionParts;
   Q_FOREACH ( const QgsField &field, layer->fields() )
   {
-    QString exp = QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                  string );
-    expressionParts << exp;
+    if ( field.type() == QVariant::String )
+    {
+      expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                      string );
+    }
+    else if ( allowNumeric && field.isNumeric() )
+    {
+      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( numericValue );
+    }
   }
 
   QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
