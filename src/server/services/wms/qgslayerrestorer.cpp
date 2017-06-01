@@ -47,7 +47,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
     QString errMsg;
     QDomDocument sldDoc;
     layer->exportSldStyle( sldDoc, errMsg );
-    settings.mSldStyle.setContent( sldDoc.toString(), true ); // for namespace processing
+    ( void )settings.mSldStyle.setContent( sldDoc.toString(), true ); // for namespace processing
 
     if ( layer->type() == QgsMapLayer::LayerType::VectorLayer )
     {
