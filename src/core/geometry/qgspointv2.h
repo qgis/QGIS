@@ -30,9 +30,8 @@
  ****************************************************************************/
 
 /** \ingroup core
- * \class QgsPointV2
  * \brief Point geometry type, with support for z-dimension and m-values.
- * \since QGIS 2.10
+ * \since QGIS 3.0, (previously QgsPointv2 since QGIS 2.10)
  */
 class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 {

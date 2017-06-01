@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsPoint
+from qgis.core import QgsPointXY
 
 from qgis.testing import start_app, unittest
 
