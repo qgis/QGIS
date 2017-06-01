@@ -73,6 +73,9 @@ matrix:
         - TRAVIS_CONFIG=macos
         - IGNORE_BUILD_FAILURES=YES
 
+  allow_failures:
+    - os: osx
+
 git:
   depth: 30
 
