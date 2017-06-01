@@ -198,13 +198,13 @@ void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
   }
 }
 
-QgsPointV2 QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
 {
   if ( !mPaintDevice || !mDxf )
-    return QgsPointV2( pt.x(), pt.y() );
+    return QgsPoint( pt.x(), pt.y() );
 
   QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
-  return QgsPointV2( dxfPt.x(), dxfPt.y() );
+  return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
 

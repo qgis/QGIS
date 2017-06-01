@@ -198,7 +198,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
     }
   }
 
-  //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
+  //parse WKB. It is ugly, but we cannot use the methods with QgsPointXY because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
   QByteArray wkb( g.exportToWkb() );

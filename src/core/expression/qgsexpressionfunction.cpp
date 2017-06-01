@@ -1587,7 +1587,7 @@ static QVariant fcnGeomZ( const QVariantList &values, const QgsExpressionContext
   //if single point, return the point's z coordinate
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
-    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+    QgsPoint *point = dynamic_cast< QgsPoint * >( geom.geometry() );
     if ( point )
       return point->z();
   }
@@ -1604,7 +1604,7 @@ static QVariant fcnGeomM( const QVariantList &values, const QgsExpressionContext
   //if single point, return the point's m value
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
-    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+    QgsPoint *point = dynamic_cast< QgsPoint * >( geom.geometry() );
     if ( point )
       return point->m();
   }
@@ -1629,8 +1629,8 @@ static QVariant fcnPointN( const QVariantList &values, const QgsExpressionContex
     return QVariant();
   }
 
-  QgsPointV2 point = geom.geometry()->vertexAt( vId );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+  QgsPoint point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( point ) ) );
 }
 
 static QVariant fcnStartPoint( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1646,8 +1646,8 @@ static QVariant fcnStartPoint( const QVariantList &values, const QgsExpressionCo
     return QVariant();
   }
 
-  QgsPointV2 point = geom.geometry()->vertexAt( vId );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+  QgsPoint point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( point ) ) );
 }
 
 static QVariant fcnEndPoint( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1663,8 +1663,8 @@ static QVariant fcnEndPoint( const QVariantList &values, const QgsExpressionCont
     return QVariant();
   }
 
-  QgsPointV2 point = geom.geometry()->vertexAt( vId );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( point ) ) );
+  QgsPoint point = geom.geometry()->vertexAt( vId );
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( point ) ) );
 }
 
 static QVariant fcnNodesToPoints( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1869,11 +1869,11 @@ static QVariant fcnMakePoint( const QVariantList &values, const QgsExpressionCon
   switch ( values.count() )
   {
     case 2:
-      return QVariant::fromValue( QgsGeometry( new QgsPointV2( x, y ) ) );
+      return QVariant::fromValue( QgsGeometry( new QgsPoint( x, y ) ) );
     case 3:
-      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, x, y, z ) ) );
+      return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsWkbTypes::PointZ, x, y, z ) ) );
     case 4:
-      return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZM, x, y, z, m ) ) );
+      return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsWkbTypes::PointZM, x, y, z, m ) ) );
   }
   return QVariant(); //avoid warning
 }
@@ -1883,7 +1883,7 @@ static QVariant fcnMakePointM( const QVariantList &values, const QgsExpressionCo
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   double y = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   double m = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( QgsWkbTypes::PointM, x, y, 0.0, m ) ) );
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsWkbTypes::PointM, x, y, 0.0, m ) ) );
 }
 
 static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -1905,7 +1905,7 @@ static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionCont
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
       continue;
 
-    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+    QgsPoint *point = dynamic_cast< QgsPoint * >( geom.geometry() );
     if ( !point )
       continue;
 
@@ -1960,7 +1960,7 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
       return QVariant();
 
-    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+    QgsPoint *point = dynamic_cast< QgsPoint * >( geom.geometry() );
     if ( !point )
       return QVariant();
 
@@ -1989,7 +1989,7 @@ static QVariant fcnMakeCircle( const QVariantList &values, const QgsExpressionCo
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  QgsPointV2 *point = static_cast< QgsPointV2 * >( geom.geometry() );
+  QgsPoint *point = static_cast< QgsPoint * >( geom.geometry() );
   QgsCircle circ( *point, radius );
   return QVariant::fromValue( QgsGeometry( circ.toPolygon( segment ) ) );
 }
@@ -2012,7 +2012,7 @@ static QVariant fcnMakeEllipse( const QVariantList &values, const QgsExpressionC
     parent->setEvalErrorString( QObject::tr( "Segment must be greater than 2" ) );
     return QVariant();
   }
-  QgsPointV2 *point = static_cast< QgsPointV2 * >( geom.geometry() );
+  QgsPoint *point = static_cast< QgsPoint * >( geom.geometry() );
   QgsEllipse elp( *point, majorAxis,  minorAxis, azimuth );
   return QVariant::fromValue( QgsGeometry( elp.toPolygon( segment ) ) );
 }
@@ -2047,8 +2047,8 @@ static QVariant fcnMakeRegularPolygon( const QVariantList &values, const QgsExpr
     parent->setEvalErrorString( QObject::tr( "Option can be 0 (inscribed) or 1 (circumscribed)" ) );
     return QVariant();
   }
-  QgsPointV2 *center = static_cast< QgsPointV2 * >( pt1.geometry() );
-  QgsPointV2 *corner = static_cast< QgsPointV2 * >( pt2.geometry() );
+  QgsPoint *center = static_cast< QgsPoint * >( pt1.geometry() );
+  QgsPoint *corner = static_cast< QgsPoint * >( pt2.geometry() );
 
   QgsRegularPolygon rp = QgsRegularPolygon( *center, *corner, nbEdges, option );
 
@@ -2074,7 +2074,7 @@ static QVariant pointAt( const QVariantList &values, const QgsExpressionContext 
     return QVariant();
   }
 
-  QgsPoint p = g.vertexAt( idx );
+  QgsPointXY p = g.vertexAt( idx );
   return QVariant( QPointF( p.x(), p.y() ) );
 }
 
@@ -2589,8 +2589,8 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   QgsGeometry fGeom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
-  const QgsPointV2 *pt1 = dynamic_cast<const QgsPointV2 *>( fGeom1.geometry() );
-  const QgsPointV2 *pt2 = dynamic_cast<const QgsPointV2 *>( fGeom2.geometry() );
+  const QgsPoint *pt1 = dynamic_cast<const QgsPoint *>( fGeom1.geometry() );
+  const QgsPoint *pt2 = dynamic_cast<const QgsPoint *>( fGeom2.geometry() );
 
   if ( !pt1 || !pt2 )
   {
@@ -2661,10 +2661,10 @@ static QVariant fcnProject( const QVariantList &values, const QgsExpressionConte
   double azimuth = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
   double inclination = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
 
-  const QgsPointV2 *p = static_cast<const QgsPointV2 *>( geom.geometry() );
-  QgsPointV2 newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
+  const QgsPoint *p = static_cast<const QgsPoint *>( geom.geometry() );
+  QgsPoint newPoint = p->project( distance,  180.0 * azimuth / M_PI, 180.0 * inclination / M_PI );
 
-  return QVariant::fromValue( QgsGeometry( new QgsPointV2( newPoint ) ) );
+  return QVariant::fromValue( QgsGeometry( new QgsPoint( newPoint ) ) );
 }
 
 static QVariant fcnInclination( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -2672,8 +2672,8 @@ static QVariant fcnInclination( const QVariantList &values, const QgsExpressionC
   QgsGeometry fGeom1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   QgsGeometry fGeom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
 
-  const QgsPointV2 *pt1 = dynamic_cast<const QgsPointV2 *>( fGeom1.geometry() );
-  const QgsPointV2 *pt2 = dynamic_cast<const QgsPointV2 *>( fGeom2.geometry() );
+  const QgsPoint *pt1 = dynamic_cast<const QgsPoint *>( fGeom1.geometry() );
+  const QgsPoint *pt2 = dynamic_cast<const QgsPoint *>( fGeom2.geometry() );
 
   if ( ( fGeom1.type() != QgsWkbTypes::PointGeometry ) || ( fGeom2.type() != QgsWkbTypes::PointGeometry ) ||
        !pt1 || !pt2 )

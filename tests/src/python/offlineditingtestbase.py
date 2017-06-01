@@ -43,16 +43,16 @@ from qgis.core import (
 # Tet features, fields: [id, name, geometry]
 # "id" is used as a pk to retriev features by attribute
 TEST_FEATURES = [
-    (1, 'name 1', QgsPoint(9, 45)),
-    (2, 'name 2', QgsPoint(9.5, 45.5)),
-    (3, 'name 3', QgsPoint(9.5, 46)),
-    (4, 'name 4', QgsPoint(10, 46.5)),
+    (1, 'name 1', QgsPointXY(9, 45)),
+    (2, 'name 2', QgsPointXY(9.5, 45.5)),
+    (3, 'name 3', QgsPointXY(9.5, 46)),
+    (4, 'name 4', QgsPointXY(10, 46.5)),
 ]
 
 # Additional features for insert test
 TEST_FEATURES_INSERT = [
-    (5, 'name 5', QgsPoint(9.7, 45.7)),
-    (6, 'name 6', QgsPoint(10.6, 46.6)),
+    (5, 'name 5', QgsPointXY(9.7, 45.7)),
+    (6, 'name 6', QgsPointXY(10.6, 46.6)),
 ]
 
 
@@ -152,7 +152,7 @@ class OfflineTestBase(object):
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2'")
         self.assertTrue(offline_layer.startEditing())
         self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fields().lookupField('name'), 'name 2 edited'))
-        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(QgsPoint(33.0, 60.0))))
+        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(QgsPointXY(33.0, 60.0))))
         self.assertTrue(offline_layer.commitChanges())
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2 edited'")
         self.assertTrue(ol.isOfflineProject())
@@ -167,7 +167,7 @@ class OfflineTestBase(object):
         # Check that data have changed in the backend (raise exception if not found)
         feat2 = self._getFeatureByAttribute(self._getLayer('test_point'), 'name', "'name 2 edited'")
         feat2 = self._getFeatureByAttribute(online_layer, 'name', "'name 2 edited'")
-        self.assertEqual(feat2.geometry().asPoint().toString(), QgsPoint(33.0, 60.0).toString())
+        self.assertEqual(feat2.geometry().asPoint().toString(), QgsPointXY(33.0, 60.0).toString())
         # Check that all other features have not changed
         layer = self._getLayer('test_point')
         self.assertTrue(self._compareFeature(layer, TEST_FEATURES[1 - 1]))

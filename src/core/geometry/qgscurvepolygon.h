@@ -104,18 +104,18 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
                     bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override;
     bool isEmpty() const override;
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
                                    double epsilon ) const override;
 
-    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex SIP_OUT ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     bool hasCurvedSegments() const override;
 
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
     virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
     virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
+    virtual QgsPoint vertexAt( QgsVertexId id ) const override;
 
     virtual bool addZValue( double zValue = 0 ) override;
     virtual bool addMValue( double mValue = 0 ) override;

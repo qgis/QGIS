@@ -72,7 +72,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPoint &point ) const;
+    bool wantGeometry( const QgsPointXY &point ) const;
     bool wantGeometry( const QgsGeometry &geom ) const;
 
   protected:

@@ -1645,7 +1645,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
 
   if ( rect.isEmpty() )
   {
-    QgsPoint c = rect.center();
+    QgsPointXY c = rect.center();
     rect = mCanvas->extent();
     rect.scale( 0.5, &c );
   }

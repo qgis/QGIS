@@ -917,7 +917,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassFeature grassFeature;
   QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
-  QList<QgsPointV2> pointList;
+  QList<QgsPoint> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
@@ -929,7 +929,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_POINT );
   grassFeature.setId( 1 );
-  geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 10, 10, 0 ) );
+  geometry = new QgsGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 10, 0 ) );
   grassFeature.setGeometry( *geometry );
   delete geometry;
   command.grassFeatures << grassFeature;
@@ -939,7 +939,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Change geometry
   command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeGeometry );
   command.fid = 1;
-  command.geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 20, 20, 0 ) );
+  command.geometry = new QgsGeometry( new QgsPoint( QgsWkbTypes::Point, 20, 20, 0 ) );
   commandGroup.commands << command;
 
   // Add field
@@ -1021,8 +1021,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
-  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
@@ -1062,8 +1062,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
-  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );

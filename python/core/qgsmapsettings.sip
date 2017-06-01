@@ -297,11 +297,11 @@ Return the calculated scale of the map
  :rtype: QgsRectangle
 %End
 
-    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
  transform point coordinates from layer's CRS to output CRS
  :return: the transformed point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
@@ -312,11 +312,11 @@ Return the calculated scale of the map
  :rtype: QgsRectangle
 %End
 
-    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
  transform point coordinates from output CRS to layer's CRS
  :return: the transformed point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;

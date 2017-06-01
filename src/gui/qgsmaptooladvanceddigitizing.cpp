@@ -80,7 +80,7 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   mCadDockWidget->disable();
 }
 
-void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint &point )
+void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
   Q_UNUSED( point );
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );

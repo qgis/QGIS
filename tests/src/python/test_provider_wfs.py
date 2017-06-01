@@ -2057,7 +2057,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 0)
 
         # Check that the approx extent contains the geometry
-        assert vl.extent().contains(QgsPoint(2, 49))
+        assert vl.extent().contains(QgsPointXY(2, 49))
 
     def testGeomedia(self):
         """Test various interoperability specifities that occur with Geomedia Web Server."""

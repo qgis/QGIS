@@ -86,17 +86,17 @@ class QgsAnnotation : QObject
 .. seealso:: hasFixedMapPosition()
 %End
 
-    QgsPoint mapPosition() const;
+    QgsPointXY mapPosition() const;
 %Docstring
  Returns the map position of the annotation, if it is attached to a fixed map
  position.
 .. seealso:: setMapPosition()
 .. seealso:: hasFixedMapPosition()
 .. seealso:: mapPositionCrs()
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    void setMapPosition( const QgsPoint &position );
+    void setMapPosition( const QgsPointXY &position );
 %Docstring
  Sets the map position of the annotation, if it is attached to a fixed map
  position.

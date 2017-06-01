@@ -83,7 +83,7 @@ QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
-  QgsPoint center;
+  QgsPointXY center;
   bool operator()( const QgsWmsProvider::TileRequest &req1, const QgsWmsProvider::TileRequest &req2 )
   {
     QPointF p1 = req1.rect.center();
@@ -656,7 +656,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       // this is an ordinary WMS server, but the user requested tiled approach
       // so we will pretend it is a WMS-C server with just one tile matrix
       tempTm.reset( new QgsWmtsTileMatrix );
-      tempTm->topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
+      tempTm->topLeft      = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
       tempTm->tileWidth    = mSettings.mMaxWidth;
       tempTm->tileHeight   = mSettings.mMaxHeight;
       tempTm->matrixWidth  = ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
@@ -1189,10 +1189,10 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  QgsPoint topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
-  QgsPoint bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
-  QgsPoint topLeft = ct.transform( topLeftLonLat );
-  QgsPoint bottomRight = ct.transform( bottomRightLonLat );
+  QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * atan( sinh( M_PI ) ) );
+  QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * atan( sinh( -M_PI ) ) );
+  QgsPointXY topLeft = ct.transform( topLeftLonLat );
+  QgsPointXY bottomRight = ct.transform( bottomRightLonLat );
   double xspan = ( bottomRight.x() - topLeft.x() );
 
   QgsWmsBoundingBoxProperty bbox;
@@ -2372,7 +2372,7 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   QgsDebugMsg( QString( "format = %1" ).arg( format ) );
 
@@ -2470,7 +2470,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint &point, QgsRast
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
 
-  QgsPoint finalPoint;
+  QgsPointXY finalPoint;
   finalPoint.setX( floor( ( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
   finalPoint.setY( floor( ( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
 

@@ -31,7 +31,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsProcessingUtils)
 from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -123,7 +123,7 @@ class PointsDisplacement(GeoAlgorithm):
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
 
-                    new_point = QgsPoint(old_point.x() + dx, old_point.y() + dy)
+                    new_point = QgsPointXY(old_point.x() + dx, old_point.y() + dy)
                     out_feature = QgsFeature()
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())

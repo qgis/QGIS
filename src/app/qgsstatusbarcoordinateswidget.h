@@ -25,7 +25,7 @@ class QToolButton;
 class QValidator;
 
 class QgsMapCanvas;
-class QgsPoint;
+class QgsPointXY;
 
 #include <QWidget>
 #include "qgis_app.h"
@@ -54,7 +54,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void coordinatesChanged();
 
   private slots:
-    void showMouseCoordinates( const QgsPoint &p );
+    void showMouseCoordinates( const QgsPointXY &p );
     void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();

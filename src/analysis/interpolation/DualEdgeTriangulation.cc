@@ -3136,8 +3136,8 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString &fileName ) const
       Point3D *p1 = mPointVector[currentEdge->getPoint()];
       Point3D *p2 = mPointVector[mHalfEdge[currentEdge->getDual()]->getPoint()];
       QgsPolyline lineGeom;
-      lineGeom.push_back( QgsPoint( p1->getX(), p1->getY() ) );
-      lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
+      lineGeom.push_back( QgsPointXY( p1->getX(), p1->getY() ) );
+      lineGeom.push_back( QgsPointXY( p2->getX(), p2->getY() ) );
       edgeLineFeature.setGeometry( QgsGeometry::fromPolyline( lineGeom ) );
       edgeLineFeature.initAttributes( 1 );
 

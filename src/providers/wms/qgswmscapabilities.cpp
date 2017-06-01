@@ -1288,7 +1288,7 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     Q_ASSERT( l.boundingBoxes.size() == 1 );
     m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
     m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.topLeft = QgsPointXY( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     m.tres = r;
     ms.tileMatrices.insert( r, m );
     i++;
@@ -1422,8 +1422,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       if ( ll.size() == 2 && ur.size() == 2 )
       {
         bb.crs = DEFAULT_LATLON_CRS;
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         l.boundingBoxes << bb;
       }
@@ -1438,8 +1438,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         if ( bbox.hasAttribute( QStringLiteral( "SRS" ) ) )
           bb.crs = bbox.attribute( QStringLiteral( "SRS" ) );
@@ -1834,8 +1834,8 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &l )
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
                .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );

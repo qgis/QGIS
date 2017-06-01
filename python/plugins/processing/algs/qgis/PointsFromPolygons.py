@@ -34,7 +34,7 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsPointV2,
+                       QgsPoint,
                        QgsProcessingUtils)
 from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -118,7 +118,7 @@ class PointsFromPolygons(GeoAlgorithm):
             for row in range(startRow, endRow + 1):
                 for col in range(startColumn, endColumn + 1):
                     (x, y) = raster.pixelToMap(row, col, geoTransform)
-                    point = QgsPointV2()
+                    point = QgsPoint()
                     point.setX(x)
                     point.setY(y)
 

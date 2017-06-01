@@ -439,7 +439,7 @@ void QgsDxfExport::writeGroup( int code, const QString &s )
   writeString( s );
 }
 
-void QgsDxfExport::writeGroup( int code, const QgsPointV2 &p )
+void QgsDxfExport::writeGroup( int code, const QgsPoint &p )
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
@@ -573,11 +573,11 @@ void QgsDxfExport::writeHeader( const QString &codepage )
 
   // EXTMIN
   writeGroup( 9, QStringLiteral( "$EXTMIN" ) );
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMinimum(), mExtent.yMinimum() ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ, mExtent.xMinimum(), mExtent.yMinimum() ) );
 
   // EXTMAX
   writeGroup( 9, QStringLiteral( "$EXTMAX" ) );
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, mExtent.xMaximum(), mExtent.yMaximum() ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ, mExtent.xMaximum(), mExtent.yMaximum() ) );
 
   // Global linetype scale
   writeGroup( 9, QStringLiteral( "$LTSCALE" ) );
@@ -727,14 +727,14 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, QStringLiteral( "AcDbViewportTableRecord" ) );
   writeGroup( 2, QStringLiteral( "*ACTIVE" ) );
   writeGroup( 70, 0 );  // flags
-  writeGroup( 0, QgsPointV2( 0.0, 0.0 ) );                            // lower left
-  writeGroup( 1, QgsPointV2( 1.0, 1.0 ) );                            // upper right
-  writeGroup( 2, QgsPointV2( 0.0, 0.0 ) );                            // view center point
-  writeGroup( 3, QgsPointV2( 0.0, 0.0 ) );                            // snap base point
-  writeGroup( 4, QgsPointV2( 1.0, 1.0 ) );                            // snap spacing
-  writeGroup( 5, QgsPointV2( 1.0, 1.0 ) );                            // grid spacing
-  writeGroup( 6, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
-  writeGroup( 7, QgsPointV2( mExtent.center() ) );                    // view target point
+  writeGroup( 0, QgsPoint( 0.0, 0.0 ) );                            // lower left
+  writeGroup( 1, QgsPoint( 1.0, 1.0 ) );                            // upper right
+  writeGroup( 2, QgsPoint( 0.0, 0.0 ) );                            // view center point
+  writeGroup( 3, QgsPoint( 0.0, 0.0 ) );                            // snap base point
+  writeGroup( 4, QgsPoint( 1.0, 1.0 ) );                            // snap spacing
+  writeGroup( 5, QgsPoint( 1.0, 1.0 ) );                            // grid spacing
+  writeGroup( 6, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
+  writeGroup( 7, QgsPoint( mExtent.center() ) );                    // view target point
   writeGroup( 40, mExtent.height() );                                 // view height
   writeGroup( 41, mExtent.width() / mExtent.height() );               // view aspect ratio
   writeGroup( 42, 50.0 );                                             // lens length
@@ -752,9 +752,9 @@ void QgsDxfExport::writeTables()
   writeGroup( 78, 0 );                                                // snap isopair
   writeGroup( 281, 0 );                                               // render mode (0 = 2D optimized)
   writeGroup( 65, 1 );                                                // value of UCSVP for this viewport
-  writeGroup( 100, QgsPointV2( QgsWkbTypes::PointZ ) );               // UCS origin
-  writeGroup( 101, QgsPointV2( QgsWkbTypes::PointZ, 1.0 ) );          // UCS x axis
-  writeGroup( 102, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 1.0 ) );     // UCS y axis
+  writeGroup( 100, QgsPoint( QgsWkbTypes::PointZ ) );               // UCS origin
+  writeGroup( 101, QgsPoint( QgsWkbTypes::PointZ, 1.0 ) );          // UCS x axis
+  writeGroup( 102, QgsPoint( QgsWkbTypes::PointZ, 0.0, 1.0 ) );     // UCS y axis
   writeGroup( 79, 0 );                                                // Orthographic type of UCS (0 = UCS is not orthographic)
   writeGroup( 146, 0.0 );                                             // Elevation
 
@@ -870,7 +870,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
     writeGroup( 2, block );
     writeGroup( 70, 0 );
-    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
+    writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
     writeGroup( 1, QLatin1String( "" ) );
     writeGroup( 0, QStringLiteral( "ENDBLK" ) );
@@ -923,7 +923,7 @@ void QgsDxfExport::writeBlocks()
     // todo: consider anchor point
     // double size = ml->size();
     // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
-    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
+    writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
     writeGroup( 1, QLatin1String( "" ) );
 
@@ -3392,7 +3392,7 @@ void QgsDxfExport::endSection()
   writeGroup( 0, QStringLiteral( "ENDSEC" ) );
 }
 
-void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle )
+void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const QColor &color, QgsSymbolRenderContext &ctx, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol, double angle )
 {
 #if 0
   // debug: draw rectangle for debugging
@@ -3404,10 +3404,10 @@ void QgsDxfExport::writePoint( const QgsPointV2 &pt, const QString &layer, const
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
     writeGroup( 62, 1 );
-    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
-    writeGroup( 1, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
-    writeGroup( 2, QgsPointV2( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
-    writeGroup( 3, QgsPointV2( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
+    writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() - halfSize ) );
+    writeGroup( 1, QgsPoint( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() - halfSize ) );
+    writeGroup( 2, QgsPoint( QgsWkbTypes::PointZ, pt.x() - halfSize, pt.y() + halfSize ) );
+    writeGroup( 3, QgsPoint( QgsWkbTypes::PointZ, pt.x() + halfSize, pt.y() + halfSize ) );
   }
 #endif // 0
 
@@ -3485,7 +3485,7 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
     writeGroup( 6, lineStyleName );
     writeGroup( color );
     writeGroup( 100, QStringLiteral( "AcDb3dPolyline" ) );
-    writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) );
+    writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 70, 8 );
 
     for ( int i = 0; i < n; i++ )
@@ -3521,8 +3521,8 @@ void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString &
   writeGroup( color );              // Color
   writeGroup( 100, QStringLiteral( "AcDbHatch" ) );
 
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
-  writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
+  writeGroup( 200, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
   writeGroup( 70, hatchPattern == QLatin1String( "SOLID" ) ); // Solid fill flag (solid fill = 1; pattern fill = 0)
@@ -3550,12 +3550,12 @@ void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString &
   writeGroup( 98, 0 );    // Number of seed points
 }
 
-void QgsDxfExport::writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width )
+void QgsDxfExport::writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width )
 {
   writePolyline( QgsPointSequence() << pt1 << pt2, layer, lineStyleName, color, width );
 }
 
-void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt )
+void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
 {
   writeGroup( 0, QStringLiteral( "POINT" ) );
   writeHandle();
@@ -3566,7 +3566,7 @@ void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const 
   writeGroup( 0, pt );
 }
 
-void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius )
+void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius )
 {
   writeGroup( 0, QStringLiteral( "HATCH" ) );  // Entity type
   writeHandle();
@@ -3576,8 +3576,8 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor &color,
   writeGroup( color );       // Color (0 by block, 256 by layer)
   writeGroup( 100, QStringLiteral( "AcDbHatch" ) );
 
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
-  writeGroup( 200, QgsPointV2( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) ); // Elevation point (in OCS)
+  writeGroup( 200, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, QStringLiteral( "SOLID" ) );  // Hatch pattern name
   writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
@@ -3590,10 +3590,10 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor &color,
   writeGroup( 73, 1 );       // Is closed flag
   writeGroup( 93, 2 );       // Number of polyline vertices
 
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::Point, pt.x() - radius, pt.y() ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::Point, pt.x() - radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
-  writeGroup( 0, QgsPointV2( QgsWkbTypes::Point, pt.x() + radius, pt.y() ) );
+  writeGroup( 0, QgsPoint( QgsWkbTypes::Point, pt.x() + radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 
   writeGroup( 97, 0 );       // Number of source boundary objects
@@ -3603,7 +3603,7 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, const QColor &color,
   writeGroup( 98, 0 );       // Number of seed points
 }
 
-void QgsDxfExport::writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width )
+void QgsDxfExport::writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width )
 {
   writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
   writeHandle();
@@ -3619,13 +3619,13 @@ void QgsDxfExport::writeCircle( const QString &layer, const QColor &color, const
   writeGroup( 70, 1 );
   writeGroup( 43, width );
 
-  writeGroup( 0, QgsPointV2( pt.x() - radius, pt.y() ) );
+  writeGroup( 0, QgsPoint( pt.x() - radius, pt.y() ) );
   writeGroup( 42, 1.0 );
-  writeGroup( 0, QgsPointV2( pt.x() + radius, pt.y() ) );
+  writeGroup( 0, QgsPoint( pt.x() + radius, pt.y() ) );
   writeGroup( 42, 1.0 );
 }
 
-void QgsDxfExport::writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color )
+void QgsDxfExport::writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color )
 {
   writeGroup( 0, QStringLiteral( "TEXT" ) );
   writeHandle();
@@ -3640,7 +3640,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
 }
 
-void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color )
+void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
 {
   if ( !mTextStream.codec()->canEncode( text ) )
   {
@@ -4423,7 +4423,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
                .arg( tmpLyr.format().font().bold() ? 1 : 0 )
                .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
 
-  writeMText( dxfLayer, txt, QgsPointV2( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+  writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
 }
 
 

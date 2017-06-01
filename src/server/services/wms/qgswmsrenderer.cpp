@@ -900,7 +900,7 @@ namespace QgsWms
     return image.release();
   }
 
-  static void infoPointToMapCoordinates( int i, int j, QgsPoint *infoPoint, const QgsMapSettings &mapSettings )
+  static void infoPointToMapCoordinates( int i, int j, QgsPointXY *infoPoint, const QgsMapSettings &mapSettings )
   {
     //check if i, j are in the pixel range of the image
     if ( i < 0 || i > mapSettings.outputSize().width() || j < 0 || j > mapSettings.outputSize().height() )
@@ -999,7 +999,7 @@ namespace QgsWms
     //However, in order to make attribute only queries via the FILTER parameter, it is allowed to skip them if the FILTER parameter is there
 
     std::unique_ptr<QgsRectangle> featuresRect;
-    std::unique_ptr<QgsPoint> infoPoint;
+    std::unique_ptr<QgsPointXY> infoPoint;
 
     if ( i == -1 || j == -1 )
     {
@@ -1015,7 +1015,7 @@ namespace QgsWms
     }
     else
     {
-      infoPoint.reset( new QgsPoint() );
+      infoPoint.reset( new QgsPointXY() );
       infoPointToMapCoordinates( i, j, infoPoint.get(), mapSettings );
     }
 
@@ -1163,7 +1163,7 @@ namespace QgsWms
             {
               continue;
             }
-            QgsPoint layerInfoPoint = mapSettings.mapToLayerCoordinates( currentLayer, *( infoPoint.get() ) );
+            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( currentLayer, *( infoPoint.get() ) );
             if ( !featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version, infoFormat ) )
             {
               continue;
@@ -1520,7 +1520,7 @@ namespace QgsWms
   }
 
   bool QgsRenderer::featureInfoFromVectorLayer( QgsVectorLayer *layer,
-      const QgsPoint *infoPoint,
+      const QgsPointXY *infoPoint,
       int nFeatures,
       QDomDocument &infoDocument,
       QDomElement &layerElement,
@@ -1774,7 +1774,7 @@ namespace QgsWms
 
   bool QgsRenderer::featureInfoFromRasterLayer( QgsRasterLayer *layer,
       const QgsMapSettings &mapSettings,
-      const QgsPoint *infoPoint,
+      const QgsPointXY *infoPoint,
       QDomDocument &infoDocument,
       QDomElement &layerElement,
       const QString &version,
@@ -2680,7 +2680,7 @@ namespace QgsWms
     return WMSPrecision;
   }
 
-  QgsRectangle QgsRenderer::featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &mapSettings, const QgsRenderContext &rct, const QgsPoint &infoPoint ) const
+  QgsRectangle QgsRenderer::featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &mapSettings, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const
   {
     if ( !ml )
     {

@@ -138,7 +138,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         fields.append(QgsField("population", QVariant.Int))
 
         feature = QgsFeature(fields, 5)
-        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
         feature.setAttributes(['Valsier Peninsula', 6.8, 198])
 
         expected = """{"name":"Valsier Peninsula",
@@ -168,7 +168,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         fields.append(QgsField("population", QVariant.Int))
 
         feature = QgsFeature(fields, 5)
-        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
         feature.setAttributes(['Valsier Peninsula', 6.8, 198])
 
         exporter = QgsJsonExporter()
@@ -188,7 +188,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         # test with linestring for bbox inclusion
         l = QgsLineString()
-        l.setPoints([QgsPointV2(5, 6), QgsPointV2(15, 16)])
+        l.setPoints([QgsPoint(5, 6), QgsPoint(15, 16)])
         feature.setGeometry(QgsGeometry(QgsLineString(l)))
 
         expected = """{
@@ -206,7 +206,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(exporter.exportFeature(feature), expected)
 
         # test that precision is respected
-        feature.setGeometry(QgsGeometry(QgsPointV2(5.444444444, 6.333333333)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5.444444444, 6.333333333)))
         exporter.setPrecision(3)
         self.assertEqual(exporter.precision(), 3)
         expected = """{
@@ -221,7 +221,7 @@ class TestQgsJsonUtils(unittest.TestCase):
    }
 }"""
         self.assertEqual(exporter.exportFeature(feature), expected)
-        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
         exporter.setPrecision(17)
 
         # test that attribute subset is respected
@@ -329,7 +329,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         self.assertEqual(exporter.exportFeature(feature), expected)
         exporter.setIncludeGeometry(True)
 
-        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
 
         # test excluding attributes
         exporter.setIncludeAttributes(False)
@@ -462,7 +462,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         # test that exported feature is reprojected
         feature = QgsFeature(layer.fields(), 5)
-        feature.setGeometry(QgsGeometry(QgsPointV2(2502577, 2403869)))
+        feature.setGeometry(QgsGeometry(QgsPoint(2502577, 2403869)))
         feature.setAttributes(['test point'])
 
         # low precision, only need rough coordinate to check and don't want to deal with rounding errors
@@ -622,7 +622,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         fields.append(QgsField("population", QVariant.Int))
 
         feature = QgsFeature(fields, 5)
-        feature.setGeometry(QgsGeometry(QgsPointV2(5, 6)))
+        feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
         feature.setAttributes(['Valsier Peninsula', 6.8, 198])
 
         exporter = QgsJsonExporter()
@@ -646,7 +646,7 @@ class TestQgsJsonUtils(unittest.TestCase):
 
         # multiple features
         feature2 = QgsFeature(fields, 6)
-        feature2.setGeometry(QgsGeometry(QgsPointV2(7, 8)))
+        feature2.setGeometry(QgsGeometry(QgsPoint(7, 8)))
         feature2.setAttributes(['Henry Gale Island', 9.7, 38])
 
         expected = """{ "type": "FeatureCollection",

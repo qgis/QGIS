@@ -506,7 +506,7 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoint
           {
             if ( GEOSCoordSeq_getY_r( geosinit.ctxt, lineSequence, i, &y ) != 0 )
             {
-              testPoints.push_back( QgsPointV2( x, y ) );
+              testPoints.push_back( QgsPoint( x, y ) );
             }
           }
         }
@@ -545,7 +545,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
 
 
   QgsAbstractGeometry *splitGeom = fromGeos( GEOSsplitPoint );
-  QgsPointV2 *splitPoint = dynamic_cast<QgsPointV2 *>( splitGeom );
+  QgsPoint *splitPoint = dynamic_cast<QgsPoint *>( splitGeom );
   if ( !splitPoint )
   {
     delete splitGeom;
@@ -566,7 +566,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
       int nVertices = line->numPoints();
       for ( int j = 1; j < ( nVertices - 1 ); ++j )
       {
-        QgsPointV2 currentPoint = line->pointN( j );
+        QgsPoint currentPoint = line->pointN( j );
         newLine.addVertex( currentPoint );
         if ( currentPoint == *splitPoint )
         {
@@ -1038,11 +1038,11 @@ int QgsGeos::numberOfGeometries( GEOSGeometry *g )
   return GEOSGetNumGeometries_r( geosinit.ctxt, g );
 }
 
-QgsPointV2 QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM )
+QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM )
 {
   if ( !cs )
   {
-    return QgsPointV2();
+    return QgsPoint();
   }
 
   double x, y;
@@ -1072,7 +1072,7 @@ QgsPointV2 QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ
   {
     t = QgsWkbTypes::PointM;
   }
-  return QgsPointV2( t, x, y, z, m );
+  return QgsPoint( t, x, y, z, m );
 }
 
 GEOSGeometry *QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision )
@@ -1130,7 +1130,7 @@ GEOSGeometry *QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision
     switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
     {
       case QgsWkbTypes::PointGeometry:
-        return createGeosPoint( static_cast<const QgsPointV2 *>( geom ), coordDims, precision );
+        return createGeosPoint( static_cast<const QgsPoint *>( geom ), coordDims, precision );
         break;
 
       case QgsWkbTypes::LineGeometry:
@@ -1358,7 +1358,7 @@ QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) 
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::centroid( QgsPointV2 &pt, QString *errorMsg ) const
+bool QgsGeos::centroid( QgsPoint &pt, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1400,7 +1400,7 @@ QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::pointOnSurface( QgsPointV2 &pt, QString *errorMsg ) const
+bool QgsGeos::pointOnSurface( QgsPoint &pt, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1597,7 +1597,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
 GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision )
 {
-  const QgsPointV2 *pt = dynamic_cast<const QgsPointV2 *>( point );
+  const QgsPoint *pt = dynamic_cast<const QgsPoint *>( point );
   if ( !pt )
     return nullptr;
 
@@ -1908,7 +1908,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
     return QgsGeometry();
   }
 
-  return QgsGeometry( new QgsPointV2( nx, ny ) );
+  return QgsGeometry( new QgsPoint( nx, ny ) );
 }
 
 QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
@@ -1949,12 +1949,12 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg )
   }
 
   QgsLineString *line = new QgsLineString();
-  line->addVertex( QgsPointV2( nx1, ny1 ) );
-  line->addVertex( QgsPointV2( nx2, ny2 ) );
+  line->addVertex( QgsPoint( nx1, ny1 ) );
+  line->addVertex( QgsPoint( nx2, ny2 ) );
   return QgsGeometry( line );
 }
 
-double QgsGeos::lineLocatePoint( const QgsPointV2 &point, QString *errorMsg ) const
+double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -2103,7 +2103,7 @@ static bool _linestringEndpoints( const GEOSGeometry *linestring, double &x1, do
 
 
 //! Merge two linestrings if they meet at the given intersection point, return new geometry or null on error.
-static GEOSGeometry *_mergeLinestrings( const GEOSGeometry *line1, const GEOSGeometry *line2, const QgsPoint &intersectionPoint )
+static GEOSGeometry *_mergeLinestrings( const GEOSGeometry *line1, const GEOSGeometry *line2, const QgsPointXY &intersectionPoint )
 {
   double x1, y1, x2, y2;
   if ( !_linestringEndpoints( line1, x1, y1, x2, y2 ) )
@@ -2143,7 +2143,7 @@ GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry
 
   bool atLeastTwoIntersections = false;
   bool oneIntersection = false;
-  QgsPoint oneIntersectionPoint;
+  QgsPointXY oneIntersectionPoint;
 
   try
   {
@@ -2161,7 +2161,7 @@ GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry
         GEOSCoordSeq_getX_r( geosinit.ctxt, intersectionCoordSeq, 0, &xi );
         GEOSCoordSeq_getY_r( geosinit.ctxt, intersectionCoordSeq, 0, &yi );
         oneIntersection = true;
-        oneIntersectionPoint = QgsPoint( xi, yi );
+        oneIntersectionPoint = QgsPointXY( xi, yi );
       }
       GEOSGeom_destroy_r( geosinit.ctxt, intersectGeom );
     }

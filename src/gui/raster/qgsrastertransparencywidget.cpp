@@ -405,7 +405,7 @@ void QgsRasterTransparencyWidget::apply()
   }
 }
 
-void QgsRasterTransparencyWidget::pixelSelected( const QgsPoint &canvasPoint )
+void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
 {
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
@@ -419,7 +419,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPoint &canvasPoint )
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
     const QgsMapSettings &ms = mMapCanvas->mapSettings();
-    QgsPoint myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
+    QgsPointXY myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
 
     QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();

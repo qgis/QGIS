@@ -160,7 +160,7 @@ Constructor
  :rtype: float
 %End
 
-    double measureLine( const QList<QgsPoint> &points ) const;
+    double measureLine( const QList<QgsPointXY> &points ) const;
 %Docstring
  Measures the length of a line with multiple segments.
  \param points list of points in line
@@ -169,7 +169,7 @@ Constructor
  :rtype: float
 %End
 
-    double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
+    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
  Measures the distance between two points.
  \param p1 start of line
@@ -179,7 +179,7 @@ Constructor
  :rtype: float
 %End
 
-    double measureLineProjected( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2, QgsPoint *projectedPoint /Out/ = 0 ) const;
+    double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI / 2, QgsPointXY *projectedPoint /Out/ = 0 ) const;
 %Docstring
  Calculates the distance from one point with distance in meters and azimuth (direction)
  When the sourceCrs() is geographic, computeSpheroidProject() will be called
@@ -213,13 +213,13 @@ Constructor
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
-    double measurePolygon( const QList<QgsPoint> &points ) const;
+    double measurePolygon( const QList<QgsPointXY> &points ) const;
 %Docstring
  Measures the area of the polygon described by a set of points.
  :rtype: float
 %End
 
-    double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
+    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
  Computes the bearing (in radians) between two points.
  :rtype: float
@@ -279,7 +279,7 @@ Constructor
  :rtype: float
 %End
 
-    QgsPoint computeSpheroidProject( const QgsPoint &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
+    QgsPointXY computeSpheroidProject( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI / 2 ) const;
 %Docstring
  Given a location, an azimuth and a distance, computes the
  location of the projected point. Based on Vincenty's formula
@@ -295,7 +295,7 @@ Constructor
  \param distance - distance in meters.
  \param azimuth - azimuth in radians, clockwise from North
  :return: p2 - location of projected point as longitude/latitude.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
 };

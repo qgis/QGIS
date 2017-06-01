@@ -158,7 +158,7 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 
     };
 
-    static bool lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection );
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
 %Docstring
 .. note::
 
@@ -280,28 +280,28 @@ Constraint on a common angle
  :rtype: bool
 %End
 
-    QgsPoint currentPoint( bool *exists  = 0 ) const;
+    QgsPointXY currentPoint( bool *exists  = 0 ) const;
 %Docstring
  The last point.
  Helper for the CAD point list. The CAD point list is the list of points
  currently digitized. It contains both  "normal" points and intermediate points (construction mode).
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint previousPoint( bool *exists = 0 ) const;
+    QgsPointXY previousPoint( bool *exists = 0 ) const;
 %Docstring
  The previous point.
  Helper for the CAD point list. The CAD point list is the list of points
  currently digitized. It contains both  "normal" points and intermediate points (construction mode).
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint penultimatePoint( bool *exists = 0 ) const;
+    QgsPointXY penultimatePoint( bool *exists = 0 ) const;
 %Docstring
  The penultimate point.
  Helper for the CAD point list. The CAD point list is the list of points
  currently digitized. It contains both  "normal" points and intermediate points (construction mode).
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     int pointsCount() const;
@@ -316,10 +316,10 @@ Constraint on a common angle
  :rtype: bool
 %End
 
-    QList<QgsPoint> snappedSegment() const;
+    QList<QgsPointXY> snappedSegment() const;
 %Docstring
  Snapped to a segment
- :rtype: list of QgsPoint
+ :rtype: list of QgsPointXY
 %End
 
     QAction *enableAction();
@@ -355,7 +355,7 @@ return the action used to enable/disable the tools
  Remove any previously emitted warnings (if any)
 %End
 
-    void pointChanged( const QgsPoint &point );
+    void pointChanged( const QgsPointXY &point );
 %Docstring
  Sometimes a constraint may change the current point out of a mouse event. This happens normally
  when a constraint is toggled.

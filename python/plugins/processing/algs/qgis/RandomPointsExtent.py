@@ -32,7 +32,7 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
-                       QgsField, QgsSpatialIndex, QgsPoint,
+                       QgsField, QgsSpatialIndex, QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsMessageLog,
                        QgsProcessingUtils)
@@ -112,7 +112,7 @@ class RandomPointsExtent(GeoAlgorithm):
             rx = xMin + (xMax - xMin) * random.random()
             ry = yMin + (yMax - yMin) * random.random()
 
-            pnt = QgsPoint(rx, ry)
+            pnt = QgsPointXY(rx, ry)
             geom = QgsGeometry.fromPoint(pnt)
             if geom.within(extent) and \
                     vector.checkMinDistance(pnt, index, minDistance, points):

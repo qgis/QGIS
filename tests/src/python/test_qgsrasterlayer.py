@@ -55,7 +55,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myRasterLayer = QgsRasterLayer(myPath, myBaseName)
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
-        myPoint = QgsPoint(786690, 3345803)
+        myPoint = QgsPointXY(786690, 3345803)
         # print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult

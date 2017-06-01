@@ -28,7 +28,7 @@
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
-class QgsPoint;
+class QgsPointXY;
 class QFile;
 class QTextStream;
 
@@ -203,7 +203,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
 
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
-    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPointXY &point, const QString &decimalPoint, bool xyDms );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer

@@ -33,12 +33,12 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
 
         // Geometry ring without duplicate nodes
         QVector<int> vtxMap;
-        QVector<QgsPointV2> ring;
+        QVector<QgsPoint> ring;
         vtxMap.append( 0 );
         ring.append( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) );
         for ( int i = 1; i < n; ++i )
         {
-          QgsPointV2 p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
+          QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
           if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > tolerance * tolerance )
           {
             vtxMap.append( i );
@@ -60,16 +60,16 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
         // For each vertex, check whether it lies on a segment
         for ( int iVert = 0, nVerts = n - isClosed; iVert < nVerts; ++iVert )
         {
-          const QgsPointV2 &p = ring[iVert];
+          const QgsPoint &p = ring[iVert];
           for ( int i = 0, j = 1; j < n; i = j++ )
           {
             if ( iVert == i || iVert == j || ( isClosed && iVert == 0 && j == n - 1 ) )
             {
               continue;
             }
-            const QgsPointV2 &si = ring[i];
-            const QgsPointV2 &sj = ring[j];
-            QgsPointV2 q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
+            const QgsPoint &si = ring[i];
+            const QgsPoint &sj = ring[j];
+            QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
             if ( QgsGeometryUtils::sqrDistance2D( p, q ) < tolerance * tolerance )
             {
               errors.append( new QgsGeometryCheckError( this, featureid, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );

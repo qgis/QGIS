@@ -266,12 +266,12 @@ class TestQgsAtlasComposition(unittest.TestCase):
         f1.initAttributes(2)
         f1.setAttribute(0, 1)
         f1.setAttribute(1, "Test label 1")
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(-0.638, 48.954)))
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-0.638, 48.954)))
         f2 = QgsFeature(2)
         f2.initAttributes(2)
         f2.setAttribute(0, 2)
         f2.setAttribute(1, "Test label 2")
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(-1.682, 48.550)))
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-1.682, 48.550)))
         pr.addFeatures([f1, f2])
 
         # categorized symbology

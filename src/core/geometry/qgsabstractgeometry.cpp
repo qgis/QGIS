@@ -103,7 +103,7 @@ QgsRectangle QgsAbstractGeometry::calculateBoundingBox() const
   double ymax = -std::numeric_limits<double>::max();
 
   QgsVertexId id;
-  QgsPointV2 vertex;
+  QgsPoint vertex;
   double x, y;
   while ( nextVertex( id, vertex ) )
   {
@@ -166,7 +166,7 @@ QString QgsAbstractGeometry::wktTypeStr() const
   return wkt;
 }
 
-QgsPointV2 QgsAbstractGeometry::centroid() const
+QgsPoint QgsAbstractGeometry::centroid() const
 {
   // http://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
   // Pick the first ring of first part for the moment
@@ -180,7 +180,7 @@ QgsPointV2 QgsAbstractGeometry::centroid() const
   double A = 0.;
   double Cx = 0.;
   double Cy = 0.;
-  QgsPointV2 v0 = vertexAt( QgsVertexId( 0, 0, 0 ) );
+  QgsPoint v0 = vertexAt( QgsVertexId( 0, 0, 0 ) );
   int i = 0, j = 1;
   if ( vertexAt( QgsVertexId( 0, 0, 0 ) ) != vertexAt( QgsVertexId( 0, 0, n - 1 ) ) )
   {
@@ -189,8 +189,8 @@ QgsPointV2 QgsAbstractGeometry::centroid() const
   }
   for ( ; j < n; i = j++ )
   {
-    QgsPointV2 vi = vertexAt( QgsVertexId( 0, 0, i ) );
-    QgsPointV2 vj = vertexAt( QgsVertexId( 0, 0, j ) );
+    QgsPoint vi = vertexAt( QgsVertexId( 0, 0, i ) );
+    QgsPoint vj = vertexAt( QgsVertexId( 0, 0, j ) );
     vi.rx() -= v0.x();
     vi.ry() -= v0.y();
     vj.rx() -= v0.x();
@@ -206,15 +206,15 @@ QgsPointV2 QgsAbstractGeometry::centroid() const
     Cx = Cy = 0.;
     for ( int i = 0; i < n - 1; ++i )
     {
-      QgsPointV2 vi = vertexAt( QgsVertexId( 0, 0, i ) );
+      QgsPoint vi = vertexAt( QgsVertexId( 0, 0, i ) );
       Cx += vi.x();
       Cy += vi.y();
     }
-    return QgsPointV2( Cx / ( n - 1 ), Cy / ( n - 1 ) );
+    return QgsPoint( Cx / ( n - 1 ), Cy / ( n - 1 ) );
   }
   else
   {
-    return QgsPointV2( v0.x() + Cx / ( 3. * A ), v0.y() + Cy / ( 3. * A ) );
+    return QgsPoint( v0.x() + Cx / ( 3. * A ), v0.y() + Cy / ( 3. * A ) );
   }
 }
 
@@ -252,7 +252,7 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
 bool QgsAbstractGeometry::isEmpty() const
 {
   QgsVertexId vId;
-  QgsPointV2 vertex;
+  QgsPoint vertex;
   return !nextVertex( vId, vertex );
 }
 

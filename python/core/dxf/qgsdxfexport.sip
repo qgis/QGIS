@@ -174,7 +174,7 @@ class QgsDxfExport
      * @note available in python bindings as writeGroupPointV2
      * @note added in 2.15
      */
-    void writeGroup( int code, const QgsPointV2 &p ) /PyName=writeGroupPointV2/;
+    void writeGroup( int code, const QgsPoint &p ) /PyName=writeGroupPointV2/;
 
     /**
      * Write a group code with color value
@@ -243,32 +243,32 @@ class QgsDxfExport
 
     //! Write line (as a polyline)
     //! @note added in 2.15
-    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
     //! Write point
     //! @note available in Python bindings as writePointV2
     //! @note added in 2.15
-    void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt ) /PyName=writePointV2/;
+    void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) /PyName=writePointV2/;
 
     //! Write filled circle (as hatch)
     //! @note available in Python bindings as writePointV2
     //! @note added in 2.15
-    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius ) /PyName=writeFillCircleV2/;
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
 
     //! Write circle (as polyline)
     //! @note available in Python bindings as writeCircleV2
     //! @note added in 2.15
-    void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
+    void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
 
     //! Write text (TEXT)
     //! @note available in Python bindings as writeTextV2
     //! @note added in 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
 
     //! Write mtext (MTEXT)
     //! @note available in Python bindings as writeMTextV2
     //! @note added in 2.15
-    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color );
+    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 
     //! Calculates a scaling factor to convert from map units to a specified symbol unit.
     static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );

@@ -38,7 +38,7 @@ from qgis.core import (QgsApplication,
                        QgsDistanceArea,
                        QgsFeatureRequest,
                        QgsFeature,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
@@ -133,7 +133,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
                 ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
 
                 # generate random point
-                pnt = QgsPoint(rx, ry)
+                pnt = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPoint(pnt)
                 if vector.checkMinDistance(pnt, index, minDistance, points):
                     f = QgsFeature(nPoints)

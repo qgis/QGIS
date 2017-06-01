@@ -41,7 +41,7 @@ static void destroy_minheap( MINHEAP tree )
 /**
  * Calculate the area of a triangle in 2d
  */
-static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea2d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
   return qAbs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
@@ -49,7 +49,7 @@ static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPo
 /**
  * Calculate the area of a triangle in 3d space
  */
-static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
   //LWDEBUG( 2, "Entered  triarea3d" );
   double ax, bx, ay, by, az, bz, cx, cy, cz, area;
@@ -191,9 +191,9 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
 static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
 {
   //LWDEBUG( 2, "Entered  tune_areas" );
-  QgsPointV2 P1;
-  QgsPointV2 P2;
-  QgsPointV2 P3;
+  QgsPoint P1;
+  QgsPoint P2;
+  QgsPoint P3;
   double area;
   int go_on = 1;
   double check_order_min_area = 0;
@@ -300,9 +300,9 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
   int npoints = ea->inpts.size();
   double area;
 
-  QgsPointV2 P1;
-  QgsPointV2 P2;
-  QgsPointV2 P3;
+  QgsPoint P1;
+  QgsPoint P2;
+  QgsPoint P3;
   P1 = ea->inpts.at( 0 );
   P2 = ea->inpts.at( 1 );
 

@@ -29,7 +29,7 @@ class QgsRectangle
 %Docstring
 Constructor
 %End
-    QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
 Construct a rectangle from two points. The rectangle is normalized after construction.
 %End
@@ -42,7 +42,7 @@ Construct a rectangle from a QRectF. The rectangle is normalized after construct
 Copy constructor
 %End
 
-    void set( const QgsPoint &p1, const QgsPoint &p2 );
+    void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
  Sets the rectangle from two QgsPoints. The rectangle is
  normalised after construction.
@@ -143,13 +143,13 @@ Copy constructor
  :rtype: float
 %End
 
-    QgsPoint center() const;
+    QgsPointXY center() const;
 %Docstring
  Returns the center point of the rectangle.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    void scale( double scaleFactor, const QgsPoint *c = 0 );
+    void scale( double scaleFactor, const QgsPointXY *c = 0 );
 %Docstring
  Scale the rectangle around its center point.
 %End
@@ -164,7 +164,7 @@ Copy constructor
  Grows the rectangle by the specified amount.
 %End
 
-    void include( const QgsPoint &p );
+    void include( const QgsPointXY &p );
 %Docstring
  Updates the rectangle to include the specified point.
 %End
@@ -194,7 +194,7 @@ Copy constructor
  :rtype: bool
 %End
 
-    bool contains( const QgsPoint &p ) const;
+    bool contains( const QgsPointXY &p ) const;
 %Docstring
  Return true when rectangle contains a point.
  :rtype: bool

@@ -53,7 +53,7 @@ void QgsGeometryValidator::checkRingIntersections(
     {
       QgsVector w = ring1[j + 1] - ring1[j];
 
-      QgsPoint s;
+      QgsPointXY s;
       if ( intersectLines( ring0[i], v, ring1[j], w, s ) )
       {
         double d = -distLine2Point( ring0[i], v.perpVector(), s );
@@ -142,7 +142,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
     {
       QgsVector w = line[k + 1] - line[k];
 
-      QgsPoint s;
+      QgsPointXY s;
       if ( !intersectLines( line[j], v, line[k], w, s ) )
         continue;
 
@@ -242,7 +242,7 @@ void QgsGeometryValidator::run()
             double x, y;
             GEOSCoordSeq_getX_r( handle, cs, 0, &x );
             GEOSCoordSeq_getY_r( handle, cs, 0, &y );
-            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPoint( x, y ) ) );
+            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPointXY( x, y ) ) );
             mErrorCount++;
           }
 
@@ -364,7 +364,7 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeom
 // return >0  => q lies left of the line
 //        <0  => q lies right of the line
 //
-double QgsGeometryValidator::distLine2Point( const QgsPoint &p, QgsVector v, const QgsPoint &q )
+double QgsGeometryValidator::distLine2Point( const QgsPointXY &p, QgsVector v, const QgsPointXY &q )
 {
   if ( qgsDoubleNear( v.length(), 0 ) )
   {
@@ -374,7 +374,7 @@ double QgsGeometryValidator::distLine2Point( const QgsPoint &p, QgsVector v, con
   return ( v.x() * ( q.y() - p.y() ) - v.y() * ( q.x() - p.x() ) ) / v.length();
 }
 
-bool QgsGeometryValidator::intersectLines( const QgsPoint &p, QgsVector v, const QgsPoint &q, QgsVector w, QgsPoint &s )
+bool QgsGeometryValidator::intersectLines( const QgsPointXY &p, QgsVector v, const QgsPointXY &q, QgsVector w, QgsPointXY &s )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
@@ -390,7 +390,7 @@ bool QgsGeometryValidator::intersectLines( const QgsPoint &p, QgsVector v, const
   return true;
 }
 
-bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPoint &p )
+bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPointXY &p )
 {
   bool inside = false;
   int j = ring.size() - 1;

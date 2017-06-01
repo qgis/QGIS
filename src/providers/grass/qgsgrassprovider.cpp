@@ -1153,7 +1153,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   if ( geometry->wkbType() == QgsWkbTypes::Point || geometry->wkbType() == QgsWkbTypes::PointZ )
   {
-    const QgsPointV2 *point = dynamic_cast<const QgsPointV2 *>( geometry );
+    const QgsPoint *point = dynamic_cast<const QgsPoint *>( geometry );
     if ( point )
     {
       Vect_append_point( points, point->x(), point->y(), point->z() );
@@ -1167,7 +1167,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
     {
       for ( int i = 0; i < lineString->numPoints(); i++ )
       {
-        QgsPointV2 point = lineString->pointN( i );
+        QgsPoint point = lineString->pointN( i );
         Vect_append_point( points, point.x(), point.y(), point.z() );
       }
     }
@@ -1182,7 +1182,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
       {
         for ( int i = 0; i < lineString->numPoints(); i++ )
         {
-          QgsPointV2 point = lineString->pointN( i );
+          QgsPoint point = lineString->pointN( i );
           Vect_append_point( points, point.x(), point.y(), point.z() );
         }
       }

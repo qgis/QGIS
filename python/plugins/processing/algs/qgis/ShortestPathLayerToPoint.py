@@ -35,7 +35,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsFields,
                        QgsField,
                        QgsFeatureRequest,
@@ -183,7 +183,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
             self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = endPoint.split(',')
-        endPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        endPoint = QgsPointXY(float(tmp[0]), float(tmp[1]))
 
         directionField = -1
         if directionFieldName is not None:

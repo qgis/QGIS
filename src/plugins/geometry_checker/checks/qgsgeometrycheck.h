@@ -101,7 +101,7 @@ class QgsGeometryCheckError
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
                            QgsFeatureId featureId,
-                           const QgsPointV2 &errorLocation,
+                           const QgsPoint &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
@@ -114,7 +114,7 @@ class QgsGeometryCheckError
     virtual QgsAbstractGeometry *geometry();
     virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
     virtual QString description() const { return mCheck->errorDescription(); }
-    const QgsPointV2 &location() const { return mErrorLocation; }
+    const QgsPoint &location() const { return mErrorLocation; }
     QVariant value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
     QgsVertexId vidx() const { return mVidx; }
@@ -155,7 +155,7 @@ class QgsGeometryCheckError
   protected:
     const QgsGeometryCheck *mCheck = nullptr;
     QgsFeatureId mFeatureId;
-    QgsPointV2 mErrorLocation;
+    QgsPoint mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;
     ValueType mValueType;

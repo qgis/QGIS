@@ -1644,7 +1644,7 @@ void QgsComposerMap::mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) c
   }
 
   //there is rotation
-  QgsPoint rotationPoint( ( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
+  QgsPointXY rotationPoint( ( extent.xMaximum() + extent.xMinimum() ) / 2.0, ( extent.yMaximum() + extent.yMinimum() ) / 2.0 );
   double dx, dy; //x-, y- shift from rotation point to corner point
 
   //top left point
@@ -1803,11 +1803,11 @@ QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
   }
 
   QgsRectangle tExtent = transformedExtent();
-  QgsPoint rotationPoint( ( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
+  QgsPointXY rotationPoint( ( tExtent.xMaximum() + tExtent.xMinimum() ) / 2.0, ( tExtent.yMaximum() + tExtent.yMinimum() ) / 2.0 );
   double dx = mapCoords.x() - rotationPoint.x();
   double dy = mapCoords.y() - rotationPoint.y();
   QgsComposerUtils::rotate( -mEvaluatedMapRotation, dx, dy );
-  QgsPoint backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
+  QgsPointXY backRotatedCoords( rotationPoint.x() + dx, rotationPoint.y() + dy );
 
   QgsRectangle unrotatedExtent = transformedExtent();
   double xItem = rect().width() * ( backRotatedCoords.x() - unrotatedExtent.xMinimum() ) / unrotatedExtent.width();

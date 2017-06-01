@@ -130,11 +130,11 @@ void TestQgisAppClipboard::copyToText()
   QgsFeature feat( fields, 5 );
   feat.setAttribute( QStringLiteral( "int_field" ), 9 );
   feat.setAttribute( QStringLiteral( "string_field" ), "val" );
-  feat.setGeometry( QgsGeometry( new QgsPointV2( 5, 6 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
   QgsFeature feat2( fields, 6 );
   feat2.setAttribute( QStringLiteral( "int_field" ), 19 );
   feat2.setAttribute( QStringLiteral( "string_field" ), "val2" );
-  feat2.setGeometry( QgsGeometry( new QgsPointV2( 7, 8 ) ) );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
   QgsFeatureStore feats;
   feats.addFeature( feat );
   feats.addFeature( feat2 );
@@ -180,7 +180,7 @@ void TestQgisAppClipboard::copyToText()
   QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
-  feat.setGeometry( QgsGeometry( new QgsPointV2( 2502577, 2403869 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 2502577, 2403869 ) ) );
   feats.addFeature( feat );
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
@@ -210,12 +210,12 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPointV2 * >( features.at( 1 ).geometry().geometry() );
+  point = dynamic_cast< QgsPoint * >( features.at( 1 ).geometry().geometry() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 }
@@ -231,7 +231,7 @@ void TestQgisAppClipboard::pasteGeoJson()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );

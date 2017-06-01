@@ -317,7 +317,7 @@ struct QgsWmtsTileMatrix
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;  //!< Top-left corner of the tile matrix in map units
+  QgsPointXY topLeft;  //!< Top-left corner of the tile matrix in map units
   int tileWidth;     //!< Width of a tile in pixels
   int tileHeight;    //!< Height of a tile in pixels
   int matrixWidth;   //!< Number of tiles horizontally

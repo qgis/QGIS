@@ -21,7 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 
-double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsPoint &point )
+double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsPointXY &point )
 {
   // step 1 - transform point into WGS84 geographic crs
   QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
@@ -35,14 +35,14 @@ double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &cr
   if ( transform.isShortCircuited() )
     return 0.0;
 
-  QgsPoint p1 = transform.transform( point );
+  QgsPointXY p1 = transform.transform( point );
 
   // shift point a tiny bit north
-  QgsPoint p2 = p1;
+  QgsPointXY p2 = p1;
   p2.setY( p2.y() + 0.000001 );
 
   //transform back
-  QgsPoint p3 = transform.transform( p2, QgsCoordinateTransform::ReverseTransform );
+  QgsPointXY p3 = transform.transform( p2, QgsCoordinateTransform::ReverseTransform );
 
   // find bearing from point to p3
   return point.azimuth( p3 );

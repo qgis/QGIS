@@ -124,25 +124,25 @@ class TestQgsExpression: public QObject
       mAggregatesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:string&field=col3:integer&field=col4:string" ), QStringLiteral( "aggregate_layer" ), QStringLiteral( "memory" ) );
       QVERIFY( mAggregatesLayer->isValid() );
       QgsFeature af1( mAggregatesLayer->dataProvider()->fields(), 1 );
-      af1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 0, 0 ) ) );
+      af1.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 0, 0 ) ) );
       af1.setAttribute( QStringLiteral( "col1" ), 4 );
       af1.setAttribute( QStringLiteral( "col2" ), "test" );
       af1.setAttribute( QStringLiteral( "col3" ), 2 );
       af1.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af2( mAggregatesLayer->dataProvider()->fields(), 2 );
-      af2.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 0 ) ) );
+      af2.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 1, 0 ) ) );
       af2.setAttribute( QStringLiteral( "col1" ), 2 );
       af2.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       af2.setAttribute( QStringLiteral( "col3" ), 1 );
       af2.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af3( mAggregatesLayer->dataProvider()->fields(), 3 );
-      af3.setGeometry( QgsGeometry::fromPoint( QgsPoint( 2, 0 ) ) );
+      af3.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 2, 0 ) ) );
       af3.setAttribute( QStringLiteral( "col1" ), 3 );
       af3.setAttribute( QStringLiteral( "col2" ), "test333" );
       af3.setAttribute( QStringLiteral( "col3" ), 2 );
       af3.setAttribute( QStringLiteral( "col4" ), QVariant( QVariant::String ) );
       QgsFeature af4( mAggregatesLayer->dataProvider()->fields(), 4 );
-      af4.setGeometry( QgsGeometry::fromPoint( QgsPoint( 3, 0 ) ) );
+      af4.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 3, 0 ) ) );
       af4.setAttribute( QStringLiteral( "col1" ), 2 );
       af4.setAttribute( QStringLiteral( "col2" ), "test4" );
       af4.setAttribute( QStringLiteral( "col3" ), 2 );
@@ -154,7 +154,7 @@ class TestQgsExpression: public QObject
       af5.setAttribute( QStringLiteral( "col3" ), 3 );
       af5.setAttribute( QStringLiteral( "col4" ), "test" );
       QgsFeature af6( mAggregatesLayer->dataProvider()->fields(), 6 );
-      af6.setGeometry( QgsGeometry::fromPoint( QgsPoint( 5, 0 ) ) );
+      af6.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 5, 0 ) ) );
       af6.setAttribute( QStringLiteral( "col1" ), 8 );
       af6.setAttribute( QStringLiteral( "col2" ), "test4" );
       af6.setAttribute( QStringLiteral( "col3" ), 3 );
@@ -1741,9 +1741,9 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<QVariant>( "result" );
 
-      QgsPoint point( 123, 456 );
+      QgsPointXY point( 123, 456 );
       QgsPolyline line;
-      line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
+      line << QgsPointXY( 1, 1 ) << QgsPointXY( 4, 2 ) << QgsPointXY( 3, 1 );
 
       QTest::newRow( "geom x" ) << "$x" << QgsGeometry::fromPoint( point ) << false << QVariant( 123. );
       QTest::newRow( "geom y" ) << "$y" << QgsGeometry::fromPoint( point ) << false << QVariant( 456. );
@@ -1775,8 +1775,8 @@ class TestQgsExpression: public QObject
     void eval_geometry_calc()
     {
       QgsPolyline polyline, polygon_ring;
-      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
-      polygon_ring << QgsPoint( 2, 1 ) << QgsPoint( 10, 1 ) << QgsPoint( 10, 6 ) << QgsPoint( 2, 6 ) << QgsPoint( 2, 1 );
+      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
       QgsPolygon polygon;
       polygon << polygon_ring;
       QgsFeature fPolygon, fPolyline;
@@ -1909,7 +1909,7 @@ class TestQgsExpression: public QObject
 
       QgsFeature feat;
       QgsPolyline polygonRing3111;
-      polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
+      polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
       QgsPolygon polygon3111;
       polygon3111 << polygonRing3111;
       QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
@@ -1981,7 +1981,7 @@ class TestQgsExpression: public QObject
 
       // test length without geomCalculator
       QgsPolyline line3111;
-      line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
+      line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
       QgsGeometry line3111G =  QgsGeometry::fromPolyline( line3111 ) ;
       feat.setGeometry( line3111G );
       context.setFeature( feat );
@@ -2020,14 +2020,14 @@ class TestQgsExpression: public QObject
     void eval_geometry_wkt()
     {
       QgsPolyline polyline, polygon_ring;
-      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
-      polygon_ring << QgsPoint( 2, 1 ) << QgsPoint( 10, 1 ) << QgsPoint( 10, 6 ) << QgsPoint( 2, 6 ) << QgsPoint( 2, 1 );
+      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
 
       QgsPolygon polygon;
       polygon << polygon_ring;
 
       QgsFeature fPoint, fPolygon, fPolyline;
-      QgsGeometry fPointG = QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) );
+      QgsGeometry fPointG = QgsGeometry::fromPoint( QgsPointXY( -1.23456789, 9.87654321 ) );
       fPoint.setGeometry( fPointG );
       QgsGeometry fPolylineG = QgsGeometry::fromPolyline( polyline );
       fPolyline.setGeometry( fPolylineG );
@@ -2062,13 +2062,13 @@ class TestQgsExpression: public QObject
       QTest::addColumn<QgsGeometry>( "geom" );
       QTest::addColumn<bool>( "evalError" );
 
-      QgsPoint point( 123, 456 );
+      QgsPointXY point( 123, 456 );
       QgsPolyline line;
-      line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
+      line << QgsPointXY( 1, 1 ) << QgsPointXY( 4, 2 ) << QgsPointXY( 3, 1 );
 
       QgsPolyline polyline, polygon_ring;
-      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
-      polygon_ring << QgsPoint( 1, 1 ) << QgsPoint( 6, 1 ) << QgsPoint( 6, 6 ) << QgsPoint( 1, 6 ) << QgsPoint( 1, 1 );
+      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      polygon_ring << QgsPointXY( 1, 1 ) << QgsPointXY( 6, 1 ) << QgsPointXY( 6, 6 ) << QgsPointXY( 1, 6 ) << QgsPointXY( 1, 1 );
       QgsPolygon polygon;
       polygon << polygon_ring;
 
@@ -2126,13 +2126,13 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<bool>( "needsGeom" );
 
-      QgsPoint point( 123, 456 );
+      QgsPointXY point( 123, 456 );
       QgsPolyline line;
-      line << QgsPoint( 1, 1 ) << QgsPoint( 4, 2 ) << QgsPoint( 3, 1 );
+      line << QgsPointXY( 1, 1 ) << QgsPointXY( 4, 2 ) << QgsPointXY( 3, 1 );
 
       QgsPolyline polyline, polygon_ring;
-      polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
-      polygon_ring << QgsPoint( 1, 1 ) << QgsPoint( 6, 1 ) << QgsPoint( 6, 6 ) << QgsPoint( 1, 6 ) << QgsPoint( 1, 1 );
+      polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
+      polygon_ring << QgsPointXY( 1, 1 ) << QgsPointXY( 6, 1 ) << QgsPointXY( 6, 6 ) << QgsPointXY( 1, 6 ) << QgsPointXY( 1, 1 );
       QgsPolygon polygon;
       polygon << polygon_ring;
 
@@ -2187,10 +2187,10 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "evalError" );
       QTest::addColumn<QVariant>( "result" );
 
-      QgsPoint point( 0, 0 );
+      QgsPointXY point( 0, 0 );
       QgsPolyline line, polygon_ring;
-      line << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 );
-      polygon_ring << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 );
+      line << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 );
+      polygon_ring << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 0, 0 );
       QgsPolygon polygon;
       polygon << polygon_ring;
 
@@ -2244,10 +2244,10 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "needGeom" );
       QTest::addColumn<QgsGeometry>( "result" );
 
-      QgsPoint point( 0, 0 );
+      QgsPointXY point( 0, 0 );
       QgsPolyline line, polygon_ring;
-      line << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 );
-      polygon_ring << QgsPoint( 0, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 );
+      line << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 );
+      polygon_ring << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 0, 0 );
       QgsPolygon polygon;
       polygon << polygon_ring;
 
@@ -2258,8 +2258,8 @@ class TestQgsExpression: public QObject
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "buffer" ) << "buffer( $geometry, 2.0)" << geom << false << true << geom.buffer( 2.0, 8 );
 
-      QgsPoint point1( 10, 20 );
-      QgsPoint point2( 30, 20 );
+      QgsPointXY point1( 10, 20 );
+      QgsPointXY point2( 30, 20 );
       QgsGeometry pnt1 = QgsGeometry::fromPoint( point1 );
       QgsGeometry pnt2 = QgsGeometry::fromPoint( point2 );
       QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('" + pnt2.exportToWkt() + "') )" << pnt1 << false << true << pnt1.combine( pnt2 );

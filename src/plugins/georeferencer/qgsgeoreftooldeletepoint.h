@@ -20,7 +20,7 @@
 
 #include "qgsmaptoolemitpoint.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsMapCanvas;
 
 class QgsGeorefToolDeletePoint : public QgsMapToolEmitPoint

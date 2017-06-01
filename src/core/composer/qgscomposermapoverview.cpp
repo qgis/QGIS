@@ -307,7 +307,7 @@ void QgsComposerMapOverview::overviewExtentChanged()
     }
     QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
 
-    QgsPoint center = otherExtent.center();
+    QgsPointXY center = otherExtent.center();
     QgsRectangle movedExtent( center.x() - extent.width() / 2,
                               center.y() - extent.height() / 2,
                               center.x() - extent.width() / 2 + extent.width(),

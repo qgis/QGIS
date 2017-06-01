@@ -103,7 +103,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPoint currentPoint = toMapCoordinates( e->pos() );
+    QgsPointXY currentPoint = toMapCoordinates( e->pos() );
     double azimuth = azimuthToCCW( mRotationPoint.azimuth( currentPoint ) );
     double azimuthDiff = azimuth - mCurrentMouseAzimuth;
     azimuthDiff = azimuthDiff > 180 ? azimuthDiff - 360 : azimuthDiff;
@@ -189,7 +189,7 @@ double QgsMapToolRotateLabel::azimuthToCCW( double a )
 QgsRubberBand *QgsMapToolRotateLabel::createRotationPreviewBox()
 {
   delete mRotationPreviewBox;
-  QVector< QgsPoint > boxPoints = mCurrentLabel.pos.cornerPoints;
+  QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
   if ( boxPoints.size() < 1 )
   {
     return nullptr;
@@ -210,7 +210,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
   }
 
   mRotationPreviewBox->reset();
-  QVector< QgsPoint > boxPoints = mCurrentLabel.pos.cornerPoints;
+  QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
   if ( boxPoints.size() < 1 )
   {
     return;
@@ -224,7 +224,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
   mRotationPreviewBox->show();
 }
 
-QgsPoint QgsMapToolRotateLabel::rotatePointCounterClockwise( const QgsPoint &input, const QgsPoint &centerPoint, double degrees )
+QgsPointXY QgsMapToolRotateLabel::rotatePointCounterClockwise( const QgsPointXY &input, const QgsPointXY &centerPoint, double degrees )
 {
   double rad = degrees / 180 * M_PI;
   double v1x = input.x() - centerPoint.x();
@@ -233,5 +233,5 @@ QgsPoint QgsMapToolRotateLabel::rotatePointCounterClockwise( const QgsPoint &inp
   double v2x = cos( rad ) * v1x - sin( rad ) * v1y;
   double v2y = sin( rad ) * v1x + cos( rad ) * v1y;
 
-  return QgsPoint( centerPoint.x() + v2x, centerPoint.y() + v2y );
+  return QgsPointXY( centerPoint.x() + v2x, centerPoint.y() + v2y );
 }

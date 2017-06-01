@@ -242,7 +242,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Evaluates the parameter with matching \a name to a point.
      */
-    QgsPoint parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a file/folder name.

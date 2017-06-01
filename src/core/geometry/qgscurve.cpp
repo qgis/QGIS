@@ -29,8 +29,8 @@ bool QgsCurve::isClosed() const
     return false;
 
   //don't consider M-coordinates when testing closedness
-  QgsPointV2 start = startPoint();
-  QgsPointV2 end = endPoint();
+  QgsPoint start = startPoint();
+  QgsPoint end = endPoint();
   return ( qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
            qgsDoubleNear( start.y(), end.y(), 1E-8 ) &&
            qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
@@ -53,7 +53,7 @@ QgsCoordinateSequence QgsCurve::coordinateSequence() const
   return mCoordinateSequence;
 }
 
-bool QgsCurve::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
+bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 {
   if ( id.vertex < 0 )
   {
@@ -87,8 +87,8 @@ QgsAbstractGeometry *QgsCurve::boundary() const
     return nullptr;
 
   QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
-  multiPoint->addGeometry( new QgsPointV2( startPoint() ) );
-  multiPoint->addGeometry( new QgsPointV2( endPoint() ) );
+  multiPoint->addGeometry( new QgsPoint( startPoint() ) );
+  multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;
 }
 
@@ -115,9 +115,9 @@ int QgsCurve::partCount() const
   return numPoints() > 0 ? 1 : 0;
 }
 
-QgsPointV2 QgsCurve::vertexAt( QgsVertexId id ) const
+QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
 {
-  QgsPointV2 v;
+  QgsPoint v;
   QgsVertexId::VertexType type;
   pointAt( id.vertex, v, type );
   return v;

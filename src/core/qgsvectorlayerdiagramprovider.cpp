@@ -123,10 +123,10 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
     centerX += label->getX( i );
     centerY += label->getY( i );
   }
-  QgsPoint outPt( centerX / 4.0, centerY / 4.0 );
+  QgsPointXY outPt( centerX / 4.0, centerY / 4.0 );
   //then, calculate the top left point for the diagram with this center position
-  QgsPoint centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
-                                       outPt.y() - label->getHeight() / 2 );
+  QgsPointXY centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
+                                         outPt.y() - label->getHeight() / 2 );
 
   mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF(), mSettings.dataDefinedProperties() );
 
@@ -284,7 +284,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
 
   QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
-  lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
+  lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
@@ -322,8 +322,8 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setZIndex( zIndex );
 
   // label distance
-  QgsPoint ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
-  QgsPoint ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
+  QgsPointXY ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
+  QgsPointXY ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
   double dist = mSettings.distance();
 
   if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Distance )

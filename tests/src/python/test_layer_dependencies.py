@@ -120,7 +120,7 @@ class TestLayerDependencies(unittest.TestCase):
         m = u.snapToMap(QPoint(95, 100))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(1, 0))
+        self.assertEqual(m.point(), QgsPointXY(1, 0))
 
         f = QgsFeature(self.linesLayer.fields())
         f.setId(1)
@@ -151,7 +151,7 @@ class TestLayerDependencies(unittest.TestCase):
         m = u.snapToMap(QPoint(45, 50))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.5, 0.5))
+        self.assertEqual(m.point(), QgsPointXY(0.5, 0.5))
         self.pointsLayer.setDependencies([])
 
         # test chained layer dependencies A -> B -> C
@@ -173,7 +173,7 @@ class TestLayerDependencies(unittest.TestCase):
         m = u.snapToMap(QPoint(75, 100 - 80))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.7, 0.8))
+        self.assertEqual(m.point(), QgsPointXY(0.7, 0.8))
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])
 
@@ -254,7 +254,7 @@ class TestLayerDependencies(unittest.TestCase):
         m = u.snapToMap(QPoint(75, 100 - 0))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.8, 0.0))
+        self.assertEqual(m.point(), QgsPointXY(0.8, 0.0))
 
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])

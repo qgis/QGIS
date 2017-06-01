@@ -8711,7 +8711,7 @@ void QgisApp::layerSubsetString()
   delete qb;
 }
 
-void QgisApp::saveLastMousePosition( const QgsPoint &p )
+void QgisApp::saveLastMousePosition( const QgsPointXY &p )
 {
   if ( mMapTipsVisible )
   {
@@ -9101,8 +9101,8 @@ void QgisApp::legendLayerZoomNative()
     // get length of central canvas pixel width in source raster crs
     QgsRectangle e = mMapCanvas->extent();
     QSize s = mMapCanvas->mapSettings().outputSize();
-    QgsPoint p1( e.center().x(), e.center().y() );
-    QgsPoint p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
+    QgsPointXY p1( e.center().x(), e.center().y() );
+    QgsPointXY p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
     QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );

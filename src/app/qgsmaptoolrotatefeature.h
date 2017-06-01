@@ -86,14 +86,14 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
   private:
 
-    QgsGeometry rotateGeometry( QgsGeometry geom, QgsPoint point, double angle );
-    QgsPoint rotatePoint( QgsPoint point, double angle );
+    QgsGeometry rotateGeometry( QgsGeometry geom, QgsPointXY point, double angle );
+    QgsPointXY rotatePoint( QgsPointXY point, double angle );
     void deleteRubberband();
     void createRotationWidget();
     void deleteRotationWidget();
 
     //! Start point of the move in map coordinates
-    QgsPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
     QPointF mInitialPos;
 
     //! Rubberband that shows the feature being moved

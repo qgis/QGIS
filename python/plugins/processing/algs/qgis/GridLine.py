@@ -35,7 +35,7 @@ from qgis.core import (QgsRectangle,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPointV2,
+                       QgsPoint,
                        QgsLineString,
                        QgsWkbTypes,
                        QgsFields)
@@ -150,8 +150,8 @@ class GridLine(GeoAlgorithm):
         count_update = count_max * 0.10
         y = bbox.yMaximum()
         while y >= bbox.yMinimum():
-            pt1 = QgsPointV2(bbox.xMinimum(), y)
-            pt2 = QgsPointV2(bbox.xMaximum(), y)
+            pt1 = QgsPoint(bbox.xMinimum(), y)
+            pt2 = QgsPoint(bbox.xMaximum(), y)
             line = QgsLineString()
             line.setPoints([pt1, pt2])
             feat.setGeometry(QgsGeometry(line))
@@ -177,8 +177,8 @@ class GridLine(GeoAlgorithm):
         count_update = count_max * 0.10
         x = bbox.xMinimum()
         while x <= bbox.xMaximum():
-            pt1 = QgsPointV2(x, bbox.yMaximum())
-            pt2 = QgsPointV2(x, bbox.yMinimum())
+            pt1 = QgsPoint(x, bbox.yMaximum())
+            pt2 = QgsPoint(x, bbox.yMinimum())
             line = QgsLineString()
             line.setPoints([pt1, pt2])
             feat.setGeometry(QgsGeometry(line))

@@ -77,7 +77,7 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkt( const QString &text )
   QgsAbstractGeometry *geom = nullptr;
   if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsPointV2();
+    geom = new QgsPoint();
   }
   else if ( trimmed.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
   {
@@ -135,9 +135,9 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkt( const QString &text )
   return geom;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromPoint( const QgsPoint &point )
+QgsAbstractGeometry *QgsGeometryFactory::fromPoint( const QgsPointXY &point )
 {
-  return new QgsPointV2( point.x(), point.y() );
+  return new QgsPoint( point.x(), point.y() );
 }
 
 QgsAbstractGeometry *QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
@@ -146,7 +146,7 @@ QgsAbstractGeometry *QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &mu
   QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
-    QgsPointV2 *pt = new QgsPointV2( ptIt->x(), ptIt->y() );
+    QgsPoint *pt = new QgsPoint( ptIt->x(), ptIt->y() );
     mp->addGeometry( pt );
   }
   return mp;
@@ -203,11 +203,11 @@ QgsAbstractGeometry *QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon
 QgsAbstractGeometry *QgsGeometryFactory::fromRect( const QgsRectangle &rect )
 {
   QgsPolyline ring;
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
+  ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
+  ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
+  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
 
   QgsPolygon polygon;
   polygon.append( ring );
@@ -237,7 +237,7 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
   switch ( type )
   {
     case QgsWkbTypes::Point:
-      return new QgsPointV2();
+      return new QgsPoint();
     case QgsWkbTypes::LineString:
       return new QgsLineString();
     case QgsWkbTypes::CircularString:

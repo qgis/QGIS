@@ -79,7 +79,7 @@ void TestQgsGeometryImport::pointWkt()
   QgsGeometry geom = QgsGeometry::fromWkt( wktString );
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
-  QgsPoint point = geom.asPoint();
+  QgsPointXY point = geom.asPoint();
 
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );
@@ -106,7 +106,7 @@ void TestQgsGeometryImport::pointWkb()
 
   QgsGeometry geom;
   geom.fromWkb( geomPtr, 21 );
-  QgsPoint point = geom.asPoint();
+  QgsPointXY point = geom.asPoint();
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
   QVERIFY( qgsDoubleNear( point.x(), x ) );
@@ -135,7 +135,7 @@ void TestQgsGeometryImport::pointGeos()
   geom.fromGeos( geosPt );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
 
-  QgsPoint geomPt = geom.asPoint();
+  QgsPointXY geomPt = geom.asPoint();
 
   QVERIFY( qgsDoubleNear( x, geomPt.x() ) );
   QVERIFY( qgsDoubleNear( y, geomPt.y() ) );
@@ -236,7 +236,7 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline &polyline, QVa
 
   for ( int i = 0; i < polyline.size(); ++i )
   {
-    const QgsPoint &polylinePt = polyline.at( i );
+    const QgsPointXY &polylinePt = polyline.at( i );
     QPointF linePt = line.at( i ).toPointF();
     if ( !qgsDoubleNear( polylinePt.x(), linePt.x() ) || !qgsDoubleNear( polylinePt.y(), linePt.y() ) )
     {

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsBox3d
      * Constructs a QgsBox3D from two points representing opposite corners of the box.
      * The box is normalized after construction.
      */
-    QgsBox3d( const QgsPointV2 &p1, const QgsPointV2 &p2 );
+    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
 
     /**
      * Sets the minimum \a x value.
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsBox3d
      * If the point is a 2D point (no z-coordinate), then the containment test
      * will be performed on the x/y extent of the box only.
      */
-    bool contains( const QgsPointV2 &point ) const;
+    bool contains( const QgsPoint &point ) const;
 
     /**
      * Converts the box to a 2D rectangle.

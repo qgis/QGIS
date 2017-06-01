@@ -77,7 +77,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       stopCapturing();
       return;
     }
-    QgsPoint firstPoint = points().at( 0 );
+    QgsPointXY firstPoint = points().at( 0 );
     QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
     for ( int i = 1; i < size(); ++i )
     {

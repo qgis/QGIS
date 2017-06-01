@@ -332,7 +332,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
   return list;
 }
 
-QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPoint &point, int neighbors ) const
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, int neighbors ) const
 {
   QList<QgsFeatureId> list;
   QgisVisitor visitor( list );

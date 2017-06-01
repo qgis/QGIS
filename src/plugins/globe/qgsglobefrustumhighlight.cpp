@@ -53,6 +53,6 @@ void QgsGlobeFrustumHighlightCallback::operator()( osg::Node *, osg::NodeVisitor
   {
     osg::Vec3d localCoords;
     mSrs->transformFromWorld( corners[i], localCoords );
-    mRubberBand->addPoint( QgsPoint( localCoords.x(), localCoords.y() ) );
+    mRubberBand->addPoint( QgsPointXY( localCoords.x(), localCoords.y() ) );
   }
 }

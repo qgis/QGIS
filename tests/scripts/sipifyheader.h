@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     bool operator==( const QgsSipifyHeader other );
 
     //! A multiline method signature
-    void multilineMethod( const QgsPoint &startPoint,
+    void multilineMethod( const QgsPointXY &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
                           QgsSnappingResult::SnappingType snap_to ) const;
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
     }
     else
     {
-      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+      sipCpp = new sipQgsPoint( a0, a1, a2, a3, a4 );
     }
     % End
 #endif

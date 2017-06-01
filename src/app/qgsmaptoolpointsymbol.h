@@ -46,7 +46,7 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint ) = 0;
+    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) = 0;
 
     virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) = 0;
 

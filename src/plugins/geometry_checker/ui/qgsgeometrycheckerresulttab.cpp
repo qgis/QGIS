@@ -315,7 +315,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   mCurrentRubberBands.clear();
 
   QList<QTableWidgetItem *> items;
-  QVector<QgsPoint> errorPositions;
+  QVector<QgsPointXY> errorPositions;
   QgsRectangle totextent;
 
   if ( current )
@@ -350,7 +350,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
       QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
-      QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPoint( error->location().x(), error->location().y() ) );
+      QgsPointXY pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPointXY( error->location().x(), error->location().y() ) );
       pointRubberBand->addPoint( pos );
       pointRubberBand->setWidth( 20 );
       pointRubberBand->setColor( Qt::red );
@@ -377,13 +377,13 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     double cx = 0., cy = 0.;
     QgsRectangle pointExtent( errorPositions.first(), errorPositions.first() );
-    Q_FOREACH ( const QgsPoint &p, errorPositions )
+    Q_FOREACH ( const QgsPointXY &p, errorPositions )
     {
       cx += p.x();
       cy += p.y();
       pointExtent.include( p );
     }
-    QgsPoint center = QgsPoint( cx / errorPositions.size(), cy / errorPositions.size() );
+    QgsPointXY center = QgsPointXY( cx / errorPositions.size(), cy / errorPositions.size() );
     if ( totextent.isEmpty() )
     {
       QgsRectangle extent = mIface->mapCanvas()->extent();

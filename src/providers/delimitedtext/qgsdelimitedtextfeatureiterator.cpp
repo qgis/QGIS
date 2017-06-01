@@ -246,7 +246,7 @@ bool QgsDelimitedTextFeatureIterator::close()
 /**
  * Check to see if the point is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint &pt ) const
+bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPointXY &pt ) const
 {
   if ( ! mTestGeometry ) return true;
   return mRequest.filterRect().contains( pt );
@@ -415,7 +415,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
     return QgsGeometry();
   }
   isNull = false;
-  QgsPoint pt;
+  QgsPointXY pt;
   bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 
   if ( ok && wantGeometry( pt ) )

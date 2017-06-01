@@ -340,8 +340,8 @@ double QgsComposerScaleBar::mapWidth() const
     da.setEllipsoid( mComposition->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = da.lengthUnits();
-    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
-                                     QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
+    double measure = da.measureLine( QgsPointXY( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
+                                     QgsPointXY( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
     return measure;
   }

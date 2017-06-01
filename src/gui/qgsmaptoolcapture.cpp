@@ -146,20 +146,20 @@ bool QgsMapToolCapture::tracingEnabled()
 }
 
 
-QgsPoint QgsMapToolCapture::tracingStartPoint()
+QgsPointXY QgsMapToolCapture::tracingStartPoint()
 {
   try
   {
     QgsMapLayer *layer = mCanvas->currentLayer();
     if ( !layer )
-      return QgsPoint();
-    QgsPointV2 v = mCaptureCurve.endPoint();
-    return toMapCoordinates( layer, QgsPoint( v.x(), v.y() ) );
+      return QgsPointXY();
+    QgsPoint v = mCaptureCurve.endPoint();
+    return toMapCoordinates( layer, QgsPointXY( v.x(), v.y() ) );
   }
   catch ( QgsCsException & )
   {
     QgsDebugMsg( "transformation to layer coordinate failed" );
-    return QgsPoint();
+    return QgsPointXY();
   }
 }
 
@@ -169,8 +169,8 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   if ( !e->isSnapped() )
     return false;
 
-  QgsPoint pt0 = tracingStartPoint();
-  if ( pt0 == QgsPoint() )
+  QgsPointXY pt0 = tracingStartPoint();
+  if ( pt0 == QgsPointXY() )
     return false;
 
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
@@ -180,7 +180,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
 
   QgsTracer::PathError err;
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
+  QVector<QgsPointXY> points = tracer->findShortestPath( pt0, e->mapPoint(), &err );
   if ( points.isEmpty() )
   {
     tracer->reportError( err, false );
@@ -199,7 +199,7 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
 }
 
 
-bool QgsMapToolCapture::tracingAddVertex( const QgsPoint &point )
+bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 {
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
   if ( !tracer )
@@ -217,8 +217,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint &point )
     bool res = tracer->isPointSnapped( point );
     if ( res )
     {
-      QgsPointV2 layerPoint;
-      nextPoint( QgsPointV2( point ), layerPoint ); // assuming the transform went fine earlier
+      QgsPoint layerPoint;
+      nextPoint( QgsPoint( point ), layerPoint ); // assuming the transform went fine earlier
 
       mRubberBand->addPoint( point );
       mCaptureCurve.addVertex( layerPoint );
@@ -226,21 +226,21 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPoint &point )
     return res;
   }
 
-  QgsPoint pt0 = tracingStartPoint();
-  if ( pt0 == QgsPoint() )
+  QgsPointXY pt0 = tracingStartPoint();
+  if ( pt0 == QgsPointXY() )
     return false;
 
   QgsTracer::PathError err;
-  QVector<QgsPoint> points = tracer->findShortestPath( pt0, point, &err );
+  QVector<QgsPointXY> points = tracer->findShortestPath( pt0, point, &err );
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
   // transform points
   QgsPointSequence layerPoints;
-  QgsPointV2 lp; // in layer coords
+  QgsPoint lp; // in layer coords
   for ( int i = 1; i < points.count(); ++i )
   {
-    if ( nextPoint( QgsPointV2( points[i] ), lp ) != 0 )
+    if ( nextPoint( QgsPoint( points[i] ), lp ) != 0 )
       return false;
     layerPoints << lp;
   }
@@ -262,7 +262,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
   bool snapped = e->isSnapped();
-  QgsPoint point = e->mapPoint();
+  QgsPointXY point = e->mapPoint();
 
   if ( !snapped )
   {
@@ -284,8 +284,8 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   if ( !mTempRubberBand && mCaptureCurve.numPoints() > 0 )
   {
     mTempRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-    QgsPointV2 pt = mCaptureCurve.endPoint();
-    mTempRubberBand->addPoint( QgsPoint( pt.x(), pt.y() ) );
+    QgsPoint pt = mCaptureCurve.endPoint();
+    mTempRubberBand->addPoint( QgsPointXY( pt.x(), pt.y() ) );
     mTempRubberBand->addPoint( point );
   }
 
@@ -308,8 +308,8 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
         if ( mCaptureMode == CapturePolygon )
           mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
-        QgsPointV2 pt = mCaptureCurve.endPoint();
-        QgsPoint mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), QgsPoint( pt.x(), pt.y() ) );
+        QgsPoint pt = mCaptureCurve.endPoint();
+        QgsPointXY mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), QgsPointXY( pt.x(), pt.y() ) );
         mTempRubberBand->addPoint( mapPt );
         mTempRubberBand->addPoint( point );
       }
@@ -320,7 +320,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 } // mouseMoveEvent
 
 
-int QgsMapToolCapture::nextPoint( const QgsPointV2 &mapPoint, QgsPointV2 &layerPoint )
+int QgsMapToolCapture::nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
@@ -330,8 +330,8 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2 &mapPoint, QgsPointV2 &layerP
   }
   try
   {
-    QgsPoint mapP( mapPoint.x(), mapPoint.y() );  //#spellok
-    layerPoint = QgsPointV2( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
+    QgsPointXY mapP( mapPoint.x(), mapPoint.y() );  //#spellok
+    layerPoint = QgsPoint( toLayerCoordinates( vlayer, mapP ) ); //transform snapped point back to layer crs  //#spellok
     if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
       layerPoint.addZValue( defaultZValue() );
     if ( QgsWkbTypes::hasM( vlayer->wkbType() ) )
@@ -347,13 +347,13 @@ int QgsMapToolCapture::nextPoint( const QgsPointV2 &mapPoint, QgsPointV2 &layerP
   return 0;
 }
 
-int QgsMapToolCapture::nextPoint( QPoint p, QgsPointV2 &layerPoint, QgsPointV2 &mapPoint )
+int QgsMapToolCapture::nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint )
 {
-  mapPoint = QgsPointV2( toMapCoordinates( p ) );
+  mapPoint = QgsPoint( toMapCoordinates( p ) );
   return nextPoint( mapPoint, layerPoint );
 }
 
-int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2 &layerPoint )
+int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsVectorLayer *sourceLayer = match.layer();
@@ -383,12 +383,12 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   }
 }
 
-int QgsMapToolCapture::addVertex( const QgsPoint &point )
+int QgsMapToolCapture::addVertex( const QgsPointXY &point )
 {
   return addVertex( point, QgsPointLocator::Match() );
 }
 
-int QgsMapToolCapture::addVertex( const QgsPoint &point, const QgsPointLocator::Match &match )
+int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator::Match &match )
 {
   if ( mode() == CaptureNone )
   {
@@ -397,11 +397,11 @@ int QgsMapToolCapture::addVertex( const QgsPoint &point, const QgsPointLocator::
   }
 
   int res;
-  QgsPointV2 layerPoint;
+  QgsPoint layerPoint;
   res = fetchLayerPoint( match, layerPoint );
   if ( res != 0 )
   {
-    res = nextPoint( QgsPointV2( point ), layerPoint );
+    res = nextPoint( QgsPoint( point ), layerPoint );
     if ( res != 0 )
     {
       return res;
@@ -441,7 +441,7 @@ int QgsMapToolCapture::addVertex( const QgsPoint &point, const QgsPointLocator::
   }
   else if ( mCaptureMode == CapturePolygon )
   {
-    const QgsPoint *firstPoint = mRubberBand->getPoint( 0, 0 );
+    const QgsPointXY *firstPoint = mRubberBand->getPoint( 0, 0 );
     mTempRubberBand->addPoint( *firstPoint );
     mTempRubberBand->movePoint( point );
     mTempRubberBand->addPoint( point );
@@ -471,7 +471,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   QgsPointSequence::const_iterator ptIt = linePoints.constBegin();
   for ( ; ptIt != linePoints.constEnd(); ++ptIt )
   {
-    mRubberBand->addPoint( QgsPoint( ptIt->x(), ptIt->y() ) );
+    mRubberBand->addPoint( QgsPointXY( ptIt->x(), ptIt->y() ) );
   }
 
   if ( !mTempRubberBand )
@@ -482,8 +482,8 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   {
     mTempRubberBand->reset();
   }
-  QgsPointV2 endPt = c->endPoint();
-  mTempRubberBand->addPoint( QgsPoint( endPt.x(), endPt.y() ) ); //add last point of c
+  QgsPoint endPt = c->endPoint();
+  mTempRubberBand->addPoint( QgsPointXY( endPt.x(), endPt.y() ) ); //add last point of c
 
   //transform back to layer CRS in case map CRS and layer CRS are different
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -517,7 +517,7 @@ void QgsMapToolCapture::undo()
     {
       if ( tempRubberBandSize > 1 )
       {
-        const QgsPoint *point = mRubberBand->getPoint( 0, rubberBandSize - 2 );
+        const QgsPointXY *point = mRubberBand->getPoint( 0, rubberBandSize - 2 );
         mTempRubberBand->movePoint( tempRubberBandSize - 2, *point );
       }
     }
@@ -700,16 +700,16 @@ int QgsMapToolCapture::size()
   return mCaptureCurve.numPoints();
 }
 
-QList<QgsPoint> QgsMapToolCapture::points()
+QList<QgsPointXY> QgsMapToolCapture::points()
 {
   QgsPointSequence pts;
-  QList<QgsPoint> points;
+  QList<QgsPointXY> points;
   mCaptureCurve.points( pts );
   QgsGeometry::convertPointList( pts, points );
   return points;
 }
 
-void QgsMapToolCapture::setPoints( const QList<QgsPoint> &pointList )
+void QgsMapToolCapture::setPoints( const QList<QgsPointXY> &pointList )
 {
   QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();

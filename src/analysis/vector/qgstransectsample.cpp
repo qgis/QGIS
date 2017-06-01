@@ -223,8 +223,8 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
       {
         continue;
       }
-      QgsPoint sampleQgsPoint = samplePoint.asPoint();
-      QgsPoint latLongSamplePoint = toLatLongTransform.transform( sampleQgsPoint );
+      QgsPointXY sampleQgsPointXY = samplePoint.asPoint();
+      QgsPointXY latLongSamplePoint = toLatLongTransform.transform( sampleQgsPointXY );
 
       QgsFeature samplePointFeature( outputPointFields );
       samplePointFeature.setGeometry( samplePoint );
@@ -236,21 +236,21 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
       samplePointFeature.setAttribute( QStringLiteral( "start_long" ), latLongSamplePoint.x() );
 
       //find closest point on clipped buffer line
-      QgsPoint minDistPoint;
+      QgsPointXY minDistPoint;
 
       int afterVertex;
-      if ( bufferLineClipped->closestSegmentWithContext( sampleQgsPoint, minDistPoint, afterVertex ) < 0 )
+      if ( bufferLineClipped->closestSegmentWithContext( sampleQgsPointXY, minDistPoint, afterVertex ) < 0 )
       {
         continue;
       }
 
       //bearing between sample point and min dist point (transect direction)
-      double bearing = distanceArea.bearing( sampleQgsPoint, minDistPoint ) / M_PI * 180.0;
+      double bearing = distanceArea.bearing( sampleQgsPointXY, minDistPoint ) / M_PI * 180.0;
 
-      QgsPoint ptFarAway( sampleQgsPoint.x() + ( minDistPoint.x() - sampleQgsPoint.x() ) * 1000000,
-                          sampleQgsPoint.y() + ( minDistPoint.y() - sampleQgsPoint.y() ) * 1000000 );
+      QgsPointXY ptFarAway( sampleQgsPointXY.x() + ( minDistPoint.x() - sampleQgsPointXY.x() ) * 1000000,
+                            sampleQgsPointXY.y() + ( minDistPoint.y() - sampleQgsPointXY.y() ) * 1000000 );
       QgsPolyline lineFarAway;
-      lineFarAway << sampleQgsPoint << ptFarAway;
+      lineFarAway << sampleQgsPointXY << ptFarAway;
       QgsGeometry lineFarAwayGeom = QgsGeometry::fromPolyline( lineFarAway );
       QgsGeometry lineClipStratum = lineFarAwayGeom.intersection( strataGeom );
       if ( lineClipStratum.isNull() )
@@ -258,7 +258,7 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
         continue;
       }
 
-      //cancel if distance between sample point and line is too large (line does not start at point
+      //cancel if distance between sample point and line is too large (line does not start at point)
       if ( lineClipStratum.distance( samplePoint ) > 0.000001 )
       {
         continue;
@@ -268,7 +268,7 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
       if ( lineClipStratum.wkbType() == QgsWkbTypes::MultiLineString
            || lineClipStratum.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
-        QgsGeometry singleLine = closestMultilineElement( sampleQgsPoint, lineClipStratum );
+        QgsGeometry singleLine = closestMultilineElement( sampleQgsPointXY, lineClipStratum );
         if ( !singleLine.isNull() )
         {
           lineClipStratum = singleLine;
@@ -372,7 +372,7 @@ bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry &geom, do
     if ( idMapIt != lineFeatureMap.constEnd() )
     {
       double dist = 0;
-      QgsPoint pt1, pt2;
+      QgsPointXY pt1, pt2;
       closestSegmentPoints( geom, idMapIt.value(), dist, pt1, pt2 );
       dist = da.measureLine( pt1, pt2 ); //convert degrees to meters if necessary
 
@@ -386,7 +386,7 @@ bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry &geom, do
   return false;
 }
 
-bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPoint &pt1, QgsPoint &pt2 )
+bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPointXY &pt1, QgsPointXY &pt2 )
 {
   QgsWkbTypes::Type t1 = g1.wkbType();
   if ( t1 != QgsWkbTypes::LineString && t1 != QgsWkbTypes::LineString25D )
@@ -408,10 +408,10 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGe
     return false;
   }
 
-  QgsPoint p11 = pl1.at( 0 );
-  QgsPoint p12 = pl1.at( 1 );
-  QgsPoint p21 = pl2.at( 0 );
-  QgsPoint p22 = pl2.at( 1 );
+  QgsPointXY p11 = pl1.at( 0 );
+  QgsPointXY p12 = pl1.at( 1 );
+  QgsPointXY p21 = pl2.at( 0 );
+  QgsPointXY p22 = pl2.at( 1 );
 
   double p1x = p11.x();
   double p1y = p11.y();
@@ -429,13 +429,13 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGe
   {
     //lines are parallel
     //project all points on the other segment and take the one with the smallest distance
-    QgsPoint minDistPoint1;
+    QgsPointXY minDistPoint1;
     double d1 = p11.sqrDistToSegment( p21.x(), p21.y(), p22.x(), p22.y(), minDistPoint1 );
-    QgsPoint minDistPoint2;
+    QgsPointXY minDistPoint2;
     double d2 = p12.sqrDistToSegment( p21.x(), p21.y(), p22.x(), p22.y(), minDistPoint2 );
-    QgsPoint minDistPoint3;
+    QgsPointXY minDistPoint3;
     double d3 = p21.sqrDistToSegment( p11.x(), p11.y(), p12.x(), p12.y(), minDistPoint3 );
-    QgsPoint minDistPoint4;
+    QgsPointXY minDistPoint4;
     double d4 = p22.sqrDistToSegment( p11.x(), p11.y(), p12.x(), p12.y(), minDistPoint4 );
 
     if ( d1 <= d2 && d1 <= d3 && d1 <= d4 )
@@ -516,7 +516,7 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGe
   return true;
 }
 
-QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint &pt, const QgsGeometry &multiLine )
+QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPointXY &pt, const QgsGeometry &multiLine )
 {
   if ( !multiLine || ( multiLine.wkbType() != QgsWkbTypes::MultiLineString
                        && multiLine.wkbType() != QgsWkbTypes::MultiLineString25D ) )

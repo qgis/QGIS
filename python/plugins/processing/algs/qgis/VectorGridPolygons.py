@@ -37,7 +37,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes)
 from qgis.utils import iface
 
@@ -117,11 +117,11 @@ class VectorGridPolygons(GeoAlgorithm):
         while y >= bbox.yMinimum():
             x = bbox.xMinimum()
             while x <= bbox.xMaximum():
-                pt1 = QgsPoint(x, y)
-                pt2 = QgsPoint(x + xSpace, y)
-                pt3 = QgsPoint(x + xSpace, y - ySpace)
-                pt4 = QgsPoint(x, y - ySpace)
-                pt5 = QgsPoint(x, y)
+                pt1 = QgsPointXY(x, y)
+                pt2 = QgsPointXY(x + xSpace, y)
+                pt3 = QgsPointXY(x + xSpace, y - ySpace)
+                pt4 = QgsPointXY(x, y - ySpace)
+                pt5 = QgsPointXY(x, y)
                 polygon = [[pt1, pt2, pt3, pt4, pt5]]
                 feat.setGeometry(geom.fromPolygon(polygon))
                 feat.setAttribute(0, idVar)

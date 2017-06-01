@@ -58,7 +58,7 @@ def createMemoryLayer(values):
         feat = QgsFeature(fields)
         feat['id'] = id
         feat['value'] = value
-        g = QgsGeometry.fromPoint(QgsPoint(x, x))
+        g = QgsGeometry.fromPoint(QgsPointXY(x, x))
         feat.setGeometry(g)
         pr.addFeatures([feat])
     ml.updateExtents()

@@ -35,7 +35,7 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields)
@@ -134,9 +134,9 @@ class Delaunay(GeoAlgorithm):
                 inFeat = next(layer.getFeatures(request))
                 geom = QgsGeometry(inFeat.geometry())
                 if geom.isMultipart():
-                    point = QgsPoint(geom.asMultiPoint()[n])
+                    point = QgsPointXY(geom.asMultiPoint()[n])
                 else:
-                    point = QgsPoint(geom.asPoint())
+                    point = QgsPointXY(geom.asPoint())
                 polygon.append(point)
                 if step <= 3:
                     attrs.append(ids[index])

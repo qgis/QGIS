@@ -44,7 +44,7 @@
 class QImage;
 class QByteArray;
 
-class QgsPoint;
+class QgsPointXY;
 class QgsRasterIdentifyResult;
 class QgsMapSettings;
 
@@ -316,8 +316,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    //virtual QMap<int, QVariant> identify( const QgsPointXY & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

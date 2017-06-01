@@ -191,7 +191,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         assert len(provider.fields()) == 3, myMessage
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",
                           20,
                           0.3])
@@ -239,7 +239,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         assert len(provider.fields()) == 3, myMessage
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",
                           20,
                           0.3])
@@ -310,7 +310,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         layer.updateFields()
         assert res, "Failed to add attributes"
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
         ft.setAttributes(["Johny",
                           20,
                           0.3])

@@ -67,7 +67,7 @@ class TestQgsNodeTool : public QObject
   private:
     QPoint mapToScreen( double mapX, double mapY )
     {
-      QgsPoint pt = mCanvas->mapSettings().mapToPixel().transform( mapX, mapY );
+      QgsPointXY pt = mCanvas->mapSettings().mapToPixel().transform( mapX, mapY );
       return QPoint( qRound( pt.x() ), qRound( pt.y() ) );
     }
 
@@ -151,19 +151,19 @@ void TestQgsNodeTool::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
   QgsPolyline line1;
-  line1 << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) << QgsPoint( 1, 3 );
+  line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
 
   QgsPolygon polygon1;
   QgsPolyline polygon1exterior;
-  polygon1exterior << QgsPoint( 4, 1 ) << QgsPoint( 7, 1 ) << QgsPoint( 7, 4 ) << QgsPoint( 4, 4 ) << QgsPoint( 4, 1 );
+  polygon1exterior << QgsPointXY( 4, 1 ) << QgsPointXY( 7, 1 ) << QgsPointXY( 7, 4 ) << QgsPointXY( 4, 4 ) << QgsPointXY( 4, 1 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
   polygonF1.setGeometry( QgsGeometry::fromPolygon( polygon1 ) );
 
   QgsFeature pointF1;
-  pointF1.setGeometry( QgsGeometry::fromPoint( QgsPoint( 2, 3 ) ) );
+  pointF1.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 2, 3 ) ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );

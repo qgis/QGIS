@@ -46,8 +46,8 @@ Emitted to report information about graph building
     virtual ~QgsGraphDirector();
 
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint > &snappedPoints /Out/ ) const;
+                            const QVector< QgsPointXY > &additionalPoints,
+                            QVector< QgsPointXY > &snappedPoints /Out/ ) const;
 %Docstring
  Make a graph using QgsGraphBuilder
 
@@ -56,7 +56,7 @@ Emitted to report information about graph building
  \param snappedPoints list of snapped points
 .. note::
 
-   if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
+   if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
 %End
 
     void addStrategy( QgsNetworkStrategy *prop /Transfer/ );

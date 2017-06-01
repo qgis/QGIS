@@ -10,7 +10,7 @@
 
 
 
-class QgsPointV2: QgsAbstractGeometry
+class QgsPoint: QgsAbstractGeometry
 {
 %Docstring
  Point geometry type, with support for z-dimension and m-values.
@@ -22,24 +22,24 @@ class QgsPointV2: QgsAbstractGeometry
 %End
   public:
 
-    QgsPointV2( double x = 0.0, double y = 0.0 );
+    QgsPoint( double x = 0.0, double y = 0.0 );
 %Docstring
  Construct a 2 dimensional point with an initial x and y coordinate.
  \param x x-coordinate of point
  \param y y-coordinate of point
 %End
 
-    explicit QgsPointV2( const QgsPoint &p );
+    explicit QgsPoint( const QgsPointXY &p );
 %Docstring
- Construct a QgsPointV2 from a QgsPoint object
+ Construct a QgsPoint from a QgsPointXY object
 %End
 
-    explicit QgsPointV2( QPointF p );
+    explicit QgsPoint( QPointF p );
 %Docstring
- Construct a QgsPointV2 from a QPointF
+ Construct a QgsPoint from a QPointF
 %End
 
-    QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+    QgsPoint( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 %Docstring
  Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
  \param type point type
@@ -57,12 +57,12 @@ class QgsPointV2: QgsAbstractGeometry
     }
     else
     {
-      sipCpp = new sipQgsPointV2( a0, a1, a2, a3, a4 );
+      sipCpp = new sipQgsPoint( a0, a1, a2, a3, a4 );
     }
 %End
 
-    bool operator==( const QgsPointV2 &pt ) const;
-    bool operator!=( const QgsPointV2 &pt ) const;
+    bool operator==( const QgsPoint &pt ) const;
+    bool operator!=( const QgsPoint &pt ) const;
 %Docstring
  :rtype: bool
 %End
@@ -156,7 +156,7 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    double distance( const QgsPointV2 &other ) const;
+    double distance( const QgsPoint &other ) const;
 %Docstring
  Returns the 2D distance between this point and another point. In certain
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
@@ -175,7 +175,7 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    double distanceSquared( const QgsPointV2 &other ) const;
+    double distanceSquared( const QgsPoint &other ) const;
 %Docstring
  Returns the squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
@@ -195,7 +195,7 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    double distance3D( const QgsPointV2 &other ) const;
+    double distance3D( const QgsPoint &other ) const;
 %Docstring
  Returns the 3D distance between this point and another point. In certain
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
@@ -214,7 +214,7 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    double distanceSquared3D( const QgsPointV2 &other ) const;
+    double distanceSquared3D( const QgsPoint &other ) const;
 %Docstring
  Returns the 3D squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
@@ -224,14 +224,14 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    double azimuth( const QgsPointV2 &other ) const;
+    double azimuth( const QgsPoint &other ) const;
 %Docstring
  Calculates azimuth between this point and other one (clockwise in degree, starting from north)
 .. versionadded:: 3.0
  :rtype: float
 %End
 
-    double inclination( const QgsPointV2 &other ) const;
+    double inclination( const QgsPoint &other ) const;
 %Docstring
  Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
  Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
@@ -239,7 +239,7 @@ class QgsPointV2: QgsAbstractGeometry
  :rtype: float
 %End
 
-    QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
+    QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
 %Docstring
  Returns a new point which correspond to this point projected by a specified distance
  with specified angles (azimuth and inclination).
@@ -251,14 +251,14 @@ class QgsPointV2: QgsAbstractGeometry
   inclination is 90. A 3D point is always returned if a 3D point is projected.
  Example:
  \code{.py}
-   p = QgsPointV2( 1, 2 ) # 2D point
+   p = QgsPoint( 1, 2 ) # 2D point
    pr = p.project ( 1, 0 )
    # pr is a 2D point: 'Point (1 3)'
    pr = p.project ( 1, 0, 90 )
    # pr is a 2D point: 'Point (1 3)'
    pr = p.project (1, 0, 0 )
    # pr is a 3D point: 'PointZ (1 2 1)'
-   p = QgsPointV2( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+   p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
    pr = p.project ( 1, 0 )
    # pr is a 3D point: 'PointZ (1 3 2)'
    pr = p.project ( 1, 0, 90 )
@@ -267,49 +267,49 @@ class QgsPointV2: QgsAbstractGeometry
    # pr is a 3D point: 'PointZ (1 2 3)'
  \endcode
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    QgsVector operator-( const QgsPointV2 &p ) const;
+    QgsVector operator-( const QgsPoint &p ) const;
 %Docstring
  Calculates the vector obtained by subtracting a point from this point.
 .. versionadded:: 3.0
  :rtype: QgsVector
 %End
 
-    QgsPointV2 &operator+=( QgsVector v );
+    QgsPoint &operator+=( QgsVector v );
 %Docstring
  Adds a vector to this point in place.
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    QgsPointV2 &operator-=( QgsVector v );
+    QgsPoint &operator-=( QgsVector v );
 %Docstring
  Subtracts a vector from this point in place.
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    QgsPointV2 operator+( QgsVector v ) const;
+    QgsPoint operator+( QgsVector v ) const;
 %Docstring
  Adds a vector to this point.
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
-    QgsPointV2 operator-( QgsVector v ) const;
+    QgsPoint operator-( QgsVector v ) const;
 %Docstring
  Subtracts a vector from this point.
 .. versionadded:: 3.0
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     virtual bool isEmpty() const;
     virtual QgsRectangle boundingBox() const;
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsPointV2 *clone() const /Factory/;
+    virtual QgsPoint *clone() const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
@@ -334,14 +334,14 @@ class QgsPointV2: QgsAbstractGeometry
     virtual int nCoordinates() const;
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
                                    double epsilon ) const;
-    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex /Out/ ) const;
+    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
@@ -355,7 +355,7 @@ class QgsPointV2: QgsAbstractGeometry
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;
     virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
-    virtual QgsPointV2 vertexAt( QgsVertexId /*id*/ ) const;
+    virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const;
 
     virtual bool addZValue( double zValue = 0 );
     virtual bool addMValue( double mValue = 0 );

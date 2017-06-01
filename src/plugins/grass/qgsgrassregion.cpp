@@ -96,7 +96,7 @@ void QgsGrassRegionEdit::deactivate()
   QgsMapTool::deactivate();
 }
 
-void QgsGrassRegionEdit::setRegion( const QgsPoint &ul, const QgsPoint &lr )
+void QgsGrassRegionEdit::setRegion( const QgsPointXY &ul, const QgsPointXY &lr )
 {
   mStartPoint = ul;
   mEndPoint = lr;
@@ -127,7 +127,7 @@ void QgsGrassRegionEdit::setTransform()
   }
 }
 
-void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPoint> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
+void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPointXY> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
   //! Coordinate transform
   //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
@@ -148,14 +148,14 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *, QVector<QgsPoint> &points, c
 
 void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform &coordinateTransform, bool isPolygon )
 {
-  QVector<QgsPoint> points;
-  points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  points.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  points.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  points.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+  QVector<QgsPointXY> points;
+  points.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  points.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
+  points.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
+  points.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
   if ( !isPolygon )
   {
-    points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+    points.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   }
 
   if ( coordinateTransform.isValid() )
@@ -487,8 +487,8 @@ void QgsGrassRegion::displayRegion()
   {
     return;
   }
-  QgsPoint ul( mWindow.west, mWindow.north );
-  QgsPoint lr( mWindow.east, mWindow.south );
+  QgsPointXY ul( mWindow.west, mWindow.north );
+  QgsPointXY lr( mWindow.east, mWindow.south );
 
   mRegionEdit->setSrcRegion( QgsRectangle( ul, lr ) );
 }

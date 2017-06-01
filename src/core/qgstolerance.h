@@ -21,7 +21,7 @@
 
 class QgsMapSettings;
 class QgsMapLayer;
-class QgsPoint;
+class QgsPointXY;
 
 /** \ingroup core
  * This is the class is providing tolerance value in map unit values.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsTolerance
 
   private:
     static double computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSettings &mapSettings );
-    static QgsPoint toLayerCoordinates( QgsMapLayer *layer, const QgsMapSettings &mapSettings, QPoint point );
+    static QgsPointXY toLayerCoordinates( QgsMapLayer *layer, const QgsMapSettings &mapSettings, QPoint point );
 
 };
 

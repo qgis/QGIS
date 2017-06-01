@@ -54,8 +54,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     //curve interface
     virtual double length() const override;
-    virtual QgsPointV2 startPoint() const override;
-    virtual QgsPointV2 endPoint() const override;
+    virtual QgsPoint startPoint() const override;
+    virtual QgsPoint endPoint() const override;
     virtual void points( QgsPointSequence &pts SIP_OUT ) const override;
     virtual int numPoints() const override;
     bool isEmpty() const override;
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /** Adds a vertex to the end of the geometry.
      */
-    void addVertex( const QgsPointV2 &pt );
+    void addVertex( const QgsPoint &pt );
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -94,15 +94,15 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt SIP_OUT,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
                                    double epsilon ) const override;
 
-    bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const override;
+    bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
     void sumUpArea( double &sum SIP_OUT ) const override;
 

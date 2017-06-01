@@ -139,7 +139,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      *
      * \param point The last point known to the cad system.
      */
-    void cadPointChanged( const QgsPoint &point );
+    void cadPointChanged( const QgsPointXY &point );
 
   private:
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;

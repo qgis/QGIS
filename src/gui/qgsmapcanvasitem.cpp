@@ -53,13 +53,13 @@ void QgsMapCanvasItem::paint( QPainter *painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
+QgsPointXY QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
   return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
-QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint &point ) const
+QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPointXY &point ) const
 {
   qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );

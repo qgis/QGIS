@@ -180,7 +180,7 @@ bool QgsVectorLayerRenderer::render()
     {
       try
       {
-        QgsPoint center = mContext.extent().center();
+        QgsPointXY center = mContext.extent().center();
         double rectSize = ct.sourceCrs().isGeographic() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
@@ -191,10 +191,10 @@ bool QgsVectorLayerRenderer::render()
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
-          QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-          QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-          QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-          QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+          QgsPointXY minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+          QgsPointXY maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+          QgsPointXY minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+          QgsPointXY maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
           double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
           double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );

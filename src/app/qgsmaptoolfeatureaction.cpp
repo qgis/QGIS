@@ -99,7 +99,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( !layer )
     return false;
 
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
 
   QgsRectangle r;
 

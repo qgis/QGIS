@@ -1087,7 +1087,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
   }
 
 #if 0 // XXX strk
-  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
+  QgsPointXY ptSize = xform->toMapCoordinatesF( w, h );
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
 #else
@@ -1717,12 +1717,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
         }
 
         //project xPos and yPos from layer to map CRS, handle rotation
-        QgsGeometry ddPoint( new QgsPointV2( xPos, yPos ) );
+        QgsGeometry ddPoint( new QgsPoint( xPos, yPos ) );
         if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
         {
           ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-          xPos = static_cast< QgsPointV2 * >( ddPoint.geometry() )->x();
-          yPos = static_cast< QgsPointV2 * >( ddPoint.geometry() )->y();
+          xPos = static_cast< QgsPoint * >( ddPoint.geometry() )->x();
+          yPos = static_cast< QgsPoint * >( ddPoint.geometry() )->y();
         }
 
         xPos += xdiff;
@@ -1774,12 +1774,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
 
   *labelFeature = lf;
   ( *labelFeature )->setHasFixedPosition( dataDefinedPosition );
-  ( *labelFeature )->setFixedPosition( QgsPoint( xPos, yPos ) );
+  ( *labelFeature )->setFixedPosition( QgsPointXY( xPos, yPos ) );
   // use layer-level defined rotation, but not if position fixed
   ( *labelFeature )->setHasFixedAngle( dataDefinedRotation || ( !dataDefinedPosition && !qgsDoubleNear( angle, 0.0 ) ) );
   ( *labelFeature )->setFixedAngle( angle );
   ( *labelFeature )->setQuadOffset( QPointF( quadOffsetX, quadOffsetY ) );
-  ( *labelFeature )->setPositionOffset( QgsPoint( offsetX, offsetY ) );
+  ( *labelFeature )->setPositionOffset( QgsPointXY( offsetX, offsetY ) );
   ( *labelFeature )->setOffsetType( offsetType );
   ( *labelFeature )->setAlwaysShow( alwaysShow );
   ( *labelFeature )->setRepeatDistance( repeatDist );
@@ -2834,7 +2834,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   const QgsMapToPixel &m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {
-    QgsPoint center = context.extent().center();
+    QgsPointXY center = context.extent().center();
 
     if ( ct.isValid() && !ct.isShortCircuited() )
     {
@@ -3337,7 +3337,7 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
 
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
 {
-  QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
+  QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
 
   painter->save();
 
@@ -3367,7 +3367,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *p
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
   painter->translate( -rect.bottomLeft() );
 #else
-  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
+  QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
   QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
@@ -3405,7 +3405,7 @@ QgsLabelingResults::~QgsLabelingResults()
   mLabelSearchTree = nullptr;
 }
 
-QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPoint &p ) const
+QList<QgsLabelPosition> QgsLabelingResults::labelsAtPosition( const QgsPointXY &p ) const
 {
   QList<QgsLabelPosition> positions;
 

@@ -20,7 +20,7 @@
 
 #include "qgsmaptoolemitpoint.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsMapCanvas;
 
 class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
@@ -34,7 +34,7 @@ class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   signals:
-    void showCoordDialog( const QgsPoint & );
+    void showCoordDialog( const QgsPointXY & );
 };
 
 #endif // QGSGEOREFTOOLADDPOINT_H

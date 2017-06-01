@@ -164,7 +164,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   if ( !xOk || !yOk )
     return;
 
-  mMapCanvas->setCenter( QgsPoint( x, y ) );
+  mMapCanvas->setCenter( QgsPointXY( x, y ) );
   mMapCanvas->refresh();
 }
 
@@ -218,7 +218,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->refreshAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint &p )
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 {
   if ( !mMapCanvas || mToggleExtentsViewButton->isChecked() )
   {

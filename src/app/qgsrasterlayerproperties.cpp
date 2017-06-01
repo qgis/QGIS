@@ -1546,7 +1546,7 @@ void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked()
   }
 }
 
-void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
+void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint )
 {
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
@@ -1564,7 +1564,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint &canvasPoint )
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
 
     const QgsMapSettings &ms = mMapCanvas->mapSettings();
-    QgsPoint myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
+    QgsPointXY myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
 
     QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();

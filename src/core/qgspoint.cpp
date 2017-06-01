@@ -25,24 +25,24 @@
 
 #include "qgsexception.h"
 
-QgsPoint::QgsPoint( const QgsPoint &p )
+QgsPointXY::QgsPointXY( const QgsPointXY &p )
 {
   mX = p.x();
   mY = p.y();
 }
 
-QgsPoint::QgsPoint( const QgsPointV2 &point )
+QgsPointXY::QgsPointXY( const QgsPoint &point )
   : mX( point.x() )
   , mY( point.y() )
 {
 }
 
-QPointF QgsPoint::toQPointF() const
+QPointF QgsPointXY::toQPointF() const
 {
   return QPointF( mX, mY );
 }
 
-QString QgsPoint::toString() const
+QString QgsPointXY::toString() const
 {
   QString rep;
   QTextStream ot( &rep );
@@ -51,14 +51,14 @@ QString QgsPoint::toString() const
   return rep;
 }
 
-QString QgsPoint::toString( int precision ) const
+QString QgsPointXY::toString( int precision ) const
 {
   QString x = qIsFinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
   QString y = qIsFinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
-QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
+QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( mX, 360.0 );
@@ -172,7 +172,7 @@ QString QgsPoint::toDegreesMinutesSeconds( int precision, const bool useSuffix, 
   return rep;
 }
 
-QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
+QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
   double myWrappedX = fmod( mX, 360.0 );
@@ -256,63 +256,63 @@ QString QgsPoint::toDegreesMinutes( int precision, const bool useSuffix, const b
   return rep;
 }
 
-QString QgsPoint::wellKnownText() const
+QString QgsPointXY::wellKnownText() const
 {
   return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 }
 
-double QgsPoint::sqrDist( double x, double y ) const
+double QgsPointXY::sqrDist( double x, double y ) const
 {
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
 }
 
-double QgsPoint::sqrDist( const QgsPoint &other ) const
+double QgsPointXY::sqrDist( const QgsPointXY &other ) const
 {
   return sqrDist( other.x(), other.y() );
 }
 
-double QgsPoint::distance( double x, double y ) const
+double QgsPointXY::distance( double x, double y ) const
 {
   return sqrt( sqrDist( x, y ) );
 }
 
-double QgsPoint::distance( const QgsPoint &other ) const
+double QgsPointXY::distance( const QgsPointXY &other ) const
 {
   return sqrt( sqrDist( other ) );
 }
 
-double QgsPoint::azimuth( const QgsPoint &other ) const
+double QgsPointXY::azimuth( const QgsPointXY &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
-QgsPoint QgsPoint::project( double distance, double bearing ) const
+QgsPointXY QgsPointXY::project( double distance, double bearing ) const
 {
   double rads = bearing * M_PI / 180.0;
   double dx = distance * sin( rads );
   double dy = distance * cos( rads );
-  return QgsPoint( mX + dx, mY + dy );
+  return QgsPointXY( mX + dx, mY + dy );
 }
 
-bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
+bool QgsPointXY::compare( const QgsPointXY &other, double epsilon ) const
 {
   return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
 }
 
 // operators
-bool QgsPoint::operator==( const QgsPoint &other )
+bool QgsPointXY::operator==( const QgsPointXY &other )
 {
   return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
-bool QgsPoint::operator!=( const QgsPoint &other ) const
+bool QgsPointXY::operator!=( const QgsPointXY &other ) const
 {
   return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
 }
 
-QgsPoint &QgsPoint::operator=( const QgsPoint &other )
+QgsPointXY &QgsPointXY::operator=( const QgsPointXY &other )
 {
   if ( &other != this )
   {
@@ -323,13 +323,13 @@ QgsPoint &QgsPoint::operator=( const QgsPoint &other )
   return *this;
 }
 
-void QgsPoint::multiply( double scalar )
+void QgsPointXY::multiply( double scalar )
 {
   mX *= scalar;
   mY *= scalar;
 }
 
-double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint &minDistPoint, double epsilon ) const
+double QgsPointXY::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint, double epsilon ) const
 {
   double nx, ny; //normal vector
 

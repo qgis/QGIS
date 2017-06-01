@@ -675,7 +675,7 @@ bool QgsCurvePolygon::isEmpty() const
   return mExteriorRing->isEmpty();
 }
 
-double QgsCurvePolygon::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {
@@ -687,7 +687,7 @@ double QgsCurvePolygon::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmen
   return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
 
-bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPointV2 &vertex ) const
+bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
 {
   if ( !mExteriorRing || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -723,7 +723,7 @@ bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPointV2 &vertex ) const
   }
 }
 
-bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPointV2 &vertex )
+bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPoint &vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -749,7 +749,7 @@ bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPointV2 &vertex )
   return true;
 }
 
-bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
+bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )
   {
@@ -855,7 +855,7 @@ int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
 }
 
-QgsPointV2 QgsCurvePolygon::vertexAt( QgsVertexId id ) const
+QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
 {
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }

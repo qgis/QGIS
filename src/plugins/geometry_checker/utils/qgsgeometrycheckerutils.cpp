@@ -52,7 +52,7 @@ namespace QgsGeometryCheckerUtils
     }
   }
 
-  static inline double pointLineDist( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q )
+  static inline double pointLineDist( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q )
   {
     double nom = qAbs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
     double dx = p2.x() - p1.x();
@@ -71,8 +71,8 @@ namespace QgsGeometryCheckerUtils
       {
         for ( int iVert1 = 0, jVert1 = 1, nVerts1 = geom1->vertexCount( iPart1, iRing1 ); jVert1 < nVerts1; iVert1 = jVert1++ )
         {
-          QgsPointV2 p1 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, iVert1 ) );
-          QgsPointV2 p2 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, jVert1 ) );
+          QgsPoint p1 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, iVert1 ) );
+          QgsPoint p2 = geom1->vertexAt( QgsVertexId( iPart1, iRing1, jVert1 ) );
           double lambdap1 = 0.;
           double lambdap2 = qSqrt( QgsGeometryUtils::sqrDistance2D( p1, p2 ) );
           QgsVector d;
@@ -92,8 +92,8 @@ namespace QgsGeometryCheckerUtils
             {
               for ( int iVert2 = 0, jVert2 = 1, nVerts2 = geom2->vertexCount( iPart2, iRing2 ); jVert2 < nVerts2; iVert2 = jVert2++ )
               {
-                QgsPointV2 q1 = geom2->vertexAt( QgsVertexId( iPart2, iRing2, iVert2 ) );
-                QgsPointV2 q2 = geom2->vertexAt( QgsVertexId( iPart2, iRing2, jVert2 ) );
+                QgsPoint q1 = geom2->vertexAt( QgsVertexId( iPart2, iRing2, iVert2 ) );
+                QgsPoint q2 = geom2->vertexAt( QgsVertexId( iPart2, iRing2, jVert2 ) );
 
                 // Check whether q1 and q2 are on the line p1, p
                 if ( pointLineDist( p1, p2, q1 ) <= tol && pointLineDist( p1, p2, q2 ) <= tol )

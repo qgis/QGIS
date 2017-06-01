@@ -45,7 +45,7 @@ QgsMapToolLabel::~QgsMapToolLabel()
 
 bool QgsMapToolLabel::labelAtPosition( QMouseEvent *e, QgsLabelPosition &p )
 {
-  QgsPoint pt = toMapCoordinates( e->pos() );
+  QgsPointXY pt = toMapCoordinates( e->pos() );
   const QgsLabelingResults *labelingResults = mCanvas->labelingResults();
   if ( labelingResults )
   {
@@ -69,11 +69,11 @@ void QgsMapToolLabel::createRubberBands()
   //label rubber band
   QgsRectangle rect = mCurrentLabel.pos.labelRect;
   mLabelRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
-  mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
-  mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
-  mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
-  mLabelRubberBand->addPoint( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
-  mLabelRubberBand->addPoint( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
+  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
+  mLabelRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
+  mLabelRubberBand->addPoint( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
+  mLabelRubberBand->addPoint( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   mLabelRubberBand->setColor( QColor( 0, 255, 0, 65 ) );
   mLabelRubberBand->setWidth( 3 );
   mLabelRubberBand->show();
@@ -101,7 +101,7 @@ void QgsMapToolLabel::createRubberBands()
     }
 
     //fixpoint rubber band
-    QgsPoint fixPoint;
+    QgsPointXY fixPoint;
     if ( currentLabelRotationPoint( fixPoint, false, false ) )
     {
       if ( mCanvas )
@@ -296,9 +296,9 @@ bool QgsMapToolLabel::currentLabelPreserveRotation()
   return true; // default, so there is no accidental data loss
 }
 
-bool QgsMapToolLabel::currentLabelRotationPoint( QgsPoint &pos, bool ignoreUpsideDown, bool rotatingUnpinned )
+bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown, bool rotatingUnpinned )
 {
-  QVector<QgsPoint> cornerPoints = mCurrentLabel.pos.cornerPoints;
+  QVector<QgsPointXY> cornerPoints = mCurrentLabel.pos.cornerPoints;
   if ( cornerPoints.size() < 4 )
   {
     return false;
@@ -337,9 +337,9 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPoint &pos, bool ignoreUpsid
 
   // NOTE: this assumes the label corner points comprise a rectangle and that the
   //       CRS supports equidistant measurements to accurately determine hypotenuse
-  QgsPoint cp_0 = cornerPoints.at( 0 );
-  QgsPoint cp_1 = cornerPoints.at( 1 );
-  QgsPoint cp_3 = cornerPoints.at( 3 );
+  QgsPointXY cp_0 = cornerPoints.at( 0 );
+  QgsPointXY cp_1 = cornerPoints.at( 1 );
+  QgsPointXY cp_3 = cornerPoints.at( 3 );
   //  QgsDebugMsg( QString( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ) );
   //  QgsDebugMsg( QString( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ) );
   //  QgsDebugMsg( QString( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ) );

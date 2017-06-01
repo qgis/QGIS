@@ -72,15 +72,15 @@ class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 {
   public:
     QgsOSMNode() : mPoint() {}
-    QgsOSMNode( QgsOSMId id, const QgsPoint &point )
+    QgsOSMNode( QgsOSMId id, const QgsPointXY &point )
       : QgsOSMElement( QgsOSMElementID::Node, id )
       , mPoint( point )
     {}
 
-    QgsPoint point() const { return mPoint; }
+    QgsPointXY point() const { return mPoint; }
 
   private:
-    QgsPoint mPoint;
+    QgsPointXY mPoint;
 };
 
 

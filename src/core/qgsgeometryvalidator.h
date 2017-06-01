@@ -49,10 +49,10 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     void validatePolyline( int i, QgsPolyline polyline, bool ring = false );
     void validatePolygon( int i, const QgsPolygon &polygon );
     void checkRingIntersections( int p0, int i0, const QgsPolyline &ring0, int p1, int i1, const QgsPolyline &ring1 );
-    double distLine2Point( const QgsPoint &p, QgsVector v, const QgsPoint &q );
-    bool intersectLines( const QgsPoint &p, QgsVector v, const QgsPoint &q, QgsVector w, QgsPoint &s );
+    double distLine2Point( const QgsPointXY &p, QgsVector v, const QgsPointXY &q );
+    bool intersectLines( const QgsPointXY &p, QgsVector v, const QgsPointXY &q, QgsVector w, QgsPointXY &s );
     bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside );
-    bool pointInRing( const QgsPolyline &ring, const QgsPoint &p );
+    bool pointInRing( const QgsPolyline &ring, const QgsPointXY &p );
 
     QgsGeometry mG;
     QList<QgsGeometry::Error> *mErrors;

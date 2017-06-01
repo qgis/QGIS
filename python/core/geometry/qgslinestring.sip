@@ -38,7 +38,7 @@ class QgsLineString: QgsCurve
 .. versionadded:: 3.0
 %End
 
-    QgsLineString( const QList<QgsPoint> &points );
+    QgsLineString( const QList<QgsPointXY> &points );
 %Docstring
  Construct a linestring from list of points.
  This constructor is more efficient then calling setPoints()
@@ -51,11 +51,11 @@ class QgsLineString: QgsCurve
     virtual bool operator!=( const QgsCurve &other ) const;
 
 
-    QgsPointV2 pointN( int i ) const;
+    QgsPoint pointN( int i ) const;
 %Docstring
  Returns the specified point from inside the line string.
  \param i index of point, starting at 0 for the first point
- :rtype: QgsPointV2
+ :rtype: QgsPoint
 %End
 
     virtual double xAt( int index ) const;
@@ -132,7 +132,7 @@ class QgsLineString: QgsCurve
  \param line line to append. Ownership is not transferred.
 %End
 
-    void addVertex( const QgsPointV2 &pt );
+    void addVertex( const QgsPoint &pt );
 %Docstring
  Adds a new vertex to the end of the line string.
  \param pt vertex to add
@@ -182,8 +182,8 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
+    virtual QgsPoint startPoint() const;
+    virtual QgsPoint endPoint() const;
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
 %Docstring
@@ -213,19 +213,19 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual void drawAsPolygon( QPainter &p ) const;
 
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos );
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
     virtual bool deleteVertex( QgsVertexId position );
 
     virtual QgsLineString *reversed() const /Factory/;
 
-    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt /Out/,
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
                                    double epsilon ) const;
-    virtual bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const;
+    virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
 
-    virtual QgsPointV2 centroid() const;
+    virtual QgsPoint centroid() const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 

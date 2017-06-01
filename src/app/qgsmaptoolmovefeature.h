@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
   private:
     //! Start point of the move in map coordinates
-    QgsPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
 
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;

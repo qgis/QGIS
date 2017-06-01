@@ -42,10 +42,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     // Rotation will be handled by QPainter later
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
-    QgsPoint center = mapToPixel.toMapCoordinates(
-                        mapToPixel.mapWidth() / 2.0,
-                        mapToPixel.mapHeight() / 2.0
-                      );
+    QgsPointXY center = mapToPixel.toMapCoordinates(
+                          mapToPixel.mapWidth() / 2.0,
+                          mapToPixel.mapHeight() / 2.0
+                        );
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
 

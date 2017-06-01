@@ -158,7 +158,7 @@ void TestQgsGML::testStreamingParser()
   QCOMPARE( features[0].first->attributes().at( 4 ), QVariant( QDateTime( QDate( 2016, 4, 10 ), QTime( 12, 34, 56, 789 ), Qt::UTC ) ) );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
   QCOMPARE( gmlParser.getEPSGCode(), 27700 );
@@ -196,7 +196,7 @@ void TestQgsGML::testPointGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   delete features[0].first;
 }
 
@@ -224,8 +224,8 @@ void TestQgsGML::testLineStringGML2()
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
   QgsPolyline line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
-  QCOMPARE( line[0], QgsPoint( 10, 20 ) );
-  QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
   delete features[0].first;
 }
 
@@ -300,8 +300,8 @@ void TestQgsGML::testMultiPointGML2()
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPoint );
   QgsMultiPoint multi = features[0].first->geometry().asMultiPoint();
   QCOMPARE( multi.size(), 2 );
-  QCOMPARE( multi[0], QgsPoint( 10, 20 ) );
-  QCOMPARE( multi[1], QgsPoint( 30, 40 ) );
+  QCOMPARE( multi[0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( multi[1], QgsPointXY( 30, 40 ) );
   delete features[0].first;
 }
 
@@ -339,8 +339,8 @@ void TestQgsGML::testMultiLineStringGML2()
   QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
-  QCOMPARE( multi[0][0], QgsPoint( 10, 20 ) );
-  QCOMPARE( multi[0][1], QgsPoint( 30, 40 ) );
+  QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( multi[0][1], QgsPointXY( 30, 40 ) );
   QCOMPARE( multi[1].size(), 3 );
   delete features[0].first;
 }
@@ -406,7 +406,7 @@ void TestQgsGML::testPointGML3()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   delete features[0].first;
 }
 
@@ -434,7 +434,7 @@ void TestQgsGML::testPointGML3_EPSG_4326()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 2, 49 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }
 
@@ -462,7 +462,7 @@ void TestQgsGML::testPointGML3_urn_EPSG_4326()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 2, 49 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }
 
@@ -490,7 +490,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 2, 49 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }
 
@@ -518,7 +518,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 2, 49 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }
 
@@ -546,8 +546,8 @@ void TestQgsGML::testLineStringGML3()
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
   QgsPolyline line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
-  QCOMPARE( line[0], QgsPoint( 10, 20 ) );
-  QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
   delete features[0].first;
 }
 
@@ -573,8 +573,8 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
   QgsPolyline line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
-  QCOMPARE( line[0], QgsPoint( 10, 20 ) );
-  QCOMPARE( line[1], QgsPoint( 30, 40 ) );
+  QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
   delete features[0].first;
 }
 
@@ -682,8 +682,8 @@ void TestQgsGML::testMultiLineStringGML3()
   QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
-  QCOMPARE( multi[0][0], QgsPoint( 10, 20 ) );
-  QCOMPARE( multi[0][1], QgsPoint( 30, 40 ) );
+  QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
+  QCOMPARE( multi[0][1], QgsPointXY( 30, 40 ) );
   QCOMPARE( multi[1].size(), 3 );
   delete features[0].first;
 }
@@ -759,7 +759,7 @@ void TestQgsGML::testPointGML3_2()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mytypename.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   delete features[0].first;
 }
 
@@ -958,7 +958,7 @@ void TestQgsGML::testTuple()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "firstlayer.1|secondlayer.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   delete features[0].first;
 }
 
@@ -998,7 +998,7 @@ void TestQgsGML::testRenamedFields()
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].second, QString( "mylayer.1" ) );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Point );
-  QCOMPARE( features[0].first->geometry().asPoint(), QgsPoint( 10, 20 ) );
+  QCOMPARE( features[0].first->geometry().asPoint(), QgsPointXY( 10, 20 ) );
   delete features[0].first;
 }
 
@@ -1100,7 +1100,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 4 );
   QgsDebugMsg( multi[0][0][0].toString() );
-  QCOMPARE( multi[0][0][0], QgsPoint( 2, 49 ) );
+  QCOMPARE( multi[0][0][0], QgsPointXY( 2, 49 ) );
   delete features[0].first;
 }
 

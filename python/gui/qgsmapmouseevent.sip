@@ -59,16 +59,16 @@ class QgsMapMouseEvent : QMouseEvent
  \param modifiers Keyboard modifiers
 %End
 
-    QgsPoint snapPoint( SnappingMode snappingMode );
+    QgsPointXY snapPoint( SnappingMode snappingMode );
 %Docstring
  snapPoint will snap the points using the map canvas snapping utils configuration
 .. note::
 
    if snapping did not succeeded, the map point will be reset to its original position
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool *snapped = 0, bool allLayers = false ) const;
+    QList<QgsPointXY> snapSegment( SnappingMode snappingMode, bool *snapped = 0, bool allLayers = false ) const;
 %Docstring
  Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
  Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
@@ -76,7 +76,7 @@ class QgsMapMouseEvent : QMouseEvent
  \param snappingMode Specify if the default project settings or all layers should be used for snapping
  \param snapped if given, determines if a segment has been snapped
  \param allLayers if true, override snapping mode
- :rtype: list of QgsPoint
+ :rtype: list of QgsPointXY
 %End
 
     bool isSnapped() const;
@@ -88,11 +88,11 @@ class QgsMapMouseEvent : QMouseEvent
  :rtype: bool
 %End
 
-    QgsPoint mapPoint() const;
+    QgsPointXY mapPoint() const;
 %Docstring
  mapPoint returns the point in coordinates
  :return: the point in map coordinates, after snapping if requested in the event.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsPointLocator::Match mapPointMatch() const;
@@ -103,7 +103,7 @@ class QgsMapMouseEvent : QMouseEvent
  :rtype: QgsPointLocator.Match
 %End
 
-    void setMapPoint( const QgsPoint &point );
+    void setMapPoint( const QgsPointXY &point );
 %Docstring
  Set the (snapped) point this event points to in map coordinates.
  The point in pixel coordinates will be calculated accordingly.
@@ -111,12 +111,12 @@ class QgsMapMouseEvent : QMouseEvent
  \param point The point in map coordinates
 %End
 
-    QgsPoint originalMapPoint() const;
+    QgsPointXY originalMapPoint() const;
 %Docstring
  Returns the original, unmodified map point of the mouse cursor.
 
  :return: The cursor position in map coordinates.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QPoint pixelPoint() const;

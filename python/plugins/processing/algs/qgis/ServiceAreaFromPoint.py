@@ -35,7 +35,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsField,
                        QgsFields,
                        QgsProcessingUtils)
@@ -174,7 +174,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         tolerance = self.getParameterValue(self.TOLERANCE)
 
         tmp = startPoint.split(',')
-        startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        startPoint = QgsPointXY(float(tmp[0]), float(tmp[1]))
 
         directionField = -1
         if directionFieldName is not None:

@@ -147,7 +147,7 @@ QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &param
   return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, name, context );
 }
 
-QgsPoint QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, name, context );
 }
