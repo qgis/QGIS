@@ -2060,6 +2060,11 @@ QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}
 - Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.
 - Signature for snapPoint() has changed.
 
+QgsSpatialIndex        {#qgis_api_break_3_0_QgsSpatialIndex}
+---------------
+
+- The protected members were made private. QgsSpatialIndex is not designed to be subclassed.
+
 
 QgsSublayersDialog        {#qgis_api_break_3_0_QgsSublayersDialog}
 ------------------

@@ -89,22 +89,6 @@ get reference count - just for debugging!
  :rtype: QAtomicInt
 %End
 
-  protected:
-
-
-    static bool featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id );
-%Docstring
- Calculates feature info to insert into index.
- \param f input feature
- \param rect will be set to feature's geometry bounding box
- \param id will be set to feature's ID
- :return: true if feature info was successfully retrieved and the feature can be added to
- the index
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-
 };
 
 
