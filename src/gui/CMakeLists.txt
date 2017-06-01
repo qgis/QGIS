@@ -174,6 +174,7 @@ SET(QGIS_GUI_SRCS
   qgsblendmodecombobox.cpp
   qgsbrowsertreeview.cpp
   qgsbrowserdockwidget.cpp
+  qgsbrowserdockwidget_p.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
@@ -363,6 +364,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
+  qgsbrowserdockwidget_p.h
   qgsbrowserdockwidget.h
   qgsencodingfiledialog.h
   qgserrordialog.h
@@ -651,6 +653,7 @@ SET(QGIS_GUI_HDRS
   qgstablewidgetitem.h
   qgsuserinputdockwidget.h
   qgsbrowserdockwidget.h
+  qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
   qgsfiledownloader.h
 
