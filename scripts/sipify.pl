@@ -164,6 +164,7 @@ sub remove_following_body_or_initializerlist {
 sub fix_annotations(){
   # printed annotations
   $LINE =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
+  $LINE =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
   $LINE =~ s/\bSIP_ARRAY\b/\/Array\//g;
   $LINE =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
   $LINE =~ s/\bSIP_DEPRECATED\b/\/Deprecated\//g;
@@ -190,7 +191,7 @@ sub fix_annotations(){
   };
 
   # unprinted annotations
-  $LINE =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+  $LINE =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
   $LINE =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
   # remove argument
   if ($LINE =~ m/SIP_PYARGREMOVE/){
@@ -628,7 +629,7 @@ while ($LINE_IDX < $LINE_COUNT){
     # remove static const value assignment
     # https://regex101.com/r/DyWkgn/4
     $LINE !~ m/^\s*const static \w+/ or die "const static should be written static const in $CLASSNAME[$#CLASSNAME] at line $LINE_IDX";
-    $LINE =~ s/^(\s*static const \w+(?:<(?:[\w()<>, ]|::)+>)? \w+) = .*([|;])\s*(\/\/.*)?$/$1;/;
+    $LINE =~ s/^(\s*static const(?:expr)? \w+(?:<(?:[\w()<>, ]|::)+>)? \w+) = .*([|;])\s*(\/\/.*)?$/$1;/;
     if ( defined $2 && $2 =~ m/\|/ ){
         dbg_info("multiline const static assignment");
         my $skip = '';
@@ -691,6 +692,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/^(\s*template<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
         $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
+        $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;
         $LINE =~ s/\s*=\s*default\b//g;
 

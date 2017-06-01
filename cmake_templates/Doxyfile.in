@@ -2050,6 +2050,7 @@ PREDEFINED             =
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
 EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
+                         "SIP_ALLOWNONE" \
                          "SIP_ARRAY" \
                          "SIP_ARRAYSIZE" \
                          "SIP_CONSTRAINED" \
@@ -2067,7 +2068,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_PYARGDEFAULT" \
                          "SIP_PYARGREMOVE" \
                          "SIP_PYNAME" \
-                         "SIP_PYTYPE" \
+                         "SIP_PYALTERNATIVETYPE" \
                          "SIP_SKIP" \
                          "SIP_TRANSFER" \
                          "SIP_TRANSFERBACK" \

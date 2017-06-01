@@ -103,7 +103,7 @@ class CORE_EXPORT QgsSpatialIndex
     /* debugging */
 
     //! get reference count - just for debugging!
-    QAtomicInt SIP_PYTYPE( int ) refs() const;
+    QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
 

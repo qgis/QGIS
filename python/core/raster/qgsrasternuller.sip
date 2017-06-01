@@ -1,11 +1,26 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasternuller.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsRasterNuller : QgsRasterInterface
 {
+%Docstring
+ Raster pipe that deals with null values.
+%End
+
 %TypeHeaderCode
-#include <qgsrasternuller.h>
+#include "qgsrasternuller.h"
 %End
   public:
     QgsRasterNuller( QgsRasterInterface *input = 0 );
-    ~QgsRasterNuller();
 
     struct NoData
     {
@@ -15,16 +30,34 @@ class QgsRasterNuller : QgsRasterInterface
 
     virtual QgsRasterNuller *clone() const /Factory/;
 
-    int bandCount() const;
 
-    Qgis::DataType dataType( int bandNo ) const;
+    virtual int bandCount() const;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) / Factory /;
+
+    virtual Qgis::DataType dataType( int bandNo ) const;
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+
 
     void setNoData( int bandNo, const QgsRasterRangeList &noData );
 
     QgsRasterRangeList noData( int bandNo ) const;
+%Docstring
+ :rtype: QgsRasterRangeList
+%End
 
-    /** \brief Set output no data value. */
     void setOutputNoDataValue( int bandNo, double noData );
+%Docstring
+ Set output no data value.
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasternuller.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

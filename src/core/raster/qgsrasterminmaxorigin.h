@@ -31,6 +31,7 @@
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
+
   public:
 
     //! \brief Default cumulative cut lower limit

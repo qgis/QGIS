@@ -40,7 +40,7 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
      * \param resultCost array of the paths costs
      */
-    static void SIP_PYTYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
+    static void SIP_PYALTERNATIVETYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
 
 #ifdef SIP_RUN
     % MethodCode
