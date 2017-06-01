@@ -16,7 +16,7 @@ import qgis  # NOQA switch sip api
 
 from qgis.core import (QgsBearingUtils,
                        QgsCoordinateReferenceSystem,
-                       QgsPoint
+                       QgsPointXY
                        )
 
 from qgis.testing import start_app, unittest
