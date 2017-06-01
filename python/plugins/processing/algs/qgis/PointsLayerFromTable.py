@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsGeometry,
                        QgsProcessingUtils)
@@ -120,7 +120,7 @@ class PointsLayerFromTable(GeoAlgorithm):
                 x = float(attrs[x_field_index])
                 y = float(attrs[y_field_index])
 
-                point = QgsPoint(x, y)
+                point = QgsPointXY(x, y)
 
                 if z_field_index is not None:
                     try:
