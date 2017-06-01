@@ -20,8 +20,8 @@ from qgis.core import (
     QgsGeometry,
     QgsVectorLayer,
     QgsFeature,
+    QgsPointXY,
     QgsPoint,
-    QgsPointV2,
     QgsCircularString,
     QgsCompoundCurve,
     QgsCurvePolygon,
@@ -1936,7 +1936,7 @@ class TestQgsGeometry(unittest.TestCase):
             (QgsMultiPointV2, "MultiPoint", QgsWkbTypes.MultiPoint),
             (QgsMultiPolygonV2, "MultiPolygon", QgsWkbTypes.MultiPolygon),
             (QgsMultiSurface, "MultiSurface", QgsWkbTypes.MultiSurface),
-            (QgsPointV2, "Point", QgsWkbTypes.Point),
+            (QgsPoint, "Point", QgsWkbTypes.Point),
             (QgsPolygonV2, "Polygon", QgsWkbTypes.Polygon),
         ]
 

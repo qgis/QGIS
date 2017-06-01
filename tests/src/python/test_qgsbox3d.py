@@ -15,8 +15,8 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsBox3d,
+                       QgsPointXY,
                        QgsPoint,
-                       QgsPointV2,
                        QgsWkbTypes,
                        QgsRectangle)
 

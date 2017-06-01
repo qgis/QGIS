@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import (QgsTextAnnotation,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,

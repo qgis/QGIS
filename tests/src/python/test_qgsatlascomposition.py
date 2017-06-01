@@ -24,7 +24,7 @@ from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
 from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbol, QgsSingleSymbolRenderer, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
-    QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
+    QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPointXY, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
 from qgscompositionchecker import QgsCompositionChecker
 
 start_app()

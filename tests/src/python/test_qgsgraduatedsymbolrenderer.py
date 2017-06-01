@@ -23,7 +23,7 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsReadWriteContext,
                        QgsRenderContext
                        )

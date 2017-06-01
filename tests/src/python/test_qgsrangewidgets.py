@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
+from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL
 from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 
