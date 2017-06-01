@@ -1183,6 +1183,8 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
     emit colorChanged( mCurrentColor );
     emit valueChanged( componentValue() );
   }
+
+  event->accept();
 }
 
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
