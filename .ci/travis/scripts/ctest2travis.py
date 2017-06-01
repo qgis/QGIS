@@ -95,7 +95,7 @@ for line in p.stdout:
             end_fold()
 
         else:
-            if re.match('FAIL[:\!].*', updated_line):
+            if re.match('(FAIL|ERROR)[:\!].*', updated_line):
                 updated_line = colored(updated_line, 'yellow')
                 in_failure = True
 
