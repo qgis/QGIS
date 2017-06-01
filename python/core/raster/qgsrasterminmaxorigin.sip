@@ -1,127 +1,205 @@
-/** \class QgsRasterMinMaxOrigin
- * This class describes the origin of min/max values. It does not store by
- * itself the min/max values.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterminmaxorigin.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsRasterMinMaxOrigin
 {
+%Docstring
+ This class describes the origin of min/max values. It does not store by
+ itself the min/max values.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgsrasterminmaxorigin.h>
+#include "qgsrasterminmaxorigin.h"
 %End
   public:
-    //! \brief Default cumulative cut lower limit
+
     static const double CUMULATIVE_CUT_LOWER;
+%Docstring
+ Default cumulative cut lower limit
+%End
 
-    //! \brief Default cumulative cut upper limit
     static const double CUMULATIVE_CUT_UPPER;
+%Docstring
+ Default cumulative cut upper limit
+%End
 
-    //! \brief Default standard deviation factor
     static const double DEFAULT_STDDEV_FACTOR;
+%Docstring
+ Default standard deviation factor
+%End
 
-    //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
-      //! User defined.
-      None  /PyName=None_/,
-      //! Real min-max values
+      //! User
+      None
+      //! Real
       MinMax,
-      //! Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      //! Range
       StdDev,
-      //! Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+      //! Range
       CumulativeCut
     };
 
-    //! \brief This enumerator describes the extent used to compute min/max values
     enum Extent
     {
-        //! Whole raster is used to compute statistics.
-        WholeRaster,
-        //! Current extent of the canvas (at the time of computation) is used to compute statistics.
-        CurrentCanvas,
-        //! Constantly updated extent of the canvas is used to compute statistics.
-        UpdatedCanvas
+      //! Whole
+      WholeRaster,
+      //! Current
+      CurrentCanvas,
+      //! Constantly
+      UpdatedCanvas
     };
 
-    //! \brief This enumerator describes the accuracy used to compute statistics.
     enum StatAccuracy
     {
-        //! Exact statistics.
-        Exact,
-        //! Approximated statistics.
-        Estimated
+      //! Exact
+      Exact,
+      //! Approximated
+      Estimated
     };
 
-    //! \brief Default constructor.
     QgsRasterMinMaxOrigin();
+%Docstring
+ Default constructor.
+%End
 
-    //! \brief Equality operator.
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
+%Docstring
+ Equality operator.
+%End
 
-    //////// Getter methods /////////////////////
 
-    //! \brief Return limits.
-    QgsRasterMinMaxOrigin::Limits limits() const;
+    Limits limits() const;
+%Docstring
+ Return limits.
+ :rtype: Limits
+%End
 
-    //! \brief Return extent.
-    QgsRasterMinMaxOrigin::Extent extent() const;
+    Extent extent() const;
+%Docstring
+ Return extent.
+ :rtype: Extent
+%End
 
-    //! \brief Return statistic accuracy.
-    QgsRasterMinMaxOrigin::StatAccuracy statAccuracy() const;
+    StatAccuracy statAccuracy() const;
+%Docstring
+ Return statistic accuracy.
+ :rtype: StatAccuracy
+%End
 
-    //! \brief Return lower bound of cumulative cut method (between 0 and 1).
     double cumulativeCutLower() const;
+%Docstring
+ Return lower bound of cumulative cut method (between 0 and 1).
+ :rtype: float
+%End
 
-    //! \brief Return upper bound of cumulative cut method (between 0 and 1).
     double cumulativeCutUpper() const;
+%Docstring
+ Return upper bound of cumulative cut method (between 0 and 1).
+ :rtype: float
+%End
 
-    //! \brief Return factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
     double stdDevFactor() const;
+%Docstring
+ Return factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+ :rtype: float
+%End
 
-    //////// Setter methods /////////////////////
 
-    //! \brief Set limits.
-    void setLimits(QgsRasterMinMaxOrigin::Limits limits);
+    void setLimits( Limits limits );
+%Docstring
+ Set limits.
+%End
 
-    //! \brief Set extent.
-    void setExtent(QgsRasterMinMaxOrigin::Extent extent);
+    void setExtent( Extent extent );
+%Docstring
+ Set extent.
+%End
 
-    //! \brief Set statistics accuracy.
-    void setStatAccuracy(QgsRasterMinMaxOrigin::StatAccuracy accuracy);
+    void setStatAccuracy( StatAccuracy accuracy );
+%Docstring
+ Set statistics accuracy.
+%End
 
-    //! \brief Set lower bound of cumulative cut method (between 0 and 1).
-    void setCumulativeCutLower(double val);
+    void setCumulativeCutLower( double val );
+%Docstring
+ Set lower bound of cumulative cut method (between 0 and 1).
+%End
 
-    //! \brief Set upper bound of cumulative cut method (between 0 and 1).
-    void setCumulativeCutUpper(double val);
+    void setCumulativeCutUpper( double val );
+%Docstring
+ Set upper bound of cumulative cut method (between 0 and 1).
+%End
 
-    //! \brief Set factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
-    void setStdDevFactor(double val);
+    void setStdDevFactor( double val );
+%Docstring
+ Set factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
+%End
 
-    //////// XML serialization /////////////////////
 
-    //! \brief Serialize object.
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+%Docstring
+ Serialize object.
+%End
 
-    //! \brief Deserialize object.
     void readXml( const QDomElement &elem );
+%Docstring
+ Deserialize object.
+%End
 
-    //////// Static methods /////////////////////
 
-     //! \brief Return a string to serialize Limits
-    static QString limitsString( QgsRasterMinMaxOrigin::Limits limits );
+    static QString limitsString( Limits limits );
+%Docstring
+ Return a string to serialize Limits
+ :rtype: str
+%End
 
-     //! \brief Deserialize Limits
-    static QgsRasterMinMaxOrigin::Limits limitsFromString( const QString &limits );
+    static Limits limitsFromString( const QString &limits );
+%Docstring
+ Deserialize Limits
+ :rtype: Limits
+%End
 
-    //! \brief Return a string to serialize Extent
-    static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
+    static QString extentString( Extent extent );
+%Docstring
+ Return a string to serialize Extent
+ :rtype: str
+%End
 
-    //! \brief Deserialize Extent
-    static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
+    static Extent extentFromString( const QString &extent );
+%Docstring
+ Deserialize Extent
+ :rtype: Extent
+%End
 
-    //! \brief Return a string to serialize StatAccuracy
-    static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
+    static QString statAccuracyString( StatAccuracy accuracy );
+%Docstring
+ Return a string to serialize StatAccuracy
+ :rtype: str
+%End
 
-    //! \brief Deserialize StatAccuracy
-    static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
+    static StatAccuracy statAccuracyFromString( const QString &accuracy );
+%Docstring
+ Deserialize StatAccuracy
+ :rtype: StatAccuracy
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterminmaxorigin.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

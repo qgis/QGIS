@@ -449,7 +449,7 @@ class CORE_EXPORT QgsRasterBlock
     QgsError mError;
 };
 
-inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssize index )
+inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssize index ) SIP_SKIP
 {
   if ( !data )
   {
@@ -487,7 +487,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize index, double value )
+inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize index, double value ) SIP_SKIP
 {
   if ( !data ) return;
 
@@ -520,7 +520,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
   }
 }
 
-inline double QgsRasterBlock::value( qgssize index ) const
+inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 {
   if ( !mData )
   {
@@ -530,7 +530,7 @@ inline double QgsRasterBlock::value( qgssize index ) const
   return readValue( mData, mDataType, index );
 }
 
-inline bool QgsRasterBlock::isNoDataValue( double value ) const
+inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP
 {
   return qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue );
 }

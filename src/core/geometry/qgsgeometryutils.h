@@ -178,7 +178,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since 3.0
      */
     static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3,
-                               QgsPointSequence SIP_PYTYPE( QList<QgsPointV2> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+                               QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPointV2> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 
