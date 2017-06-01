@@ -36,6 +36,13 @@
  */
 class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 {
+    Q_GADGET
+
+    Q_PROPERTY( double x READ x WRITE setX )
+    Q_PROPERTY( double y READ y WRITE setY )
+    Q_PROPERTY( double z READ z WRITE setZ )
+    Q_PROPERTY( double m READ m WRITE setM )
+
   public:
 
     /** Construct a 2 dimensional point with an initial x and y coordinate.
