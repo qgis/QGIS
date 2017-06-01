@@ -214,6 +214,18 @@ class TestQgsUnitTypes(unittest.TestCase):
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderPoints)
 
+    def testRenderUnitsString(self):
+        """Test converting render units to strings"""
+        units = [QgsUnitTypes.RenderMillimeters,
+                 QgsUnitTypes.RenderMapUnits,
+                 QgsUnitTypes.RenderPixels,
+                 QgsUnitTypes.RenderPercentage,
+                 QgsUnitTypes.RenderPoints,
+                 QgsUnitTypes.RenderInches]
+
+        for u in units:
+            self.assertTrue(QgsUnitTypes.toString(u))
+
     def testFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between units"""
 
