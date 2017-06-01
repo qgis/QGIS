@@ -81,6 +81,13 @@ class CORE_EXPORT QgsSpatialIndex
     //! Add feature to index
     bool insertFeature( const QgsFeature &f );
 
+    /**
+     * Add a feature \a id to the index with a specified bounding box.
+     * \returns true if feature was successfully added to index.
+     * \since QGIS 3.0
+    */
+    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+
     //! Remove feature from index
     bool deleteFeature( const QgsFeature &f );
 
@@ -101,8 +108,26 @@ class CORE_EXPORT QgsSpatialIndex
   protected:
     //! \note not available in Python bindings
     static SpatialIndex::Region rectToRegion( const QgsRectangle &rect ) SIP_SKIP;
-    //! \note not available in Python bindings
+
+    /** Calculates feature info to insert into index.
+    * \param f input feature
+    * \param r will be set to spatial index region
+    * \param id will be set to feature's ID
+    * \returns true if feature info was successfully retrieved and the feature can be added to
+    * the index
+    * \note not available in Python bindings
+    */
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
+
+    /** Calculates feature info to insert into index.
+     * \param f input feature
+     * \param rect will be set to feature's geometry bounding box
+     * \param id will be set to feature's ID
+     * \returns true if feature info was successfully retrieved and the feature can be added to
+     * the index
+     * \since QGIS 3.0
+     */
+    static bool featureInfo( const QgsFeature &f, QgsRectangle &rect, QgsFeatureId &id );
 
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 
