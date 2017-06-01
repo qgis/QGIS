@@ -237,21 +237,23 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
 
     result.description = dispExpression.evaluate( &context ).toString();
 
-    result.userData = f.id();
+    result.userData = QVariantList() << f.id() << layer->id();
     result.icon = QgsMapLayerModel::iconForLayer( layer );
     result.score = static_cast< double >( string.length() ) / result.displayString.size();
     emit resultFetched( result );
 
     found++;
     if ( found >= 30 )
-      return;
+      break;
   }
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QgsFeatureId id = result.userData.toLongLong();
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  QVariantList dataList = result.userData.toList();
+  QgsFeatureId id = dataList.at( 0 ).toLongLong();
+  QString layerId = dataList.at( 1 ).toString();
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
