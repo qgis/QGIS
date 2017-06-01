@@ -68,6 +68,15 @@ void QgsDecorationLayoutExtent::projectRead()
     QgsSimpleLineSymbolLayer *layer = new QgsSimpleLineSymbolLayer( QColor( 0, 0, 0, 100 ), 0, Qt::DashLine );
     mSymbol->changeSymbolLayer( 0, layer );
   }
+
+  QString textXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+  if ( !textXml.isEmpty() )
+  {
+    doc.setContent( textXml );
+    elem = doc.documentElement();
+    mTextFormat.readXml( elem, rwContext );
+  }
+  mLabelExtents = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Labels" ), true );
 }
 
 void QgsDecorationLayoutExtent::saveToProject()
@@ -85,6 +94,12 @@ void QgsDecorationLayoutExtent::saveToProject()
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
     QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Symbol" ), doc.toString() );
   }
+
+  QDomDocument textDoc;
+  QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
+  textDoc.appendChild( textElem );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Labels" ), mLabelExtents );
 }
 
 void QgsDecorationLayoutExtent::run()
@@ -116,6 +131,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
     Q_FOREACH ( const QgsComposerMap *map, composition->composerMapItems() )
     {
       QPolygonF extent = map->visibleExtentPolygon();
+      QPointF labelPoint = extent.at( 1 );
       QgsGeometry g = QgsGeometry::fromQPolygonF( extent );
 
       if ( map->crs() !=
@@ -128,6 +144,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
         try
         {
           g.transform( ct );
+          labelPoint = ct.transform( labelPoint.x(), labelPoint.y() ).toQPointF();
         }
         catch ( QgsCsException & )
         {
@@ -135,12 +152,29 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
       }
 
       g.transform( transform );
+      labelPoint = transform.map( labelPoint );
       extent = g.asQPolygonF();
       mSymbol->renderPolygon( extent, nullptr, nullptr, context );
+
+      if ( mLabelExtents )
+      {
+        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, QgsTextRenderer::AlignRight, QStringList() << tr( "%1: %2" ).arg( composition->name(), map->displayName() ),
+                                   context, mTextFormat );
+      }
     }
   }
   mSymbol->stopRender( context );
   context.painter()->restore();
+}
+
+bool QgsDecorationLayoutExtent::labelExtents() const
+{
+  return mLabelExtents;
+}
+
+void QgsDecorationLayoutExtent::setLabelExtents( bool labelExtents )
+{
+  mLabelExtents = labelExtents;
 }
 
 QgsFillSymbol *QgsDecorationLayoutExtent::symbol() const
