@@ -491,7 +491,7 @@ void QgsGeorefPluginGui::linkGeorefToQGis( bool link )
 }
 
 // GCPs slots
-void QgsGeorefPluginGui::addPoint( const QgsPoint &pixelCoords, const QgsPoint &mapCoords,
+void QgsGeorefPluginGui::addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
                                    bool enable, bool finalize )
 {
   QgsGeorefDataPoint *pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(),
@@ -582,13 +582,13 @@ void QgsGeorefPluginGui::releasePoint( QPoint p )
   }
 }
 
-void QgsGeorefPluginGui::showCoordDialog( const QgsPoint &pixelCoords )
+void QgsGeorefPluginGui::showCoordDialog( const QgsPointXY &pixelCoords )
 {
   if ( mLayer && !mMapCoordsDialog )
   {
     mMapCoordsDialog = new QgsMapCoordsDialog( mIface->mapCanvas(), pixelCoords, this );
     connect( mMapCoordsDialog, &QgsMapCoordsDialog::pointAdded,
-    [this]( const QgsPoint & a, const QgsPoint & b ) { this->addPoint( a, b ); }
+    [this]( const QgsPointXY & a, const QgsPointXY & b ) { this->addPoint( a, b ); }
            );
     mMapCoordsDialog->show();
   }
@@ -708,10 +708,10 @@ void QgsGeorefPluginGui::jumpToGCP( uint theGCPIndex )
   // qgsmapcanvas doesn't seem to have a method for recentering the map
   QgsRectangle ext = mCanvas->extent();
 
-  QgsPoint center = ext.center();
-  QgsPoint new_center = mPoints[theGCPIndex]->pixelCoords();
+  QgsPointXY center = ext.center();
+  QgsPointXY new_center = mPoints[theGCPIndex]->pixelCoords();
 
-  QgsPoint diff( new_center.x() - center.x(), new_center.y() - center.y() );
+  QgsPointXY diff( new_center.x() - center.x(), new_center.y() - center.y() );
   QgsRectangle new_extent( ext.xMinimum() + diff.x(), ext.yMinimum() + diff.y(),
                            ext.xMaximum() + diff.x(), ext.yMaximum() + diff.y() );
   mCanvas->setExtent( new_extent );
@@ -778,7 +778,7 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
 }
 
 // Canvas info slots (copy/pasted from QGIS :) )
-void QgsGeorefPluginGui::showMouseCoords( const QgsPoint &p )
+void QgsGeorefPluginGui::showMouseCoords( const QgsPointXY &p )
 {
   mCoordsLabel->setText( p.toString( mMousePrecisionDecimalPlaces ) );
   // Set minimum necessary width
@@ -1254,8 +1254,8 @@ bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
       return false;
     }
 
-    QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-    QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
+    QgsPointXY mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
+    QgsPointXY pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
     if ( ls.count() == 5 )
     {
       bool enable = ls.at( 4 ).toInt();
@@ -1345,7 +1345,7 @@ bool QgsGeorefPluginGui::georeference()
   if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() ||
        QgsGeorefTransform::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
-    QgsPoint origin;
+    QgsPointXY origin;
     double pixelXSize, pixelYSize, rotation;
     if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
@@ -1421,7 +1421,7 @@ bool QgsGeorefPluginGui::georeference()
   }
 }
 
-bool QgsGeorefPluginGui::writeWorldFile( const QgsPoint &origin, double pixelXSize, double pixelYSize, double rotation )
+bool QgsGeorefPluginGui::writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation )
 {
   // write the world file
   QFile file( mWorldFileName );
@@ -1647,7 +1647,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
 
   QgsComposerTextTableV2 *parameterTable = nullptr;
   double scaleX, scaleY, rotation;
-  QgsPoint origin;
+  QgsPointXY origin;
 
   QgsComposerLabel *parameterLabel = nullptr;
   //transformation that involves only scaling and rotation (linear or helmert) ?
@@ -1799,7 +1799,7 @@ void QgsGeorefPluginGui::updateTransformParamLabel()
   QString transformName = convertTransformEnumToString( mGeorefTransform.transformParametrisation() );
   QString labelString = tr( "Transform: " ) + transformName;
 
-  QgsPoint origin;
+  QgsPointXY origin;
   double scaleX, scaleY, rotation;
   if ( mGeorefTransform.getOriginScaleRotation( origin, scaleX, scaleY, rotation ) )
   {
@@ -1962,7 +1962,7 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
 
 bool QgsGeorefPluginGui::updateGeorefTransform()
 {
-  QVector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPointXY> mapCoords, pixelCoords;
   if ( mGCPListWidget->gcpList() )
     mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
   else
@@ -2000,20 +2000,20 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
   {
     for ( uint edge = 0; edge < 4; edge++ )
     {
-      QgsPoint src, raster;
+      QgsPointXY src, raster;
       switch ( edge )
       {
         case 0:
-          src = QgsPoint( oX + ( double )s * stepX, oY );
+          src = QgsPointXY( oX + ( double )s * stepX, oY );
           break;
         case 1:
-          src = QgsPoint( oX + ( double )s * stepX, dY );
+          src = QgsPointXY( oX + ( double )s * stepX, dY );
           break;
         case 2:
-          src = QgsPoint( oX, oY + ( double )s * stepY );
+          src = QgsPointXY( oX, oY + ( double )s * stepY );
           break;
         case 3:
-          src = QgsPoint( dX, oY + ( double )s * stepY );
+          src = QgsPointXY( dX, oY + ( double )s * stepY );
           break;
       }
       t.transform( src, raster, rasterToWorld );

@@ -178,11 +178,11 @@ void TestQgsRubberband::testVisibility()
 
   // Add point without update
   mRubberband->reset( QgsWkbTypes::PolygonGeometry );
-  mRubberband->addPoint( QgsPoint( 10, 10 ), false );
+  mRubberband->addPoint( QgsPointXY( 10, 10 ), false );
   QCOMPARE( mRubberband->isVisible(), false );
 
   // Add point with update
-  mRubberband->addPoint( QgsPoint( 20, 20 ), true );
+  mRubberband->addPoint( QgsPointXY( 20, 20 ), true );
   QCOMPARE( mRubberband->isVisible(), true );
 
   // Check visibility after zoom (should not be changed)
@@ -200,9 +200,9 @@ void TestQgsRubberband::testClose()
   r.closePoints();
   QCOMPARE( r.partSize( 0 ), 0 );
 
-  r.addPoint( QgsPoint( 1, 2 ) );
-  r.addPoint( QgsPoint( 1, 3 ) );
-  r.addPoint( QgsPoint( 2, 3 ) );
+  r.addPoint( QgsPointXY( 1, 2 ) );
+  r.addPoint( QgsPointXY( 1, 3 ) );
+  r.addPoint( QgsPointXY( 2, 3 ) );
   QCOMPARE( r.partSize( 0 ), 3 );
 
   // test with some bad geometry indexes - don't want to crash!

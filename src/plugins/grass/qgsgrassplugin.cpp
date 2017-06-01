@@ -687,7 +687,7 @@ void QgsGrassPlugin::displayRegion()
     return;
   }
 
-  QgsRectangle rect( QgsPoint( window.west, window.north ), QgsPoint( window.east, window.south ) );
+  QgsRectangle rect( QgsPointXY( window.west, window.north ), QgsPointXY( window.east, window.south ) );
 
   QPen regionPen = QgsGrass::regionPen();
   mRegionBand->setColor( regionPen.color() );

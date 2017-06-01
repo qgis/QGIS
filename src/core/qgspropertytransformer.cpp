@@ -689,18 +689,18 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp *ramp )
 // QgsCurveTransform
 //
 
-bool sortByX( const QgsPoint &a, const QgsPoint &b )
+bool sortByX( const QgsPointXY &a, const QgsPointXY &b )
 {
   return a.x() < b.x();
 }
 
 QgsCurveTransform::QgsCurveTransform()
 {
-  mControlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
+  mControlPoints << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
   calcSecondDerivativeArray();
 }
 
-QgsCurveTransform::QgsCurveTransform( const QList<QgsPoint> &controlPoints )
+QgsCurveTransform::QgsCurveTransform( const QList<QgsPointXY> &controlPoints )
   : mControlPoints( controlPoints )
 {
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
@@ -734,21 +734,21 @@ QgsCurveTransform &QgsCurveTransform::operator=( const QgsCurveTransform &other 
   return *this;
 }
 
-void QgsCurveTransform::setControlPoints( const QList<QgsPoint> &points )
+void QgsCurveTransform::setControlPoints( const QList<QgsPointXY> &points )
 {
   mControlPoints = points;
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
   for ( int i = 0; i < mControlPoints.count(); ++i )
   {
-    mControlPoints[ i ] = QgsPoint( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
-                                    qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
+    mControlPoints[ i ] = QgsPointXY( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
+                                      qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
   }
   calcSecondDerivativeArray();
 }
 
 void QgsCurveTransform::addControlPoint( double x, double y )
 {
-  QgsPoint point( x, y );
+  QgsPointXY point( x, y );
   if ( mControlPoints.contains( point ) )
     return;
 
@@ -802,10 +802,10 @@ double QgsCurveTransform::y( double x ) const
     return qBound( 0.0, mControlPoints.at( n - 1 ).y(), 1.0 );
 
   // find corresponding segment
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint currentControlPoint = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY currentControlPoint = *pointIt;
   ++pointIt;
-  QgsPoint nextControlPoint = *pointIt;
+  QgsPointXY nextControlPoint = *pointIt;
 
   for ( int i = 0; i < n - 1; ++i )
   {
@@ -852,10 +852,10 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
   }
 
   // find corresponding segment
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint currentControlPoint = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY currentControlPoint = *pointIt;
   ++pointIt;
-  QgsPoint nextControlPoint = *pointIt;
+  QgsPointXY nextControlPoint = *pointIt;
 
   int xIndex = 0;
   double currentX = x.at( xIndex );
@@ -914,7 +914,7 @@ bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
   if ( xVals.count() != yVals.count() )
     return false;
 
-  QList< QgsPoint > newPoints;
+  QList< QgsPointXY > newPoints;
   bool ok = false;
   for ( int i = 0; i < xVals.count(); ++i )
   {
@@ -924,7 +924,7 @@ bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
     double y = yVals.at( i ).toDouble( &ok );
     if ( !ok )
       return false;
-    newPoints << QgsPoint( x, y );
+    newPoints << QgsPointXY( x, y );
   }
   setControlPoints( newPoints );
   return true;
@@ -934,7 +934,7 @@ bool QgsCurveTransform::writeXml( QDomElement &transformElem, QDomDocument & ) c
 {
   QStringList x;
   QStringList y;
-  Q_FOREACH ( const QgsPoint &p, mControlPoints )
+  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
   {
     x << qgsDoubleToString( p.x() );
     y << qgsDoubleToString( p.y() );
@@ -952,7 +952,7 @@ QVariant QgsCurveTransform::toVariant() const
 
   QStringList x;
   QStringList y;
-  Q_FOREACH ( const QgsPoint &p, mControlPoints )
+  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
   {
     x << qgsDoubleToString( p.x() );
     y << qgsDoubleToString( p.y() );
@@ -976,7 +976,7 @@ bool QgsCurveTransform::loadVariant( const QVariant &transformer )
   if ( xVals.count() != yVals.count() )
     return false;
 
-  QList< QgsPoint > newPoints;
+  QList< QgsPointXY > newPoints;
   bool ok = false;
   for ( int i = 0; i < xVals.count(); ++i )
   {
@@ -986,7 +986,7 @@ bool QgsCurveTransform::loadVariant( const QVariant &transformer )
     double y = yVals.at( i ).toDouble( &ok );
     if ( !ok )
       return false;
-    newPoints << QgsPoint( x, y );
+    newPoints << QgsPointXY( x, y );
   }
   setControlPoints( newPoints );
   return true;
@@ -1010,12 +1010,12 @@ void QgsCurveTransform::calcSecondDerivativeArray()
   matrix[1] = 1;
   matrix[2] = 0;
   result[0] = 0;
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint pointIm1 = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY pointIm1 = *pointIt;
   ++pointIt;
-  QgsPoint pointI = *pointIt;
+  QgsPointXY pointI = *pointIt;
   ++pointIt;
-  QgsPoint pointIp1 = *pointIt;
+  QgsPointXY pointIp1 = *pointIt;
 
   for ( int i = 1; i < n - 1; ++i )
   {

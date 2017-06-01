@@ -35,7 +35,7 @@ from qgis.core import (QgsRectangle,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsFields)
 
@@ -173,11 +173,11 @@ class GridPolygon(GeoAlgorithm):
                 y2 = y1 - vSpacing
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y1))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x2, y2))
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x1, y1))
+                polyline.append(QgsPointXY(x1, y1))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x2, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x1, y1))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x2, y2, id])
@@ -225,11 +225,11 @@ class GridPolygon(GeoAlgorithm):
                     y3 = y - (((row * 2) + 3) * halfVSpacing)
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y2))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x3, y2))
+                polyline.append(QgsPointXY(x2, y3))
+                polyline.append(QgsPointXY(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x3, y3, id])
@@ -287,13 +287,13 @@ class GridPolygon(GeoAlgorithm):
                     y3 = originY + (row * vOverlay) - (((row * 2) + 3) * halfVSpacing)  # lo
 
                 polyline = []
-                polyline.append(QgsPoint(x1, y2))
-                polyline.append(QgsPoint(x2, y1))
-                polyline.append(QgsPoint(x3, y1))
-                polyline.append(QgsPoint(x4, y2))
-                polyline.append(QgsPoint(x3, y3))
-                polyline.append(QgsPoint(x2, y3))
-                polyline.append(QgsPoint(x1, y2))
+                polyline.append(QgsPointXY(x1, y2))
+                polyline.append(QgsPointXY(x2, y1))
+                polyline.append(QgsPointXY(x3, y1))
+                polyline.append(QgsPointXY(x4, y2))
+                polyline.append(QgsPointXY(x3, y3))
+                polyline.append(QgsPointXY(x2, y3))
+                polyline.append(QgsPointXY(x1, y2))
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x4, y3, id])

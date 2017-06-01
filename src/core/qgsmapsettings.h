@@ -248,7 +248,7 @@ class CORE_EXPORT QgsMapSettings
      * \brief transform point coordinates from layer's CRS to output CRS
      * \returns the transformed point
      */
-    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
      * \brief transform rectangle from layer's CRS to output CRS
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsMapSettings
      * \brief transform point coordinates from output CRS to layer's CRS
      * \returns the transformed point
      */
-    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+    QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
      * \brief transform rectangle from output CRS to layer's CRS

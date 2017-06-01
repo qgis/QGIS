@@ -1337,7 +1337,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     QgsPointSequence p;
     p.reserve( polygon.size() );
     for ( int i = 0; i < polygon.size(); i++ )
-      p << QgsPointV2( polygon[i] );
+      p << QgsPoint( polygon[i] );
     p << p[0];
 
     if ( mBrush.style() != Qt::NoBrush )
@@ -1348,9 +1348,9 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   else if ( shape == Circle )
   {
     if ( mBrush.style() != Qt::NoBrush )
-      e.writeFilledCircle( layerName, bc, QgsPointV2( shift ), halfSize );
+      e.writeFilledCircle( layerName, bc, QgsPoint( shift ), halfSize );
     if ( mPen.style() != Qt::NoPen )
-      e.writeCircle( layerName, pc, QgsPointV2( shift ), halfSize, QStringLiteral( "CONTINUOUS" ), strokeWidth );
+      e.writeCircle( layerName, pc, QgsPoint( shift ), halfSize, QStringLiteral( "CONTINUOUS" ), strokeWidth );
   }
   else if ( shape == Line )
   {
@@ -1358,7 +1358,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
     QPointF pt2 = t.map( QPointF( 0, halfSize ) );
 
     if ( mPen.style() != Qt::NoPen )
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
   }
   else if ( shape == Cross )
   {
@@ -1369,8 +1369,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt3 = t.map( QPointF( 0, -halfSize ) );
       QPointF pt4 = t.map( QPointF( 0, halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else if ( shape == Cross2 )
@@ -1382,8 +1382,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt3 = t.map( QPointF( halfSize, -halfSize ) );
       QPointF pt4 = t.map( QPointF( -halfSize, halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt4 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else if ( shape == ArrowHead )
@@ -1394,8 +1394,8 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
       QPointF pt2 = t.map( QPointF( 0, 0 ) );
       QPointF pt3 = t.map( QPointF( -halfSize, -halfSize ) );
 
-      e.writeLine( QgsPointV2( pt1 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
-      e.writeLine( QgsPointV2( pt3 ), QgsPointV2( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt1 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
+      e.writeLine( QgsPoint( pt3 ), QgsPoint( pt2 ), layerName, QStringLiteral( "CONTINUOUS" ), pc, strokeWidth );
     }
   }
   else

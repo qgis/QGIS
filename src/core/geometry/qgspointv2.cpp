@@ -31,7 +31,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsPointV2::QgsPointV2( double x, double y )
+QgsPoint::QgsPoint( double x, double y )
   : QgsAbstractGeometry()
   , mX( x )
   , mY( y )
@@ -41,7 +41,7 @@ QgsPointV2::QgsPointV2( double x, double y )
   mWkbType = QgsWkbTypes::Point;
 }
 
-QgsPointV2::QgsPointV2( const QgsPoint &p )
+QgsPoint::QgsPoint( const QgsPointXY &p )
   : QgsAbstractGeometry()
   , mX( p.x() )
   , mY( p.y() )
@@ -51,7 +51,7 @@ QgsPointV2::QgsPointV2( const QgsPoint &p )
   mWkbType = QgsWkbTypes::Point;
 }
 
-QgsPointV2::QgsPointV2( QPointF p )
+QgsPoint::QgsPoint( QPointF p )
   : QgsAbstractGeometry()
   , mX( p.x() )
   , mY( p.y() )
@@ -61,7 +61,7 @@ QgsPointV2::QgsPointV2( QPointF p )
   mWkbType = QgsWkbTypes::Point;
 }
 
-QgsPointV2::QgsPointV2( QgsWkbTypes::Type type, double x, double y, double z, double m )
+QgsPoint::QgsPoint( QgsWkbTypes::Type type, double x, double y, double z, double m )
   : mX( x )
   , mY( y )
   , mZ( z )
@@ -78,7 +78,7 @@ QgsPointV2::QgsPointV2( QgsWkbTypes::Type type, double x, double y, double z, do
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::operator==( const QgsPointV2 &pt ) const
+bool QgsPoint::operator==( const QgsPoint &pt ) const
 {
   return ( pt.wkbType() == wkbType() &&
            qgsDoubleNear( pt.x(), mX, 1E-8 ) &&
@@ -87,17 +87,17 @@ bool QgsPointV2::operator==( const QgsPointV2 &pt ) const
            qgsDoubleNear( pt.m(), mM, 1E-8 ) );
 }
 
-bool QgsPointV2::operator!=( const QgsPointV2 &pt ) const
+bool QgsPoint::operator!=( const QgsPoint &pt ) const
 {
   return !operator==( pt );
 }
 
-QgsPointV2 *QgsPointV2::clone() const
+QgsPoint *QgsPoint::clone() const
 {
-  return new QgsPointV2( *this );
+  return new QgsPoint( *this );
 }
 
-bool QgsPointV2::fromWkb( QgsConstWkbPtr &wkbPtr )
+bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   QgsWkbTypes::Type type = wkbPtr.readHeader();
   if ( QgsWkbTypes::flatType( type ) != QgsWkbTypes::Point )
@@ -125,7 +125,7 @@ bool QgsPointV2::fromWkb( QgsConstWkbPtr &wkbPtr )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::fromWkt( const QString &wkt )
+bool QgsPoint::fromWkt( const QString &wkt )
 {
   clear();
 
@@ -173,7 +173,7 @@ bool QgsPointV2::fromWkt( const QString &wkt )
  * See details in QEP #17
  ****************************************************************************/
 
-QByteArray QgsPointV2::asWkb() const
+QByteArray QgsPoint::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 );
   binarySize += ( 2 + is3D() + isMeasure() ) * sizeof( double );
@@ -195,7 +195,7 @@ QByteArray QgsPointV2::asWkb() const
   return wkbArray;
 }
 
-QString QgsPointV2::asWkt( int precision ) const
+QString QgsPoint::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
   wkt += qgsDoubleToString( mX, precision ) + ' ' + qgsDoubleToString( mY, precision );
@@ -207,7 +207,7 @@ QString QgsPointV2::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
@@ -217,7 +217,7 @@ QDomElement QgsPointV2::asGML2( QDomDocument &doc, int precision, const QString 
   return elemPoint;
 }
 
-QDomElement QgsPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
@@ -237,25 +237,25 @@ QDomElement QgsPointV2::asGML3( QDomDocument &doc, int precision, const QString 
  * See details in QEP #17
  ****************************************************************************/
 
-QString QgsPointV2::asJSON( int precision ) const
+QString QgsPoint::asJSON( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + ", " + qgsDoubleToString( mY, precision )
          + "]}";
 }
 
-void QgsPointV2::draw( QPainter &p ) const
+void QgsPoint::draw( QPainter &p ) const
 {
   p.drawRect( mX - 2, mY - 2, 4, 4 );
 }
 
-void QgsPointV2::clear()
+void QgsPoint::clear()
 {
   mX = mY = mZ = mM = 0.;
   clearCache();
 }
 
-void QgsPointV2::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
+void QgsPoint::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
   clearCache();
   if ( transformZ )
@@ -269,17 +269,17 @@ void QgsPointV2::transform( const QgsCoordinateTransform &ct, QgsCoordinateTrans
   }
 }
 
-QgsCoordinateSequence QgsPointV2::coordinateSequence() const
+QgsCoordinateSequence QgsPoint::coordinateSequence() const
 {
   QgsCoordinateSequence cs;
 
   cs.append( QgsRingSequence() );
-  cs.back().append( QgsPointSequence() << QgsPointV2( *this ) );
+  cs.back().append( QgsPointSequence() << QgsPoint( *this ) );
 
   return cs;
 }
 
-QgsAbstractGeometry *QgsPointV2::boundary() const
+QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
 }
@@ -290,7 +290,7 @@ QgsAbstractGeometry *QgsPointV2::boundary() const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
+bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
   Q_UNUSED( position );
   clearCache();
@@ -307,7 +307,7 @@ bool QgsPointV2::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
   return true;
 }
 
-double QgsPointV2::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt );
   Q_UNUSED( segmentPt );
@@ -317,7 +317,7 @@ double QgsPointV2::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, 
   return -1;  // no segments - return error
 }
 
-bool QgsPointV2::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
+bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 {
   if ( id.vertex < 0 )
   {
@@ -345,7 +345,7 @@ bool QgsPointV2::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPointV2::addZValue( double zValue )
+bool QgsPoint::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
     return false;
@@ -356,7 +356,7 @@ bool QgsPointV2::addZValue( double zValue )
   return true;
 }
 
-bool QgsPointV2::addMValue( double mValue )
+bool QgsPoint::addMValue( double mValue )
 {
   if ( QgsWkbTypes::hasM( mWkbType ) )
     return false;
@@ -367,7 +367,7 @@ bool QgsPointV2::addMValue( double mValue )
   return true;
 }
 
-void QgsPointV2::transform( const QTransform &t )
+void QgsPoint::transform( const QTransform &t )
 {
   clearCache();
   qreal x, y;
@@ -377,7 +377,7 @@ void QgsPointV2::transform( const QTransform &t )
 }
 
 
-bool QgsPointV2::dropZValue()
+bool QgsPoint::dropZValue()
 {
   if ( !is3D() )
     return false;
@@ -388,7 +388,7 @@ bool QgsPointV2::dropZValue()
   return true;
 }
 
-bool QgsPointV2::dropMValue()
+bool QgsPoint::dropMValue()
 {
   if ( !isMeasure() )
     return false;
@@ -399,7 +399,7 @@ bool QgsPointV2::dropMValue()
   return true;
 }
 
-bool QgsPointV2::convertTo( QgsWkbTypes::Type type )
+bool QgsPoint::convertTo( QgsWkbTypes::Type type )
 {
   if ( type == mWkbType )
     return true;
@@ -433,59 +433,59 @@ bool QgsPointV2::convertTo( QgsWkbTypes::Type type )
 }
 
 
-QPointF QgsPointV2::toQPointF() const
+QPointF QgsPoint::toQPointF() const
 {
   return QPointF( mX, mY );
 }
 
-double QgsPointV2::distance( double x, double y ) const
+double QgsPoint::distance( double x, double y ) const
 {
   return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
 }
 
-double QgsPointV2::distance( const QgsPointV2 &other ) const
+double QgsPoint::distance( const QgsPoint &other ) const
 {
   return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
 }
 
-double QgsPointV2::distanceSquared( double x, double y ) const
+double QgsPoint::distanceSquared( double x, double y ) const
 {
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
 }
 
-double QgsPointV2::distanceSquared( const QgsPointV2 &other ) const
+double QgsPoint::distanceSquared( const QgsPoint &other ) const
 {
   return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
 }
 
-double QgsPointV2::distance3D( double x, double y, double z ) const
+double QgsPoint::distance3D( double x, double y, double z ) const
 {
   return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z ) );
 }
 
-double QgsPointV2::distance3D( const QgsPointV2 &other ) const
+double QgsPoint::distance3D( const QgsPoint &other ) const
 {
   return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() ) );
 }
 
-double QgsPointV2::distanceSquared3D( double x, double y, double z ) const
+double QgsPoint::distanceSquared3D( double x, double y, double z ) const
 {
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z );
 }
 
-double QgsPointV2::distanceSquared3D( const QgsPointV2 &other ) const
+double QgsPoint::distanceSquared3D( const QgsPoint &other ) const
 {
   return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() );
 }
 
-double QgsPointV2::azimuth( const QgsPointV2 &other ) const
+double QgsPoint::azimuth( const QgsPoint &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
-double QgsPointV2::inclination( const QgsPointV2 &other ) const
+double QgsPoint::inclination( const QgsPoint &other ) const
 {
   double distance = distance3D( other );
   if ( qgsDoubleNear( distance, 0.0 ) )
@@ -497,7 +497,7 @@ double QgsPointV2::inclination( const QgsPointV2 &other ) const
   return ( acos( dz / distance ) * 180.0 / M_PI );
 }
 
-QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclination ) const
+QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
   QgsWkbTypes::Type pType( QgsWkbTypes::Point );
 
@@ -525,5 +525,5 @@ QgsPointV2 QgsPointV2::project( double distance, double azimuth, double inclinat
     pType = QgsWkbTypes::addM( pType );
   }
 
-  return QgsPointV2( pType, mX + dx, mY + dy, mZ + dz, mM );
+  return QgsPoint( pType, mX + dx, mY + dy, mZ + dz, mM );
 }

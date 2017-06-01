@@ -31,7 +31,7 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkbTypes,
-                       QgsPoint, QgsFeature, QgsFeatureRequest,
+                       QgsPointXY, QgsFeature, QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
@@ -98,7 +98,7 @@ class RandomPointsLayer(GeoAlgorithm):
             rx = bbox.xMinimum() + bbox.width() * random.random()
             ry = bbox.yMinimum() + bbox.height() * random.random()
 
-            pnt = QgsPoint(rx, ry)
+            pnt = QgsPointXY(rx, ry)
             geom = QgsGeometry.fromPoint(pnt)
             ids = idxLayer.intersects(geom.buffer(5, 5).boundingBox())
             if len(ids) > 0 and \

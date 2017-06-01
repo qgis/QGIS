@@ -44,12 +44,12 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     void setRotationPreviewBox( double rotation );
 
     //! Rotates input point counterclockwise around centerPoint
-    QgsPoint rotatePointCounterClockwise( const QgsPoint &input, const QgsPoint &centerPoint, double degrees );
+    QgsPointXY rotatePointCounterClockwise( const QgsPointXY &input, const QgsPointXY &centerPoint, double degrees );
 
     double mStartRotation; //rotation value prior to start rotating
     double mCurrentRotation;
     double mCurrentMouseAzimuth;
-    QgsPoint mRotationPoint;
+    QgsPointXY mRotationPoint;
     QgsPointRotationItem *mRotationItem = nullptr;
     QgsRubberBand *mRotationPreviewBox = nullptr;
 

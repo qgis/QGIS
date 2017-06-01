@@ -43,7 +43,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
-    bool insertVertex( const QgsPointV2 &point, QgsFeatureId atFeatureId, int beforeVertex );
+    bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  to the given coordinates
      *  \note available in Python bindings as moveVertexV2
      */
-    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
     /** Deletes a vertex from a feature.
      * \param featureId ID of feature to remove vertex from
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *   5 no feature found where ring can be inserted
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPoint> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
+    int addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
     /** Adds a ring to polygon/multipolygon features
      * \param ring ring to add
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  6 if selected geometry not found
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint> &ring, QgsFeatureId featureId );
+    int addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
 
     /** Adds a new part polygon to a multipart feature
      * \returns
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /** Splits features cut by the given line
      *  \param splitLine line that splits the layer features
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QList<QgsPoint> &splitLine, bool topologicalEditing = false );
+    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /** Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
@@ -171,13 +171,13 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param p position of the vertex
      * \returns 0 in case of success
      */
-    int addTopologicalPoints( const QgsPoint &p );
+    int addTopologicalPoints( const QgsPointXY &p );
 
   protected:
 
     /** Little helper function that gives bounding box from a list of points.
     \returns 0 in case of success */
-    int boundingBoxFromPointList( const QList<QgsPoint> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+    int boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 
   private:
 

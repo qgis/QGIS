@@ -26,7 +26,7 @@ class QgsMapTip: QWidget
      * @param mpMapCanvas a map canvas on which the tip is drawn
      */
     void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & mapPosition,
+                     QgsPointXY & mapPosition,
                      QPoint & pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
     /** Clear the current maptip if it exists

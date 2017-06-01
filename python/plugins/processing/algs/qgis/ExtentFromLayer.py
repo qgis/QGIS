@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsField,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
@@ -115,8 +115,8 @@ class ExtentFromLayer(GeoAlgorithm):
         area = width * height
         perim = 2 * width + 2 * height
 
-        rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                                                                     maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+        rect = [QgsPointXY(minx, miny), QgsPointXY(minx, maxy), QgsPointXY(maxx,
+                                                                           maxy), QgsPointXY(maxx, miny), QgsPointXY(minx, miny)]
         geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
@@ -151,8 +151,8 @@ class ExtentFromLayer(GeoAlgorithm):
             cnty = miny + height / 2.0
             area = width * height
             perim = 2 * width + 2 * height
-            rect = [QgsPoint(minx, miny), QgsPoint(minx, maxy), QgsPoint(maxx,
-                                                                         maxy), QgsPoint(maxx, miny), QgsPoint(minx, miny)]
+            rect = [QgsPointXY(minx, miny), QgsPointXY(minx, maxy), QgsPointXY(maxx,
+                                                                               maxy), QgsPointXY(maxx, miny), QgsPointXY(minx, miny)]
 
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)

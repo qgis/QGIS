@@ -82,7 +82,7 @@ void QgsPointMarkerItem::paint( QPainter *painter )
   }
 }
 
-void QgsPointMarkerItem::setPointLocation( const QgsPoint &p )
+void QgsPointMarkerItem::setPointLocation( const QgsPointXY &p )
 {
   mLocation = toCanvasCoordinates( p );
 }

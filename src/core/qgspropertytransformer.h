@@ -68,7 +68,7 @@ class CORE_EXPORT QgsCurveTransform
      * Behavior is undefined if duplicate x values exist in the control points
      * list.
      */
-    QgsCurveTransform( const QList< QgsPoint > &controlPoints );
+    QgsCurveTransform( const QList< QgsPointXY > &controlPoints );
 
     ~QgsCurveTransform();
 
@@ -83,14 +83,14 @@ class CORE_EXPORT QgsCurveTransform
      * Returns a list of the control points for the transform.
      * \see setControlPoints()
      */
-    QList< QgsPoint > controlPoints() const { return mControlPoints; }
+    QList< QgsPointXY > controlPoints() const { return mControlPoints; }
 
     /**
      * Sets the list of control points for the transform. Any existing
      * points are removed.
      * \see controlPoints()
      */
-    void setControlPoints( const QList< QgsPoint > &points );
+    void setControlPoints( const QList< QgsPointXY > &points );
 
     /**
      * Adds a control point to the transform. Behavior is undefined if duplicate
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsCurveTransform
 
     void calcSecondDerivativeArray();
 
-    QList< QgsPoint > mControlPoints;
+    QList< QgsPointXY > mControlPoints;
 
     double *mSecondDerivativeArray = nullptr;
 };

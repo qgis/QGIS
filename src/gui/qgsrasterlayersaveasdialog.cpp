@@ -349,9 +349,9 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
     // close to margins are higher resolutions (even very, too high)
     // TODO: consider more precise resolution calculation
 
-    QgsPoint center = outputRectangle().center();
+    QgsPointXY center = outputRectangle().center();
     QgsCoordinateTransform ct( srcCrs, outputCrs() );
-    QgsPoint srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
+    QgsPointXY srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
 
     QgsRectangle srcExtent( srsCenter.x() - xRes / 2, srsCenter.y() - yRes / 2, srsCenter.x() + xRes / 2, srsCenter.y() + yRes / 2 );
 

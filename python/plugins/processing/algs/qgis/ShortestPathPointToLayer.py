@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsFields, QgsField, QgsFeatureRequest,
+from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
@@ -176,7 +176,7 @@ class ShortestPathPointToLayer(GeoAlgorithm):
             self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.LineString, layer.crs(), context)
 
         tmp = startPoint.split(',')
-        startPoint = QgsPoint(float(tmp[0]), float(tmp[1]))
+        startPoint = QgsPointXY(float(tmp[0]), float(tmp[1]))
 
         directionField = -1
         if directionFieldName is not None:

@@ -75,7 +75,7 @@ void TestQgsRectangle::regression6194()
   rect2.setYMaximum( 520.0 );
 
   // Scale by 2.5, keeping bottom left as is.
-  QgsPoint p( 135.0, 270.0 );
+  QgsPointXY p( 135.0, 270.0 );
   rect1.scale( 2.5, &p );
 
   QVERIFY( rect2.xMinimum() == rect1.xMinimum() );

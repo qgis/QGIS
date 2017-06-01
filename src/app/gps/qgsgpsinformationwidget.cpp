@@ -69,7 +69,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
 
   mpLastLayer = nullptr;
 
-  mLastGpsPosition = QgsPoint( 0.0, 0.0 );
+  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
 
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
@@ -390,7 +390,7 @@ void QgsGPSInformationWidget::connectGps()
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
 
-  mLastGpsPosition = QgsPoint( 0.0, 0.0 );
+  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
 
   QString port;
 
@@ -626,10 +626,10 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
     validFlag = info.longitude >= -180.0 && info.longitude <= 180.0 && info.latitude >= -90.0 && info.latitude <= 90.0;
   }
 
-  QgsPoint myNewCenter;
+  QgsPointXY myNewCenter;
   if ( validFlag )
   {
-    myNewCenter = QgsPoint( info.longitude, info.latitude );
+    myNewCenter = QgsPointXY( info.longitude, info.latitude );
   }
   else
   {
@@ -674,7 +674,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();
       QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS ); // use existing WGS84 CRS
 
-      QgsPoint myPoint = myTransform.transform( myNewCenter );
+      QgsPointXY myPoint = myTransform.transform( myNewCenter );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
       QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
 
@@ -743,7 +743,7 @@ void QgsGPSInformationWidget::addVertex()
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
   // should catch map CRS change and transform the points
-  QgsPoint myPoint;
+  QgsPointXY myPoint;
   if ( mpCanvas )
   {
     QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapSettings().destinationCrs() );
@@ -798,7 +798,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
     QgsFeature *f = new QgsFeature( 0 );
 
     QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
-    QgsPoint myPoint = t.transform( mLastGpsPosition );
+    QgsPointXY myPoint = t.transform( mLastGpsPosition );
     double x = myPoint.x();
     double y = myPoint.y();
 
@@ -848,12 +848,12 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       QgsWkbPtr wkbPtr( buf, size );
       wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::LineString << mCaptureList.size();
 
-      for ( QList<QgsPoint>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
+      for ( QList<QgsPointXY>::const_iterator it = mCaptureList.constBegin(); it != mCaptureList.constEnd(); ++it )
       {
-        QgsPoint savePoint = *it;
+        QgsPointXY savePoint = *it;
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
-        QgsPoint myPoint = t.transform( savePoint );
+        QgsPointXY myPoint = t.transform( savePoint );
 
         wkbPtr << myPoint.x() << myPoint.y();
       }
@@ -870,18 +870,18 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       QgsWkbPtr wkbPtr( buf, size );
       wkbPtr << ( char ) QgsApplication::endian() << QgsWkbTypes::Polygon << 1 << mCaptureList.size() + 1;
 
-      QList<QgsPoint>::iterator it;
+      QList<QgsPointXY>::iterator it;
       for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
       {
-        QgsPoint savePoint = *it;
+        QgsPointXY savePoint = *it;
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
-        QgsPoint myPoint = t.transform( savePoint );
+        QgsPointXY myPoint = t.transform( savePoint );
         wkbPtr << myPoint.x() << myPoint.y();
       }
       // close the polygon
       it = mCaptureList.begin();
-      QgsPoint savePoint = *it;
+      QgsPointXY savePoint = *it;
 
       wkbPtr << savePoint.x() << savePoint.y();
 

@@ -2035,9 +2035,9 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   QPointF scenePoint = mapToScene( event->pos() );
 
   //adjust view center
-  QgsPoint oldCenter( visibleRect.center() );
-  QgsPoint newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
-                      scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  QgsPointXY oldCenter( visibleRect.center() );
+  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                        scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
   centerOn( newCenter.x(), newCenter.y() );
 
   //zoom composition

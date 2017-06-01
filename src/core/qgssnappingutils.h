@@ -60,7 +60,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches.
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
-    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
 
     //! Snap to current layer
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
@@ -198,9 +198,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void clearAllLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
-    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
+    QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
-    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPoint &pointMap, double tolerance );
+    QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
     typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
 

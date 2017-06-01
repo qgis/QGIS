@@ -35,7 +35,7 @@ namespace SpatialIndex SIP_SKIP
 
 class QgsFeature;
 class QgsRectangle;
-class QgsPoint;
+class QgsPointXY;
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsSpatialIndex
     QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
 
     //! Returns nearest neighbors (their count is specified by second parameter)
-    QList<QgsFeatureId> nearestNeighbor( const QgsPoint &point, int neighbors ) const;
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
     /* debugging */
 

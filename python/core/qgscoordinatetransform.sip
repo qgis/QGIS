@@ -106,7 +106,7 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
 %Docstring
  Transform the point from the source CRS to the destination CRS.
  If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -114,10 +114,10 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  \param point point to transform
  \param direction transform direction (defaults to ForwardTransform)
  :return: transformed point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 %Docstring
  Transform the point specified by x,y from the source CRS to the destination CRS.
  If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -126,7 +126,7 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  \param y y coordinate of point to transform
  \param direction transform direction (defaults to ForwardTransform)
  :return: transformed point
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;

@@ -34,7 +34,7 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsV
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+  QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
 
   QList<IdentifyResult> results;
   if ( !identifyVectorLayer( &results, mLayer, point ) )

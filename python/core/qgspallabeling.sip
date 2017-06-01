@@ -19,11 +19,11 @@ class QgsLabelPosition
 #include "qgspallabeling.h"
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
+    QgsLabelPosition( int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
     QgsLabelPosition();
     int featureId;
     double rotation;
-    QVector< QgsPoint > cornerPoints;
+    QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
     double width;
     double height;
@@ -467,8 +467,8 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
     const QgsMapToPixel *xform;
     QgsCoordinateTransform ct;
 
-    QgsPoint ptZero;
-    QgsPoint ptOne;
+    QgsPointXY ptZero;
+    QgsPointXY ptOne;
     QgsGeometry extentGeom;
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
@@ -507,7 +507,7 @@ class QgsLabelingResults
     ~QgsLabelingResults();
 
 
-    QList<QgsLabelPosition> labelsAtPosition( const QgsPoint &p ) const;
+    QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 %Docstring
 return infos about labels at a given (map) position
  :rtype: list of QgsLabelPosition

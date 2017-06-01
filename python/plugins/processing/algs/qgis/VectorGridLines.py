@@ -37,7 +37,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes)
 from qgis.utils import iface
 
@@ -111,8 +111,8 @@ class VectorGridLines(GeoAlgorithm):
         count_update = count_max * 0.10
         y = bbox.yMaximum()
         while y >= bbox.yMinimum():
-            pt1 = QgsPoint(bbox.xMinimum(), y)
-            pt2 = QgsPoint(bbox.xMaximum(), y)
+            pt1 = QgsPointXY(bbox.xMinimum(), y)
+            pt2 = QgsPointXY(bbox.xMaximum(), y)
             line = [pt1, pt2]
             feat.setGeometry(geom.fromPolyline(line))
             feat.setAttribute(0, idVar)
@@ -131,8 +131,8 @@ class VectorGridLines(GeoAlgorithm):
         count_update = count_max * 0.10
         x = bbox.xMinimum()
         while x <= bbox.xMaximum():
-            pt1 = QgsPoint(x, bbox.yMaximum())
-            pt2 = QgsPoint(x, bbox.yMinimum())
+            pt1 = QgsPointXY(x, bbox.yMaximum())
+            pt2 = QgsPointXY(x, bbox.yMinimum())
             line = [pt1, pt2]
             feat.setGeometry(geom.fromPolyline(line))
             feat.setAttribute(0, idVar)

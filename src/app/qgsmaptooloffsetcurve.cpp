@@ -219,7 +219,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
   mGeometryModified = true;
 
   //get offset from current position rectangular to feature
-  QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
+  QgsPointXY layerCoords = toLayerCoordinates( layer, e->pos() );
 
   //snap cursor to background layers
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( e->pos() );
@@ -236,7 +236,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
     }
   }
 
-  QgsPoint minDistPoint;
+  QgsPointXY minDistPoint;
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );

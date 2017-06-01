@@ -631,7 +631,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   // This is a hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
-  QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+  QgsPointXY topLeft = m2p.toMapPoint( 0, 0 );
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
@@ -795,7 +795,7 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
 
 } // setExtent
 
-void QgsMapCanvas::setCenter( const QgsPoint &center )
+void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
   QgsRectangle r = mapSettings().extent();
   double x = center.x();
@@ -809,7 +809,7 @@ void QgsMapCanvas::setCenter( const QgsPoint &center )
   );
 } // setCenter
 
-QgsPoint QgsMapCanvas::center() const
+QgsPointXY QgsMapCanvas::center() const
 {
   QgsRectangle r = mapSettings().extent();
   return r.center();
@@ -927,7 +927,7 @@ void QgsMapCanvas::zoomToFeatureExtent( QgsRectangle &rect )
   if ( rect.isEmpty() )
   {
     // zoom in
-    QgsPoint c = rect.center();
+    QgsPointXY c = rect.center();
     rect = extent();
     rect.scale( 1.0, &c );
   }
@@ -1219,7 +1219,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   double sfy = ( double )zoomRectSize.height() / canvasSize.height();
   double sf = qMax( sfx, sfy );
 
-  QgsPoint c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
+  QgsPointXY c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
 
   zoomByFactor( sf, &c );
   refresh();
@@ -1400,10 +1400,10 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
   // zoom map to mouse cursor by scaling
-  QgsPoint oldCenter = center();
-  QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
-  QgsPoint newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
-                      mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
+  QgsPointXY oldCenter = center();
+  QgsPointXY mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
+  QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
+                        mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
 }
@@ -1441,7 +1441,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
   else
   {
     // transform the mouse pos to map coordinates
-    QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
+    QgsPointXY center  = getCoordinateTransform()->toMapPoint( x, y );
     QgsRectangle r = mapSettings().visibleExtent();
     r.scale( scaleFactor, &center );
     setExtent( r, true );
@@ -1480,7 +1480,7 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
 
   // show x y on status bar
   QPoint xy = e->pos();
-  QgsPoint coord = getCoordinateTransform()->toMapCoordinates( xy );
+  QgsPointXY coord = getCoordinateTransform()->toMapCoordinates( xy );
   emit xyCoordinates( coord );
 }
 
@@ -1752,13 +1752,13 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   moveCanvasContents( true ); // true means reset
 
   // use start and end box points to calculate the extent
-  QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
-  QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
+  QgsPointXY start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
+  QgsPointXY end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
   // modify the center
   double dx = end.x() - start.x();
   double dy = end.y() - start.y();
-  QgsPoint c = center();
+  QgsPointXY c = center();
   c.set( c.x() - dx, c.y() - dy );
   setCenter( c );
 
@@ -1982,7 +1982,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer *ml, const QString &
   }
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint *center )
+void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {
   if ( mScaleLocked )
   {

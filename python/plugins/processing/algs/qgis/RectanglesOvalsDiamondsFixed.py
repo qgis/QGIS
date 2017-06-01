@@ -31,7 +31,7 @@ import math
 from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
@@ -127,8 +127,8 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
-                polygon = [[QgsPoint(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
-                                     -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                                       -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
@@ -139,7 +139,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
-                polygon = [[QgsPoint(i[0] + x, i[1] + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
@@ -158,8 +158,8 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
-                polygon = [[QgsPoint(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
-                                     -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                                       -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
@@ -170,7 +170,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
-                polygon = [[QgsPoint(i[0] + x, i[1] + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
@@ -191,8 +191,8 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 points = []
                 for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
-                polygon = [[QgsPoint(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
-                                     -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
+                                       -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
@@ -205,7 +205,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 points = []
                 for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
-                polygon = [[QgsPoint(i[0] + x, i[1] + y) for i in points]]
+                polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())

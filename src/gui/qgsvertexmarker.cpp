@@ -32,7 +32,7 @@ void QgsVertexMarker::setIconSize( int iconSize )
   mIconSize = iconSize;
 }
 
-void QgsVertexMarker::setCenter( const QgsPoint &point )
+void QgsVertexMarker::setCenter( const QgsPointXY &point )
 {
   mCenter = point;
   QPointF pt = toCanvasCoordinates( mCenter );

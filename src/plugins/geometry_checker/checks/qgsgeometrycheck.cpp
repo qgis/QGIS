@@ -58,7 +58,7 @@ double QgsGeometryCheckPrecision::reducedTolerance()
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     QgsFeatureId featureId,
-    const QgsPointV2 &errorLocation,
+    const QgsPoint &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )

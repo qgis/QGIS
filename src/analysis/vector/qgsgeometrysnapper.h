@@ -169,7 +169,7 @@ class QgsSnapIndex
         : geom( _geom )
         , vidx( _vidx )
       {}
-      QgsPointV2 point() const { return geom->vertexAt( vidx ); }
+      QgsPoint point() const { return geom->vertexAt( vidx ); }
 
       const QgsAbstractGeometry *geom = nullptr;
       QgsVertexId vidx;
@@ -182,7 +182,7 @@ class QgsSnapIndex
       public:
         virtual ~SnapItem() = default;
         SnapType type;
-        virtual QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const = 0;
+        virtual QgsPoint getSnapPoint( const QgsPoint &p ) const = 0;
 
       protected:
         explicit SnapItem( SnapType _type ) : type( _type ) {}
@@ -192,7 +192,7 @@ class QgsSnapIndex
     {
       public:
         explicit PointSnapItem( const CoordIdx *_idx, bool isEndPoint );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
+        QgsPoint getSnapPoint( const QgsPoint &/*p*/ ) const override;
         const CoordIdx *idx = nullptr;
     };
 
@@ -200,22 +200,22 @@ class QgsSnapIndex
     {
       public:
         SegmentSnapItem( const CoordIdx *_idxFrom, const CoordIdx *_idxTo );
-        QgsPointV2 getSnapPoint( const QgsPointV2 &p ) const override;
-        bool getIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &inter ) const;
-        bool getProjection( const QgsPointV2 &p, QgsPointV2 &pProj );
+        QgsPoint getSnapPoint( const QgsPoint &p ) const override;
+        bool getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const;
+        bool getProjection( const QgsPoint &p, QgsPoint &pProj );
         const CoordIdx *idxFrom = nullptr;
         const CoordIdx *idxTo = nullptr;
     };
 
-    QgsSnapIndex( const QgsPointV2 &origin, double cellSize );
+    QgsSnapIndex( const QgsPoint &origin, double cellSize );
     ~QgsSnapIndex();
     void addGeometry( const QgsAbstractGeometry *geom );
-    QgsPointV2 getClosestSnapToPoint( const QgsPointV2 &p, const QgsPointV2 &q );
-    SnapItem *getSnapItem( const QgsPointV2 &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
+    QgsPoint getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q );
+    SnapItem *getSnapItem( const QgsPoint &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
 
   private:
     typedef QList<SnapItem *> Cell;
-    typedef QPair<QgsPointV2, QgsPointV2> Segment;
+    typedef QPair<QgsPoint, QgsPoint> Segment;
 
     class GridRow
     {
@@ -231,7 +231,7 @@ class QgsSnapIndex
         int mColStartIdx;
     };
 
-    QgsPointV2 mOrigin;
+    QgsPoint mOrigin;
     double mCellSize;
 
     QList<CoordIdx *> mCoordIdxs;

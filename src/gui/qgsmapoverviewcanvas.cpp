@@ -91,10 +91,10 @@ void QgsMapOverviewCanvas::drawExtentRect()
   const QPolygonF &vPoly = mMapCanvas->mapSettings().visiblePolygon();
   const QgsMapToPixel &cXf = mSettings.mapToPixel();
   QVector< QPoint > pts;
-  pts.push_back( cXf.transform( QgsPoint( vPoly[0] ) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint( vPoly[1] ) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint( vPoly[2] ) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint( vPoly[3] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPointXY( vPoly[0] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPointXY( vPoly[1] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPointXY( vPoly[2] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPointXY( vPoly[3] ) ).toQPointF().toPoint() );
   mPanningWidget->setPolygon( QPolygon( pts ) );
   mPanningWidget->show(); // show if hidden
 }
@@ -132,7 +132,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent *e )
     const QgsMapToPixel &cXf = mSettings.mapToPixel();
     QRect rect = mPanningWidget->geometry();
 
-    QgsPoint center = cXf.toMapCoordinates( rect.center() );
+    QgsPointXY center = cXf.toMapCoordinates( rect.center() );
     mMapCanvas->setCenter( center );
     mMapCanvas->refresh();
   }

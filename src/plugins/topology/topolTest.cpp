@@ -256,10 +256,10 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer *layer
 
   qDebug() << mFeatureList1.count();
 
-  QgsPoint startPoint;
-  QgsPoint endPoint;
+  QgsPointXY startPoint;
+  QgsPointXY endPoint;
 
-  std::multimap<QgsPoint, QgsFeatureId, PointComparer> endVerticesMap;
+  std::multimap<QgsPointXY, QgsFeatureId, PointComparer> endVerticesMap;
 
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
@@ -292,8 +292,8 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer *layer
         startPoint = line[0];
         endPoint = line[line.size() - 1];
 
-        endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( startPoint, it->feature.id() ) );
-        endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( endPoint, it->feature.id() ) );
+        endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( startPoint, it->feature.id() ) );
+        endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( endPoint, it->feature.id() ) );
 
       }
     }
@@ -302,17 +302,17 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer *layer
       QgsPolyline polyline = g1.asPolyline();
       startPoint = polyline[0];
       endPoint = polyline[polyline.size() - 1];
-      endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( startPoint, it->feature.id() ) );
-      endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( endPoint, it->feature.id() ) );
+      endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( startPoint, it->feature.id() ) );
+      endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( endPoint, it->feature.id() ) );
     }
   }
 
   QgsGeometry canvasExtentPoly = QgsGeometry::fromWkt( qgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
-  for ( std::multimap<QgsPoint, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
-    QgsPoint p = pointIt->first;
+    QgsPointXY p = pointIt->first;
     QgsFeatureId k = pointIt->second;
 
     size_t repetitions = endVerticesMap.count( p );
@@ -743,10 +743,10 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
   qDebug() << mFeatureList1.count();
 
-  QgsPoint startPoint;
-  QgsPoint endPoint;
+  QgsPointXY startPoint;
+  QgsPointXY endPoint;
 
-  std::multimap<QgsPoint, QgsFeatureId, PointComparer> endVerticesMap;
+  std::multimap<QgsPointXY, QgsFeatureId, PointComparer> endVerticesMap;
 
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
@@ -779,8 +779,8 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
         startPoint = line[0];
         endPoint = line[line.size() - 1];
 
-        endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( startPoint, it->feature.id() ) );
-        endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( endPoint, it->feature.id() ) );
+        endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( startPoint, it->feature.id() ) );
+        endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( endPoint, it->feature.id() ) );
 
       }
     }
@@ -789,8 +789,8 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
       QgsPolyline polyline = g1.asPolyline();
       startPoint = polyline[0];
       endPoint = polyline[polyline.size() - 1];
-      endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( startPoint, it->feature.id() ) );
-      endVerticesMap.insert( std::pair<QgsPoint, QgsFeatureId>( endPoint, it->feature.id() ) );
+      endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( startPoint, it->feature.id() ) );
+      endVerticesMap.insert( std::pair<QgsPointXY, QgsFeatureId>( endPoint, it->feature.id() ) );
     }
   }
 
@@ -798,9 +798,9 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
   QgsGeometry canvasExtentPoly = QgsGeometry::fromWkt( qgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
-  for ( std::multimap<QgsPoint, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
-    QgsPoint p = pointIt->first;
+    QgsPointXY p = pointIt->first;
     QgsFeatureId k = pointIt->second;
 
     size_t repetitions = endVerticesMap.count( p );

@@ -357,7 +357,7 @@ class QgsFeatureRenderer
      * Creates a point in screen coordinates from a wkb string in map
      * coordinates
      */
-    static QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point );
+    static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 
     /**
      * Clones generic renderer data to another renderer.

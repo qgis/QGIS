@@ -29,12 +29,12 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
 
     ~QgsGraphBuilder();
 
-    virtual void addVertex( int id, const QgsPoint &pt );
+    virtual void addVertex( int id, const QgsPointXY &pt );
 %Docstring
  MANDATORY BUILDER PROPERTY DECLARATION
 %End
 
-    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &prop );
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop );
 
     QgsGraph *graph() /Factory/;
 %Docstring

@@ -105,7 +105,7 @@ void QgsPointSample::addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWri
   }
 
   QgsSpatialIndex sIndex; //to check minimum distance
-  QMap< QgsFeatureId, QgsPoint > pointMapForFeature;
+  QMap< QgsFeatureId, QgsPointXY > pointMapForFeature;
 
   int nIterations = 0;
   int maxIterations = nPoints * 200;
@@ -118,7 +118,7 @@ void QgsPointSample::addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWri
   {
     randX = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
     randY = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
-    QgsPoint randPoint( randX, randY );
+    QgsPointXY randPoint( randX, randY );
     QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
     if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
@@ -138,7 +138,7 @@ void QgsPointSample::addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWri
   }
 }
 
-bool QgsPointSample::checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPoint > &pointMap )
+bool QgsPointSample::checkMinDistance( QgsPointXY &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPointXY > &pointMap )
 {
   if ( minDistance <= 0 )
   {
@@ -151,13 +151,13 @@ bool QgsPointSample::checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, dou
     return true;
   }
 
-  QMap< QgsFeatureId, QgsPoint >::const_iterator it = pointMap.find( neighborList[0] );
+  QMap< QgsFeatureId, QgsPointXY >::const_iterator it = pointMap.find( neighborList[0] );
   if ( it == pointMap.constEnd() ) //should not happen
   {
     return true;
   }
 
-  QgsPoint neighborPt = it.value();
+  QgsPointXY neighborPt = it.value();
   if ( neighborPt.sqrDist( pt ) < ( minDistance * minDistance ) )
   {
     return false;

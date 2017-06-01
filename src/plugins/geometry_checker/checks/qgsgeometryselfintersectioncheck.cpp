@@ -115,11 +115,11 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     error->setObsolete();
     return;
   }
-  QgsPointV2 p1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment1 ) );
-  QgsPointV2 q1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment2 ) );
-  QgsPointV2 p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
-  QgsPointV2 q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
-  QgsPointV2 s;
+  QgsPoint p1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment1 ) );
+  QgsPoint q1 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, inter.segment2 ) );
+  QgsPoint p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
+  QgsPoint q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
+  QgsPoint s;
   if ( !QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, s, QgsGeometryCheckPrecision::tolerance() ) )
   {
     error->setObsolete();

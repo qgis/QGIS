@@ -40,8 +40,8 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
           continue;
         for ( int iVert = nVerts - 1, jVert = 0; jVert < nVerts; iVert = jVert++ )
         {
-          QgsPointV2 pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          QgsPointV2 pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
+          QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
           {
             errors.append( new QgsGeometryCheckError( this, featureid, pj, QgsVertexId( iPart, iRing, jVert ) ) );
@@ -78,8 +78,8 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
     error->setObsolete();
     return;
   }
-  QgsPointV2 pi = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + nVerts - 1 ) % nVerts ) );
-  QgsPointV2 pj = geom->vertexAt( error->vidx() );
+  QgsPoint pi = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + nVerts - 1 ) % nVerts ) );
+  QgsPoint pj = geom->vertexAt( error->vidx() );
   if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) >= QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
   {
     error->setObsolete();

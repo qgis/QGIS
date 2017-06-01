@@ -49,7 +49,7 @@ Get a point locator for the given layer. If such locator does not exist, it will
 Snap to map according to the current configuration (mode). Optional filter allows discarding unwanted matches.
  :rtype: QgsPointLocator.Match
 %End
-    QgsPointLocator::Match snapToMap( const QgsPoint &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
+    QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
  :rtype: QgsPointLocator.Match
 %End

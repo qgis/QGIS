@@ -241,9 +241,9 @@ class QgsSymbol
     QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers /Transfer/ );
 
     /**
-     * Creates a point in screen coordinates from a QgsPointV2 in map coordinates
+     * Creates a point in screen coordinates from a QgsPoint in map coordinates
      */
-    static QPointF _getPoint( QgsRenderContext &context, const QgsPointV2 &point );
+    static QPointF _getPoint( QgsRenderContext &context, const QgsPoint &point );
 
     /**
      * Creates a line string in screen coordinates from a QgsCurve in map

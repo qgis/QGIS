@@ -154,7 +154,7 @@ void QgsCurveEditorWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
   {
-    QList< QgsPoint > cp = mCurve.controlPoints();
+    QList< QgsPointXY > cp = mCurve.controlPoints();
     if ( mCurrentPlotMarkerIndex > 0 && mCurrentPlotMarkerIndex < cp.count() - 1 )
     {
       cp.removeAt( mCurrentPlotMarkerIndex );
@@ -184,11 +184,11 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
   double minDist = 3.0 / mPlot->width();
   int currentPlotMarkerIndex = -1;
 
-  QList< QgsPoint > controlPoints = mCurve.controlPoints();
+  QList< QgsPointXY > controlPoints = mCurve.controlPoints();
 
   for ( int i = 0; i < controlPoints.count(); ++i )
   {
-    QgsPoint currentPoint = controlPoints.at( i );
+    QgsPointXY currentPoint = controlPoints.at( i );
     double currentDist;
     currentDist = qPow( point.x() - currentPoint.x(), 2.0 ) + qPow( point.y() - currentPoint.y(), 2.0 );
     if ( currentDist < minDist )
@@ -210,7 +210,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   if ( mCurrentPlotMarkerIndex < 0 )
     return;
 
-  QList< QgsPoint > cp = mCurve.controlPoints();
+  QList< QgsPointXY > cp = mCurve.controlPoints();
   bool removePoint = false;
   if ( mCurrentPlotMarkerIndex == 0 )
   {
@@ -237,7 +237,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   }
   else
   {
-    cp[ mCurrentPlotMarkerIndex ] = QgsPoint( point.x(), point.y() );
+    cp[ mCurrentPlotMarkerIndex ] = QgsPointXY( point.x(), point.y() );
   }
   mCurve.setControlPoints( cp );
   updatePlot();
@@ -312,7 +312,7 @@ void QgsCurveEditorWidget::updatePlot()
   QVector< double > x;
 
   int i = 0;
-  Q_FOREACH ( const QgsPoint &point, mCurve.controlPoints() )
+  Q_FOREACH ( const QgsPointXY &point, mCurve.controlPoints() )
   {
     x << point.x();
     addPlotMarker( point.x(), point.y(), mCurrentPlotMarkerIndex == i );

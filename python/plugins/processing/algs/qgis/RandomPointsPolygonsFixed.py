@@ -31,7 +31,7 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsWkbTypes,
-                       QgsSpatialIndex, QgsPoint, QgsFeature,
+                       QgsSpatialIndex, QgsPointXY, QgsFeature,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
@@ -119,7 +119,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                 rx = bbox.xMinimum() + bbox.width() * random.random()
                 ry = bbox.yMinimum() + bbox.height() * random.random()
 
-                pnt = QgsPoint(rx, ry)
+                pnt = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPoint(pnt)
                 if geom.within(fGeom) and \
                         vector.checkMinDistance(pnt, index, minDistance, points):

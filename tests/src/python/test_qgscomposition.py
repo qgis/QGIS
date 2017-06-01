@@ -48,7 +48,7 @@ class TestQgsComposition(unittest.TestCase):
         """Test that we can use degree symbols in substitutions.
         """
         # Create a point and convert it to text containing a degree symbol.
-        myPoint = QgsPoint(12.3, -33.33)
+        myPoint = QgsPointXY(12.3, -33.33)
         myCoordinates = myPoint.toDegreesMinutesSeconds(2)
         myTokens = myCoordinates.split(',')
         myLongitude = myTokens[0]

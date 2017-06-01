@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsGeometry,
                        QgsFeature,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsMessageLog,
@@ -156,8 +156,8 @@ class Gridify(GeoAlgorithm):
     def _gridify(self, points, hSpacing, vSpacing):
         nPoints = []
         for p in points:
-            nPoints.append(QgsPoint(round(p.x() / hSpacing, 0) * hSpacing,
-                                    round(p.y() / vSpacing, 0) * vSpacing))
+            nPoints.append(QgsPointXY(round(p.x() / hSpacing, 0) * hSpacing,
+                                      round(p.y() / vSpacing, 0) * vSpacing))
 
         i = 0
         # Delete overlapping points

@@ -876,7 +876,7 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolyline &coords, const QDomElement &el
     {
       return true;
     }
-    coords.push_back( QgsPoint( x, y ) );
+    coords.push_back( QgsPointXY( x, y ) );
   }
   return false;
 }
@@ -956,7 +956,7 @@ bool QgsOgcUtils::readGMLPositions( QgsPolyline &coords, const QDomElement &elem
     {
       return true;
     }
-    coords.push_back( QgsPoint( x, y ) );
+    coords.push_back( QgsPointXY( x, y ) );
   }
   return false;
 }
@@ -1513,7 +1513,7 @@ QDomElement QgsOgcUtils::createGMLCoordinates( const QgsPolyline &points, QDomDo
   coordElem.setAttribute( QStringLiteral( "ts" ), QStringLiteral( " " ) );
 
   QString coordString;
-  QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
+  QVector<QgsPointXY>::const_iterator pointIt = points.constBegin();
   for ( ; pointIt != points.constEnd(); ++pointIt )
   {
     if ( pointIt != points.constBegin() )
@@ -1538,7 +1538,7 @@ QDomElement QgsOgcUtils::createGMLPositions( const QgsPolyline &points, QDomDocu
   posElem.setAttribute( QStringLiteral( "srsDimension" ), QStringLiteral( "2" ) );
 
   QString coordString;
-  QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
+  QVector<QgsPointXY>::const_iterator pointIt = points.constBegin();
   for ( ; pointIt != points.constEnd(); ++pointIt )
   {
     if ( pointIt != points.constBegin() )

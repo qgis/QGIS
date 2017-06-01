@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -109,7 +109,7 @@ class HubLines(GeoAlgorithm):
                     f = QgsFeature()
                     f.setAttributes(spokepoint.attributes())
                     f.setGeometry(QgsGeometry.fromPolyline(
-                        [QgsPoint(spokeX, spokeY), QgsPoint(hubX, hubY)]))
+                        [QgsPointXY(spokeX, spokeY), QgsPointXY(hubX, hubY)]))
                     writer.addFeature(f)
 
                     break

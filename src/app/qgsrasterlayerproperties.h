@@ -26,7 +26,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
 
-class QgsPoint;
+class QgsPointXY;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -83,7 +83,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when the reset null value to file default icon is selected
     //void on_btnResetNull_clicked();
 
-    void pixelSelected( const QgsPoint & );
+    void pixelSelected( const QgsPointXY & );
 
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );

@@ -163,7 +163,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     }
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPoint layerCoords = toLayerCoordinates( vlayer, point );
+      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
       double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
       QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                                layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );

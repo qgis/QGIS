@@ -710,7 +710,7 @@ static QPolygonF makeOffsetGeometry( const QgsPolyline &polyline )
   QPolygonF resultLine;
   resultLine.resize( pointCount );
 
-  const QgsPoint *tempPtr = polyline.data();
+  const QgsPointXY *tempPtr = polyline.data();
 
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     resultLine[i] = QPointF( tempPtr->x(), tempPtr->y() );
@@ -741,7 +741,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   QgsPolyline tempPolyline( pointCount );
   QPointF *tempPtr = polyline.data();
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
-    tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
+    tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
   QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( !tempGeometry.isNull() )
@@ -3703,7 +3703,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
     unsigned int i, pointCount = points.count();
 
     QgsPolyline polyline( pointCount );
-    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPoint( points[i].x(), points[i].y() );
+    for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
 
     QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
     if ( !geom.isNull() )
@@ -3712,7 +3712,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
 
       if ( !pointOnSurfaceGeom.isNull() )
       {
-        QgsPoint point = pointOnSurfaceGeom.asPoint();
+        QgsPointXY point = pointOnSurfaceGeom.asPoint();
 
         return QPointF( point.x(), point.y() );
       }

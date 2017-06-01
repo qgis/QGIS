@@ -71,13 +71,13 @@ returns canvas item rectangle in map units
 sets canvas item rectangle in map units
 %End
 
-    QgsPoint toMapCoordinates( QPoint point ) const;
+    QgsPointXY toMapCoordinates( QPoint point ) const;
 %Docstring
 transformation from screen coordinates to map coordinates
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
-    QPointF toCanvasCoordinates( const QgsPoint &point ) const;
+    QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 transformation from map coordinates to screen coordinates
  :rtype: QPointF

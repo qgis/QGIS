@@ -205,10 +205,10 @@ void QgsMapSettings::updateDerived()
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
   {
-    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
-    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
-    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
-    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
+    QgsPointXY p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
+    QgsPointXY p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
+    QgsPointXY p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
+    QgsPointXY p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
     dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
     dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
     dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
@@ -370,11 +370,11 @@ QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer 
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
   QgsRectangle extent = referenceExtent.isEmpty() ? layer->extent() : referenceExtent;
-  QgsPoint l1( extent.xMinimum(), extent.yMinimum() );
-  QgsPoint l2( extent.xMaximum(), extent.yMaximum() );
+  QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
+  QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
   double distLayerUnits = std::sqrt( l1.sqrDist( l2 ) );
-  QgsPoint m1 = layerToMapCoordinates( layer, l1 );
-  QgsPoint m2 = layerToMapCoordinates( layer, l2 );
+  QgsPointXY m1 = layerToMapCoordinates( layer, l1 );
+  QgsPointXY m2 = layerToMapCoordinates( layer, l2 );
   double distMapUnits = std::sqrt( m1.sqrDist( m2 ) );
   return distMapUnits / distLayerUnits;
 }
@@ -428,7 +428,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
 }
 
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const
 {
   try
   {
@@ -462,7 +462,7 @@ QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, Qg
 }
 
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const
 {
   try
   {

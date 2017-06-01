@@ -146,10 +146,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
-    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint &point );
+    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
   private:
 
@@ -177,18 +177,18 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      */
     QString formatArea( double area ) const;
 
-    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint &layerPoint = QgsPoint() );
+    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 
     /** Adds details of the closest vertex to derived attributes
      */
     void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
 
-    QString formatCoordinate( const QgsPoint &canvasPoint ) const;
-    QString formatXCoordinate( const QgsPoint &canvasPoint ) const;
-    QString formatYCoordinate( const QgsPoint &canvasPoint ) const;
+    QString formatCoordinate( const QgsPointXY &canvasPoint ) const;
+    QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;
+    QString formatYCoordinate( const QgsPointXY &canvasPoint ) const;
 
     // Last point in canvas CRS
-    QgsPoint mLastPoint;
+    QgsPointXY mLastPoint;
 
     double mLastMapUnitsPerPixel;
 

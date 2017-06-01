@@ -187,7 +187,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   double cellSize = qMin( bounds.width(), bounds.height() );
 
   if ( qgsDoubleNear( cellSize, 0.0 ) )
-    return QgsGeometry( new QgsPointV2( bounds.xMinimum(), bounds.yMinimum() ) );
+    return QgsGeometry( new QgsPoint( bounds.xMinimum(), bounds.yMinimum() ) );
 
   double h = cellSize / 2.0;
   std::priority_queue< Cell *, std::vector<Cell *>, GreaterThanByMax > cellQueue;
@@ -241,7 +241,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   if ( distanceFromBoundary )
     *distanceFromBoundary = bestCell->d;
 
-  return QgsGeometry( new QgsPointV2( bestCell->x, bestCell->y ) );
+  return QgsGeometry( new QgsPoint( bestCell->x, bestCell->y ) );
 }
 
 
@@ -253,7 +253,7 @@ bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, d
   return lowerThreshold > qAbs( dotProduct ) || qAbs( dotProduct ) > upperThreshold;
 }
 
-double normalizedDotProduct( const QgsPointV2 &a, const QgsPointV2 &b, const QgsPointV2 &c )
+double normalizedDotProduct( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c )
 {
   QgsVector p = a - b;
   QgsVector q = c - b;
@@ -272,9 +272,9 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
 
   bool isClosed = ring->isClosed();
   int numPoints = ring->numPoints();
-  QgsPointV2 a;
-  QgsPointV2 b;
-  QgsPointV2 c;
+  QgsPoint a;
+  QgsPoint b;
+  QgsPoint c;
 
   for ( int i = 0; i < numPoints; ++i )
   {
@@ -310,7 +310,7 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
   return sum;
 }
 
-QgsVector calcMotion( const QgsPointV2 &a, const QgsPointV2 &b, const QgsPointV2 &c,
+QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
                       double lowerThreshold, double upperThreshold )
 {
   QgsVector p = a - b;
@@ -356,9 +356,9 @@ QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tole
     motions.reserve( numPoints );
 
     // first loop through an calculate all motions
-    QgsPointV2 a;
-    QgsPointV2 b;
-    QgsPointV2 c;
+    QgsPoint a;
+    QgsPoint b;
+    QgsPoint c;
     for ( int i = 0; i < numPoints; ++i )
     {
       if ( isClosed && i == numPoints - 1 )

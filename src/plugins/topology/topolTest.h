@@ -81,7 +81,7 @@ class TopologyRule
 class PointComparer
 {
   public:
-    bool operator()( const QgsPoint &p1, const QgsPoint &p2 )const
+    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 )const
     {
       if ( p1.x() < p2.x() )
       {

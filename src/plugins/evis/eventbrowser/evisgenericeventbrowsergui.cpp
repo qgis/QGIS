@@ -533,7 +533,7 @@ void eVisGenericEventBrowserGui::displayImage()
       if ( !myFeature )
         return;
 
-      QgsPoint myPoint = myFeature->geometry().asPoint();
+      QgsPointXY myPoint = myFeature->geometry().asPoint();
       myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
       QgsRectangle myRect( myPoint.x() - ( mCanvas->extent().width() / 2 ), myPoint.y() - ( mCanvas->extent().height() / 2 ), myPoint.x() + ( mCanvas->extent().width() / 2 ), myPoint.y() + ( mCanvas->extent().height() / 2 ) );
@@ -1116,7 +1116,7 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
     if ( !myFeature )
       return;
 
-    QgsPoint myPoint = myFeature->geometry().asPoint();
+    QgsPointXY myPoint = myFeature->geometry().asPoint();
     myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
 
     mCanvas->getCoordinateTransform()->transform( &myPoint );

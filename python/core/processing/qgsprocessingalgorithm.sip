@@ -239,10 +239,10 @@ class QgsProcessingAlgorithm
  :rtype: QgsRectangle
 %End
 
-    QgsPoint parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
  Evaluates the parameter with matching ``name`` to a point.
- :rtype: QgsPoint
+ :rtype: QgsPointXY
 %End
 
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

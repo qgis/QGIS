@@ -42,7 +42,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
     /** Sets the center point of the marker symbol (in map coordinates)
      * \param p center point
     */
-    void setPointLocation( const QgsPoint &p );
+    void setPointLocation( const QgsPointXY &p );
 
     /** Sets the marker symbol to use for rendering the point. Note - you may need to call
      * updateSize() after setting the symbol.

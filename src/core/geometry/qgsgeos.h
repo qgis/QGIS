@@ -53,8 +53,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
-    bool centroid( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
-    bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
+    bool centroid( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
+    bool pointOnSurface( QgsPoint &pt, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \note only valid for linestring geometries
      * \returns distance along line, or -1 on error
      */
-    double lineLocatePoint( const QgsPointV2 &point, QString *errorMsg = nullptr ) const;
+    double lineLocatePoint( const QgsPoint &point, QString *errorMsg = nullptr ) const;
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
     static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );
     static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
-    static QgsPointV2 coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
+    static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
 

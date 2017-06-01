@@ -21,7 +21,7 @@
 
 class QgsGrassPlugin;
 class QgisInterface;
-class QgsPoint;
+class QgsPointXY;
 class QgsProjectionSelectionTreeWidget;
 
 extern "C"
@@ -225,7 +225,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Locations were initialized
     bool mRegionsInited;
 
-    std::vector<QgsPoint> mRegionsPoints;
+    std::vector<QgsPointXY> mRegionsPoints;
 
     //! Last projection used for region
     QgsCoordinateReferenceSystem mCrs;

@@ -450,7 +450,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
 
   QgsRasterDataProvider *myProvider = myRasterLayer->dataProvider();
-  QgsPoint myPoint( 1535030, 5083350 );
+  QgsPointXY myPoint( 1535030, 5083350 );
   QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
   QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
 

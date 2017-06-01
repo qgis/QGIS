@@ -30,7 +30,7 @@ struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event )
   : QMouseEvent( event->type(), event->pos(), event->button(), event->buttons(), event->modifiers() )
   , mSnappingMode( NoSnapping )
-  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) : QgsPoint() )
+  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) : QgsPointXY() )
   , mMapPoint( mOriginalMapPoint )
   , mPixelPoint( event->pos() )
   , mMapCanvas( mapCanvas )
@@ -40,14 +40,14 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
   : QMouseEvent( type, pos, button, buttons, modifiers )
   , mSnappingMode( NoSnapping )
-  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos ) : QgsPoint() )
+  , mOriginalMapPoint( mapCanvas ? mapCanvas->mapSettings().mapToPixel().toMapCoordinates( pos ) : QgsPointXY() )
   , mMapPoint( mOriginalMapPoint )
   , mPixelPoint( pos )
   , mMapCanvas( mapCanvas )
 {
 }
 
-QgsPoint QgsMapMouseEvent::snapPoint( SnappingMode snappingMode )
+QgsPointXY QgsMapMouseEvent::snapPoint( SnappingMode snappingMode )
 {
   // Use cached result
   if ( mSnappingMode == snappingMode )
@@ -95,10 +95,10 @@ QgsPoint QgsMapMouseEvent::snapPoint( SnappingMode snappingMode )
   return mMapPoint;
 }
 
-QList<QgsPoint> QgsMapMouseEvent::snapSegment( SnappingMode snappingMode, bool *snapped, bool allLayers ) const
+QList<QgsPointXY> QgsMapMouseEvent::snapSegment( SnappingMode snappingMode, bool *snapped, bool allLayers ) const
 {
-  QList<QgsPoint> segment;
-  QgsPoint pt1, pt2;
+  QList<QgsPointXY> segment;
+  QgsPointXY pt1, pt2;
 
   // If there's a cached snapping result we use it
   if ( snappingMode == mSnappingMode && mSnapMatch.hasEdge() )
@@ -147,13 +147,13 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( SnappingMode snappingMode, bool *
   return segment;
 }
 
-void QgsMapMouseEvent::setMapPoint( const QgsPoint &point )
+void QgsMapMouseEvent::setMapPoint( const QgsPointXY &point )
 {
   mMapPoint = point;
   mPixelPoint = mapToPixelCoordinates( point );
 }
 
-QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPoint &point )
+QPoint QgsMapMouseEvent::mapToPixelCoordinates( const QgsPointXY &point )
 {
   double x = point.x(), y = point.y();
 

@@ -151,12 +151,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
       else
       {
         // Note: ll = lower left point
-        QgsPoint ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
-                                    QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ll = ct.transform( extent.xMinimum(), extent.yMinimum(),
+                                      QgsCoordinateTransform::ReverseTransform );
 
         //   and ur = upper right point
-        QgsPoint ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
-                                    QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
+                                      QgsCoordinateTransform::ReverseTransform );
 
         QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
 

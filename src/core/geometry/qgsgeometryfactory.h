@@ -28,9 +28,9 @@ class QgsRectangle;
 
 //compatibility with old classes
 #include "qgspoint.h"
-typedef QVector<QgsPoint> QgsPolyline;
+typedef QVector<QgsPointXY> QgsPolyline;
 typedef QVector<QgsPolyline> QgsPolygon;
-typedef QVector<QgsPoint> QgsMultiPoint;
+typedef QVector<QgsPointXY> QgsMultiPoint;
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsGeometryFactory
     static QgsAbstractGeometry *geomFromWkt( const QString &text );
 
     //! Construct geometry from a point
-    static QgsAbstractGeometry *fromPoint( const QgsPoint &point );
+    static QgsAbstractGeometry *fromPoint( const QgsPointXY &point );
     //! Construct geometry from a multipoint
     static QgsAbstractGeometry *fromMultiPoint( const QgsMultiPoint &multipoint );
     //! Construct geometry from a polyline

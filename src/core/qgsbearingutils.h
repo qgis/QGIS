@@ -19,7 +19,7 @@
 #define QGSBEARINGUTILS_H
 
 class QgsCoordinateReferenceSystem;
-class QgsPoint;
+class QgsPointXY;
 
 #include "qgis_core.h"
 
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsBearingUtils
      * vertical. An exception will be thrown if the bearing could not be calculated.
      */
     static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
-                                    const QgsPoint &point );
+                                    const QgsPointXY &point );
 
 };
 

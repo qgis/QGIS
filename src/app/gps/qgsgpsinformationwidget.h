@@ -97,8 +97,8 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mpRubberBand = nullptr;
-    QgsPoint mLastGpsPosition;
-    QList<QgsPoint> mCaptureList;
+    QgsPointXY mLastGpsPosition;
+    QList<QgsPointXY> mCaptureList;
     FixStatus mLastFixStatus;
     QString mDateTimeFormat; // user specified format string in registry (no UI presented)
     QgsVectorLayer *mpLastLayer = nullptr;

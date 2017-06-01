@@ -42,9 +42,9 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
         }
         for ( int iVert = 0; iVert < nVerts; ++iVert )
         {
-          const QgsPointV2 &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
-          const QgsPointV2 &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          const QgsPointV2 &p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
+          const QgsPoint &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
+          const QgsPoint &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          const QgsPoint &p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
           QgsVector v21, v23;
           try
           {
@@ -94,9 +94,9 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     error->setObsolete();
     return;
   }
-  const QgsPointV2 &p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
-  const QgsPointV2 &p2 = geometry->vertexAt( vidx );
-  const QgsPointV2 &p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );
+  const QgsPoint &p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
+  const QgsPoint &p2 = geometry->vertexAt( vidx );
+  const QgsPoint &p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );
   QgsVector v21, v23;
   try
   {

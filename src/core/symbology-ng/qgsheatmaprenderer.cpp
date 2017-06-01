@@ -153,7 +153,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   //loop through all points in multipoint
   for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
   {
-    QgsPoint pixel = context.mapToPixel().transform( *pointIt );
+    QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;
     int pointY = pixel.y() / mRenderQuality;
     for ( int x = qMax( pointX - mRadiusPixels, 0 ); x < qMin( pointX + mRadiusPixels, width ); ++x )

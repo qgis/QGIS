@@ -32,26 +32,26 @@ class TestQgsBearingUtils(unittest.TestCase):
 
         # short circuit - already a geographic crs
         crs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(0, 0)), 0)
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(44, 0)), 0)
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(44, -43)), 0)
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(44, 43)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(0, 0)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(44, 0)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(44, -43)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(44, 43)), 0)
 
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(44, 200)), 0)
-        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(44, -200)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(44, 200)), 0)
+        self.assertEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(44, -200)), 0)
 
         # no short circuit
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
-        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(2508807, 2423425)), 0.06, 2)
+        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(2508807, 2423425)), 0.06, 2)
 
         # try a south-up crs
         crs = QgsCoordinateReferenceSystem.fromEpsgId(2053)
-        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(29, -27.55)), -180.0, 1)
+        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(29, -27.55)), -180.0, 1)
 
         # try a north pole crs
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3575)
-        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(-780770, 652329)), 129.9, 1)
-        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(513480, 873173)), -149.5, 1)
+        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(-780770, 652329)), 129.9, 1)
+        self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPointXY(513480, 873173)), -149.5, 1)
 
 
 if __name__ == '__main__':

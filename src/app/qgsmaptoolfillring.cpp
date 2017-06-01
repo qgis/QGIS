@@ -80,7 +80,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
-    QList< QgsPoint > pointList = points();
+    QList< QgsPointXY > pointList = points();
 
     QgsFeatureId modifiedFid;
     int addRingReturnCode = vlayer->addRing( pointList, &modifiedFid );
@@ -126,7 +126,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      Q_FOREACH ( const QgsPoint &point, pointList )
+      Q_FOREACH ( const QgsPointXY &point, pointList )
       {
         xMin = qMin( xMin, point.x() );
         xMax = qMax( xMax, point.x() );

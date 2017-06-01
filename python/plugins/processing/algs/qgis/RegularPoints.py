@@ -33,7 +33,7 @@ from math import sqrt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
-                       QgsGeometry, QgsPoint, QgsCoordinateReferenceSystem)
+                       QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExtent
@@ -127,11 +127,11 @@ class RegularPoints(GeoAlgorithm):
             x = extent.xMinimum() + inset
             while x <= extent.xMaximum():
                 if randomize:
-                    geom = QgsGeometry().fromPoint(QgsPoint(
+                    geom = QgsGeometry().fromPoint(QgsPointXY(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPoint(QgsPoint(x, y))
+                    geom = QgsGeometry().fromPoint(QgsPointXY(x, y))
 
                 if extent_engine.intersects(geom.geometry()):
                     f.setAttribute('id', count)

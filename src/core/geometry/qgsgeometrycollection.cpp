@@ -239,7 +239,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPointV2 << new QgsLineString << new QgsPolygonV2
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygonV2
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPointV2 << new QgsMultiLineString
@@ -401,12 +401,12 @@ int QgsGeometryCollection::nCoordinates() const
   return count;
 }
 
-double QgsGeometryCollection::closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsGeometryCollection::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
-bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
+bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
 {
   if ( id.part < 0 )
   {
@@ -434,7 +434,7 @@ bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) co
   return mGeometries.at( id.part )->nextVertex( id, vertex );
 }
 
-bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPointV2 &vertex )
+bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   if ( position.part >= mGeometries.size() )
   {
@@ -449,7 +449,7 @@ bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPointV2
   return success;
 }
 
-bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPointV2 &newPos )
+bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
   if ( position.part >= mGeometries.size() )
   {

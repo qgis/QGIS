@@ -86,7 +86,7 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return point;
@@ -106,15 +106,15 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDire
     throw;
   }
 
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
 
-QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
 {
   try
   {
-    return transform( QgsPoint( theX, theY ), direction );
+    return transform( QgsPointXY( theX, theY ), direction );
   }
   catch ( const QgsCsException & )
   {
@@ -343,7 +343,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   if ( rect.isEmpty() )
   {
-    QgsPoint p = transform( rect.xMinimum(), rect.yMinimum(), direction );
+    QgsPointXY p = transform( rect.xMinimum(), rect.yMinimum(), direction );
     return QgsRectangle( p, p );
   }
 

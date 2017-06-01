@@ -62,11 +62,11 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
-QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
+QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
 {
   QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
 
-  QgsPoint geo = point;
+  QgsPointXY geo = point;
   if ( format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" ) || format == QLatin1String( "D" ) )
   {
     // degrees

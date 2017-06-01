@@ -67,7 +67,7 @@ Returns measurement tool
  :rtype: QgsDistanceArea
 %End
 
-    virtual void addVertex( int id, const QgsPoint &pt );
+    virtual void addVertex( int id, const QgsPointXY &pt );
 %Docstring
  Add vertex to the graph
  \param id vertex identifier
@@ -77,7 +77,7 @@ Returns measurement tool
    id and pt are redundant. You can use pt or id to identify the vertex
 %End
 
-    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &strategies );
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies );
 %Docstring
  Add edge to the graph
  \param pt1id first vertex identificator

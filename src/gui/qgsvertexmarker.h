@@ -41,7 +41,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
-    void setCenter( const QgsPoint &point );
+    void setCenter( const QgsPointXY &point );
 
     void setIconType( int iconType );
 
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     int mIconSize = 10;
 
     //! coordinates of the point in the center
-    QgsPoint mCenter;
+    QgsPointXY mCenter;
 
     //! color of the marker
     QColor mColor = QColor( 255, 0, 0 );

@@ -31,7 +31,7 @@ QgsLabelSearchTree::~QgsLabelSearchTree()
   clear();
 }
 
-void QgsLabelSearchTree::label( const QgsPoint &p, QList<QgsLabelPosition *> &posList ) const
+void QgsLabelSearchTree::label( const QgsPointXY &p, QList<QgsLabelPosition *> &posList ) const
 {
   double c_min[2];
   c_min[0] = p.x() - 0.1;
@@ -86,11 +86,11 @@ bool QgsLabelSearchTree::insertLabel( pal::LabelPosition *labelPos, int featureI
   double c_max[2];
   labelPos->getBoundingBox( c_min, c_max );
 
-  QVector<QgsPoint> cornerPoints;
+  QVector<QgsPointXY> cornerPoints;
   cornerPoints.reserve( 4 );
   for ( int i = 0; i < 4; ++i )
   {
-    cornerPoints.push_back( QgsPoint( labelPos->getX( i ), labelPos->getY( i ) ) );
+    cornerPoints.push_back( QgsPointXY( labelPos->getX( i ), labelPos->getY( i ) ) );
   }
   QgsLabelPosition *newEntry = new QgsLabelPosition( featureId, labelPos->getAlpha(), cornerPoints, QgsRectangle( c_min[0], c_min[1], c_max[0], c_max[1] ),
       labelPos->getWidth(), labelPos->getHeight(), layerName, labeltext, labelfont, labelPos->getUpsideDown(), diagram, pinned, providerId );

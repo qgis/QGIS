@@ -442,7 +442,7 @@ void TestQgsLabelingEngine::testSubstitutions()
 
   QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl, QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl->fields(), 1 );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+  f.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 1, 2 ) ) );
 
   // make a fake render context
   QSize size( 640, 480 );
@@ -474,7 +474,7 @@ void TestQgsLabelingEngine::testSubstitutions()
 void TestQgsLabelingEngine::testCapitalization()
 {
   QgsFeature f( vl->fields(), 1 );
-  f.setGeometry( QgsGeometry::fromPoint( QgsPoint( 1, 2 ) ) );
+  f.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 1, 2 ) ) );
 
   // make a fake render context
   QSize size( 640, 480 );

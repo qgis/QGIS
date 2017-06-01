@@ -42,7 +42,7 @@ class QgsCurveTransform
  between 0 and 1 unchanged. I.e. y == x.
 %End
 
-    QgsCurveTransform( const QList< QgsPoint > &controlPoints );
+    QgsCurveTransform( const QList< QgsPointXY > &controlPoints );
 %Docstring
  Constructs a QgsCurveTransform using a specified list of ``controlPoints``.
  Behavior is undefined if duplicate x values exist in the control points
@@ -57,14 +57,14 @@ class QgsCurveTransform
 %End
 
 
-    QList< QgsPoint > controlPoints() const;
+    QList< QgsPointXY > controlPoints() const;
 %Docstring
  Returns a list of the control points for the transform.
 .. seealso:: setControlPoints()
- :rtype: list of QgsPoint
+ :rtype: list of QgsPointXY
 %End
 
-    void setControlPoints( const QList< QgsPoint > &points );
+    void setControlPoints( const QList< QgsPointXY > &points );
 %Docstring
  Sets the list of control points for the transform. Any existing
  points are removed.

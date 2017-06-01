@@ -72,7 +72,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation ) );
 }
 
-void QgsPointRotationItem::setPointLocation( const QgsPoint &p )
+void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
 {
   QPointF transformedPoint = toCanvasCoordinates( p );
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );

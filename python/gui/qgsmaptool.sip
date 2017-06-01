@@ -141,26 +141,26 @@ class QgsMapTool : QObject
     QgsMapTool( QgsMapCanvas *canvas /TransferThis/ );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( QPoint point );
+    QgsPointXY toMapCoordinates( QPoint point );
 
     //! transformation from screen coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
+    QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 
     //! transformation from map coordinates to layer's coordinates
-    QgsPoint toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
+    QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
+    QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     //! @note available in python bindings as toMapCoordinatesV2
-    QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point ) /PyName=toMapCoordinatesV2/;
+    QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoordinates( const QgsPoint &point );
+    QPoint toCanvasCoordinates( const QgsPointXY &point );
 
 
 };

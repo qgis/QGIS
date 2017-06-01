@@ -23,7 +23,7 @@ class QgsBearingUtils
   public:
 
     static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
-                                    const QgsPoint &point );
+                                    const QgsPointXY &point );
 %Docstring
  Returns the direction to true north from a specified point and for a specified
  coordinate reference system. The returned value is in degrees clockwise from

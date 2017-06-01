@@ -92,7 +92,7 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint> &geom )
+int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
 {
   if ( !mCanvas )
   {
@@ -107,7 +107,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint> &geom )
     return 2;
   }
 
-  QList<QgsPoint>::const_iterator list_it = geom.constBegin();
+  QList<QgsPointXY>::const_iterator list_it = geom.constBegin();
   for ( ; list_it != geom.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );

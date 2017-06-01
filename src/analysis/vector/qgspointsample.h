@@ -20,7 +20,7 @@
 #include "qgis_analysis.h"
 
 class QgsFeature;
-class QgsPoint;
+class QgsPointXY;
 class QgsSpatialIndex;
 class QgsVectorFileWriter;
 class QgsVectorLayer;
@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsPointSample
 
     QgsPointSample(); //default constructor is forbidden
     void addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWriter &writer, int nPoints, double minDistance );
-    bool checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPoint > &pointMap );
+    bool checkMinDistance( QgsPointXY &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPointXY > &pointMap );
 
     //! Layer id of input polygon/multipolygon layer
     QgsVectorLayer *mInputLayer = nullptr;

@@ -73,7 +73,7 @@ class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
-class QgsPoint;
+class QgsPointXY;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRasterLayer;
@@ -886,7 +886,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! toggles whether the current selected layer is in overview or not
     void isInOverview();
     //! Store the position for map tool tip
-    void saveLastMousePosition( const QgsPoint & );
+    void saveLastMousePosition( const QgsPointXY & );
     //! Slot to show current map scale;
     void showScale( double scale );
     //! Slot to handle user rotation input;
@@ -1875,7 +1875,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QTimer *mpMapTipsTimer = nullptr;
 
     //! Point of last mouse position in map coordinates (used with MapTips)
-    QgsPoint mLastMapPosition;
+    QgsPointXY mLastMapPosition;
 
     //! Maptip object
     QgsMapTip *mpMaptip = nullptr;

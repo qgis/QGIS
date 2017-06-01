@@ -73,7 +73,7 @@ void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   Q_UNUSED( e );
   mClickedFeature = feature;
@@ -178,7 +178,7 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
   mOffsetItem->setSymbol( markerSymbol->clone() );
 }
 
-QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPoint &startPoint, const QgsPoint &endPoint ) const
+QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const
 {
   QMap<int, QVariant> newAttrValues;
   Q_FOREACH ( QgsSymbolLayer *layer, mMarkerSymbol->symbolLayers() )
@@ -202,7 +202,7 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
   return newAttrValues;
 }
 
-void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPoint &startPoint, const QgsPoint &endPoint )
+void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPointXY &startPoint, const QgsPointXY &endPoint )
 {
   if ( !mOffsetItem )
     return;
@@ -219,7 +219,7 @@ void QgsMapToolOffsetPointSymbol::updateOffsetPreviewItem( const QgsPoint &start
   mOffsetItem->updateSize();
 }
 
-QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPoint &startPoint, const QgsPoint &endPoint, QgsUnitTypes::RenderUnit unit ) const
+QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, QgsUnitTypes::RenderUnit unit ) const
 {
   double dx = endPoint.x() - startPoint.x();
   double dy = -( endPoint.y() - startPoint.y() );

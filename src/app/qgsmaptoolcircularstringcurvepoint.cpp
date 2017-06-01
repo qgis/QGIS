@@ -33,7 +33,7 @@ QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
 
 void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPointV2 mapPoint( e->mapPoint() );
+  QgsPoint mapPoint( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -85,7 +85,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
 
 void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPointV2 mapPoint( e->mapPoint() );
+  QgsPoint mapPoint( e->mapPoint() );
   QgsVertexId idx( 0, 0, 1 + ( mPoints.size() + 1 ) % 2 );
   if ( mTempRubberBand )
   {

@@ -44,7 +44,7 @@ QgsMapTip::QgsMapTip()
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
-                            QgsPoint &mapPosition,
+                            QgsPointXY &mapPosition,
                             QPoint &pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
@@ -165,7 +165,7 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mMapTipVisible = false;
 }
 
-QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )

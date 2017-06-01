@@ -37,7 +37,7 @@ class QgsFeature;
 class QgsFeatureRenderer;
 class QgsMapLayer;
 class QgsMapSettings;
-class QgsPoint;
+class QgsPointXY;
 class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRectangle;
@@ -203,7 +203,7 @@ namespace QgsWms
       \param featureBBox the bounding box of the selected features in output CRS
       \returns true in case of success*/
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
-                                       const QgsPoint *infoPoint,
+                                       const QgsPointXY *infoPoint,
                                        int nFeatures,
                                        QDomDocument &infoDocument,
                                        QDomElement &layerElement,
@@ -215,7 +215,7 @@ namespace QgsWms
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
-                                       const QgsPoint *infoPoint,
+                                       const QgsPointXY *infoPoint,
                                        QDomDocument &infoDocument,
                                        QDomElement &layerElement,
                                        const QString &version,
@@ -298,7 +298,7 @@ namespace QgsWms
       //! Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value
       static QString replaceValueMapAndRelation( QgsVectorLayer *vl, int idx, const QString &attributeVal );
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
-      QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPoint &infoPoint ) const;
+      QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
 
     private:
