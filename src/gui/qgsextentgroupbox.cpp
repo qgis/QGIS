@@ -16,6 +16,11 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgsrasterblock.h"
+#include "qgsmaplayermodel.h"
+#include "qgscsexception.h"
+#include "qgsproject.h"
+#include <QMenu>
+#include <QAction>
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -23,6 +28,11 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   , mExtentState( OriginalExtent )
 {
   setupUi( this );
+
+  mLayerMenu = new QMenu( this );
+  mButtonCalcFromLayer->setMenu( mLayerMenu );
+  connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentGroupBox::layerMenuAboutToShow );
+  mMapLayerModel = new QgsMapLayerModel( this );
 
   mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
   mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
@@ -54,9 +64,44 @@ void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, con
 
 void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
-  mOutputCrs = outputCrs;
-}
+  if ( mOutputCrs != outputCrs )
+  {
+    switch ( mExtentState )
+    {
+      case CurrentExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromCurrent();
+        break;
 
+      case OriginalExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromOriginal();
+        break;
+
+      case ProjectLayerExtent:
+        mOutputCrs = outputCrs;
+        setOutputExtentFromLayer( mExtentLayer.data() );
+        break;
+
+      case UserExtent:
+        try
+        {
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs );
+          QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
+          mOutputCrs = outputCrs;
+          setOutputExtentFromUser( extent, outputCrs );
+        }
+        catch ( QgsCsException & )
+        {
+          // can't reproject
+          mOutputCrs = outputCrs;
+        }
+        break;
+    }
+
+  }
+
+}
 
 void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
 {
@@ -67,8 +112,16 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
   }
   else
   {
-    QgsCoordinateTransform ct( srcCrs, mOutputCrs );
-    extent = ct.transformBoundingBox( r );
+    try
+    {
+      QgsCoordinateTransform ct( srcCrs, mOutputCrs );
+      extent = ct.transformBoundingBox( r );
+    }
+    catch ( QgsCsException & )
+    {
+      // can't reproject
+      extent = r;
+    }
   }
 
   mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
@@ -111,7 +164,8 @@ void QgsExtentGroupBox::updateTitle()
     case UserExtent:
       msg = tr( "user defined" );
       break;
-    default:
+    case ProjectLayerExtent:
+      msg = mExtentLayerName;
       break;
   }
   if ( isCheckable() && !isChecked() )
@@ -121,6 +175,41 @@ void QgsExtentGroupBox::updateTitle()
   setTitle( msg );
 }
 
+void QgsExtentGroupBox::layerMenuAboutToShow()
+{
+  qDeleteAll( mMenuActions );
+  mMenuActions.clear();
+  mLayerMenu->clear();
+  for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
+  {
+    QModelIndex index = mMapLayerModel->index( i, 0 );
+    QIcon icon = qvariant_cast<QIcon>( mMapLayerModel->data( index, Qt::DecorationRole ) );
+    QString text = mMapLayerModel->data( index, Qt::DisplayRole ).toString();
+    QAction *act = new QAction( icon, text, mLayerMenu );
+    act->setToolTip( mMapLayerModel->data( index, Qt::ToolTipRole ).toString() );
+    QString layerId = mMapLayerModel->data( index, QgsMapLayerModel::LayerIdRole ).toString();
+    if ( mExtentState == ProjectLayerExtent && mExtentLayer && mExtentLayer->id() == layerId )
+    {
+      act->setCheckable( true );
+      act->setChecked( true );
+    }
+    connect( act, &QAction::triggered, this, [this, layerId]
+    {
+      setExtentToLayerExtent( layerId );
+    } );
+    mLayerMenu->addAction( act );
+    mMenuActions << act;
+  }
+}
+
+void QgsExtentGroupBox::setExtentToLayerExtent( const QString &layerId )
+{
+  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+  if ( !layer )
+    return;
+
+  setOutputExtentFromLayer( layer );
+}
 
 void QgsExtentGroupBox::setOutputExtentFromCurrent()
 {
@@ -133,10 +222,20 @@ void QgsExtentGroupBox::setOutputExtentFromOriginal()
   setOutputExtent( mOriginalExtent, mOriginalCrs, OriginalExtent );
 }
 
-
 void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   setOutputExtent( extent, crs, UserExtent );
+}
+
+void QgsExtentGroupBox::setOutputExtentFromLayer( const QgsMapLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  mExtentLayer = layer;
+  mExtentLayerName = layer->name();
+
+  setOutputExtent( layer->extent(), layer->crs(), ProjectLayerExtent );
 }
 
 void QgsExtentGroupBox::groupBoxClicked()

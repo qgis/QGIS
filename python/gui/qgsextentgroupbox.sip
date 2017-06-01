@@ -27,108 +27,132 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 #include "qgsextentgroupbox.h"
 %End
   public:
-    explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
 
     enum ExtentState
     {
       OriginalExtent,
       CurrentExtent,
       UserExtent,
+      ProjectLayerExtent,
     };
+
+    explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsExtentGroupBox.
+%End
 
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 %Docstring
-Setup original extent - should be called as part of initialization
+ Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
+.. seealso:: originalExtent()
+.. seealso:: originalCrs()
 %End
 
     QgsRectangle originalExtent() const;
 %Docstring
+ Returns the original extent set for the widget.
+.. seealso:: setOriginalExtent()
+.. seealso:: originalCrs()
  :rtype: QgsRectangle
 %End
-    const QgsCoordinateReferenceSystem &originalCrs() const;
+
+    QgsCoordinateReferenceSystem originalCrs() const;
 %Docstring
+ Returns the original coordinate reference system set for the widget.
+.. seealso:: originalExtent()
+.. seealso:: setOriginalExtent()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 %Docstring
-Setup current extent - should be called as part of initialization (or whenever current extent changes)
+ Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
+ The current extent is usually set to match the current map canvas extent.
+.. seealso:: currentExtent()
+.. seealso:: currentCrs()
 %End
 
     QgsRectangle currentExtent() const;
 %Docstring
+ Returns the current extent set for the widget. The current extent is usually set to match the
+ current map canvas extent.
+.. seealso:: setCurrentExtent()
+.. seealso:: currentCrs()
  :rtype: QgsRectangle
 %End
-    const QgsCoordinateReferenceSystem &currentCrs() const;
+
+    QgsCoordinateReferenceSystem currentCrs() const;
 %Docstring
+ Returns the coordinate reference system for the current extent set for the widget. The current
+ extent and CRS usually reflects the map canvas extent and CRS.
+.. seealso:: setCurrentExtent()
+.. seealso:: currentExtent()
  :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 %Docstring
-Should be called as part of initialization and whenever the the output CRS is changed
+ Sets the output CRS - may need to be used for transformation from original/current extent.
+ Should be called as part of initialization and whenever the the output CRS is changed.
+ The current extent will be reprojected into the new output CRS.
 %End
 
     QgsRectangle outputExtent() const;
 %Docstring
-Get the resulting extent - in output CRS coordinates
+ Returns the extent shown in the widget - in output CRS coordinates.
  :rtype: QgsRectangle
 %End
 
     QgsExtentGroupBox::ExtentState extentState() const;
 %Docstring
+ Returns the currently selected state for the widget's extent.
  :rtype: QgsExtentGroupBox.ExtentState
 %End
 
     void setTitleBase( const QString &title );
 %Docstring
+ Sets the base part of ``title`` of the group box (will be appended with extent state)
 .. versionadded:: 2.12
+.. seealso:: titleBase()
 %End
+
     QString titleBase() const;
 %Docstring
+ Returns the base part of title of the group box (will be appended with extent state).
 .. versionadded:: 2.12
+.. seealso:: setTitleBase()
  :rtype: str
 %End
 
   public slots:
+
     void setOutputExtentFromOriginal();
 %Docstring
-set output extent to be the same as original extent (may be transformed to output CRS)
+ Sets the output extent to be the same as original extent (may be transformed to output CRS).
 %End
 
     void setOutputExtentFromCurrent();
 %Docstring
-set output extent to be the same as current extent (may be transformed to output CRS)
+ Sets the output extent to be the same as current extent (may be transformed to output CRS).
 %End
 
     void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
 %Docstring
-set output extent to custom extent (may be transformed to output CRS)
+ Sets the output extent to a custom extent (may be transformed to output CRS).
+%End
+
+    void setOutputExtentFromLayer( const QgsMapLayer *layer );
+%Docstring
+ Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
+.. versionadded:: 3.0
 %End
 
   signals:
+
     void extentChanged( const QgsRectangle &r );
 %Docstring
-emitted when extent is changed
+ Emitted when the widget's extent is changed.
 %End
-
-  protected slots:
-
-    void on_mXMinLineEdit_textEdited( const QString & );
-    void on_mXMaxLineEdit_textEdited( const QString & );
-    void on_mYMinLineEdit_textEdited( const QString & );
-    void on_mYMaxLineEdit_textEdited( const QString & );
-
-    void groupBoxClicked();
-
-  protected:
-    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentGroupBox::ExtentState state );
-    void setOutputExtentFromLineEdit();
-    void updateTitle();
-
-
-
-
 
 };
 
