@@ -33,23 +33,45 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
-// hack to show wrapped text without spaces
-class QgsBrowserPropertiesWrapLabel : public QTextEdit
+/**
+ * \ingroup gui
+ * Hack to show wrapped text without spaces
+ * \since QGIS 2.10
+ */
+class GUI_EXPORT QgsBrowserPropertiesWrapLabel : public QTextEdit
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserPropertiesWrapLabel
+      * \param text label text
+      * \param parent parent widget
+      */
     QgsBrowserPropertiesWrapLabel( const QString &text, QWidget *parent = nullptr );
 
   private slots:
     void adjustHeight( QSizeF size );
 };
 
-class QgsBrowserPropertiesWidget : public QWidget
+/**
+ * \ingroup gui
+ * The QgsBrowserPropertiesWidget base class
+ * \since QGIS 2.10
+ */
+class GUI_EXPORT QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserPropertiesWidget
+      * \param parent parent widget
+      */
     explicit QgsBrowserPropertiesWidget( QWidget *parent = nullptr );
-    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
+    //! Factory method to create a new browser widget
+    static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr ) SIP_FACTORY;
+    //! Stub
     virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
     //! Set content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
@@ -62,38 +84,77 @@ class QgsBrowserPropertiesWidget : public QWidget
     virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
 };
 
-class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
+/**
+ * \ingroup gui
+ * The QgsBrowserLayerProperties class
+ * \since QGIS 2.10
+ */
+class GUI_EXPORT QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserLayerProperties
+      * \param parent parent widget
+      */
     explicit QgsBrowserLayerProperties( QWidget *parent = nullptr );
+    //! Set item
     void setItem( QgsDataItem *item ) override;
 
+    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+     * widget rather than it's own separate dialog.
+     * \param condensedMode set to true to enable condensed mode
+     * \since QGIS 2.10
+     */
     virtual void setCondensedMode( bool condensedMode ) override;
 
   private:
     QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
 };
 
-class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserDirectoryPropertiesBase
+/**
+ * \ingroup gui
+ * The QgsBrowserDirectoryProperties class
+ * \since QGIS 2.10
+ */
+class GUI_EXPORT QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserDirectoryPropertiesBase
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserDirectoryProperties
+      * \param parent parent widget
+      */
     explicit QgsBrowserDirectoryProperties( QWidget *parent = nullptr );
 
+    //! Create widget from the given item and add it
     void setItem( QgsDataItem *item ) override;
   private:
     QgsDirectoryParamWidget *mDirectoryWidget = nullptr;
     QgsBrowserPropertiesWrapLabel *mPathLabel = nullptr;
 };
 
-class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
+/**
+ * \ingroup gui
+ * The QgsBrowserPropertiesDialog class
+ * \since QGIS 2.10
+ */
+class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropertiesDialogBase
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserPropertiesDialog
+      * \param settingsSection prefix for settings (from the object name)
+      * \param parent parent widget
+      */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
     ~QgsBrowserPropertiesDialog();
 
+    //! Create dialog from the given item and add it
     void setItem( QgsDataItem *item );
 
   private:
@@ -101,55 +162,91 @@ class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropert
     QString mSettingsSection;
 };
 
+/**
+ * \ingroup gui
+ * The QgsBrowserDockWidget class
+ * \since QGIS 2.10
+ */
 class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserDockWidget
+      * \param name name of the widget
+      * \param parent parent widget
+      */
     explicit QgsBrowserDockWidget( const QString &name, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
+    //! Add directory to favorites
     void addFavoriteDirectory( const QString &favDir );
 
   public slots:
+    //! Add layer at index
     void addLayerAtIndex( const QModelIndex &index );
+    //! Show context menu
     void showContextMenu( QPoint );
 
+    //! Add current item to favorite
     void addFavorite();
+    //! Add directory from file dialog to favorite
     void addFavoriteDirectory();
+    //! Remove from favorite
     void removeFavorite();
 
+    //! Refresh browser view model (and view)
     void refresh();
 
+    //! Show/hide filter widget
     void showFilterWidget( bool visible );
+    //! Enable/disable properties widget
     void enablePropertiesWidget( bool enable );
+    //! Set filter syntax
     void setFilterSyntax( QAction * );
+    //! Set filter case sensitivity
     void setCaseSensitive( bool caseSensitive );
+    //! Apply filter to the model
     void setFilter();
+    //! Update project home directory
     void updateProjectHome();
 
 
-    // layer menu items
+    //! Add selected layers to the project
     void addSelectedLayers();
+    //! Show the layer properties
     void showProperties();
+    //! Hide current item
     void hideItem();
+    //! Toggle fast scan
     void toggleFastScan();
 
+    //! Selection hass changed
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    //! Splitter has been moved
     void splitterMoved();
 
   signals:
-    // A file needs to be opened
-    void openFile( const QString );
-    // Drop uri list needs to be handled
-    void handleDropUriList( QgsMimeDataUtils::UriList );
+    //! Emitted when a file needs to be opened
+    void openFile( const QString & );
+    //! Emitted when drop uri list needs to be handled
+    void handleDropUriList( const QgsMimeDataUtils::UriList & );
 
   protected:
+    //! Refresh the model
     void refreshModel( const QModelIndex &index );
+    //! Show event override
     void showEvent( QShowEvent *event ) override;
+    //! Add a layer
     void addLayer( QgsLayerItem *layerItem );
+    //! Clear the properties widget
     void clearPropertiesWidget();
+    //! Set the properties widget
     void setPropertiesWidget();
 
+    //! Count selected items
     int selectedItemsCount();
+    //! Settings prefix (the object name)
     QString settingsSection() { return objectName().toLower(); }
 
     QgsDockBrowserTreeView *mBrowserView = nullptr;
@@ -165,42 +262,58 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
 
 /**
-Utility class for correct drag&drop handling.
-
-We want to allow user to drag layers to qgis window. At the same time we do not
-accept drops of the items on our view - but if we ignore the drag enter action
-then qgis application consumes the drag events and it is possible to drop the
-items on the tree view although the drop is actually managed by qgis app.
+ * \ingroup gui
+ * Utility class for correct drag&drop handling.
+ *
+ * We want to allow user to drag layers to qgis window. At the same time we do not
+ * accept drops of the items on our view - but if we ignore the drag enter action
+ * then qgis application consumes the drag events and it is possible to drop the
+ * items on the tree view although the drop is actually managed by qgis app.
+ * \since QGIS 2.10
  */
-class QgsDockBrowserTreeView : public QgsBrowserTreeView
+class GUI_EXPORT QgsDockBrowserTreeView : public QgsBrowserTreeView
 {
     Q_OBJECT
 
   public:
-    explicit QgsDockBrowserTreeView( QWidget *parent );
 
+    /**
+      * Constructor for QgsDockBrowserTreeView
+      * \param parent parent widget
+      */
+    explicit QgsDockBrowserTreeView( QWidget *parent );
+    //! Overrides drag enter event
     void dragEnterEvent( QDragEnterEvent *e ) override;
+    //! Overrides drag move event
     void dragMoveEvent( QDragMoveEvent *e ) override;
+    //! Overrides drag stop event
     void dropEvent( QDropEvent *e ) override;
 };
 
 /**
-Utility class for filtering browser items
+ * \ingroup gui
+ * Utility class for filtering browser items
+ * \since QGIS 2.10
  */
-class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+
+    /**
+      * Constructor for QgsBrowserTreeFilterProxyModel
+      * @param parent parent widget
+      */
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
-
+    //! Set the browser model
     void setBrowserModel( QgsBrowserModel *model );
-
+    //! Set the filter syntax
     void setFilterSyntax( const QString &syntax );
-
+    //! Set the filter
     void setFilter( const QString &filter );
-
+    //! Set case sensitivity
     void setCaseSensitive( bool caseSensitive );
-
+    //! Update filter
     void updateFilter();
 
   protected:
@@ -211,18 +324,19 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     QString mPatternSyntax;
     Qt::CaseSensitivity mCaseSensitivity;
 
+    //! Filter accepts string
     bool filterAcceptsString( const QString &value ) const;
 
-    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    //! It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
-    // returns true if at least one ancestor is accepted by filter
+    //! Returns true if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
-    // returns true if at least one descendant s accepted by filter
+    //! Returns true if at least one descendant s accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
-    // filter accepts item name
+    //! Filter accepts item name
     bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
 };
 
