@@ -21,7 +21,7 @@ import tempfile
 
 from qgis.core import (QgsVectorLayer,
                        QgsVectorDataProvider,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsFeature,
                        QgsGeometry,
                        QgsProject,

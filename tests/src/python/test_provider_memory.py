@@ -17,7 +17,7 @@ from qgis.core import (
     QgsField,
     QgsFields,
     QgsLayerDefinition,
-    QgsPoint,
+    QgsPointXY,
     QgsReadWriteContext,
     QgsVectorLayer,
     QgsFeatureRequest,

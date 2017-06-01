@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsPoint, QgsVectorLayer
+from qgis.core import QgsPointXY, QgsVectorLayer
 
 from qgis.testing import start_app, unittest
 

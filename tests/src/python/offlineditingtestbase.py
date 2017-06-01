@@ -32,7 +32,7 @@ from time import sleep
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsFeatureRequest,
     QgsExpression,
     QgsProject,

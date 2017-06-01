@@ -19,7 +19,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        NULL
                        )
 from qgis.testing import start_app, unittest

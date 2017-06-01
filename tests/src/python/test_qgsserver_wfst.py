@@ -46,7 +46,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsRectangle,
     QgsFeatureRequest,
     QgsExpression,

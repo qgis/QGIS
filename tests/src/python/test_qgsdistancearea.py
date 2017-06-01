@@ -16,7 +16,7 @@ import qgis  # NOQA
 import math
 
 from qgis.core import (QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsDistanceArea,
                        QgsCoordinateReferenceSystem,
                        QgsUnitTypes

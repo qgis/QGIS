@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import QFileInfo, QDir
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
                        QgsProject)

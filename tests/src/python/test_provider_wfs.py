@@ -28,7 +28,7 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsRectangle,
-    QgsPoint,
+    QgsPointXY,
     QgsVectorDataProvider,
     QgsFeatureRequest,
     QgsApplication,

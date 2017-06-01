@@ -19,7 +19,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsField)
 from qgis.testing import start_app, unittest
 start_app()

@@ -18,7 +18,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsRelation,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsProject
                        )
 from qgis.testing import start_app, unittest

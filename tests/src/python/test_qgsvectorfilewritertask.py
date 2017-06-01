@@ -20,7 +20,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsVectorFileWriter,
     QgsVectorFileWriterTask
 )
