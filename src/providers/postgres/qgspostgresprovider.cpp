@@ -3539,8 +3539,11 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
-    QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
+
+    // Do not disable AddFeatures here, features are also added when copying layers. It should be user's
+    // when editing data with measure. If necessary, add a warning in editing UI.
+    //QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
+    //mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
   }
 
   QgsDebugMsg( QString( "Spatial column type is %1" ).arg( QgsPostgresConn::displayStringForGeomType( mSpatialColType ) ) );
