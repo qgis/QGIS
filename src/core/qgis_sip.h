@@ -97,6 +97,11 @@
 #define SIP_EXTERNAL
 
 /*
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=allownone
+ */
+#define SIP_ALLOWNONE
+
+/*
   * discard line
   */
 #define SIP_SKIP
@@ -109,7 +114,7 @@
 /*
   * specify an alternative type for SIP argument or return value
   */
-#define SIP_PYTYPE(type)
+#define SIP_PYALTERNATIVETYPE(type)
 
 /*
   * specify an alternative default value for SIP argument

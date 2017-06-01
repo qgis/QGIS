@@ -305,7 +305,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
-                                 int sampleSize = SAMPLE_SIZE,
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 
     /** \brief Refresh contrast enhancement with new extent.
