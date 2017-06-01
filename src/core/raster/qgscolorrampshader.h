@@ -94,7 +94,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       QColor color;
 
       // compare operator for sorting
-      bool operator<( const ColorRampItem &other ) const { return value < other.value; }
+      bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
     };
 
     //! \brief Get the custom colormap
@@ -143,10 +143,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     //! \brief Generates and new RGB value based on one input value
-    bool shade( double, int *, int *, int *, int * ) override;
+    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
 
     //! \brief Generates and new RGB value based on original RGB value
-    bool shade( double, double, double, double, int *, int *, int *, int * ) override;
+    bool shade( double redValue, double greenValue,
+                double blueValue, double alphaValue,
+                int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
+                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
 
     //! \brief Get symbology items if provided by renderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;

@@ -55,7 +55,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     };
 
     //! Map of value to class properties
-    typedef QList< Class > ClassData;
+    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
 
     /**
      * Constructor for QgsPalettedRasterRenderer.
@@ -144,6 +144,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
         QgsRasterBlockFeedback *feedback = nullptr );
 
   private:
+#ifdef SIP_RUN
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & );
+    const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & );
+#endif
+
 
     int mBand;
     ClassData mClassData;
