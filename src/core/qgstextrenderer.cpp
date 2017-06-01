@@ -1423,7 +1423,11 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 
 void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
+  QDomElement textStyleElem;
+  if ( elem.nodeName() == QStringLiteral( "text-style" ) )
+    textStyleElem = elem;
+  else
+    textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
   mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
   QString fontFamily = mTextFontFamily;
