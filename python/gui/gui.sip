@@ -27,6 +27,7 @@
 %Include qgsattributeforminterface.sip
 %Include qgsattributetypeloaddialog.sip
 %Include qgsbrowsertreeview.sip
+%Include qgsbrowserdockwidget.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %If (HAVE_QSCI_SIP)

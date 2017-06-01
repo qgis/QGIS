@@ -655,7 +655,8 @@ void QgsBrowserDockWidget::setFilter()
 
 void QgsBrowserDockWidget::updateProjectHome()
 {
-  if (mModel) mModel->updateProjectHome();
+  if ( mModel )
+    mModel->updateProjectHome();
 }
 
 void QgsBrowserDockWidget::setFilterSyntax( QAction *action )
