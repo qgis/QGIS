@@ -19,7 +19,7 @@ from qgis.gui import (
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsVectorLayer,
     QgsVectorLayerCache
 )
