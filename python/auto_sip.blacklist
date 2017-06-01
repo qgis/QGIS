@@ -246,9 +246,6 @@ analysis/interpolation/qgsgridfilewriter.sip
 analysis/interpolation/qgsinterpolator.sip
 analysis/interpolation/qgsidwinterpolator.sip
 analysis/interpolation/qgstininterpolator.sip
-analysis/openstreetmap/qgsosmbase.sip
-analysis/openstreetmap/qgsosmdatabase.sip
-analysis/openstreetmap/qgsosmimport.sip
 analysis/raster/qgsderivativefilter.sip
 analysis/raster/qgsaspectfilter.sip
 analysis/raster/qgskde.sip

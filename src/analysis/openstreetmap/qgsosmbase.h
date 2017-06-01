@@ -26,7 +26,7 @@ typedef qint64 QgsOSMId;
 
 class QgsOSMDatabase;
 
-struct QgsOSMElementID
+struct ANALYSIS_EXPORT QgsOSMElementID
 {
   enum Type { Invalid, Node, Way, Relation };
 

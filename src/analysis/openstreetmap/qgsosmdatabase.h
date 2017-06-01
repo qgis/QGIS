@@ -56,6 +56,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     //! QgsOSMDatabase cannot be copied.
     QgsOSMDatabase &operator=( const QgsOSMDatabase &rh ) = delete;
 
+    //! Setter for the spatialite database.
     void setFileName( const QString &dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
     bool isOpen() const;
@@ -82,8 +83,9 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsOSMTags tags( bool way, QgsOSMId id ) const;
 
-    //! \note available in Python bindings
-    QList<QgsOSMTagCountPair> usedTags( bool ways ) const;
+    //! \note not available in Python bindings
+    //! SIP does not seem to handle this return type - strange
+    QList<QgsOSMTagCountPair> usedTags( bool ways ) const SIP_SKIP;
 
     QgsPolyline wayPoints( QgsOSMId id ) const;
 
@@ -112,6 +114,11 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     QString quotedValue( QString value );
 
   private:
+
+#ifdef SIP_RUN
+    QgsOSMDatabase( const QgsOSMDatabase &rh );
+#endif
+
     //! database file name
     QString mDbFileName;
 
@@ -134,6 +141,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
  * Encapsulate iteration over table of nodes/
  * \note not available in Python bindings
 */
+#ifndef SIP_RUN
 class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 {
   public:
@@ -153,6 +161,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
     friend class QgsOSMDatabase;
 
 };
+#endif // SIP_RUN
 
 
 
@@ -160,6 +169,7 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
  * Encapsulate iteration over table of ways
  * \note not available in Python bindings
  */
+#ifndef SIP_RUN
 class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 {
   public:
@@ -179,6 +189,7 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
     friend class QgsOSMDatabase;
 
 };
+#endif // SIP_RUN
 
 
 
