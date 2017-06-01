@@ -34,21 +34,28 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
     Q_OBJECT
   public:
 
-    //! Constructor
+    /**
+     * Constructor for QgsDecorationLayoutExtent.
+    */
     QgsDecorationLayoutExtent( QObject *parent = nullptr );
 
+    /**
+     * Returns the fill symbol used for shading layout extents.
+     * \see setSymbol()
+     */
     QgsFillSymbol *symbol() const;
+
+    /**
+     * Sets the fill \a symbol used for shading layout extents. Ownership of
+     * \a symbol is transferred.
+     * \see symbol()
+     */
     void setSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
   public slots:
-    //! set values on the gui when a project is read or the gui first loaded
     void projectRead() override;
-    //! save values to the project
     void saveToProject() override;
-
-    //! Show the dialog box
     void run() override;
-    //! render the copyright label
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
   private:

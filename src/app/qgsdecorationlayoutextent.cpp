@@ -25,7 +25,7 @@
 #include "qgsgeometry.h"
 #include "qgscsexception.h"
 #include "qgslinesymbollayer.h"
-
+#include "qgscomposer.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -109,8 +109,10 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QTransform transform = m2p.transform();
 
-  Q_FOREACH ( QgsComposition *composition, QgsProject::instance()->layoutManager()->compositions() )
+  // only loop through open composers
+  Q_FOREACH ( QgsComposer *composer, QgisApp::instance()->printComposers() )
   {
+    QgsComposition *composition = composer->composition();
     Q_FOREACH ( const QgsComposerMap *map, composition->composerMapItems() )
     {
       QPolygonF extent = map->visibleExtentPolygon();
