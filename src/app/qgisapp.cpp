@@ -161,6 +161,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
+#include "qgsdecorationlayoutextent.h"
 #include "qgsencodingfiledialog.h"
 #include "qgserror.h"
 #include "qgserrordialog.h"
@@ -3527,11 +3528,15 @@ void QgisApp::createDecorations()
   QgsDecorationGrid *mDecorationGrid = new QgsDecorationGrid( this );
   connect( mActionDecorationGrid, &QAction::triggered, mDecorationGrid, &QgsDecorationGrid::run );
 
+  QgsDecorationLayoutExtent *decorationLayoutExtent = new QgsDecorationLayoutExtent( this );
+  connect( mActionDecorationLayoutExtent, &QAction::triggered, decorationLayoutExtent, &QgsDecorationLayoutExtent::run );
+
   // add the decorations in a particular order so they are rendered in that order
   addDecorationItem( mDecorationGrid );
   addDecorationItem( mDecorationCopyright );
   addDecorationItem( mDecorationNorthArrow );
   addDecorationItem( mDecorationScaleBar );
+  addDecorationItem( decorationLayoutExtent );
   connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::renderDecorationItems );
   connect( this, &QgisApp::newProject, this, &QgisApp::projectReadDecorationItems );
   connect( this, &QgisApp::projectRead, this, &QgisApp::projectReadDecorationItems );
