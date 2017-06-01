@@ -180,55 +180,62 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   if ( !layer )
     return;
 
-  int i = 0;
   int found = 0;
   QgsExpression dispExpression( layer->displayExpression() );
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   dispExpression.prepare( &context );
 
+  // build up request expression
+  QStringList expressionParts;
   Q_FOREACH ( const QgsField &field, layer->fields() )
+  {
+    QString exp = QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                  string );
+    expressionParts << exp;
+  }
+
+  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFilterExpression( expression );
+  req.setLimit( 30 );
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures( req );
+  while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return;
 
-    QString exp = QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                  string );
-    QgsFeatureRequest req;
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-    QStringList attrs;
-    attrs << field.name();
-    attrs.append( dispExpression.referencedColumns().toList() );
-    req.setSubsetOfAttributes( attrs, layer->fields() );
-    req.setFilterExpression( exp );
-    req.setLimit( 30 );
-    QgsFeature f;
-    QgsFeatureIterator it = layer->getFeatures( req );
-    while ( it.nextFeature( f ) )
+    QgsLocatorResult result;
+    result.filter = this;
+
+    context.setFeature( f );
+
+    // find matching field content
+    Q_FOREACH ( const QVariant &var, f.attributes() )
     {
-      if ( feedback->isCanceled() )
-        return;
-
-      QgsLocatorResult result;
-      result.filter = this;
-
-      context.setFeature( f );
-      result.displayString = dispExpression.evaluate( &context ).toString();
-      if ( result.displayString.isEmpty() )
-        result.displayString = f.attribute( i ).toString();
-      else
-        result.description = f.attribute( i ).toString();
-
-      result.userData = f.id();
-      result.icon = QgsMapLayerModel::iconForLayer( layer );
-      result.score = static_cast< double >( string.length() ) / f.attribute( i ).toString().size();
-      emit resultFetched( result );
-
-      found++;
-      if ( found >= 30 )
-        return;
+      QString attrString = var.toString();
+      if ( attrString.contains( string, Qt::CaseInsensitive ) )
+      {
+        result.displayString = attrString;
+        break;
+      }
     }
-    i++;
+    if ( result.displayString.isEmpty() )
+      continue; //not sure how this result slipped through...
+
+    result.description = dispExpression.evaluate( &context ).toString();
+
+    result.userData = f.id();
+    result.icon = QgsMapLayerModel::iconForLayer( layer );
+    result.score = static_cast< double >( string.length() ) / result.displayString.size();
+    emit resultFetched( result );
+
+    found++;
+    if ( found >= 30 )
+      return;
   }
 }
 
