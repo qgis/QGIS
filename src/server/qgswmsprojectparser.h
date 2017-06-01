@@ -127,6 +127,9 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
 
     bool useLayerIDs() const override { return mProjectParser->useLayerIDs(); }
 
+    /** True if tile render mode is enabled in the configuration*/
+    bool tileRenderMode() const override;
+
   private:
     QgsServerProjectParser* mProjectParser;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

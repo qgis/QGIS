@@ -123,6 +123,9 @@ class QgsWMSConfigParser
 
     virtual bool useLayerIDs() const = 0;
 
+    /** True if tile render mode is enabled in the configuration*/
+    virtual bool tileRenderMode() const = 0;
+
   private:
 
     QgsWMSConfigParser();

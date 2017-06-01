@@ -62,6 +62,8 @@ QgsMapRenderer::QgsMapRenderer()
 
   mLabelingEngine = nullptr;
   readDefaultDatumTransformations();
+
+  mTileRenderMode = false;
 }
 
 QgsMapRenderer::~QgsMapRenderer()
@@ -342,6 +344,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
   li.toBack();
+
+  mRenderContext.setFlag( QgsRenderContext::RenderMapTile, mTileRenderMode );
 
   QgsRectangle r1, r2;
 

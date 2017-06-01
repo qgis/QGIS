@@ -396,6 +396,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
       mRenderContext.setFeatureFilterProvider( ffp );
     }
 
+    /** Set tile mode (render code tries to prevent tile border effects)*/
+    void setTileRenderMode( bool enabled ) { mTileRenderMode = enabled; }
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
@@ -511,6 +514,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QHash< QString, QgsLayerCoordinateTransform > mLayerCoordinateTransformInfo;
 
     QHash< QPair< QString, QString >, QPair< int, int > > mDefaultDatumTransformations;
+
+    /** Tell the render system we are rendering a map tile*/
+    bool mTileRenderMode;
 
   private:
     void readDefaultDatumTransformations();
