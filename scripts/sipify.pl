@@ -564,7 +564,7 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
     # Skip operators
-    if ( $LINE =~ m/operator(=|<<|>>|->)\s*\(/ ){
+    if ( $ACCESS[$#ACCESS] != PRIVATE && $LINE =~ m/operator(=|<<|>>|->)\s*\(/ ){
         dbg_info("skip operator");
         detect_and_remove_following_body_or_initializerlist();
         next;
