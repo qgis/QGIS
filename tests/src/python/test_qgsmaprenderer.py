@@ -26,7 +26,7 @@ from qgis.core import (QgsMapRendererCache,
                        QgsFeature,
                        QgsGeometry,
                        QgsMapSettings,
-                       QgsPoint)
+                       QgsPointXY)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSize, QThreadPool
 from qgis.PyQt.QtGui import QPainter, QImage
