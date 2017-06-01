@@ -54,6 +54,14 @@ Add feature to index
  :rtype: bool
 %End
 
+    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+ Add a feature ``id`` to the index with a specified bounding box.
+ :return: true if feature was successfully added to index.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     bool deleteFeature( const QgsFeature &f );
 %Docstring
 Remove feature from index
@@ -80,9 +88,6 @@ Returns nearest neighbors (their count is specified by second parameter)
 get reference count - just for debugging!
  :rtype: QAtomicInt
 %End
-
-  protected:
-
 
 };
 
