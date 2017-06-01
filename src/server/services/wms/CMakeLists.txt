@@ -18,12 +18,20 @@ SET (wms_SRCS
   qgsmaprendererjobproxy.cpp
   qgsmediancut.cpp
   qgswmsrenderer.cpp
+  qgswmsparameters.cpp
+  qgslayerrestorer.cpp
+)
+
+SET (wms_MOC_HDRS
+  qgswmsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wms MODULE ${wms_SRCS})
+QT5_WRAP_CPP(wms_MOC_SRCS ${wms_MOC_HDRS})
+
+ADD_LIBRARY (wms MODULE ${wms_SRCS} ${wms_MOC_SRCS} ${wms_MOC_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -35,6 +43,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression

@@ -76,6 +76,7 @@ QgsServer::QgsServer( )
     abort();
   }
   init();
+  mConfigCache = QgsConfigCache::instance();
 }
 
 QString &QgsServer::serverName()
@@ -353,20 +354,10 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
       // load the project if needed and not empty
-      auto projectIt = mProjectRegistry.find( configFilePath );
-      if ( projectIt == mProjectRegistry.constEnd() )
+      const QgsProject *project = mConfigCache->project( configFilePath );
+      if ( ! project )
       {
-        // load the project
-        QgsProject *project = new QgsProject();
-        project->setFileName( configFilePath );
-        if ( project->read() )
-        {
-          projectIt = mProjectRegistry.insert( configFilePath, project );
-        }
-        else
-        {
-          throw QgsServerException( QStringLiteral( "Project file error" ) );
-        }
+        throw QgsServerException( QStringLiteral( "Project file error" ) );
       }
 
       sServerInterface->setConfigFilePath( configFilePath );
@@ -397,7 +388,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QgsService *service = sServiceRegistry.getService( serviceString, versionString );
       if ( service )
       {
-        service->executeRequest( request, responseDecorator, projectIt.value() );
+        service->executeRequest( request, responseDecorator, project );
       }
       else
       {

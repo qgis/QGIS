@@ -102,7 +102,7 @@ int QgsServerProjectUtils::wmsMaxHeight( const QgsProject &project )
 
 bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
 {
-  return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ) );
+  return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), false );
 }
 
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )

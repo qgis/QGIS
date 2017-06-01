@@ -124,8 +124,8 @@ class SERVER_EXPORT QgsServer
 
     static QgsServerSettings sSettings;
 
-    // map of QgsProject
-    QMap<QString, const QgsProject *> mProjectRegistry;
+    //! cache
+    QgsConfigCache *mConfigCache;
 };
 #endif // QGSSERVER_H
 

@@ -84,10 +84,17 @@ class QgsServerProjectParser
 
     /** Returns the text of the <layername> element for a layer element
     @return name or a null string in case of error*/
-    QString layerName( const QDomElement &layerElem ) const;
+    // QString layerName( const QDomElement &layerElem ) const;
 
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;
+
+    /** Gets a list containing names of layers. If a layer has a short name,
+     *  then it's used instead of it's name.
+     * \returns A list of layers' names or short name if defined
+     * \since QGIS 3.0
+     */
+    QStringList layersNames() const;
 
     //! Add layers for vector joins
     void addJoinLayersForElement( const QDomElement &layerElem ) const;
@@ -100,10 +107,6 @@ class QgsServerProjectParser
     /** Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement &layerElem ) const;
-
-    /** Returns the text of the <id> element for a layer element
-    @return id or a null string in case of error*/
-    QString layerShortName( const QDomElement &layerElem ) const;
 
     QgsRectangle projectExtent() const;
 
