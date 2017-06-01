@@ -117,6 +117,8 @@ Set the current value to the value defined by the clear value.
 
   protected:
     virtual void changeEvent( QEvent *event );
+    virtual void wheelEvent( QWheelEvent *event );
+
 
 };
 
