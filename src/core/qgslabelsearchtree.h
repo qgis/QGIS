@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLabelSearchTree
     //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
     //! QgsLabelSearchTree cannot be copied.
-    QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh );
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
 #endif
 };
 
