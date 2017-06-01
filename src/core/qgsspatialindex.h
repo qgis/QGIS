@@ -105,9 +105,9 @@ class CORE_EXPORT QgsSpatialIndex
     //! get reference count - just for debugging!
     QAtomicInt SIP_PYTYPE( int ) refs() const;
 
-  protected:
-    //! \note not available in Python bindings
-    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect ) SIP_SKIP;
+  private:
+
+    static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
 
     /** Calculates feature info to insert into index.
     * \param f input feature
@@ -115,7 +115,6 @@ class CORE_EXPORT QgsSpatialIndex
     * \param id will be set to feature's ID
     * \returns true if feature info was successfully retrieved and the feature can be added to
     * the index
-    * \note not available in Python bindings
     */
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
 
