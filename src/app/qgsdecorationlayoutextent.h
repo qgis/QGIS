@@ -25,6 +25,7 @@
 #include <QObject>
 #include "qgis_app.h"
 #include "qgssymbol.h"
+#include "qgstextrenderer.h"
 #include <memory>
 
 class QgsDecorationLayoutExtentDialog;
@@ -52,6 +53,34 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
      */
     void setSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Returns the text format for extent labels.
+     * \see setTextFormat()
+     * \see labelExtents()
+     */
+    QgsTextFormat textFormat() const { return mTextFormat; }
+
+    /**
+     * Sets the text \a format for extent labels.
+     * \see textFormat()
+     * \see setLabelExtents()
+     */
+    void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
+
+    /**
+     * Returns true if layout extents should be labeled with the name of the associated layout & map.
+     * \see setLabelExtents()
+     * \see textFormat()
+     */
+    bool labelExtents() const;
+
+    /**
+     * Sets whether layout extents should be labeled with the name of the associated layout & map.
+     * \see labelExtents()
+     * \see setTextFormat()
+     */
+    void setLabelExtents( bool labelExtents );
+
   public slots:
     void projectRead() override;
     void saveToProject() override;
@@ -60,6 +89,8 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
 
   private:
     std::unique_ptr< QgsFillSymbol > mSymbol;
+    QgsTextFormat mTextFormat;
+    bool mLabelExtents = true;
 
     friend class QgsDecorationLayoutExtentDialog;
 };

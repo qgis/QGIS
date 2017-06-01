@@ -27,6 +27,7 @@
 #include "qgisapp.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
+#include "qgstextformatwidget.h"
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )
@@ -37,9 +38,15 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
 
+  connect( mCheckBoxLabelExtents, &QCheckBox::toggled, mButtonFontStyle, &QPushButton::setEnabled );
+  mCheckBoxLabelExtents->setChecked( false );
+  mButtonFontStyle->setEnabled( false );
+
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
   connect( mSymbolButton, &QPushButton::clicked, this, &QgsDecorationLayoutExtentDialog::changeSymbol );
+  connect( mButtonFontStyle, &QPushButton::clicked, this, &QgsDecorationLayoutExtentDialog::changeFont );
+
 }
 
 void QgsDecorationLayoutExtentDialog::updateGuiElements()
@@ -52,6 +59,8 @@ void QgsDecorationLayoutExtentDialog::updateGuiElements()
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol.get(), mSymbolButton->iconSize() );
     mSymbolButton->setIcon( icon );
   }
+  mTextFormat = mDeco.textFormat();
+  mCheckBoxLabelExtents->setChecked( mDeco.labelExtents() );
 }
 
 void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
@@ -62,6 +71,8 @@ void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
   {
     mDeco.setSymbol( mSymbol->clone() );
   }
+  mDeco.setTextFormat( mTextFormat );
+  mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
 }
 
 QgsDecorationLayoutExtentDialog::~QgsDecorationLayoutExtentDialog()
@@ -107,4 +118,11 @@ void QgsDecorationLayoutExtentDialog::changeSymbol()
       mSymbolButton->setIcon( icon );
     }
   }
+}
+
+void QgsDecorationLayoutExtentDialog::changeFont()
+{
+  QgsTextFormatDialog dlg( mTextFormat, QgisApp::instance()->mapCanvas(), this );
+  if ( dlg.exec() )
+    mTextFormat = dlg.format();
 }
