@@ -641,6 +641,8 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
+  geometry/qgspointv2.h
+
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
@@ -993,7 +995,6 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultipoint.h
   geometry/qgsmultipolygon.h
   geometry/qgsmultisurface.h
-  geometry/qgspointv2.h
   geometry/qgspolygon.h
   geometry/qgsrectangle.h
   geometry/qgsregularpolygon.h
