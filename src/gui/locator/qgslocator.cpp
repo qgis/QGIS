@@ -63,7 +63,8 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   if ( !filter->prefix().isEmpty() )
   {
     if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
-         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" ) )
+         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
+         || filter->name() == QStringLiteral( "features" ) )
     {
       //inbuilt filter, no prefix check
       mPrefixedFilters.insert( filter->prefix(), filter );

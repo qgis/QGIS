@@ -25,6 +25,7 @@
 #include "qgsmaplayermodel.h"
 #include "qgscomposition.h"
 #include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include <QToolButton>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
@@ -162,4 +163,99 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       found << action;
     }
   }
+}
+
+QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{
+  setUseWithoutPrefix( false );
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  if ( string.length() < 3 )
+    return;
+
+  bool allowNumeric = false;
+  double numericValue = string.toDouble( &allowNumeric );
+
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
+  if ( !layer )
+    return;
+
+  int found = 0;
+  QgsExpression dispExpression( layer->displayExpression() );
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  dispExpression.prepare( &context );
+
+  // build up request expression
+  QStringList expressionParts;
+  Q_FOREACH ( const QgsField &field, layer->fields() )
+  {
+    if ( field.type() == QVariant::String )
+    {
+      expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                      string );
+    }
+    else if ( allowNumeric && field.isNumeric() )
+    {
+      expressionParts << QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( field.name() ) ).arg( numericValue );
+    }
+  }
+
+  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry );
+  req.setFilterExpression( expression );
+  req.setLimit( 30 );
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    QgsLocatorResult result;
+    result.filter = this;
+
+    context.setFeature( f );
+
+    // find matching field content
+    Q_FOREACH ( const QVariant &var, f.attributes() )
+    {
+      QString attrString = var.toString();
+      if ( attrString.contains( string, Qt::CaseInsensitive ) )
+      {
+        result.displayString = attrString;
+        break;
+      }
+    }
+    if ( result.displayString.isEmpty() )
+      continue; //not sure how this result slipped through...
+
+    result.description = dispExpression.evaluate( &context ).toString();
+
+    result.userData = QVariantList() << f.id() << layer->id();
+    result.icon = QgsMapLayerModel::iconForLayer( layer );
+    result.score = static_cast< double >( string.length() ) / result.displayString.size();
+    emit resultFetched( result );
+
+    found++;
+    if ( found >= 30 )
+      break;
+  }
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QVariantList dataList = result.userData.toList();
+  QgsFeatureId id = dataList.at( 0 ).toLongLong();
+  QString layerId = dataList.at( 1 ).toString();
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  if ( !layer )
+    return;
+
+  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
 }
