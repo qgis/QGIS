@@ -183,7 +183,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyUp.png</normaloff>:/images/themes/default/symbologyUp.png</iconset>
+             <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
            </property>
           </widget>
          </item>
