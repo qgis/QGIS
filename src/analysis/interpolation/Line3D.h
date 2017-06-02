@@ -21,7 +21,7 @@
 #include "qgis_analysis.h"
 
 /** \ingroup analysis
- * This class represents a line. It is implemented as a single directed linked list of nodes (with related Point3D objects). Attention: the points inserted in a line are not deleted from Line3D*/
+ * This class represents a line. It is implemented as a single directed linked list of nodes (with related QgsPoint objects). Attention: the points inserted in a line are not deleted from Line3D*/
 class ANALYSIS_EXPORT Line3D
 {
   private:
@@ -39,14 +39,14 @@ class ANALYSIS_EXPORT Line3D
   public:
     Line3D();
     ~Line3D();
-    //! Returns true, if the Line contains no Point3D, otherwise false
+    //! Returns true, if the Line contains no QgsPoint, otherwise false
     bool empty() const;
     //! Inserts a node behind the current position and sets the current position to this new node
-    void insertPoint( Point3D *p );
+    void insertPoint( QgsPoint *p );
     //! Removes the point behind the current position
     void removePoint();
     //! Gets the point at the current position
-    Point3D *getPoint() const;
+    QgsPoint *getPoint() const;
     //! Returns the current position
     unsigned int getCurrent() const;
     //! Returns the size of the line (the numbero of inserted Nodes without 'head' and 'z'
@@ -72,7 +72,7 @@ inline unsigned int Line3D::getCurrent() const
   return current;
 }
 
-inline Point3D *Line3D::getPoint() const
+inline QgsPoint *Line3D::getPoint() const
 {
   return ( currentNode->getPoint() );
 }

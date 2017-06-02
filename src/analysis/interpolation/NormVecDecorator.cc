@@ -39,7 +39,7 @@ NormVecDecorator::~NormVecDecorator()
   }
 }
 
-int NormVecDecorator::addPoint( Point3D *p )
+int NormVecDecorator::addPoint( QgsPoint *p )
 {
   if ( mTIN )
   {
@@ -231,7 +231,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
 }
 
-bool NormVecDecorator::calcPoint( double x, double y, Point3D *result )
+bool NormVecDecorator::calcPoint( double x, double y, QgsPoint *result )
 {
 
   if ( !alreadyestimated )
@@ -252,7 +252,7 @@ bool NormVecDecorator::calcPoint( double x, double y, Point3D *result )
   }
 }
 
-bool NormVecDecorator::getTriangle( double x, double y, Point3D *p1, Vector3D *v1, Point3D *p2, Vector3D *v2, Point3D *p3, Vector3D *v3 )
+bool NormVecDecorator::getTriangle( double x, double y, QgsPoint *p1, Vector3D *v1, QgsPoint *p2, Vector3D *v2, QgsPoint *p3, Vector3D *v3 )
 {
   if ( p1 && p2 && p3 && v1 && v2 && v3 )
   {
@@ -322,7 +322,7 @@ NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
 }
 
 
-bool NormVecDecorator::getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 )
+bool NormVecDecorator::getTriangle( double x, double y, QgsPoint *p1, int *ptn1, Vector3D *v1, PointState *state1, QgsPoint *p2, int *ptn2, Vector3D *v2, PointState *state2, QgsPoint *p3, int *ptn3, Vector3D *v3, PointState *state3 )
 {
   if ( p1 && p2 && p3 && v1 && v2 && v3 && ptn1 && ptn2 && ptn3 && state1 && state2 && state3 )
   {
@@ -438,10 +438,10 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     if ( p1 != -1 && p2 != -1 && p3 != -1 )//don't calculate normal, if a point is a virtual point
     {
       MathUtils::normalFromPoints( getPoint( p1 ), getPoint( p2 ), getPoint( p3 ), &part );
-      double dist1 = getPoint( p3 )->dist3D( getPoint( p1 ) );
-      double dist2 = getPoint( p3 )->dist3D( getPoint( p2 ) );
+      double dist1 = getPoint( p3 )->distance3D( *getPoint( p1 ) );
+      double dist2 = getPoint( p3 )->distance3D( *getPoint( p2 ) );
       //don't add the normal if the triangle is horizontal
-      if ( ( getPoint( p1 )->getZ() != getPoint( p2 )->getZ() ) || ( getPoint( p1 )->getZ() != getPoint( p3 )->getZ() ) )
+      if ( ( getPoint( p1 )->z() != getPoint( p2 )->z() ) || ( getPoint( p1 )->z() != getPoint( p3 )->z() ) )
       {
         currentweight = 1 / ( dist1 * dist1 * dist2 * dist2 );
         total.setX( total.getX() + part.getX()*currentweight );

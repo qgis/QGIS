@@ -23,7 +23,6 @@
 %Include interpolation/Node.sip
 %Include interpolation/NormVecDecorator.sip
 %Include interpolation/ParametricLine.sip
-%Include interpolation/Point3D.sip
 %Include interpolation/TriangleInterpolator.sip
 %Include interpolation/Triangulation.sip
 %Include interpolation/TriDecorator.sip

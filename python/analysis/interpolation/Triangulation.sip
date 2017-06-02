@@ -27,7 +27,7 @@ class Triangulation
      * Adds a point to the triangulation
      * Ownership is transferred to this class
      */
-    virtual int addPoint( Point3D *p ) = 0;
+    virtual int addPoint( QgsPoint *p ) = 0;
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
@@ -42,18 +42,18 @@ class Triangulation
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
      * Returns true in case of success and flase in case of failure
      */
-    virtual bool calcPoint( double x, double y, Point3D *result ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint *result ) = 0;
 
     /** Returns a pointer to the point with number i. Any virtual points must have the number -1*/
-    virtual Point3D *getPoint( unsigned int i ) const = 0;
+    virtual QgsPoint *getPoint( unsigned int i ) const = 0;
 
     /** Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
-    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1 /Out/, Point3D *p2 /Out/, int *n2 /Out/, Point3D *p3 /Out/, int *n3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1, int *n1 /Out/, QgsPoint *p2 /Out/, int *n2 /Out/, QgsPoint *p3 /Out/, int *n3 /Out/ ) = 0;
 
     /** Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3*/
-    virtual bool getTriangle( double x, double y, Point3D *p1 /Out/, Point3D *p2 /Out/, Point3D *p3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 /Out/, QgsPoint *p2 /Out/, QgsPoint *p3 /Out/ ) = 0;
 
     /** Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     virtual int getOppositePoint( int p1, int p2 ) = 0;
