@@ -26,12 +26,12 @@
 #include <QMessageBox>
 
 
-QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
 {
-  if ( embeddedMode )
+  if ( widgetMode == QgsProviderRegistry::WidgetMode::Embedded || widgetMode == QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
 
   // import/export of connections not supported yet

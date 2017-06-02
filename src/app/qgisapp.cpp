@@ -285,6 +285,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
+#include "qgsdatasourcemanagerdialog.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -1392,6 +1393,8 @@ QgisApp::~QgisApp()
   delete mPythonUtils;
 
   delete mTray;
+
+  delete mDataSourceManagerDialog;
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1582,6 +1585,43 @@ bool QgisApp::event( QEvent *event )
     done = QMainWindow::event( event );
   }
   return done;
+}
+
+void QgisApp::dataSourceManager( QString pageName )
+{
+  if ( ! mDataSourceManagerDialog )
+  {
+    mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
+    // Forward signals to this
+    connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+             this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
+             this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
+             this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showProgress, this, &QgisApp::showProgress );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
+    connect( mDataSourceManagerDialog, static_cast<void ( QgsDataSourceManagerDialog::* )()>( &QgsDataSourceManagerDialog::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::handleDropUriList, this, &QgisApp::handleDropUriList );
+    connect( this, &QgisApp::newProject, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::updateProjectHome );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, &QgisApp::openFile );
+
+  }
+  // Try to open the dialog on a particular page
+  if ( ! pageName.isEmpty( ) )
+  {
+    mDataSourceManagerDialog->openPage( pageName );
+  }
+  if ( QgsSettings().value( "/qgis/dataSourceManagerNonModal", true ).toBool( ) )
+  {
+    mDataSourceManagerDialog->show();
+  }
+  else
+  {
+    mDataSourceManagerDialog->exec();
+  }
 }
 
 QgisAppStyleSheet *QgisApp::styleSheetBuilder()
@@ -1808,6 +1848,7 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
+  connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]( ) { dataSourceManager( ); } );
   connect( mActionNewVectorLayer, &QAction::triggered, this, &QgisApp::newVectorLayer );
   connect( mActionNewSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::newSpatialiteLayer );
   connect( mActionNewGeoPackageLayer, &QAction::triggered, this, &QgisApp::newGeoPackageLayer );
@@ -1816,20 +1857,20 @@ void QgisApp::createActions()
   connect( mActionShowAlignRasterTool, &QAction::triggered, this, &QgisApp::showAlignRasterTool );
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
   connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
-  connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { addVectorLayer(); } );
-  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { addRasterLayer(); } );
-  connect( mActionAddPgLayer, &QAction::triggered, this, &QgisApp::addDatabaseLayer );
-  connect( mActionAddSpatiaLiteLayer, &QAction::triggered, this, &QgisApp::addSpatiaLiteLayer );
-  connect( mActionAddMssqlLayer, &QAction::triggered, this, &QgisApp::addMssqlLayer );
-  connect( mActionAddDb2Layer, &QAction::triggered, this, &QgisApp::addDb2Layer );
-  connect( mActionAddOracleLayer, &QAction::triggered, this, &QgisApp::addOracleLayer );
-  connect( mActionAddWmsLayer, &QAction::triggered, this, &QgisApp::addWmsLayer );
-  connect( mActionAddWcsLayer, &QAction::triggered, this, &QgisApp::addWcsLayer );
-  connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { addWfsLayer(); } );
-  connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { addAfsLayer(); } );
-  connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { addAmsLayer(); } );
-  connect( mActionAddDelimitedText, &QAction::triggered, this, &QgisApp::addDelimitedTextLayer );
-  connect( mActionAddVirtualLayer, &QAction::triggered, this, &QgisApp::addVirtualLayer );
+  connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ogr" ) ); } );
+  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "raster" ) ); } );
+  connect( mActionAddPgLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "postgres" ) ); } );
+  connect( mActionAddSpatiaLiteLayer, &QAction::triggered, [ = ] { dataSourceManager( QStringLiteral( "spatialite" ) ); } );
+  connect( mActionAddMssqlLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
+  connect( mActionAddDb2Layer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "DB2" ) ); } );
+  connect( mActionAddOracleLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "oracle" ) ); } );
+  connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
+  connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
+  connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
+  connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgisfeatureserver" ) ); } );
+  connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgismapserver" ) ); } );
+  connect( mActionAddDelimitedText, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "delimitedtext" ) ); } );
+  connect( mActionAddVirtualLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "virtual" ) ); } );
   connect( mActionOpenTable, &QAction::triggered, this, &QgisApp::attributeTable );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
@@ -2202,6 +2243,7 @@ void QgisApp::createToolBars()
 
   QList<QToolBar *> toolbarMenuToolBars;
   toolbarMenuToolBars << mFileToolBar
+                      << mDataSourceManagerToolBar
                       << mLayerToolBar
                       << mDigitizeToolBar
                       << mAdvancedDigitizeToolBar
@@ -2666,6 +2708,7 @@ void QgisApp::createStatusBar()
   actionObjects << menuBar()
                 << mAdvancedDigitizeToolBar
                 << mFileToolBar
+                << mDataSourceManagerToolBar
                 << mLayerToolBar
                 << mDigitizeToolBar
                 << mMapNavToolBar
@@ -2772,6 +2815,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSetLayerCRS->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetLayerCRS.png" ) ) );
   mActionSetProjectCRSFromLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRSFromLayer.png" ) ) );
   mActionNewVectorLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewVectorLayer.svg" ) ) );
+  mActionDataSourceManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDataSourceManager.svg" ) ) );
   mActionNewMemoryLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateMemory.svg" ) ) );
   mActionAddAllToOverview->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAllToOverview.svg" ) ) );
   mActionHideAllLayers->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ) );
@@ -3863,31 +3907,6 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   return newuri;
 }
 
-/**
-  This method prompts the user for a list of vector file names  with a dialog.
-  */
-void QgisApp::addVectorLayer()
-{
-  freezeCanvases();
-  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this );
-
-  if ( ovl->exec() )
-  {
-    QStringList selectedSources = ovl->dataSources();
-    QString enc = ovl->encoding();
-    if ( !selectedSources.isEmpty() )
-    {
-      addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
-    }
-  }
-
-  freezeCanvases( false );
-  refreshMapCanvas();
-
-  delete ovl;
-}
-
-
 bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
@@ -4634,132 +4653,6 @@ void QgisApp::addOracleLayer()
 #endif
 } // QgisApp::addOracleLayer()
 
-void QgisApp::addWmsLayer()
-{
-  // Fudge for now
-  QgsDebugMsg( "about to addRasterLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wmss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wms" ), this ) );
-  if ( !wmss )
-  {
-    QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
-    return;
-  }
-  connect( wmss, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-  wmss->exec();
-  delete wmss;
-}
-
-void QgisApp::addWcsLayer()
-{
-  QgsDebugMsg( "about to addWcsLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wcss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "wcs" ), this ) );
-  if ( !wcss )
-  {
-    QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );
-    return;
-  }
-  connect( wcss, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-  wcss->exec();
-  delete wcss;
-}
-
-void QgisApp::addWfsLayer()
-{
-  QgsDebugMsg( "about to addWfsLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wfss = dynamic_cast<QDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "WFS" ), this ) );
-  if ( !wfss )
-  {
-    QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
-    return;
-  }
-  connect( wfss, SIGNAL( addWfsLayer( QString, QString ) ),
-           this, SLOT( addWfsLayer( QString, QString ) ) );
-
-  wfss->exec();
-  delete wfss;
-}
-
-void QgisApp::addWfsLayer( const QString &uri, const QString &typeName )
-{
-  // TODO: this should be eventually moved to a more reasonable place
-  addVectorLayer( uri, typeName, QStringLiteral( "WFS" ) );
-}
-
-void QgisApp::addAfsLayer()
-{
-  if ( !mapCanvas() )
-  {
-    return;
-  }
-
-  QgsDebugMsg( "about to addAfsLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *afss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgisfeatureserver" ), this ) );
-  if ( !afss )
-  {
-    QMessageBox::warning( this, tr( "ArcGIS Feature Server" ), tr( "Cannot get ArcGIS Feature Server select dialog from provider." ) );
-    return;
-  }
-  afss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
-  connect( afss, &QgsSourceSelectDialog::addLayer,
-  this, [ = ]( const QString & uri, const QString & typeName ) { addAfsLayer( uri, typeName ); } );
-
-  bool wasFrozen = mapCanvas()->isFrozen();
-  freezeCanvases();
-  afss->exec();
-  if ( !wasFrozen )
-    freezeCanvases( false );
-  delete afss;
-}
-
-void QgisApp::addAfsLayer( const QString &uri, const QString &typeName )
-{
-  // TODO: this should be eventually moved to a more reasonable place
-  addVectorLayer( uri, typeName, QStringLiteral( "arcgisfeatureserver" ) );
-}
-
-void QgisApp::addAmsLayer()
-{
-  if ( !mapCanvas() )
-  {
-    return;
-  }
-
-  QgsDebugMsg( "about to addAmsLayer" );
-
-  // TODO: QDialog for now, switch to QWidget in future
-  QgsSourceSelectDialog *amss = dynamic_cast<QgsSourceSelectDialog *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "arcgismapserver" ), this ) );
-  if ( !amss )
-  {
-    QMessageBox::warning( this, tr( "ArcGIS Map Server" ), tr( "Cannot get ArcGIS Map Server select dialog from provider." ) );
-    return;
-  }
-  amss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
-  connect( amss, &QgsSourceSelectDialog::addLayer,
-  this, [ = ]( const QString & uri, const QString & typeName ) { addAmsLayer( uri, typeName ); } );
-
-  bool wasFrozen = mapCanvas()->isFrozen();
-  freezeCanvases();
-  amss->exec();
-  if ( !wasFrozen )
-    freezeCanvases( false );
-  delete amss;
-}
-
-void QgisApp::addAmsLayer( const QString &uri, const QString &typeName )
-{
-  // TODO: this should be eventually moved to a more reasonable place
-  addRasterLayer( uri, typeName, QStringLiteral( "arcgismapserver" ) );
-}
 
 void QgisApp::fileExit()
 {
@@ -11534,8 +11427,8 @@ void QgisApp::renameView()
 /////////////////////////////////////////////////////////////////
 
 
-// this is a slot for action from GUI to add raster layer
-void QgisApp::addRasterLayer()
+// this is a slot for action from GUI to open and add raster layers
+void QgisApp::addRasterLayer( )
 {
   QStringList selectedFiles;
   QString e;//only for parameter correctness
@@ -11551,7 +11444,7 @@ void QgisApp::addRasterLayer()
 
   addRasterLayers( selectedFiles );
 
-}// QgisApp::addRasterLayer()
+}
 
 //
 // This is the method that does the actual work of adding a raster layer - the others

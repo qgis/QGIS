@@ -31,10 +31,23 @@
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
-QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QDialog( parent, fl ),
+    mWidgetMode( widgetMode ),
+    mAddButton( nullptr )
 {
   setupUi( this );
+
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
+  {
+    this->layout()->setSizeConstraint( QLayout::SetNoConstraint );
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
+  }
+
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  // TODO: enable/disable according to valid selection
+  mAddButton->setEnabled( true );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::AcceptRole );
 
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
@@ -49,7 +62,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowF
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = cmbEncodings->findText( enc );
   if ( encindex < 0 )
@@ -274,7 +287,7 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
     if ( !selected.isEmpty() )
     {
       inputSrcDataset->setText( selected.join( QStringLiteral( ";" ) ) );
-      buttonBox->button( QDialogButtonBox::Open )->setFocus();
+      mAddButton->setFocus();
     }
   }
   else if ( radioSrcDirectory->isChecked() )
@@ -382,7 +395,14 @@ void QgsOpenVectorLayerDialog::accept()
   // Save the used encoding
   settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
-  QDialog::accept();
+  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
+  {
+    QDialog::accept();
+  }
+  else if ( ! mDataSources.isEmpty( ) )
+  {
+    emit addVectorLayers( mDataSources, encoding(), dataSourceType( ) );
+  }
 }
 
 void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
@@ -394,7 +414,6 @@ void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
-    layout()->setSizeConstraint( QLayout::SetFixedSize );
     mDataSourceType = QStringLiteral( "file" );
   }
 }
@@ -408,7 +427,6 @@ void QgsOpenVectorLayerDialog::on_radioSrcDirectory_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
-    layout()->setSizeConstraint( QLayout::SetFixedSize );
     mDataSourceType = QStringLiteral( "directory" );
   }
 }
@@ -422,7 +440,6 @@ void QgsOpenVectorLayerDialog::on_radioSrcDatabase_toggled( bool checked )
     protocolGroupBox->hide();
     dbGroupBox->show();
     layout()->blockSignals( false );
-    layout()->setSizeConstraint( QLayout::SetFixedSize );
     setConnectionTypeListPosition();
     populateConnectionList();
     setConnectionListPosition();
@@ -437,7 +454,6 @@ void QgsOpenVectorLayerDialog::on_radioSrcProtocol_toggled( bool checked )
     fileGroupBox->hide();
     dbGroupBox->hide();
     protocolGroupBox->show();
-    layout()->setSizeConstraint( QLayout::SetFixedSize );
     mDataSourceType = QStringLiteral( "protocol" );
   }
 }

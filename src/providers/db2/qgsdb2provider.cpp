@@ -1711,9 +1711,9 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsDb2SourceSelect( parent, fl );
+  return new QgsDb2SourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )

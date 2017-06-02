@@ -25,6 +25,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgscontexthelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -60,7 +61,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsOWSSourceSelect();
 
@@ -172,7 +173,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     bool mManagerMode;
 
     //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
 
     /**

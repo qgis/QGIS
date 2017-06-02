@@ -3031,9 +3031,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsOracleSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsOracleSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsOracleSourceSelect( parent, fl );
+  return new QgsOracleSourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN int dataCapabilities()

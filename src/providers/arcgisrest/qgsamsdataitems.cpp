@@ -19,6 +19,7 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsproviderregistry.h"
 
 #include <QImageReader>
 
@@ -53,7 +54,7 @@ QList<QAction *> QgsAmsRootItem::actions()
 
 QWidget *QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, true );
+  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsSourceSelectDialog::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
   return select;
 }

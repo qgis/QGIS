@@ -253,7 +253,7 @@ QList<QAction *> QgsWCSRootItem::actions()
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, true, true );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsOWSSourceSelect::connectionsChanged, this, &QgsWCSRootItem::connectionsChanged );
   return select;
 }
@@ -303,8 +303,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   return nullptr;
 }
 
-QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWCSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsWCSSourceSelect( parent, fl );
+  return new QgsWCSSourceSelect( parent, fl, widgetMode );
 }
 

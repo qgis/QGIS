@@ -25,7 +25,7 @@
 #include "qgsguiutils.h"
 #include "qgscontexthelp.h"
 #include "qgswcscapabilities.h"
-
+#include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"
 
 #include <QStringList>
@@ -53,7 +53,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   public:
     //! Constructor
-    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsWCSSourceSelect();
 

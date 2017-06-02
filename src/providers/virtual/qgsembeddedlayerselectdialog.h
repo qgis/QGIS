@@ -35,6 +35,12 @@ class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLaye
 
     //! Returns the list of layer ids selected
     QStringList layers() const;
+
+  public slots:
+    void updateLayersList( );
+
+  private:
+    QgsLayerTreeView *mTreeView = nullptr;
 };
 
 #endif

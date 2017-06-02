@@ -18,6 +18,7 @@
 #include <QTextStream>
 #include "qgshelp.h"
 #include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
 
 class QButtonGroup;
 class QgisInterface;
@@ -31,7 +32,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool embedded = false );
+    QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );
@@ -56,6 +57,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
+    QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
   private slots:
     void on_buttonBox_accepted();

@@ -48,16 +48,21 @@ enum
   MODEL_IDX_SQL
 };
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
   , mCapabilities( nullptr )
   , mSQLComposerDialog( nullptr )
+  , mWidgetMode( widgetMode )
 {
   setupUi( this );
 
-  if ( embeddedMode )
+  if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    // For some osbscure reson hiding does not work!
+    // buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
+    mHoldDialogOpen->setHidden( true );
+    mHoldDialogOpen->hide();
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
@@ -400,7 +405,7 @@ void QgsWFSSourceSelect::addLayer()
     emit addWfsLayer( mUri, layerName );
   }
 
-  if ( !mHoldDialogOpen->isChecked() )
+  if ( ! mHoldDialogOpen->isChecked() && mWidgetMode == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }

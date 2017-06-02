@@ -117,6 +117,7 @@ class QgsLabelingWidget;
 class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
+class QgsDataSourceManagerDialog;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -166,30 +167,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
-
-    /** Add a vector layer directly without prompting user for location
-      The caller must provide information compatible with the provider plugin
-      using the vectorLayerPath and baseName. The provider can use these
-      parameters in any way necessary to initialize the layer. The baseName
-      parameter is used in the Map Legend so it should be formed in a meaningful
-      way.
-      */
-    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
-
-    /** \brief overloaded version of the private addLayer method that takes a list of
-     * file names instead of prompting user with a dialog.
-     \param enc encoding type for the layer
-    \param dataSourceType type of ogr datasource
-     \returns true if successfully added layer
-     */
-    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-
-    /** Overloaded vesion of the private addRasterLayer()
-      Method that takes a list of file names instead of prompting
-      user with a dialog.
-      \returns true if successfully added layer(s)
-      */
-    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
     /** Open a raster layer for the given file
       \returns false if unable to open a raster layer for rasterFile
@@ -441,6 +418,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionDraw() { return mActionDraw; }
 
+    QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
     QAction *actionEmbedLayers() { return mActionEmbedLayers; }
@@ -544,6 +522,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QToolBar *fileToolBar() { return mFileToolBar; }
     QToolBar *layerToolBar() { return mLayerToolBar; }
+    QToolBar *dataSourceManagerToolBar() { return mDataSourceManagerToolBar; }
     QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
     QToolBar *digitizeToolBar() { return mDigitizeToolBar; }
     QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
@@ -615,14 +594,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
 
-  public slots:
-    //! Process the list of URIs that have been dropped in QGIS
-    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
-
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
   public slots:
+    //! Process the list of URIs that have been dropped in QGIS
+    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
     void openFile( const QString &fileName );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
@@ -780,6 +757,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent *event ) override;
 
+
+    /**
+     * \brief dataSourceManager Open the DataSourceManager dialog/dock
+     * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
+     *        or "ogr" (vector layers) or "raster" (raster layers)
+     */
+    void dataSourceManager( QString pageName = QString( ) );
+
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
       using the uri and baseName. The provider can use these
@@ -789,14 +774,32 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey );
 
+    /** Add a vector layer directly without prompting user for location
+      The caller must provide information compatible with the provider plugin
+      using the vectorLayerPath and baseName. The provider can use these
+      parameters in any way necessary to initialize the layer. The baseName
+      parameter is used in the Map Legend so it should be formed in a meaningful
+      way.
+      */
+    QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
+
+    /** \brief overloaded version of the private addLayer method that takes a list of
+     * file names instead of prompting user with a dialog.
+     \param enc encoding type for the layer
+    \param dataSourceType type of ogr datasource
+     \returns true if successfully added layer
+     */
+    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
+
+    /** Overloaded vesion of the private addRasterLayer()
+      Method that takes a list of file names instead of prompting
+      user with a dialog.
+      \returns true if successfully added layer(s)
+      */
+    bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
+
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
-
-    void addWfsLayer( const QString &uri, const QString &typeName );
-
-    void addAfsLayer( const QString &uri, const QString &typeName );
-
-    void addAmsLayer( const QString &uri, const QString &typeName );
 
     void versionReplyFinished();
 
@@ -856,8 +859,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void sponsors();
     //! About QGIS
     void about();
-    //! Add a raster layer to the map (will prompt user for file name using dlg )
-    void addRasterLayer();
     //#ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
     void addDatabaseLayer();
@@ -1284,6 +1285,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     Is called from the legend when the current legend item has changed*/
     void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
 
+    /** \brief Open one or more raster layers and add to the map
+     *  Will prompt user for file names using a file selection dialog
+     */
+    void addRasterLayer();
+
     void selectionChanged( QgsMapLayer *layer );
 
     void extentChanged();
@@ -1296,20 +1302,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //    void debugHook();
     //! Add a Layer Definition file
     void addLayerDefinition();
-    //! Add a vector layer to the map
-    void addVectorLayer();
     //! Exit Qgis
     void fileExit();
-    //! Add a WMS layer to the map
-    void addWmsLayer();
-    //! Add a WCS layer to the map
-    void addWcsLayer();
-    //! Add a WFS layer to the map
-    void addWfsLayer();
-    //! Add a ArcGIS FeatureServer layer to the map
-    void addAfsLayer();
-    //! Add a ArcGIS MapServer layer to the map
-    void addAmsLayer();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in
@@ -1911,6 +1905,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
+
+    //! Data Source Manager
+    QgsDataSourceManagerDialog *mDataSourceManagerDialog = nullptr;
 
     //! snapping widget
     QgsSnappingWidget *mSnappingWidget = nullptr;

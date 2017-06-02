@@ -35,6 +35,13 @@ class QgsProviderRegistry
 %End
   public:
 
+    enum WidgetMode
+    {
+      None,
+      Embedded,
+      Manager,
+    };
+
     static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
 %Docstring
 Means of accessing canonical single instance
@@ -88,7 +95,9 @@ Set library directory where to search for plugins
 %End
 
     QWidget *createSelectionWidget( const QString &providerKey,
-                                    QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
+                                    QWidget *parent = 0,
+                                    Qt::WindowFlags fl = Qt::WindowFlags(),
+                                    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 %Docstring
  Returns a new widget for selecting layers from a provider.
  Either the ``parent`` widget must be set or the caller becomes

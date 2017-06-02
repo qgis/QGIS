@@ -164,7 +164,7 @@ QList<QAction *> QgsWfsRootItem::actions()
 
 QWidget *QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, true );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::connectionsChanged );
   return select;
 }
@@ -187,9 +187,9 @@ void QgsWfsRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsWFSSourceSelect( parent, fl );
+  return new QgsWFSSourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN int dataCapabilities()

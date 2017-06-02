@@ -45,9 +45,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsAfsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsAfsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsAfsSourceSelect( parent, fl );
+  return new QgsAfsSourceSelect( parent, fl, widgetMode );
 }
 
 QGISEXTERN int dataCapabilities()

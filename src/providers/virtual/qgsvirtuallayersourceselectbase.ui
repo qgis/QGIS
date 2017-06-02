@@ -374,9 +374,7 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
   <tabstop>mCRS</tabstop>
   <tabstop>mBrowseCRSBtn</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -391,22 +389,6 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsVirtualLayerSourceSelectBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>291</x>
-     <y>405</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>291</x>
-     <y>213</y>
     </hint>
    </hints>
   </connection>

@@ -410,7 +410,7 @@ QList<QAction *> QgsWMSRootItem::actions()
 
 QWidget *QgsWMSRootItem::paramWidget()
 {
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, true, true );
+  QgsWMSSourceSelect *select = new QgsWMSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsWMSSourceSelect::connectionsChanged, this, &QgsWMSRootItem::connectionsChanged );
   return select;
 }
@@ -438,9 +438,9 @@ QGISEXTERN void registerGui( QMainWindow *mainWindow )
   QgsTileScaleWidget::showTileScale( mainWindow );
 }
 
-QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsWMSSourceSelect( parent, fl );
+  return new QgsWMSSourceSelect( parent, fl, widgetMode );
 }
 
 

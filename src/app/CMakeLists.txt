@@ -61,6 +61,7 @@ SET(QGIS_APP_SRCS
   qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
+  qgsdatasourcemanagerdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -247,6 +248,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
+  qgsdatasourcemanagerdialog.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolannotation.h
@@ -531,6 +533,42 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
+)
+INCLUDE_DIRECTORIES(
+  ../analysis/raster
+  ../analysis/openstreetmap
+  ../core
+  ../core/annotations
+  ../core/auth
+  ../core/gps
+  ../core/composer
+  ../core/dxf
+  ../core/geometry
+  ../core/metadata
+  ../core/layertree
+  ../core/providers/memory
+  ../core/raster
+  ../core/scalebar
+  ../core/symbology-ng
+  ../gui
+  ../gui/symbology-ng
+  ../gui/attributetable
+  ../gui/auth
+  ../gui/raster
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
+  ../gui/layertree
+  ../plugins
+  ../python
+  gps
+  ogr
+  openstreetmap
+  dwg
+  dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
