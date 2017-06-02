@@ -1,0 +1,11 @@
+Random Terrain
+grid_calculus
+ParameterNumber|RADIUS|Radius (cells)|None|None|25
+ParameterNumber|ITERATIONS|Iterations|None|None|100
+ParameterSelection|TARGET_DEFINITION|Target Grid System|[0] User defined
+ParameterNumber|TARGET_USER_SIZE|Cellsize|0.0|None|1.0
+ParameterNumber|TARGET_USER_XMIN|Left|None|None|0
+ParameterNumber|TARGET_USER_XMAX|Right|None|None|100
+ParameterNumber|TARGET_USER_YMIN|Bottom|None|None|0
+ParameterNumber|TARGET_USER_YMAX|Top|None|None|100
+OutputRaster|TARGET_OUT_GRID|Grid
