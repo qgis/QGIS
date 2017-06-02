@@ -52,7 +52,7 @@ QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   }
 
   QDomNodeList interpolationList = elem.elementsByTagName( QStringLiteral( "Interpolation" ) );
-  if ( interpolationList.size() < 1 )
+  if ( interpolationList.isEmpty() )
   {
     QgsDebugMsg( "No Interpolation element found" );
     return nullptr;
@@ -68,7 +68,7 @@ QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QgsInterpolator::LayerData currentLayerData;
   currentLayerData.vectorLayer = mVectorLayer;
   QDomNodeList propertyNameList = interpolationElem.elementsByTagName( QStringLiteral( "PropertyName" ) );
-  if ( propertyNameList.size() < 1 )
+  if ( propertyNameList.isEmpty() )
   {
     currentLayerData.zCoordInterpolation = true;
   }
@@ -110,7 +110,7 @@ QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   int nCols, nRows;
 
   QDomNodeList resolutionNodeList = elem.elementsByTagName( QStringLiteral( "Resolution" ) );
-  if ( resolutionNodeList.size() < 1 )
+  if ( resolutionNodeList.isEmpty() )
   {
     //use default values...
     nCols = 100;

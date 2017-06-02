@@ -173,7 +173,7 @@ namespace QgsWms
 
     readLayersAndStyles( mParameters, layersList, stylesList );
 
-    if ( layersList.size() < 1 )
+    if ( layersList.isEmpty() )
     {
       return nullptr;
     }
@@ -193,7 +193,7 @@ namespace QgsWms
 
     QgsCoordinateReferenceSystem dummyCRS;
     QStringList layerIds = layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
-    if ( layerIds.size() < 1 )
+    if ( layerIds.isEmpty() )
     {
       return nullptr;
     }
@@ -966,7 +966,7 @@ namespace QgsWms
     }
 
     QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    if ( queryLayerList.size() < 1 )
+    if ( queryLayerList.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
     }
@@ -2383,7 +2383,7 @@ namespace QgsWms
       QDomElement currentFeatureElem;
 
       QDomNodeList featureList = currentLayerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-      if ( featureList.size() < 1 )
+      if ( featureList.isEmpty() )
       {
         //raster?
         QDomNodeList attributeList = currentLayerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
