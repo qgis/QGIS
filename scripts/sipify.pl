@@ -161,58 +161,60 @@ sub remove_following_body_or_initializerlist {
     };
 }
 
-sub fix_annotations(){
-  # printed annotations
-  $LINE =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
-  $LINE =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
-  $LINE =~ s/\bSIP_ARRAY\b/\/Array\//g;
-  $LINE =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
-  $LINE =~ s/\bSIP_DEPRECATED\b/\/Deprecated\//g;
-  $LINE =~ s/\bSIP_CONSTRAINED\b/\/Constrained\//g;
-  $LINE =~ s/\bSIP_EXTERNAL\b/\/External\//g;
-  $LINE =~ s/\bSIP_FACTORY\b/\/Factory\//;
-  $LINE =~ s/\bSIP_IN\b/\/In\//g;
-  $LINE =~ s/\bSIP_INOUT\b/\/In,Out\//g;
-  $LINE =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
-  $LINE =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
-  $LINE =~ s/\bSIP_OUT\b/\/Out\//g;
-  $LINE =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
-  $LINE =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
-  $LINE =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
-  $LINE =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
+sub fix_annotations {
+    my $line = $_[0];
+    # printed annotations
+    $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
+    $line =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
+    $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
+    $line =~ s/\bSIP_ARRAYSIZE\b/\/ArraySize\//g;
+    $line =~ s/\bSIP_DEPRECATED\b/\/Deprecated\//g;
+    $line =~ s/\bSIP_CONSTRAINED\b/\/Constrained\//g;
+    $line =~ s/\bSIP_EXTERNAL\b/\/External\//g;
+    $line =~ s/\bSIP_FACTORY\b/\/Factory\//;
+    $line =~ s/\bSIP_IN\b/\/In\//g;
+    $line =~ s/\bSIP_INOUT\b/\/In,Out\//g;
+    $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
+    $line =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
+    $line =~ s/\bSIP_OUT\b/\/Out\//g;
+    $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+    $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
+    $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
+    $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
 
-  $LINE =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+    $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
 
-  # combine multiple annotations
-  # https://regex101.com/r/uvCt4M/3
-  do {no warnings 'uninitialized';
-      $LINE =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
-      (! $3) or dbg_info("combine multiple annotations -- works only for 2");
-  };
+    # combine multiple annotations
+    # https://regex101.com/r/uvCt4M/3
+    do {no warnings 'uninitialized';
+        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        (! $3) or dbg_info("combine multiple annotations -- works only for 2");
+    };
 
-  # unprinted annotations
-  $LINE =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
-  $LINE =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
-  # remove argument
-  if ($LINE =~ m/SIP_PYARGREMOVE/){
-      dbg_info("remove arg");
-      if ( $MULTILINE_DEFINITION == 1 ){
-          my $prev_line = pop(@OUTPUT) =~ s/\n$//r;
-          # update multi line status
-          my $parenthesis_balance = 0;
-          $parenthesis_balance += $prev_line =~ tr/\(//;
-          $parenthesis_balance -= $prev_line =~ tr/\)//;
-          if ($parenthesis_balance == 1){
-             $MULTILINE_DEFINITION = 0;
-          }
-          # concat with above line to bring previous commas
-          $LINE =~ s/^\s+//;
-          $LINE = "$prev_line $LINE\n";
-      }
-      # see https://regex101.com/r/5iNptO/4
-      $LINE =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
-  }
-  $LINE =~ s/SIP_FORCE//;
+    # unprinted annotations
+    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYALTERNATIVETYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/=\s+[^=]*?\s+SIP_PYARGDEFAULT\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
+    # remove argument
+    if ($line =~ m/SIP_PYARGREMOVE/){
+        dbg_info("remove arg");
+        if ( $MULTILINE_DEFINITION == 1 ){
+            my $prev_line = pop(@OUTPUT) =~ s/\n$//r;
+            # update multi line status
+            my $parenthesis_balance = 0;
+            $parenthesis_balance += $prev_line =~ tr/\(//;
+            $parenthesis_balance -= $prev_line =~ tr/\)//;
+            if ($parenthesis_balance == 1){
+                $MULTILINE_DEFINITION = 0;
+            }
+            # concat with above line to bring previous commas
+            $line =~ s/^\s+//;
+            $line = "$prev_line $line\n";
+        }
+        # see https://regex101.com/r/5iNptO/4
+        $line =~ s/(?<coma>, +)?(const )?(\w+)(\<(?>[^<>]|(?4))*\>)?\s+[\w&*]+\s+SIP_PYARGREMOVE( = [^()]*(\(\s*(?:[^()]++|(?6))*\s*\))?)?(?(<coma>)|,?)//g;
+    }
+    $line =~ s/SIP_FORCE//;
+    return $line;
 }
 
 # detect a comment block, return 1 if found
@@ -464,7 +466,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if (defined $+{annot})
         {
             $LINE .= "$+{annot}";
-            fix_annotations();
+            $LINE = fix_annotations($LINE);
         }
 
         $LINE .= "\n{\n";
@@ -606,8 +608,11 @@ while ($LINE_IDX < $LINE_COUNT){
                 if ($LINE =~ m/\};/){
                     last;
                 }
-                my $enum_val = $LINE =~ s/(\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$3/r;
-                write_output("ENU3", "$enum_val\n");
+                do {no warnings 'uninitialized';
+                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$2$3/r;
+                    $enum_decl = fix_annotations($enum_decl);
+                    write_output("ENU3", "$enum_decl\n");
+                };
                 detect_comment_block(strict_mode => UNSTRICT);
             }
             write_output("ENU4", "$LINE\n");
@@ -739,7 +744,7 @@ while ($LINE_IDX < $LINE_COUNT){
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
-    fix_annotations();
+    $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
     $LINE =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End)/%$1/;

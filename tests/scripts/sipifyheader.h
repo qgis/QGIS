@@ -16,7 +16,6 @@ email                : denis.rouzaud@gmail.com
 #ifndef SIPIFYHEADER_H
 #define SIPIFYHEADER_H
 
-
 #include "qgis_core.h"
 #include <QtClass>
 
@@ -113,6 +112,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBas
       ImaginarySuccess = 1 << 3, //!< Edit operation resulted in an imaginary geometry
       RecursiveSuccess = 1 << 4, //!< Edit operation resulted in an n-dimensional wormhole
       SuccessCombination = Success | ImaginarySuccess, //!< Holy Graal
+      PythonName SIP_PYNAME( DifferentName ), //!< Different python name
     };
     Q_DECLARE_FLAGS( Flags, MyEnum )
 
