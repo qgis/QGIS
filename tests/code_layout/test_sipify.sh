@@ -5,7 +5,7 @@
 DIR=$(git rev-parse --show-toplevel)
 
 pushd ${DIR} > /dev/null
-outdiff=$(./scripts/sipify.pl tests/scripts/sipifyheader.h | diff tests/scripts/sipifyheader.expected.sip -)
+outdiff=$(./scripts/sipify.pl tests/code_layout/sipifyheader.h | diff tests/code_layout/sipifyheader.expected.sip -)
 popd > /dev/null
 
 if [[ $outdiff ]]; then

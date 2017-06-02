@@ -1,0 +1,16 @@
+IF(WITH_ASTYLE)
+  ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify-indentation.sh)
+ENDIF(WITH_ASTYLE)
+
+ADD_TEST(qgis_spelling ${CMAKE_SOURCE_DIR}/scripts/spell_check/spell_test.sh)
+
+ADD_TEST(qgis_sipify ${CMAKE_SOURCE_DIR}/tests/code_layout/test_sipify.sh)
+ADD_TEST(qgis_sip_uptodate ${CMAKE_SOURCE_DIR}/tests/code_layout/test_sipfiles_uptodate.sh)
+
+IF (WITH_APIDOC)
+  INCLUDE(UsePythonTest)
+  ADD_PYTHON_TEST(PyQgsDocCoverage ${CMAKE_SOURCE_DIR}/tests/code_layout/test_qgsdoccoverage.py)
+  IF (WITH_CORE)
+    ADD_PYTHON_TEST(PyQgsSipCoverage ${CMAKE_SOURCE_DIR}/tests/code_layout/test_qgssipcoverage.py)
+  ENDIF(WITH_CORE)
+ENDIF (WITH_APIDOC)

@@ -18,5 +18,5 @@ export CORES=2
 mkdir build
 cd build
 
-cmake -DWITH_APIDOC=ON ../.ci/travis/code_layout
+cmake -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON ..
 make -j${CORES}
