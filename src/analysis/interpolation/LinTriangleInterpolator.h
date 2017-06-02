@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     //! Calculates the normal vector and assigns it to vec
     virtual bool calcNormVec( double x, double y, Vector3D *result ) override;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D *result ) override;
+    virtual bool calcPoint( double x, double y, QgsPoint *result ) override;
     //! Returns a pointer to the current Triangulation object
     virtual DualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation

@@ -44,11 +44,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
   public:
 
-    /** Construct a 2 dimensional point with an initial x and y coordinate.
-     * \param x x-coordinate of point
-     * \param y y-coordinate of point
+    /**
+     * Construct a point with the provided initial coordinate values.
      */
-    QgsPoint( double x = 0.0, double y = 0.0 );
+    QgsPoint( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
     /** Construct a QgsPoint from a QgsPointXY object
      */

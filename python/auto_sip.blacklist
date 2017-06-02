@@ -212,7 +212,6 @@ analysis/interpolation/Line3D.sip
 analysis/interpolation/Node.sip
 analysis/interpolation/NormVecDecorator.sip
 analysis/interpolation/ParametricLine.sip
-analysis/interpolation/Point3D.sip
 analysis/interpolation/TriangleInterpolator.sip
 analysis/interpolation/Triangulation.sip
 analysis/interpolation/TriDecorator.sip
