@@ -2875,7 +2875,7 @@ namespace QgsWms
           case QgsWkbTypes::PolygonGeometry:
           {
             QgsGeometry point = param.mGeom.pointOnSurface();
-            QgsPoint pt = point.asPoint();
+            QgsPointXY pt = point.asPoint();
             placement = QgsPalLayerSettings::AroundPoint;
 
             QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
