@@ -679,8 +679,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerStyleManager *styleManager() const;
 
-    /** Tests whether the layer should be visible at the specified scale.
-     * \param scale scale denominator to test
+    /** Tests whether the layer should be visible at the specified \a scale.
+     *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
      * \since QGIS 2.16
      * \see minimumScale()

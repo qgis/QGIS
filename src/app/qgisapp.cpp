@@ -8734,8 +8734,7 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
 
 void QgisApp::showScale( double scale )
 {
-  // Why has MapCanvas the scale inverted?
-  mScaleWidget->setScale( 1.0 / scale );
+  mScaleWidget->setScale( scale );
 
   // Not sure if the lines below do anything meaningful /Homann
   if ( mScaleWidget->width() > mScaleWidget->minimumWidth() )

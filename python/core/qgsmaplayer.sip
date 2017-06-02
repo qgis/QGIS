@@ -760,8 +760,8 @@ Return pointer to layer's undo stack
 
     bool isInScaleRange( double scale ) const;
 %Docstring
- Tests whether the layer should be visible at the specified scale.
- \param scale scale denominator to test
+ Tests whether the layer should be visible at the specified ``scale``.
+  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :return: true if the layer is visible at the given scale.
 .. versionadded:: 2.16
 .. seealso:: minimumScale()
