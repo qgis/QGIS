@@ -187,7 +187,7 @@ Calculates the direction angle of a circle tangent (clockwise from north in radi
  :rtype: float
 %End
 
-    static void segmentizeArc( const QgsPoint &p1, const QgsPointV2 &p2, const QgsPoint &p3,
+    static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
                                QList<QgsPoint>  &points /Out/, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
