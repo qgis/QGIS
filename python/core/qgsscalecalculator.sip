@@ -60,7 +60,7 @@ Returns current map units
  Calculate the scale denominator
  \param mapExtent QgsRectangle containing the current map extent
  \param canvasWidth Width of the map canvas in pixel (physical) units
- :return: scale denominator of current map view
+ :return: scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
  :rtype: float
 %End
 

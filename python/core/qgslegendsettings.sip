@@ -193,9 +193,18 @@ Returns style
 
     double mapScale() const;
 %Docstring
+ Returns the legend map scale.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: setMapScale()
  :rtype: float
 %End
+
     void setMapScale( double scale );
+%Docstring
+ Sets the legend map ``scale``.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: mapScale()
+%End
 
     int dpi() const;
 %Docstring

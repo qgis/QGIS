@@ -20,14 +20,14 @@
 double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext &c ) const
 {
   double mup = c.mapToPixel().mapUnitsPerPixel();
-  double renderScale = c.rendererScale(); // Note: this value is 1 / scale
+  double renderScale = c.rendererScale();
   if ( !qgsDoubleNear( minScale, 0 ) )
   {
-    mup = qMin( mup / ( minScale * renderScale ), mup );
+    mup = qMin( mup / ( renderScale / minScale ), mup );
   }
   if ( !qgsDoubleNear( maxScale, 0 ) )
   {
-    mup = qMax( mup / ( maxScale * renderScale ), mup );
+    mup = qMax( mup / ( renderScale / maxScale ), mup );
   }
   return mup;
 }

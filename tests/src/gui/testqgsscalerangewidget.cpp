@@ -73,17 +73,17 @@ void TestQgsScaleRangeWidget::test_setScaleRange()
   // max or min.
   // See https://issues.qgis.org/issues/15463
 
-  widget->setScaleRange( 4.0, 6.0 );
-  QCOMPARE( widget->minimumScale(), 4.0 );
-  QCOMPARE( widget->maximumScale(), 6.0 );
-
-  widget->setScaleRange( 8.0, 10.0 );
-  QCOMPARE( widget->minimumScale(), 8.0 );
-  QCOMPARE( widget->maximumScale(), 10.0 );
-
-  widget->setScaleRange( 2.0, 4.0 );
-  QCOMPARE( widget->minimumScale(), 2.0 );
+  widget->setScaleRange( 6, 4 );
+  QCOMPARE( widget->minimumScale(), 6.0 );
   QCOMPARE( widget->maximumScale(), 4.0 );
+
+  widget->setScaleRange( 10.0, 8 );
+  QCOMPARE( widget->minimumScale(), 10.0 );
+  QCOMPARE( widget->maximumScale(), 8.0 );
+
+  widget->setScaleRange( 4, 2 );
+  QCOMPARE( widget->minimumScale(), 4.0 );
+  QCOMPARE( widget->maximumScale(), 2.0 );
 
   // TODO: test passing min > max
 

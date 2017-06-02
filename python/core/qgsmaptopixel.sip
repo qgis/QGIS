@@ -42,8 +42,8 @@ class QgsMapToPixel
 
     static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
 %Docstring
- Returns a new QgsMapToPixel created using a specified scale and distance unit.
- \param scale map scale
+ Returns a new QgsMapToPixel created using a specified ``scale`` and distance unit.
+ \param scale map scale denominator, e.g. 1000.0 for a 1:1000 map.
  \param dpi screen DPI
  \param mapUnits map units
  :return: matching QgsMapToPixel

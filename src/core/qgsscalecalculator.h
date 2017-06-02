@@ -67,7 +67,7 @@ class CORE_EXPORT QgsScaleCalculator
      * Calculate the scale denominator
      * \param mapExtent QgsRectangle containing the current map extent
      * \param canvasWidth Width of the map canvas in pixel (physical) units
-     * \returns scale denominator of current map view
+     * \returns scale denominator of current map view, e.g. 1000.0 for a 1:1000 map.
      */
     double calculate( const QgsRectangle &mapExtent, int canvasWidth );
 
