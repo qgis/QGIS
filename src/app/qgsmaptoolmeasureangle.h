@@ -17,7 +17,7 @@
 #define QGSMAPTOOLMEASUREANGLE_H
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsdistancearea.h"
 #include "qgis_app.h"
 

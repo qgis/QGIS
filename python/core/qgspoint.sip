@@ -20,7 +20,7 @@ class QgsPointXY
 %End
 
 %TypeHeaderCode
-#include "qgspoint.h"
+#include "qgspointxy.h"
 %End
   public:
     QgsPointXY();

@@ -27,7 +27,7 @@
 #include "qgstestutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgsvectorfilewriter.h"
 

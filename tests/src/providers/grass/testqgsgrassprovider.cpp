@@ -22,24 +22,24 @@
 #include <QTemporaryFile>
 #include "qgstest.h"
 
-#include <qgsapplication.h>
-#include <qgscoordinatereferencesystem.h>
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeatureiterator.h"
-#include <qgsgeometry.h>
-#include <qgslinestring.h>
-#include <qgspointv2.h>
-#include <qgspolygon.h>
-#include <qgsproviderregistry.h>
-#include <qgsrasterbandstats.h>
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
-#include <qgsrasterlayer.h>
+#include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-#include <qgsgrass.h>
-#include <qgsgrassimport.h>
-#include <qgsgrassprovider.h>
+#include "qgsgrass.h"
+#include "qgsgrassimport.h"
+#include "qgsgrassprovider.h"
 
 extern "C"
 {

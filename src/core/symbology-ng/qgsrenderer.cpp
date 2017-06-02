@@ -33,7 +33,7 @@
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 #include "qgswkbptr.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsproperty.h"
 
 #include <QDomElement>

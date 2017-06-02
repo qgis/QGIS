@@ -19,7 +19,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsgeometryfactory.h"
 #include "qgis.h"
 #include "qgswkbtypes.h"

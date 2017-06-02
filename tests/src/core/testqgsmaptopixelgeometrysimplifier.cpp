@@ -32,7 +32,7 @@
 #if 0
 #include <qgspoint.h>
 #include "qgsgeometryutils.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgscircularstring.h"

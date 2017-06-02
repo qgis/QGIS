@@ -21,7 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgisapp.h"
 
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )

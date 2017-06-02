@@ -32,7 +32,7 @@
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgssettings.h"
 
 #include <QImage>

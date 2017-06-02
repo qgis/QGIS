@@ -22,7 +22,7 @@
 #include "libdwgr.h"
 #include "libdxfrw.h"
 #include "qgis.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgscircularstring.h"
 #include "qgscurvepolygon.h"

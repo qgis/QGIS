@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsrectangle.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 /** \ingroup core
  * A 3-dimensional box composed of x, y, z coordinates.

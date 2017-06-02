@@ -22,7 +22,7 @@
 #include <QStringList>
 #include "qgsspatialindex.h"
 #include "qgsabstractgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgis_analysis.h"
 

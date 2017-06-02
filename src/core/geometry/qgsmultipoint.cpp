@@ -16,7 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipoint.h"
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()

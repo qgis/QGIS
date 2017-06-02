@@ -29,7 +29,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"

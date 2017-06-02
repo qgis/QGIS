@@ -19,7 +19,7 @@
 
 #include "ui_qgsmeasurebase.h"
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsdistancearea.h"
 #include "qgshelp.h"
 #include "qgis_app.h"

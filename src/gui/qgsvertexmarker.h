@@ -17,7 +17,7 @@
 #define QGSVERTEXMARKER_H
 
 #include "qgsmapcanvasitem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_gui.h"
 
 class QPainter;

@@ -31,8 +31,13 @@
 class QgsPoint;
 
 /** \ingroup core
- * A class to represent a point.
- * For Z and M support prefer QgsPointV2.
+ * A class to represent a 2D point.
+ *
+ * A QgsPointXY represents a position with X and Y coordinates.
+ * In most scenarios it is preferable to use a QgsPoint instead which also
+ * supports Z and M values.
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPointXY
 {

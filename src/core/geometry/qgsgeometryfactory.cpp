@@ -19,7 +19,7 @@
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsmulticurve.h"

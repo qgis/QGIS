@@ -18,7 +18,7 @@
 #include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include <QVariant>
 #include <QHash>
 #include <QString>

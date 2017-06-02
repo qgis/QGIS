@@ -32,7 +32,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
 

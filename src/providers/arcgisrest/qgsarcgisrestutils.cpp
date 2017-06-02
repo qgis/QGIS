@@ -26,7 +26,7 @@
 #include "geometry/qgsmultipoint.h"
 #include "geometry/qgsmulticurve.h"
 #include "geometry/qgspolygon.h"
-#include "geometry/qgspointv2.h"
+#include "geometry/qgspoint.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>

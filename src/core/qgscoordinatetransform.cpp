@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgscsexception.h"
 

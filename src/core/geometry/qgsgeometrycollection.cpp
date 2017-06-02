@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgscompoundcurve.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsmultipoint.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"

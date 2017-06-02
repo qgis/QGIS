@@ -21,7 +21,7 @@ class QgsVectorLayer;
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 

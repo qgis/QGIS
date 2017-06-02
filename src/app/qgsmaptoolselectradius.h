@@ -18,7 +18,7 @@ email                : jpalmer at linz dot govt dot nz
 
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_app.h"
 
 class QgsMapCanvas;

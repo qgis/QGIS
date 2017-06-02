@@ -18,7 +18,7 @@
 
 #include <QVector>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 class QgsRasterChangeCoords

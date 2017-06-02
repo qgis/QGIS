@@ -129,7 +129,7 @@ class QgsLocatorWidget;
 #include "qgsauthmanager.h"
 #include "qgsconfig.h"
 #include "qgsfeature.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgswelcomepageitemsmodel.h"

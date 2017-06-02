@@ -24,7 +24,7 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscurve.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 #ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
