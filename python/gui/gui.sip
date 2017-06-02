@@ -119,6 +119,7 @@
 %Include qgsmaptoolpan.sip
 %Include qgsmaptoolzoom.sip
 %Include qgsmaplayerstylemanagerwidget.sip
+%Include qgsmenuheader.sip
 %Include qgsmessagebar.sip
 %Include qgsmessagebaritem.sip
 %Include qgsmessagelogviewer.sip
