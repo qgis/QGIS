@@ -177,7 +177,7 @@ class CORE_EXPORT QgsGeometryUtils
     /** Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
      * \since 3.0
      */
-    static void segmentizeArc( const QgsPoint &p1, const QgsPointV2 &p2, const QgsPoint &p3,
+    static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
                                QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
