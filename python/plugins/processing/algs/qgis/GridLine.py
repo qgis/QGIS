@@ -35,7 +35,7 @@ from qgis.core import (QgsRectangle,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPointXY,
+                       QgsPoint,
                        QgsLineString,
                        QgsWkbTypes,
                        QgsFields)
