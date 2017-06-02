@@ -50,7 +50,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! QgsRasterRenderer cannot be copied. Use clone() instead.
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & ) = delete;
 
-    QgsRasterRenderer *clone() const override = 0;
+    QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
 
     virtual int bandCount() const override;
 
@@ -60,7 +60,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface *input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override = 0;
+    virtual QgsRasterBlock *block( int bandNo,
+                                   const QgsRectangle &extent,
+                                   int width,
+                                   int height,
+                                   QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
     bool usesTransparency() const;
 
@@ -78,7 +82,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     double opacity() const { return mOpacity; }
 
-    void setRasterTransparency( QgsRasterTransparency *t );
+    void setRasterTransparency( QgsRasterTransparency *t SIP_TRANSFER );
     const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency; }
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
@@ -122,6 +126,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;
+
+  private:
+#ifdef SIP_RUN
+    QgsRasterRenderer( const QgsRasterRenderer & );
+    const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
+#endif
 
 };
 

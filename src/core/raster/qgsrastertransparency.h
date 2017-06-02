@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #define QGSRASTERTRANSPARENCY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 class QDomDocument;
 class QDomElement;
@@ -67,10 +68,10 @@ class CORE_EXPORT QgsRasterTransparency
     void initializeTransparentPixelList( double, double, double );
 
     //! \brief Mutator for transparentSingleValuePixelList
-    void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel> &newList );
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList SIP_TRANSFER );
 
     //! \brief Mutator for transparentThreeValuePixelList
-    void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel> &newList );
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList SIP_TRANSFER );
 
     //! \brief Returns the transparency value for a single value Pixel
     int alphaValue( double, int globalTransparency = 255 ) const;
