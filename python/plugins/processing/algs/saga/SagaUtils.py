@@ -68,6 +68,7 @@ def findSagaFolder():
                 folder = testfolder
     elif isWindows():
         folders = []
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga-ltr'))
         folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga'))
         if "OSGEO4W_ROOT" in os.environ:
             folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga-ltr"))
