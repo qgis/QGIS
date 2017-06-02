@@ -965,7 +965,7 @@ namespace QgsWms
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "No QUERY_LAYERS" ) );
     }
 
-    QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
+    QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( ',', QString::SkipEmptyParts );
     if ( queryLayerList.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
@@ -1918,10 +1918,10 @@ namespace QgsWms
     QString filterParameter = mParameters.value( QStringLiteral( "FILTER" ) );
     if ( !filterParameter.isEmpty() )
     {
-      QStringList layerSplit = filterParameter.split( QStringLiteral( ";" ) );
+      QStringList layerSplit = filterParameter.split( ';' );
       for ( auto layerIt = layerSplit.constBegin(); layerIt != layerSplit.constEnd(); ++layerIt )
       {
-        QStringList eqSplit = layerIt->split( QStringLiteral( ":" ) );
+        QStringList eqSplit = layerIt->split( ':' );
         if ( eqSplit.size() < 2 )
         {
           continue;
@@ -2024,7 +2024,7 @@ namespace QgsWms
       return false;
     }
 
-    QStringList tokens = filter.split( QStringLiteral( " " ), QString::SkipEmptyParts );
+    QStringList tokens = filter.split( ' ', QString::SkipEmptyParts );
     groupStringList( tokens, QStringLiteral( "'" ) );
     groupStringList( tokens, QStringLiteral( "\"" ) );
 
@@ -2158,7 +2158,7 @@ namespace QgsWms
     Q_FOREACH ( const QString &selectionLayer, selectionString.split( ";" ) )
     {
       //separate layer name from id list
-      QStringList layerIdSplit = selectionLayer.split( QStringLiteral( ":" ) );
+      QStringList layerIdSplit = selectionLayer.split( ':' );
       if ( layerIdSplit.size() < 2 )
       {
         continue;
@@ -2191,7 +2191,7 @@ namespace QgsWms
         continue;
       }
 
-      QStringList idList = layerIdSplit.at( 1 ).split( QStringLiteral( "," ) );
+      QStringList idList = layerIdSplit.at( 1 ).split( ',' );
       QgsFeatureIds selectedIds;
 
       Q_FOREACH ( const QString &id, idList )
@@ -2233,7 +2233,7 @@ namespace QgsWms
     {
       return;
     }
-    QStringList opacityList = opIt.value().split( QStringLiteral( "," ) );
+    QStringList opacityList = opIt.value().split( ',' );
 
     //collect leaf layers and their opacity
     QVector< QPair< QgsMapLayer *, int > > layerOpacityList;

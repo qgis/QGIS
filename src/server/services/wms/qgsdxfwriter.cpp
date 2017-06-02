@@ -31,10 +31,10 @@ namespace QgsWms
     {
       QMap<QString, QString> options;
 
-      QStringList optionsList = optionString.split( QStringLiteral( ";" ) );
+      QStringList optionsList = optionString.split( ';' );
       for ( auto optionsIt = optionsList.constBegin(); optionsIt != optionsList.constEnd(); ++optionsIt )
       {
-        int equalIdx = optionsIt->indexOf( QLatin1String( ":" ) );
+        int equalIdx = optionsIt->indexOf( ':' );
         if ( equalIdx > 0 && equalIdx < ( optionsIt->length() - 1 ) )
         {
           options.insert( optionsIt->left( equalIdx ).toUpper(),
@@ -54,7 +54,7 @@ namespace QgsWms
       QMap<QString, QString>::const_iterator layerAttributesIt = options.find( QStringLiteral( "LAYERATTRIBUTES" ) );
       if ( layerAttributesIt != options.constEnd() )
       {
-        layerAttributes = options.value( QStringLiteral( "LAYERATTRIBUTES" ) ).split( QStringLiteral( "," ) );
+        layerAttributes = options.value( QStringLiteral( "LAYERATTRIBUTES" ) ).split( ',' );
       }
 
       //LAYERS and STYLES
