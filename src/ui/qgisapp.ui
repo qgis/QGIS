@@ -1837,7 +1837,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/copyright_label.svg</normaloff>:/images/themes/default/copyright_label.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Copyright Label</string>
+    <string>&amp;Copyright Label…</string>
+   </property>
+   <property name="toolTip">
+    <string>Copyright Label</string>
    </property>
    <property name="whatsThis">
     <string>Creates a copyright label that is displayed on the map canvas.</string>
@@ -1849,7 +1852,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/north_arrow.png</normaloff>:/images/themes/default/north_arrow.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;North Arrow</string>
+    <string>&amp;North Arrow…</string>
+   </property>
+   <property name="toolTip">
+    <string>North Arrow</string>
    </property>
    <property name="whatsThis">
     <string>&quot;Creates a north arrow that is displayed on the map canvas&quot;</string>
@@ -1861,7 +1867,10 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionScaleBar.svg</normaloff>:/images/themes/default/mActionScaleBar.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Scale Bar</string>
+    <string>&amp;Scale Bar…</string>
+   </property>
+   <property name="toolTip">
+    <string>Scale Bar</string>
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
@@ -1951,7 +1960,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/transformed.svg</normaloff>:/images/themes/default/transformed.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Grid</string>
+    <string>&amp;Grid…</string>
    </property>
    <property name="toolTip">
     <string>Grid</string>
@@ -2620,7 +2629,10 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionAddMap.svg</normaloff>:/images/themes/default/mActionAddMap.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Layout Extents...</string>
+    <string>&amp;Layout Extents…</string>
+   </property>
+   <property name="toolTip">
+    <string>Layout Extents</string>
    </property>
   </action>
  </widget>
