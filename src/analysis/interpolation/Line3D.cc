@@ -46,7 +46,7 @@ bool Line3D::empty() const
   return ( head->getNext() == z );
 }
 
-void Line3D::insertPoint( Point3D *p )
+void Line3D::insertPoint( QgsPoint *p )
 {
   if ( currentNode != z )//we can't insert a node behind the z-node
   {

@@ -17,16 +17,16 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgis_analysis.h"
 
 /** \ingroup analysis
- * Node is a class used by Line3D. It represents a node in the single directed linked list. Associated Point3D objects are deleted when the node is deleted.*/
+ * Node is a class used by Line3D. It represents a node in the single directed linked list. Associated QgsPoint objects are deleted when the node is deleted.*/
 class ANALYSIS_EXPORT Node
 {
   protected:
-    //! Pointer to the Point3D object associated with the node
-    Point3D *mPoint = nullptr;
+    //! Pointer to the QgsPoint object associated with the node
+    QgsPoint *mPoint = nullptr;
     //! Pointer to the next Node in the linked list
     Node *mNext = nullptr;
   public:
@@ -36,12 +36,12 @@ class ANALYSIS_EXPORT Node
     Node &operator=( const Node &n );
     //! Returns a pointer to the next element in the linked list
     Node *getNext() const;
-    //! Returns a pointer to the Point3D object associated with the node
-    Point3D *getPoint() const;
+    //! Returns a pointer to the QgsPoint object associated with the node
+    QgsPoint *getPoint() const;
     //! Sets the pointer to the next node
     void setNext( Node *n );
-    //! Sets a new pointer to an associated Point3D object
-    void setPoint( Point3D *p );
+    //! Sets a new pointer to an associated QgsPoint object
+    void setPoint( QgsPoint *p );
 };
 
 inline Node::Node()
@@ -61,7 +61,7 @@ inline Node *Node::getNext() const
   return mNext;
 }
 
-inline Point3D *Node::getPoint() const
+inline QgsPoint *Node::getPoint() const
 {
   return mPoint;
 }
@@ -71,7 +71,7 @@ inline void Node::setNext( Node *n )
   mNext = n;
 }
 
-inline void Node::setPoint( Point3D *p )
+inline void Node::setPoint( QgsPoint *p )
 {
   mPoint = p;
 }

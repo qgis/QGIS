@@ -20,7 +20,7 @@ Node::Node( const Node &n )
 {
   if ( n.getPoint() )
   {
-    Point3D *point = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
+    QgsPoint *point = new QgsPoint( n.getPoint()->x(), n.getPoint()->y(), n.getPoint()->z() );
     mPoint = point;
   }
   else
@@ -34,11 +34,11 @@ Node::Node( const Node &n )
 
 Node &Node::operator=( const Node &n )
 {
-  Point3D *tmp = mPoint;
+  QgsPoint *tmp = mPoint;
 
   if ( n.getPoint() )//mPoint of n is not a null pointer
   {
-    mPoint = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
+    mPoint = new QgsPoint( n.getPoint()->x(), n.getPoint()->y(), n.getPoint()->z() );
     if ( !mPoint )//no memory
     {
       mPoint = tmp;
@@ -52,10 +52,8 @@ Node &Node::operator=( const Node &n )
     mPoint = nullptr;
   }
 
-  if ( tmp )
-  {
-    delete tmp;
-  }
+  delete tmp;
+
 
   mNext = n.getNext();
   return ( *this );

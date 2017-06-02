@@ -16,7 +16,6 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/NormVecDecorator.cc
   interpolation/Node.cc
   interpolation/ParametricLine.cc
-  interpolation/Point3D.cc
   interpolation/TriangleInterpolator.cc
   interpolation/Triangulation.cc
   interpolation/TriDecorator.cc
@@ -129,7 +128,6 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/ParametricLine.h
   interpolation/CloughTocherInterpolator.h
   interpolation/TriangleInterpolator.h
-  interpolation/Point3D.h
   interpolation/Vector3D.h
   interpolation/DualEdgeTriangulation.h
   interpolation/Node.h

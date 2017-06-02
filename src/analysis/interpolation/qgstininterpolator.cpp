@@ -22,7 +22,7 @@
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
 #include "Line3D.h"
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
@@ -58,12 +58,12 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
     return 1;
   }
 
-  Point3D r;
+  QgsPoint r;
   if ( !mTriangleInterpolator->calcPoint( x, y, &r ) )
   {
     return 2;
   }
-  result = r.getZ();
+  result = r.z();
   return 0;
 }
 
@@ -224,7 +224,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
       {
         z = attributeValue;
       }
-      Point3D *point = new Point3D( x, y, z );
+      QgsPoint *point = new QgsPoint( x, y, z );
       if ( mTriangulation->addPoint( point ) == -100 )
       {
         return -1;
@@ -279,11 +279,11 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
         if ( type == POINTS )
         {
           //todo: handle error code -100
-          mTriangulation->addPoint( new Point3D( x, y, z ) );
+          mTriangulation->addPoint( new QgsPoint( x, y, z ) );
         }
         else
         {
-          line->insertPoint( new Point3D( x, y, z ) );
+          line->insertPoint( new QgsPoint( x, y, z ) );
         }
       }
 
@@ -323,11 +323,11 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
           if ( type == POINTS )
           {
             //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
+            mTriangulation->addPoint( new QgsPoint( x, y, z ) );
           }
           else
           {
-            line->insertPoint( new Point3D( x, y, z ) );
+            line->insertPoint( new QgsPoint( x, y, z ) );
           }
         }
         if ( type != POINTS )
@@ -367,11 +367,11 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
           if ( type == POINTS )
           {
             //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
+            mTriangulation->addPoint( new QgsPoint( x, y, z ) );
           }
           else
           {
-            line->insertPoint( new Point3D( x, y, z ) );
+            line->insertPoint( new QgsPoint( x, y, z ) );
           }
         }
 
@@ -417,11 +417,11 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
             if ( type == POINTS )
             {
               //todo: handle error code -100
-              mTriangulation->addPoint( new Point3D( x, y, z ) );
+              mTriangulation->addPoint( new QgsPoint( x, y, z ) );
             }
             else
             {
-              line->insertPoint( new Point3D( x, y, z ) );
+              line->insertPoint( new QgsPoint( x, y, z ) );
             }
           }
           if ( type != POINTS )

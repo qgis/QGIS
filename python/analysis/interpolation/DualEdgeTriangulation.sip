@@ -11,23 +11,23 @@ class DualEdgeTriangulation: Triangulation
     /** Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
     void addLine( Line3D *line /Transfer/, bool breakline );
     /** Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure*/
-    int addPoint( Point3D *p /Transfer/);
+    int addPoint( QgsPoint *p /Transfer/);
     /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest();
     /** Calculates the normal at a point on the surface*/
     virtual bool calcNormal( double x, double y, Vector3D *result );
     /** Calculates x-, y and z-value of the point on the surface*/
-    virtual bool calcPoint( double x, double y, Point3D *result );
+    virtual bool calcPoint( double x, double y, QgsPoint *result );
     /** Draws the points, edges and the forced lines*/
     //virtual void draw(QPainter *p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     /** Returns a pointer to the point with number i*/
-    virtual Point3D *getPoint( unsigned int i ) const;
+    virtual QgsPoint *getPoint( unsigned int i ) const;
     /** Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     int getOppositePoint( int p1, int p2 );
     /** Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
-    bool getTriangle( double x, double y, Point3D *p1, int *n1 /Out/, Point3D *p2 /Out/, int *n2 /Out/, Point3D *p3 /Out/, int *n3 /Out/ );
+    bool getTriangle( double x, double y, QgsPoint *p1, int *n1 /Out/, QgsPoint *p2 /Out/, int *n2 /Out/, QgsPoint *p3 /Out/, int *n3 /Out/ );
     /** Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
-        bool getTriangle( double x, double y, Point3D *p1 /Out/, Point3D *p2 /Out/, Point3D *p3 /Out/ );
+        bool getTriangle( double x, double y, QgsPoint *p1 /Out/, QgsPoint *p2 /Out/, QgsPoint *p3 /Out/ );
     /** Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method*/
     QList<int> *getSurroundingTriangles( int pointno );
     /** Returns the largest x-coordinate value of the bounding box*/
@@ -80,7 +80,7 @@ class DualEdgeTriangulation: Triangulation
     /** Returns the number of an edge which points to the point with number 'point' or -1 if there is an error*/
     int baseEdgeOfPoint( int point );
     /** Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong*/
-    int baseEdgeOfTriangle( Point3D *point );
+    int baseEdgeOfTriangle( QgsPoint *point );
     /** Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.*/
     bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
     /** Swaps 'edge' and test recursively for other swaps (delaunay criterion)*/
@@ -100,5 +100,5 @@ class DualEdgeTriangulation: Triangulation
     /** Returns true, if a half edge is on the convex hull and false otherwise*/
     bool edgeOnConvexHull( int edge );
     /** Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge*/
-    void evaluateInfluenceRegion( Point3D *point, int edge, QSet<int> &set );
+    void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
 };

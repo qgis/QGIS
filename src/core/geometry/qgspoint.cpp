@@ -31,12 +31,12 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsPoint::QgsPoint( double x, double y )
+QgsPoint::QgsPoint( double x, double y, double z, double m )
   : QgsAbstractGeometry()
   , mX( x )
   , mY( y )
-  , mZ( 0.0 )
-  , mM( 0.0 )
+  , mZ( z )
+  , mM( m )
 {
   mWkbType = QgsWkbTypes::Point;
 }

@@ -22,9 +22,9 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
 
   if ( vec && mTIN )
   {
-    Point3D pt1( 0, 0, 0 );
-    Point3D pt2( 0, 0, 0 );
-    Point3D pt3( 0, 0, 0 );
+    QgsPoint pt1( 0, 0, 0 );
+    QgsPoint pt2( 0, 0, 0 );
+    QgsPoint pt3( 0, 0, 0 );
 
     if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
     {
@@ -33,7 +33,7 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
 
     vec->setX( 1.0 );
     vec->setY( 0.0 );
-    vec->setZ( ( pt1.getZ() * ( pt2.getY() - pt3.getY() ) + pt2.getZ() * ( pt3.getY() - pt1.getY() ) + pt3.getZ() * ( pt1.getY() - pt2.getY() ) ) / ( ( pt1.getX() - pt2.getX() ) * ( pt2.getY() - pt3.getY() ) - ( pt2.getX() - pt3.getX() ) * ( pt1.getY() - pt2.getY() ) ) );
+    vec->setZ( ( pt1.z() * ( pt2.y() - pt3.y() ) + pt2.z() * ( pt3.y() - pt1.y() ) + pt3.z() * ( pt1.y() - pt2.y() ) ) / ( ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() ) ) );
     return true;
   }
 
@@ -48,9 +48,9 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
 {
   if ( vec && mTIN )
   {
-    Point3D pt1( 0, 0, 0 );
-    Point3D pt2( 0, 0, 0 );
-    Point3D pt3( 0, 0, 0 );
+    QgsPoint pt1( 0, 0, 0 );
+    QgsPoint pt2( 0, 0, 0 );
+    QgsPoint pt3( 0, 0, 0 );
 
     if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
     {
@@ -59,7 +59,7 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
 
     vec->setX( 0 );
     vec->setY( 1.0 );
-    vec->setZ( ( pt1.getZ() * ( pt2.getX() - pt3.getX() ) + pt2.getZ() * ( pt3.getX() - pt1.getX() ) + pt3.getZ() * ( pt1.getX() - pt2.getX() ) ) / ( ( pt1.getY() - pt2.getY() ) * ( pt2.getX() - pt3.getX() ) - ( pt2.getY() - pt3.getY() ) * ( pt1.getX() - pt2.getX() ) ) );
+    vec->setZ( ( pt1.z() * ( pt2.x() - pt3.x() ) + pt2.z() * ( pt3.x() - pt1.x() ) + pt3.z() * ( pt1.x() - pt2.x() ) ) / ( ( pt1.y() - pt2.y() ) * ( pt2.x() - pt3.x() ) - ( pt2.y() - pt3.y() ) * ( pt1.x() - pt2.x() ) ) );
     return true;
   }
 
@@ -98,22 +98,22 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D *vec )
 }
 
 
-bool LinTriangleInterpolator::calcPoint( double x, double y, Point3D *point )
+bool LinTriangleInterpolator::calcPoint( double x, double y, QgsPoint *point )
 {
   if ( point && mTIN )
   {
-    Point3D pt1( 0, 0, 0 );
-    Point3D pt2( 0, 0, 0 );
-    Point3D pt3( 0, 0, 0 );
+    QgsPoint pt1( 0, 0, 0 );
+    QgsPoint pt2( 0, 0, 0 );
+    QgsPoint pt3( 0, 0, 0 );
 
     if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
     {
       return false;//point is outside the convex hull or numerical problems
     }
 
-    double a = ( pt1.getZ() * ( pt2.getY() - pt3.getY() ) + pt2.getZ() * ( pt3.getY() - pt1.getY() ) + pt3.getZ() * ( pt1.getY() - pt2.getY() ) ) / ( ( pt1.getX() - pt2.getX() ) * ( pt2.getY() - pt3.getY() ) - ( pt2.getX() - pt3.getX() ) * ( pt1.getY() - pt2.getY() ) );
-    double b = ( pt1.getZ() * ( pt2.getX() - pt3.getX() ) + pt2.getZ() * ( pt3.getX() - pt1.getX() ) + pt3.getZ() * ( pt1.getX() - pt2.getX() ) ) / ( ( pt1.getY() - pt2.getY() ) * ( pt2.getX() - pt3.getX() ) - ( pt2.getY() - pt3.getY() ) * ( pt1.getX() - pt2.getX() ) );
-    double c = pt1.getZ() - a * pt1.getX() - b * pt1.getY();
+    double a = ( pt1.z() * ( pt2.y() - pt3.y() ) + pt2.z() * ( pt3.y() - pt1.y() ) + pt3.z() * ( pt1.y() - pt2.y() ) ) / ( ( pt1.x() - pt2.x() ) * ( pt2.y() - pt3.y() ) - ( pt2.x() - pt3.x() ) * ( pt1.y() - pt2.y() ) );
+    double b = ( pt1.z() * ( pt2.x() - pt3.x() ) + pt2.z() * ( pt3.x() - pt1.x() ) + pt3.z() * ( pt1.x() - pt2.x() ) ) / ( ( pt1.y() - pt2.y() ) * ( pt2.x() - pt3.x() ) - ( pt2.y() - pt3.y() ) * ( pt1.x() - pt2.x() ) );
+    double c = pt1.z() - a * pt1.x() - b * pt1.y();
 
     point->setX( x );
     point->setY( y );
