@@ -21,7 +21,6 @@
 .pydevproject
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
-.ci/travis/code_layout/scripts/qgisstyle*
 api_doc
 build*
 debian/*.debhelper
