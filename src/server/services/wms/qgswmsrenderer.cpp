@@ -2989,6 +2989,11 @@ namespace QgsWms
               mNicknameLayers[lname]->setCustomProperty( "readSLD", true );
               layers.append( mNicknameLayers[lname] );
             }
+            else
+            {
+              throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
+                                            QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
+            }
           }
         }
       }
@@ -3005,7 +3010,7 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) )
+      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -3017,6 +3022,11 @@ namespace QgsWms
         }
 
         layers.append( mNicknameLayers[nickname] );
+      }
+      else
+      {
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
+                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
       }
     }
 
