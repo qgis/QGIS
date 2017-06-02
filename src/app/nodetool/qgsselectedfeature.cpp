@@ -17,7 +17,7 @@
 #include "nodetool/qgsvertexentry.h"
 
 #include "qgsfeatureiterator.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsvertexmarker.h"

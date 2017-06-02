@@ -20,7 +20,7 @@
 
 #include <gdalwarper.h>
 #include <vector>
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 
 class QgsGeorefTransform;

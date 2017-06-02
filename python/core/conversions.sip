@@ -259,7 +259,7 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QList>
-#include "qgspointv2.h"
+#include "qgspoint.h"
 %End
 
 %ConvertFromTypeCode
@@ -333,7 +333,7 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QList>
-#include "qgspointv2.h"
+#include "qgspoint.h"
 %End
 
 %ConvertFromTypeCode

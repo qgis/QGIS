@@ -18,7 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 #include "qgsgeos.h"
 #include "qgsmaptopixel.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 #include <limits>
 #include <QTransform>

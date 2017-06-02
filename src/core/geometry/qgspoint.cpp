@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"

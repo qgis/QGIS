@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsgeorefdatapoint.h"
 
 #include "qgsgcplist.h"

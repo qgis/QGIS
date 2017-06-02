@@ -218,7 +218,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
 #include "qgsproject.h"

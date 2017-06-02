@@ -18,7 +18,7 @@
 #define QGS_GEOMETRYCHECKERUTILS_H
 
 #include "geometry/qgsabstractgeometry.h"
-#include "geometry/qgspointv2.h"
+#include "geometry/qgspoint.h"
 #include <qmath.h>
 
 class QgsGeometryEngine;

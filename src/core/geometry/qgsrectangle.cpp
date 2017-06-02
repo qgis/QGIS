@@ -25,7 +25,7 @@
 #include <QRegExp>
 #include <qnumeric.h>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsbox3d.h"

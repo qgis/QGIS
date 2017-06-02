@@ -17,7 +17,7 @@
 #include "qgscompoundcurve.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include <QMouseEvent>
 
 QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapToolCapture *parentTool,

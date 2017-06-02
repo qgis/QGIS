@@ -21,7 +21,7 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmaptopixel.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgswkbptr.h"
 #include <QPainter>
 #include <QPainterPath>

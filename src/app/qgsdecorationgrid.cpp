@@ -25,7 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
 #include "qgspathresolver.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgssymbol.h" //for symbology

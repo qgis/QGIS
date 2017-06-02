@@ -17,7 +17,7 @@
 
 #include <QString>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include <sqlite3.h>
 #include "qgis_analysis.h"

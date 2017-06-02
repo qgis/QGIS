@@ -19,7 +19,7 @@
 #include "qgsconfig.h"
 #include "qgis.h"
 #include "qgsmessagebar.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 
 #include <QCursor>

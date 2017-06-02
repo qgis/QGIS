@@ -29,7 +29,7 @@
 #include "qgslogger.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsnmeaconnection.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"

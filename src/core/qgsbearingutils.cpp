@@ -17,7 +17,7 @@
 
 #include "qgsbearingutils.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 

@@ -26,7 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgslinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"

@@ -18,7 +18,7 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include <QSvgRenderer>
 
 class QPainter;

@@ -20,7 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"

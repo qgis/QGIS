@@ -21,7 +21,7 @@
 #include <QString>
 
 #include "qgis_core.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgsrectangle.h"

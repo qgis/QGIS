@@ -17,7 +17,7 @@
 #define COORDINATECAPTUREMAPTOOL_H
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include <QObject>
 #include <QPointer>

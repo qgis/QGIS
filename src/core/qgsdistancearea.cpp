@@ -19,7 +19,7 @@
 
 #include "qgsdistancearea.h"
 #include "qgis.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"

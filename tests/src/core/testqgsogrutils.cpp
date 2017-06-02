@@ -26,7 +26,7 @@
 #include "qgsgeometry.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 class TestQgsOgrUtils: public QObject
 {
