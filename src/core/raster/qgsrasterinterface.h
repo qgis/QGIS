@@ -319,7 +319,7 @@ class CORE_EXPORT QgsRasterInterface
      */
 #ifndef SIP_RUN
     virtual bool hasHistogram( int bandNo,
-                               int binCount = 0,
+                               int binCount,
                                double minimum = std::numeric_limits<double>::quiet_NaN(),
                                double maximum = std::numeric_limits<double>::quiet_NaN(),
                                const QgsRectangle &extent = QgsRectangle(),
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsRasterInterface
 #ifndef SIP_RUN
     void initHistogram( QgsRasterHistogram &histogram,
                         int bandNo,
-                        int binCount = 0,
+                        int binCount,
                         double minimum = std::numeric_limits<double>::quiet_NaN(),
                         double maximum = std::numeric_limits<double>::quiet_NaN(),
                         const QgsRectangle &boundingBox = QgsRectangle(),
