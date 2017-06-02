@@ -21,6 +21,7 @@
 #include <QDialog>
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
+#include "qgsmimedatautils.h"
 #include "qgshelp.h"
 
 class QgsBrowserDockWidget;
@@ -72,6 +73,12 @@ class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
+    //! Emitted when a file needs to be opened
+    void openFile( const QString & );
+    //! Emitted when drop uri list needs to be handled from the browser
+    void handleDropUriList( const QgsMimeDataUtils::UriList & );
+    //! Update project home directory
+    void updateProjectHome();
 
   private:
     //! Return the dialog from the provider

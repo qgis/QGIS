@@ -594,14 +594,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
 
-  public slots:
-    //! Process the list of URIs that have been dropped in QGIS
-    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
-
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
   public slots:
+    //! Process the list of URIs that have been dropped in QGIS
+    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
     void openFile( const QString &fileName );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
