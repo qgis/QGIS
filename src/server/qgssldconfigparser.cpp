@@ -801,6 +801,15 @@ void QgsSLDConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDo
   }
 }
 
+bool QgsSLDConfigParser::tileRenderMode() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->tileRenderMode();
+  }
+  return false;
+}
+
 QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& layerName ) const
 {
   QList<QDomElement> resultList;

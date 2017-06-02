@@ -132,6 +132,9 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
+    /** True if tile render mode is enabled in the configuration*/
+    bool tileRenderMode() const override;
+
   private:
 
     /** SLD as dom document*/

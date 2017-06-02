@@ -2103,6 +2103,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
   mMapRenderer->clearLayerCoordinateTransforms();
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
+  mMapRenderer->setTileRenderMode( mConfigParser->tileRenderMode() );
 
   //map extent
   bool bboxOk = true;

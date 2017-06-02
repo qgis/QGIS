@@ -2323,6 +2323,28 @@ void QgsWMSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomD
   mProjectParser->serviceCapabilities( parentElement, doc, "WMS", featureInfoFormatSIA2045() );
 }
 
+bool QgsWMSProjectParser::tileRenderMode() const
+{
+  if ( !mProjectParser->xmlDocument() )
+  {
+    return false;
+  }
+
+  QDomElement qgisElem = mProjectParser->xmlDocument()->documentElement();
+  QDomElement mapCanvasElem = qgisElem.firstChildElement( "mapcanvas" );
+  if ( mapCanvasElem.isNull() )
+  {
+    return false;
+  }
+  QDomElement renderMapTileElem = mapCanvasElem.firstChildElement( "rendermaptile" );
+  if ( renderMapTileElem.isNull() )
+  {
+    return false;
+  }
+
+  return ( renderMapTileElem.text() == "1" );
+}
+
 QDomElement QgsWMSProjectParser::composerByName( const QString& composerName ) const
 {
   QDomElement composerElem;

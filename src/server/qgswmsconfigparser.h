@@ -139,6 +139,9 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     virtual bool useLayerIDs() const = 0;
 
+    /** True if tile render mode is enabled in the configuration*/
+    virtual bool tileRenderMode() const = 0;
+
     /** Adds highlight layers to the layer registry and to the layer set. Returns the ids of the newly created layers (for later removal)*/
     static QStringList addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix = QString() );
     static void removeHighlightLayers( const QStringList& layerIds );

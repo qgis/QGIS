@@ -325,6 +325,9 @@ class QgsMapRenderer : QObject
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
 
+    /** Set tile mode (render code tries to prevent tile border effects)*/
+    void setTileRenderMode( bool enabled );
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore
