@@ -873,7 +873,9 @@ void QgsMapLayer::connectNotify( const char *signal )
 
 bool QgsMapLayer::isInScaleRange( double scale ) const
 {
-  return !mScaleBasedVisibility || ( mMinScale * Qgis::SCALE_PRECISION < scale && scale < mMaxScale );
+  return !mScaleBasedVisibility ||
+         ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
+           && ( mMaxScale == 0 || scale < mMaxScale ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
