@@ -304,6 +304,7 @@ class PGRasterTable(PGTable, RasterTable):
         if not uri:
             uri = self.database().uri()
         # NOTE: service-only URIs won't work with GDAL up to 2.2.x
+        # See: https://issues.qgis.org/issues/16626
         service = (u'service=%s' % uri.service()) if uri.service() else ''
         schema = (u'schema=%s' % self.schemaName()) if self.schemaName() else ''
         dbname = (u'dbname=%s' % uri.database()) if uri.database() else ''
