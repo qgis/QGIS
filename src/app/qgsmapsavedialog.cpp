@@ -20,9 +20,11 @@
 #include "qgis.h"
 #include "qgsscalecalculator.h"
 #include "qgsdecorationitem.h"
+#include "qgsexpressioncontext.h"
 #include "qgsextentgroupbox.h"
 #include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 
 #include <QCheckBox>
@@ -211,4 +213,12 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setLayers( mMapCanvas->layers() );
+
+  //build the expression context
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
+
+  mapSettings.setExpressionContext( expressionContext );
 }
