@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * tests/scripts/sipifyheader.h                                         *
+ * tests/code_layout/sipifyheader.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -442,7 +442,7 @@ class TemplateInheritance5 : SomethingElse
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * tests/scripts/sipifyheader.h                                         *
+ * tests/code_layout/sipifyheader.h                                     *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

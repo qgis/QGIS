@@ -191,11 +191,6 @@ IF (ENABLE_ORACLETEST)
   ADD_PYTHON_TEST(PyQgsOracleProvider test_provider_oracle.py)
 ENDIF (ENABLE_ORACLETEST)
 
-IF (WITH_APIDOC)
-  ADD_PYTHON_TEST(PyQgsDocCoverage test_qgsdoccoverage.py)
-  ADD_PYTHON_TEST(PyQgsSipCoverage test_qgssipcoverage.py)
-ENDIF (WITH_APIDOC)
-
 IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsServer test_qgsserver.py)
   ADD_PYTHON_TEST(PyQgsServerPlugins test_qgsserver_plugins.py)

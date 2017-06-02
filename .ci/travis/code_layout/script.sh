@@ -14,10 +14,6 @@
 ###########################################################################
 set -e
 
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-export QGISSTYLE=${DIR}/scripts/qgisstyle
-
 pushd build
 xvfb-run ctest -V --output-on-failure
 popd
