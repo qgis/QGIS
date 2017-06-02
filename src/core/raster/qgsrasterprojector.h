@@ -79,16 +79,16 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     //! Calculate destination extent and size from source extent and size
     bool destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                         QgsRectangle &destExtent, int &destXSize, int &destYSize );
+                         QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
     //! Calculate destination extent and size from source extent and size
     static bool extentSize( const QgsCoordinateTransform &ct,
                             const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
-                            QgsRectangle &destExtent, int &destXSize, int &destYSize );
+                            QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
   private:
 
@@ -109,6 +109,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
 };
 
+
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /**
@@ -268,6 +270,7 @@ class ProjectorData
 };
 
 /// @endcond
+#endif
 
 #endif
 

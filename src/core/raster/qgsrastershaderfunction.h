@@ -31,10 +31,11 @@ email                : ersts@amnh.org
 #include <QPair>
 
 class CORE_EXPORT QgsRasterShaderFunction
+{
 #ifdef SIP_RUN
 #include <qgscolorrampshader.h>
 #endif
-{
+
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -56,10 +57,21 @@ class CORE_EXPORT QgsRasterShaderFunction
     virtual void setMinimumValue( double );
 
     //! \brief generates and new RGBA value based on one input value
-    virtual bool shade( double, int *, int *, int *, int * );
+    virtual bool shade( double value,
+                        int *returnRedValue SIP_OUT,
+                        int *returnGreenValue SIP_OUT,
+                        int *returnBlueValue SIP_OUT,
+                        int *returnAlpha SIP_OUT );
 
     //! \brief generates and new RGBA value based on original RGBA value
-    virtual bool shade( double, double, double, double, int *, int *, int *, int * );
+    virtual bool shade( double redValue,
+                        double greenValue,
+                        double blueValue,
+                        double alphaValue,
+                        int *returnRedValue SIP_OUT,
+                        int *returnGreenValue SIP_OUT,
+                        int *returnBlueValue SIP_OUT,
+                        int *returnAlpha SIP_OUT );
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 

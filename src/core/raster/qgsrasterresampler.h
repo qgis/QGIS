@@ -26,12 +26,13 @@ class QImage;
 /** \ingroup core
   * Interface for resampling rasters (e.g. to have a smoother appearance)
   */
-class QgsRasterResampler
+class CORE_EXPORT QgsRasterResampler
+{
 #ifdef SIP_RUN
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 #endif
-{
+
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
