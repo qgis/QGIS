@@ -22,7 +22,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsrectangle.h"
 #include "qgsmapsettings.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlistutils.h"

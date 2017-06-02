@@ -19,7 +19,7 @@
 #include <cstdarg>
 #include <stdexcept>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 class QgsLeastSquares

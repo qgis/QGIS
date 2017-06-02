@@ -21,7 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;

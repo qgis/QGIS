@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;

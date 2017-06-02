@@ -17,7 +17,7 @@
 
 #include "qgsmaptoolemitpoint.h"
 #include "qgssnappingutils.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsvertexmarker.h"
 #include "qgsmapcanvas.h"
 

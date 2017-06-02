@@ -33,7 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include "evisgenericeventbrowsergui.h"
 

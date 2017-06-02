@@ -29,7 +29,7 @@
 #include <QVector>
 #include <QVariant>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphVertex;

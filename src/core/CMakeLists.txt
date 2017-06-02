@@ -224,7 +224,7 @@ SET(QGIS_CORE_SRCS
   qgspathresolver.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp
-  qgspoint.cpp
+  qgspointxy.cpp
   qgspointlocator.cpp
   qgsproject.cpp
   qgsprojectbadlayerhandler.cpp
@@ -413,7 +413,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultipoint.cpp
   geometry/qgsmultipolygon.cpp
   geometry/qgsmultisurface.cpp
-  geometry/qgspointv2.cpp
+  geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
   geometry/qgsrectangle.cpp
   geometry/qgsregularpolygon.cpp
@@ -559,7 +559,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsofflineediting.h
   qgsowsconnection.h
   qgspluginlayer.h
-  qgspoint.h
+  qgspointxy.h
   qgspointlocator.h
   qgsproject.h
   qgsrelationmanager.h
@@ -641,7 +641,7 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
-  geometry/qgspointv2.h
+  geometry/qgspoint.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h

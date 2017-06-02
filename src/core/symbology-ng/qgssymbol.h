@@ -21,7 +21,7 @@
 #include <QList>
 #include <QMap>
 #include "qgsmapunitscale.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrendercontext.h"

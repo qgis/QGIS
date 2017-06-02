@@ -18,7 +18,7 @@
 
 #include <QMouseEvent>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgspointlocator.h"
 #include "qgis_gui.h"
 

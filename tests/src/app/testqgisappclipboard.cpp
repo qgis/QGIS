@@ -28,7 +28,7 @@
 #include "qgsclipboard.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgssettings.h"
 
 /** \ingroup UnitTests

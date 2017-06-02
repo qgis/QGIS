@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 
+#include "qgspointxy.h"
 #include "qgspoint.h"
-#include "qgspointv2.h"
 
 #include <cmath>
 #include <QTextStream>

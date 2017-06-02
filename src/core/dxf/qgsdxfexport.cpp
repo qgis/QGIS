@@ -29,7 +29,7 @@
 #include "qgsdxfexport.h"
 #include "qgsdxfpallabeling.h"
 #include "qgsvectordataprovider.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
@@ -44,7 +44,7 @@
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgswkbtypes.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsgeos.h"
 
 #include "pal/feature.h"

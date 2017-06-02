@@ -25,7 +25,7 @@
 class QString;
 class QRectF;
 class QgsBox3d;
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 /** \ingroup core

@@ -20,7 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 
 class QgsLineString;

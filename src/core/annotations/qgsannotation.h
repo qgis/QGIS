@@ -20,7 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrendercontext.h"
 #include "qgssymbol.h"

@@ -37,7 +37,7 @@
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include "qgslabelingenginesettings.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
 #include "qgstextrenderer.h"

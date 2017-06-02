@@ -30,7 +30,7 @@ email                : morb at ozemail dot com dot au
 #include "qgslogger.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 #include "qgsvectorlayer.h"
@@ -41,7 +41,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 

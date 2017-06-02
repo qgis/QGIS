@@ -22,7 +22,7 @@
 #include "qgsvectorfilewriter.h" //logic for writing shpfiles
 #include "qgsfeature.h" //we will need to pass a bunch of these for each rec
 #include "qgsgeometry.h" //each feature needs a geometry
-#include "qgspoint.h" //we will use point geometry
+#include "qgspointxy.h" //we will use point geometry
 #include "qgscoordinatereferencesystem.h" //needed for creating a srs
 #include "qgsapplication.h" //search path for srs.db
 #include "qgslogger.h"

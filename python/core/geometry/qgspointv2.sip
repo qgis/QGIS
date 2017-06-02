@@ -18,7 +18,7 @@ class QgsPoint: QgsAbstractGeometry
 %End
 
 %TypeHeaderCode
-#include "qgspointv2.h"
+#include "qgspoint.h"
 %End
   public:
 

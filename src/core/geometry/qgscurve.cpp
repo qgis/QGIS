@@ -17,7 +17,7 @@
 
 #include "qgscurve.h"
 #include "qgslinestring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgsmultipoint.h"
 
 QgsCurve::QgsCurve(): QgsAbstractGeometry()

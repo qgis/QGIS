@@ -19,7 +19,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsunittypes.h"
 
 #include <QObject>

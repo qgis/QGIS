@@ -18,7 +18,7 @@
 #include <ui_qgsmapcanvasdockwidgetbase.h>
 
 #include "qgsdockwidget.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
 #include <QTimer>

@@ -15,7 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgswkbptr.h"
 #include <QPolygonF>
 

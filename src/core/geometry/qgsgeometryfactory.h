@@ -27,7 +27,7 @@ class QgsConstWkbPtr;
 class QgsRectangle;
 
 //compatibility with old classes
-#include "qgspoint.h"
+#include "qgspointxy.h"
 typedef QVector<QgsPointXY> QgsPolyline;
 typedef QVector<QgsPolyline> QgsPolygon;
 typedef QVector<QgsPointXY> QgsMultiPoint;

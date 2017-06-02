@@ -18,7 +18,7 @@
 #define QGSMAPTOOLCIRCULARSTRINGRADIUS_H
 
 #include "qgsmaptooladdcircularstring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 class QDoubleSpinBox;
 

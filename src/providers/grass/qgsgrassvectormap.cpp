@@ -19,7 +19,7 @@
 
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 #include "qgslogger.h"
 #include "qgsgeometry.h"
