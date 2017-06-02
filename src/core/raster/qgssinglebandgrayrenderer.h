@@ -47,9 +47,9 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QgsSingleBandGrayRenderer *clone() const override SIP_FACTORY;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
@@ -67,6 +67,11 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QList<int> usesBands() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
+    const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
+#endif
+
     int mGrayBand;
     Gradient mGradient;
     std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
