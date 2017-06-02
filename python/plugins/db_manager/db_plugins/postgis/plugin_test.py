@@ -46,8 +46,8 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
 
     def test_rasterTable(self):
 
-        #testdb = os.environ.get('QGIS_PGTEST_DB') or 'qgis_test'
-        #os.environ['PGDATABASE'] = testdb
+        testdb = os.environ.get('QGIS_PGTEST_DB') or 'qgis_test'
+        os.environ['PGDATABASE'] = testdb
 
         obj = QObject() # needs to be kept alive
         database = PGDatabase(obj, QgsDataSourceUri())
