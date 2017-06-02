@@ -8,7 +8,6 @@
 
 
 
-
 %ModuleHeaderCode
 #include <qgsnetworkspeedstrategy.h>
 #include <qgsnetworkdistancestrategy.h>
@@ -79,6 +78,7 @@ typedef QtClass<QVariant> QtClassQVariantBase;
       ImaginarySuccess,
       RecursiveSuccess,
       SuccessCombination,
+      PythonName /PyName=DifferentName/,
     };
     typedef QFlags<QgsSipifyHeader::MyEnum> Flags;
 
