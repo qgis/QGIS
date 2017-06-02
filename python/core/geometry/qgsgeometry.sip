@@ -224,6 +224,13 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
+
+    QgsVertexIterator vertices() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
+%End
+
     QgsPoint closestVertex( const QgsPoint &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
  :rtype: QgsPoint

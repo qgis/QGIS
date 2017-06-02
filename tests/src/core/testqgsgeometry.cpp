@@ -69,6 +69,7 @@ class TestQgsGeometry : public QObject
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
     void operatorBool();
+    void vertexIterator();
 
     // geometry types
     void point(); //test QgsPointV2
@@ -406,6 +407,23 @@ void TestQgsGeometry::operatorBool()
   QVERIFY( !geom );
 }
 
+void TestQgsGeometry::vertexIterator()
+{
+  QgsGeometry geom;
+  QgsVertexIterator it = geom.vertices();
+  QVERIFY( !it.hasNext() );
+
+  QgsPolyline polyline;
+  polyline << QgsPoint( 1, 2 ) << QgsPoint( 3, 4 );
+  QgsGeometry geom2 = QgsGeometry::fromPolyline( polyline );
+  QgsVertexIterator it2 = geom2.vertices();
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 2 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 3, 4 ) );
+  QVERIFY( !it2.hasNext() );
+}
+
 void TestQgsGeometry::point()
 {
   //test QgsPointV2
@@ -720,6 +738,20 @@ void TestQgsGeometry::point()
   QVERIFY( p21.nextVertex( v, p22 ) );
   QCOMPARE( p22, p21 );
   QCOMPARE( v, QgsVertexId( 1, 0, 0 ) );
+
+  // vertex iterator
+  QgsAbstractGeometry::vertex_iterator it1 = p21.vertices_begin();
+  QgsAbstractGeometry::vertex_iterator it1end = p21.vertices_end();
+  QCOMPARE( *it1, p21 );
+  QCOMPARE( it1.vertexId(), QgsVertexId( 0, 0, 0 ) );
+  ++it1;
+  QCOMPARE( it1, it1end );
+
+  // Java-style iterator
+  QgsVertexIterator it2( &p21 );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), p21 );
+  QVERIFY( !it2.hasNext() );
 
   //vertexAt - will always be same as point
   QCOMPARE( p21.vertexAt( QgsVertexId() ), p21 );
@@ -2165,6 +2197,15 @@ void TestQgsGeometry::lineString()
   QVERIFY( !l32.nextVertex( v, p ) );
   v = QgsVertexId( 0, 0, 10 );
   QVERIFY( !l32.nextVertex( v, p ) );
+
+  // vertex iterator on empty linestring
+  QgsAbstractGeometry::vertex_iterator it1 = l32.vertices_begin();
+  QCOMPARE( it1, l32.vertices_end() );
+
+  // Java-style iterator on empty linetring
+  QgsVertexIterator it1x( &l32 );
+  QVERIFY( !it1x.hasNext() );
+
   //LineString
   l32.setPoints( QgsPointSequence() << QgsPointV2( 1, 2 ) << QgsPointV2( 11, 12 ) );
   v = QgsVertexId( 0, 0, 2 ); //out of range
@@ -2187,6 +2228,24 @@ void TestQgsGeometry::lineString()
   QVERIFY( l32.nextVertex( v, p ) );
   QCOMPARE( v, QgsVertexId( 1, 0, 1 ) ); //test that part number is maintained
   QCOMPARE( p, QgsPointV2( 11, 12 ) );
+
+  // vertex iterator
+  QgsAbstractGeometry::vertex_iterator it2 = l32.vertices_begin();
+  QCOMPARE( *it2, QgsPointV2( 1, 2 ) );
+  QCOMPARE( it2.vertexId(), QgsVertexId( 0, 0, 0 ) );
+  ++it2;
+  QCOMPARE( *it2, QgsPointV2( 11, 12 ) );
+  QCOMPARE( it2.vertexId(), QgsVertexId( 0, 0, 1 ) );
+  ++it2;
+  QCOMPARE( it2, l32.vertices_end() );
+
+  // Java-style iterator
+  QgsVertexIterator it2x( &l32 );
+  QVERIFY( it2x.hasNext() );
+  QCOMPARE( it2x.next(), QgsPointV2( 1, 2 ) );
+  QVERIFY( it2x.hasNext() );
+  QCOMPARE( it2x.next(), QgsPointV2( 11, 12 ) );
+  QVERIFY( !it2x.hasNext() );
 
   //LineStringZ
   l32.setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPointV2( QgsWkbTypes::PointZ, 11, 12, 13 ) );
@@ -4433,6 +4492,25 @@ void TestQgsGeometry::multiPoint()
   QgsVertexId after;
   // return error - points have no segments
   QVERIFY( boundaryMP.closestSegment( QgsPointV2( 0.5, 0.5 ), closest, after, 0, 0 ) < 0 );
+
+  // vertex iterator
+  QgsAbstractGeometry::vertex_iterator it = boundaryMP.vertices_begin();
+  QgsAbstractGeometry::vertex_iterator itEnd = boundaryMP.vertices_end();
+  QCOMPARE( *it, QgsPointV2( 0, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 1, 1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 0 ) );
+  ++it;
+  QCOMPARE( it, itEnd );
+
+  // Java-style iterator
+  QgsVertexIterator it2( &boundaryMP );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 0, 0 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 1 ) );
+  QVERIFY( !it2.hasNext() );
 }
 
 void TestQgsGeometry::multiLineString()
@@ -4469,6 +4547,45 @@ void TestQgsGeometry::multiLineString()
   QCOMPARE( static_cast< QgsPointV2 *>( mpBoundary->geometryN( 3 ) )->x(), 11.0 );
   QCOMPARE( static_cast< QgsPointV2 *>( mpBoundary->geometryN( 3 ) )->y(), 11.0 );
   delete boundary;
+
+  // vertex iterator: 2 linestrings with 3 points each
+  QgsAbstractGeometry::vertex_iterator it = multiLine1.vertices_begin();
+  QgsAbstractGeometry::vertex_iterator itEnd = multiLine1.vertices_end();
+  QCOMPARE( *it, QgsPointV2( 0, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 1, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 1, 1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 2 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10, 10 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 11, 10 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 11, 11 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 2 ) );
+  ++it;
+  QCOMPARE( it, itEnd );
+
+  // Java-style iterator
+  QgsVertexIterator it2( &multiLine1 );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 0, 0 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 0 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 1 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10, 10 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 11, 10 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 11, 11 ) );
+  QVERIFY( !it2.hasNext() );
 
   // add a closed string = no boundary
   QgsLineString boundaryLine3;
@@ -4558,6 +4675,102 @@ void TestQgsGeometry::multiPolygon()
   boundaryRing2.setPoints( QList<QgsPointV2>() << QgsPointV2( 10.8, 10.8 ) << QgsPointV2( 10.9, 10.8 ) << QgsPointV2( 10.9, 10.9 )  << QgsPointV2( 10.8, 10.8 ) );
   polygon2.setInteriorRings( QList< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   multiPolygon1.addGeometry( polygon2.clone() );
+
+  // vertex iterator: 2 polygons (one with just exterior ring, other with two interior rings)
+  QgsAbstractGeometry::vertex_iterator it = multiPolygon1.vertices_begin();
+  QgsAbstractGeometry::vertex_iterator itEnd = multiPolygon1.vertices_end();
+  QCOMPARE( *it, QgsPointV2( 0, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 1, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 1, 1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 2 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 0, 0 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 0, 0, 3 ) );
+  ++it;
+  // 2nd polygon - exterior ring
+  QCOMPARE( *it, QgsPointV2( 10, 10 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 11, 10 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 11, 11 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 2 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10, 10 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 0, 3 ) );
+  ++it;
+  // 2nd polygon - 1st interior ring
+  QCOMPARE( *it, QgsPointV2( 10.1, 10.1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 1, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.2, 10.1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 1, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.2, 10.2 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 1, 2 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.1, 10.1 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 1, 3 ) );
+  ++it;
+  // 2nd polygon - 2nd interior ring
+  QCOMPARE( *it, QgsPointV2( 10.8, 10.8 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 2, 0 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.9, 10.8 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 2, 1 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.9, 10.9 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 2, 2 ) );
+  ++it;
+  QCOMPARE( *it, QgsPointV2( 10.8, 10.8 ) );
+  QCOMPARE( it.vertexId(), QgsVertexId( 1, 2, 3 ) );
+  ++it;
+  // done!
+  QCOMPARE( it, itEnd );
+
+  // Java-style iterator
+  QgsVertexIterator it2( &multiPolygon1 );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 0, 0 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 0 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 1, 1 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 0, 0 ) );
+  QVERIFY( it2.hasNext() );
+  // 2nd polygon - exterior ring
+  QCOMPARE( it2.next(), QgsPointV2( 10, 10 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 11, 10 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 11, 11 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10, 10 ) );
+  QVERIFY( it2.hasNext() );
+  // 2nd polygon - 1st interior ring
+  QCOMPARE( it2.next(), QgsPointV2( 10.1, 10.1 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.2, 10.1 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.2, 10.2 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.1, 10.1 ) );
+  QVERIFY( it2.hasNext() );
+  // 2nd polygon - 2nd interior ring
+  QCOMPARE( it2.next(), QgsPointV2( 10.8, 10.8 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.9, 10.8 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.9, 10.9 ) );
+  QVERIFY( it2.hasNext() );
+  QCOMPARE( it2.next(), QgsPointV2( 10.8, 10.8 ) );
+  QVERIFY( !it2.hasNext() );
 
   boundary = multiPolygon1.boundary();
   QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );

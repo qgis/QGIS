@@ -249,6 +249,22 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   return true;
 }
 
+QgsVertexIterator QgsAbstractGeometry::vertices() const
+{
+  return QgsVertexIterator( this );
+}
+
+bool QgsAbstractGeometry::hasChildGeometries() const
+{
+  return QgsWkbTypes::isMultiType( wkbType() ) || dimension() == 2;
+}
+
+QgsPointV2 QgsAbstractGeometry::childPoint( int index ) const
+{
+  Q_UNUSED( index );
+  return QgsPointV2();
+}
+
 bool QgsAbstractGeometry::isEmpty() const
 {
   QgsVertexId vId;
@@ -274,3 +290,111 @@ QgsAbstractGeometry *QgsAbstractGeometry::toCurveType() const
   return 0;
 }
 
+QgsAbstractGeometry::vertex_iterator::vertex_iterator( const QgsAbstractGeometry *g, int index )
+  : depth( 0 )
+{
+  ::memset( levels, 0, sizeof( Level ) * 3 );  // make sure we clean up also the padding areas (for memcmp test in operator==)
+  levels[0].g = g;
+  levels[0].index = index;
+
+  digDown();  // go to the leaf level of the first vertex
+}
+
+QgsAbstractGeometry::vertex_iterator &QgsAbstractGeometry::vertex_iterator::operator++()
+{
+  if ( depth == 0 && levels[0].index >= levels[0].g->childCount() )
+    return *this;  // end of geometry - nowhere else to go
+
+  Q_ASSERT( !levels[depth].g->hasChildGeometries() );  // we should be at a leaf level
+
+  ++levels[depth].index;
+
+  // traverse up if we are at the end in the current level
+  while ( depth > 0 && levels[depth].index >= levels[depth].g->childCount() )
+  {
+    --depth;
+    ++levels[depth].index;
+  }
+
+  digDown();  // go to the leaf level again
+
+  return *this;
+}
+
+QgsAbstractGeometry::vertex_iterator QgsAbstractGeometry::vertex_iterator::operator++( int )
+{
+  vertex_iterator it( *this );
+  ++*this;
+  return it;
+}
+
+QgsPointV2 QgsAbstractGeometry::vertex_iterator::operator*() const
+{
+  Q_ASSERT( !levels[depth].g->hasChildGeometries() );
+  return levels[depth].g->childPoint( levels[depth].index );
+}
+
+QgsVertexId QgsAbstractGeometry::vertex_iterator::vertexId() const
+{
+  int part = 0, ring = 0, vertex = levels[depth].index;
+  if ( depth == 0 )
+  {
+    // nothing else to do
+  }
+  else if ( depth == 1 )
+  {
+    if ( QgsWkbTypes::isMultiType( levels[0].g->wkbType() ) )
+      part = levels[0].index;
+    else
+      ring = levels[0].index;
+  }
+  else if ( depth == 2 )
+  {
+    part = levels[0].index;
+    ring = levels[1].index;
+  }
+  else
+  {
+    Q_ASSERT( false );
+    return QgsVertexId();
+  }
+
+  // get the vertex type: find out from the leaf geometry
+  QgsVertexId::VertexType vertexType = QgsVertexId::SegmentVertex;
+  if ( const QgsCurve *curve = dynamic_cast<const QgsCurve *>( levels[depth].g ) )
+  {
+    QgsPointV2 p;
+    curve->pointAt( vertex, p, vertexType );
+  }
+
+  return QgsVertexId( part, ring, vertex, vertexType );
+}
+
+bool QgsAbstractGeometry::vertex_iterator::operator==( const QgsAbstractGeometry::vertex_iterator &other ) const
+{
+  if ( depth != other.depth )
+    return false;
+  int res = ::memcmp( levels, other.levels, sizeof( Level ) * ( depth + 1 ) );
+  return res == 0;
+}
+
+void QgsAbstractGeometry::vertex_iterator::digDown()
+{
+  if ( levels[depth].g->hasChildGeometries() && levels[depth].index >= levels[depth].g->childCount() )
+    return;  // first check we are not already at the end
+
+  // while not "final" depth for the geom: go one level down.
+  while ( levels[depth].g->hasChildGeometries() )
+  {
+    ++depth;
+    Q_ASSERT( depth < 3 );  // that's capacity of the levels array
+    levels[depth].index = 0;
+    levels[depth].g = levels[depth - 1].g->childGeometry( levels[depth - 1].index );
+  }
+}
+
+QgsPointV2 QgsVertexIterator::next()
+{
+  n = i++;
+  return *n;
+}

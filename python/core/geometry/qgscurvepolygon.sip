@@ -163,6 +163,10 @@ Adds an interior ring to the geometry (takes ownership)
     virtual bool dropMValue();
 
   protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
+  protected:
 
 
     virtual QgsRectangle calculateBoundingBox() const;

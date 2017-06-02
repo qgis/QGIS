@@ -158,6 +158,9 @@ class QgsCurve: QgsAbstractGeometry
 
   protected:
 
+    virtual int childCount() const;
+    virtual QgsPointV2 childPoint( int index ) const;
+
     virtual void clearCache() const;
 
 };
