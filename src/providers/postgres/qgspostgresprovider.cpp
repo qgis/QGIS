@@ -3531,21 +3531,6 @@ bool QgsPostgresProvider::getGeometryDetails()
   if ( !mValid )
     return false;
 
-  // store whether the geometry includes measure value
-  if ( detectedType == QLatin1String( "POINTM" ) || detectedType == QLatin1String( "MULTIPOINTM" ) ||
-       detectedType == QLatin1String( "LINESTRINGM" ) || detectedType == QLatin1String( "MULTILINESTRINGM" ) ||
-       detectedType == QLatin1String( "POLYGONM" ) || detectedType == QLatin1String( "MULTIPOLYGONM" ) ||
-       mForce2d )
-  {
-    // explicitly disable adding new features and editing of geometries
-    // as this would lead to corruption of measures
-
-    // Do not disable AddFeatures here, features are also added when copying layers. It should be user's
-    // when editing data with measure. If necessary, add a warning in editing UI.
-    //QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn, mQuery ) );
-    //mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
-  }
-
   QgsDebugMsg( QString( "Spatial column type is %1" ).arg( QgsPostgresConn::displayStringForGeomType( mSpatialColType ) ) );
 
   return mValid;
