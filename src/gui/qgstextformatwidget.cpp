@@ -1227,7 +1227,7 @@ void QgsTextFormatWidget::onSubstitutionsChanged( const QgsStringReplacementColl
 
 void QgsTextFormatWidget::previewScaleChanged( double scale )
 {
-  lblFontPreview->setScale( 1.0 / scale );
+  lblFontPreview->setScale( scale );
 }
 
 void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )

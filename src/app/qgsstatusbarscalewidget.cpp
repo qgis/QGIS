@@ -80,7 +80,7 @@ QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()
 void QgsStatusBarScaleWidget::setScale( double scale )
 {
   mScale->blockSignals( true );
-  mScale->setScale( 1.0 / scale );
+  mScale->setScale( scale );
   mScale->blockSignals( false );
 }
 

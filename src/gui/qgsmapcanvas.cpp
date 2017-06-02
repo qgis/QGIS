@@ -277,10 +277,10 @@ void QgsMapCanvas::setCurrentLayer( QgsMapLayer *layer )
   emit currentLayerChanged( layer );
 }
 
-double QgsMapCanvas::scale()
+double QgsMapCanvas::scale() const
 {
   return mapSettings().scale();
-} // scale
+}
 
 bool QgsMapCanvas::isDrawing()
 {

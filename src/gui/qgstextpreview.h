@@ -63,14 +63,17 @@ class GUI_EXPORT QgsTextPreview : public QLabel
      */
     QgsTextFormat format() const { return mFormat; }
 
-    /** Sets the scale to use for previewing format sizes in map units.
-     * \param scale preview map scale
+    /**
+     * Sets the \a scale to use for previewing format sizes in map units.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see scale()
      * \see setMapUnits()
      */
     void setScale( double scale );
 
-    /** Returns the scale used for previewing format sizes in map units.
+    /**
+     * Returns the scale used for previewing format sizes in map units.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see setScale()
      * \see mapUnits()
      */
@@ -92,7 +95,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
   private:
     QgsTextFormat mFormat;
     QgsRenderContext mContext;
-    double mScale;
+    double mScale = -1;
     QgsUnitTypes::DistanceUnit mMapUnits;
     void updateContext();
 };

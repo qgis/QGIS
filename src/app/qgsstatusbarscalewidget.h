@@ -44,8 +44,8 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     virtual ~QgsStatusBarScaleWidget();
 
     /**
-     * \brief setScale set the selected scale from double
-     * \param scale
+     * Set the selected \a scale from double.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      */
     void setScale( double scale );
 
