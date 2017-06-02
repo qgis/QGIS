@@ -53,7 +53,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mExtentGroupBox->setCurrentExtent( mExtent, ms.destinationCrs() );
   mExtentGroupBox->setOutputExtentFromCurrent();
 
-  mScaleWidget->setScale( 1 / ms.scale() );
+  mScaleWidget->setScale( ms.scale() );
   mScaleWidget->setMapCanvas( mMapCanvas );
   mScaleWidget->setShowCurrentScaleButton( true );
 
@@ -144,7 +144,7 @@ void QgsMapSaveDialog::updateScale( double scale )
   calculator.setDpi( mDpi );
 
   double oldScale = 1 / ( calculator.calculate( mExtent, mSize.width() ) );
-  double scaleRatio = oldScale / scale;
+  double scaleRatio = scale / oldScale;
   mExtent.scale( scaleRatio );
   mExtentGroupBox->setOutputExtentFromUser( mExtent, mExtentGroupBox->currentCrs() );
 }

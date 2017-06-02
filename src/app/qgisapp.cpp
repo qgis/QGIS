@@ -8979,8 +8979,8 @@ void QgisApp::setLayerScaleVisibility()
   if ( layer )
   {
     dlg->setScaleVisiblity( layer->hasScaleBasedVisibility() );
-    dlg->setMinimumScale( 1.0 / layer->minimumScale() );
-    dlg->setMaximumScale( 1.0 / layer->maximumScale() );
+    dlg->setMinimumScale( layer->minimumScale() );
+    dlg->setMaximumScale( layer->maximumScale() );
   }
   if ( dlg->exec() )
   {
@@ -8988,8 +8988,8 @@ void QgisApp::setLayerScaleVisibility()
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
-      layer->setMaximumScale( 1.0 / dlg->maximumScale() );
-      layer->setMinimumScale( 1.0 / dlg->minimumScale() );
+      layer->setMaximumScale( dlg->maximumScale() );
+      layer->setMinimumScale( dlg->minimumScale() );
     }
     freezeCanvases( false );
     refreshMapCanvas();

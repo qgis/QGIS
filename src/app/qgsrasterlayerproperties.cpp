@@ -141,7 +141,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  mScaleRangeWidget->setScaleRange( 1.0 / lyr->minimumScale(), 1.0 / lyr->maximumScale() ); // caution: layer uses scale denoms, widget uses true scales
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
@@ -910,9 +910,8 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  // caution: layer uses scale denoms, widget uses true scales
-  mRasterLayer->setMinimumScale( 1.0 / mScaleRangeWidget->minimumScale() );
-  mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->maximumScale() );
+  mRasterLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mRasterLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   mRasterLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mRasterLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );

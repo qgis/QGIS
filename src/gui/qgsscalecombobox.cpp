@@ -26,8 +26,6 @@
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   : QComboBox( parent )
-  , mScale( 1.0 )
-  , mMinScale( 0.0 )
 {
   updateScales();
 
@@ -71,7 +69,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     denominator = QLocale::system().toDouble( parts[1], &ok );
     if ( ok )
     {
-      myScalesList[ i ] = toString( 1.0 / denominator );
+      myScalesList[ i ] = toString( denominator );
     }
   }
 
@@ -114,17 +112,17 @@ void QgsScaleComboBox::showPopup()
   view()->setMinimumWidth( view()->sizeHintForColumn( 0 ) );
 }
 
-QString QgsScaleComboBox::scaleString()
+QString QgsScaleComboBox::scaleString() const
 {
   return toString( mScale );
 }
 
-bool QgsScaleComboBox::setScaleString( const QString &scaleTxt )
+bool QgsScaleComboBox::setScaleString( const QString &string )
 {
   bool ok;
-  double newScale = toDouble( scaleTxt, &ok );
+  double newScale = toDouble( string, &ok );
   double oldScale = mScale;
-  if ( newScale < mMinScale && newScale != 0 )
+  if ( newScale > mMinScale && newScale != 0 && mMinScale != 0 )
   {
     newScale = mMinScale;
   }
@@ -167,7 +165,7 @@ void QgsScaleComboBox::fixupScale()
   if ( ok )
   {
     // if a user types scale = 2345, we transform to 1:2345
-    if ( userSetScale && newScale >= 1.0 )
+    if ( userSetScale && newScale < 1.0 && !qgsDoubleNear( newScale, 0.0 ) )
     {
       newScale = 1 / newScale;
     }
@@ -185,13 +183,13 @@ QString QgsScaleComboBox::toString( double scale )
   {
     return QStringLiteral( "0" );
   }
-  else if ( scale > 1 )
+  else if ( scale <= 1 )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( qRound( scale ) ) );
+    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( qRound( scale ) ) );
   }
 }
 
@@ -200,7 +198,8 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
   bool ok = false;
   QString scaleTxt( scaleString );
 
-  double scale = qgsPermissiveToDouble( scaleTxt, ok );
+  double denominator = qgsPermissiveToDouble( scaleTxt, ok );
+  double scale = !qgsDoubleNear( denominator, 0.0 ) ? 1.0 / denominator : 0.0;
   if ( ok )
   {
     // Create a text version and set that text and rescan
@@ -217,10 +216,10 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
       bool okY = false;
       int x = qgsPermissiveToInt( txtList[ 0 ], okX );
       int y = qgsPermissiveToInt( txtList[ 1 ], okY );
-      if ( okX && okY )
+      if ( okX && okY && x != 0 )
       {
         // Scale is fraction of x and y
-        scale = ( double )x / ( double )y;
+        scale = static_cast<  double >( y ) / static_cast< double >( x );
         ok = true;
       }
     }
@@ -237,8 +236,8 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
 void QgsScaleComboBox::setMinScale( double scale )
 {
   mMinScale = scale;
-  if ( mScale < scale && mScale != 0 )
+  if ( mScale > mMinScale && mScale != 0 && mMinScale != 0 )
   {
-    setScale( scale );
+    setScale( mMinScale );
   }
 }

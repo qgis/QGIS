@@ -21,57 +21,90 @@ class QgsScaleComboBox : QComboBox
 #include "qgsscalecombobox.h"
 %End
   public:
-    QgsScaleComboBox( QWidget *parent /TransferThis/ = 0 );
 
-    QString scaleString();
+    QgsScaleComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Function to read the selected scale as text
+ Constructor for QgsScaleComboBox.
+%End
+
+    QString scaleString() const;
+%Docstring
+ Returns the selected scale as a string, e.g. "1:150".
+.. seealso:: setScaleString()
  :rtype: str
 %End
-    bool setScaleString( const QString &scaleTxt );
+
+    bool setScaleString( const QString &string );
 %Docstring
-Function to set the selected scale from text
+ Set the selected scale from a ``string``, e.g. "1:150".
+.. seealso:: scaleString()
  :rtype: bool
 %End
+
     double scale() const;
 %Docstring
-Function to read the selected scale as double
+ Returns the selected scale as a double.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: setScale()
  :rtype: float
 %End
-    void setScale( double scale );
-%Docstring
-Function to set the selected scale from double
-%End
+
     double minScale() const;
 %Docstring
-Function to read the min scale
+ Returns the minimum scale, or 0 if no minimum scale set.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ Any scale lower than the minimum scale will automatically be converted to the minimum scale.
+ Except for 0 which is always allowed.
  :rtype: float
 %End
 
     static QString toString( double scale );
 %Docstring
+ Helper function to convert a ``scale`` double to scale string.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+ The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
+.. seealso:: toDouble()
  :rtype: str
 %End
-    static double toDouble( const QString &scaleString, bool *ok = 0 );
+
+    static double toDouble( const QString &string, bool *ok = 0 );
 %Docstring
-Helper function to convert a scale string to double
+ Helper function to convert a scale ``string`` to double.
+ The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
+.. seealso:: toString()
  :rtype: float
 %End
 
   signals:
+
     void scaleChanged( double scale );
 %Docstring
-Signal is emitted when *user* has finished editing/selecting a new scale.
+ Emitted when *user* has finished editing/selecting a new scale.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
   public slots:
+
     void updateScales( const QStringList &scales = QStringList() );
+%Docstring
+ Sets the list of predefined ``scales`` to show in the combobox. List elements
+ are expected to be valid scale strings, such as "1:1000000".
+%End
+
+    void setScale( double scale );
+%Docstring
+ Set the selected scale from a double.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: scale()
+%End
 
     void setMinScale( double scale );
 %Docstring
- Set the minimum allowed scale.
- Anything scale lower than the minimum scale will automatically
- be converted to the minimum scale.
+ Set the minimum allowed ``scale``. Set to 0 to disable the minimum scale.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ Any scale lower than the minimum scale will automatically be converted to the minimum scale.
  Except for 0 which is always allowed.
 %End
 

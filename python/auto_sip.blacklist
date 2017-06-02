@@ -50,8 +50,6 @@ gui/qgsrasterformatsaveoptionswidget.sip
 gui/qgsrasterlayersaveasdialog.sip
 gui/qgsrasterpyramidsoptionswidget.sip
 gui/qgsrubberband.sip
-gui/qgsscalerangewidget.sip
-gui/qgsscalevisibilitydialog.sip
 gui/qgsscrollarea.sip
 gui/qgssearchquerybuilder.sip
 gui/qgsshortcutsmanager.sip

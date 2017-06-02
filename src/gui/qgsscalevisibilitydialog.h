@@ -26,33 +26,68 @@ class QgsScaleRangeWidget;
 
 /** \ingroup gui
  * \class QgsScaleVisibilityDialog
+ * A dialog allowing users to enter a scale visibility range.
  */
 class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
 {
     Q_OBJECT
+    Q_PROPERTY( bool hasScaleVisibility READ hasScaleVisibility WRITE setScaleVisiblity )
+    Q_PROPERTY( double minimumScale READ minimumScale WRITE setMinimumScale )
+    Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
+
+    /**
+     * Constructor for QgsScaleVisibilityDialog, with specified dialog \a title. The \a mapCanvas argument
+     * can be used to associate the dialog with a map canvas, allowing use of the current map scale
+     * within the dialog.
+     */
     explicit QgsScaleVisibilityDialog( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
 
-    //! return if scale visibilty is enabled
-    bool hasScaleVisibility();
+    /**
+     * Return true if scale based visibilty is enabled.
+     */
+    bool hasScaleVisibility() const;
 
-    //! return minimum scale (true scale, not scale denominator)
-    double minimumScale();
+    /**
+     * Returns the selected minimum scale, or 0 if minimum scale is not set.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see maximumScale()
+     * \see setMinimumScale()
+     */
+    double minimumScale() const;
 
-    //! return maximum scale (true scale, not scale denominator)
-    double maximumScale();
-
+    /**
+     * Returns the selected maximum scale, or 0 if maximum scale is not set.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see minimumScale()
+     * \see setMaximumScale())
+     */
+    double maximumScale() const;
 
   public slots:
-    //! set if scale visibility is enabled
+
+    /**
+     * Set whether scale based visibility is enabled.
+     * \see hasScaleVisibility()
+     */
     void setScaleVisiblity( bool hasScaleVisibility );
 
-    //! set minimum scale (true scale, not scale denominator)
-    void setMinimumScale( double minScale );
+    /**
+     * Set the minimum \a scale, or 0 to indicate the minimum is not set.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see minimumScale()
+     * \see setMaximumScale()
+     */
+    void setMinimumScale( double scale );
 
-    //! set maximum scale (true scale, not scale denominator)
-    void setMaximumScale( double maxScale );
+    /**
+     * Set the maximum \a scale, or 0 to indicate the minimum is not set.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see maximumScale()
+     * \see setMinimumScale()
+     */
+    void setMaximumScale( double scale );
 
 
   private:

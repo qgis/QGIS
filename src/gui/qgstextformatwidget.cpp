@@ -482,7 +482,7 @@ void QgsTextFormatWidget::initWidget()
   if ( mMapCanvas )
   {
     lblFontPreview->setMapUnits( mMapCanvas->mapSettings().mapUnits() );
-    mPreviewScaleComboBox->setScale( 1.0 / mMapCanvas->mapSettings().scale() );
+    mPreviewScaleComboBox->setScale( mMapCanvas->mapSettings().scale() );
   }
 }
 
@@ -1227,7 +1227,7 @@ void QgsTextFormatWidget::onSubstitutionsChanged( const QgsStringReplacementColl
 
 void QgsTextFormatWidget::previewScaleChanged( double scale )
 {
-  lblFontPreview->setScale( scale );
+  lblFontPreview->setScale( 1.0 / scale );
 }
 
 void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )

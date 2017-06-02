@@ -602,7 +602,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
-  mSimplifyMaximumScaleComboBox->setScale( 1.0 / mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
+  mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
 
   // Magnifier
   double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
@@ -1255,7 +1255,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), mSimplifyAlgorithmComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), 1.0 / mSimplifyMaximumScaleComboBox->scale() );
+  mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
 
   // magnification
   mSettings->setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
