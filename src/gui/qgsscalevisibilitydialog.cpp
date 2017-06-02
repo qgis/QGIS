@@ -59,7 +59,7 @@ void QgsScaleVisibilityDialog::setScaleVisiblity( bool hasScaleVisibility )
   mGroupBox->setChecked( hasScaleVisibility );
 }
 
-bool QgsScaleVisibilityDialog::hasScaleVisibility()
+bool QgsScaleVisibilityDialog::hasScaleVisibility() const
 {
   return mGroupBox->isChecked();
 }
@@ -69,7 +69,7 @@ void QgsScaleVisibilityDialog::setMinimumScale( double minScale )
   mScaleWidget->setMinimumScale( minScale );
 }
 
-double QgsScaleVisibilityDialog::minimumScale()
+double QgsScaleVisibilityDialog::minimumScale() const
 {
   return mScaleWidget->minimumScale();
 }
@@ -79,7 +79,7 @@ void QgsScaleVisibilityDialog::setMaximumScale( double maxScale )
   mScaleWidget->setMaximumScale( maxScale );
 }
 
-double QgsScaleVisibilityDialog::maximumScale()
+double QgsScaleVisibilityDialog::maximumScale() const
 {
   return mScaleWidget->maximumScale();
 }

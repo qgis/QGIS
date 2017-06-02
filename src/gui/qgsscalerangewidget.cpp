@@ -48,8 +48,8 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();
   // add start, add comprehension of scales by settings fake ordered values
-  mMinimumScaleWidget->setScale( 1.0 / 100000 );
-  mMaximumScaleWidget->setScale( 1.0 / 1000 );
+  mMinimumScaleWidget->setScale( 100000 );
+  mMaximumScaleWidget->setScale( 1000 );
 
   mLayout->addWidget( minLbl, 0, 0, 1, 2 );
   mLayout->addWidget( mMinimumScaleIconLabel, 1, 0 );
@@ -86,44 +86,22 @@ void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 
 void QgsScaleRangeWidget::setMinimumScale( double scale )
 {
-  if ( qIsInf( scale ) )
-    scale = 0;
   mMinimumScaleWidget->setScale( scale );
 }
 
-double QgsScaleRangeWidget::minimumScale()
+double QgsScaleRangeWidget::minimumScale() const
 {
   return mMinimumScaleWidget->scale();
 }
 
 void QgsScaleRangeWidget::setMaximumScale( double scale )
 {
-  if ( qIsInf( scale ) )
-    scale = 0;
   mMaximumScaleWidget->setScale( scale );
 }
 
-double QgsScaleRangeWidget::maximumScale()
+double QgsScaleRangeWidget::maximumScale() const
 {
   return mMaximumScaleWidget->scale();
-}
-
-double QgsScaleRangeWidget::minimumScaleDenom()
-{
-  double scale = maximumScale();
-  if ( scale == 0 )
-    return 0;
-  else
-    return qRound( 1.0 / scale );
-}
-
-double QgsScaleRangeWidget::maximumScaleDenom()
-{
-  double scale = minimumScale();
-  if ( scale == 0 )
-    return 0;
-  else
-    return qRound( 1.0 / scale );
 }
 
 void QgsScaleRangeWidget::setScaleRange( double min, double max )

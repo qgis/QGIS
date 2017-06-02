@@ -623,9 +623,9 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
     groupScale->setChecked( true );
     // caution: rule uses scale denom, scale widget uses true scales
     if ( rule->scaleMinDenom() > 0 )
-      mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
+      mScaleRangeWidget->setMaximumScale( rule->scaleMinDenom() );
     if ( rule->scaleMaxDenom() > 0 )
-      mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
+      mScaleRangeWidget->setMinimumScale( rule->scaleMaxDenom() );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 
@@ -770,8 +770,8 @@ void QgsRendererRulePropsWidget::apply()
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
   // caution: rule uses scale denom, scale widget uses true scales
-  mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScaleDenom() : 0 );
-  mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScaleDenom() : 0 );
+  mRule->setScaleMinDenom( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );
+  mRule->setScaleMaxDenom( groupScale->isChecked() ? mScaleRangeWidget->maximumScale() : 0 );
   mRule->setSymbol( groupSymbol->isChecked() ? mSymbol->clone() : nullptr );
 }
 

@@ -2010,6 +2010,32 @@ QgsScaleBarStyle        {#qgis_api_break_3_0_QgsScaleBarStyle}
 - The interface for QgsScaleBarStyle has been completely rewritten - any code using QgsScaleBarStyle or subclasses will need to update
 to the new draw() and calculateBoxSize() methods.
 
+
+QgsScaleComboBox        {#qgis_api_break_3_0_QgsScaleComboBox}
+----------------
+
+- All numeric scales reported and used by QgsScaleComboBox now represent the scale denominator (i.e. 2345 for a scale "1:2345"), for consistency with other scale use throughout the API.
+
+
+QgsScaleRangeWidget        {#qgis_api_break_3_0_QgsScaleRangeWidget}
+-------------------
+
+- All numeric scales reported and used by QgsScaleRangeWidget now represent the scale denominator (i.e. 2345 for a scale "1:2345"), for consistency with other scale use throughout the API.
+- minimumScaleDenom() and maximumScaleDenom() were removed. Now minimumScale() and maximumScale() report the scale denominator.
+
+
+QgsScaleVisibilityDialog        {#qgis_api_break_3_0_QgsScaleVisibilityDialog}
+------------------------
+
+- All numeric scales reported and used by QgsScaleVisibilityDialog now represent the scale denominator (i.e. 2345 for a scale "1:2345"), for consistency with other scale use throughout the API.
+
+
+QgsScaleWidget        {#qgis_api_break_3_0_QgsScaleWidget}
+--------------
+
+- All numeric scales reported and used by QgsScaleWidget now represent the scale denominator (i.e. 2345 for a scale "1:2345"), for consistency with other scale use throughout the API.
+
+
 QgsServer       {#qgis_api_break_3_0_QgsServer}
 ----------
 

@@ -411,7 +411,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mDisplayExpressionWidget->setField( mLayer->displayExpression() );
 
   // set up the scale based layer visibility stuff....
-  mScaleRangeWidget->setScaleRange( 1.0 / mLayer->minimumScale(), 1.0 / mLayer->maximumScale() ); // caution: layer uses scale denoms, widget uses true scales
+  mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
   mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
 
@@ -456,7 +456,7 @@ void QgsVectorLayerProperties::syncToLayer()
   QStringList myScalesList = PROJECT_SCALES.split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
-  mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
+  mSimplifyMaximumScaleComboBox->setScale( simplifyMethod.maximumScale() );
 
   mForceRasterCheckBox->setChecked( mLayer->renderer() && mLayer->renderer()->forceRasterRender() );
 
@@ -509,9 +509,8 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mLayer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
-  // caution: layer uses scale denoms, widget uses true scales
-  mLayer->setMinimumScale( mScaleRangeWidget->maximumScaleDenom() );
-  mLayer->setMaximumScale( mScaleRangeWidget->minimumScaleDenom() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
 
   // provider-specific options
   if ( mLayer->dataProvider() )
@@ -634,7 +633,7 @@ void QgsVectorLayerProperties::apply()
   simplifyMethod.setSimplifyAlgorithm( static_cast< QgsVectorSimplifyMethod::SimplifyAlgorithm >( mSimplifyAlgorithmComboBox->currentData().toInt() ) );
   simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
-  simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
+  simplifyMethod.setMaximumScale( mSimplifyMaximumScaleComboBox->scale() );
   mLayer->setSimplifyMethod( simplifyMethod );
 
   if ( mLayer->renderer() )
