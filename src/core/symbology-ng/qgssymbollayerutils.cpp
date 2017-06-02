@@ -399,7 +399,7 @@ QSizeF QgsSymbolLayerUtils::decodeSize( const QString &string )
 
 QString QgsSymbolLayerUtils::encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale )
 {
-  return QStringLiteral( "%1,%2,%3,%4,%5,%6" ).arg( qgsDoubleToString( mapUnitScale.minScale ),
+  return QStringLiteral( "3x:%1,%2,%3,%4,%5,%6" ).arg( qgsDoubleToString( mapUnitScale.minScale ),
          qgsDoubleToString( mapUnitScale.maxScale ) )
          .arg( mapUnitScale.minSizeMMEnabled ? 1 : 0 )
          .arg( mapUnitScale.minSizeMM )
@@ -409,17 +409,35 @@ QString QgsSymbolLayerUtils::encodeMapUnitScale( const QgsMapUnitScale &mapUnitS
 
 QgsMapUnitScale QgsSymbolLayerUtils::decodeMapUnitScale( const QString &str )
 {
-  QStringList lst = str.split( ',' );
+  QStringList lst;
+  bool v3 = false;
+  if ( str.startsWith( QStringLiteral( "3x:" ) ) )
+  {
+    v3 = true;
+    QString chopped = str.mid( 3 );
+    lst = chopped.split( ',' );
+  }
+  else
+  {
+    lst = str.split( ',' );
+  }
   if ( lst.count() < 2 )
     return QgsMapUnitScale();
+
+  double minScale = lst[0].toDouble();
+  if ( !v3 )
+    minScale = minScale != 0 ? 1.0 / minScale : 0;
+  double maxScale = lst[1].toDouble();
+  if ( !v3 )
+    maxScale = maxScale != 0 ? 1.0 / maxScale : 0;
 
   if ( lst.count() < 6 )
   {
     // old format
-    return QgsMapUnitScale( lst[0].toDouble(), lst[1].toDouble() );
+    return QgsMapUnitScale( minScale, maxScale );
   }
 
-  QgsMapUnitScale s( lst[0].toDouble(), lst[1].toDouble() );
+  QgsMapUnitScale s( minScale, maxScale );
   s.minSizeMMEnabled = lst[2].toInt();
   s.minSizeMM = lst[3].toDouble();
   s.maxSizeMMEnabled = lst[4].toInt();
@@ -870,8 +888,10 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   if ( element.hasAttribute( ( "mapUnitScale" ) ) )
   {
     QgsMapUnitScale mapUnitScale;
-    mapUnitScale.minScale = element.attribute( QStringLiteral( "mapUnitMinScale" ), QStringLiteral( "0.0" ) ).toDouble();
-    mapUnitScale.maxScale = element.attribute( QStringLiteral( "mapUnitMaxScale" ), QStringLiteral( "0.0" ) ).toDouble();
+    double oldMin = element.attribute( QStringLiteral( "mapUnitMinScale" ), QStringLiteral( "0.0" ) ).toDouble();
+    mapUnitScale.minScale = oldMin != 0 ? 1.0 / oldMin : 0;
+    double oldMax = element.attribute( QStringLiteral( "mapUnitMaxScale" ), QStringLiteral( "0.0" ) ).toDouble();
+    mapUnitScale.maxScale = oldMax != 0 ? 1.0 / oldMax : 0;
     symbol->setMapUnitScale( mapUnitScale );
   }
   symbol->setOpacity( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );

@@ -97,13 +97,13 @@ void TestQgsMapToPixel::getters()
 
 void TestQgsMapToPixel::fromScale()
 {
-  QgsMapToPixel m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 96.0 );
+  QgsMapToPixel m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceMeters, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.264583, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.0001, QgsUnitTypes::DistanceMeters, 96.0 );
+  m2p = QgsMapToPixel::fromScale( 10000, QgsUnitTypes::DistanceMeters, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 2.645833, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceMeters, 72.0 );
+  m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceMeters, 72.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.352778, 0.000001 );
-  m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceKilometers, 96.0 );
+  m2p = QgsMapToPixel::fromScale( 1000, QgsUnitTypes::DistanceKilometers, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
 }
 

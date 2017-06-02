@@ -54,10 +54,10 @@ void QgsMapUnitScaleWidget::setMapUnitScale( const QgsMapUnitScale &scale )
   // can't block signals on the widgets themselves, some use them to update
   // internal states
   mBlockSignals = true;
-  mComboBoxMinScale->setScale( 1.0 / ( scale.minScale > 0.0 ? scale.minScale : 0.0000001 ) );
-  mCheckBoxMinScale->setChecked( scale.minScale > 0.0 );
-  mComboBoxMinScale->setEnabled( scale.minScale > 0.0 );
-  mComboBoxMaxScale->setScale( 1.0 / ( scale.maxScale > 0.0 ? scale.maxScale : 1.0 ) );
+  mComboBoxMinScale->setScale( scale.minScale > 0.0 ? scale.minScale : 10000000 );
+  mCheckBoxMinScale->setChecked( scale.minScale != 0.0 );
+  mComboBoxMinScale->setEnabled( scale.minScale != 0.0 );
+  mComboBoxMaxScale->setScale( scale.maxScale > 0.0 ? scale.maxScale : 1.0 );
   mCheckBoxMaxScale->setChecked( scale.maxScale > 0.0 );
   mComboBoxMaxScale->setEnabled( scale.maxScale > 0.0 );
 
@@ -110,8 +110,8 @@ void QgsMapUnitScaleWidget::settingsChanged()
 QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 {
   QgsMapUnitScale scale;
-  scale.minScale = mCheckBoxMinScale->isChecked() ? 1.0 / mComboBoxMinScale->scale() : 0;
-  scale.maxScale = mCheckBoxMaxScale->isChecked() ? 1.0 / mComboBoxMaxScale->scale() : 0;
+  scale.minScale = mCheckBoxMinScale->isChecked() ? mComboBoxMinScale->scale() : 0;
+  scale.maxScale = mCheckBoxMaxScale->isChecked() ? mComboBoxMaxScale->scale() : 0;
   scale.minSizeMMEnabled = mCheckBoxMinSize->isChecked();
   scale.minSizeMM = mSpinBoxMinSize->value();
   scale.maxSizeMMEnabled = mCheckBoxMaxSize->isChecked();

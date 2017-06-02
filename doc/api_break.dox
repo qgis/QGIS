@@ -1582,6 +1582,8 @@ QgsMapToPixel        {#qgis_api_break_3_0_QgsMapToPixel}
 
 - The constructor now uses the map center x and y, and requires both height and width in pixels and a rotation value
 - setYMaximum(), setYMinimum(), setXMinimum() were removed. Use setParameters() instead
+- fromScale now accepts the scale as a scale denominator, not actual scale (e.g. 2000 for 1:2000). This change
+was made to make all scale based API calls uniform in behavior.
 
 
 QgsMapToPixelGeometrySimplifier        {#qgis_api_break_3_0_QgsMapToPixelGeometrySimplifier}
@@ -1604,6 +1606,12 @@ plugins calling this method will need to be updated.
 - setCrsTransformEnabled() and hasCrsTransformEnabled() were removed. CRS transformation is now always enabled.
 - the default destination CRS has changed from WGS 84 to invalid CRS (i.e. undefined, no reprojection will be done).
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
+
+QgsMapUnitScale        {#qgis_api_break_3_0_QgsMapUnitScale}
+---------------
+
+- minScale and maxScale now represent the scale as a scale denominator, not actual scale (e.g. 2000 for 1:2000). This change
+was made to make all scale based API calls uniform in behavior.
 
 
 QgsMarkerSymbolLayer        {#qgis_api_break_3_0_QgsMarkerSymbolLayer}
