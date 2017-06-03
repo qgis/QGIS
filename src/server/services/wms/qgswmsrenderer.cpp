@@ -2673,11 +2673,11 @@ namespace QgsWms
       QDomElement gmlElem;
       if ( version < 3 )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, 8 );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, 8 );
       }
       else
       {
-        gmlElem = QgsOgcUtils::geometryToGML( &geom, doc, QStringLiteral( "GML3" ), 8 );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), 8 );
       }
 
       if ( !gmlElem.isNull() )

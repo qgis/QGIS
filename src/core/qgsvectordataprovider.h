@@ -551,7 +551,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Converts the geometry to the provider type if possible / necessary
      * \returns the converted geometry or nullptr if no conversion was necessary or possible
      */
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const SIP_FACTORY;
+    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 
     /**
      * Set the list of native types supported by this provider.

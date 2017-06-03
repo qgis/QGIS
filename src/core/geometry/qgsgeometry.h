@@ -496,8 +496,9 @@ class CORE_EXPORT QgsGeometry
     /** Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
      * \returns 0 in case of success
+     * \note Not available in Python
      */
-    int makeDifference( const QgsGeometry *other );
+    int makeDifferenceInPlace( const QgsGeometry &other ) SIP_SKIP;
 
     /** Returns the geometry formed by modifying this geometry such that it does not
      * intersect the other geometry.

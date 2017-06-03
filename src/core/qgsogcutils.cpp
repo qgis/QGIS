@@ -1122,12 +1122,12 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument
   return envElem;
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision )
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision )
 {
   return geometryToGML( geometry, doc, ( format == QLatin1String( "GML2" ) ) ? GML_2_1_2 : GML_3_2_1, QString(), false, QString(), precision );
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                         GMLVersion gmlVersion,
                                         const QString &srsName,
                                         bool invertAxisOrientation,
@@ -1146,7 +1146,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocumen
 
   bool hasZValue = false;
 
-  QByteArray wkb( geometry->exportToWkb() );
+  QByteArray wkb( geometry.exportToWkb() );
   QgsConstWkbPtr wkbPtr( wkb );
   try
   {
@@ -1161,7 +1161,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocumen
 
   if ( gmlVersion != GML_2_1_2 )
   {
-    switch ( geometry->wkbType() )
+    switch ( geometry.wkbType() )
     {
       case QgsWkbTypes::Point25D:
       case QgsWkbTypes::Point:
@@ -1185,7 +1185,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocumen
 
   try
   {
-    switch ( geometry->wkbType() )
+    switch ( geometry.wkbType() )
     {
       case QgsWkbTypes::Point25D:
       case QgsWkbTypes::Point:
@@ -1501,7 +1501,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocumen
   }
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision )
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision )
 {
   return geometryToGML( geometry, doc, QStringLiteral( "GML2" ), precision );
 }
@@ -2572,7 +2572,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       }
       QString wkt = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
       QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-      otherGeomElem = QgsOgcUtils::geometryToGML( &geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
+      otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
       mGeomId ++;
     }
@@ -3043,7 +3043,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 
     QString wkt = static_cast<const QgsSQLStatement::NodeLiteral *>( firstFnArg )->value().toString();
     QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-    QDomElement geomElem = QgsOgcUtils::geometryToGML( &geom, mDoc, mGMLVersion, srsName, axisInversion,
+    QDomElement geomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, srsName, axisInversion,
                            QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
     mGeomId ++;
     if ( geomElem.isNull() )

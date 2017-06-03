@@ -542,7 +542,7 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     void registerFeature( QgsFeature &f, QgsRenderContext &context,
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
-                          QgsGeometry *obstacleGeometry SIP_PYARGREMOVE = nullptr );
+                          QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
 
     /** Read settings from a DOM element
      * \since QGIS 2.12
@@ -660,7 +660,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Registers a feature as an obstacle only (no label rendered)
      */
-    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, QgsGeometry *obstacleGeometry = nullptr );
+    void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
     QMap<Property, QVariant> dataDefinedValues;
 
@@ -750,7 +750,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns prepared geometry
      * \since QGIS 2.9
      */
-    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr ) SIP_FACTORY;
+    static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) SIP_FACTORY;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * \param geometry geometry to prepare
@@ -760,7 +760,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns true if geometry requires preparation
      * \since QGIS 2.9
      */
-    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
+    static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 
     /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
@@ -780,7 +780,7 @@ class CORE_EXPORT QgsPalLabeling
      */
     static QStringList splitToGraphemes( const QString &text );
 
-  protected:
+  private:
     //! Update temporary QgsPalLayerSettings with any data defined text style values
     static void dataDefinedTextStyle( QgsPalLayerSettings &tmpLyr,
                                       const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues );
@@ -811,7 +811,7 @@ class CORE_EXPORT QgsPalLabeling
      * \returns true if geometry exceeds minimum size
      * \since QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry &geom, double minSize );
 
     friend class QgsPalLayerSettings;
 };

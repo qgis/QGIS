@@ -700,17 +700,17 @@ QSet<QgsMapLayerDependency> QgsVectorDataProvider::dependencies() const
   return QSet<QgsMapLayerDependency>();
 }
 
-QgsGeometry *QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geom ) const
+QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geom ) const
 {
   if ( geom.isNull() )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsAbstractGeometry *geometry = geom.geometry();
   if ( !geometry )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsWkbTypes::Type providerGeomType = wkbType();
@@ -718,7 +718,7 @@ QgsGeometry *QgsVectorDataProvider::convertToProviderType( const QgsGeometry &ge
   //geom is already in the provider geometry type
   if ( geometry->wkbType() == providerGeomType )
   {
-    return nullptr;
+    return QgsGeometry();
   }
 
   QgsAbstractGeometry *outputGeom = nullptr;
@@ -794,9 +794,9 @@ QgsGeometry *QgsVectorDataProvider::convertToProviderType( const QgsGeometry &ge
 
   if ( outputGeom )
   {
-    return new QgsGeometry( outputGeom );
+    return QgsGeometry( outputGeom );
   }
-  return nullptr;
+  return QgsGeometry();
 }
 
 void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes )

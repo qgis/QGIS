@@ -556,7 +556,7 @@ Returns a list of available encodings
 .. versionadded:: 3.0
 %End
 
-    QgsGeometry *convertToProviderType( const QgsGeometry &geom ) const /Factory/;
+    QgsGeometry convertToProviderType( const QgsGeometry &geom ) const;
 %Docstring
  Converts the geometry to the provider type if possible / necessary
  :return: the converted geometry or None if no conversion was necessary or possible
