@@ -205,7 +205,7 @@ class GeoDB:
                 break
             except psycopg2.OperationalError as e:
                 if i == 3:
-                    raise DbError(unicode(e))
+                    raise DbError(unicode(e.pgerror, e.cursor.connection.encoding, 'replace'))
 
                 err = unicode(e)
                 user = self.uri.username()
@@ -821,7 +821,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(unicode(e), e.cursor.query)
+            raise DbError(unicode(e.pgerror, e.cursor.connection.encoding, 'replace'), e.cursor.query)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
