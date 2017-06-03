@@ -123,7 +123,7 @@
 %Include qgspathresolver.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
-%Include qgspoint.sip
+%Include qgspointxy.sip
 %Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectbadlayerhandler.sip
@@ -398,7 +398,7 @@
 %Include geometry/qgsmultipoint.sip
 %Include geometry/qgsmultipolygon.sip
 %Include geometry/qgsmultisurface.sip
-%Include geometry/qgspointv2.sip
+%Include geometry/qgspoint.sip
 %Include geometry/qgspolygon.sip
 %Include geometry/qgsrectangle.sip
 %Include geometry/qgsregularpolygon.sip
