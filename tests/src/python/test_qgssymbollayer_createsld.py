@@ -417,8 +417,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "singleSymbol"))
         layer.loadNamedStyle(mFilePath)
-        layer.setMinimumScale(1000)
-        layer.setMaximumScale(500000)
+        layer.setMaximumScale(1000)
+        layer.setMinimumScale(500000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)
@@ -442,8 +442,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorized"))
         layer.loadNamedStyle(mFilePath)
-        layer.setMinimumScale(1000)
-        layer.setMaximumScale(500000)
+        layer.setMaximumScale(1000)
+        layer.setMinimumScale(500000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)
@@ -484,8 +484,8 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "ruleBased"))
         status = layer.loadNamedStyle(mFilePath)  # NOQA
-        layer.setMinimumScale(5000)
-        layer.setMaximumScale(50000000)
+        layer.setMaximumScale(5000)
+        layer.setMinimumScale(50000000)
         layer.setScaleBasedVisibility(True)
 
         dom, root = self.layerToSld(layer)

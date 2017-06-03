@@ -149,8 +149,8 @@ void TestQgsMapLayer::isInScaleRange()
   QFETCH( double, scale );
   QFETCH( bool, isInScale );
 
-  mpLayer->setMinimumScale( 2500.0 );
-  mpLayer->setMaximumScale( 5000.0 );
+  mpLayer->setMaximumScale( 2500.0 );
+  mpLayer->setMinimumScale( 5000.0 );
   mpLayer->setScaleBasedVisibility( true );
   QCOMPARE( mpLayer->isInScaleRange( scale ), isInScale );
   //always in scale range if scale based visibility is false
@@ -160,8 +160,8 @@ void TestQgsMapLayer::isInScaleRange()
 
 void TestQgsMapLayer::isInScaleRange2()
 {
-  mpLayer->setMinimumScale( 5000.0 );
-  mpLayer->setMaximumScale( 0.0 );
+  mpLayer->setMaximumScale( 5000.0 );
+  mpLayer->setMinimumScale( 0.0 );
   mpLayer->setScaleBasedVisibility( true );
   QVERIFY( !mpLayer->isInScaleRange( 1000 ) );
   QVERIFY( !mpLayer->isInScaleRange( 1 ) );
@@ -169,8 +169,8 @@ void TestQgsMapLayer::isInScaleRange2()
   QVERIFY( mpLayer->isInScaleRange( 5001 ) );
   QVERIFY( mpLayer->isInScaleRange( 15000 ) );
 
-  mpLayer->setMinimumScale( 0.0 );
-  mpLayer->setMaximumScale( 5000.0 );
+  mpLayer->setMaximumScale( 0.0 );
+  mpLayer->setMinimumScale( 5000.0 );
   mpLayer->setScaleBasedVisibility( true );
   QVERIFY( mpLayer->isInScaleRange( 1000 ) );
   QVERIFY( mpLayer->isInScaleRange( 1 ) );

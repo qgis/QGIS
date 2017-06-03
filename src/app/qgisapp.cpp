@@ -8979,8 +8979,8 @@ void QgisApp::setLayerScaleVisibility()
   if ( layer )
   {
     dlg->setScaleVisiblity( layer->hasScaleBasedVisibility() );
-    dlg->setMinimumScale( 1.0 / layer->maximumScale() );
-    dlg->setMaximumScale( 1.0 / layer->minimumScale() );
+    dlg->setMinimumScale( 1.0 / layer->minimumScale() );
+    dlg->setMaximumScale( 1.0 / layer->maximumScale() );
   }
   if ( dlg->exec() )
   {
@@ -8988,8 +8988,8 @@ void QgisApp::setLayerScaleVisibility()
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
-      layer->setMinimumScale( 1.0 / dlg->maximumScale() );
-      layer->setMaximumScale( 1.0 / dlg->minimumScale() );
+      layer->setMaximumScale( 1.0 / dlg->maximumScale() );
+      layer->setMinimumScale( 1.0 / dlg->minimumScale() );
     }
     freezeCanvases( false );
     refreshMapCanvas();
@@ -9011,13 +9011,13 @@ void QgisApp::zoomToLayerScale()
   if ( layer && layer->hasScaleBasedVisibility() )
   {
     const double scale = mMapCanvas->scale();
-    if ( scale > layer->maximumScale() )
+    if ( scale > layer->minimumScale() )
     {
-      mMapCanvas->zoomScale( layer->maximumScale() * Qgis::SCALE_PRECISION );
+      mMapCanvas->zoomScale( layer->minimumScale() * Qgis::SCALE_PRECISION );
     }
-    else if ( scale <= layer->minimumScale() )
+    else if ( scale <= layer->maximumScale() )
     {
-      mMapCanvas->zoomScale( layer->minimumScale() );
+      mMapCanvas->zoomScale( layer->maximumScale() );
     }
   }
 }

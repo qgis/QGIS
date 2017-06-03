@@ -772,9 +772,12 @@ Return pointer to layer's undo stack
 
     double minimumScale() const;
 %Docstring
- Returns the minimum scale denominator at which the layer is visible.
- Scale based visibility is only used if hasScaleBasedVisibility is true.
- :return: minimum scale denominator at which the layer will render
+ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 .. seealso:: setMinimumScale()
 .. seealso:: maximumScale()
 .. seealso:: hasScaleBasedVisibility()
@@ -784,9 +787,12 @@ Return pointer to layer's undo stack
 
     double maximumScale() const;
 %Docstring
- Returns the maximum scale denominator at which the layer is visible.
- Scale based visibility is only used if hasScaleBasedVisibility is true.
- :return: minimum scale denominator at which the layer will render
+ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 .. seealso:: setMaximumScale()
 .. seealso:: minimumScale()
 .. seealso:: hasScaleBasedVisibility()
@@ -889,22 +895,28 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
     void setMinimumScale( double scale );
 %Docstring
- Sets the minimum scale denominator at which the layer will be visible.
- Scale based visibility is only used if setScaleBasedVisibility is set to true.
- \param scale minimum scale denominator at which the layer should render
-.. seealso:: minimumScale
-.. seealso:: setMaximumScale
-.. seealso:: setScaleBasedVisibility
+ Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the layer will be visible.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no minimum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+.. seealso:: minimumScale()
+.. seealso:: setMaximumScale()
+.. seealso:: setScaleBasedVisibility()
 %End
 
     void setMaximumScale( double scale );
 %Docstring
- Sets the maximum scale denominator at which the layer will be visible.
- Scale based visibility is only used if setScaleBasedVisibility is set to true.
- \param scale maximum scale denominator at which the layer should render
-.. seealso:: maximumScale
-.. seealso:: setMinimumScale
-.. seealso:: setScaleBasedVisibility
+ Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the layer will be visible.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no maximum scale visibility.
+.. note::
+
+   Scale based visibility is only used if setScaleBasedVisibility() is set to true.
+.. seealso:: maximumScale()
+.. seealso:: setMinimumScale()
+.. seealso:: setScaleBasedVisibility()
 %End
 
     void setScaleBasedVisibility( const bool enabled );

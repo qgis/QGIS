@@ -1002,19 +1002,19 @@ namespace QgsWms
               double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
 
               QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
-              scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->minimumScale() * SCALE_TO_SCALEHINT ) );
-              scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );
+              scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );
+              scaleHintElem.setAttribute( QStringLiteral( "max" ), QString::number( l->minimumScale() * SCALE_TO_SCALEHINT ) );
               layerElem.appendChild( scaleHintElem );
             }
             else
             {
-              QString minScaleString = QString::number( l->minimumScale() );
+              QString minScaleString = QString::number( l->maximumScale() );
               QDomElement minScaleElem = doc.createElement( QStringLiteral( "MinScaleDenominator" ) );
               QDomText minScaleText = doc.createTextNode( minScaleString );
               minScaleElem.appendChild( minScaleText );
               layerElem.appendChild( minScaleElem );
 
-              QString maxScaleString = QString::number( l->maximumScale() );
+              QString maxScaleString = QString::number( l->minimumScale() );
               QDomElement maxScaleElem = doc.createElement( QStringLiteral( "MaxScaleDenominator" ) );
               QDomText maxScaleText = doc.createTextNode( maxScaleString );
               maxScaleElem.appendChild( maxScaleText );
