@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsRectangle
 
 from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
 
@@ -56,6 +56,50 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/compileExpressions', False)
 
+    def uncompiledFilters(self):
+        filters = set(['"name" NOT LIKE \'Ap%\'',
+                       '"name" IS NULL',
+                       '"name" IS NOT NULL',
+                       '"name" NOT ILIKE \'QGIS\'',
+                       '"name" NOT ILIKE \'pEAR\'',
+                       'name <> \'Apple\'',
+                       '"name" <> \'apple\'',
+                       '(name = \'Apple\') is not null',
+                       '"name" || \' \' || "cnt" = \'Orange 100\'',
+                       '\'x\' || "name" IS NOT NULL',
+                       '\'x\' || "name" IS NULL',
+                       '"name" ~ \'[OP]ra[gne]+\'',
+                       'false and NULL',
+                       'true and NULL',
+                       'NULL and false',
+                       'NULL and true',
+                       'NULL and NULL',
+                       'false or NULL',
+                       'true or NULL',
+                       'NULL or false',
+                       'NULL or true',
+                       'NULL or NULL',
+                       'not null',
+                       'not name IS NULL',
+                       'not name = \'Apple\'',
+                       'not name = \'Apple\' or name = \'Apple\'',
+                       'not name = \'Apple\' or not name = \'Apple\'',
+                       'not name = \'Apple\' and pk = 4',
+                       'not name = \'Apple\' and not pk = 4',
+                       'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+        return filters
+
+    def partiallyCompiledFilters(self):
+        return set(['name ILIKE \'QGIS\'',
+                    'name = \'Apple\'',
+                    'name = \'apple\'',
+                    'name LIKE \'Apple\'',
+                    'name LIKE \'aPple\'',
+                    '"name"="name2"',
+                    'name ILIKE \'aPple\'',
+                    'name ILIKE \'%pp%\'',
+                    '"name" || \' \' || "name" = \'Orange Orange\''])
+
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
         vl = QgsVectorLayer('%s table="qgis_test"."date_times" sql=' %
@@ -82,6 +126,35 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
+
+    def testInvalidGeometries(self):
+        """ Test what happens when SQL Server is a POS and throws an exception on encountering an invalid geometry """
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        assert(vl.isValid())
+
+        self.assertEqual(vl.dataProvider().extent().toString(1), QgsRectangle(173.953, -41.513, 173.967, -41.502).toString(1))
+
+        #burn through features - don't want SQL server to trip up on the invalid ones
+        count = 0
+        for f in vl.dataProvider().getFeatures():
+            count += 1
+        self.assertEqual(count, 39)
+
+        count = 0
+
+        for f in vl.dataProvider().getFeatures(QgsFeatureRequest(QgsRectangle(173, -42, 174, -41))):
+            count += 1
+        # two invalid geometry features
+        self.assertEqual(count, 37)
+        # sorry... you get NO chance to see these features exist and repair them... because SQL server. Use PostGIS instead and live a happier life!
+
+        # with estimated metadata
+        vl = QgsVectorLayer('%s srid=4167 type=POLYGON  estimatedmetadata=true table="qgis_test"."invalid_polys" (ogr_geometry) sql=' %
+                            (self.dbconn), "testinvalid", "mssql")
+        assert(vl.isValid())
+        self.assertEqual(vl.dataProvider().extent().toString(1), QgsRectangle(173.954, -41.513, 173.967, -41.502).toString(1))
+
 
 if __name__ == '__main__':
     unittest.main()

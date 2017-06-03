@@ -109,7 +109,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mStatement += QString( ",[%1]" ).arg( mSource->mGeometryColName );
   }
 
-  mStatement += QString( "FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
+  mStatement += QString( " FROM [%1].[%2]" ).arg( mSource->mSchemaName, mSource->mTableName );
 
   bool filterAdded = false;
   // set spatial filter
@@ -127,7 +127,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
     <<  qgsDoubleToString( request.filterRect().xMinimum() ) << ' ' <<  qgsDoubleToString( request.filterRect().yMinimum() );
 
-    mStatement += QString( " where [%1].STIsValid() = 1 AND [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
+    mStatement += QString( " where [%1].STIsValid() = 1 AND [%1].Filter([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );
     filterAdded = true;
   }
@@ -247,7 +247,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
     mOrderByCompiled = false;
   }
 
-  if ( !mOrderByCompiled )
+  if ( !mOrderByCompiled && !request.orderBy().isEmpty() )
     limitAtProvider = false;
 
   if ( request.limit() >= 0 && limitAtProvider )
@@ -301,8 +301,25 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     {
       QVariant v = mQuery->value( i );
       const QgsField &fld = mSource->mFields.at( mAttributesToFetch.at( i ) );
-      if ( v.type() != fld.type() )
+
+      // special handling for time fields
+      if ( fld.type() == QVariant::Time && v.type() == QVariant::ByteArray )
+      {
+        QList<QByteArray> parts = v.toByteArray().split( '\0' );
+        if ( parts.count() >= 3 )
+        {
+          int hours = QString( parts.at( 0 ) ).at( 0 ).toAscii();
+          int minutes = QString( parts.at( 1 ) ).at( 0 ).toAscii();
+          int seconds = QString( parts.at( 2 ) ).at( 0 ).toAscii();
+          v = QTime( hours, minutes, seconds );
+        }
+        else
+          v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+      }
+      else if ( v.type() != fld.type() )
+      {
         v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+      }
       feature.setAttribute( mAttributesToFetch.at( i ), v );
     }
 
@@ -311,12 +328,19 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( mSource->isSpatial() )
     {
       QByteArray ar = mQuery->record().value( mSource->mGeometryColName ).toByteArray();
-      unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
-      if ( wkb )
+      if ( !ar.isEmpty() )
       {
-        QgsGeometry *g = new QgsGeometry();
-        g->fromWkb( wkb, mParser.GetWkbLen() );
-        feature.setGeometry( g );
+        unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
+        if ( wkb )
+        {
+          QgsGeometry *g = new QgsGeometry();
+          g->fromWkb( wkb, mParser.GetWkbLen() );
+          feature.setGeometry( g );
+        }
+        else
+        {
+          feature.setGeometry( nullptr );
+        }
       }
       else
       {
