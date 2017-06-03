@@ -588,12 +588,9 @@ void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel *model, const 
     else
     {
       QgsMapLayer *layer = nodeLayer->layer();
-      if ( layer->hasScaleBasedVisibility() )
+      if ( !layer->isInScaleRange( scale ) )
       {
-        if ( layer->minimumScale() > scale )
-          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
-        else if ( layer->maximumScale() < scale )
-          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+        qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
       }
     }
   }
