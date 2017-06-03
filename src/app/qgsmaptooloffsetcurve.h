@@ -72,8 +72,6 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsGeometry linestringFromPolygon( const QgsGeometry &featureGeom, int vertex );
     //! Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry
     QgsGeometry convertToSingleLine( const QgsGeometry &geom, int vertex, bool &isMulti );
-    //! Converts offset line back to a multiline if necessary
-    QgsGeometry *convertToMultiLine( QgsGeometry *geom );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H

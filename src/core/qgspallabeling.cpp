@@ -991,7 +991,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
 bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const
 {
-  return QgsPalLabeling::checkMinimumSizeMM( ct, &geom, minSize );
+  return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
 void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f, QgsRenderContext *context )
@@ -1133,7 +1133,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
 #endif
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry *obstacleGeometry )
+void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **labelFeature, QgsGeometry obstacleGeometry )
 {
   // either used in QgsPalLabeling (palLayer is set) or in QgsLabelingEngine (labelFeature is set)
   Q_ASSERT( labelFeature );
@@ -1450,9 +1450,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && fitInPolygonOnly )
   {
     permissibleZone = geom;
-    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? &extentGeom : nullptr ) )
+    if ( QgsPalLabeling::geometryRequiresPreparation( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() ) )
     {
-      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? &extentGeom : nullptr );
+      permissibleZone = QgsPalLabeling::prepareGeometry( permissibleZone, context, ct, doClip ? extentGeom : QgsGeometry() );
     }
   }
 
@@ -1465,22 +1465,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   GEOSGeometry *geos_geom_clone = nullptr;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? &extentGeom : nullptr ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry() ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? &extentGeom : nullptr );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry() );
 
     if ( geom.isNull() )
       return;
   }
   geos_geom_clone = geom.exportToGeos();
 
-  std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle )
   {
-    if ( obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) )
+    if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) )
     {
-      scopedObstacleGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, ct, doClip ? &extentGeom : nullptr ) ) );
-      obstacleGeometry = scopedObstacleGeom.get();
+      obstacleGeometry = QgsGeometry( QgsPalLabeling::prepareGeometry( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry() ) );
     }
   }
 
@@ -1518,7 +1516,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   GEOSGeometry *geosObstacleGeomClone = nullptr;
   if ( obstacleGeometry )
   {
-    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
+    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
   }
 
 
@@ -1828,8 +1826,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
       //register symbol size
-      ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry->boundingBox().width(),
-                                        obstacleGeometry->boundingBox().height() ) );
+      ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
+                                        obstacleGeometry.boundingBox().height() ) );
     }
   }
 
@@ -1951,14 +1949,14 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   lf->setDataDefinedValues( dataDefinedValues );
 }
 
-void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, QgsGeometry *obstacleGeometry )
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry )
 {
   mCurFeat = &f;
 
   QgsGeometry geom;
   if ( obstacleGeometry )
   {
-    geom = *obstacleGeometry;
+    geom = obstacleGeometry;
   }
   else
   {
@@ -1984,9 +1982,9 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderConte
   GEOSGeometry *geos_geom_clone = nullptr;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, &extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
   {
-    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, &extentGeom );
+    geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
   }
   geos_geom_clone = geom.exportToGeos();
 
@@ -2781,7 +2779,7 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
 }
 
 
-bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
 {
   if ( geometry.isNull() )
   {
@@ -2798,7 +2796,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry &geometry, Q
     return true;
 
   //requires clip
-  if ( clipGeometry && !clipGeometry->boundingBox().contains( geometry.boundingBox() ) )
+  if ( !clipGeometry.isNull() && !clipGeometry.boundingBox().contains( geometry.boundingBox() ) )
     return true;
 
   //requires fixing
@@ -2841,7 +2839,7 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry )
+QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry )
 {
   if ( geometry.isNull() )
   {
@@ -2904,11 +2902,11 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     geom = bufferGeom;
   }
 
-  if ( clipGeometry &&
-       ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->boundingBox().contains( geom.boundingBox() ) )
-         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry->contains( geom ) ) ) )
+  if ( !clipGeometry.isNull() &&
+       ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.boundingBox().contains( geom.boundingBox() ) )
+         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) )
   {
-    QgsGeometry clipGeom = geom.intersection( *clipGeometry ); // creates new geometry
+    QgsGeometry clipGeom = geom.intersection( clipGeometry ); // creates new geometry
     if ( clipGeom.isNull() )
     {
       return QgsGeometry();
@@ -2919,19 +2917,19 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   return geom;
 }
 
-bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize )
+bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry &geom, double minSize )
 {
   if ( minSize <= 0 )
   {
     return true;
   }
 
-  if ( !geom )
+  if ( geom.isNull() )
   {
     return false;
   }
 
-  QgsWkbTypes::GeometryType featureType = geom->type();
+  QgsWkbTypes::GeometryType featureType = geom.type();
   if ( featureType == QgsWkbTypes::PointGeometry ) //minimum size does not apply to point features
   {
     return true;
@@ -2940,7 +2938,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
   double mapUnitsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
   if ( featureType == QgsWkbTypes::LineGeometry )
   {
-    double length = geom->length();
+    double length = geom.length();
     if ( length >= 0.0 )
     {
       return ( length >= ( minSize * mapUnitsPerMM ) );
@@ -2948,7 +2946,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
   }
   else if ( featureType == QgsWkbTypes::PolygonGeometry )
   {
-    double area = geom->area();
+    double area = geom.area();
     if ( area >= 0.0 )
     {
       return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );

@@ -636,7 +636,7 @@ void QgsMapToolCapture::validateGeometry()
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  std::unique_ptr<QgsGeometry> g;
+  QgsGeometry geom;
 
   switch ( mCaptureMode )
   {
@@ -647,7 +647,7 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureLine:
       if ( size() < 2  || ( mCaptureMode == CaptureSegment && size() > 2 ) )
         return;
-      g.reset( new QgsGeometry( mCaptureCurve.curveToLine() ) );
+      geom = QgsGeometry( mCaptureCurve.curveToLine() );
       break;
     case CapturePolygon:
       if ( size() < 3 )
@@ -656,17 +656,17 @@ void QgsMapToolCapture::validateGeometry()
       exteriorRing->close();
       QgsPolygonV2 *polygon = new QgsPolygonV2();
       polygon->setExteriorRing( exteriorRing );
-      g.reset( new QgsGeometry( polygon ) );
+      geom = QgsGeometry( polygon );
       break;
   }
 
-  if ( !g )
+  if ( !geom )
     return;
 
   QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
     method = QgsGeometry::ValidatorGeos;
-  mValidator = new QgsGeometryValidator( g.get(), nullptr, method );
+  mValidator = new QgsGeometryValidator( geom, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();

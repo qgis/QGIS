@@ -496,13 +496,6 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int makeDifference( const QgsGeometry *other );
-%Docstring
- Changes this geometry such that it does not intersect the other geometry
- \param other geometry that should not be intersect
- :return: 0 in case of success
- :rtype: int
-%End
 
     QgsGeometry makeDifference( const QgsGeometry &other ) const;
 %Docstring

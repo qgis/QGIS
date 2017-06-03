@@ -1828,7 +1828,7 @@ void QgsNodeTool::GeometryValidation::start( QgsGeometry &geom, QgsNodeTool *t, 
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
     method = QgsGeometry::ValidatorGeos;
 
-  validator = new QgsGeometryValidator( &geom, nullptr, method );
+  validator = new QgsGeometryValidator( geom, nullptr, method );
   connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsNodeTool::validationErrorFound );
   connect( validator, &QThread::finished, tool, &QgsNodeTool::validationFinished );
   validator->start();

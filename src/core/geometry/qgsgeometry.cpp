@@ -836,16 +836,16 @@ int QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
   return errorCode;
 }
 
-int QgsGeometry::makeDifference( const QgsGeometry *other )
+int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
 {
-  if ( !d->geometry || !other->d->geometry )
+  if ( !d->geometry || !other.d->geometry )
   {
     return 0;
   }
 
   QgsGeos geos( d->geometry );
 
-  QgsAbstractGeometry *diffGeom = geos.intersection( *( other->geometry() ) );
+  QgsAbstractGeometry *diffGeom = geos.intersection( *other.geometry() );
   if ( !diffGeom )
   {
     return 1;
@@ -1964,7 +1964,7 @@ QgsGeometry QgsGeometry::makeValid()
 
 void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors, ValidationMethod method )
 {
-  QgsGeometryValidator::validateGeometry( this, errors, method );
+  QgsGeometryValidator::validateGeometry( *this, errors, method );
 }
 
 bool QgsGeometry::isGeosValid() const

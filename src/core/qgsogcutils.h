@@ -80,7 +80,7 @@ class CORE_EXPORT QgsOgcUtils
         \returns QDomElement
         \since QGIS 2.16
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                       QgsOgcUtils::GMLVersion gmlVersion,
                                       const QString &srsName,
                                       bool invertAxisOrientation,
@@ -90,12 +90,12 @@ class CORE_EXPORT QgsOgcUtils
     /** Exports the geometry to GML2 or GML3
         \returns QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
     /** Exports the geometry to GML2
         \returns QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         \returns QDomElement
