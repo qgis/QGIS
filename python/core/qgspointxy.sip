@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspoint.h                                                  *
+ * src/core/qgspointxy.h                                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -15,8 +15,13 @@
 class QgsPointXY
 {
 %Docstring
- A class to represent a point.
- For Z and M support prefer QgsPointV2.
+ A class to represent a 2D point.
+
+ A QgsPointXY represents a position with X and Y coordinates.
+ In most scenarios it is preferable to use a QgsPoint instead which also
+ supports Z and M values.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -331,7 +336,7 @@ Divides the coordinates in this point by a scalar quantity in place
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgspoint.h                                                  *
+ * src/core/qgspointxy.h                                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
