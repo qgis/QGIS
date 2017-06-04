@@ -162,6 +162,10 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 
     void addEntry( const QColor &color );
 
+  public slots:
+
+    void deleteAll();
+
   signals:
 
     void classesChanged();
@@ -194,7 +198,9 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
   private:
 
-    QMenu *contextMenu = nullptr;
+    QMenu *mContextMenu = nullptr;
+    QMenu *mAdvancedMenu = nullptr;
+    QAction *mLoadFromLayerAction = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
     QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
 
