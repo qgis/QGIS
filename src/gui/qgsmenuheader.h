@@ -53,7 +53,7 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
 };
 
 /** \ingroup gui
- * \class QgsMenuHeader
+ * \class QgsMenuHeaderWidgetAction
  * Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
  * \since QGIS 3.0
  * \see QgsMenuHeader()
