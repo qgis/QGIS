@@ -108,9 +108,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Add a few example servers to the list.
     void addDefaultServers();
 
-    //! Connections manager mode
-    bool mManagerMode;
-
     //! Embedded mode, without 'Close'
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 

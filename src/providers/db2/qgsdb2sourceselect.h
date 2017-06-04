@@ -155,9 +155,6 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
-    //! Connections manager mode
-    bool mManagerMode;
-
     //! Embedded mode, without 'Close'
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 
