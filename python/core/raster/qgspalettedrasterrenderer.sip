@@ -91,6 +91,13 @@ Returns number of colors
 .. versionadded:: 2.1
 %End
 
+    int band() const;
+%Docstring
+ Returns the raster band used for rendering the raster.
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 

@@ -88,6 +88,12 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      *  \since QGIS 2.1 */
     void setLabel( int idx, const QString &label );
 
+    /**
+     * Returns the raster band used for rendering the raster.
+     * \since QGIS 3.0
+     */
+    int band() const { return mBand; }
+
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
