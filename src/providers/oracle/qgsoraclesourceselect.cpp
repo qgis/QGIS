@@ -168,7 +168,6 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 
 QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QDialog( parent, fl )
-  , mManagerMode( managerMode )
   , mWidgetMode( widgetMode )
   , mColumnTypeThread( 0 )
   , mIsConnected( false )
@@ -191,14 +190,11 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( !mManagerMode )
-  {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
 
-    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
-  }
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
   mSearchModeComboBox->addItem( tr( "RegExp" ) );

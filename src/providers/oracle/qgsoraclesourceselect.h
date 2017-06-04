@@ -23,6 +23,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
+#include "qgsproviderregistry.h"
 
 #include <QMap>
 #include <QPair>
@@ -141,9 +142,6 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Connections manager mode
-    bool mManagerMode;
 
     //! Embedded mode, without 'Close'
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;

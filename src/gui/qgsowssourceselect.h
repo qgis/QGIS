@@ -169,9 +169,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Service name
     QString mService;
 
-    //! Connections manager mode
-    bool mManagerMode;
-
     //! Embedded mode, without 'Close'
     QgsProviderRegistry::WidgetMode mWidgetMode = QgsProviderRegistry::WidgetMode::None;
 

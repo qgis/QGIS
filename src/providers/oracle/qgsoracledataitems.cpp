@@ -471,7 +471,7 @@ QList<QAction *> QgsOracleRootItem::actions()
 
 QWidget *QgsOracleRootItem::paramWidget()
 {
-  QgsOracleSourceSelect *select = new QgsOracleSourceSelect( 0, 0, true, true );
+  QgsOracleSourceSelect *select = new QgsOracleSourceSelect();
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
