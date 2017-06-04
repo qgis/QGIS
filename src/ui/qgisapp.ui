@@ -580,7 +580,7 @@
   </widget>
   <widget class="QToolBar" name="mSnappingToolBar">
    <property name="windowTitle">
-    <string>Snapping toolbar</string>
+    <string>Snapping Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
