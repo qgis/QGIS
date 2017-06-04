@@ -40,10 +40,21 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mCalculatingProgressBar->hide();
   mCancelButton->hide();
 
-  contextMenu = new QMenu( tr( "Options" ), this );
-  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
-  contextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
+  mContextMenu = new QMenu( tr( "Options" ), this );
+  mContextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
+  mContextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
+  mContextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
+
+  mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
+  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
+  connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
+  QAction *loadFromFile = mAdvancedMenu->addAction( trUtf8( "Load color map from file…" ) );
+  connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
+  QAction *exportToFile = mAdvancedMenu->addAction( trUtf8( "Export color map to file…" ) );
+  connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
+
+
+  mButtonAdvanced->setMenu( mAdvancedMenu );
 
   mModel = new QgsPalettedRendererModel( this );
   mTreeView->setSortingEnabled( false );
@@ -65,7 +76,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
+  connect( mTreeView, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { mContextMenu->exec( QCursor::pos() ); }
          );
 
   btnColorRamp->setShowRandomColorRamp( true );
@@ -87,20 +98,18 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterRendererWidget::widgetChanged );
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   connect( mDeleteEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::deleteEntry );
+  connect( mButtonDeleteAll, &QPushButton::clicked, mModel, &QgsPalettedRendererModel::deleteAll );
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
-  connect( mLoadFromFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadColorTable );
-  connect( mExportToFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::saveColorTable );
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::classify );
-  connect( mButtonLoadFromLayer, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadFromLayer );
 
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {
-    mButtonLoadFromLayer->setEnabled( !provider->colorTable( mBandComboBox->currentBand() ).isEmpty() );
+    mLoadFromLayerAction->setEnabled( !provider->colorTable( mBandComboBox->currentBand() ).isEmpty() );
   }
   else
   {
-    mButtonLoadFromLayer->setEnabled( false );
+    mLoadFromLayerAction->setEnabled( false );
   }
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
@@ -444,7 +453,7 @@ void QgsPalettedRendererWidget::gathererThreadFinished()
 {
   mGatherer->deleteLater();
   mGatherer = nullptr;
-  mClassifyButton->setText( tr( "Add Unique Values" ) );
+  mClassifyButton->setText( tr( "Classify" ) );
   mClassifyButton->setEnabled( true );
   mCalculatingProgressBar->hide();
   mCancelButton->hide();
@@ -751,6 +760,14 @@ void QgsPalettedRendererModel::addEntry( const QColor &color )
 {
   insertRow( rowCount() );
   setData( index( mData.count() - 1, 1 ), color );
+}
+
+void QgsPalettedRendererModel::deleteAll()
+{
+  beginResetModel();
+  mData.clear();
+  endResetModel();
+  emit classesChanged();
 }
 
 ///@endcond PRIVATE
