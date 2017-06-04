@@ -113,7 +113,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   }
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
-  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsPalettedRendererWidget::loadFromLayer );
+  connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsPalettedRendererWidget::bandChanged );
 }
 
 QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
@@ -143,6 +143,9 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
   const QgsPalettedRasterRenderer *pr = dynamic_cast<const QgsPalettedRasterRenderer *>( r );
   if ( pr )
   {
+    mBand = pr->band();
+    whileBlocking( mBandComboBox )->setBand( mBand );
+
     //read values and colors and fill into tree widget
     mModel->setClassData( pr->classes() );
 
@@ -438,6 +441,32 @@ void QgsPalettedRendererWidget::loadFromLayer()
       emit widgetChanged();
     }
   }
+}
+
+void QgsPalettedRendererWidget::bandChanged( int band )
+{
+  if ( band == mBand )
+    return;
+
+  bool deleteExisting = false;
+  if ( !mModel->classData().isEmpty() )
+  {
+    int res = QMessageBox::question( this,
+                                     tr( "Confirm Delete" ),
+                                     tr( "The classification band was changed from %1 to %2.\n"
+                                         "Should the existing classes be deleted?" ).arg( mBand ).arg( band ),
+                                     QMessageBox::Yes | QMessageBox::No );
+
+    deleteExisting = ( res == QMessageBox::Yes );
+  }
+
+  mBand = band;
+  mModel->blockSignals( true );
+  if ( deleteExisting )
+    mModel->deleteAll();
+
+  mModel->blockSignals( false );
+  emit widgetChanged();
 }
 
 void QgsPalettedRendererWidget::gatheredClasses()

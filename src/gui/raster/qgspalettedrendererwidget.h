@@ -207,6 +207,8 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     //! Background class gatherer thread
     QgsPalettedRendererClassGatherer *mGatherer = nullptr;
 
+    int mBand = -1;
+
     void setSelectionColor( const QItemSelection &selection, const QColor &color );
 
   private slots:
@@ -221,6 +223,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void saveColorTable();
     void classify();
     void loadFromLayer();
+    void bandChanged( int band );
 
     void gatheredClasses();
     void gathererThreadFinished();
