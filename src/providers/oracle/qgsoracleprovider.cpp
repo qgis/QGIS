@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
+#include "qgsproviderregistry.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"

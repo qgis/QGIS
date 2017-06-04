@@ -24,6 +24,7 @@
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
+#include "qgsproviderregistry.h"
 
 #include <QVector>
 #include <QQueue>
