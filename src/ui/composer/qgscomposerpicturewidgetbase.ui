@@ -108,14 +108,14 @@
                </size>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -377,7 +377,7 @@
           <item row="0" column="3">
            <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -455,14 +455,14 @@
           <item row="1" column="3">
            <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
           <item row="2" column="3">
            <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>

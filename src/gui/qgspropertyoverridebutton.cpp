@@ -413,7 +413,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     if ( expString.length() > 35 )
     {
       expString.truncate( 35 );
-      expString.append( "..." );
+      expString.append( "…" );
     }
 
     expString.prepend( tr( "Current: " ) );
@@ -680,7 +680,7 @@ void QgsPropertyOverrideButton::updateGui()
   if ( deftip.length() > 75 )
   {
     deftip.truncate( 75 );
-    deftip.append( "..." );
+    deftip.append( "…" );
   }
 
   mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );

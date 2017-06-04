@@ -74,7 +74,7 @@
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -124,7 +124,7 @@
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -174,7 +174,7 @@
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -217,7 +217,7 @@
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

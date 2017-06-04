@@ -128,7 +128,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLegendTitleDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -286,7 +286,7 @@
                <string>Add group</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -575,7 +575,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mColumnsDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>

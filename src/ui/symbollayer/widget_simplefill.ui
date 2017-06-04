@@ -60,21 +60,21 @@
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mFillStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
     <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -234,14 +234,14 @@
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mJoinStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -287,7 +287,7 @@
    <item row="3" column="2">
     <widget class="QgsPropertyOverrideButton" name="mStrokeStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

@@ -1190,7 +1190,7 @@
                   <item row="0" column="5">
                    <widget class="QToolButton" name="mBtnMoveHelpDown">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1267,7 +1267,7 @@
                   <item row="0" column="4">
                    <widget class="QToolButton" name="mBtnMoveHelpUp">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -3501,7 +3501,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Add predefined scale</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3515,7 +3515,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Remove selected</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3529,7 +3529,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Reset to default scales</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3556,7 +3556,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Import from file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -3570,7 +3570,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>Export to file</string>
                       </property>
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">

@@ -65,7 +65,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   layout->addWidget( mLineEdit, 1, 0 );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( QStringLiteral( "..." ) );
+  mFileWidgetButton->setText( QStringLiteral( "…" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
 
