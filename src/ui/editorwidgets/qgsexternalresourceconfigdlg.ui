@@ -119,14 +119,14 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QgsPropertyOverrideButton" name="mRootPathPropertyOverrideButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -441,7 +441,7 @@
           <item row="0" column="4">
            <widget class="QgsPropertyOverrideButton" name="mDocumentViewerContentPropertyOverrideButton">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>

@@ -94,7 +94,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
           <property name="popupMode">
            <enum>QToolButton::InstantPopup</enum>

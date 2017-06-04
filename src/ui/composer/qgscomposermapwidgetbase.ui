@@ -118,7 +118,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mMapRotationDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -143,7 +143,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mScaleDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -204,7 +204,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mStylePresetsDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -241,7 +241,7 @@
             <item>
              <widget class="QToolButton" name="mLayerListFromPresetButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::InstantPopup</enum>
@@ -251,7 +251,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mLayersDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -306,7 +306,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mXMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -333,7 +333,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mYMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -360,7 +360,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mXMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -387,7 +387,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mYMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -465,7 +465,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mAtlasMarginDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>

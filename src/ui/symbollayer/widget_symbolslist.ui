@@ -294,7 +294,7 @@
            <item>
             <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>
@@ -343,7 +343,7 @@
            <item>
             <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>
@@ -402,7 +402,7 @@
            <item>
             <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>

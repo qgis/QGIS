@@ -94,7 +94,7 @@
      <item>
       <widget class="QToolButton" name="mBrowseToolButton">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -220,35 +220,35 @@
    <item row="0" column="2">
     <widget class="QgsPropertyOverrideButton" name="mTextureWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mFilColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="3" column="2">
     <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -326,7 +326,7 @@
    <item row="6" column="2">
     <widget class="QgsPropertyOverrideButton" name="mSVGDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

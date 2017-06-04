@@ -83,7 +83,7 @@
      <item>
       <widget class="QgsPropertyOverrideButton" name="mLineOffsetDDBtn">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -143,7 +143,7 @@
      <item>
       <widget class="QgsPropertyOverrideButton" name="mOffsetAlongLineDDBtn">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -170,7 +170,7 @@
      <item row="3" column="2">
       <widget class="QgsPropertyOverrideButton" name="mIntervalDDBtn">
        <property name="text">
-        <string>...</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -282,7 +282,7 @@
    <item row="0" column="1">
     <widget class="QgsPropertyOverrideButton" name="mPlacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

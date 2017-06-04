@@ -218,7 +218,7 @@
                <string>Reset sample text</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
@@ -706,7 +706,7 @@
                          <item row="18" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontBlendModeDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -749,7 +749,7 @@
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mFontUnderlineDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -790,7 +790,7 @@
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mFontStrikeoutDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -844,7 +844,7 @@
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mFontBoldDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -888,7 +888,7 @@
                          <item row="17" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontWordSpacingDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -964,7 +964,7 @@
                          <item row="6" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontUnitsDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1016,7 +1016,7 @@
                          <item row="1" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1080,21 +1080,21 @@
                          <item row="16" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontLetterSpacingDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                          <item row="3" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontStyleDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                          <item row="4" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontItalicDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1123,14 +1123,14 @@
                          <item row="7" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontColorDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                          <item row="14" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontCaseDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1204,7 +1204,7 @@
                          <item row="5" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontSizeDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1296,7 +1296,7 @@ font-style: italic;</string>
                                <string>Configure substitutes</string>
                               </property>
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -1346,7 +1346,7 @@ font-style: italic;</string>
                          <item row="8" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mFontOpacityDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1456,7 +1456,7 @@ font-style: italic;</string>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mWrapCharDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -1473,7 +1473,7 @@ font-style: italic;</string>
                            <item row="1" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mFontLineHeightDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -1578,7 +1578,7 @@ font-style: italic;</string>
                            <item row="2" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mFontMultiLineAlignDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -1621,7 +1621,7 @@ font-style: italic;</string>
                          <item row="0" column="1">
                           <widget class="QgsPropertyOverrideButton" name="mDirectSymbDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -1702,7 +1702,7 @@ font-style: italic;</string>
                                   </size>
                                  </property>
                                  <property name="text">
-                                  <string>...</string>
+                                  <string>…</string>
                                  </property>
                                 </widget>
                                </item>
@@ -1712,14 +1712,14 @@ font-style: italic;</string>
                             <item row="2" column="2">
                              <widget class="QgsPropertyOverrideButton" name="mDirectSymbPlacementDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
                             <item row="0" column="2">
                              <widget class="QgsPropertyOverrideButton" name="mDirectSymbLeftDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -1766,7 +1766,7 @@ font-style: italic;</string>
                             <item row="1" column="2">
                              <widget class="QgsPropertyOverrideButton" name="mDirectSymbRightDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -1813,7 +1813,7 @@ font-style: italic;</string>
                                   </size>
                                  </property>
                                  <property name="text">
-                                  <string>...</string>
+                                  <string>…</string>
                                  </property>
                                 </widget>
                                </item>
@@ -1823,7 +1823,7 @@ font-style: italic;</string>
                             <item row="3" column="2">
                              <widget class="QgsPropertyOverrideButton" name="mDirectSymbRevDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -1921,7 +1921,7 @@ font-style: italic;</string>
                         <item row="0" column="1">
                          <widget class="QgsPropertyOverrideButton" name="mFormatNumDDBtn">
                           <property name="text">
-                           <string>...</string>
+                           <string>…</string>
                           </property>
                          </widget>
                         </item>
@@ -1969,7 +1969,7 @@ font-style: italic;</string>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mFormatNumDecimalsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -1986,7 +1986,7 @@ font-style: italic;</string>
                            <item row="1" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mFormatNumPlusSignDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2063,7 +2063,7 @@ font-style: italic;</string>
                         <item row="1" column="1">
                          <widget class="QgsPropertyOverrideButton" name="mBufferDrawDDBtn">
                           <property name="text">
-                           <string>...</string>
+                           <string>…</string>
                           </property>
                          </widget>
                         </item>
@@ -2111,21 +2111,21 @@ font-style: italic;</string>
                            <item row="2" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferColorDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="7" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferBlendModeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferSizeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2234,7 +2234,7 @@ font-style: italic;</string>
                            <item row="6" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferJoinStyleDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2251,7 +2251,7 @@ font-style: italic;</string>
                            <item row="1" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2312,7 +2312,7 @@ font-style: italic;</string>
                            <item row="4" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mBufferOpacityDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2441,7 +2441,7 @@ font-style: italic;</string>
                         <item row="1" column="1">
                          <widget class="QgsPropertyOverrideButton" name="mShapeDrawDDBtn">
                           <property name="text">
-                           <string>...</string>
+                           <string>…</string>
                           </property>
                          </widget>
                         </item>
@@ -2538,14 +2538,14 @@ font-style: italic;</string>
                            <item row="4" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeSizeYDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="11" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeOffsetUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2604,7 +2604,7 @@ font-style: italic;</string>
                            <item row="13" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeRadiusUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2624,7 +2624,7 @@ font-style: italic;</string>
                            <item row="2" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeSizeTypeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2638,7 +2638,7 @@ font-style: italic;</string>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeTypeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2664,7 +2664,7 @@ font-style: italic;</string>
                            <item row="21" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapePenStyleDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2693,7 +2693,7 @@ font-style: italic;</string>
                            <item row="14" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeOpacityDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2717,7 +2717,7 @@ font-style: italic;</string>
                            <item row="3" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeSizeXDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2762,7 +2762,7 @@ font-style: italic;</string>
                            <item row="12" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeRadiusDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2776,7 +2776,7 @@ font-style: italic;</string>
                            <item row="8" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeRotationDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2835,7 +2835,7 @@ font-style: italic;</string>
                            <item row="9" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeOffsetDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2893,14 +2893,14 @@ font-style: italic;</string>
                            <item row="7" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeRotationTypeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="20" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -2963,28 +2963,28 @@ font-style: italic;</string>
                            <item row="17" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeFillColorDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="5" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeSizeUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="19" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeWidthDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="18" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeStrokeColorDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -3010,7 +3010,7 @@ font-style: italic;</string>
                            <item row="15" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShapeBlendModeDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -3085,14 +3085,14 @@ font-style: italic;</string>
                               <item>
                                <widget class="QPushButton" name="mShapeSVGSelectorBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
                               <item>
                                <widget class="QgsPropertyOverrideButton" name="mShapeSVGPathDDBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
@@ -3255,7 +3255,7 @@ font-style: italic;</string>
                         <item row="1" column="1">
                          <widget class="QgsPropertyOverrideButton" name="mShadowDrawDDBtn">
                           <property name="text">
-                           <string>...</string>
+                           <string>…</string>
                           </property>
                          </widget>
                         </item>
@@ -3521,70 +3521,70 @@ font-style: italic;</string>
                            <item row="0" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowUnderDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="1" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowOffsetAngleDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="2" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowOffsetDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="3" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowOffsetUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="5" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowRadiusDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="6" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowRadiusUnitsDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="8" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowOpacityDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="9" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowScaleDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="10" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowColorDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
                            <item row="11" column="2">
                             <widget class="QgsPropertyOverrideButton" name="mShadowBlendDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -4102,7 +4102,7 @@ font-style: italic;</string>
                          <item row="0" column="3">
                           <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4178,14 +4178,14 @@ font-style: italic;</string>
                          <item row="0" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mLineDistanceDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                          <item row="1" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mLineDistanceUnitDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4269,7 +4269,7 @@ font-style: italic;</string>
                          <item row="0" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mPointQuadOffsetDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4294,7 +4294,7 @@ font-style: italic;</string>
                             <item row="1" column="1">
                              <widget class="QToolButton" name="mPointOffsetOver">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                               <property name="icon">
                                <iconset resource="../../images/images.qrc">
@@ -4556,7 +4556,7 @@ font-style: italic;</string>
                          <item row="0" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mPointPositionOrderDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4671,14 +4671,14 @@ font-style: italic;</string>
                          <item row="0" column="3">
                           <widget class="QgsPropertyOverrideButton" name="mPointOffsetDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
                          <item row="1" column="3">
                           <widget class="QgsPropertyOverrideButton" name="mPointOffsetUnitsDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4857,7 +4857,7 @@ font-style: italic;</string>
                          <item row="0" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mRepeatDistanceDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4871,7 +4871,7 @@ font-style: italic;</string>
                          <item row="1" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mRepeatDistanceUnitDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -4944,7 +4944,7 @@ font-style: italic;</string>
                          <item row="1" column="5">
                           <widget class="QgsPropertyOverrideButton" name="mMaxCharAngleDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -5042,7 +5042,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5062,7 +5062,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5107,7 +5107,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mCoordRotationDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5160,7 +5160,7 @@ font-style: italic;</string>
                             <item>
                              <widget class="QgsPropertyOverrideButton" name="mCoordAlignmentHDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -5180,7 +5180,7 @@ font-style: italic;</string>
                             <item>
                              <widget class="QgsPropertyOverrideButton" name="mCoordAlignmentVDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -5254,7 +5254,7 @@ font-style: italic;</string>
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mPriorityDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -5364,7 +5364,7 @@ font-style: italic;</string>
                            <item row="0" column="1">
                             <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5430,7 +5430,7 @@ font-style: italic;</string>
                               <item row="0" column="1">
                                <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityMinDDBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
@@ -5465,7 +5465,7 @@ font-style: italic;</string>
                               <item row="1" column="1">
                                <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityMaxDDBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
@@ -5495,7 +5495,7 @@ font-style: italic;</string>
                            <item row="0" column="1">
                             <widget class="QgsPropertyOverrideButton" name="mFontLimitPixelDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5567,7 +5567,7 @@ font-style: italic;</string>
                               <item row="0" column="1">
                                <widget class="QgsPropertyOverrideButton" name="mFontMinPixelDDBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
@@ -5605,7 +5605,7 @@ font-style: italic;</string>
                               <item row="1" column="1">
                                <widget class="QgsPropertyOverrideButton" name="mFontMaxPixelDDBtn">
                                 <property name="text">
-                                 <string>...</string>
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
@@ -5646,7 +5646,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mZIndexDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -5712,14 +5712,14 @@ font-style: italic;</string>
                             <item row="1" column="2">
                              <widget class="QgsPropertyOverrideButton" name="mShowLabelDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
                             <item row="1" column="5">
                              <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>
@@ -6082,7 +6082,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsPropertyOverrideButton" name="mIsObstacleDDBtn">
                              <property name="text">
-                              <string>...</string>
+                              <string>…</string>
                              </property>
                             </widget>
                            </item>
@@ -6158,7 +6158,7 @@ font-style: italic;</string>
                             <item>
                              <widget class="QgsPropertyOverrideButton" name="mObstacleFactorDDBtn">
                               <property name="text">
-                               <string>...</string>
+                               <string>…</string>
                               </property>
                              </widget>
                             </item>

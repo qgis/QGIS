@@ -59,7 +59,7 @@
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mJoinStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -191,7 +191,7 @@
    <item row="7" column="2">
     <widget class="QgsPropertyOverrideButton" name="mDashPatternDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -244,35 +244,35 @@
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mCapStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
     <widget class="QgsPropertyOverrideButton" name="mColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mPenWidthDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="3" column="2">
     <widget class="QgsPropertyOverrideButton" name="mPenStyleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>

@@ -206,7 +206,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select an existing or create a new database&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="text">
-              <string>...</string>
+              <string>…</string>
              </property>
             </widget>
            </item>

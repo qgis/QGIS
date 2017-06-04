@@ -688,7 +688,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mBackgroundColorDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -731,7 +731,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mLineColorDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -775,7 +775,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mLineWidthDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -802,7 +802,7 @@
                          <item>
                           <widget class="QgsPropertyOverrideButton" name="mStartAngleDDBtn">
                            <property name="text">
-                            <string>...</string>
+                            <string>…</string>
                            </property>
                           </widget>
                          </item>
@@ -932,7 +932,7 @@
                      <item row="1" column="2">
                       <widget class="QgsPropertyOverrideButton" name="mShowDiagramDDBtn">
                        <property name="text">
-                        <string>...</string>
+                        <string>…</string>
                        </property>
                       </widget>
                      </item>
@@ -959,7 +959,7 @@
                      <item row="1" column="5">
                       <widget class="QgsPropertyOverrideButton" name="mAlwaysShowDDBtn">
                        <property name="text">
-                        <string>...</string>
+                        <string>…</string>
                        </property>
                       </widget>
                      </item>
@@ -1011,7 +1011,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mIsObstacleDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1491,7 +1491,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mDistanceDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1548,7 +1548,7 @@
                     <item>
                      <widget class="QgsPropertyOverrideButton" name="mPriorityDDBtn">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                      </widget>
                     </item>
@@ -1592,7 +1592,7 @@
                     <item>
                      <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                      </widget>
                     </item>
@@ -1746,7 +1746,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mCoordXDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>
@@ -1766,7 +1766,7 @@
                        <item>
                         <widget class="QgsPropertyOverrideButton" name="mCoordYDDBtn">
                          <property name="text">
-                          <string>...</string>
+                          <string>…</string>
                          </property>
                         </widget>
                        </item>

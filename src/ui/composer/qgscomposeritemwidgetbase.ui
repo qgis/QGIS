@@ -81,28 +81,28 @@
         <item row="1" column="3">
          <widget class="QgsPropertyOverrideButton" name="mXPositionDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="2" column="3">
          <widget class="QgsPropertyOverrideButton" name="mYPositionDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="3" column="3">
          <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
         <item row="4" column="3">
          <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -388,7 +388,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mItemRotationDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -462,7 +462,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mItemFrameColorDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -588,7 +588,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mItemBackgroundColorDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -659,7 +659,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -677,7 +677,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mExcludePrintsDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -698,7 +698,7 @@
         <item>
          <widget class="QgsPropertyOverrideButton" name="mBlendModeDDBtn">
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
