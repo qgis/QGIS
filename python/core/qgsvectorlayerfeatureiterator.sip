@@ -46,6 +46,13 @@ class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
  :rtype: QgsFields
 %End
 
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+ Returns the coordinate reference system for features retrieved from this source.
+.. versionadded:: 3.0
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
   protected:
 
 
@@ -136,6 +143,35 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
   private:
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
+};
+
+
+
+class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
+{
+%Docstring
+ QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerfeatureiterator.h"
+%End
+  public:
+
+    QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
+%Docstring
+ Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified ``layer``.
+ The currently selected feature IDs are stored, so change to the layer selection after constructing
+ the QgsVectorLayerSelectedFeatureSource will not be reflected.
+%End
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+    virtual QgsFields fields() const;
+    virtual QgsWkbTypes::Type wkbType() const;
+    virtual long featureCount() const;
+
 };
 
 /************************************************************************

@@ -52,6 +52,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsSingleCategoryDiagramRenderer,
                        QgsDiagramLayerSettings,
                        QgsTextFormat,
+                       QgsVectorLayerSelectedFeatureSource,
                        NULL)
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
@@ -2297,6 +2298,61 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # compare xml documents
         self.assertEqual(layer_doc.toString(), clone_doc.toString())
+
+    def testQgsVectorLayerSelectedFeatureSource(self):
+        """
+        test QgsVectorLayerSelectedFeatureSource
+        """
+
+        layer = QgsVectorLayer("Point?crs=epsg:3111&field=fldtxt:string&field=fldint:integer",
+                               "addfeat", "memory")
+        pr = layer.dataProvider()
+        f1 = QgsFeature(1)
+        f1.setAttributes(["test", 123])
+        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+        f2 = QgsFeature(2)
+        f2.setAttributes(["test2", 457])
+        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(200, 200)))
+        f3 = QgsFeature(3)
+        f3.setAttributes(["test2", 888])
+        f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(300, 200)))
+        f4 = QgsFeature(4)
+        f4.setAttributes(["test3", -1])
+        f4.setGeometry(QgsGeometry.fromPoint(QgsPointXY(400, 300)))
+        f5 = QgsFeature(5)
+        f5.setAttributes(["test4", 0])
+        f5.setGeometry(QgsGeometry.fromPoint(QgsPointXY(0, 0)))
+        self.assertTrue(pr.addFeatures([f1, f2, f3, f4, f5]))
+        self.assertEqual(layer.featureCount(), 5)
+
+        source = QgsVectorLayerSelectedFeatureSource(layer)
+        self.assertEqual(source.sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(source.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(source.fields(), layer.fields())
+
+        # no selection
+        self.assertEqual(source.featureCount(), 0)
+        it = source.getFeatures()
+        f = QgsFeature()
+        self.assertFalse(it.nextFeature(f))
+
+        # with selection
+        layer.selectByIds([f1.id(), f3.id(), f5.id()])
+        source = QgsVectorLayerSelectedFeatureSource(layer)
+        self.assertEqual(source.featureCount(), 3)
+        ids = set([f.id() for f in source.getFeatures()])
+        self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
+
+        # test that source has stored snapshot of selected features
+        layer.selectByIds([f2.id(), f4.id()])
+        self.assertEqual(source.featureCount(), 3)
+        ids = set([f.id() for f in source.getFeatures()])
+        self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
+
+        # test that source is not dependent on layer
+        del layer
+        ids = set([f.id() for f in source.getFeatures()])
+        self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
 
 
 # TODO:
