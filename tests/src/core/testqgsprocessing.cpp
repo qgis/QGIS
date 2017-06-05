@@ -213,8 +213,8 @@ class TestQgsProcessing: public QObject
     void parameterString();
     void parameterExpression();
     void parameterField();
-    void parameterVectorLayer();
-    void parameterOutputVectorLayer();
+    void parameterFeatureSource();
+    void parameterFeatureSink();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -2179,7 +2179,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fields, QStringList() << "abc" << "def" );
 }
 
-void TestQgsProcessing::parameterVectorLayer()
+void TestQgsProcessing::parameterFeatureSource()
 {
   // setup a context
   QgsProject p;
@@ -2202,6 +2202,7 @@ void TestQgsProcessing::parameterVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( "layer1231123" ) ) );
 
   // should be OK
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
@@ -2236,10 +2237,10 @@ void TestQgsProcessing::parameterVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
-
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( "layer1231123" ) ) );
 }
 
-void TestQgsProcessing::parameterOutputVectorLayer()
+void TestQgsProcessing::parameterFeatureSink()
 {
   // setup a context
   QgsProject p;
@@ -2255,6 +2256,7 @@ void TestQgsProcessing::parameterOutputVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSink( "layer1231123" ) ) );
 
   // should be OK with or without context - it's an output layer!
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
@@ -2269,6 +2271,7 @@ void TestQgsProcessing::parameterOutputVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSink( "layer1231123" ) ) );
 }
 
 void TestQgsProcessing::checkParamValues()

@@ -35,6 +35,7 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingFeatureSink,
                        QgsProcessingParameterFeatureSink)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -109,20 +110,15 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     if not param.checkValueIsAcceptable(value):
                         raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
             else:
-                parameters[param.name()] = self.mainWidget.outputWidgets[param.name()].getValue()
+                open_after_run = False
+                if not  param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
+                        isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
+                    if self.mainWidget.checkBoxes[param.name()].isChecked():
+                        open_after_run = True
+
+                parameters[param.name()] = QgsProcessingFeatureSink(self.mainWidget.outputWidgets[param.name()].getValue(), open_after_run)
 
         return parameters
-
-    def getLayersToOpen(self):
-        layer_outputs = []
-        for param in self.alg.destinationParameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                continue
-            if isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
-                if self.mainWidget.checkBoxes[param.name()].isChecked():
-                    layer_outputs.append(param.name())
-
-        return layer_outputs
 
     def checkExtentCRS(self):
         unmatchingCRS = False
@@ -254,9 +250,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-
-            for o in self.getLayersToOpen():
-                context.addLayerToLoadOnCompletion(result[o])
 
             if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()

@@ -1268,15 +1268,22 @@ QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const 
 
 bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
-  if ( !input.isValid() )
+  QVariant var = input;
+  if ( !var.isValid() )
     return mFlags & FlagOptional;
 
-  if ( input.canConvert<QgsProperty>() )
+  if ( var.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
+    var = fromVar.source;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
   {
     return true;
   }
 
-  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+  if ( var.type() != QVariant::String || var.toString().isEmpty() )
     return mFlags & FlagOptional;
 
   if ( !context )
@@ -1286,7 +1293,7 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   }
 
   // try to load as layer
-  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context ) )
     return true;
 
   return false;
@@ -1312,18 +1319,25 @@ QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QStr
 
 bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
-  if ( !input.isValid() )
+  QVariant var = input;
+  if ( !var.isValid() )
     return mFlags & FlagOptional;
 
-  if ( input.canConvert<QgsProperty>() )
+  if ( var.canConvert<QgsProcessingFeatureSink>() )
+  {
+    QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
   {
     return true;
   }
 
-  if ( input.type() != QVariant::String )
+  if ( var.type() != QVariant::String )
     return false;
 
-  if ( input.toString().isEmpty() )
+  if ( var.toString().isEmpty() )
     return mFlags & FlagOptional;
 
   return true;

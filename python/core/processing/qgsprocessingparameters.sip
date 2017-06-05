@@ -41,6 +41,12 @@ class QgsProcessingFeatureSourceDefinition
  True if only selected features in the source should be used by algorithms.
 %End
 
+
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants.
+%End
+
 };
 
 
@@ -77,6 +83,12 @@ class QgsProcessingFeatureSink
     QString fileEncoding;
 %Docstring
  Encoding for destination file.
+%End
+
+
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants.
 %End
 
 };

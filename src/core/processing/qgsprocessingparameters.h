@@ -63,6 +63,13 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool selectedFeaturesOnly;
 
+
+    //! Allows direct construction of QVariants.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
 };
 
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
@@ -102,6 +109,13 @@ class CORE_EXPORT QgsProcessingFeatureSink
      * Encoding for destination file.
      */
     QString fileEncoding;
+
+
+    //! Allows direct construction of QVariants.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
 
 };
 
