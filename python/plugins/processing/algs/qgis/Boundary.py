@@ -82,8 +82,8 @@ class Boundary(QgisAlgorithm):
         if QgsWkbTypes.hasM(input_wkb):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context, '',
-                                               source.fields(), output_wkb, source.crs())
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
+                                               source.fields(), output_wkb, source.sourceCrs())
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount()
