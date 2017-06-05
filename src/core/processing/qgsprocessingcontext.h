@@ -102,33 +102,34 @@ class CORE_EXPORT QgsProcessingContext
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
     /**
-     * Returns a list of layers (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+     * Returns a map of layers (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
      * \see setLayersToLoadOnCompletion()
      * \see addLayerToLoadOnCompletion()
      */
-    QStringList layersToLoadOnCompletion() const
+    QgsStringMap layersToLoadOnCompletion() const
     {
       return mLayersToLoadOnCompletion;
     }
 
     /**
-     * Sets the list of \a layers (by ID or datasource) to load into the canvas upon completion of the algorithm or model.
+     * Sets the map of \a layers (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
      * \see addLayerToLoadOnCompletion()
      * \see layersToLoadOnCompletion()
      */
-    void setLayersToLoadOnCompletion( const QStringList &layers )
+    void setLayersToLoadOnCompletion( const QgsStringMap &layers )
     {
       mLayersToLoadOnCompletion = layers;
     }
 
     /**
      * Adds a \a layer to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
+     * The \a name parameter dictates a friendly display name for the layer.
      * \see setLayersToLoadOnCompletion()
      * \see layersToLoadOnCompletion()
      */
-    void addLayerToLoadOnCompletion( const QString &layer )
+    void addLayerToLoadOnCompletion( const QString &layer, const QString &name )
     {
-      mLayersToLoadOnCompletion << layer;
+      mLayersToLoadOnCompletion.insert( layer, name );
     }
 
     /**
@@ -208,7 +209,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     QString mDefaultEncoding;
-    QStringList mLayersToLoadOnCompletion;
+    QgsStringMap mLayersToLoadOnCompletion;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

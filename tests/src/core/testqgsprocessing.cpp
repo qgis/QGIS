@@ -467,16 +467,28 @@ void TestQgsProcessing::context()
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
   QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
-  context.setLayersToLoadOnCompletion( QStringList() << v1->id() );
+  QgsStringMap layers;
+  layers.insert( v1->id(), QStringLiteral( "v1" ) );
+  context.setLayersToLoadOnCompletion( layers );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
-  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v1->id() );
-  context.addLayerToLoadOnCompletion( v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v1" ) );
+  context.addLayerToLoadOnCompletion( v2->id(), QStringLiteral( "v2" ) );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
-  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v1->id() );
-  QCOMPARE( context.layersToLoadOnCompletion().at( 1 ), v2->id() );
-  context.setLayersToLoadOnCompletion( QStringList() << v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v1" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ), QStringLiteral( "v2" ) );
+  layers.clear();
+  layers.insert( v2->id(), QStringLiteral( "v2" ) );
+  context.setLayersToLoadOnCompletion( layers );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
-  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v2->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v2" ) );
+  context.addLayerToLoadOnCompletion( v1->id(), QString() );
+  QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
   delete v1;
   delete v2;
 }
@@ -1027,7 +1039,7 @@ void TestQgsProcessing::parameters()
   QVERIFY( !QgsProcessingParameters::isDynamic( params, QStringLiteral( "bad" ) ) );
 
   // parameterAsString
-  def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  def = new QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "desc" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QStringLiteral( "a string" ) );
   def->setName( QStringLiteral( "double" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ).left( 3 ), QStringLiteral( "5.2" ) );
@@ -1154,7 +1166,8 @@ void TestQgsProcessing::parameters()
 
   // make sure layer was automatically added to list to load on completion
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
-  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), destId );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), destId );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "desc" ) );
 
   delete def;
 }
