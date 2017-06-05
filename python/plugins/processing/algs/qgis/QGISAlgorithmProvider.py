@@ -145,7 +145,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-# from .BoundingBox import BoundingBox
+from .BoundingBox import BoundingBox
 from .Boundary import Boundary
 # from .PointOnSurface import PointOnSurface
 # from .OffsetLine import OffsetLine
@@ -241,7 +241,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
-        #         BoundingBox(), Boundary(), PointOnSurface(),
+        #         PointOnSurface(),
         #         OffsetLine(), PolygonCentroids(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
         #         Aspect(), Slope(), Ruggedness(), Hillshade(),
@@ -259,7 +259,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FixGeometry(), ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
-        algs = [Boundary()]
+        algs = [Boundary(),
+                BoundingBox()]
 
         # if hasPlotly:
         #     from .VectorLayerHistogram import VectorLayerHistogram
