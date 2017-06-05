@@ -85,7 +85,7 @@ namespace QgsWfs
         fids.insert( fid.toInt() );
       }
 
-      if ( fids.size() > 0 )
+      if ( !fids.isEmpty() )
       {
         request.setFilterFids( fids );
       }
