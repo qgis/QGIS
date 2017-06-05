@@ -34,7 +34,7 @@ import os
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterPoint,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterOutputVectorLayer)
 from qgis.PyQt import uic
@@ -110,7 +110,7 @@ class ParametersPanel(BASE, WIDGET):
                 widget = wrapper.widget
 
                 if widget is not None:
-                    if isinstance(param, QgsProcessingParameterVectorLayer):
+                    if isinstance(param, QgsProcessingParameterFeatureSource):
                         layout = QHBoxLayout()
                         layout.setSpacing(2)
                         layout.setMargin(0)
