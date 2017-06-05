@@ -46,17 +46,25 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSourceDefinition.
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
      */
-    QgsProcessingFeatureSourceDefinition( const QVariant &source = QVariant(), bool selectedFeaturesOnly = false )
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false )
+      : source( QgsProperty::fromValue( source ) )
+      , selectedFeaturesOnly( selectedFeaturesOnly )
+    {}
+
+    /**
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+     */
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
     {}
 
     /**
-     * Source definition. Usually set to a source layer's ID or file name.
+     * Source definition. Usually a static property set to a source layer's ID or file name.
      */
-    QVariant source;
+    QgsProperty source;
 
     /**
      * True if only selected features in the source should be used by algorithms.
@@ -88,17 +96,25 @@ class CORE_EXPORT QgsProcessingFeatureSink
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSink.
+     * Constructor for QgsProcessingFeatureSink, accepting a static string sink.
      */
-    QgsProcessingFeatureSink( const QVariant &sink = QVariant(), bool loadIntoProject = false )
+    QgsProcessingFeatureSink( const QString &sink = QString(), bool loadIntoProject = false )
+      : sink( QgsProperty::fromValue( sink ) )
+      , loadIntoProject( loadIntoProject )
+    {}
+
+    /**
+     * Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+     */
+    QgsProcessingFeatureSink( const QgsProperty &sink, bool loadIntoProject = false )
       : sink( sink )
       , loadIntoProject( loadIntoProject )
     {}
 
     /**
-     * Sink definition. Usually set to the destination file name for the sink's layer.
+     * Sink definition. Usually a static property set to the destination file name for the sink's layer.
      */
-    QVariant sink;
+    QgsProperty sink;
 
     /**
      * True if sink should be loaded into the current project when the algorithm completes.

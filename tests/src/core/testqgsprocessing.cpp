@@ -2329,9 +2329,9 @@ void TestQgsProcessing::combineLayerExtent()
 
 void TestQgsProcessing::processingFeatureSource()
 {
-  QVariant source( QStringLiteral( "test.shp" ) );
-  QgsProcessingFeatureSourceDefinition fs( source, true );
-  QCOMPARE( fs.source, source );
+  QString sourceString = QStringLiteral( "test.shp" );
+  QgsProcessingFeatureSourceDefinition fs( sourceString, true );
+  QCOMPARE( fs.source.staticValue().toString(), sourceString );
   QVERIFY( fs.selectedFeaturesOnly );
 
   // test storing QgsProcessingFeatureSource in variant and retrieving
@@ -2339,15 +2339,45 @@ void TestQgsProcessing::processingFeatureSource()
   QVERIFY( fsInVariant.isValid() );
 
   QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( fsInVariant );
-  QCOMPARE( fromVar.source, source );
+  QCOMPARE( fromVar.source.staticValue().toString(), sourceString );
   QVERIFY( fromVar.selectedFeaturesOnly );
+
+  // test evaluating parameter as source
+  QgsVectorLayer *layer = new QgsVectorLayer( "Point", "v1", "memory" );
+  QgsFeature f( 10001 );
+  f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
+  layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QgsProject p;
+  p.addMapLayer( layer );
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // first using static string definition
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
+  QgsFeature f2;
+  QVERIFY( source.get() );
+  QVERIFY( source->getFeatures().nextFeature( f2 ) );
+  QCOMPARE( f2.geometry(), f.geometry() );
+
+  // next using property based definition
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('%1' + ' ')" ).arg( layer->id() ) ), false ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
+  QVERIFY( source.get() );
+  QVERIFY( source->getFeatures().nextFeature( f2 ) );
+  QCOMPARE( f2.geometry(), f.geometry() );
 }
 
 void TestQgsProcessing::processingFeatureSink()
 {
-  QVariant sink( QStringLiteral( "test.shp" ) );
-  QgsProcessingFeatureSink fs( sink, true );
-  QCOMPARE( fs.sink, sink );
+  QString sinkString( QStringLiteral( "test.shp" ) );
+  QgsProcessingFeatureSink fs( sinkString, true );
+  QCOMPARE( fs.sink.staticValue().toString(), sinkString );
   QVERIFY( fs.loadIntoProject );
 
   // test storing QgsProcessingFeatureSink in variant and retrieving
@@ -2355,8 +2385,32 @@ void TestQgsProcessing::processingFeatureSink()
   QVERIFY( fsInVariant.isValid() );
 
   QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( fsInVariant );
-  QCOMPARE( fromVar.sink, sink );
+  QCOMPARE( fromVar.sink.staticValue().toString(), sinkString );
   QVERIFY( fromVar.loadIntoProject );
+
+  // test evaluating parameter as sink
+  QgsProject p;
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // first using static string definition
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( "memory:test", false ) );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), context, dest ) );
+  QVERIFY( sink.get() );
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
+  QVERIFY( layer );
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
+
+  // next using property based definition
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), false ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  QVERIFY( sink.get() );
+  QgsVectorLayer *layer2 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
+  QVERIFY( layer2 );
+  QCOMPARE( layer2->crs().authid(), QStringLiteral( "EPSG:3113" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
