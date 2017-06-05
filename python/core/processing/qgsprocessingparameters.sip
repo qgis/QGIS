@@ -70,14 +70,18 @@ class QgsProcessingFeatureSink
 %End
   public:
 
-    QgsProcessingFeatureSink( const QString &sink = QString(), bool loadIntoProject = false );
+    QgsProcessingFeatureSink( const QString &sink = QString(), QgsProject *destinationProject = 0 );
 %Docstring
  Constructor for QgsProcessingFeatureSink, accepting a static string sink.
+ The ``destinationProject`` parameter can be set to a QgsProject instance in which
+ to automatically load the resulting sink after completing processing.
 %End
 
-    QgsProcessingFeatureSink( const QgsProperty &sink, bool loadIntoProject = false );
+    QgsProcessingFeatureSink( const QgsProperty &sink, QgsProject *destinationProject = 0 );
 %Docstring
  Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+ The ``destinationProject`` parameter can be set to a QgsProject instance in which
+ to automatically load the resulting sink after completing processing.
 %End
 
     QgsProperty sink;
@@ -85,9 +89,11 @@ class QgsProcessingFeatureSink
  Sink definition. Usually a static property set to the destination file name for the sink's layer.
 %End
 
-    bool loadIntoProject;
+    QgsProject *destinationProject;
 %Docstring
- True if sink should be loaded into the current project when the algorithm completes.
+ Destination project. Can be set to a QgsProject instance in which
+ to automatically load the resulting sink after completing processing.
+ The default behavior is not to load the result into any project (None).
 %End
 
     QVariantMap createOptions;

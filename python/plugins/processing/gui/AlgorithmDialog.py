@@ -110,13 +110,13 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     if not param.checkValueIsAcceptable(value):
                         raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
             else:
-                open_after_run = False
+                dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
                         isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
-                        open_after_run = True
+                        dest_project = QgsProject.instance()
 
-                parameters[param.name()] = QgsProcessingFeatureSink(self.mainWidget.outputWidgets[param.name()].getValue(), open_after_run)
+                parameters[param.name()] = QgsProcessingFeatureSink(self.mainWidget.outputWidgets[param.name()].getValue(), dest_project)
 
         return parameters
 

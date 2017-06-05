@@ -467,25 +467,25 @@ void TestQgsProcessing::context()
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
   QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
-  QgsStringMap layers;
-  layers.insert( v1->id(), QStringLiteral( "v1" ) );
+  QMap< QString, QgsProcessingContext::LayerDetails > layers;
+  layers.insert( v1->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v1" ), &p ) );
   context.setLayersToLoadOnCompletion( layers );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v1" ) );
-  context.addLayerToLoadOnCompletion( v2->id(), QStringLiteral( "v2" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
+  context.addLayerToLoadOnCompletion( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v1" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ), QStringLiteral( "v2" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ).name, QStringLiteral( "v2" ) );
   layers.clear();
-  layers.insert( v2->id(), QStringLiteral( "v2" ) );
+  layers.insert( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   context.setLayersToLoadOnCompletion( layers );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v2->id() );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "v2" ) );
-  context.addLayerToLoadOnCompletion( v1->id(), QString() );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v2" ) );
+  context.addLayerToLoadOnCompletion( v1->id(), QgsProcessingContext::LayerDetails( QString(), &p ) );
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
@@ -1148,8 +1148,9 @@ void TestQgsProcessing::parameters()
   QCOMPARE( layer->crs(), crs );
 
   // QgsProcessingFeatureSink as parameter
+  QgsProject p;
   QgsProcessingFeatureSink fs( QStringLiteral( "test.shp" ) );
-  fs.loadIntoProject = true;
+  fs.destinationProject = &p;
   QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
   params.insert( QStringLiteral( "fs" ), QVariant::fromValue( fs ) );
   def->setName( QStringLiteral( "fs" ) );
@@ -1167,7 +1168,7 @@ void TestQgsProcessing::parameters()
   // make sure layer was automatically added to list to load on completion
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), destId );
-  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ), QStringLiteral( "desc" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
 
   delete def;
 }
@@ -2376,9 +2377,10 @@ void TestQgsProcessing::processingFeatureSource()
 void TestQgsProcessing::processingFeatureSink()
 {
   QString sinkString( QStringLiteral( "test.shp" ) );
-  QgsProcessingFeatureSink fs( sinkString, true );
+  QgsProject p;
+  QgsProcessingFeatureSink fs( sinkString, &p );
   QCOMPARE( fs.sink.staticValue().toString(), sinkString );
-  QVERIFY( fs.loadIntoProject );
+  QCOMPARE( fs.destinationProject, &p );
 
   // test storing QgsProcessingFeatureSink in variant and retrieving
   QVariant fsInVariant = QVariant::fromValue( fs );
@@ -2386,17 +2388,16 @@ void TestQgsProcessing::processingFeatureSink()
 
   QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( fsInVariant );
   QCOMPARE( fromVar.sink.staticValue().toString(), sinkString );
-  QVERIFY( fromVar.loadIntoProject );
+  QCOMPARE( fromVar.destinationProject, &p );
 
   // test evaluating parameter as sink
-  QgsProject p;
   QgsProcessingContext context;
   context.setProject( &p );
 
   // first using static string definition
   QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
   QVariantMap params;
-  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( "memory:test", false ) );
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( "memory:test", nullptr ) );
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), context, dest ) );
   QVERIFY( sink.get() );
@@ -2405,7 +2406,7 @@ void TestQgsProcessing::processingFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
 
   // next using property based definition
-  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), false ) );
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), nullptr ) );
   sink.reset( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer2 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
