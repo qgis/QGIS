@@ -98,6 +98,11 @@ QgsFields QgsVectorLayerFeatureSource::fields() const
   return mFields;
 }
 
+QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
+{
+  return mCrs;
+}
+
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
@@ -1006,3 +1011,51 @@ bool QgsVectorLayerFeatureIterator::prepareOrderBy( const QList<QgsFeatureReques
   return true;
 }
 
+
+//
+// QgsVectorLayerSelectedFeatureSource
+//
+
+QgsVectorLayerSelectedFeatureSource::QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer )
+  : mSource( layer )
+  , mSelectedFeatureIds( layer->selectedFeatureIds() )
+  , mWkbType( layer->wkbType() )
+{}
+
+QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
+{
+  QgsFeatureRequest req( request );
+
+  if ( req.filterFids().isEmpty() && req.filterType() != QgsFeatureRequest::FilterFids )
+  {
+    req.setFilterFids( mSelectedFeatureIds );
+  }
+  else if ( !req.filterFids().isEmpty() )
+  {
+    QgsFeatureIds reqIds = mSelectedFeatureIds;
+    reqIds.intersect( req.filterFids() );
+    req.setFilterFids( reqIds );
+  }
+
+  return mSource.getFeatures( req );
+}
+
+QgsCoordinateReferenceSystem QgsVectorLayerSelectedFeatureSource::sourceCrs() const
+{
+  return mSource.crs();
+}
+
+QgsFields QgsVectorLayerSelectedFeatureSource::fields() const
+{
+  return mSource.fields();
+}
+
+QgsWkbTypes::Type QgsVectorLayerSelectedFeatureSource::wkbType() const
+{
+  return mWkbType;
+}
+
+long QgsVectorLayerSelectedFeatureSource::featureCount() const
+{
+  return mSelectedFeatureIds.count();
+}
