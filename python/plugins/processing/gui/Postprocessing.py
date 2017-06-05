@@ -55,32 +55,6 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
         feedback = QgsProcessingFeedback()
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
-    #for out in alg.outputs:
-    #    feedback.setProgress(100 * i / float(len(alg.outputs)))
-    #    if out.flags() & QgsProcessingParameterDefinition.FlagHidden or not out.open:
-    #        continue
-    #    if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
-    #        try:
-    #            layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
-    #            if layer:
-    #                layer.setName(out.description())
-    #                QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
-    #            else:
-    #                if ProcessingConfig.getSetting(
-    #                        ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-    #                    name = os.path.basename(out.value)
-    #                else:
-    #                   name = out.description()
-    #                dataobjects.load(out.value, name, alg.crs,
-    #                                 RenderingStyles.getStyle(alg.id(),
-    #                                                          out.name))
-    #        except Exception:
-    #            QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
-    #            wrongLayers.append(out.description())
-    #    elif isinstance(out, OutputHTML):
-    #        resultsList.addResult(alg.icon(), out.description(), out.value)
-    #    i += 1
-    i = 0
     for l in context.layersToLoadOnCompletion():
         feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
         try:
@@ -103,33 +77,33 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
             #wrongLayers.append(out.description())
             wrongLayers.append(l)
-    for out in alg.outputs:
-        feedback.setProgress(100 * i / float(len(alg.outputs)))
-        if out.hidden or not out.open:
-            continue
-        if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
-            try:
-                layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
-                if layer:
-                    layer.setName(out.description)
-                    QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
-                else:
-                    if ProcessingConfig.getSetting(
-                            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-                        name = os.path.basename(out.value)
-                    else:
-                        name = out.description
-
-                    isRaster = True if isinstance(out, OutputRaster) else False
-                    dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.id(), out.name),
-                                     isRaster)
-            except Exception:
-                QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
-                wrongLayers.append(out.description)
-        elif isinstance(out, OutputHTML):
-            resultsList.addResult(alg.icon(), out.description, out.value)
-        i += 1
+    # for out in alg.outputs:
+    #     feedback.setProgress(100 * i / float(len(alg.outputs)))
+    #     if out.flags() & QgsProcessingParameterDefinition.FlagHidden or not out.open:
+    #         continue
+    #     if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
+    #         try:
+    #             layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
+    #             if layer:
+    #                 layer.setName(out.description)
+    #                 QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+    #             else:
+    #                 if ProcessingConfig.getSetting(
+    #                         ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
+    #                     name = os.path.basename(out.value)
+    #                 else:
+    #                     name = out.description
+    #
+    #                 isRaster = True if isinstance(out, OutputRaster) else False
+    #                 dataobjects.load(out.value, name, alg.crs,
+    #                                  RenderingStyles.getStyle(alg.id(), out.name),
+    #                                  isRaster)
+    #         except Exception:
+    #             QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+    #             wrongLayers.append(out.description)
+    #     elif isinstance(out, OutputHTML):
+    #         resultsList.addResult(alg.icon(), out.description, out.value)
+    #     i += 1
 
     QApplication.restoreOverrideCursor()
     if wrongLayers:
