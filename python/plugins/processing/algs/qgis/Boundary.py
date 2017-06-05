@@ -70,9 +70,9 @@ class Boundary(QgisAlgorithm):
         return self.tr('Boundary')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsLayer(parameters, self.INPUT_LAYER, context)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-        input_wkb = layer.wkbType()
+        input_wkb = source.wkbType()
         if QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.LineGeometry:
             output_wkb = QgsWkbTypes.MultiPoint
         elif QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.PolygonGeometry:
@@ -83,10 +83,10 @@ class Boundary(QgisAlgorithm):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context, '',
-                                               layer.fields(), output_wkb, layer.crs())
+                                               source.fields(), output_wkb, source.crs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():

@@ -36,6 +36,14 @@ Constructor - creates R-tree
 .. versionadded:: 2.8
 %End
 
+    explicit QgsSpatialIndex( const QgsFeatureSource &source );
+%Docstring
+ Constructor - creates R-tree and bulk loads it with features from the source.
+ This is much faster approach than creating an empty index and then inserting features one by one.
+
+.. versionadded:: 3.0
+%End
+
     QgsSpatialIndex( const QgsSpatialIndex &other );
 %Docstring
 Copy constructor

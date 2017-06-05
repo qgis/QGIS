@@ -18,6 +18,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -245,6 +246,32 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     context.addLayerToLoadOnCompletion( destinationIdentifier );
 
   return sink.release();
+}
+
+QgsFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return nullptr;
+
+  QString layerRef = parameterAsString( definition, parameters, context );
+  if ( layerRef.isEmpty() )
+    layerRef = definition->defaultValue().toString();
+
+  if ( layerRef.isEmpty() )
+    return nullptr;
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  if ( !vl )
+    return nullptr;
+
+  if ( context.flags() & QgsProcessingContext::UseSelectionIfPresent && vl->selectedFeatureCount() > 0 )
+  {
+    return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
+  }
+  else
+  {
+    return new QgsProcessingFeatureSource( vl, context );
+  }
 }
 
 QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )

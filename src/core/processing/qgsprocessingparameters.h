@@ -29,6 +29,7 @@ class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
+class QgsFeatureSource;
 
 /**
  * \class QgsProcessingFeatureSink
@@ -339,6 +340,16 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition to a feature source.
+     *
+     * Sources will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context.
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    static QgsFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.

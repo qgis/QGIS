@@ -322,6 +322,17 @@ class QgsProcessingParameters
  :rtype: QgsFeatureSink
 %End
 
+    static QgsFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a feature source.
+
+ Sources will either be taken from ``context``'s active project, or loaded from external
+ sources and stored temporarily in the ``context``.
+
+ This function creates a new object and the caller takes responsibility for deleting the returned object.
+ :rtype: QgsFeatureSource
+%End
+
     static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a map layer.
