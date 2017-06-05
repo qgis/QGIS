@@ -1046,12 +1046,12 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsOracleProvider::uniqueValues( int index, int limit ) const
 {
-  if ( !mConnection )
-    return;
+  QSet<QVariant> uniqueValues;
 
-  uniqueValues.clear();
+  if ( !mConnection )
+    return uniqueValues;
 
   try
   {
@@ -1081,17 +1081,20 @@ void QgsOracleProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, 
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
                                  .arg( qry.lastQuery() ), tr( "Oracle" ) );
-      return;
+      return QSet<QVariant>();
     }
 
     while ( qry.next() )
     {
-      uniqueValues.append( qry.value( 0 ) );
+      uniqueValues << qry.value( 0 );
     }
   }
   catch ( OracleFieldNotFound )
   {
+    return QSet<QVariant>();
   }
+
+  return uniqueValues;
 }
 
 // Returns the maximum value of an attribute
