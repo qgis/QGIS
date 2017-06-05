@@ -116,7 +116,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
-                parameters[param.name()] = QgsProcessingFeatureSinkDefinition(self.mainWidget.outputWidgets[param.name()].getValue(), dest_project)
+                value = self.mainWidget.outputWidgets[param.name()].getValue()
+                value.destinationProject = dest_project
+                parameters[param.name()] = value
 
         return parameters
 
