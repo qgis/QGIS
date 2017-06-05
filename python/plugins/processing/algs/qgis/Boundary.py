@@ -82,13 +82,15 @@ class Boundary(QgisAlgorithm):
         if QgsWkbTypes.hasM(input_wkb):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
-        dest = self.parameterAsString(parameters, self.OUTPUT_LAYER, context)
-        (writer, dest_layer) = QgsProcessingUtils.createFeatureSink(dest, '', layer.fields(), output_wkb, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context, '',
+                                               layer.fields(), output_wkb, layer.crs())
 
         features = QgsProcessingUtils.getFeatures(layer, context)
         total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
@@ -99,7 +101,7 @@ class Boundary(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            sink.addFeature(output_feature)
             feedback.setProgress(int(current * total))
 
-        return {self.OUTPUT_LAYER: dest_layer}
+        return {self.OUTPUT_LAYER: dest_id}

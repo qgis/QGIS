@@ -78,12 +78,12 @@ QString QgsCentroidAlgorithm::shortHelpString() const
 
 QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
   if ( !layer )
     return QVariantMap();
 
-  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), dest ) );
 
   long count = QgsProcessingUtils::featureCount( layer, context );
   if ( count <= 0 )
@@ -110,7 +110,7 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
         QgsMessageLog::logMessage( QObject::tr( "Error calculating centroid for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    writer->addFeature( out );
+    sink->addFeature( out );
 
     feedback->setProgress( current * step );
     current++;
@@ -151,12 +151,12 @@ QString QgsBufferAlgorithm::shortHelpString() const
 
 QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
   if ( !layer )
     return QVariantMap();
 
-  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Polygon, layer->crs(), context ) );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, QString(), layer->fields(), QgsWkbTypes::Polygon, layer->crs(), dest ) );
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
@@ -199,7 +199,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    writer->addFeature( out );
+    sink->addFeature( out );
 
     feedback->setProgress( current * step );
     current++;
