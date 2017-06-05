@@ -196,7 +196,7 @@ def exportVectorLayer(layer, supported=None):
         output = getTempFilenameInTempFolder(basename)
     else:
         output = getTempFilename("shp")
-    useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.fields(),

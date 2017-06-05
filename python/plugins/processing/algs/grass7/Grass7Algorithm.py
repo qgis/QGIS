@@ -525,8 +525,9 @@ class Grass7Algorithm(GeoAlgorithm):
         else:
             layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
             if layer:
-                useSelection = \
-                    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+                #TODO
+                #useSelection = \
+                #    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
                 if useSelection and layer.selectedFeatureCount() != 0:
                     filename = dataobjects.exportVectorLayer(layer)
                 else:
