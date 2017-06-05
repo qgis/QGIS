@@ -30,6 +30,7 @@ class QgsProcessingContext;
 class QgsMapLayerStore;
 
 #include <QString>
+#include <QVariant>
 
 /**
  * \class QgsProcessingUtils
@@ -106,7 +107,10 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
      *
-     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     * The \a createOptions map can be used to specify additional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files. If 'fileEncoding' is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
      * temporary layer store.
@@ -116,11 +120,11 @@ class CORE_EXPORT QgsProcessingUtils
 #ifndef SIP_RUN
     static QgsFeatureSink *createFeatureSink(
       QString &destination,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) SIP_FACTORY;
+      const QVariantMap &createOptions = QVariantMap() ) SIP_FACTORY;
 #endif
 
     /**
@@ -128,9 +132,12 @@ class CORE_EXPORT QgsProcessingUtils
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.
      *
-     * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
+     * Sink parameters such as desired \a fields, \a geometryType and \a crs must be specified.
      *
-     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     * The \a createOptions map can be used to specify additional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files. If 'fileEncoding' is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
      * temporary layer store.
@@ -142,11 +149,11 @@ class CORE_EXPORT QgsProcessingUtils
     static void createFeatureSinkPython(
       QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK,
       QString &destination SIP_INOUT,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) SIP_PYNAME( createFeatureSink );
+      const QVariantMap &createOptions = QVariantMap() ) SIP_PYNAME( createFeatureSink );
 
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs

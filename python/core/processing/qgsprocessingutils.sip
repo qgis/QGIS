@@ -90,19 +90,22 @@ class QgsProcessingUtils
     static void createFeatureSinkPython(
       QgsFeatureSink **sink /Out,TransferBack/,
       QString &destination /In,Out/,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) /PyName=createFeatureSink/;
+      const QVariantMap &createOptions = QVariantMap() ) /PyName=createFeatureSink/;
 %Docstring
  Creates a feature sink ready for adding features. The ``destination`` specifies a destination
  URI for the resultant layer. It may be updated in place to reflect the actual destination
  for the layer.
 
- Sink parameters such as desired ``encoding``, ``fields``, ``geometryType`` and ``crs`` must be specified.
+ Sink parameters such as desired ``fields``, ``geometryType`` and ``crs`` must be specified.
 
- If the ``encoding`` is not specified, the default encoding from the ``context`` will be used.
+ The ``createOptions`` map can be used to specify additional sink creation options, which
+ are passed to the underlying provider when creating new layers. Known options also
+ include 'fileEncoding', which is used to specify a file encoding to use for created
+ files. If 'fileEncoding' is not specified, the default encoding from the ``context`` will be used.
 
  If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
  temporary layer store.

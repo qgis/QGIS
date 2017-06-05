@@ -262,14 +262,14 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions )
 {
-  QString destEncoding = encoding;
+  QVariantMap options = createOptions;
   QgsVectorLayer *layer = nullptr;
-  if ( destEncoding.isEmpty() )
+  if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
   {
     // no destination encoding specified, use default
-    destEncoding = context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding();
+    options.insert( QStringLiteral( "fileEncoding" ), context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding() );
   }
 
   if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
@@ -279,9 +279,6 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
   }
   else
   {
-    QMap<QString, QVariant> options;
-    options.insert( QStringLiteral( "fileEncoding" ), destEncoding );
-
     QString providerKey;
     QString uri;
     QString format;
@@ -292,7 +289,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, destEncoding, fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
+      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
           QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName );
       destination = finalFileName;
       return writer;
@@ -329,9 +326,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
   return new QgsProxyFeatureSink( layer->dataProvider() );
 }
 
-void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &options )
 {
-  *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context );
+  *sink = createFeatureSink( destination, context, fields, geometryType, crs, options );
 }
 
 

@@ -214,13 +214,13 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
 
   bool loadIntoProject = false;
-  QString encoding;
+  QVariantMap createOptions;
   if ( val.canConvert<QgsProcessingFeatureSink>() )
   {
     // input is a QgsProcessingFeatureSink - get extra properties from it
     QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( val );
     loadIntoProject = fromVar.loadIntoProject;
-    encoding = fromVar.fileEncoding;
+    createOptions = fromVar.createOptions;
     val = fromVar.sink;
   }
 
@@ -239,7 +239,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     dest = val.toString();
   }
 
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, encoding, fields, geometryType, crs, context ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions ) );
   destinationIdentifier = dest;
 
   if ( loadIntoProject )

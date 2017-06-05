@@ -106,9 +106,12 @@ class CORE_EXPORT QgsProcessingFeatureSink
     bool loadIntoProject;
 
     /**
-     * Encoding for destination file.
+     * Map of optional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files.
      */
-    QString fileEncoding;
+    QVariantMap createOptions;
 
 
     //! Allows direct construction of QVariants.
