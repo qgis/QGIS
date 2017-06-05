@@ -2343,6 +2343,16 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         ids = set([f.id() for f in source.getFeatures()])
         self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
 
+        # test that requesting subset of ids intersects this request with the selected ids
+        ids = set([f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFids([f1.id(), f2.id(), f5.id()]))])
+        self.assertEqual(ids, {f1.id(), f5.id()})
+
+        # test that requesting id works
+        ids = set([f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f1.id()))])
+        self.assertEqual(ids, {f1.id()})
+        ids = set([f.id() for f in source.getFeatures(QgsFeatureRequest().setFilterFid(f5.id()))])
+        self.assertEqual(ids, {f5.id()})
+
         # test that source has stored snapshot of selected features
         layer.selectByIds([f2.id(), f4.id()])
         self.assertEqual(source.featureCount(), 3)

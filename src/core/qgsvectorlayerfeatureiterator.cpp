@@ -1026,7 +1026,7 @@ QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFe
 {
   QgsFeatureRequest req( request );
 
-  if ( req.filterFids().isEmpty() && req.filterType() != QgsFeatureRequest::FilterFids )
+  if ( req.filterFids().isEmpty() && req.filterType() != QgsFeatureRequest::FilterFid )
   {
     req.setFilterFids( mSelectedFeatureIds );
   }
