@@ -884,7 +884,7 @@ void TestQgsProcessing::createIndex()
   // selected features check, but none selected
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
-  bool caught;
+  bool caught = false;
   try
   {
     index = QgsSpatialIndex( *source.get() );

@@ -2070,7 +2070,6 @@ Set the extent
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

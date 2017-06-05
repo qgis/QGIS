@@ -111,7 +111,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                         raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
             else:
                 open_after_run = False
-                if not  param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
+                if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
                         isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         open_after_run = True

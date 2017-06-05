@@ -8,6 +8,11 @@ ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
 PyQgsDBManagerGpkg
 
+# temporary during processing refactoring
+ProcessingParametersTest
+ProcessingModelerTest
+ProcessingGdalAlgorithmsTest
+
 # layout tests are run on separate build
 qgis_indentation
 qgis_spelling

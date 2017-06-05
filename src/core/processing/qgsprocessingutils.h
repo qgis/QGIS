@@ -192,6 +192,7 @@ class CORE_EXPORT QgsProcessingUtils
  * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
  * results according to the settings in a QgsProcessingContext.
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class QgsProcessingFeatureSource : public QgsFeatureSource
 {
