@@ -466,13 +466,12 @@ void QgsRelationReferenceWidget::init()
     {
       Q_FOREACH ( const QString &fieldName, mFilterFields )
       {
-        QVariantList uniqueValues;
         int idx = mReferencedLayer->fields().lookupField( fieldName );
         QComboBox *cb = new QComboBox();
         cb->setProperty( "Field", fieldName );
         cb->setProperty( "FieldAlias", mReferencedLayer->attributeDisplayName( idx ) );
         mFilterComboBoxes << cb;
-        mReferencedLayer->uniqueValues( idx, uniqueValues );
+        QVariantList uniqueValues = mReferencedLayer->uniqueValues( idx ).toList();
         cb->addItem( mReferencedLayer->attributeDisplayName( idx ) );
         QVariant nullValue = QgsApplication::nullRepresentation();
         cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields().at( idx ).type() ) );

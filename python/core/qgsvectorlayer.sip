@@ -1507,18 +1507,19 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  :rtype: QgsEditorWidgetSetup
 %End
 
-    void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 ) const;
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+
 %Docstring
  Calculates a list of unique values contained within an attribute in the layer. Note that
  in some circumstances when unsaved changes are present for the layer then the returned list
  may contain outdated values (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value will be included in the
  returned list).
- \param index column index for attribute
- \param uniqueValues out: result list
+ \param fieldIndex column index for attribute
  \param limit maximum number of values to return (or -1 if unlimited)
 .. seealso:: minimumValue()
 .. seealso:: maximumValue()
+ :rtype: set of QVariant
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,

@@ -607,9 +607,9 @@ QVariant QgsMssqlProvider::maximumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsMssqlProvider::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   // get the field name
   QgsField fld = mAttributeFields.at( index );
@@ -643,9 +643,10 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
     // read all features
     while ( query.next() )
     {
-      uniqueValues.append( query.value( 0 ) );
+      uniqueValues.insert( query.value( 0 ) );
     }
   }
+  return uniqueValues;
 }
 
 

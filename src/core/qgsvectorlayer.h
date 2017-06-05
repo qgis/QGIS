@@ -1423,13 +1423,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * may contain outdated values (for instance when the attribute value in a saved feature has
      * been changed inside the edit buffer then the previous saved value will be included in the
      * returned list).
-     * \param index column index for attribute
-     * \param uniqueValues out: result list
+     * \param fieldIndex column index for attribute
      * \param limit maximum number of values to return (or -1 if unlimited)
      * \see minimumValue()
      * \see maximumValue()
      */
-    void uniqueValues( int index, QList<QVariant> &uniqueValues SIP_OUT, int limit = -1 ) const;
+    QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset

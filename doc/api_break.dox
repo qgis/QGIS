@@ -2275,6 +2275,7 @@ clause fragment which must be evaluated by the provider in order to calculate th
 QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new method defaultValueClause
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
 - isSaveAndLoadStyleToDBSupported() was renamed to isSaveAndLoadStyleToDatabaseSupported()
+- The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
 
 
 QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}
@@ -2335,6 +2336,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addFeatures() no longer accepts a makeSelected boolean, and will not automatically select newly added features. If desired, features must be manually selected by calling selectByIds() after addFeatures()
 - annotationForm() and setAnnotationForm() have been removed. Form path is stored in individual QgsFormAnnotation objects.
 - setLayerTransparency, layerTransparency, and layerTransparencyChanged were removed. Use opacity, setOpacity and opacityChanged instead.
+- The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

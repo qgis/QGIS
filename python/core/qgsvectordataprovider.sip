@@ -156,16 +156,6 @@ Bitmask of all provider's editing capabilities
  :rtype: QVariant
 %End
 
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 ) const;
-%Docstring
- Return unique values of an attribute
- \param index the index of the attribute
- \param uniqueValues values reference to the list to fill
- \param limit maxmum number of the values to return
-
- Default implementation simply iterates the features
-%End
-
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = 0 ) const;
 %Docstring

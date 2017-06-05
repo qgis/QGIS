@@ -158,6 +158,7 @@ SET(QGIS_CORE_SRCS
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfeaturesink.cpp
+  qgsfeaturesource.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp

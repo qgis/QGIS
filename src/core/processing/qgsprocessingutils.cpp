@@ -274,9 +274,8 @@ QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fie
   if ( !useSelection )
   {
     // not using selection, so use provider optimised version
-    QList<QVariant> values;
-    layer->uniqueValues( fieldIndex, values );
-    return values;
+    QSet<QVariant> values = layer->uniqueValues( fieldIndex );
+    return values.toList();
   }
   else
   {

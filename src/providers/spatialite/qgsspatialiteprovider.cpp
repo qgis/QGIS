@@ -3641,17 +3641,17 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueValues, int limit ) const
+QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
 {
   sqlite3_stmt *stmt = nullptr;
   QString sql;
 
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   // get the field name
   if ( index < 0 || index >= mAttributeFields.count() )
   {
-    return; //invalid field
+    return uniqueValues; //invalid field
   }
   QgsField fld = mAttributeFields.at( index );
 
@@ -3674,7 +3674,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   {
     // some error occurred
     QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
-    return;
+    return uniqueValues;
   }
 
   while ( 1 )
@@ -3694,16 +3694,16 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
       switch ( sqlite3_column_type( stmt, 0 ) )
       {
         case SQLITE_INTEGER:
-          uniqueValues.append( QVariant( sqlite3_column_int( stmt, 0 ) ) );
+          uniqueValues.insert( QVariant( sqlite3_column_int( stmt, 0 ) ) );
           break;
         case SQLITE_FLOAT:
-          uniqueValues.append( QVariant( sqlite3_column_double( stmt, 0 ) ) );
+          uniqueValues.insert( QVariant( sqlite3_column_double( stmt, 0 ) ) );
           break;
         case SQLITE_TEXT:
-          uniqueValues.append( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
+          uniqueValues.insert( QVariant( QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) ) ) );
           break;
         default:
-          uniqueValues.append( QVariant( mAttributeFields.at( index ).type() ) );
+          uniqueValues.insert( QVariant( mAttributeFields.at( index ).type() ) );
           break;
       }
     }
@@ -3711,13 +3711,13 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
     {
       QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), tr( "SpatiaLite" ) );
       sqlite3_finalize( stmt );
-      return;
+      return uniqueValues;
     }
   }
 
   sqlite3_finalize( stmt );
 
-  return;
+  return uniqueValues;
 }
 
 QStringList QgsSpatiaLiteProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
