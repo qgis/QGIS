@@ -90,7 +90,7 @@ class BoxPlot(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, valuefieldname)
+        values = vector.values(layer, valuefieldname)
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 

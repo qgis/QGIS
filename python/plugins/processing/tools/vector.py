@@ -78,8 +78,8 @@ def resolveFieldIndex(layer, attr):
         return index
 
 
-def values(layer, context, *attributes):
-    """Returns the values in the attributes table of a vector layer,
+def values(source, *attributes):
+    """Returns the values in the attributes table of a feature source,
     for the passed fields.
 
     Field can be passed as field names or as zero-based field indices.
@@ -88,7 +88,6 @@ def values(layer, context, *attributes):
 
     It assummes fields are numeric or contain values that can be parsed
     to a number.
-    :param context:
     """
     ret = {}
     indices = []
@@ -101,7 +100,7 @@ def values(layer, context, *attributes):
     # use an optimised feature request
     request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
 
-    for feature in QgsProcessingUtils.getFeatures(layer, context, request):
+    for feature in source.getFeatures(request):
         for i in indices:
 
             # convert attribute value to number

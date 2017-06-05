@@ -82,7 +82,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, xfieldname, yfieldname)
+        values = vector.values(layer, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
                            mode='markers')]
