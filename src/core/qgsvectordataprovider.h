@@ -187,16 +187,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QVariant maximumValue( int index ) const;
 
     /**
-     * Return unique values of an attribute
-     * \param index the index of the attribute
-     * \param uniqueValues values reference to the list to fill
-     * \param limit maxmum number of the values to return
-     *
-     * Default implementation simply iterates the features
-     */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues SIP_OUT, int limit = -1 ) const;
-
-    /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
      * matching is done in a case-insensitive manner.
      * \param index the index of the attribute

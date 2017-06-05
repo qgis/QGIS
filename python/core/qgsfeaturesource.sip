@@ -69,6 +69,15 @@ class QgsFeatureSource
  :rtype: long
 %End
 
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
+%Docstring
+ Returns the set of unique values contained within the specified ``fieldIndex`` from this source.
+ If specified, the ``limit`` option can be used to limit the number of returned values.
+ The base class implementation uses a non-optimised approach of looping through
+ all features in the source.
+ :rtype: set of QVariant
+%End
+
 };
 
 

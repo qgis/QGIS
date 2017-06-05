@@ -3010,23 +3010,23 @@ QString QgsVectorLayer::defaultValueExpression( int index ) const
     return mFields.at( index ).defaultValueExpression();
 }
 
-void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
   if ( !mDataProvider )
   {
-    return;
+    return uniqueValues;
   }
 
   QgsFields::FieldOrigin origin = mFields.fieldOrigin( index );
   switch ( origin )
   {
     case QgsFields::OriginUnknown:
-      return;
+      return uniqueValues;
 
     case QgsFields::OriginProvider: //a provider field
     {
-      mDataProvider->uniqueValues( index, uniqueValues, limit );
+      uniqueValues = mDataProvider->uniqueValues( index, limit );
 
       if ( mEditBuffer )
       {
@@ -3070,7 +3070,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
         }
       }
 
-      return;
+      return uniqueValues;
     }
 
     case QgsFields::OriginEdit:
@@ -3080,8 +3080,8 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
            !mEditBuffer->mDeletedAttributeIds.contains( index ) &&
            mEditBuffer->mChangedAttributeValues.isEmpty() )
       {
-        mDataProvider->uniqueValues( index, uniqueValues, limit );
-        return;
+        uniqueValues = mDataProvider->uniqueValues( index, limit );
+        return uniqueValues;
       }
       FALLTHROUGH;
     //we need to go through each feature
@@ -3108,12 +3108,12 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
         }
       }
 
-      uniqueValues = val.values();
-      return;
+      return val.values().toSet();
     }
   }
 
   Q_ASSERT_X( false, "QgsVectorLayer::uniqueValues()", "Unknown source of the field!" );
+  return uniqueValues;
 }
 
 QStringList QgsVectorLayer::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const

@@ -310,9 +310,8 @@ void TestQgsVectorLayer::uniqueValues()
   QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
 
   //test with invalid field
-  QList<QVariant> values;
-  vLayer->uniqueValues( 1000, values );
-  QCOMPARE( values.length(), 0 );
+  QSet<QVariant> values = vLayer->uniqueValues( 1000 );
+  QCOMPARE( values.count(), 0 );
 }
 
 void TestQgsVectorLayer::minimumValue()

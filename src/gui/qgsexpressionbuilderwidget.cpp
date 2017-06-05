@@ -336,9 +336,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   if ( fieldIndex < 0 )
     return;
 
-  QList<QVariant> values;
   QStringList strValues;
-  mLayer->uniqueValues( fieldIndex, values, countLimit );
+  QSet<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit );
   Q_FOREACH ( const QVariant &value, values )
   {
     QString strValue;

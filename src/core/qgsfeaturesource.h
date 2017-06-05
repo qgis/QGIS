@@ -20,9 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsfeaturerequest.h"
 
 class QgsFeatureIterator;
-class QgsFeatureRequest;
 class QgsCoordinateReferenceSystem;
 class QgsFields;
 
@@ -78,6 +78,14 @@ class CORE_EXPORT QgsFeatureSource
      * if the feature count is unknown.
      */
     virtual long featureCount() const = 0;
+
+    /**
+     * Returns the set of unique values contained within the specified \a fieldIndex from this source.
+     * If specified, the \a limit option can be used to limit the number of returned values.
+     * The base class implementation uses a non-optimised approach of looping through
+     * all features in the source.
+     */
+    virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
 };
 
