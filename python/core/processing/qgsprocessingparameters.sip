@@ -64,8 +64,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterTableField;
     else if ( sipCpp->type() == "source" )
       sipType = sipType_QgsProcessingParameterFeatureSource;
-    else if ( sipCpp->type() == "vectorOut" )
-      sipType = sipType_QgsProcessingParameterOutputVectorLayer;
+    else if ( sipCpp->type() == "sink" )
+      sipType = sipType_QgsProcessingParameterFeatureSink;
 %End
   public:
 
@@ -1058,12 +1058,12 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
 };
 
 
-class QgsProcessingParameterOutputVectorLayer : QgsProcessingParameterDefinition
+class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
 {
 %Docstring
- A vector layer output for processing algorithms.
+ A feature sink output for processing algorithms.
 
- A parameter which represents the destination for a vector layer created by an algorithm.
+ A parameter which represents the destination feature sink for features created by an algorithm.
 .. versionadded:: 3.0
 %End
 
@@ -1072,10 +1072,10 @@ class QgsProcessingParameterOutputVectorLayer : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterOutputVectorLayer.
+ Constructor for QgsProcessingParameterFeatureSink.
 %End
 
     virtual QString type() const;
@@ -1085,14 +1085,14 @@ class QgsProcessingParameterOutputVectorLayer : QgsProcessingParameterDefinition
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
 %Docstring
- Returns the layer type for the output layer associated with the parameter.
+ Returns the layer type for sinks associated with the parameter.
 .. seealso:: setDataType()
  :rtype: QgsProcessingParameterDefinition.LayerType
 %End
 
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 %Docstring
- Sets the layer ``type`` for the output layer associated with the parameter.
+ Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
 %End
 

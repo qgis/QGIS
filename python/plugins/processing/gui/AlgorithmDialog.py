@@ -35,7 +35,7 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -118,7 +118,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         for param in self.alg.destinationParameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if isinstance(param, (OutputRaster, QgsProcessingParameterOutputVectorLayer, OutputTable)):
+            if isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
                 if self.mainWidget.checkBoxes[param.name()].isChecked():
                     layer_outputs.append(param.name())
 

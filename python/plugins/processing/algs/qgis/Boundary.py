@@ -32,7 +32,7 @@ from qgis.core import (QgsGeometry,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterOutputVectorLayer,
+                       QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputVectorLayer)
 
 from qgis.PyQt.QtGui import QIcon
@@ -54,7 +54,7 @@ class Boundary(QgisAlgorithm):
     def __init__(self):
         super().__init__()
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterOutputVectorLayer(self.OUTPUT_LAYER, self.tr('Boundary')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Boundary')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Boundaries")))
 
     def icon(self):
