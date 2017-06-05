@@ -428,17 +428,6 @@ class ParameterMultipleInput(ParameterDataObject):
                         return str(layer.source())
                 return s
 
-    def getFileFilter(self):
-        if self.datatype == dataobjects.TYPE_RASTER:
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif self.datatype == dataobjects.TYPE_FILE:
-            return self.tr('All files (*.*)', 'ParameterMultipleInput')
-        else:
-            exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterMultipleInput').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
     def dataType(self):
         if self.datatype == dataobjects.TYPE_VECTOR_POINT:
             return 'points'
@@ -626,12 +615,6 @@ class ParameterRaster(ParameterDataObject):
         else:
             self.exported = self.value
         return self.exported
-
-    def getFileFilter(self):
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
 
     def getAsScriptCode(self):
         param_type = ''
@@ -821,12 +804,6 @@ class ParameterTable(ParameterDataObject):
             self.exported = self.value
         return self.exported
 
-    def getFileFilter(self):
-        exts = ['csv', 'dbf']
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-
     def getAsScriptCode(self):
         param_type = ''
         if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
@@ -950,12 +927,6 @@ class ParameterVector(ParameterDataObject):
         else:
             self.exported = self.value
         return self.exported
-
-    def getFileFilter(self):
-        exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
 
     def dataType(self):
         return dataobjects.vectorDataType(self)

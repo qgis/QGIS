@@ -42,6 +42,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
 from processing.gui.PostgisTableSelector import PostgisTableSelector
+from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -187,7 +188,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText("spatialite:" + uri.uri())
 
     def selectFile(self):
-        fileFilter = self.parameter.getFileFilter(self.alg)
+        fileFilter = getFileFilter(self.parameter)
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
