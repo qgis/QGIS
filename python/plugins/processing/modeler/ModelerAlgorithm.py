@@ -279,7 +279,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         return QgsApplication.iconPath("processingModel.svg")
 
     def addParameter(self, param):
-        self.inputs[param.param.name] = param
+        self.inputs[param.param.name()] = param
 
     def updateParameter(self, param):
         self.inputs[param.name].param = param

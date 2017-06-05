@@ -58,7 +58,7 @@ from qgis.core import (QgsFields,
 from processing.tools import dataobjects
 
 
-def resolveFieldIndex(layer, attr):
+def resolveFieldIndex(source, attr):
     """This method takes an object and returns the index field it
     refers to in a layer. If the passed object is an integer, it
     returns the same integer value. If the passed value is not an
@@ -72,7 +72,7 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fields().lookupField(attr)
+        index = source.fields().lookupField(attr)
         if index == -1:
             raise ValueError('Wrong field name')
         return index
@@ -93,7 +93,7 @@ def values(source, *attributes):
     indices = []
     attr_keys = {}
     for attr in attributes:
-        index = resolveFieldIndex(layer, attr)
+        index = resolveFieldIndex(source, attr)
         indices.append(index)
         attr_keys[index] = attr
 
