@@ -37,7 +37,8 @@ from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsSettings,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingFeatureSinkDefinition)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
@@ -62,6 +63,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
         self.parameter = parameter
         self.alg = alg
+        settings = QgsSettings()
+        self.encoding = settings.value('/Processing/encoding', 'System')
 
         if hasattr(self.leText, 'setPlaceholderText'):
             if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
@@ -159,17 +162,15 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        encoding = settings.value('/Processing/encoding', 'System')
         fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save Spatialite'), path, fileFilter, encoding)
+            self, self.tr('Save Spatialite'), path, fileFilter, self.encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = str(fileDialog.encoding())
-            self.parameter.encoding = encoding
+            self.encoding = str(fileDialog.encoding())
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
@@ -179,7 +180,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                     fileName += ext.group(1)
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
-            settings.setValue('/Processing/encoding', encoding)
+            settings.setValue('/Processing/encoding', self.encoding)
 
             uri = QgsDataSourceUri()
             uri.setDatabase(fileName)
@@ -196,17 +197,15 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        encoding = settings.value('/Processing/encoding', 'System')
         fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save file'), path, fileFilter, encoding)
+            self, self.tr('Save file'), path, fileFilter, self.encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = str(fileDialog.encoding())
-            self.parameter.encoding = encoding
+            self.encoding = str(fileDialog.encoding())
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
@@ -217,7 +216,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText(fileName)
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
-            settings.setValue('/Processing/encoding', encoding)
+            settings.setValue('/Processing/encoding', self.encoding)
 
     def selectDirectory(self):
         lastDir = ''
@@ -226,6 +225,11 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.leText.setText(dirName)
 
     def getValue(self):
+        key = None
         if not self.leText.text():
-            return 'memory:'
-        return self.leText.text()
+            key = 'memory:'
+        else:
+            key = self.leText.text()
+        value = QgsProcessingFeatureSinkDefinition(key)
+        value.createOptions = {'fileEncoding': self.encoding}
+        return value
