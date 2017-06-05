@@ -51,7 +51,6 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     txtDriver->setText( settings.value( key + "/driver" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
 
-
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
@@ -131,7 +130,6 @@ void QgsDb2NewConnection::accept()
 
 void QgsDb2NewConnection::on_btnConnect_clicked()
 {
-  QgsDebugMsg( "DB2: TestDatabase; button clicked" );
   testConnection();
 }
 
@@ -149,7 +147,6 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 QgsDb2NewConnection::~QgsDb2NewConnection()
 {
-
 }
 
 bool QgsDb2NewConnection::testConnection()
@@ -172,7 +169,8 @@ bool QgsDb2NewConnection::testConnection()
 
   if ( !rc )
   {
-    db2ConnectStatus -> setText( errMsg );
+    bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
+                      QgsMessageBar::WARNING );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -181,18 +179,19 @@ bool QgsDb2NewConnection::testConnection()
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
-    db2ConnectStatus -> setText( QStringLiteral( "DB2 connection open succeeded" ) );
+    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
-    db2ConnectStatus -> setText( "DB2 connection failed : " + errMsg );
+    bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
+                      QgsMessageBar::WARNING );
     return false;
   }
 }
 
 void QgsDb2NewConnection::listDatabases()
 {
-  QgsDebugMsg( "DB2 New Connection Dialogue : list database" );
 }
