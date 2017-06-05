@@ -27,7 +27,7 @@ class QgsProcessingContext
 
     enum Flag
     {
-      UseSelectionIfPresent,
+      // UseSelectionIfPresent,
     };
     typedef QFlags<QgsProcessingContext::Flag> Flags;
 
