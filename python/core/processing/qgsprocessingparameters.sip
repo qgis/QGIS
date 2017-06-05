@@ -26,14 +26,19 @@ class QgsProcessingFeatureSourceDefinition
 %End
   public:
 
-    QgsProcessingFeatureSourceDefinition( const QVariant &source = QVariant(), bool selectedFeaturesOnly = false );
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false );
 %Docstring
- Constructor for QgsProcessingFeatureSourceDefinition.
+ Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
 %End
 
-    QVariant source;
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false );
 %Docstring
- Source definition. Usually set to a source layer's ID or file name.
+ Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+%End
+
+    QgsProperty source;
+%Docstring
+ Source definition. Usually a static property set to a source layer's ID or file name.
 %End
 
     bool selectedFeaturesOnly;
@@ -65,14 +70,19 @@ class QgsProcessingFeatureSink
 %End
   public:
 
-    QgsProcessingFeatureSink( const QVariant &sink = QVariant(), bool loadIntoProject = false );
+    QgsProcessingFeatureSink( const QString &sink = QString(), bool loadIntoProject = false );
 %Docstring
- Constructor for QgsProcessingFeatureSink.
+ Constructor for QgsProcessingFeatureSink, accepting a static string sink.
 %End
 
-    QVariant sink;
+    QgsProcessingFeatureSink( const QgsProperty &sink, bool loadIntoProject = false );
 %Docstring
- Sink definition. Usually set to the destination file name for the sink's layer.
+ Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+%End
+
+    QgsProperty sink;
+%Docstring
+ Sink definition. Usually a static property set to the destination file name for the sink's layer.
 %End
 
     bool loadIntoProject;
