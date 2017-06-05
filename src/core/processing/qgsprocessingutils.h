@@ -100,14 +100,6 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
-     * Returns a list of unique values contained in a single field in a \a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return unique values from selected features in the layer.
-     */
-    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
-
-    /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.
