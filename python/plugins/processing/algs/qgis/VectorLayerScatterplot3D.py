@@ -89,7 +89,7 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, xfieldname, yfieldname, zfieldname)
+        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
 
         data = [go.Scatter3d(
                 x=values[xfieldname],

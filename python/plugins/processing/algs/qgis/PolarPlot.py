@@ -78,7 +78,7 @@ class PolarPlot(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, valuefieldname)
+        values = vector.values(layer, valuefieldname)
 
         data = [go.Area(r=values[valuefieldname],
                         t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]

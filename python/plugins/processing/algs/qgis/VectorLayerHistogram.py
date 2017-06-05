@@ -79,7 +79,7 @@ class VectorLayerHistogram(QgisAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, fieldname)
+        values = vector.values(layer, fieldname)
 
         data = [go.Histogram(x=values[fieldname],
                              nbinsx=bins)]

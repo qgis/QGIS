@@ -74,10 +74,6 @@ def createContext():
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
 
-    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-    if use_selection:
-        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
-
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
