@@ -36,7 +36,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -157,7 +157,7 @@ class ParametersPanel(BASE, WIDGET):
             widget = DestinationSelectionPanel(output, self.alg)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
-            if isinstance(output, (OutputRaster, QgsProcessingParameterOutputVectorLayer, OutputTable)):
+            if isinstance(output, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
                 check = QCheckBox()
                 check.setText(self.tr('Open output file after running algorithm'))
                 check.setChecked(True)

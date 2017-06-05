@@ -66,7 +66,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
 QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
 }
 
@@ -136,7 +136,7 @@ QgsBufferAlgorithm::QgsBufferAlgorithm()
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
-  addParameter( new QgsProcessingParameterOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
 }
 

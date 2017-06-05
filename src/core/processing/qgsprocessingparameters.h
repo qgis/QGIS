@@ -86,8 +86,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterTableField;
     else if ( sipCpp->type() == "source" )
       sipType = sipType_QgsProcessingParameterFeatureSource;
-    else if ( sipCpp->type() == "vectorOut" )
-      sipType = sipType_QgsProcessingParameterOutputVectorLayer;
+    else if ( sipCpp->type() == "sink" )
+      sipType = sipType_QgsProcessingParameterFeatureSink;
     SIP_END
 #endif
 
@@ -1047,35 +1047,35 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
 
 
 /**
- * \class QgsProcessingParameterOutputVectorLayer
+ * \class QgsProcessingParameterFeatureSink
  * \ingroup core
- * A vector layer output for processing algorithms.
+ * A feature sink output for processing algorithms.
  *
- * A parameter which represents the destination for a vector layer created by an algorithm.
+ * A parameter which represents the destination feature sink for features created by an algorithm.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterOutputVectorLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParameterDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingParameterOutputVectorLayer.
+     * Constructor for QgsProcessingParameterFeatureSink.
      */
-    QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 
-    QString type() const override { return QStringLiteral( "vectorOut" ); }
+    QString type() const override { return QStringLiteral( "sink" ); }
     bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
-     * Returns the layer type for the output layer associated with the parameter.
+     * Returns the layer type for sinks associated with the parameter.
      * \see setDataType()
      */
     QgsProcessingParameterDefinition::LayerType dataType() const;
 
     /**
-     * Sets the layer \a type for the output layer associated with the parameter.
+     * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
     void setDataType( QgsProcessingParameterDefinition::LayerType type );

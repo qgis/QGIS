@@ -91,10 +91,10 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
       //destination styleparameters
       QVERIFY( destinationParameterDefinitions().isEmpty() );
-      QgsProcessingParameterOutputVectorLayer *p5 = new QgsProcessingParameterOutputVectorLayer( "p5" );
+      QgsProcessingParameterFeatureSink *p5 = new QgsProcessingParameterFeatureSink( "p5" );
       QVERIFY( addParameter( p5 ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 );
-      QgsProcessingParameterOutputVectorLayer *p6 = new QgsProcessingParameterOutputVectorLayer( "p6" );
+      QgsProcessingParameterFeatureSink *p6 = new QgsProcessingParameterFeatureSink( "p6" );
       QVERIFY( addParameter( p6 ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
     }
@@ -2186,7 +2186,7 @@ void TestQgsProcessing::parameterOutputVectorLayer()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterOutputVectorLayer > def( new QgsProcessingParameterOutputVectorLayer( "non_optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false ) );
+  std::unique_ptr< QgsProcessingParameterFeatureSink > def( new QgsProcessingParameterFeatureSink( "non_optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -2199,7 +2199,7 @@ void TestQgsProcessing::parameterOutputVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
 
   // optional
-  def.reset( new QgsProcessingParameterOutputVectorLayer( "optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString(), true ) );
+  def.reset( new QgsProcessingParameterFeatureSink( "optional", QString(), QgsProcessingParameterDefinition::TypeVectorAny, QString(), true ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );

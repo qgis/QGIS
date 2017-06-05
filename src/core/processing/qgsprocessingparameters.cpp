@@ -1220,14 +1220,14 @@ void QgsProcessingParameterFeatureSource::setDataTypes( const QList<int> &types 
 }
 
 
-QgsProcessingParameterOutputVectorLayer::QgsProcessingParameterOutputVectorLayer( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
 }
 
-bool QgsProcessingParameterOutputVectorLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
     return mFlags & FlagOptional;
@@ -1246,12 +1246,12 @@ bool QgsProcessingParameterOutputVectorLayer::checkValueIsAcceptable( const QVar
   return true;
 }
 
-QgsProcessingParameterDefinition::LayerType QgsProcessingParameterOutputVectorLayer::dataType() const
+QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
 {
   return mDataType;
 }
 
-void QgsProcessingParameterOutputVectorLayer::setDataType( QgsProcessingParameterDefinition::LayerType type )
+void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefinition::LayerType type )
 {
   mDataType = type;
 }
