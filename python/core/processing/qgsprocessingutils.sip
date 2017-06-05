@@ -86,15 +86,6 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
-    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
-%Docstring
- Returns a list of unique values contained in a single field in a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return unique values from selected features in the layer.
- :rtype: list of QVariant
-%End
-
 
     static void createFeatureSinkPython(
       QgsFeatureSink **sink /Out,TransferBack/,

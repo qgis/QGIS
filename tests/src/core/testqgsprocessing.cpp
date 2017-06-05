@@ -789,20 +789,27 @@ void TestQgsProcessing::uniqueValues()
   QgsProcessingContext context;
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
 
+  QgsProject p;
+  p.addMapLayer( layer );
+  context.setProject( &p );
+
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "string" ), layer->id() );
+
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+
   // some bad checks
-  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 0, context ).isEmpty() );
-  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, -1, context ).isEmpty() );
-  QVERIFY( QgsProcessingUtils::uniqueValues( nullptr, 10001, context ).isEmpty() );
-  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
-  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
+  QVERIFY( source->uniqueValues( -1 ).isEmpty() );
+  QVERIFY( source->uniqueValues( 10001 ).isEmpty() );
 
   // good checks
-  QList< QVariant > vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  QSet< QVariant > vals = source->uniqueValues( 0 );
   QCOMPARE( vals.count(), 3 );
   QVERIFY( vals.contains( 1 ) );
   QVERIFY( vals.contains( 2 ) );
   QVERIFY( vals.contains( 3 ) );
-  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  vals = source->uniqueValues( 1 );
   QCOMPARE( vals.count(), 3 );
   QVERIFY( vals.contains( QString( "A" ) ) );
   QVERIFY( vals.contains( QString( "B" ) ) );
@@ -811,12 +818,13 @@ void TestQgsProcessing::uniqueValues()
   //using only selected features
   layer->selectByIds( QgsFeatureIds() << 1 << 2 << 4 );
   // but not using selection yet...
-  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  vals = source->uniqueValues( 0 );
   QCOMPARE( vals.count(), 3 );
   QVERIFY( vals.contains( 1 ) );
   QVERIFY( vals.contains( 2 ) );
   QVERIFY( vals.contains( 3 ) );
-  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  vals = source->uniqueValues( 1 );
   QCOMPARE( vals.count(), 3 );
   QVERIFY( vals.contains( QString( "A" ) ) );
   QVERIFY( vals.contains( QString( "B" ) ) );
@@ -824,18 +832,17 @@ void TestQgsProcessing::uniqueValues()
 
   // selection and using selection
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
-  QVERIFY( QgsProcessingUtils::uniqueValues( layer, -1, context ).isEmpty() );
-  QVERIFY( QgsProcessingUtils::uniqueValues( layer, 10001, context ).isEmpty() );
-  vals = QgsProcessingUtils::uniqueValues( layer, 0, context );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  QVERIFY( source->uniqueValues( -1 ).isEmpty() );
+  QVERIFY( source->uniqueValues( 10001 ).isEmpty() );
+  vals = source->uniqueValues( 0 );
   QCOMPARE( vals.count(), 2 );
   QVERIFY( vals.contains( 1 ) );
   QVERIFY( vals.contains( 2 ) );
-  vals = QgsProcessingUtils::uniqueValues( layer, 1, context );
+  vals = source->uniqueValues( 1 );
   QCOMPARE( vals.count(), 2 );
   QVERIFY( vals.contains( QString( "A" ) ) );
   QVERIFY( vals.contains( QString( "B" ) ) );
-
-  delete layer;
 }
 
 void TestQgsProcessing::createIndex()

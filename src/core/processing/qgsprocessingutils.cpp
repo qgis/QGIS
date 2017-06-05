@@ -226,36 +226,6 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
-
-QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )
-{
-  if ( !layer )
-    return QList<QVariant>();
-
-  if ( fieldIndex < 0 || fieldIndex >= layer->fields().count() )
-    return QList<QVariant>();
-
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( !useSelection )
-  {
-    // not using selection, so use provider optimised version
-    QSet<QVariant> values = layer->uniqueValues( fieldIndex );
-    return values.toList();
-  }
-  else
-  {
-    // using selection, so we have to iterate through selected features
-    QSet<QVariant> values;
-    QgsFeature f;
-    QgsFeatureIterator it = layer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << fieldIndex ).setFlags( QgsFeatureRequest::NoGeometry ) );
-    while ( it.nextFeature( f ) )
-    {
-      values.insert( f.attribute( fieldIndex ) );
-    }
-    return values.toList();
-  }
-}
-
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
   QRegularExpression splitRx( "^(.*?):(.*)$" );
