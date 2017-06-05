@@ -31,6 +31,42 @@ class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsFeatureSource;
 
+
+/**
+ * \class QgsProcessingFeatureSourceDefinition
+ * \ingroup core
+ *
+ * Encapsulates settings relating to a feature source input to a processing algorithm.
+ *
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsProcessingFeatureSourceDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSourceDefinition.
+     */
+    QgsProcessingFeatureSourceDefinition( const QVariant &source = QVariant(), bool selectedFeaturesOnly = false )
+      : source( source )
+      , selectedFeaturesOnly( selectedFeaturesOnly )
+    {}
+
+    /**
+     * Source definition. Usually set to a source layer's ID or file name.
+     */
+    QVariant source;
+
+    /**
+     * True if only selected features in the source should be used by algorithms.
+     */
+    bool selectedFeaturesOnly;
+
+};
+
+Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
+
 /**
  * \class QgsProcessingFeatureSink
  * \ingroup core
@@ -70,6 +106,7 @@ class CORE_EXPORT QgsProcessingFeatureSink
 };
 
 Q_DECLARE_METATYPE( QgsProcessingFeatureSink )
+
 
 
 

@@ -11,6 +11,40 @@
 
 
 
+
+class QgsProcessingFeatureSourceDefinition
+{
+%Docstring
+
+ Encapsulates settings relating to a feature source input to a processing algorithm.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingFeatureSourceDefinition( const QVariant &source = QVariant(), bool selectedFeaturesOnly = false );
+%Docstring
+ Constructor for QgsProcessingFeatureSourceDefinition.
+%End
+
+    QVariant source;
+%Docstring
+ Source definition. Usually set to a source layer's ID or file name.
+%End
+
+    bool selectedFeaturesOnly;
+%Docstring
+ True if only selected features in the source should be used by algorithms.
+%End
+
+};
+
+
+
 class QgsProcessingFeatureSink
 {
 %Docstring
@@ -46,6 +80,7 @@ class QgsProcessingFeatureSink
 %End
 
 };
+
 
 
 
