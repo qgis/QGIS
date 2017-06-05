@@ -56,7 +56,7 @@ Allows direct construction of QVariants.
 
 
 
-class QgsProcessingFeatureSink
+class QgsProcessingFeatureSinkDefinition
 {
 %Docstring
 
@@ -70,16 +70,16 @@ class QgsProcessingFeatureSink
 %End
   public:
 
-    QgsProcessingFeatureSink( const QString &sink = QString(), QgsProject *destinationProject = 0 );
+    QgsProcessingFeatureSinkDefinition( const QString &sink = QString(), QgsProject *destinationProject = 0 );
 %Docstring
- Constructor for QgsProcessingFeatureSink, accepting a static string sink.
+ Constructor for QgsProcessingFeatureSinkDefinition, accepting a static string sink.
  The ``destinationProject`` parameter can be set to a QgsProject instance in which
  to automatically load the resulting sink after completing processing.
 %End
 
-    QgsProcessingFeatureSink( const QgsProperty &sink, QgsProject *destinationProject = 0 );
+    QgsProcessingFeatureSinkDefinition( const QgsProperty &sink, QgsProject *destinationProject = 0 );
 %Docstring
- Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+ Constructor for QgsProcessingFeatureSinkDefinition, accepting a QgsProperty sink.
  The ``destinationProject`` parameter can be set to a QgsProject instance in which
  to automatically load the resulting sink after completing processing.
 %End

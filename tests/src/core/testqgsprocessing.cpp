@@ -1147,9 +1147,9 @@ void TestQgsProcessing::parameters()
   QCOMPARE( layer->wkbType(), wkbType );
   QCOMPARE( layer->crs(), crs );
 
-  // QgsProcessingFeatureSink as parameter
+  // QgsProcessingFeatureSinkDefinition as parameter
   QgsProject p;
-  QgsProcessingFeatureSink fs( QStringLiteral( "test.shp" ) );
+  QgsProcessingFeatureSinkDefinition fs( QStringLiteral( "test.shp" ) );
   fs.destinationProject = &p;
   QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
   params.insert( QStringLiteral( "fs" ), QVariant::fromValue( fs ) );
@@ -2270,7 +2270,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
-  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSink( "layer1231123" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSinkDefinition( "layer1231123" ) ) );
 
   // should be OK with or without context - it's an output layer!
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
@@ -2285,7 +2285,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
-  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSink( "layer1231123" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSinkDefinition( "layer1231123" ) ) );
 }
 
 void TestQgsProcessing::checkParamValues()
@@ -2378,7 +2378,7 @@ void TestQgsProcessing::processingFeatureSink()
 {
   QString sinkString( QStringLiteral( "test.shp" ) );
   QgsProject p;
-  QgsProcessingFeatureSink fs( sinkString, &p );
+  QgsProcessingFeatureSinkDefinition fs( sinkString, &p );
   QCOMPARE( fs.sink.staticValue().toString(), sinkString );
   QCOMPARE( fs.destinationProject, &p );
 
@@ -2386,7 +2386,7 @@ void TestQgsProcessing::processingFeatureSink()
   QVariant fsInVariant = QVariant::fromValue( fs );
   QVERIFY( fsInVariant.isValid() );
 
-  QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( fsInVariant );
+  QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( fsInVariant );
   QCOMPARE( fromVar.sink.staticValue().toString(), sinkString );
   QCOMPARE( fromVar.destinationProject, &p );
 
@@ -2397,7 +2397,7 @@ void TestQgsProcessing::processingFeatureSink()
   // first using static string definition
   QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
   QVariantMap params;
-  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( "memory:test", nullptr ) );
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSinkDefinition( "memory:test", nullptr ) );
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), context, dest ) );
   QVERIFY( sink.get() );
@@ -2406,7 +2406,7 @@ void TestQgsProcessing::processingFeatureSink()
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
 
   // next using property based definition
-  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSink( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), nullptr ) );
+  params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSinkDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), nullptr ) );
   sink.reset( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer2 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );

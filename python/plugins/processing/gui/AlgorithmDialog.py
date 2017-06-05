@@ -35,7 +35,7 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingFeatureSink,
+                       QgsProcessingFeatureSinkDefinition,
                        QgsProcessingParameterFeatureSink)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -116,7 +116,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
-                parameters[param.name()] = QgsProcessingFeatureSink(self.mainWidget.outputWidgets[param.name()].getValue(), dest_project)
+                parameters[param.name()] = QgsProcessingFeatureSinkDefinition(self.mainWidget.outputWidgets[param.name()].getValue(), dest_project)
 
         return parameters
 

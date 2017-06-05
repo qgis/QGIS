@@ -83,7 +83,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
 
 /**
- * \class QgsProcessingFeatureSink
+ * \class QgsProcessingFeatureSinkDefinition
  * \ingroup core
  *
  * Encapsulates settings relating to a feature sink input to a processing algorithm.
@@ -91,26 +91,26 @@ Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
  * \since QGIS 3.0
  */
 
-class CORE_EXPORT QgsProcessingFeatureSink
+class CORE_EXPORT QgsProcessingFeatureSinkDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSink, accepting a static string sink.
+     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a static string sink.
      * The \a destinationProject parameter can be set to a QgsProject instance in which
      * to automatically load the resulting sink after completing processing.
      */
-    QgsProcessingFeatureSink( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
+    QgsProcessingFeatureSinkDefinition( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
       : sink( QgsProperty::fromValue( sink ) )
       , destinationProject( destinationProject )
     {}
 
     /**
-     * Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a QgsProperty sink.
      * The \a destinationProject parameter can be set to a QgsProject instance in which
      * to automatically load the resulting sink after completing processing.
      */
-    QgsProcessingFeatureSink( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
+    QgsProcessingFeatureSinkDefinition( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
       : sink( sink )
       , destinationProject( destinationProject )
     {}
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsProcessingFeatureSink
 
 };
 
-Q_DECLARE_METATYPE( QgsProcessingFeatureSink )
+Q_DECLARE_METATYPE( QgsProcessingFeatureSinkDefinition )
 
 
 
