@@ -59,7 +59,8 @@ from qgis.core import (
     QgsProcessingParameterExpression,
     QgsProcessingParameterTable,
     QgsProcessingParameterTableField,
-    QgsProcessingParameterFeatureSource)
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingFeatureSourceDefinition)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -67,6 +68,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QFileDialog,
     QHBoxLayout,
+    QVBoxLayout,
     QLineEdit,
     QPlainTextEdit,
     QToolButton,
@@ -760,7 +762,18 @@ class VectorWidgetWrapper(WidgetWrapper):
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
 
-            widget.setLayout(layout)
+            vl = QVBoxLayout()
+            vl.setMargin(0)
+            vl.setContentsMargins(0, 0, 0, 0)
+            vl.setSpacing(2)
+            vl.addLayout(layout)
+
+            self.use_selection_checkbox = QCheckBox(self.tr('Selected features only'))
+            self.use_selection_checkbox.setChecked(False)
+            self.use_selection_checkbox.setEnabled(False)
+            vl.addWidget(self.use_selection_checkbox)
+
+            widget.setLayout(vl)
 
             filters = QgsMapLayerProxyModel.Filters()
             if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes():
@@ -775,6 +788,8 @@ class VectorWidgetWrapper(WidgetWrapper):
             try:
                 if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
                     self.combo.setLayer(iface.activeLayer())
+                    self.use_selection_checkbox.setEnabled(iface.activeLayer().selectedFeatureCount() > 0)
+
             except:
                 pass
 
@@ -787,8 +802,7 @@ class VectorWidgetWrapper(WidgetWrapper):
                 self.combo.setFilters(filters)
             self.combo.setExcludedProviders(['grass'])
 
-            self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            self.combo.layerChanged.connect(self.layerChanged)
             return widget
 
         elif self.dialogType == DIALOG_BATCH:
@@ -818,6 +832,14 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(layout)
             return widget
 
+    def layerChanged(self, layer):
+        if not layer or layer.type() != QgsMapLayer.VectorLayer or layer.selectedFeatureCount() == 0:
+            self.use_selection_checkbox.setChecked(False)
+            self.use_selection_checkbox.setEnabled(False)
+        else:
+            self.use_selection_checkbox.setEnabled(True)
+        self.widgetValueHasChanged.emit(self)
+
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
         if filename:
@@ -840,14 +862,15 @@ class VectorWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
+            use_selected_features = self.use_selection_checkbox.isChecked()
             try:
                 layer = self.combo.currentLayer()
                 if layer:
-                    return layer.id()
+                    return QgsProcessingFeatureSourceDefinition(layer.id(), use_selected_features)
                 else:
-                    return self.combo.currentText()
+                    return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
             except:
-                return self.combo.currentText()
+                return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.value()
         else:
