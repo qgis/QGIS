@@ -243,7 +243,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   destinationIdentifier = dest;
 
   if ( loadIntoProject )
-    context.addLayerToLoadOnCompletion( destinationIdentifier );
+    context.addLayerToLoadOnCompletion( destinationIdentifier, definition ? definition->description() : QString() );
 
   return sink.release();
 }
