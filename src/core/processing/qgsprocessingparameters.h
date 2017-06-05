@@ -30,6 +30,47 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 
+/**
+ * \class QgsProcessingFeatureSink
+ * \ingroup core
+ *
+ * Encapsulates settings relating to a feature sink input to a processing algorithm.
+ *
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsProcessingFeatureSink
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSink.
+     */
+    QgsProcessingFeatureSink( const QVariant &sink = QVariant(), bool loadIntoProject = false )
+      : sink( sink )
+      , loadIntoProject( loadIntoProject )
+    {}
+
+    /**
+     * Sink definition. Usually set to the destination file name for the sink's layer.
+     */
+    QVariant sink;
+
+    /**
+     * True if sink should be loaded into the current project when the algorithm completes.
+     */
+    bool loadIntoProject;
+
+    /**
+     * Encoding for destination file.
+     */
+    QString fileEncoding;
+
+};
+
+Q_DECLARE_METATYPE( QgsProcessingFeatureSink )
+
+
 
 //
 // Parameter definitions
@@ -285,7 +326,7 @@ class CORE_EXPORT QgsProcessingParameters
     /**
      * Evaluates the parameter with matching \a definition to a feature sink.
      *
-     * The \a encoding, \a fields, \a geometryType and \a crs parameters dictate the properties
+     * The \a fields, \a geometryType and \a crs parameters dictate the properties
      * of the resulting feature sink.
      *
      * Sinks will either be taken from \a context's active project, or created from external
@@ -296,7 +337,7 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
-                                            const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT ) SIP_FACTORY;
 
     /**

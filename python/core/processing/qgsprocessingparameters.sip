@@ -11,6 +11,45 @@
 
 
 
+class QgsProcessingFeatureSink
+{
+%Docstring
+
+ Encapsulates settings relating to a feature sink input to a processing algorithm.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingFeatureSink( const QVariant &sink = QVariant(), bool loadIntoProject = false );
+%Docstring
+ Constructor for QgsProcessingFeatureSink.
+%End
+
+    QVariant sink;
+%Docstring
+ Sink definition. Usually set to the destination file name for the sink's layer.
+%End
+
+    bool loadIntoProject;
+%Docstring
+ True if sink should be loaded into the current project when the algorithm completes.
+%End
+
+    QString fileEncoding;
+%Docstring
+ Encoding for destination file.
+%End
+
+};
+
+
+
+
 
 
 class QgsProcessingParameterDefinition
@@ -266,12 +305,12 @@ class QgsProcessingParameters
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
-                                            const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
                                             QgsProcessingContext &context, QString &destinationIdentifier /Out/ ) /Factory/;
 %Docstring
  Evaluates the parameter with matching ``definition`` to a feature sink.
 
- The ``encoding``, ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
+ The ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
  of the resulting feature sink.
 
  Sinks will either be taken from ``context``'s active project, or created from external

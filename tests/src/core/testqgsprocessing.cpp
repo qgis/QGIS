@@ -217,6 +217,7 @@ class TestQgsProcessing: public QObject
     void parameterOutputVectorLayer();
     void checkParamValues();
     void combineLayerExtent();
+    void processingFeatureSink();
 
   private:
 
@@ -1062,15 +1063,15 @@ void TestQgsProcessing::parameters()
   // make sure layer was loaded
   QVERIFY( !context.temporaryLayerStore()->mapLayers().isEmpty() );
 
-  // as sink
-  QString encoding;
+  // parameters as sinks
+
   QgsWkbTypes::Type wkbType = QgsWkbTypes::PolygonM;
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( "epsg:3111" );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:3111" ) );
   QString destId;
   def->setName( QStringLiteral( "string" ) );
   params.insert( QStringLiteral( "string" ), QStringLiteral( "memory:mem" ) );
   std::unique_ptr< QgsFeatureSink > sink;
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, encoding, fields, wkbType, crs, context, destId ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
@@ -1083,8 +1084,8 @@ void TestQgsProcessing::parameters()
   // property defined sink destination
   params.insert( QStringLiteral( "prop" ), QgsProperty::fromExpression( "'memory:mem2'" ) );
   def->setName( QStringLiteral( "prop" ) );
-  crs = QgsCoordinateReferenceSystem( "epsg:3113" );
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, encoding, fields, wkbType, crs, context, destId ) );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:3113" ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
@@ -1093,6 +1094,27 @@ void TestQgsProcessing::parameters()
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "a_field" ) );
   QCOMPARE( layer->wkbType(), wkbType );
   QCOMPARE( layer->crs(), crs );
+
+  // QgsProcessingFeatureSink as parameter
+  QgsProcessingFeatureSink fs( QStringLiteral( "test.shp" ) );
+  fs.loadIntoProject = true;
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
+  params.insert( QStringLiteral( "fs" ), QVariant::fromValue( fs ) );
+  def->setName( QStringLiteral( "fs" ) );
+  crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:28356" ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
+  QVERIFY( sink.get() );
+  QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( sink.get() );
+  QVERIFY( writer );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
+  QVERIFY( layer );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), wkbType );
+  QCOMPARE( layer->crs(), crs );
+
+  // make sure layer was automatically added to list to load on completion
+  QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
+  QCOMPARE( context.layersToLoadOnCompletion().at( 0 ), destId );
 
   delete def;
 }
@@ -2247,6 +2269,22 @@ void TestQgsProcessing::combineLayerExtent()
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 3536664, 10 );
+}
+
+void TestQgsProcessing::processingFeatureSink()
+{
+  QVariant sink( QStringLiteral( "test.shp" ) );
+  QgsProcessingFeatureSink fs( sink, true );
+  QCOMPARE( fs.sink, sink );
+  QVERIFY( fs.loadIntoProject );
+
+  // test storing QgsProcessingFeatureSink in variant and retrieving
+  QVariant fsInVariant = QVariant::fromValue( fs );
+  QVERIFY( fsInVariant.isValid() );
+
+  QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( fsInVariant );
+  QCOMPARE( fromVar.sink, sink );
+  QVERIFY( fromVar.loadIntoProject );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

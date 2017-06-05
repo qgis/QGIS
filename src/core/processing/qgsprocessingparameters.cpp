@@ -202,13 +202,47 @@ bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefin
     return def.toBool();
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &encoding, const QgsFields &fields,
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields,
     QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
     QgsProcessingContext &context, QString &destinationIdentifier )
 {
-  QString dest = parameterAsString( definition, parameters, context );
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+  }
+
+  bool loadIntoProject = false;
+  QString encoding;
+  if ( val.canConvert<QgsProcessingFeatureSink>() )
+  {
+    // input is a QgsProcessingFeatureSink - get extra properties from it
+    QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( val );
+    loadIntoProject = fromVar.loadIntoProject;
+    encoding = fromVar.fileEncoding;
+    val = fromVar.sink;
+  }
+
+  QString dest;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    dest = definition->defaultValue().toString();
+  }
+  else
+  {
+    dest = val.toString();
+  }
+
   std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, encoding, fields, geometryType, crs, context ) );
   destinationIdentifier = dest;
+
+  if ( loadIntoProject )
+    context.addLayerToLoadOnCompletion( destinationIdentifier );
 
   return sink.release();
 }
