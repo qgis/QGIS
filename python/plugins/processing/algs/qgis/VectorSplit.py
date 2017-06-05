@@ -87,7 +87,7 @@ class VectorSplit(QgisAlgorithm):
         for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
-            writer, dest = QgsProcessingUtils.createFeatureSink(fName, None, fields, geomType, crs, context)
+            writer, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
             for f in QgsProcessingUtils.getFeatures(layer, context):
                 if f[fieldName] == i:
                     writer.addFeature(f)
