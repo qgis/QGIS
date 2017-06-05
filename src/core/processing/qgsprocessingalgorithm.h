@@ -29,7 +29,8 @@
 class QgsProcessingProvider;
 class QgsProcessingContext;
 class QgsProcessingFeedback;
-class QWidget;
+class QgsFeatureSink;
+
 
 /**
  * \class QgsProcessingAlgorithm
@@ -296,6 +297,24 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a static boolean value.
      */
     bool parameterAsBool( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a feature sink.
+     *
+     * Sinks will either be taken from \a context's active project, or created from external
+     * providers and stored temporarily in the \a context.
+     *
+     * The \a encoding, \a fields, \a geometryType and \a crs parameters dictate the properties
+     * of the resulting feature sink.
+     *
+     * The \a destinationIdentifier argument will be set to a string which can be used to retrieve the layer corresponding
+     * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                     const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                     QString &destinationIdentifier SIP_OUT ) const SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.

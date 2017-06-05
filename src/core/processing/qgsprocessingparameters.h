@@ -28,6 +28,8 @@
 class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsFeatureSink;
+
 
 //
 // Parameter definitions
@@ -279,6 +281,23 @@ class CORE_EXPORT QgsProcessingParameters
      * Evaluates the parameter with matching \a definition to a static boolean value.
      */
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a feature sink.
+     *
+     * The \a encoding, \a fields, \a geometryType and \a crs parameters dictate the properties
+     * of the resulting feature sink.
+     *
+     * Sinks will either be taken from \a context's active project, or created from external
+     * providers and stored temporarily in the \a context. The \a destinationIdentifier
+     * argument will be set to a string which can be used to retrieve the layer corresponding
+     * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+                                            const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.

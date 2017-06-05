@@ -202,6 +202,17 @@ bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefin
     return def.toBool();
 }
 
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &encoding, const QgsFields &fields,
+    QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+    QgsProcessingContext &context, QString &destinationIdentifier )
+{
+  QString dest = parameterAsString( definition, parameters, context );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, encoding, fields, geometryType, crs, context ) );
+  destinationIdentifier = dest;
+
+  return sink.release();
+}
+
 QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
@@ -290,10 +301,10 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   return QgsRectangle();
 }
 
-QgsPoint QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
-    return QgsPoint();
+    return QgsPointXY();
 
   QString pointText = parameterAsString( definition, parameters, context );
   if ( pointText.isEmpty() )

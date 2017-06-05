@@ -1003,7 +1003,7 @@ void TestQgsProcessing::parameters()
 
   // correctly setup feature
   QgsFields fields;
-  fields.append( QgsField( "a_field", QVariant::String ) );
+  fields.append( QgsField( "a_field", QVariant::String, QString(), 30 ) );
   QgsFeature f( fields );
   f.setAttribute( 0, QStringLiteral( "field value" ) );
   context.expressionContext().setFeature( f );
@@ -1061,6 +1061,39 @@ void TestQgsProcessing::parameters()
   QVERIFY( QgsProcessingParameters::parameterAsLayer( def, params, context ) );
   // make sure layer was loaded
   QVERIFY( !context.temporaryLayerStore()->mapLayers().isEmpty() );
+
+  // as sink
+  QString encoding;
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::PolygonM;
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( "epsg:3111" );
+  QString destId;
+  def->setName( QStringLiteral( "string" ) );
+  params.insert( QStringLiteral( "string" ), QStringLiteral( "memory:mem" ) );
+  std::unique_ptr< QgsFeatureSink > sink;
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, encoding, fields, wkbType, crs, context, destId ) );
+  QVERIFY( sink.get() );
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
+  QVERIFY( layer );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->fields().count(), 1 );
+  QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "a_field" ) );
+  QCOMPARE( layer->wkbType(), wkbType );
+  QCOMPARE( layer->crs(), crs );
+
+  // property defined sink destination
+  params.insert( QStringLiteral( "prop" ), QgsProperty::fromExpression( "'memory:mem2'" ) );
+  def->setName( QStringLiteral( "prop" ) );
+  crs = QgsCoordinateReferenceSystem( "epsg:3113" );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, encoding, fields, wkbType, crs, context, destId ) );
+  QVERIFY( sink.get() );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
+  QVERIFY( layer );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->fields().count(), 1 );
+  QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "a_field" ) );
+  QCOMPARE( layer->wkbType(), wkbType );
+  QCOMPARE( layer->crs(), crs );
+
   delete def;
 }
 
