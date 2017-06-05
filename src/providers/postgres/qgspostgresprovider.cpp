@@ -1553,9 +1553,9 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsPostgresProvider::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   try
   {
@@ -1583,12 +1583,13 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
     {
       for ( int i = 0; i < res.PQntuples(); i++ )
-        uniqueValues.append( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
+        uniqueValues.insert( convertValue( fld.type(), fld.subType(), res.PQgetvalue( i, 0 ) ) );
     }
   }
   catch ( PGFieldNotFound )
   {
   }
+  return uniqueValues;
 }
 
 QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const

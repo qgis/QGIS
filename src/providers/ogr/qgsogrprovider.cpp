@@ -30,6 +30,8 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgis.h"
+
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -2949,17 +2951,17 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   return srs;
 }
 
-void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit ) const
+QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 {
-  uniqueValues.clear();
+  QSet<QVariant> uniqueValues;
 
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
-    return;
+    return uniqueValues;
 
   QgsField fld = mAttributeFields.at( index );
   if ( fld.name().isNull() )
   {
-    return; //not a provider field
+    return uniqueValues; //not a provider field
   }
 
   QByteArray sql = "SELECT DISTINCT " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) );
@@ -2977,7 +2979,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   if ( !l )
   {
     QgsDebugMsg( "Failed to execute SQL" );
-    return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
+    return QgsVectorDataProvider::uniqueValues( index, limit );
   }
 
   OGRFeatureH f;
@@ -2991,6 +2993,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
+  return uniqueValues;
 }
 
 QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const

@@ -66,7 +66,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QStringList subLayers() const override;
     virtual QVariant minimumValue( int index ) const override;
     virtual QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;

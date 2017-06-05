@@ -787,8 +787,7 @@ void QgsDxfExport::writeTables()
     }
     else
     {
-      QList<QVariant> values;
-      vl->uniqueValues( attrIdx, values );
+      QSet<QVariant> values = vl->uniqueValues( attrIdx );
       Q_FOREACH ( const QVariant &v, values )
       {
         layerNames << dxfLayerName( v.toString() );

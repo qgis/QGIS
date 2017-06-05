@@ -173,7 +173,7 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 }
 
 //! Hash for QVariant
-uint qHash( const QVariant &variant );
+CORE_EXPORT uint qHash( const QVariant &variant );
 
 //! Returns a string representation of a double
 //! \param a double value

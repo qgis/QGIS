@@ -433,28 +433,6 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, int limit ) const
-{
-  QgsFeature f;
-  QgsAttributeList keys;
-  keys.append( index );
-  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ).setFlags( QgsFeatureRequest::NoGeometry ) );
-
-  QSet<QString> set;
-  values.clear();
-
-  while ( fi.nextFeature( f ) )
-  {
-    if ( !set.contains( f.attribute( index ).toString() ) )
-    {
-      values.append( f.attribute( index ) );
-      set.insert( f.attribute( index ).toString() );
-    }
-
-    if ( limit >= 0 && values.size() >= limit )
-      break;
-  }
-}
 
 QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
