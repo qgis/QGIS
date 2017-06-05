@@ -213,13 +213,13 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     val = parameters.value( definition->name() );
   }
 
-  bool loadIntoProject = false;
+  QgsProject *destinationProject = nullptr;
   QVariantMap createOptions;
   if ( val.canConvert<QgsProcessingFeatureSink>() )
   {
     // input is a QgsProcessingFeatureSink - get extra properties from it
     QgsProcessingFeatureSink fromVar = qvariant_cast<QgsProcessingFeatureSink>( val );
-    loadIntoProject = fromVar.loadIntoProject;
+    destinationProject = fromVar.destinationProject;
     createOptions = fromVar.createOptions;
     val = fromVar.sink;
   }
@@ -242,8 +242,8 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions ) );
   destinationIdentifier = dest;
 
-  if ( loadIntoProject )
-    context.addLayerToLoadOnCompletion( destinationIdentifier, definition ? definition->description() : QString() );
+  if ( destinationProject )
+    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( definition ? definition->description() : QString(), destinationProject ) );
 
   return sink.release();
 }

@@ -83,25 +83,45 @@ class QgsProcessingContext
  :rtype: QgsMapLayerStore
 %End
 
-    QgsStringMap layersToLoadOnCompletion() const;
+    struct LayerDetails
+    {
+
+      LayerDetails( const QString &name, QgsProject *project );
 %Docstring
- Returns a map of layers (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
-.. seealso:: setLayersToLoadOnCompletion()
-.. seealso:: addLayerToLoadOnCompletion()
- :rtype: QgsStringMap
+ Constructor for LayerDetails.
 %End
 
-    void setLayersToLoadOnCompletion( const QgsStringMap &layers );
+      QString name;
 %Docstring
- Sets the map of ``layers`` (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
+Friendly name for layer, to use when loading layer into project.
+%End
+
+      QgsProject *project;
+%Docstring
+Destination project
+%End
+
+    };
+
+    QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const;
+%Docstring
+ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
+.. seealso:: setLayersToLoadOnCompletion()
+.. seealso:: addLayerToLoadOnCompletion()
+ :rtype: QMap< str, QgsProcessingContext.LayerDetails >
+%End
+
+    void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers );
+%Docstring
+ Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
 .. seealso:: addLayerToLoadOnCompletion()
 .. seealso:: layersToLoadOnCompletion()
 %End
 
-    void addLayerToLoadOnCompletion( const QString &layer, const QString &name );
+    void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details );
 %Docstring
  Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
- The ``name`` parameter dictates a friendly display name for the layer.
+ The ``details`` parameter dictates the LayerDetails.
 .. seealso:: setLayersToLoadOnCompletion()
 .. seealso:: layersToLoadOnCompletion()
 %End

@@ -101,35 +101,55 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsMapLayerStore *temporaryLayerStore() { return &tempLayerStore; }
 
+    //! Details for layers to load into projects.
+    struct LayerDetails
+    {
+
+      /**
+       * Constructor for LayerDetails.
+       */
+      LayerDetails( const QString &name, QgsProject *project )
+        : name( name )
+        , project( project )
+      {}
+
+      //! Friendly name for layer, to use when loading layer into project.
+      QString name;
+
+      //! Destination project
+      QgsProject *project;
+
+    };
+
     /**
-     * Returns a map of layers (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
+     * Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
      * \see setLayersToLoadOnCompletion()
      * \see addLayerToLoadOnCompletion()
      */
-    QgsStringMap layersToLoadOnCompletion() const
+    QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const
     {
       return mLayersToLoadOnCompletion;
     }
 
     /**
-     * Sets the map of \a layers (by ID or datasource) to friendly layer name, to load into the canvas upon completion of the algorithm or model.
+     * Sets the map of \a layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
      * \see addLayerToLoadOnCompletion()
      * \see layersToLoadOnCompletion()
      */
-    void setLayersToLoadOnCompletion( const QgsStringMap &layers )
+    void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers )
     {
       mLayersToLoadOnCompletion = layers;
     }
 
     /**
      * Adds a \a layer to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
-     * The \a name parameter dictates a friendly display name for the layer.
+     * The \a details parameter dictates the LayerDetails.
      * \see setLayersToLoadOnCompletion()
      * \see layersToLoadOnCompletion()
      */
-    void addLayerToLoadOnCompletion( const QString &layer, const QString &name )
+    void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details )
     {
-      mLayersToLoadOnCompletion.insert( layer, name );
+      mLayersToLoadOnCompletion.insert( layer, details );
     }
 
     /**
@@ -209,7 +229,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     QString mDefaultEncoding;
-    QgsStringMap mLayersToLoadOnCompletion;
+    QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
 
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );

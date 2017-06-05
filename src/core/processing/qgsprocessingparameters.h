@@ -97,18 +97,22 @@ class CORE_EXPORT QgsProcessingFeatureSink
 
     /**
      * Constructor for QgsProcessingFeatureSink, accepting a static string sink.
+     * The \a destinationProject parameter can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
      */
-    QgsProcessingFeatureSink( const QString &sink = QString(), bool loadIntoProject = false )
+    QgsProcessingFeatureSink( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
       : sink( QgsProperty::fromValue( sink ) )
-      , loadIntoProject( loadIntoProject )
+      , destinationProject( destinationProject )
     {}
 
     /**
      * Constructor for QgsProcessingFeatureSink, accepting a QgsProperty sink.
+     * The \a destinationProject parameter can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
      */
-    QgsProcessingFeatureSink( const QgsProperty &sink, bool loadIntoProject = false )
+    QgsProcessingFeatureSink( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
       : sink( sink )
-      , loadIntoProject( loadIntoProject )
+      , destinationProject( destinationProject )
     {}
 
     /**
@@ -117,9 +121,11 @@ class CORE_EXPORT QgsProcessingFeatureSink
     QgsProperty sink;
 
     /**
-     * True if sink should be loaded into the current project when the algorithm completes.
+     * Destination project. Can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
+     * The default behavior is not to load the result into any project (nullptr).
      */
-    bool loadIntoProject;
+    QgsProject *destinationProject;
 
     /**
      * Map of optional sink creation options, which
