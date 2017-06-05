@@ -44,7 +44,7 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
-
+from processing.gui.ParameterGuiUtils import getFileFilter
 from processing.tools import dataobjects
 
 
@@ -145,7 +145,7 @@ class BatchInputSelectionPanel(QWidget):
             path = ''
 
         ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
-                                                            self.tr('All files (*.*);;') + self.param.getFileFilter())
+                                                            self.tr('All files (*.*);;') + getFileFilter(self.param))
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',

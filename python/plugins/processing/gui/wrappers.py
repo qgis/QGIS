@@ -111,7 +111,7 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-
+from processing.gui.ParameterGuiUtils import getFileFilter
 DIALOG_STANDARD = 'standard'
 DIALOG_BATCH = 'batch'
 DIALOG_MODELER = 'modeler'
@@ -207,7 +207,7 @@ class WidgetWrapper(QObject):
 
         filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select file'),
                                                                 path, self.tr(
-            'All files (*.*);;') + self.param.getFileFilter())
+            'All files (*.*);;') + getFileFilter(self.param))
         if filename:
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(str(filename)))
@@ -1215,6 +1215,40 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             def validator(v):
                 return bool(v) or self.param.flags() & QgsProcessingParameterDefinition.FlagOptional
             return self.comboValue(validator)
+
+
+def getFileFilter(param):
+    """
+    Returns a suitable file filter pattern for the specified parameter definition
+    :param param:
+    :return:
+    """
+    if param.type() == 'multilayer':
+        if param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
+            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+        elif param.layerType() == QgsProcessingParameterDefinition.TypeFile:
+            return self.tr('All files (*.*)', 'QgsProcessingParameterMultipleLayers')
+        else:
+            exts = QgsVectorFileWriter.supportedFormatExtensions()
+        for i in range(len(exts)):
+            exts[i] = self.tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
+        return ';;'.join(exts)
+    elif param.type() == 'raster':
+        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+        for i in range(len(exts)):
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
+        return ';;'.join(exts)
+    elif param.type() == 'table':
+        exts = ['csv', 'dbf']
+        for i in range(len(exts)):
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
+        return ';;'.join(exts)
+    elif param.type() == 'sink':
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
+        for i in range(len(exts)):
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
+        return ';;'.join(exts)
+    return ''
 
 
 class WidgetWrapperFactory:
