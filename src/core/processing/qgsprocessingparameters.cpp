@@ -253,9 +253,31 @@ QgsFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessin
   if ( !definition )
     return nullptr;
 
-  QString layerRef = parameterAsString( definition, parameters, context );
-  if ( layerRef.isEmpty() )
+  QVariant val = parameters.value( definition->name() );
+
+  bool selectedFeaturesOnly = false;
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    val = fromVar.source;
+  }
+
+  QString layerRef;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
     layerRef = definition->defaultValue().toString();
+  }
+  else
+  {
+    layerRef = val.toString();
+  }
 
   if ( layerRef.isEmpty() )
     return nullptr;
@@ -264,7 +286,7 @@ QgsFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessin
   if ( !vl )
     return nullptr;
 
-  if ( context.flags() & QgsProcessingContext::UseSelectionIfPresent && vl->selectedFeatureCount() > 0 )
+  if ( selectedFeaturesOnly )
   {
     return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
   }

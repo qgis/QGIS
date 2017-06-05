@@ -217,6 +217,7 @@ class TestQgsProcessing: public QObject
     void parameterOutputVectorLayer();
     void checkParamValues();
     void combineLayerExtent();
+    void processingFeatureSource();
     void processingFeatureSink();
 
   private:
@@ -452,8 +453,6 @@ void TestQgsProcessing::context()
   context.setDefaultEncoding( "my_enc" );
   QCOMPARE( context.defaultEncoding(), QStringLiteral( "my_enc" ) );
 
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
-  QCOMPARE( context.flags(), QgsProcessingContext::UseSelectionIfPresent );
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
   QCOMPARE( context.flags(), QgsProcessingContext::Flags( 0 ) );
 
@@ -695,9 +694,9 @@ void TestQgsProcessing::features()
     return ids;
   };
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
   QVariantMap params;
-  params.insert( QStringLiteral( "string" ), layer->id() );
+  params.insert( QStringLiteral( "layer" ), layer->id() );
 
   std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
 
@@ -707,7 +706,7 @@ void TestQgsProcessing::features()
   QCOMPARE( source->featureCount(), 5L );
 
   // test with selected features
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures() );
@@ -715,7 +714,7 @@ void TestQgsProcessing::features()
   QCOMPARE( source->featureCount(), 2L );
 
   // selection, but not using selected features
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures() );
@@ -723,16 +722,16 @@ void TestQgsProcessing::features()
   QCOMPARE( source->featureCount(), 5L );
 
   // using selected features, but no selection
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->removeSelection();
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures() );
-  QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( source->featureCount(), 5L );
+  QVERIFY( ids.isEmpty() );
+  QCOMPARE( source->featureCount(), 0L );
 
 
   // test that feature request is honored
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << 1 << 3 << 5 ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 3 << 5 );
@@ -741,7 +740,7 @@ void TestQgsProcessing::features()
   QCOMPARE( source->featureCount(), 5L );
 
   //test that feature request is honored when using selections
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
@@ -754,7 +753,6 @@ void TestQgsProcessing::features()
     encountered = true;
   };
 
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryAbortOnInvalid );
   context.setInvalidGeometryCallback( callback );
   QgsVectorLayer *polyLayer = new QgsVectorLayer( "Polygon", "v2", "memory" );
@@ -762,7 +760,7 @@ void TestQgsProcessing::features()
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 1 0, 0 1, 1 1, 0 0))" ) ) );
   polyLayer->dataProvider()->addFeatures( QgsFeatureList() << f );
   p.addMapLayer( polyLayer );
-  params.insert( QStringLiteral( "string" ), polyLayer->id() );
+  params.insert( QStringLiteral( "layer" ), polyLayer->id() );
 
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   ids = getIds( source->getFeatures() );
@@ -793,9 +791,9 @@ void TestQgsProcessing::uniqueValues()
   p.addMapLayer( layer );
   context.setProject( &p );
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
   QVariantMap params;
-  params.insert( QStringLiteral( "string" ), layer->id() );
+  params.insert( QStringLiteral( "layer" ), layer->id() );
 
   std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
 
@@ -831,7 +829,7 @@ void TestQgsProcessing::uniqueValues()
   QVERIFY( vals.contains( QString( "C" ) ) );
 
   // selection and using selection
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   QVERIFY( source->uniqueValues( -1 ).isEmpty() );
   QVERIFY( source->uniqueValues( 10001 ).isEmpty() );
@@ -860,23 +858,31 @@ void TestQgsProcessing::createIndex()
   p.addMapLayer( layer );
   context.setProject( &p );
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
   QVariantMap params;
-  params.insert( QStringLiteral( "string" ), layer->id() );
+  params.insert( QStringLiteral( "layer" ), layer->id() );
 
   // disable selected features check
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
   std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  QVERIFY( source.get() );
   QgsSpatialIndex index( *source.get() );
   QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
   // selected features check, but none selected
-  context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
-  index = QgsSpatialIndex( *source.get() );
-  ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
-  QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+  bool caught;
+  try
+  {
+    index = QgsSpatialIndex( *source.get() );
+    ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
+  }
+  catch ( ... )
+  {
+    caught = true;
+  }
+  QVERIFY( caught );
 
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
@@ -886,7 +892,7 @@ void TestQgsProcessing::createIndex()
   QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
 
   // selection but not using selection mode
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
   index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
@@ -2303,6 +2309,22 @@ void TestQgsProcessing::combineLayerExtent()
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 3536664, 10 );
+}
+
+void TestQgsProcessing::processingFeatureSource()
+{
+  QVariant source( QStringLiteral( "test.shp" ) );
+  QgsProcessingFeatureSourceDefinition fs( source, true );
+  QCOMPARE( fs.source, source );
+  QVERIFY( fs.selectedFeaturesOnly );
+
+  // test storing QgsProcessingFeatureSource in variant and retrieving
+  QVariant fsInVariant = QVariant::fromValue( fs );
+  QVERIFY( fsInVariant.isValid() );
+
+  QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( fsInVariant );
+  QCOMPARE( fromVar.source, source );
+  QVERIFY( fromVar.selectedFeaturesOnly );
 }
 
 void TestQgsProcessing::processingFeatureSink()
