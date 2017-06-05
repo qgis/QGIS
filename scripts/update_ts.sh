@@ -46,6 +46,8 @@ cleanup() {
 	trap "" EXIT
 }
 
+export QT_SELECT=5
+
 PATH=$QTDIR/bin:$PATH
 
 if type qmake-qt5 >/dev/null 2>&1; then
@@ -70,7 +72,7 @@ if ! type tx >/dev/null 2>&1; then
 	exit 1
 fi
 
-builddir=$2
+builddir=$(realpath $2)
 if [ -d "$builddir" ]; then
 	textcpp=
 	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
@@ -96,6 +98,10 @@ tar --remove-files -cf i18n/backup.tar $files
 if [ $1 = push ]; then
 	echo Pulling source from transifex...
 	tx pull -s -l none
+	if ! [ -f "i18n/qgis_en.ts" ]; then
+		echo Download of source translation failed
+		exit
+	fi
 elif [ $1 = pull ]; then
 	rm i18n/qgis_*.ts
 
@@ -134,7 +140,7 @@ echo Updating processing translations
 perl scripts/processing2cpp.pl python/plugins/processing/processing-i18n.cpp
 
 echo Creating qmake project file
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n $textcpp
+$QMAKE -project -o qgis_ts.pro -nopwd $PWD/src $PWD/python $PWD/i18n $textcpp
 
 echo Updating translations
 $LUPDATE -locations absolute -verbose qgis_ts.pro
