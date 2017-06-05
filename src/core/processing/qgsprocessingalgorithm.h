@@ -317,6 +317,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
                                      QString &destinationIdentifier SIP_OUT ) const SIP_FACTORY;
 
     /**
+     * Evaluates the parameter with matching \a definition to a feature source.
+     *
+     * Sources will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context.
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    QgsFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_FACTORY;
+
+    /**
      * Evaluates the parameter with matching \a name to a map layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external

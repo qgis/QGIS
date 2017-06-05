@@ -226,42 +226,6 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
-QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request )
-{
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-
-  QgsFeatureRequest req( request );
-  req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
-  req.setInvalidGeometryCallback( context.invalidGeometryCallback() );
-  if ( useSelection )
-  {
-    return layer->getSelectedFeatures( req );
-  }
-  else
-  {
-    return layer->getFeatures( req );
-  }
-}
-
-long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context )
-{
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( useSelection )
-    return layer->selectedFeatureCount();
-  else
-    return layer->featureCount();
-}
-
-QgsSpatialIndex QgsProcessingUtils::createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context )
-{
-  QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( useSelection )
-    return QgsSpatialIndex( layer->getSelectedFeatures( request ) );
-  else
-    return QgsSpatialIndex( layer->getFeatures( request ) );
-}
 
 QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )
 {
@@ -432,6 +396,58 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
   }
   return extent;
 }
+
+
+//
+// QgsProcessingFeatureSource
+//
+
+QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource )
+  : mSource( originalSource )
+  , mOwnsSource( ownsOriginalSource )
+  , mInvalidGeometryCheck( context.invalidGeometryCheck() )
+  , mInvalidGeometryCallback( context.invalidGeometryCallback() )
+{}
+
+QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
+{
+  if ( mOwnsSource )
+    delete mSource;
+}
+
+QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
+{
+  QgsFeatureRequest req( request );
+  req.setInvalidGeometryCheck( mInvalidGeometryCheck );
+  req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  return mSource->getFeatures( req );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const
+{
+  return mSource->sourceCrs();
+}
+
+QgsFields QgsProcessingFeatureSource::fields() const
+{
+  return mSource->fields();
+}
+
+QgsWkbTypes::Type QgsProcessingFeatureSource::wkbType() const
+{
+  return mSource->wkbType();
+}
+
+long QgsProcessingFeatureSource::featureCount() const
+{
+  return mSource->featureCount();
+}
+
+
+
+
+
+
 
 
 

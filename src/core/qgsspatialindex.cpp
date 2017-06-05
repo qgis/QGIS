@@ -20,6 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
+#include "qgsfeaturesource.h"
 
 #include "SpatialIndex.h"
 
@@ -226,6 +227,11 @@ QgsSpatialIndex::QgsSpatialIndex()
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi )
 {
   d = new QgsSpatialIndexData( fi );
+}
+
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source )
+{
+  d = new QgsSpatialIndexData( source.getFeatures() );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT

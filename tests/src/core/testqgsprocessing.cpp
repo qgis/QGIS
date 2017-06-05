@@ -676,7 +676,11 @@ void TestQgsProcessing::features()
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
+  QgsProject p;
+  p.addMapLayer( layer );
+
   QgsProcessingContext context;
+  context.setProject( &p );
   // disable check for geometry validity
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
 
@@ -691,46 +695,56 @@ void TestQgsProcessing::features()
     return ids;
   };
 
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "string" ), layer->id() );
+
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+
   // test with all features
-  QgsFeatureIds ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  QgsFeatureIds ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+  QCOMPARE( source->featureCount(), 5L );
 
   // test with selected features
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
-  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 2L );
+  QCOMPARE( source->featureCount(), 2L );
 
   // selection, but not using selected features
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+  QCOMPARE( source->featureCount(), 5L );
 
   // using selected features, but no selection
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->removeSelection();
-  ids = getIds( QgsProcessingUtils::getFeatures( layer, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
+  QCOMPARE( source->featureCount(), 5L );
 
 
   // test that feature request is honored
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
-  ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFilterFids( QgsFeatureIds() << 1 << 3 << 5 ) ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << 1 << 3 << 5 ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 3 << 5 );
 
   // count is only rough - but we expect (for now) to see full layer count
-  QCOMPARE( QgsProcessingUtils::featureCount( layer, context ), 5L );
-
+  QCOMPARE( source->featureCount(), 5L );
 
   //test that feature request is honored when using selections
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  ids = getIds( QgsProcessingUtils::getFeatures( layer, context, QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
 
   // test callback is hit when filtering invalid geoms
@@ -747,17 +761,19 @@ void TestQgsProcessing::features()
   QgsFeature f;
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 1 0, 0 1, 1 1, 0 0))" ) ) );
   polyLayer->dataProvider()->addFeatures( QgsFeatureList() << f );
+  p.addMapLayer( polyLayer );
+  params.insert( QStringLiteral( "string" ), polyLayer->id() );
 
-  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures() );
   QVERIFY( encountered );
 
   encountered = false;
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
-  ids = getIds( QgsProcessingUtils::getFeatures( polyLayer, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  ids = getIds( source->getFeatures() );
   QVERIFY( !encountered );
 
-  delete layer;
-  delete polyLayer;
 }
 
 void TestQgsProcessing::uniqueValues()
@@ -833,30 +849,41 @@ void TestQgsProcessing::createIndex()
   }
 
   QgsProcessingContext context;
+  QgsProject p;
+  p.addMapLayer( layer );
+  context.setProject( &p );
+
+  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "string" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "string" ), layer->id() );
+
   // disable selected features check
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
-  QgsSpatialIndex index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  QgsSpatialIndex index( *source.get() );
   QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
   // selected features check, but none selected
   context.setFlags( QgsProcessingContext::UseSelectionIfPresent );
-  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
-  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
 
   // selection but not using selection mode
   context.setFlags( QgsProcessingContext::Flags( 0 ) );
-  index = QgsProcessingUtils::createSpatialIndex( layer, context );
+  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
-
 }
 
 void TestQgsProcessing::createFeatureSink()

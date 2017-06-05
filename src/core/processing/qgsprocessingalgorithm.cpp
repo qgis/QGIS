@@ -215,6 +215,11 @@ QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &para
   return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier );
 }
 
+QgsFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), parameters, context );
+}
+
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );

@@ -100,30 +100,6 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
-     * Returns an iterator for the features in a \a layer, respecting
-     * the settings from the supplied \a context.
-     * An optional base \a request can be used to optimise the returned
-     * iterator, eg by restricting the returned attributes or geometry.
-     */
-    static QgsFeatureIterator getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request = QgsFeatureRequest() );
-
-    /**
-     * Returns an approximate feature count for a \a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return the count of selected features in the layer.
-     */
-    static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
-
-    /**
-     * Creates a spatial index for a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return an index containing only selected features in the layer.
-     */
-    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
-
-    /**
      * Returns a list of unique values contained in a single field in a \a layer, when
      * the settings from the supplied \a context are respected. E.g. if the
      * context is set to only use selected features, then calling this will
@@ -215,6 +191,47 @@ class CORE_EXPORT QgsProcessingUtils
     friend class TestQgsProcessing;
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsProcessingFeatureSource
+ * \ingroup core
+ * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ * results according to the settings in a QgsProcessingContext.
+ * \note not available in Python bindings
+ */
+class QgsProcessingFeatureSource : public QgsFeatureSource
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
+     * and processing \a context.
+     * Ownership of \a originalSource is dictated by \a ownsOriginalSource. If \a ownsOriginalSource is false,
+     * ownership is not transferred, and callers must ensure that \a originalSource exists for the lifetime of this object.
+     * If \a ownsOriginalSource is true, then this object will take ownership of \a originalSource.
+     */
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+
+    ~QgsProcessingFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
+    virtual QgsFields fields() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
+    virtual long featureCount() const override;
+
+  private:
+
+    QgsFeatureSource *mSource = nullptr;
+    bool mOwnsSource = false;
+    QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+
+};
+
+#endif
 
 #endif // QGSPROCESSINGUTILS_H
 

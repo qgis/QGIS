@@ -86,33 +86,6 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
-    static QgsFeatureIterator getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request = QgsFeatureRequest() );
-%Docstring
- Returns an iterator for the features in a ``layer``, respecting
- the settings from the supplied ``context``.
- An optional base ``request`` can be used to optimise the returned
- iterator, eg by restricting the returned attributes or geometry.
- :rtype: QgsFeatureIterator
-%End
-
-    static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Returns an approximate feature count for a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return the count of selected features in the layer.
- :rtype: long
-%End
-
-    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Creates a spatial index for a layer, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return an index containing only selected features in the layer.
- :rtype: QgsSpatialIndex
-%End
-
     static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
 %Docstring
  Returns a list of unique values contained in a single field in a ``layer``, when
@@ -160,6 +133,7 @@ class QgsProcessingUtils
 %End
 
 };
+
 
 
 

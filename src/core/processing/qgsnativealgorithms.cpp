@@ -78,19 +78,19 @@ QString QgsCentroidAlgorithm::shortHelpString() const
 
 QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
-  if ( !layer )
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, layer->fields(), QgsWkbTypes::Point, layer->crs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Point, source->sourceCrs(), dest ) );
 
-  long count = QgsProcessingUtils::featureCount( layer, context );
+  long count = source->featureCount();
   if ( count <= 0 )
     return QVariantMap();
 
   QgsFeature f;
-  QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
+  QgsFeatureIterator it = source->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -151,12 +151,12 @@ QString QgsBufferAlgorithm::shortHelpString() const
 
 QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
-  if ( !layer )
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, layer->fields(), QgsWkbTypes::Polygon, layer->crs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs(), dest ) );
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
@@ -168,12 +168,12 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   const QgsProcessingParameterDefinition *distanceParamDef = parameterDefinition( QStringLiteral( "DISTANCE" ) );
 
-  long count = QgsProcessingUtils::featureCount( layer, context );
+  long count = source->featureCount();
   if ( count <= 0 )
     return QVariantMap();
 
   QgsFeature f;
-  QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
+  QgsFeatureIterator it = source->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
