@@ -2133,7 +2133,7 @@ void TestQgsProcessing::parameterVectorLayer()
   context.setProject( &p );
 
   // not optional!
-  std::unique_ptr< QgsProcessingParameterVectorLayer > def( new QgsProcessingParameterVectorLayer( "non_optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false ) );
+  std::unique_ptr< QgsProcessingParameterFeatureSource > def( new QgsProcessingParameterFeatureSource( "non_optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, QString( "EPSG:3113" ), false ) );
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
@@ -2164,7 +2164,7 @@ void TestQgsProcessing::parameterVectorLayer()
   QVERIFY( !QgsProcessingParameters::parameterAsVectorLayer( def.get(), params, context ) );
 
   // optional
-  def.reset( new QgsProcessingParameterVectorLayer( "optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, v1->id(), true ) );
+  def.reset( new QgsProcessingParameterFeatureSource( "optional", QString(), QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny, v1->id(), true ) );
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsVectorLayer( def.get(), params,  context )->id(), v1->id() );
   QVERIFY( def->checkValueIsAcceptable( false ) );

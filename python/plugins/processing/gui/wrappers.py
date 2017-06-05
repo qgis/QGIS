@@ -59,7 +59,7 @@ from qgis.core import (
     QgsProcessingParameterExpression,
     QgsProcessingParameterTable,
     QgsProcessingParameterTableField,
-    QgsProcessingParameterVectorLayer)
+    QgsProcessingParameterFeatureSource)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -1256,7 +1256,7 @@ class WidgetWrapperFactory:
             wrapper = TableWidgetWrapper
         elif param.type() == 'field':
             wrapper = TableFieldWidgetWrapper
-        elif param.type() == 'vector':
+        elif param.type() == 'source':
             wrapper = VectorWidgetWrapper
         else:
             assert False, param.type()

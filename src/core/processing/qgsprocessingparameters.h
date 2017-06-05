@@ -84,8 +84,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterTable;
     else if ( sipCpp->type() == "field" )
       sipType = sipType_QgsProcessingParameterTableField;
-    else if ( sipCpp->type() == "vector" )
-      sipType = sipType_QgsProcessingParameterVectorLayer;
+    else if ( sipCpp->type() == "source" )
+      sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "vectorOut" )
       sipType = sipType_QgsProcessingParameterOutputVectorLayer;
     SIP_END
@@ -1008,33 +1008,33 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
 };
 
 /**
- * \class QgsProcessingParameterVectorLayer
+ * \class QgsProcessingParameterFeatureSource
  * \ingroup core
- * A vector layer parameter for processing algorithms.
+ * An input feature source (such as vector layers) parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition
 {
   public:
 
     /**
-    * Constructor for QgsProcessingParameterVectorLayer.
+    * Constructor for QgsProcessingParameterFeatureSource.
     */
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(),
-                                       const QList< int > &types = QList< int >(),
-                                       const QVariant &defaultValue = QVariant(), bool optional = false );
+    QgsProcessingParameterFeatureSource( const QString &name, const QString &description = QString(),
+                                         const QList< int > &types = QList< int >(),
+                                         const QVariant &defaultValue = QVariant(), bool optional = false );
 
-    QString type() const override { return QStringLiteral( "vector" ); }
+    QString type() const override { return QStringLiteral( "source" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
-     * Returns the layer types for layers acceptable by the parameter.
+     * Returns the geometry types for sources acceptable by the parameter.
      * \see setDataTypes()
      */
     QList< int > dataTypes() const;
 
     /**
-     * Sets the layer \a types for layers acceptable by the parameter.
+     * Sets the geometry \a types for sources acceptable by the parameter.
      * \see dataTypes()
      */
     void setDataTypes( const QList< int > &types );

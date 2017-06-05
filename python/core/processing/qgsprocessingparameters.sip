@@ -62,8 +62,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterTable;
     else if ( sipCpp->type() == "field" )
       sipType = sipType_QgsProcessingParameterTableField;
-    else if ( sipCpp->type() == "vector" )
-      sipType = sipType_QgsProcessingParameterVectorLayer;
+    else if ( sipCpp->type() == "source" )
+      sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "vectorOut" )
       sipType = sipType_QgsProcessingParameterOutputVectorLayer;
 %End
@@ -1019,10 +1019,10 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
+class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
 {
 %Docstring
- A vector layer parameter for processing algorithms.
+ An input feature source (such as vector layers) parameter for processing algorithms.
 .. versionadded:: 3.0
 %End
 
@@ -1031,11 +1031,11 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(),
-                                       const QList< int > &types = QList< int >(),
-                                       const QVariant &defaultValue = QVariant(), bool optional = false );
+    QgsProcessingParameterFeatureSource( const QString &name, const QString &description = QString(),
+                                         const QList< int > &types = QList< int >(),
+                                         const QVariant &defaultValue = QVariant(), bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterVectorLayer.
+ Constructor for QgsProcessingParameterFeatureSource.
 %End
 
     virtual QString type() const;
@@ -1044,14 +1044,14 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 
     QList< int > dataTypes() const;
 %Docstring
- Returns the layer types for layers acceptable by the parameter.
+ Returns the geometry types for sources acceptable by the parameter.
 .. seealso:: setDataTypes()
  :rtype: list of int
 %End
 
     void setDataTypes( const QList< int > &types );
 %Docstring
- Sets the layer ``types`` for layers acceptable by the parameter.
+ Sets the geometry ``types`` for sources acceptable by the parameter.
 .. seealso:: dataTypes()
 %End
 
