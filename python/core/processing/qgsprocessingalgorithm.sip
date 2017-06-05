@@ -308,7 +308,7 @@ class QgsProcessingAlgorithm
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
-                                     const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
                                      QString &destinationIdentifier /Out/ ) const /Factory/;
 %Docstring
  Evaluates the parameter with matching ``name`` to a feature sink.
@@ -316,7 +316,7 @@ class QgsProcessingAlgorithm
  Sinks will either be taken from ``context``'s active project, or created from external
  providers and stored temporarily in the ``context``.
 
- The ``encoding``, ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
+ The ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
  of the resulting feature sink.
 
  The ``destinationIdentifier`` argument will be set to a string which can be used to retrieve the layer corresponding
