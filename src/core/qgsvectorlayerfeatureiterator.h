@@ -20,6 +20,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeaturesource.h"
 
 #include <QSet>
 #include <memory>
@@ -66,6 +67,12 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      * \since QGIS 3.0
      */
     QgsFields fields() const;
+
+    /**
+     * Returns the coordinate reference system for features retrieved from this source.
+     * \since QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem crs() const;
 
   protected:
 
@@ -251,6 +258,40 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Checks a feature's geometry for validity, if requested in feature request.
      */
     bool checkGeometryValidity( const QgsFeature &feature );
+};
+
+
+
+/**
+ * \class QgsVectorLayerSelectedFeatureSource
+ * \ingroup core
+ * QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified \a layer.
+     * The currently selected feature IDs are stored, so change to the layer selection after constructing
+     * the QgsVectorLayerSelectedFeatureSource will not be reflected.
+     */
+    QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
+    virtual QgsFields fields() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
+    virtual long featureCount() const override;
+
+  private:
+
+    // ideally this wouldn't be mutable, but QgsVectorLayerFeatureSource has non-const getFeatures()
+    mutable QgsVectorLayerFeatureSource mSource;
+    QgsFeatureIds mSelectedFeatureIds;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H
