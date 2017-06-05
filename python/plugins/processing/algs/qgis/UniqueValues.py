@@ -33,7 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -43,7 +43,7 @@ from processing.core.outputs import OutputString
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class UniqueValues(GeoAlgorithm):
+class UniqueValues(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
@@ -57,13 +57,8 @@ class UniqueValues(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'listuniquevalues'
-
-    def displayName(self):
-        return self.tr('List unique values')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -73,7 +68,13 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'listuniquevalues'
+
+    def displayName(self):
+        return self.tr('List unique values')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)

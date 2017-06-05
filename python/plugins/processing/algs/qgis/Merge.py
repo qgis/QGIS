@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Merge(GeoAlgorithm):
+class Merge(QgisAlgorithm):
     LAYERS = 'LAYERS'
     OUTPUT = 'OUTPUT'
 
@@ -51,20 +51,21 @@ class Merge(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'mergevectorlayers'
-
-    def displayName(self):
-        return self.tr('Merge vector layers')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Layers to merge'),
                                                  datatype=dataobjects.TYPE_VECTOR_ANY))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'mergevectorlayers'
+
+    def displayName(self):
+        return self.tr('Merge vector layers')
+
+    def processAlgorithm(self, parameters, context, feedback):
         inLayers = self.getParameterValue(self.LAYERS)
 
         layers = []

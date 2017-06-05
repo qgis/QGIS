@@ -37,7 +37,7 @@ from qgis.core import (QgsSettings,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -46,7 +46,7 @@ settings_method_key = "/qgis/digitizing/validate_geometries"
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class CheckValidity(GeoAlgorithm):
+class CheckValidity(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     METHOD = 'METHOD'
@@ -60,13 +60,8 @@ class CheckValidity(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'checkvalidity'
-
-    def displayName(self):
-        return self.tr('Check validity')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',
                         'GEOS']
@@ -92,7 +87,13 @@ class CheckValidity(GeoAlgorithm):
             self.ERROR_OUTPUT,
             self.tr('Error output')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'checkvalidity'
+
+    def displayName(self):
+        return self.tr('Check validity')
+
+    def processAlgorithm(self, parameters, context, feedback):
         settings = QgsSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
@@ -177,9 +178,9 @@ class CheckValidity(GeoAlgorithm):
         del invalid_writer
         del error_writer
 
-        if valid_count == 0:
-            valid_output.open = False
-        if invalid_count == 0:
-            invalid_output.open = False
-        if error_count == 0:
-            error_output.open = False
+        if valid_count != 0:
+            context.addLayerToLoadOnCompletion(valid_output.value)
+        if invalid_count != 0:
+            context.addLayerToLoadOnCompletion(invalid_output.value)
+        if error_count != 0:
+            context.addLayerToLoadOnCompletion(error_output.value)

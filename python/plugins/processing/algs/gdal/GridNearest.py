@@ -59,16 +59,8 @@ class GridNearest(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def name(self):
-        return 'gridnearestneighbor'
-
-    def displayName(self):
-        return self.tr('Grid (Nearest neighbor)')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
@@ -87,7 +79,16 @@ class GridNearest(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated nearest neighbor')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'gridnearestneighbor'
+
+    def displayName(self):
+        return self.tr('Grid (Nearest neighbor)')
+
+    def group(self):
+        return self.tr('Raster analysis')
+
+    def getConsoleCommands(self, parameters):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(

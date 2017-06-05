@@ -36,14 +36,14 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
 
 
-class FieldsMapper(GeoAlgorithm):
+class FieldsMapper(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELDS_MAPPING = 'FIELDS_MAPPING'
@@ -62,13 +62,8 @@ class FieldsMapper(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'refactorfields'
-
-    def displayName(self):
-        return self.tr('Refactor fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
@@ -110,7 +105,13 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)

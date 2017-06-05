@@ -39,7 +39,7 @@ from qgis.core import (QgsRectangle,
                        QgsWkbTypes,
                        QgsFields)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
@@ -51,7 +51,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridPolygon(GeoAlgorithm):
+class GridPolygon(QgisAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
@@ -70,13 +70,8 @@ class GridPolygon(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'creategridpolygon'
-
-    def displayName(self):
-        return self.tr('Create grid (polygon)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]
@@ -97,7 +92,13 @@ class GridPolygon(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'creategridpolygon'
+
+    def displayName(self):
+        return self.tr('Create grid (polygon)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         idx = self.getParameterValue(self.TYPE)
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)

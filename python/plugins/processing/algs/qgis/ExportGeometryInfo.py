@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes, QgsProcessingUtils
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -42,7 +42,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExportGeometryInfo(GeoAlgorithm):
+class ExportGeometryInfo(QgisAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'CALC_METHOD'
@@ -57,13 +57,8 @@ class ExportGeometryInfo(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'exportaddgeometrycolumns'
-
-    def displayName(self):
-        return self.tr('Export/Add geometry columns')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]
@@ -75,7 +70,13 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'exportaddgeometrycolumns'
+
+    def displayName(self):
+        return self.tr('Export/Add geometry columns')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         method = self.getParameterValue(self.METHOD)
 

@@ -30,7 +30,7 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -38,7 +38,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class MeanAndStdDevPlot(GeoAlgorithm):
+class MeanAndStdDevPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -54,13 +54,8 @@ class MeanAndStdDevPlot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'meanandstandarddeviationplot'
-
-    def displayName(self):
-        return self.tr('Mean and standard deviation plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
@@ -71,14 +66,20 @@ class MeanAndStdDevPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'meanandstandarddeviationplot'
+
+    def displayName(self):
+        return self.tr('Mean and standard deviation plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, namefieldname, valuefieldname)
+        values = vector.values(layer, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):

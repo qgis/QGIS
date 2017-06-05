@@ -18,6 +18,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgscsexception.h"
 #include "qgsprocessingcontext.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"
@@ -225,72 +226,6 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
-QgsFeatureIterator QgsProcessingUtils::getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request )
-{
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-
-  QgsFeatureRequest req( request );
-  req.setInvalidGeometryCheck( context.invalidGeometryCheck() );
-  req.setInvalidGeometryCallback( context.invalidGeometryCallback() );
-  if ( useSelection )
-  {
-    return layer->getSelectedFeatures( req );
-  }
-  else
-  {
-    return layer->getFeatures( req );
-  }
-}
-
-long QgsProcessingUtils::featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context )
-{
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( useSelection )
-    return layer->selectedFeatureCount();
-  else
-    return layer->featureCount();
-}
-
-QgsSpatialIndex QgsProcessingUtils::createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context )
-{
-  QgsFeatureRequest request;
-  request.setSubsetOfAttributes( QgsAttributeList() );
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( useSelection )
-    return QgsSpatialIndex( layer->getSelectedFeatures( request ) );
-  else
-    return QgsSpatialIndex( layer->getFeatures( request ) );
-}
-
-QList<QVariant> QgsProcessingUtils::uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context )
-{
-  if ( !layer )
-    return QList<QVariant>();
-
-  if ( fieldIndex < 0 || fieldIndex >= layer->fields().count() )
-    return QList<QVariant>();
-
-  bool useSelection = context.flags() & QgsProcessingContext::UseSelectionIfPresent && layer->selectedFeatureCount() > 0;
-  if ( !useSelection )
-  {
-    // not using selection, so use provider optimised version
-    QSet<QVariant> values = layer->uniqueValues( fieldIndex );
-    return values.toList();
-  }
-  else
-  {
-    // using selection, so we have to iterate through selected features
-    QSet<QVariant> values;
-    QgsFeature f;
-    QgsFeatureIterator it = layer->getSelectedFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << fieldIndex ).setFlags( QgsFeatureRequest::NoGeometry ) );
-    while ( it.nextFeature( f ) )
-    {
-      values.insert( f.attribute( fieldIndex ) );
-    }
-    return values.toList();
-  }
-}
-
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
   QRegularExpression splitRx( "^(.*?):(.*)$" );
@@ -327,14 +262,14 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions )
 {
-  QString destEncoding = encoding;
+  QVariantMap options = createOptions;
   QgsVectorLayer *layer = nullptr;
-  if ( destEncoding.isEmpty() )
+  if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
   {
     // no destination encoding specified, use default
-    destEncoding = context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding();
+    options.insert( QStringLiteral( "fileEncoding" ), context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding() );
   }
 
   if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
@@ -344,9 +279,6 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
   }
   else
   {
-    QMap<QString, QVariant> options;
-    options.insert( QStringLiteral( "fileEncoding" ), destEncoding );
-
     QString providerKey;
     QString uri;
     QString format;
@@ -357,7 +289,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, destEncoding, fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
+      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
           QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName );
       destination = finalFileName;
       return writer;
@@ -394,9 +326,95 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, con
   return new QgsProxyFeatureSink( layer->dataProvider() );
 }
 
-void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, const QString &encoding, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context )
+void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &options )
 {
-  *sink = createFeatureSink( destination, encoding, fields, geometryType, crs, context );
+  *sink = createFeatureSink( destination, context, fields, geometryType, crs, options );
 }
+
+
+QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs )
+{
+  QgsRectangle extent;
+  Q_FOREACH ( QgsMapLayer *layer, layers )
+  {
+    if ( !layer )
+      continue;
+
+    if ( crs.isValid() )
+    {
+      //transform layer extent to target CRS
+      QgsCoordinateTransform ct( layer->crs(), crs );
+      try
+      {
+        QgsRectangle reprojExtent = ct.transformBoundingBox( layer->extent() );
+        extent.combineExtentWith( reprojExtent );
+      }
+      catch ( QgsCsException & )
+      {
+        // can't reproject... what to do here? hmmm?
+        // let's ignore this layer for now, but maybe we should just use the original extent?
+      }
+    }
+    else
+    {
+      extent.combineExtentWith( layer->extent() );
+    }
+
+  }
+  return extent;
+}
+
+
+//
+// QgsProcessingFeatureSource
+//
+
+QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource )
+  : mSource( originalSource )
+  , mOwnsSource( ownsOriginalSource )
+  , mInvalidGeometryCheck( context.invalidGeometryCheck() )
+  , mInvalidGeometryCallback( context.invalidGeometryCallback() )
+{}
+
+QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
+{
+  if ( mOwnsSource )
+    delete mSource;
+}
+
+QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
+{
+  QgsFeatureRequest req( request );
+  req.setInvalidGeometryCheck( mInvalidGeometryCheck );
+  req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  return mSource->getFeatures( req );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureSource::sourceCrs() const
+{
+  return mSource->sourceCrs();
+}
+
+QgsFields QgsProcessingFeatureSource::fields() const
+{
+  return mSource->fields();
+}
+
+QgsWkbTypes::Type QgsProcessingFeatureSource::wkbType() const
+{
+  return mSource->wkbType();
+}
+
+long QgsProcessingFeatureSource::featureCount() const
+{
+  return mSource->featureCount();
+}
+
+
+
+
+
+
+
 
 

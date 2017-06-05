@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
+from qgis.core import QgsProcessingParameterDefinition
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
@@ -102,8 +103,8 @@ class ModelerScene(QGraphicsScene):
         # And then the arrows
         for alg in list(model.algs.values()):
             idx = 0
-            for parameter in alg.algorithm.parameters:
-                if not parameter.hidden:
+            for parameter in alg.algorithm.parameterDefinitions():
+                if not parameter.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     if parameter.name in alg.params:
                         value = alg.params[parameter.name]
                     else:

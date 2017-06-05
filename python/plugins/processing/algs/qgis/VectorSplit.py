@@ -31,7 +31,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
@@ -41,7 +41,7 @@ from processing.tools.system import mkdir
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VectorSplit(GeoAlgorithm):
+class VectorSplit(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
@@ -53,20 +53,21 @@ class VectorSplit(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'splitvectorlayer'
-
-    def displayName(self):
-        return self.tr('Split vector layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'splitvectorlayer'
+
+    def displayName(self):
+        return self.tr('Split vector layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         directory = self.getOutputValue(self.OUTPUT)
@@ -86,7 +87,7 @@ class VectorSplit(GeoAlgorithm):
         for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
 
-            writer, dest = QgsProcessingUtils.createFeatureSink(fName, None, fields, geomType, crs, context)
+            writer, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
             for f in QgsProcessingUtils.getFeatures(layer, context):
                 if f[fieldName] == i:
                     writer.addFeature(f)

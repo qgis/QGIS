@@ -27,14 +27,14 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class Smooth(GeoAlgorithm):
+class Smooth(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -51,13 +51,8 @@ class Smooth(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'smoothgeometry'
-
-    def displayName(self):
-        return self.tr('Smooth geometry')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.ITERATIONS,
@@ -68,7 +63,13 @@ class Smooth(GeoAlgorithm):
                                           self.tr('Maximum node angle to smooth'), default=180.0, minValue=0.0, maxValue=180.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Smoothed')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'smoothgeometry'
+
+    def displayName(self):
+        return self.tr('Smooth geometry')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         iterations = self.getParameterValue(self.ITERATIONS)
         offset = self.getParameterValue(self.OFFSET)

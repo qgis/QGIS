@@ -37,7 +37,7 @@ from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbT
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
@@ -47,7 +47,7 @@ from processing.tools import vector, dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsExtent(GeoAlgorithm):
+class RandomPointsExtent(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
     POINT_NUMBER = 'POINT_NUMBER'
@@ -61,13 +61,8 @@ class RandomPointsExtent(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinextent'
-
-    def displayName(self):
-        return self.tr('Random points in extent')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -78,7 +73,13 @@ class RandomPointsExtent(GeoAlgorithm):
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randompointsinextent'
+
+    def displayName(self):
+        return self.tr('Random points in extent')
+
+    def processAlgorithm(self, parameters, context, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         extent = str(self.getParameterValue(self.EXTENT)).split(',')

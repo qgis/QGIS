@@ -31,7 +31,7 @@ import random
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
 from collections import defaultdict
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -40,7 +40,7 @@ from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class RandomExtractWithinSubsets(GeoAlgorithm):
+class RandomExtractWithinSubsets(QgisAlgorithm):
 
     INPUT = 'INPUT'
     METHOD = 'METHOD'
@@ -57,13 +57,8 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomextractwithinsubsets'
-
-    def displayName(self):
-        return self.tr('Random extract within subsets')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -78,7 +73,13 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random stratified)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randomextractwithinsubsets'
+
+    def displayName(self):
+        return self.tr('Random extract within subsets')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)

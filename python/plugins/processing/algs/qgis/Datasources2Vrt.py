@@ -33,7 +33,7 @@ from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
                        QgsApplication)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterBoolean
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputFile
 from processing.core.outputs import OutputString
 
 
-class Datasources2Vrt(GeoAlgorithm):
+class Datasources2Vrt(QgisAlgorithm):
     DATASOURCES = 'DATASOURCES'
     UNIONED = 'UNIONED'
 
@@ -57,13 +57,8 @@ class Datasources2Vrt(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'buildvirtualvector'
-
-    def displayName(self):
-        return self.tr('Build virtual vector')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))
@@ -76,7 +71,13 @@ class Datasources2Vrt(GeoAlgorithm):
         self.addOutput(OutputString(self.VRT_STRING,
                                     self.tr('Virtual string')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'buildvirtualvector'
+
+    def displayName(self):
+        return self.tr('Build virtual vector')
+
+    def processAlgorithm(self, parameters, context, feedback):
         input_layers = self.getParameterValue(self.DATASOURCES)
         unioned = self.getParameterValue(self.UNIONED)
         vrtPath = self.getOutputValue(self.VRT_FILE)

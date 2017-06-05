@@ -33,7 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsWkbTypes, QgsField, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
@@ -41,7 +41,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointsAlongGeometry(GeoAlgorithm):
+class PointsAlongGeometry(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -58,13 +58,8 @@ class PointsAlongGeometry(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'pointsalonglines'
-
-    def displayName(self):
-        return self.tr('Points along lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -76,7 +71,13 @@ class PointsAlongGeometry(GeoAlgorithm):
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'pointsalonglines'
+
+    def displayName(self):
+        return self.tr('Points along lines')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         distance = self.getParameterValue(self.DISTANCE)
         start_offset = self.getParameterValue(self.START_OFFSET)

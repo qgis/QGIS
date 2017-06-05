@@ -38,6 +38,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointXY,
                        QgsField,
                        QgsFields,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -47,7 +48,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            )
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
                                         ParameterNumber,
@@ -61,7 +62,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ServiceAreaFromPoint(GeoAlgorithm):
+class ServiceAreaFromPoint(QgisAlgorithm):
 
     INPUT_VECTOR = 'INPUT_VECTOR'
     START_POINT = 'START_POINT'
@@ -84,13 +85,8 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
-    def name(self):
-        return 'serviceareafrompoint'
-
-    def displayName(self):
-        return self.tr('Service area (from point)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
             (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -146,7 +142,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                       0.0, 99999999.999999, 0.0))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(OutputVector(self.OUTPUT_POINTS,
@@ -156,7 +152,13 @@ class ServiceAreaFromPoint(GeoAlgorithm):
                                     self.tr('Service area (convex hull)'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'serviceareafrompoint'
+
+    def displayName(self):
+        return self.tr('Service area (from point)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         strategy = self.getParameterValue(self.STRATEGY)

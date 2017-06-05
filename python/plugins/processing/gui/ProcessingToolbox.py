@@ -246,11 +246,6 @@ class ProcessingToolbox(BASE, WIDGET):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            #hack - remove when getCopy is removed
-            provider = alg.provider()
-            alg = alg.getCopy()
-            #hack pt 2
-            alg.setProvider(provider)
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
             dlg.exec_()
@@ -260,8 +255,8 @@ class ProcessingToolbox(BASE, WIDGET):
         if isinstance(item, TreeAlgorithmItem):
             context = dataobjects.createContext()
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
-            message = alg.checkBeforeOpeningParametersDialog()
-            if message:
+            ok, message = alg.canExecute()
+            if not ok:
                 dlg = MessageDialog()
                 dlg.setTitle(self.tr('Error executing algorithm'))
                 dlg.setMessage(
@@ -270,13 +265,8 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.exec_()
                 return
 
-            # temporary hack - TODO remove this getCopy when parameters are moved from algorithm
-            provider = alg.provider()
-            alg = alg.getCopy()
-            alg.setProvider(provider)
-
-            if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
-                dlg = alg.getCustomParametersDialog()
+            if alg.countVisibleParameters() > 0:
+                dlg = alg.createCustomParametersWidget(self)
                 if not dlg:
                     dlg = AlgorithmDialog(alg)
                 canvas = iface.mapCanvas()
@@ -296,8 +286,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
-                execute(alg, context, feedback)
-                handleAlgorithmResults(alg, context, feedback)
+                parameters = {}
+                ret, results = execute(alg, parameters, context, feedback)
+                handleAlgorithmResults(alg, parameters, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action

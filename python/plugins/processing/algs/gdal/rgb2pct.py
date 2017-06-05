@@ -53,20 +53,21 @@ class rgb2pct(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def name(self):
-        return 'rgbtopct'
-
-    def displayName(self):
-        return self.tr('RGB to PCT')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
                                           self.tr('Number of colors'), 1, None, 2))
         self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('RGB to PCT')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'rgbtopct'
+
+    def displayName(self):
+        return self.tr('RGB to PCT')
+
+    def getConsoleCommands(self, parameters):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))

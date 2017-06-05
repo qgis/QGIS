@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 import math
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterString
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.PyQt.QtCore import QVariant
 
 
-class ExtractSpecificNodes(GeoAlgorithm):
+class ExtractSpecificNodes(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -56,20 +56,21 @@ class ExtractSpecificNodes(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'extractspecificnodes'
-
-    def displayName(self):
-        return self.tr('Extract specific nodes')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
         self.addParameter(ParameterString(self.NODES,
                                           self.tr('Node indices'), default='0'))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'extractspecificnodes'
+
+    def displayName(self):
+        return self.tr('Extract specific nodes')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         fields = layer.fields()

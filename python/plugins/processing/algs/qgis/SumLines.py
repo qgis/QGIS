@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
@@ -40,7 +40,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SumLines(GeoAlgorithm):
+class SumLines(QgisAlgorithm):
 
     LINES = 'LINES'
     POLYGONS = 'POLYGONS'
@@ -54,13 +54,8 @@ class SumLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'sumlinelengths'
-
-    def displayName(self):
-        return self.tr('Sum line lengths')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.LINES,
                                           self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.POLYGONS,
@@ -72,7 +67,13 @@ class SumLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'sumlinelengths'
+
+    def displayName(self):
+        return self.tr('Sum line lengths')
+
+    def processAlgorithm(self, parameters, context, feedback):
         lineLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.LINES), context)
         polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)

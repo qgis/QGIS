@@ -35,7 +35,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -46,7 +46,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SpatialJoin(GeoAlgorithm):
+class SpatialJoin(QgisAlgorithm):
     TARGET = "TARGET"
     JOIN = "JOIN"
     PREDICATE = "PREDICATE"
@@ -62,13 +62,8 @@ class SpatialJoin(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'joinattributesbylocation'
-
-    def displayName(self):
-        return self.tr('Join attributes by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -108,7 +103,13 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'joinattributesbylocation'
+
+    def displayName(self):
+        return self.tr('Join attributes by location')
+
+    def processAlgorithm(self, parameters, context, feedback):
         target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
         join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)

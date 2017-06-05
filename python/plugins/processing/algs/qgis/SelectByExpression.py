@@ -32,11 +32,11 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExpression
 
 
-class SelectByExpression(GeoAlgorithm):
+class SelectByExpression(QgisAlgorithm):
 
     LAYERNAME = 'LAYERNAME'
     EXPRESSION = 'EXPRESSION'
@@ -52,13 +52,8 @@ class SelectByExpression(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbyexpression'
-
-    def displayName(self):
-        return self.tr('Select by expression')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),
@@ -72,7 +67,13 @@ class SelectByExpression(GeoAlgorithm):
                                              self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'selectbyexpression'
+
+    def displayName(self):
+        return self.tr('Select by expression')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

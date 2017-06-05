@@ -35,14 +35,14 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 from processing.tools import vector
 
 
-class SplitLinesWithLines(GeoAlgorithm):
+class SplitLinesWithLines(QgisAlgorithm):
 
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'
@@ -62,20 +62,21 @@ class SplitLinesWithLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'splitlineswithlines'
-
-    def displayName(self):
-        return self.tr('Split lines with lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'splitlineswithlines'
+
+    def displayName(self):
+        return self.tr('Split lines with lines')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
         layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
 

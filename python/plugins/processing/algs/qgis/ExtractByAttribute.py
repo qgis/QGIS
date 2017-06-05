@@ -30,7 +30,7 @@ from qgis.core import (QgsExpression,
                        QgsFeatureRequest,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
 
 
-class ExtractByAttribute(GeoAlgorithm):
+class ExtractByAttribute(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OPERATOR = 'OPERATOR'
@@ -74,13 +74,8 @@ class ExtractByAttribute(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbyattribute'
-
-    def displayName(self):
-        return self.tr('Extract by attribute')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.i18n_operators = ['=',
                                '!=',
                                '>',
@@ -104,7 +99,13 @@ class ExtractByAttribute(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (attribute)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'extractbyattribute'
+
+    def displayName(self):
+        return self.tr('Extract by attribute')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]

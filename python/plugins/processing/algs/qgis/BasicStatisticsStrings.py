@@ -36,7 +36,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsFeatureRequest,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -45,7 +45,7 @@ from processing.core.outputs import OutputNumber
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BasicStatisticsStrings(GeoAlgorithm):
+class BasicStatisticsStrings(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
@@ -74,13 +74,8 @@ class BasicStatisticsStrings(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'basicstatisticsfortextfields'
-
-    def displayName(self):
-        return self.tr('Basic statistics for text fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -100,7 +95,13 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.addOutput(OutputNumber(self.MIN_VALUE, self.tr('Minimum string value')))
         self.addOutput(OutputNumber(self.MAX_VALUE, self.tr('Maximum string value')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'basicstatisticsfortextfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for text fields')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
 

@@ -32,7 +32,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -43,7 +43,7 @@ import processing
 from math import sqrt
 
 
-class ConcaveHull(GeoAlgorithm):
+class ConcaveHull(QgisAlgorithm):
 
     INPUT = 'INPUT'
     ALPHA = 'ALPHA'
@@ -60,13 +60,8 @@ class ConcaveHull(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'concavehull'
-
-    def displayName(self):
-        return self.tr('Concave hull')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,
@@ -79,7 +74,13 @@ class ConcaveHull(GeoAlgorithm):
         self.addOutput(
             OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'concavehull'
+
+    def displayName(self):
+        return self.tr('Concave hull')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(ConcaveHull.INPUT), context)
         alpha = self.getParameterValue(self.ALPHA)
         holes = self.getParameterValue(self.HOLES)

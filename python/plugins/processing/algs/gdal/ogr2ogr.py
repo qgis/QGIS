@@ -100,16 +100,8 @@ class Ogr2Ogr(GdalAlgorithm):
     FORMAT = 'FORMAT'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'convertformat'
-
-    def displayName(self):
-        return self.tr('Convert format')
-
-    def group(self):
-        return self.tr('Vector conversion')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.FORMAT,
@@ -119,7 +111,16 @@ class Ogr2Ogr(GdalAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Converted')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'convertformat'
+
+    def displayName(self):
+        return self.tr('Convert format')
+
+    def group(self):
+        return self.tr('Vector conversion')
+
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
 

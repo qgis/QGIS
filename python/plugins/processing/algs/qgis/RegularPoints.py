@@ -35,7 +35,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
                        QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
@@ -46,7 +46,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RegularPoints(GeoAlgorithm):
+class RegularPoints(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
     SPACING = 'SPACING'
@@ -62,13 +62,8 @@ class RegularPoints(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'regularpoints'
-
-    def displayName(self):
-        return self.tr('Regular points')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.SPACING,
@@ -83,7 +78,13 @@ class RegularPoints(GeoAlgorithm):
                                        self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'regularpoints'
+
+    def displayName(self):
+        return self.tr('Regular points')
+
+    def processAlgorithm(self, parameters, context, feedback):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))

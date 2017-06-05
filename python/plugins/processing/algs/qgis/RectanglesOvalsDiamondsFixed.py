@@ -35,7 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -43,7 +43,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
+class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     SHAPE = 'SHAPE'
@@ -62,13 +62,8 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'rectanglesovalsdiamondsfixed'
-
-    def displayName(self):
-        return self.tr('Rectangles, ovals, diamonds (fixed)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
@@ -92,7 +87,13 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'rectanglesovalsdiamondsfixed'
+
+    def displayName(self):
+        return self.tr('Rectangles, ovals, diamonds (fixed)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         shape = self.getParameterValue(self.SHAPE)
         width = self.getParameterValue(self.WIDTH)

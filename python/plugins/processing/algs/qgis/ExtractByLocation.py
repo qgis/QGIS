@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsFeatureRequest,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -36,7 +36,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 
-class ExtractByLocation(GeoAlgorithm):
+class ExtractByLocation(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
@@ -56,13 +56,8 @@ class ExtractByLocation(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbylocation'
-
-    def displayName(self):
-        return self.tr('Extract by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -86,7 +81,13 @@ class ExtractByLocation(GeoAlgorithm):
                                           0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'extractbylocation'
+
+    def displayName(self):
+        return self.tr('Extract by location')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         filename = self.getParameterValue(self.INTERSECT)

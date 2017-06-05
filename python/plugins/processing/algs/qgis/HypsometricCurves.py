@@ -36,7 +36,7 @@ from qgis.core import (QgsRectangle,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -46,7 +46,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import raster, vector, dataobjects
 
 
-class HypsometricCurves(GeoAlgorithm):
+class HypsometricCurves(QgisAlgorithm):
 
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
@@ -63,13 +63,8 @@ class HypsometricCurves(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'hypsometriccurves'
-
-    def displayName(self):
-        return self.tr('Hypsometric curves')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
@@ -82,7 +77,13 @@ class HypsometricCurves(GeoAlgorithm):
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
                                        self.tr('Hypsometric curves')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'hypsometriccurves'
+
+    def displayName(self):
+        return self.tr('Hypsometric curves')
+
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.BOUNDARY_LAYER), context)
         step = self.getParameterValue(self.STEP)

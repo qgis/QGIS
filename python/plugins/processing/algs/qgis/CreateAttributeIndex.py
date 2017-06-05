@@ -30,13 +30,13 @@ from qgis.core import (QgsVectorDataProvider,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class CreateAttributeIndex(GeoAlgorithm):
+class CreateAttributeIndex(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
@@ -51,13 +51,8 @@ class CreateAttributeIndex(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'createattributeindex'
-
-    def displayName(self):
-        return self.tr('Create attribute index')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -65,7 +60,13 @@ class CreateAttributeIndex(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Indexed layer'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'createattributeindex'
+
+    def displayName(self):
+        return self.tr('Create attribute index')
+
+    def processAlgorithm(self, parameters, context, feedback):
         file_name = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
         field = self.getParameterValue(self.FIELD)

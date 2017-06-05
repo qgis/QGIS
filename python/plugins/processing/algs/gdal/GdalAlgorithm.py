@@ -55,11 +55,14 @@ class GdalAlgorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
 
-    def getCustomParametersDialog(self):
+    def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
-    def processAlgorithm(self, context, feedback):
-        commands = self.getConsoleCommands()
+    def getConsoleCommands(self, parameters):
+        return None
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = self.getConsoleCommands(parameters)
         layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         supported = QgsVectorFileWriter.supportedFormatExtensions()
         for i, c in enumerate(commands):
@@ -77,7 +80,7 @@ class GdalAlgorithm(GeoAlgorithm):
             commands[i] = c
         GdalUtils.runGdal(commands, feedback)
 
-    def shortHelp(self):
+    def shortHelpString(self):
         helpPath = GdalUtils.gdalHelpPath()
         if helpPath == '':
             return
@@ -87,17 +90,17 @@ class GdalAlgorithm(GeoAlgorithm):
         else:
             url = helpPath + '{}.html'.format(self.commandName())
 
-        return self._formatHelp('''This algorithm is based on the GDAL {} module.
+        return '''This algorithm is based on the GDAL {} module.
                 For more info, see the <a href={}> module help</a>
-                '''.format(self.commandName(), url))
+                '''.format(self.commandName(), url)
 
     def commandName(self):
-        alg = self.getCopy()
-        for output in alg.outputs:
+        parameters = {}
+        for output in self.outputs:
             output.setValue("dummy")
-        for param in alg.parameters:
-            param.setValue("1")
-        name = alg.getConsoleCommands()[0]
+        for param in self.parameterDefinitions():
+            parameters[param.name()] = "1"
+        name = self.getConsoleCommands(parameters)[0]
         if name.endswith(".py"):
             name = name[:-3]
         return name

@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils, NULL
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -40,7 +40,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SinglePartsToMultiparts(GeoAlgorithm):
+class SinglePartsToMultiparts(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
@@ -52,20 +52,21 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'singlepartstomultipart'
-
-    def displayName(self):
-        return self.tr('Singleparts to multipart')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'singlepartstomultipart'
+
+    def displayName(self):
+        return self.tr('Singleparts to multipart')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
 

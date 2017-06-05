@@ -33,12 +33,12 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class BarPlot(GeoAlgorithm):
+class BarPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -54,13 +54,8 @@ class BarPlot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'barplot'
-
-    def displayName(self):
-        return self.tr('Bar plot')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
@@ -73,14 +68,20 @@ class BarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'barplot'
+
+    def displayName(self):
+        return self.tr('Bar plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, valuefieldname)
+        values = vector.values(layer, valuefieldname)
 
         x_var = [i[namefieldname] for i in layer.getFeatures()]
 

@@ -45,16 +45,8 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
     CLIP_EXTENT = 'CLIP_EXTENT'
     OPTIONS = 'OPTIONS'
 
-    def name(self):
-        return 'clipvectorsbyextent'
-
-    def displayName(self):
-        return self.tr('Clip vectors by extent')
-
-    def group(self):
-        return self.tr('Vector geoprocessing')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
@@ -64,10 +56,21 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (extent)')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'clipvectorsbyextent'
+
+    def displayName(self):
+        return self.tr('Clip vectors by extent')
+
+    def group(self):
+        return self.tr('Vector geoprocessing')
+
+    def getConsoleCommands(self, parameters):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
+        if not clipExtent:
+            clipExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value

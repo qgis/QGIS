@@ -35,7 +35,7 @@ from qgis.core import (QgsFeature,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -46,7 +46,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Dissolve(GeoAlgorithm):
+class Dissolve(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -59,13 +59,8 @@ class Dissolve(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'dissolve'
-
-    def displayName(self):
-        return self.tr('Dissolve')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Dissolve.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -75,7 +70,13 @@ class Dissolve(GeoAlgorithm):
                                               self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'dissolve'
+
+    def displayName(self):
+        return self.tr('Dissolve')
+
+    def processAlgorithm(self, parameters, context, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Dissolve.INPUT), context)

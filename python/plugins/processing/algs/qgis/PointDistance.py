@@ -35,7 +35,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -46,7 +46,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointDistance(GeoAlgorithm):
+class PointDistance(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     INPUT_FIELD = 'INPUT_FIELD'
@@ -62,13 +62,8 @@ class PointDistance(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'distancematrix'
-
-    def displayName(self):
-        return self.tr('Distance matrix')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),
                           self.tr('Summary distance matrix (mean, std. dev., min, max)')]
@@ -90,7 +85,13 @@ class PointDistance(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'distancematrix'
+
+    def displayName(self):
+        return self.tr('Distance matrix')
+
+    def processAlgorithm(self, parameters, context, feedback):
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         inField = self.getParameterValue(self.INPUT_FIELD)
         targetLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET_LAYER), context)

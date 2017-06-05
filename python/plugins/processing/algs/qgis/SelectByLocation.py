@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -41,7 +41,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SelectByLocation(GeoAlgorithm):
+class SelectByLocation(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
@@ -56,13 +56,8 @@ class SelectByLocation(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'selectbylocation'
-
-    def displayName(self):
-        return self.tr('Select by location')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
@@ -93,7 +88,13 @@ class SelectByLocation(GeoAlgorithm):
                                              self.methods, 0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'selectbylocation'
+
+    def displayName(self):
+        return self.tr('Select by location')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)

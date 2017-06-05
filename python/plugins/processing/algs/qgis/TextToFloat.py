@@ -29,13 +29,13 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 
 
-class TextToFloat(GeoAlgorithm):
+class TextToFloat(QgisAlgorithm):
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
@@ -49,13 +49,8 @@ class TextToFloat(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'texttofloat'
-
-    def displayName(self):
-        return self.tr('Text to float')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -63,7 +58,13 @@ class TextToFloat(GeoAlgorithm):
                                               self.INPUT, ParameterTableField.DATA_TYPE_STRING))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Float from text')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'texttofloat'
+
+    def displayName(self):
+        return self.tr('Text to float')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         fieldName = self.getParameterValue(self.FIELD)
         idx = layer.fields().lookupField(fieldName)

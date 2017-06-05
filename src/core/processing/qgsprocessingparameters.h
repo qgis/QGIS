@@ -28,6 +28,126 @@
 class QgsProcessingContext;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsFeatureSink;
+class QgsFeatureSource;
+
+
+/**
+ * \class QgsProcessingFeatureSourceDefinition
+ * \ingroup core
+ *
+ * Encapsulates settings relating to a feature source input to a processing algorithm.
+ *
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsProcessingFeatureSourceDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
+     */
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false )
+      : source( QgsProperty::fromValue( source ) )
+      , selectedFeaturesOnly( selectedFeaturesOnly )
+    {}
+
+    /**
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+     */
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false )
+      : source( source )
+      , selectedFeaturesOnly( selectedFeaturesOnly )
+    {}
+
+    /**
+     * Source definition. Usually a static property set to a source layer's ID or file name.
+     */
+    QgsProperty source;
+
+    /**
+     * True if only selected features in the source should be used by algorithms.
+     */
+    bool selectedFeaturesOnly;
+
+
+    //! Allows direct construction of QVariants.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
+};
+
+Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
+
+/**
+ * \class QgsProcessingFeatureSinkDefinition
+ * \ingroup core
+ *
+ * Encapsulates settings relating to a feature sink input to a processing algorithm.
+ *
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsProcessingFeatureSinkDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a static string sink.
+     * The \a destinationProject parameter can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
+     */
+    QgsProcessingFeatureSinkDefinition( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
+      : sink( QgsProperty::fromValue( sink ) )
+      , destinationProject( destinationProject )
+    {}
+
+    /**
+     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a QgsProperty sink.
+     * The \a destinationProject parameter can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
+     */
+    QgsProcessingFeatureSinkDefinition( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
+      : sink( sink )
+      , destinationProject( destinationProject )
+    {}
+
+    /**
+     * Sink definition. Usually a static property set to the destination file name for the sink's layer.
+     */
+    QgsProperty sink;
+
+    /**
+     * Destination project. Can be set to a QgsProject instance in which
+     * to automatically load the resulting sink after completing processing.
+     * The default behavior is not to load the result into any project (nullptr).
+     */
+    QgsProject *destinationProject;
+
+    /**
+     * Map of optional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files.
+     */
+    QVariantMap createOptions;
+
+
+    //! Allows direct construction of QVariants.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
+};
+
+Q_DECLARE_METATYPE( QgsProcessingFeatureSinkDefinition )
+
+
+
 
 //
 // Parameter definitions
@@ -47,6 +167,48 @@ class QgsVectorLayer;
 
 class CORE_EXPORT QgsProcessingParameterDefinition
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "boolean" )
+      sipType = sipType_QgsProcessingParameterBoolean;
+    else if ( sipCpp->type() == "crs" )
+      sipType = sipType_QgsProcessingParameterCrs;
+    else if ( sipCpp->type() == "layer" )
+      sipType = sipType_QgsProcessingParameterMapLayer;
+    else if ( sipCpp->type() == "extent" )
+      sipType = sipType_QgsProcessingParameterExtent;
+    else if ( sipCpp->type() == "point" )
+      sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == "file" )
+      sipType = sipType_QgsProcessingParameterFile;
+    else if ( sipCpp->type() == "matrix" )
+      sipType = sipType_QgsProcessingParameterMatrix;
+    else if ( sipCpp->type() == "multilayer" )
+      sipType = sipType_QgsProcessingParameterMultipleLayers;
+    else if ( sipCpp->type() == "number" )
+      sipType = sipType_QgsProcessingParameterNumber;
+    else if ( sipCpp->type() == "range" )
+      sipType = sipType_QgsProcessingParameterRange;
+    else if ( sipCpp->type() == "raster" )
+      sipType = sipType_QgsProcessingParameterRasterLayer;
+    else if ( sipCpp->type() == "enum" )
+      sipType = sipType_QgsProcessingParameterEnum;
+    else if ( sipCpp->type() == "string" )
+      sipType = sipType_QgsProcessingParameterString;
+    else if ( sipCpp->type() == "expression" )
+      sipType = sipType_QgsProcessingParameterExpression;
+    else if ( sipCpp->type() == "table" )
+      sipType = sipType_QgsProcessingParameterTable;
+    else if ( sipCpp->type() == "field" )
+      sipType = sipType_QgsProcessingParameterTableField;
+    else if ( sipCpp->type() == "source" )
+      sipType = sipType_QgsProcessingParameterFeatureSource;
+    else if ( sipCpp->type() == "sink" )
+      sipType = sipType_QgsProcessingParameterFeatureSink;
+    SIP_END
+#endif
+
   public:
 
     //! Parameter flags
@@ -83,6 +245,13 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Unique parameter type name.
      */
     virtual QString type() const = 0;
+
+    /**
+     * Returns true if this parameter represents a file or layer destination, e.g. parameters
+     * which are used for the destination for layers output by an algorithm will return
+     * true.
+     */
+    virtual bool isDestination() const { return false; }
 
     /**
      * Returns the name of the parameter. This is the internal identifier by which
@@ -137,6 +306,15 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     void setFlags( const Flags &flags ) { mFlags = flags; }
 
+    /**
+     * Checks whether the specified \a input value is acceptable for the
+     * parameter. Returns true if the value can be accepted.
+     * The optional \a context parameter can be specified to allow a more stringent
+     * check to be performed, capable of checking for the presence of required
+     * layers and other factors within the context.
+     */
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const;
+
   protected:
 
     //! Parameter name
@@ -188,107 +366,134 @@ class CORE_EXPORT QgsProcessingParameters
     static bool isDynamic( const QVariantMap &parameters, const QString &name );
 
     /**
-     * Evaluates the parameter with matching \a name to a static string value.
+     * Evaluates the parameter with matching \a definition to a static string value.
      */
-    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to an expression.
+     * Evaluates the parameter with matching \a definition to an expression.
      */
-    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static double value.
+     * Evaluates the parameter with matching \a definition to a static double value.
      */
-    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static integer value.
+     * Evaluates the parameter with matching \a definition to a static integer value.
      */
-    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a enum value.
+     * Evaluates the parameter with matching \a definition to a enum value.
      */
-    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to list of enum values.
+     * Evaluates the parameter with matching \a definition to list of enum values.
      */
-    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a static boolean value.
+     * Evaluates the parameter with matching \a definition to a static boolean value.
      */
-    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context );
+    static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a map layer.
+     * Evaluates the parameter with matching \a definition to a feature sink.
+     *
+     * The \a fields, \a geometryType and \a crs parameters dictate the properties
+     * of the resulting feature sink.
+     *
+     * Sinks will either be taken from \a context's active project, or created from external
+     * providers and stored temporarily in the \a context. The \a destinationIdentifier
+     * argument will be set to a string which can be used to retrieve the layer corresponding
+     * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+                                            const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition to a feature source.
+     *
+     * Sources will either be taken from \a context's active project, or loaded from external
+     * sources and stored temporarily in the \a context.
+     *
+     * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     */
+    static QgsFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition to a map layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a raster layer.
+     * Evaluates the parameter with matching \a definition to a raster layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a vector layer.
+     * Evaluates the parameter with matching \a definition to a vector layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external
      * sources and stored temporarily in the \a context. In either case, callers do not
      * need to handle deletion of the returned layer.
      */
-    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a coordinate reference system.
+     * Evaluates the parameter with matching \a definition to a coordinate reference system.
      */
-    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a rectangular extent.
+     * Evaluates the parameter with matching \a definition to a rectangular extent.
      */
-    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a point.
+     * Evaluates the parameter with matching \a definition to a point.
      */
-    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a file/folder name.
+     * Evaluates the parameter with matching \a definition to a file/folder name.
      */
-    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a matrix/table of values.
+     * Evaluates the parameter with matching \a definition to a matrix/table of values.
      * Tables are collapsed to a 1 dimensional list.
      */
-    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a list of map layers.
+     * Evaluates the parameter with matching \a definition to a list of map layers.
      */
-    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a range of values.
+     * Evaluates the parameter with matching \a definition to a range of values.
      */
-    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a name to a list of fields.
+     * Evaluates the parameter with matching \a definition to a list of fields.
      */
-    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
 };
 
@@ -311,7 +516,6 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
                                    bool optional = false );
 
     QString type() const override { return QStringLiteral( "boolean" ); }
-
 };
 
 /**
@@ -331,6 +535,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
                                bool optional = false );
 
     QString type() const override { return QStringLiteral( "crs" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 };
 
 /**
@@ -350,6 +555,7 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
                                     bool optional = false );
 
     QString type() const override { return QStringLiteral( "layer" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 };
 
 /**
@@ -369,7 +575,7 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
                                   bool optional = false );
 
     QString type() const override { return QStringLiteral( "extent" ); }
-
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -391,6 +597,7 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
                                  bool optional = false );
 
     QString type() const override { return QStringLiteral( "point" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -418,6 +625,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
                                 bool optional = false );
 
     QString type() const override { return QStringLiteral( "file" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the parameter behavior (e.g. File or Folder).
@@ -468,6 +676,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
                                   bool optional = false );
 
     QString type() const override { return QStringLiteral( "matrix" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns a list of column headers (if set).
@@ -537,6 +746,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
                                           bool optional = false );
 
     QString type() const override { return QStringLiteral( "multilayer" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.
@@ -550,9 +760,24 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      */
     void setLayerType( QgsProcessingParameterDefinition::LayerType type );
 
+    /**
+     * Returns the minimum number of layers required for the parameter. If the return value is < 1
+     * then the parameter accepts any number of layers.
+     * \see setMinimumNumberInputs()
+     */
+    int minimumNumberInputs() const;
+
+    /**
+     * Sets the \a minimum number of layers required for the parameter. The minimum must be >= 1
+     * if the parameter is not optional.
+     * \see minimumNumberInputs()
+     */
+    void setMinimumNumberInputs( int minimum );
+
   private:
 
     LayerType mLayerType = TypeVectorAny;
+    int mMinimumNumberInputs = 0;
 
 };
 
@@ -585,6 +810,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                          );
 
     QString type() const override { return QStringLiteral( "number" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the minimum value acceptable by the parameter.
@@ -648,6 +874,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
                                  bool optional = false );
 
     QString type() const override { return QStringLiteral( "range" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the acceptable data type for the range.
@@ -683,6 +910,7 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "raster" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
 };
 
@@ -705,6 +933,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 bool optional = false );
 
     QString type() const override { return QStringLiteral( "enum" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the list of acceptable options for the parameter.
@@ -860,6 +1089,7 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "field" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -906,40 +1136,81 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
 };
 
 /**
- * \class QgsProcessingParameterVector
+ * \class QgsProcessingParameterFeatureSource
  * \ingroup core
- * A vector layer parameter for processing algorithms.
+ * An input feature source (such as vector layers) parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVector : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingParameterVector.
-     */
-    QgsProcessingParameterVector( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
-                                  bool optional = false );
+    * Constructor for QgsProcessingParameterFeatureSource.
+    */
+    QgsProcessingParameterFeatureSource( const QString &name, const QString &description = QString(),
+                                         const QList< int > &types = QList< int >(),
+                                         const QVariant &defaultValue = QVariant(), bool optional = false );
 
-    QString type() const override { return QStringLiteral( "vector" ); }
-
+    QString type() const override { return QStringLiteral( "source" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
-     * Returns the layer type for layers acceptable by the parameter.
+     * Returns the geometry types for sources acceptable by the parameter.
+     * \see setDataTypes()
+     */
+    QList< int > dataTypes() const;
+
+    /**
+     * Sets the geometry \a types for sources acceptable by the parameter.
+     * \see dataTypes()
+     */
+    void setDataTypes( const QList< int > &types );
+
+  private:
+
+    QList< int > mDataTypes = QList< int >() << QgsProcessingParameterDefinition::TypeVectorAny;
+
+};
+
+
+/**
+ * \class QgsProcessingParameterFeatureSink
+ * \ingroup core
+ * A feature sink output for processing algorithms.
+ *
+ * A parameter which represents the destination feature sink for features created by an algorithm.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterFeatureSink.
+     */
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
+
+    QString type() const override { return QStringLiteral( "sink" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+
+    /**
+     * Returns the layer type for sinks associated with the parameter.
      * \see setDataType()
      */
     QgsProcessingParameterDefinition::LayerType dataType() const;
 
     /**
-     * Sets the layer \a type for layers acceptable by the parameter.
+     * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 
   private:
 
-    QgsProcessingParameterDefinition::LayerType mDataType;
-
+    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

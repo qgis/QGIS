@@ -31,7 +31,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsGeometry,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterCrs
@@ -39,7 +39,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class PointsLayerFromTable(GeoAlgorithm):
+class PointsLayerFromTable(QgisAlgorithm):
 
     INPUT = 'INPUT'
     XFIELD = 'XFIELD'
@@ -61,13 +61,8 @@ class PointsLayerFromTable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'createpointslayerfromtable'
-
-    def displayName(self):
-        return self.tr('Create points layer from table')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -82,7 +77,13 @@ class PointsLayerFromTable(GeoAlgorithm):
                                        self.tr('Target CRS'), 'EPSG:4326'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points from table'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'createpointslayerfromtable'
+
+    def displayName(self):
+        return self.tr('Create points layer from table')
+
+    def processAlgorithm(self, parameters, context, feedback):
         source = self.getParameterValue(self.INPUT)
         vlayer = QgsProcessingUtils.mapLayerFromString(source, context)
         output = self.getOutputFromName(self.OUTPUT)

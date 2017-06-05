@@ -58,7 +58,7 @@ from qgis.core import (QgsFields,
 from processing.tools import dataobjects
 
 
-def resolveFieldIndex(layer, attr):
+def resolveFieldIndex(source, attr):
     """This method takes an object and returns the index field it
     refers to in a layer. If the passed object is an integer, it
     returns the same integer value. If the passed value is not an
@@ -72,14 +72,14 @@ def resolveFieldIndex(layer, attr):
     if isinstance(attr, int):
         return attr
     else:
-        index = layer.fields().lookupField(attr)
+        index = source.fields().lookupField(attr)
         if index == -1:
             raise ValueError('Wrong field name')
         return index
 
 
-def values(layer, context, *attributes):
-    """Returns the values in the attributes table of a vector layer,
+def values(source, *attributes):
+    """Returns the values in the attributes table of a feature source,
     for the passed fields.
 
     Field can be passed as field names or as zero-based field indices.
@@ -88,20 +88,19 @@ def values(layer, context, *attributes):
 
     It assummes fields are numeric or contain values that can be parsed
     to a number.
-    :param context:
     """
     ret = {}
     indices = []
     attr_keys = {}
     for attr in attributes:
-        index = resolveFieldIndex(layer, attr)
+        index = resolveFieldIndex(source, attr)
         indices.append(index)
         attr_keys[index] = attr
 
     # use an optimised feature request
     request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.NoGeometry)
 
-    for feature in QgsProcessingUtils.getFeatures(layer, context, request):
+    for feature in source.getFeatures(request):
         for i in indices:
 
             # convert attribute value to number

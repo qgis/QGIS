@@ -18,6 +18,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -28,27 +29,32 @@ bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QS
     return false;
 }
 
-QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+QString QgsProcessingParameters::parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  QVariant val = parameters.value( name );
+  if ( !definition )
+    return QString();
+
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    return val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    return val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
 
   if ( !val.isValid() || val.toString().isEmpty() )
   {
     // fall back to default
-    if ( definition )
-      val = definition->defaultValue();
+    val = definition->defaultValue();
   }
 
   return val.toString();
 }
 
-QString QgsProcessingParameters::parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+QString QgsProcessingParameters::parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  QVariant val = parameters.value( name );
+  if ( !definition )
+    return QString();
+
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    return val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    return val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
 
   if ( val.isValid() && !val.toString().isEmpty() )
   {
@@ -58,22 +64,17 @@ QString QgsProcessingParameters::parameterAsExpression( const QgsProcessingParam
   }
 
   // fall back to default
-  if ( definition )
-  {
-    return definition->defaultValue().toString();
-  }
-  else
-  {
-    // it's invalid, but what else are we going to do...?
-    return val.toString();
-  }
+  return definition->defaultValue().toString();
 }
 
-double QgsProcessingParameters::parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+double QgsProcessingParameters::parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  QVariant val = parameters.value( name );
+  if ( !definition )
+    return 0;
+
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    return val.value< QgsProperty >().valueAsDouble( context.expressionContext(), definition ? definition->defaultValue().toDouble() : 0 );
+    return val.value< QgsProperty >().valueAsDouble( context.expressionContext(), definition->defaultValue().toDouble() );
 
   bool ok = false;
   double res = val.toDouble( &ok );
@@ -81,24 +82,25 @@ double QgsProcessingParameters::parameterAsDouble( const QgsProcessingParameterD
     return res;
 
   // fall back to default
-  if ( definition )
-    val = definition->defaultValue();
+  val = definition->defaultValue();
   return val.toDouble();
 }
 
-int QgsProcessingParameters::parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+int QgsProcessingParameters::parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  QVariant val = parameters.value( name );
+  if ( !definition )
+    return 0;
+
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    return val.value< QgsProperty >().valueAsInt( context.expressionContext(), definition ? definition->defaultValue().toInt() : 0 );
+    return val.value< QgsProperty >().valueAsInt( context.expressionContext(), definition->defaultValue().toInt() );
 
   bool ok = false;
   double dbl = val.toDouble( &ok );
   if ( !ok )
   {
     // fall back to default
-    if ( definition )
-      val = definition->defaultValue();
+    val = definition->defaultValue();
     dbl = val.toDouble( &ok );
   }
 
@@ -118,9 +120,12 @@ int QgsProcessingParameters::parameterAsInt( const QgsProcessingParameterDefinit
   return val.toInt();
 }
 
-int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  int val = parameterAsInt( definition, parameters, name, context );
+  if ( !definition )
+    return 0;
+
+  int val = parameterAsInt( definition, parameters, context );
   const QgsProcessingParameterEnum *enumDef = dynamic_cast< const QgsProcessingParameterEnum *>( definition );
   if ( enumDef && val >= enumDef->options().size() )
   {
@@ -129,12 +134,15 @@ int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefini
   return val;
 }
 
-QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
+  if ( !definition )
+    return QList<int>();
+
   QVariantList resultList;
-  QVariant val = parameters.value( name );
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    resultList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    resultList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
     Q_FOREACH ( const QVariant &var, val.toList() )
@@ -179,13 +187,14 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   return result;
 }
 
-bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context )
+bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
-  QVariant def;
-  if ( definition )
-    def = definition->defaultValue();
+  if ( !definition )
+    return false;
 
-  QVariant val = parameters.value( name );
+  QVariant def = definition->defaultValue();
+
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
     return val.value< QgsProperty >().valueAsBool( context.expressionContext(), def.toBool() );
   else if ( val.isValid() )
@@ -194,9 +203,105 @@ bool QgsProcessingParameters::parameterAsBool( const QgsProcessingParameterDefin
     return def.toBool();
 }
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields,
+    QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
+    QgsProcessingContext &context, QString &destinationIdentifier )
 {
-  QString layerRef = parameterAsString( definition, parameters, name, context );
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+  }
+
+  QgsProject *destinationProject = nullptr;
+  QVariantMap createOptions;
+  if ( val.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSinkDefinition - get extra properties from it
+    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( val );
+    destinationProject = fromVar.destinationProject;
+    createOptions = fromVar.createOptions;
+    val = fromVar.sink;
+  }
+
+  QString dest;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    dest = definition->defaultValue().toString();
+  }
+  else
+  {
+    dest = val.toString();
+  }
+
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions ) );
+  destinationIdentifier = dest;
+
+  if ( destinationProject )
+    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( definition ? definition->description() : QString(), destinationProject ) );
+
+  return sink.release();
+}
+
+QgsFeatureSource *QgsProcessingParameters::parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return nullptr;
+
+  QVariant val = parameters.value( definition->name() );
+
+  bool selectedFeaturesOnly = false;
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    val = fromVar.source;
+  }
+
+  QString layerRef;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    layerRef = definition->defaultValue().toString();
+  }
+  else
+  {
+    layerRef = val.toString();
+  }
+
+  if ( layerRef.isEmpty() )
+    return nullptr;
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  if ( !vl )
+    return nullptr;
+
+  if ( selectedFeaturesOnly )
+  {
+    return new QgsProcessingFeatureSource( new QgsVectorLayerSelectedFeatureSource( vl ), context, true );
+  }
+  else
+  {
+    return new QgsProcessingFeatureSource( vl, context );
+  }
+}
+
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return nullptr;
+
+  QString layerRef = parameterAsString( definition, parameters, context );
   if ( layerRef.isEmpty() )
     layerRef = definition->defaultValue().toString();
 
@@ -206,19 +311,22 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
   return QgsProcessingUtils::mapLayerFromString( layerRef, context );
 }
 
-QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, name, context ) );
+  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context ) );
 }
 
-QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, name, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context ) );
 }
 
-QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  QString crsText = parameterAsString( definition, parameters, name, context );
+  if ( !definition )
+    return QgsCoordinateReferenceSystem();
+
+  QString crsText = parameterAsString( definition, parameters, context );
   if ( crsText.isEmpty() )
     crsText = definition->defaultValue().toString();
 
@@ -239,11 +347,17 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   return crs;
 }
 
-QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  QString rectText = parameterAsString( definition, parameters, name, context );
-  if ( rectText.isEmpty() )
-    rectText = definition->defaultValue().toString();
+  if ( !definition )
+    return QgsRectangle();
+
+  QVariant val = parameters.value( definition->name() );
+  QString rectText;
+  if ( val.canConvert<QgsProperty>() )
+    rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  else
+    rectText = val.toString();
 
   if ( rectText.isEmpty() )
     return QgsRectangle();
@@ -270,9 +384,12 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   return QgsRectangle();
 }
 
-QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  QString pointText = parameterAsString( definition, parameters, name, context );
+  if ( !definition )
+    return QgsPointXY();
+
+  QString pointText = parameterAsString( definition, parameters, context );
   if ( pointText.isEmpty() )
     pointText = definition->defaultValue().toString();
 
@@ -293,26 +410,32 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
   return QgsPointXY();
 }
 
-QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  QString fileText = parameterAsString( definition, parameters, name, context );
+  if ( !definition )
+    return QString();
+
+  QString fileText = parameterAsString( definition, parameters, context );
   if ( fileText.isEmpty() )
     fileText = definition->defaultValue().toString();
   return fileText;
 }
 
-QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  if ( !definition )
+    return QVariantList();
+
   QString resultString;
-  QVariant val = parameters.value( name );
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    resultString = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    resultString = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
     return val.toList();
   else
     resultString = val.toString();
 
-  if ( resultString.isEmpty() && definition )
+  if ( resultString.isEmpty() )
   {
     // check default
     if ( definition->defaultValue().type() == QVariant::List )
@@ -328,12 +451,15 @@ QVariantList QgsProcessingParameters::parameterAsMatrix( const QgsProcessingPara
   return result;
 }
 
-QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  if ( !definition )
+    return QList<QgsMapLayer *>();
+
   QStringList resultStringList;
-  QVariant val = parameters.value( name );
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
     Q_FOREACH ( const QVariant &var, val.toList() )
@@ -342,7 +468,7 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   else
     resultStringList << val.toString();
 
-  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) && definition )
+  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
   {
     resultStringList.clear();
     // check default
@@ -366,12 +492,15 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   return layers;
 }
 
-QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  if ( !definition )
+    return QList<double>();
+
   QStringList resultStringList;
-  QVariant val = parameters.value( name );
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
     Q_FOREACH ( const QVariant &var, val.toList() )
@@ -380,7 +509,7 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   else
     resultStringList << val.toString();
 
-  if ( ( resultStringList.isEmpty() || ( resultStringList.size() == 1 && resultStringList.at( 0 ).isEmpty() ) ) && definition )
+  if ( ( resultStringList.isEmpty() || ( resultStringList.size() == 1 && resultStringList.at( 0 ).isEmpty() ) ) )
   {
     resultStringList.clear();
     // check default
@@ -404,12 +533,15 @@ QList<double> QgsProcessingParameters::parameterAsRange( const QgsProcessingPara
   return QList< double >() << resultStringList.at( 0 ).toDouble() << resultStringList.at( 1 ).toDouble();
 }
 
-QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
+  if ( !definition )
+    return QStringList();
+
   QStringList resultStringList;
-  QVariant val = parameters.value( name );
+  QVariant val = parameters.value( definition->name() );
   if ( val.canConvert<QgsProperty>() )
-    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition ? definition->defaultValue().toString() : QString() );
+    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
     Q_FOREACH ( const QVariant &var, val.toList() )
@@ -418,7 +550,7 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   else
     resultStringList.append( val.toString().split( ';' ) );
 
-  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) && definition )
+  if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
   {
     resultStringList.clear();
     // check default
@@ -445,6 +577,17 @@ QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QStrin
   , mFlags( optional ? FlagOptional : 0 )
 {}
 
+bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String && input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
@@ -455,10 +598,52 @@ QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const
 
 }
 
+bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
 }
 
 QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -467,10 +652,80 @@ QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name,
 
 }
 
+bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  QStringList parts = input.toString().split( ',' );
+  if ( parts.count() == 4 )
+  {
+    bool xMinOk = false;
+    ( void )parts.at( 0 ).toDouble( &xMinOk );
+    bool xMaxOk = false;
+    ( void )parts.at( 1 ).toDouble( &xMaxOk );
+    bool yMinOk = false;
+    ( void )parts.at( 2 ).toDouble( &yMinOk );
+    bool yMaxOk = false;
+    ( void )parts.at( 3 ).toDouble( &yMaxOk );
+    if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
+      return true;
+  }
+
+  // try as layer extent
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
 QgsProcessingParameterPoint::QgsProcessingParameterPoint( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+
+  QStringList parts = input.toString().split( ',' );
+  if ( parts.count() == 2 )
+  {
+    bool xOk = false;
+    ( void )parts.at( 0 ).toDouble( &xOk );
+    bool yOk = false;
+    ( void )parts.at( 1 ).toDouble( &yOk );
+    return xOk && yOk;
+  }
+  else
+    return false;
 }
 
 QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional )
@@ -481,6 +736,36 @@ QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, con
 
 }
 
+bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  QString string = input.toString().trimmed();
+
+  if ( input.type() != QVariant::String || string.isEmpty() )
+    return mFlags & FlagOptional;
+
+  switch ( mBehavior )
+  {
+    case File:
+    {
+      if ( !mExtension.isEmpty() )
+        return string.endsWith( mExtension, Qt::CaseInsensitive );
+      return true;
+    }
+
+    case Folder:
+      return true;
+  }
+  return true;
+}
+
 QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name, const QString &description, int numberRows, bool fixedNumberRows, const QStringList &headers, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mHeaders( headers )
@@ -488,6 +773,31 @@ QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name,
   , mFixedNumberRows( fixedNumberRows )
 {
 
+}
+
+bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().isEmpty() )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::Double || input.type() == QVariant::Int )
+  {
+    return true;
+  }
+
+  return false;
 }
 
 QStringList QgsProcessingParameterMatrix::headers() const
@@ -527,6 +837,63 @@ QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( cons
 
 }
 
+bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > 1 )
+      return false;
+
+    if ( !context )
+      return true;
+
+    return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().count() < mMinimumNumberInputs )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > input.toList().count() )
+      return false;
+
+    if ( !context )
+      return true;
+
+    Q_FOREACH ( const QVariant &v, input.toList() )
+    {
+      if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
+        return false;
+    }
+    return true;
+  }
+  else if ( input.type() == QVariant::StringList )
+  {
+    if ( input.toStringList().count() < mMinimumNumberInputs )
+      return mFlags & FlagOptional;
+
+    if ( mMinimumNumberInputs > input.toStringList().count() )
+      return false;
+
+    if ( !context )
+      return true;
+
+    Q_FOREACH ( const QString &v, input.toStringList() )
+    {
+      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+        return false;
+    }
+    return true;
+  }
+  return false;
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterMultipleLayers::layerType() const
 {
   return mLayerType;
@@ -537,6 +904,17 @@ void QgsProcessingParameterMultipleLayers::setLayerType( LayerType type )
   mLayerType = type;
 }
 
+int QgsProcessingParameterMultipleLayers::minimumNumberInputs() const
+{
+  return mMinimumNumberInputs;
+}
+
+void QgsProcessingParameterMultipleLayers::setMinimumNumberInputs( int minimumNumberInputs )
+{
+  if ( mMinimumNumberInputs >= 1 || !( flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+    mMinimumNumberInputs = minimumNumberInputs;
+}
+
 QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name, const QString &description, Type type, const QVariant &defaultValue, bool optional, double minValue, double maxValue )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mMin( minValue )
@@ -544,6 +922,27 @@ QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name,
   , mDataType( type )
 {
 
+}
+
+bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  bool ok = false;
+  double res = input.toDouble( &ok );
+  if ( !ok )
+    return mFlags & FlagOptional;
+
+  if ( res < mMin || res > mMax )
+    return false;
+
+  return true;
 }
 
 double QgsProcessingParameterNumber::minimum() const
@@ -583,6 +982,46 @@ QgsProcessingParameterRange::QgsProcessingParameterRange( const QString &name, c
 
 }
 
+bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::String )
+  {
+    QStringList list = input.toString().split( ',' );
+    if ( list.count() != 2 )
+      return mFlags & FlagOptional;
+    bool ok = false;
+    list.at( 0 ).toDouble( &ok );
+    bool ok2 = false;
+    list.at( 1 ).toDouble( &ok2 );
+    if ( !ok || !ok2 )
+      return mFlags & FlagOptional;
+    return true;
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().count() != 2 )
+      return mFlags & FlagOptional;
+
+    bool ok = false;
+    input.toList().at( 0 ).toDouble( &ok );
+    bool ok2 = false;
+    input.toList().at( 1 ).toDouble( &ok2 );
+    if ( !ok || !ok2 )
+      return mFlags & FlagOptional;
+    return true;
+  }
+
+  return false;
+}
+
 QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
 {
   return mDataType;
@@ -599,12 +1038,94 @@ QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QStr
 
 }
 
+bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::String || input.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
 QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mOptions( options )
   , mAllowMultiple( allowMultiple )
 {
 
+}
+
+bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::List )
+  {
+    if ( !mAllowMultiple )
+      return false;
+
+    Q_FOREACH ( const QVariant &val, input.toList() )
+    {
+      bool ok = false;
+      int res = val.toInt( &ok );
+      if ( !ok )
+        return false;
+      else if ( res < 0 || res >= mOptions.count() )
+        return false;
+    }
+
+    return true;
+  }
+  else if ( input.type() == QVariant::String )
+  {
+    QStringList parts = input.toString().split( ',' );
+    if ( parts.count() > 1 && !mAllowMultiple )
+      return false;
+
+    Q_FOREACH ( const QString &part, parts )
+    {
+      bool ok = false;
+      int res = part.toInt( &ok );
+      if ( !ok )
+        return false;
+      else if ( res < 0 || res >= mOptions.count() )
+        return false;
+    }
+    return true;
+  }
+  else if ( input.type() == QVariant::Int || input.type() == QVariant::Double )
+  {
+    bool ok = false;
+    int res = input.toInt( &ok );
+    if ( !ok )
+      return false;
+    else if ( res >= 0 && res < mOptions.count() )
+      return true;
+  }
+  return false;
 }
 
 QStringList QgsProcessingParameterEnum::options() const
@@ -676,6 +1197,38 @@ QgsProcessingParameterTableField::QgsProcessingParameterTableField( const QStrin
 
 }
 
+bool QgsProcessingParameterTableField::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::List || input.type() == QVariant::StringList )
+  {
+    if ( !mAllowMultiple )
+      return false;
+  }
+  else if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    QStringList parts = input.toString().split( ';' );
+    if ( parts.count() > 1 && !mAllowMultiple )
+      return false;
+  }
+  else
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+  return true;
+}
+
 QString QgsProcessingParameterTableField::parentLayerParameter() const
 {
   return mParentLayerParameter;
@@ -706,19 +1259,96 @@ void QgsProcessingParameterTableField::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
-QgsProcessingParameterVector::QgsProcessingParameterVector( const QString &name, const QString &description, LayerType type, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mDataTypes( types )
+{
+
+}
+
+bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
+    var = fromVar.source;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( var.type() != QVariant::String || var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  if ( !context )
+  {
+    // that's as far as we can get without a context
+    return true;
+  }
+
+  // try to load as layer
+  if ( QgsProcessingUtils::mapLayerFromString( var.toString(), *context ) )
+    return true;
+
+  return false;
+}
+
+QList< int > QgsProcessingParameterFeatureSource::dataTypes() const
+{
+  return mDataTypes;
+}
+
+void QgsProcessingParameterFeatureSource::setDataTypes( const QList<int> &types )
+{
+  mDataTypes = types;
+}
+
+
+QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
 }
 
-QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVector::dataType() const
+bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  {
+    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
 {
   return mDataType;
 }
 
-void QgsProcessingParameterVector::setDataType( QgsProcessingParameterDefinition::LayerType dataType )
+void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefinition::LayerType type )
 {
-  mDataType = dataType;
+  mDataType = type;
 }

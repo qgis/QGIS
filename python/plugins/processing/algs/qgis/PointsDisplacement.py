@@ -34,14 +34,14 @@ from qgis.core import (QgsApplication,
                        QgsPointXY,
                        QgsProcessingUtils)
 from processing.tools import dataobjects
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
 
 
-class PointsDisplacement(GeoAlgorithm):
+class PointsDisplacement(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     DISTANCE = 'DISTANCE'
@@ -57,13 +57,8 @@ class PointsDisplacement(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'pointsdisplacement'
-
-    def displayName(self):
-        return self.tr('Points displacement')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -73,7 +68,13 @@ class PointsDisplacement(GeoAlgorithm):
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'pointsdisplacement'
+
+    def displayName(self):
+        return self.tr('Points displacement')
+
+    def processAlgorithm(self, parameters, context, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)

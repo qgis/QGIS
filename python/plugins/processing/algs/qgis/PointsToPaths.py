@@ -39,7 +39,7 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
@@ -48,7 +48,7 @@ from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects
 
 
-class PointsToPaths(GeoAlgorithm):
+class PointsToPaths(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     GROUP_FIELD = 'GROUP_FIELD'
@@ -67,13 +67,8 @@ class PointsToPaths(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'pointstopath'
-
-    def displayName(self):
-        return self.tr('Points to path')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,
@@ -88,7 +83,13 @@ class PointsToPaths(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'pointstopath'
+
+    def displayName(self):
+        return self.tr('Points to path')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         groupField = self.getParameterValue(self.GROUP_FIELD)
         orderField = self.getParameterValue(self.ORDER_FIELD)

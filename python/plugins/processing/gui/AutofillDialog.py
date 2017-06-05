@@ -47,8 +47,8 @@ class AutofillDialog(BASE, WIDGET):
 
         self.cmbFillType.currentIndexChanged.connect(self.toggleParameters)
 
-        for param in alg.parameters:
-            self.cmbParameters.addItem(param.description)
+        for param in alg.parameterDefinitions():
+            self.cmbParameters.addItem(param.description())
 
     def toggleParameters(self, index):
         if index == self.FILL_WITH_PARAMETER:

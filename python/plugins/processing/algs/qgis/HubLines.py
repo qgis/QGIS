@@ -32,7 +32,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class HubLines(GeoAlgorithm):
+class HubLines(QgisAlgorithm):
     HUBS = 'HUBS'
     HUB_FIELD = 'HUB_FIELD'
     SPOKES = 'SPOKES'
@@ -57,13 +57,8 @@ class HubLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'hublines'
-
-    def displayName(self):
-        return self.tr('Hub lines')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.HUBS,
                                           self.tr('Hub layer')))
         self.addParameter(ParameterTableField(self.HUB_FIELD,
@@ -75,7 +70,13 @@ class HubLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'hublines'
+
+    def displayName(self):
+        return self.tr('Hub lines')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
 

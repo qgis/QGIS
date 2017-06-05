@@ -27,11 +27,17 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -40,10 +46,16 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Boundary(GeoAlgorithm):
+class Boundary(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def __init__(self):
+        super().__init__()
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Boundary')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Boundaries")))
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
@@ -57,16 +69,10 @@ class Boundary(GeoAlgorithm):
     def displayName(self):
         return self.tr('Boundary')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Boundary')))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-    def processAlgorithm(self, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-
-        input_wkb = layer.wkbType()
+        input_wkb = source.wkbType()
         if QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.LineGeometry:
             output_wkb = QgsWkbTypes.MultiPoint
         elif QgsWkbTypes.geometryType(input_wkb) == QgsWkbTypes.PolygonGeometry:
@@ -76,13 +82,15 @@ class Boundary(GeoAlgorithm):
         if QgsWkbTypes.hasM(input_wkb):
             output_wkb = QgsWkbTypes.addM(output_wkb)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(layer.fields(), output_wkb, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
+                                               source.fields(), output_wkb, source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
 
         for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
             output_feature = input_feature
             input_geometry = input_feature.geometry()
             if input_geometry:
@@ -93,7 +101,7 @@ class Boundary(GeoAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            sink.addFeature(output_feature)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT_LAYER: dest_id}

@@ -32,11 +32,11 @@ from qgis.core import (QgsExpression,
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExpression
 
 
-class ExtractByExpression(GeoAlgorithm):
+class ExtractByExpression(QgisAlgorithm):
 
     INPUT = 'INPUT'
     EXPRESSION = 'EXPRESSION'
@@ -54,20 +54,21 @@ class ExtractByExpression(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'extractbyexpression'
-
-    def displayName(self):
-        return self.tr('Extract by expression')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterExpression(self.EXPRESSION,
                                               self.tr("Expression"), parent_layer=self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (expression)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'extractbyexpression'
+
+    def displayName(self):
+        return self.tr('Extract by expression')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         expression_string = self.getParameterValue(self.EXPRESSION)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),

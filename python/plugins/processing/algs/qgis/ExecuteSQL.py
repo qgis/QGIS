@@ -33,7 +33,7 @@ from qgis.core import (QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterMultipleInput
@@ -42,7 +42,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class ExecuteSQL(GeoAlgorithm):
+class ExecuteSQL(QgisAlgorithm):
 
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
@@ -65,13 +65,8 @@ class ExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'executesql'
-
-    def displayName(self):
-        return self.tr('Execute SQL')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))
@@ -103,7 +98,13 @@ class ExecuteSQL(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('SQL Output')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'executesql'
+
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layers = self.getParameterValue(self.INPUT_DATASOURCES)
         query = self.getParameterValue(self.INPUT_QUERY)
         uid_field = self.getParameterValue(self.INPUT_UID_FIELD)

@@ -26,14 +26,14 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber)
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class DeleteHoles(GeoAlgorithm):
+class DeleteHoles(QgisAlgorithm):
 
     INPUT = 'INPUT'
     MIN_AREA = 'MIN_AREA'
@@ -51,13 +51,8 @@ class DeleteHoles(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'deleteholes'
-
-    def displayName(self):
-        return self.tr('Delete holes')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_AREA,
@@ -65,7 +60,13 @@ class DeleteHoles(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'deleteholes'
+
+    def displayName(self):
+        return self.tr('Delete holes')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         min_area = self.getParameterValue(self.MIN_AREA)
         if min_area is not None:

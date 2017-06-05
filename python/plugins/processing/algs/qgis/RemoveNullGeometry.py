@@ -27,13 +27,13 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class RemoveNullGeometry(GeoAlgorithm):
+class RemoveNullGeometry(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -50,18 +50,19 @@ class RemoveNullGeometry(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
+
     def name(self):
         return 'removenullgeometries'
 
     def displayName(self):
         return self.tr('Remove null geometries')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Removed null geometry')))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         writer = self.getOutputFromName(
             self.OUTPUT_LAYER).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)

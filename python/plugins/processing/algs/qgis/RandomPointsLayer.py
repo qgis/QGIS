@@ -35,7 +35,7 @@ from qgis.core import (QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkb
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
@@ -44,7 +44,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsLayer(GeoAlgorithm):
+class RandomPointsLayer(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     POINT_NUMBER = 'POINT_NUMBER'
@@ -57,13 +57,8 @@ class RandomPointsLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinlayerbounds'
-
-    def displayName(self):
-        return self.tr('Random points in layer bounds')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
@@ -72,7 +67,13 @@ class RandomPointsLayer(GeoAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randompointsinlayerbounds'
+
+    def displayName(self):
+        return self.tr('Random points in layer bounds')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

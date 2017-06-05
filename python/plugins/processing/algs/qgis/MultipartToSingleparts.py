@@ -31,14 +31,14 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsWkbTypes, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class MultipartToSingleparts(GeoAlgorithm):
+class MultipartToSingleparts(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -49,17 +49,18 @@ class MultipartToSingleparts(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
+
     def name(self):
         return 'multiparttosingleparts'
 
     def displayName(self):
         return self.tr('Multipart to singleparts')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         geomType = QgsWkbTypes.singleType(layer.wkbType())
 

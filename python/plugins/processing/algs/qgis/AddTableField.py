@@ -30,7 +30,7 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class AddTableField(GeoAlgorithm):
+class AddTableField(QgisAlgorithm):
 
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
@@ -58,14 +58,8 @@ class AddTableField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'addfieldtoattributestable'
-
-    def displayName(self):
-        return self.tr('Add field to attributes table')
-
-    def defineCharacteristics(self):
-
+    def __init__(self):
+        super().__init__()
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]
@@ -83,7 +77,13 @@ class AddTableField(GeoAlgorithm):
         self.addOutput(OutputVector(
             self.OUTPUT_LAYER, self.tr('Added')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'addfieldtoattributestable'
+
+    def displayName(self):
+        return self.tr('Add field to attributes table')
+
+    def processAlgorithm(self, parameters, context, feedback):
         fieldType = self.getParameterValue(self.FIELD_TYPE)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldLength = self.getParameterValue(self.FIELD_LENGTH)

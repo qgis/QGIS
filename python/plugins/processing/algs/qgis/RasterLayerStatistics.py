@@ -31,14 +31,14 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputHTML
 from processing.tools import raster
 
 
-class RasterLayerStatistics(GeoAlgorithm):
+class RasterLayerStatistics(QgisAlgorithm):
 
     INPUT = 'INPUT'
 
@@ -60,13 +60,8 @@ class RasterLayerStatistics(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'rasterlayerstatistics'
-
-    def displayName(self):
-        return self.tr('Raster layer statistics')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
@@ -78,7 +73,13 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
         self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'rasterlayerstatistics'
+
+    def displayName(self):
+        return self.tr('Raster layer statistics')
+
+    def processAlgorithm(self, parameters, context, feedback):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(uri, context)

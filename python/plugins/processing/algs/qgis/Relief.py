@@ -30,8 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon, QColor
 
 from qgis.analysis import QgsRelief
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from qgis.core import QgsProcessingParameterDefinition
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
@@ -45,7 +45,7 @@ from processing.tools import raster
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Relief(GeoAlgorithm):
+class Relief(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'
@@ -60,13 +60,9 @@ class Relief(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def name(self):
-        return 'relief'
+    def __init__(self):
+        super().__init__()
 
-    def displayName(self):
-        return self.tr('Relief')
-
-    def defineCharacteristics(self):
         class ParameterReliefColors(Parameter):
             default_metadata = {
                 'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'
@@ -78,13 +74,13 @@ class Relief(GeoAlgorithm):
 
             def setValue(self, value):
                 if value is None:
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
                     self.value = None
                     return True
 
                 if value == '':
-                    if not self.optional:
+                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
                         return False
 
                 if isinstance(value, str):
@@ -136,7 +132,13 @@ class Relief(GeoAlgorithm):
         self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
                                    self.tr('Frequency distribution')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'relief'
+
+    def displayName(self):
+        return self.tr('Relief')
+
+    def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         automaticColors = self.getParameterValue(self.AUTO_COLORS)

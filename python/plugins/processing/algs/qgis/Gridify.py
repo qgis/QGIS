@@ -32,14 +32,14 @@ from qgis.core import (QgsGeometry,
                        QgsApplication,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
-class Gridify(GeoAlgorithm):
+class Gridify(QgisAlgorithm):
     INPUT = 'INPUT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
@@ -54,13 +54,8 @@ class Gridify(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'snappointstogrid'
-
-    def displayName(self):
-        return self.tr('Snap points to grid')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -70,7 +65,13 @@ class Gridify(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'snappointstogrid'
+
+    def displayName(self):
+        return self.tr('Snap points to grid')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)

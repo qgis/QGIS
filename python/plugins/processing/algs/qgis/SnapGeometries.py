@@ -31,12 +31,12 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
 from processing.core.outputs import OutputVector
 
 
-class SnapGeometriesToLayer(GeoAlgorithm):
+class SnapGeometriesToLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     REFERENCE_LAYER = 'REFERENCE_LAYER'
@@ -53,13 +53,8 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'snapgeometries'
-
-    def displayName(self):
-        return self.tr('Snap geometries to layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
@@ -75,7 +70,13 @@ class SnapGeometriesToLayer(GeoAlgorithm):
             self.modes, default=0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped geometries')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'snapgeometries'
+
+    def displayName(self):
+        return self.tr('Snap geometries to layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         reference_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.REFERENCE_LAYER), context)
         tolerance = self.getParameterValue(self.TOLERANCE)

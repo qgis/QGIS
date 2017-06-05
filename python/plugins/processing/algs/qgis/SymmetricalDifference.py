@@ -36,7 +36,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import vector
@@ -44,7 +44,7 @@ from processing.tools import vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class SymmetricalDifference(GeoAlgorithm):
+class SymmetricalDifference(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
@@ -56,13 +56,8 @@ class SymmetricalDifference(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'symmetricaldifference'
-
-    def displayName(self):
-        return self.tr('Symmetrical difference')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.OVERLAY,
@@ -70,7 +65,13 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'symmetricaldifference'
+
+    def displayName(self):
+        return self.tr('Symmetrical difference')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.OVERLAY), context)
 

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -36,7 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsDataSourceUri)
 
 
-class SpatialiteExecuteSQL(GeoAlgorithm):
+class SpatialiteExecuteSQL(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
@@ -50,17 +50,18 @@ class SpatialiteExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
+        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
+
     def name(self):
         return 'spatialiteexecutesql'
 
     def displayName(self):
         return self.tr('Spatialite execute SQL')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
-        self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         database = self.getParameterValue(self.DATABASE)
         uri = QgsDataSourceUri(database)
         if uri.database() is '':

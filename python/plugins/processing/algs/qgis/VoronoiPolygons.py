@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -44,7 +44,7 @@ from . import voronoi
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VoronoiPolygons(GeoAlgorithm):
+class VoronoiPolygons(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BUFFER = 'BUFFER'
@@ -56,13 +56,8 @@ class VoronoiPolygons(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'voronoipolygons'
-
-    def displayName(self):
-        return self.tr('Voronoi polygons')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.BUFFER,
@@ -70,7 +65,13 @@ class VoronoiPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'voronoipolygons'
+
+    def displayName(self):
+        return self.tr('Voronoi polygons')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
 
         buf = self.getParameterValue(self.BUFFER)

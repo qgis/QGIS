@@ -37,7 +37,7 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsFeatureRequest,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -46,7 +46,7 @@ from processing.core.outputs import OutputNumber
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class BasicStatisticsForField(GeoAlgorithm):
+class BasicStatisticsForField(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELD_NAME = 'FIELD_NAME'
@@ -83,13 +83,8 @@ class BasicStatisticsForField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'basicstatisticsforfields'
-
-    def displayName(self):
-        return self.tr('Basic statistics for fields')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
@@ -120,7 +115,13 @@ class BasicStatisticsForField(GeoAlgorithm):
         self.addOutput(OutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'basicstatisticsforfields'
+
+    def displayName(self):
+        return self.tr('Basic statistics for fields')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         field_name = self.getParameterValue(self.FIELD_NAME)
         field = layer.fields().at(layer.fields().lookupField(field_name))

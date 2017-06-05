@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # exclude output for from_output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')

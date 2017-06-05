@@ -36,7 +36,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import vector
@@ -53,7 +53,7 @@ for key, value in list(wkbTypeGroups.items()):
         wkbTypeGroups[const] = key
 
 
-class Union(GeoAlgorithm):
+class Union(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INPUT2 = 'INPUT2'
@@ -65,20 +65,21 @@ class Union(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'union'
-
-    def displayName(self):
-        return self.tr('Union')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(Union.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Union.INPUT2,
                                           self.tr('Input layer 2')))
         self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'union'
+
+    def displayName(self):
+        return self.tr('Union')
+
+    def processAlgorithm(self, parameters, context, feedback):
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT), context)
         vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT2), context)
 

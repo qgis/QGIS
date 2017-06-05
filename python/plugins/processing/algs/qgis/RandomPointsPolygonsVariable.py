@@ -35,7 +35,7 @@ from qgis.core import (QgsFields, QgsField, QgsFeature, QgsPointXY, QgsWkbTypes,
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
@@ -46,7 +46,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsPolygonsVariable(GeoAlgorithm):
+class RandomPointsPolygonsVariable(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     FIELD = 'FIELD'
@@ -60,13 +60,8 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinsidepolygonsvariable'
-
-    def displayName(self):
-        return self.tr('Random points inside polygons (variable)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 
@@ -81,7 +76,13 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randompointsinsidepolygonsvariable'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (variable)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         fieldName = self.getParameterValue(self.FIELD)
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

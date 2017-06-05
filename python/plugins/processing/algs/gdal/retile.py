@@ -26,6 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsProcessingParameterDefinition
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
@@ -63,16 +65,8 @@ class retile(GdalAlgorithm):
     def commandName(self):
         return "gdal_retile"
 
-    def name(self):
-        return 'retile'
-
-    def displayName(self):
-        return self.tr('Retile')
-
-    def group(self):
-        return self.tr('Raster miscellaneous')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
@@ -115,13 +109,22 @@ class retile(GdalAlgorithm):
                                       None, False, True))
 
         for param in params:
-            param.isAdvanced = True
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
         self.addOutput(OutputDirectory(self.TARGETDIR,
                                        self.tr('The directory where the tile result is created')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'retile'
+
+    def displayName(self):
+        return self.tr('Retile')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
+
+    def getConsoleCommands(self, parameters):
 
         arguments = []
 

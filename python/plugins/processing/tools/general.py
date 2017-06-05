@@ -47,9 +47,9 @@ def algorithmOptions(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         opts = ''
-        for param in alg.parameters:
+        for param in alg.parameterDefinitions():
             if isinstance(param, ParameterSelection):
-                opts += '{} ({})\n'.format(param.name, param.description)
+                opts += '{} ({})\n'.format(param.name(), param.description())
                 for option in enumerate(param.options):
                     opts += '\t{} - {}\n'.format(option[0], option[1])
         print(opts)
@@ -63,7 +63,6 @@ def algorithmHelp(id):
     """
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
-        alg = alg.getCopy()
         print(str(alg))
         algorithmOptions(id)
     else:
@@ -74,9 +73,7 @@ def run(algOrName, *args, **kwargs):
     """Executes given algorithm and returns its outputs as dictionary
     object.
     """
-    alg = Processing.runAlgorithm(algOrName, None, *args, **kwargs)
-    if alg is not None:
-        return alg.getOutputValuesAsDictionary()
+    return Processing.runAlgorithm(algOrName, None, *args, **kwargs)
 
 
 def runAndLoadResults(name, *args, **kwargs):

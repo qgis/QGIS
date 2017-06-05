@@ -27,13 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.tools import postgis
 
 
-class PostGISExecuteSQL(GeoAlgorithm):
+class PostGISExecuteSQL(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
@@ -47,13 +47,8 @@ class PostGISExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'postgisexecutesql'
-
-    def displayName(self):
-        return self.tr('PostGIS execute SQL')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database'),
@@ -62,7 +57,13 @@ class PostGISExecuteSQL(GeoAlgorithm):
                     'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'postgisexecutesql'
+
+    def displayName(self):
+        return self.tr('PostGIS execute SQL')
+
+    def processAlgorithm(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         self.db = postgis.GeoDB.from_name(connection)
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')

@@ -30,7 +30,7 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterTableField
 from processing.tools import postgis
 
 
-class ImportIntoPostGIS(GeoAlgorithm):
+class ImportIntoPostGIS(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
@@ -63,13 +63,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'importintopostgis'
-
-    def displayName(self):
-        return self.tr('Import into PostGIS')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to import')))
         self.addParameter(ParameterString(
@@ -114,7 +109,13 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
                                            self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'importintopostgis'
+
+    def displayName(self):
+        return self.tr('Import into PostGIS')
+
+    def processAlgorithm(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         db = postgis.GeoDB.from_name(connection)
 

@@ -30,7 +30,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
@@ -39,7 +39,7 @@ from processing.core.parameters import ParameterTableField
 from processing.tools import spatialite
 
 
-class ImportIntoSpatialite(GeoAlgorithm):
+class ImportIntoSpatialite(QgisAlgorithm):
 
     DATABASE = 'DATABASE'
     TABLENAME = 'TABLENAME'
@@ -62,13 +62,8 @@ class ImportIntoSpatialite(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
-    def name(self):
-        return 'importintospatialite'
-
-    def displayName(self):
-        return self.tr('Import into Spatialite')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT, self.tr('Layer to import')))
         self.addParameter(ParameterVector(self.DATABASE, self.tr('File database'), False, False))
         self.addParameter(ParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
@@ -81,7 +76,13 @@ class ImportIntoSpatialite(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'importintospatialite'
+
+    def displayName(self):
+        return self.tr('Import into Spatialite')
+
+    def processAlgorithm(self, parameters, context, feedback):
         database = self.getParameterValue(self.DATABASE)
         uri = QgsDataSourceUri(database)
         if uri.database() is '':

@@ -63,19 +63,8 @@ class ClipByMask(GdalAlgorithm):
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
-    def name(self):
-        return 'cliprasterbymasklayer'
-
-    def displayName(self):
-        return self.tr('Clip raster by mask layer')
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
-
-    def group(self):
-        return self.tr('Raster extraction')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -101,7 +90,19 @@ class ClipByMask(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (mask)')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'cliprasterbymasklayer'
+
+    def displayName(self):
+        return self.tr('Clip raster by mask layer')
+
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
+
+    def group(self):
+        return self.tr('Raster extraction')
+
+    def getConsoleCommands(self, parameters):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
         context = dataobjects.createContext()

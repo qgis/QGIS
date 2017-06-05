@@ -193,8 +193,8 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
 
 
 def _executeAlgorithm(alg):
-    message = alg.checkBeforeOpeningParametersDialog()
-    if message:
+    ok, message = alg.canExecute()
+    if not ok:
         dlg = MessageDialog()
         dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
@@ -203,15 +203,9 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
 
-    # hack - remove when getCopy is removed
-    provider = alg.provider()
-    alg = alg.getCopy()
-    #hack pt 2
-    alg.setProvider(provider)
-
     context = dataobjects.createContext()
-    if (alg.getVisibleParametersCount() + alg.getVisibleOutputsCount()) > 0:
-        dlg = alg.getCustomParametersDialog()
+    if (alg.countVisibleParameters()) > 0:
+        dlg = alg.createCustomParametersWidget(None)
         if not dlg:
             dlg = AlgorithmDialog(alg)
         canvas = iface.mapCanvas()
@@ -226,7 +220,8 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
-        execute(alg, context, feedback)
+        parameters = {}
+        ret, results = execute(alg, parameters, context, feedback)
         handleAlgorithmResults(alg, context, feedback)
         feedback.close()
 

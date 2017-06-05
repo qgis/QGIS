@@ -38,6 +38,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsPointXY,
                        QgsFields,
                        QgsField,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -47,7 +48,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            )
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
@@ -64,7 +65,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ShortestPathPointToPoint(GeoAlgorithm):
+class ShortestPathPointToPoint(QgisAlgorithm):
 
     INPUT_VECTOR = 'INPUT_VECTOR'
     START_POINT = 'START_POINT'
@@ -87,13 +88,8 @@ class ShortestPathPointToPoint(GeoAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
-    def name(self):
-        return 'shortestpathpointtopoint'
-
-    def displayName(self):
-        return self.tr('Shortest path (point to point)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
             (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -148,7 +144,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                       0.0, 99999999.999999, 0.0))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(OutputNumber(self.TRAVEL_COST,
@@ -157,7 +153,13 @@ class ShortestPathPointToPoint(GeoAlgorithm):
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'shortestpathpointtopoint'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to point)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         endPoint = self.getParameterValue(self.END_POINT)

@@ -35,7 +35,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
@@ -44,7 +44,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class NearestNeighbourAnalysis(GeoAlgorithm):
+class NearestNeighbourAnalysis(QgisAlgorithm):
 
     POINTS = 'POINTS'
     OUTPUT = 'OUTPUT'
@@ -60,13 +60,8 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'nearestneighbouranalysis'
-
-    def displayName(self):
-        return self.tr('Nearest neighbour analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 
@@ -82,7 +77,13 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'nearestneighbouranalysis'
+
+    def displayName(self):
+        return self.tr('Nearest neighbour analysis')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         output = self.getOutputValue(self.OUTPUT)
 

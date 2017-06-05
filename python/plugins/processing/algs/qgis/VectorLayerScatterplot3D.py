@@ -30,7 +30,7 @@ import plotly.graph_objs as go
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
@@ -38,7 +38,7 @@ from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
-class VectorLayerScatterplot3D(GeoAlgorithm):
+class VectorLayerScatterplot3D(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -55,13 +55,8 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def name(self):
-        return 'scatter3dplot'
-
-    def displayName(self):
-        return self.tr('Vector layer scatterplot 3D')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,
@@ -79,7 +74,13 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'scatter3dplot'
+
+    def displayName(self):
+        return self.tr('Vector layer scatterplot 3D')
+
+    def processAlgorithm(self, parameters, context, feedback):
 
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         xfieldname = self.getParameterValue(self.XFIELD)
@@ -88,7 +89,7 @@ class VectorLayerScatterplot3D(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, context, xfieldname, yfieldname, zfieldname)
+        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
 
         data = [go.Scatter3d(
                 x=values[xfieldname],

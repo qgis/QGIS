@@ -33,7 +33,7 @@ from qgis.core import (QgsFeatureRequest, QgsFeature, QgsGeometry,
                        QgsWkbTypes, QgsFields,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -42,7 +42,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class LinesIntersection(GeoAlgorithm):
+class LinesIntersection(QgisAlgorithm):
 
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'
@@ -57,13 +57,8 @@ class LinesIntersection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'lineintersections'
-
-    def displayName(self):
-        return self.tr('Line intersections')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
@@ -81,7 +76,13 @@ class LinesIntersection(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'lineintersections'
+
+    def displayName(self):
+        return self.tr('Line intersections')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
         layerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
         fieldA = self.getParameterValue(self.FIELD_A)

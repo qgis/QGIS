@@ -35,7 +35,7 @@ from qgis.core import (QgsExpression,
                        QgsProject,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -47,7 +47,7 @@ from processing.core.outputs import OutputVector
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
 
-class FieldsCalculator(GeoAlgorithm):
+class FieldsCalculator(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     NEW_FIELD = 'NEW_FIELD'
@@ -69,13 +69,8 @@ class FieldsCalculator(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'fieldcalculator'
-
-    def displayName(self):
-        return self.tr('Field calculator')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),
                            self.tr('String'),
@@ -96,7 +91,13 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'fieldcalculator'
+
+    def displayName(self):
+        return self.tr('Field calculator')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
@@ -163,11 +164,12 @@ class FieldsCalculator(GeoAlgorithm):
                 self.tr('An error occurred while evaluating the calculation '
                         'string:\n{0}').format(error))
 
-    def checkParameterValuesBeforeExecuting(self):
+    def checkParameterValues(self, parameters, context):
         newField = self.getParameterValue(self.NEW_FIELD)
         fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
+        return super(FieldsCalculator, self).checkParameterValues(parameters, context)
 
-    def getCustomParametersDialog(self):
+    def createCustomParametersWidget(self, parent):
         return FieldsCalculatorDialog(self)

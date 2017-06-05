@@ -33,14 +33,14 @@ from qgis.core import (QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class DensifyGeometriesInterval(GeoAlgorithm):
+class DensifyGeometriesInterval(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'
@@ -55,13 +55,8 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'densifygeometriesgivenaninterval'
-
-    def displayName(self):
-        return self.tr('Densify geometries given an interval')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
@@ -70,7 +65,13 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'densifygeometriesgivenaninterval'
+
+    def displayName(self):
+        return self.tr('Densify geometries given an interval')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         interval = self.getParameterValue(self.INTERVAL)
 

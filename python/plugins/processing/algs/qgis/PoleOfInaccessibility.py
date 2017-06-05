@@ -32,7 +32,7 @@ from qgis.core import QgsWkbTypes, QgsField, NULL, QgsProcessingUtils
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PoleOfInaccessibility(GeoAlgorithm):
+class PoleOfInaccessibility(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     TOLERANCE = 'TOLERANCE'
@@ -56,13 +56,8 @@ class PoleOfInaccessibility(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'poleofinaccessibility'
-
-    def displayName(self):
-        return self.tr('Pole of Inaccessibility')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))
@@ -70,7 +65,13 @@ class PoleOfInaccessibility(GeoAlgorithm):
                                           self.tr('Tolerance (layer units)'), default=1.0, minValue=0.0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'poleofinaccessibility'
+
+    def displayName(self):
+        return self.tr('Pole of Inaccessibility')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         tolerance = self.getParameterValue(self.TOLERANCE)
 

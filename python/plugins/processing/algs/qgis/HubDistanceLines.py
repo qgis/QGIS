@@ -36,7 +36,7 @@ from qgis.core import (QgsField,
                        QgsApplication,
                        QgsProject,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
@@ -48,7 +48,7 @@ from processing.tools import dataobjects
 from math import sqrt
 
 
-class HubDistanceLines(GeoAlgorithm):
+class HubDistanceLines(QgisAlgorithm):
     POINTS = 'POINTS'
     HUBS = 'HUBS'
     FIELD = 'FIELD'
@@ -71,13 +71,8 @@ class HubDistanceLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'distancetonearesthublinetohub'
-
-    def displayName(self):
-        return self.tr('Distance to nearest hub (line to hub)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),
@@ -95,7 +90,13 @@ class HubDistanceLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'distancetonearesthublinetohub'
+
+    def displayName(self):
+        return self.tr('Distance to nearest hub (line to hub)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
         fieldName = self.getParameterValue(self.FIELD)

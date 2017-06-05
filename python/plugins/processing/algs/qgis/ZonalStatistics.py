@@ -41,7 +41,7 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -52,7 +52,7 @@ from processing.tools.raster import mapToPixel
 from processing.tools import dataobjects, vector
 
 
-class ZonalStatistics(GeoAlgorithm):
+class ZonalStatistics(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
@@ -70,13 +70,8 @@ class ZonalStatistics(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'zonalstatistics'
-
-    def displayName(self):
-        return self.tr('Zonal Statistics')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,
@@ -90,9 +85,16 @@ class ZonalStatistics(GeoAlgorithm):
                                            self.tr('Load whole raster in memory')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'zonalstatistics'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics')
+
+    def processAlgorithm(self, parameters, context, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
+            :param parameters:
             :param context:
         """
 

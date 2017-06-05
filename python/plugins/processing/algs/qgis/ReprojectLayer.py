@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsFeature, QgsProcessingUtils
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
@@ -37,7 +37,7 @@ from qgis.PyQt.QtGui import QIcon
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ReprojectLayer(GeoAlgorithm):
+class ReprojectLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
     TARGET_CRS = 'TARGET_CRS'
@@ -52,13 +52,8 @@ class ReprojectLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'reprojectlayer'
-
-    def displayName(self):
-        return self.tr('Reproject layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,
@@ -66,7 +61,13 @@ class ReprojectLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'reprojectlayer'
+
+    def displayName(self):
+        return self.tr('Reproject layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()

@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.analysis import QgsZonalStatistics
 from qgis.core import QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
@@ -44,7 +44,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ZonalStatisticsQgis(GeoAlgorithm):
+class ZonalStatisticsQgis(QgisAlgorithm):
 
     INPUT_RASTER = 'INPUT_RASTER'
     RASTER_BAND = 'RASTER_BAND'
@@ -59,13 +59,8 @@ class ZonalStatisticsQgis(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'zonalstatisticsqgis'
-
-    def displayName(self):
-        return self.tr('Zonal Statistics (QGIS)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
                       self.tr('Sum'): QgsZonalStatistics.Sum,
                       self.tr('Mean'): QgsZonalStatistics.Mean,
@@ -99,7 +94,13 @@ class ZonalStatisticsQgis(GeoAlgorithm):
                                     True,
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'zonalstatisticsqgis'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics (QGIS)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT_RASTER)
         vectorPath = self.getParameterValue(self.INPUT_VECTOR)
         bandNumber = self.getParameterValue(self.RASTER_BAND)

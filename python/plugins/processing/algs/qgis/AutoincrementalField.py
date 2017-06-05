@@ -30,12 +30,12 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
 
-class AutoincrementalField(GeoAlgorithm):
+class AutoincrementalField(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -49,18 +49,19 @@ class AutoincrementalField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def __init__(self):
+        super().__init__()
+        self.addParameter(ParameterVector(self.INPUT,
+                                          self.tr('Input layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
+
     def name(self):
         return 'addautoincrementalfield'
 
     def displayName(self):
         return self.tr('Add autoincremental field')
 
-    def defineCharacteristics(self):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
-
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = \
             QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

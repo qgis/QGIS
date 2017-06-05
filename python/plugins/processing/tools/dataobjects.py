@@ -40,9 +40,13 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsSettings,
                        QgsProcessingUtils,
                        QgsProcessingContext,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpressionContextScope)
 from qgis.gui import QgsSublayersDialog
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -70,12 +74,8 @@ def createContext():
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
 
-    use_selection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-    if use_selection:
-        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
-
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
-    if not invalid_features_method:
+    if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
@@ -88,6 +88,25 @@ def createContext():
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
 
+    return context
+
+
+def createExpressionContext():
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.globalScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+
+    if iface.mapCanvas():
+        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
+
+    processingScope = QgsExpressionContextScope()
+
+    extent = iface.mapCanvas().fullExtent()
+    processingScope.setVariable('fullextent_minx', extent.xMinimum())
+    processingScope.setVariable('fullextent_miny', extent.yMinimum())
+    processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+    processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+    context.appendScope(processingScope)
     return context
 
 
@@ -177,7 +196,7 @@ def exportVectorLayer(layer, supported=None):
         output = getTempFilenameInTempFolder(basename)
     else:
         output = getTempFilename("shp")
-    useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.fields(),

@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.core.parameters import ParameterFile
@@ -36,7 +36,7 @@ from processing.tools import dataobjects
 from qgis.utils import iface
 
 
-class SetVectorStyle(GeoAlgorithm):
+class SetVectorStyle(QgisAlgorithm):
 
     INPUT = 'INPUT'
     STYLE = 'STYLE'
@@ -51,28 +51,28 @@ class SetVectorStyle(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'setstyleforvectorlayer'
-
-    def displayName(self):
-        return self.tr('Set style for vector layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Vector layer')))
         self.addParameter(ParameterFile(self.STYLE,
                                         self.tr('Style file'), False, False, 'qml'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'setstyleforvectorlayer'
+
+    def displayName(self):
+        return self.tr('Set style for vector layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         style = self.getParameterValue(self.STYLE)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
         else:
             layer.loadNamedStyle(style)
-            iface.mapCanvas().refresh()
+            context.addLayerToLoadOnCompletion(layer.id())
             layer.triggerRepaint()

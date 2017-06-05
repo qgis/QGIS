@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from .v_what_rast import removeOutput, outputInput
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     removeOutput(alg)
 
 

@@ -60,16 +60,8 @@ class proximity(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
 
-    def name(self):
-        return 'proximity'
-
-    def displayName(self):
-        return self.tr('Proximity (raster distance)')
-
-    def group(self):
-        return self.tr('Raster analysis')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,
@@ -87,7 +79,16 @@ class proximity(GdalAlgorithm):
                                              self.tr('Output raster type'), self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'proximity'
+
+    def displayName(self):
+        return self.tr('Proximity (raster distance)')
+
+    def group(self):
+        return self.tr('Raster analysis')
+
+    def getConsoleCommands(self, parameters):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []

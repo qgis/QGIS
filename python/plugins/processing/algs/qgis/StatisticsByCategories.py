@@ -30,12 +30,12 @@ from qgis.core import (QgsApplication,
                        QgsStatisticalSummary,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 
 
-class StatisticsByCategories(GeoAlgorithm):
+class StatisticsByCategories(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'
@@ -51,13 +51,8 @@ class StatisticsByCategories(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def name(self):
-        return 'statisticsbycategories'
-
-    def displayName(self):
-        return self.tr('Statistics by categories')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
@@ -69,7 +64,13 @@ class StatisticsByCategories(GeoAlgorithm):
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'statisticsbycategories'
+
+    def displayName(self):
+        return self.tr('Statistics by categories')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
         categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)

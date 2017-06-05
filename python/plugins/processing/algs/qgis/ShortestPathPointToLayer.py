@@ -33,6 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
                        QgsMessageLog,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
@@ -42,7 +43,7 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            )
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
                                         ParameterNumber,
@@ -56,7 +57,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ShortestPathPointToLayer(GeoAlgorithm):
+class ShortestPathPointToLayer(QgisAlgorithm):
 
     INPUT_VECTOR = 'INPUT_VECTOR'
     START_POINT = 'START_POINT'
@@ -78,13 +79,8 @@ class ShortestPathPointToLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
-    def name(self):
-        return 'shortestpathpointtolayer'
-
-    def displayName(self):
-        return self.tr('Shortest path (point to layer)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
             (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -140,14 +136,20 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                                       0.0, 99999999.999999, 0.0))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Shortest path'),
                                     datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'shortestpathpointtolayer'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to layer)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
         startPoint = self.getParameterValue(self.START_POINT)
         endPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.END_POINTS), context)

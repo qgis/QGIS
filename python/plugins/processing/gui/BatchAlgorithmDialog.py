@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QSizePolicy
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import Qt
 
+from qgis.core import QgsProcessingParameterDefinition
 from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
@@ -55,6 +56,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         AlgorithmDialogBase.__init__(self, alg)
 
         self.alg = alg
+        self.alg_parameters = []
 
         self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.displayName()))
 
@@ -67,28 +69,29 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.layout().insertWidget(0, self.bar)
 
     def accept(self):
-        self.algs = []
+        self.alg_parameters = []
         self.load = []
         self.canceled = False
 
+        context = dataobjects.createContext()
+
         for row in range(self.mainWidget.tblParameters.rowCount()):
-            alg = self.alg.getCopy()
-            # hack - remove when getCopy is removed
-            alg.setProvider(self.alg.provider())
             col = 0
-            for param in alg.parameters:
-                if param.hidden:
+            parameters = {}
+            for param in self.alg.parameterDefinitions():
+                if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
-                if not self.mainWidget.setParamValue(param, wrapper, alg):
+                parameters[param.name()] = wrapper.value()
+                if not param.checkValueIsAcceptable(wrapper.value(), context):
                     self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                         param.description, row + 1),
+                                         param.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
                 col += 1
-            for out in alg.outputs:
-                if out.hidden:
+            for out in alg.destinationParameterDefinitions():
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
 
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
@@ -98,13 +101,13 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     col += 1
                 else:
                     self.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                         out.description, row + 1),
+                                         out.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
                     self.algs = None
                     return
 
-            self.algs.append(alg)
-            if self.alg.getVisibleOutputsCount():
+            self.alg_parameters.append(parameters)
+            if self.alg.countVisibleOutputs():
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 self.load.append(widget.currentIndex() == 0)
             else:
@@ -121,15 +124,14 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         except:
             pass
 
-        context = dataobjects.createContext()
-
-        for count, alg in enumerate(self.algs):
-            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.displayName()))
-            if execute(alg, context, self.feedback) and not self.canceled:
+        for count, parameters in enumerate(self.alg_parameters):
+            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.alg_parameters)))
+            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
+            ret, results = execute(self.alg, parameters, context, self.feedback)
+            if ret and not self.canceled:
                 if self.load[count]:
-                    handleAlgorithmResults(alg, context, self.feedback, False)
-                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.displayName()))
+                    handleAlgorithmResults(self.alg, context, self.feedback, False)
+                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()))
             else:
                 QApplication.restoreOverrideCursor()
                 return
@@ -137,8 +139,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.finish()
 
     def finish(self):
-        for count, alg in enumerate(self.algs):
-            self.loadHTMLResults(alg, count)
+        for count, parameters in enumerate(self.alg_parameters):
+            self.loadHTMLResults(self.alg, count)
 
         self.createSummaryTable()
         QApplication.restoreOverrideCursor()
@@ -149,12 +151,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
     def loadHTMLResults(self, alg, num):
         for out in alg.outputs:
-            if out.hidden or not out.open:
+            if out.flags() & QgsProcessingParameterDefinition.FlagHidden or not out.open:
                 continue
 
             if isinstance(out, OutputHTML):
                 ProcessingResults.addResult(
-                    '{} [{}]'.format(out.description, num), out.value)
+                    '{} [{}]'.format(out.description(), num), out.value)
 
     def createSummaryTable(self):
         createTable = False
@@ -173,7 +175,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 f.write('<hr>\n')
                 for out in alg.outputs:
                     if isinstance(out, (OutputNumber, OutputString)):
-                        f.write('<p>{}: {}</p>\n'.format(out.description, out.value))
+                        f.write('<p>{}: {}</p>\n'.format(out.description(), out.value))
             f.write('<hr>\n')
 
         ProcessingResults.addResult(

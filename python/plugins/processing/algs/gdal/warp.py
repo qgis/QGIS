@@ -69,16 +69,8 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
-    def name(self):
-        return 'warpreproject'
-
-    def displayName(self):
-        return self.tr('Warp (reproject)')
-
-    def group(self):
-        return self.tr('Raster projections')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'),
@@ -120,11 +112,23 @@ class warp(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'warpreproject'
+
+    def displayName(self):
+        return self.tr('Warp (reproject)')
+
+    def group(self):
+        return self.tr('Raster projections')
+
+    def getConsoleCommands(self, parameters):
+        inLayer = self.getParameterValue(self.INPUT)
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
         useRasterExtent = self.getParameterValue(self.USE_RASTER_EXTENT)
         rasterExtent = self.getParameterValue(self.RASTER_EXTENT)
+        if not rasterExtent:
+            rasterExtent = QgsProcessingUtils.combineLayerExtents([inLayer])
         extentCrs = self.getParameterValue(self.EXTENT_CRS)
         opts = self.getParameterValue(self.OPTIONS)
         noData = self.getParameterValue(self.NO_DATA)

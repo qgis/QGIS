@@ -38,7 +38,7 @@ from qgis.core import (QgsField,
                        QgsProcessingUtils,
                        QgsFields)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
@@ -47,7 +47,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExtentFromLayer(GeoAlgorithm):
+class ExtentFromLayer(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     BY_FEATURE = 'BY_FEATURE'
@@ -63,13 +63,8 @@ class ExtentFromLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'polygonfromlayerextent'
-
-    def displayName(self):
-        return self.tr('Polygon from layer extent')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
@@ -77,7 +72,13 @@ class ExtentFromLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'polygonfromlayerextent'
+
+    def displayName(self):
+        return self.tr('Polygon from layer extent')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 

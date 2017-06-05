@@ -35,7 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsCoordinateTransform,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterExtent
@@ -44,7 +44,7 @@ from processing.core.outputs import OutputHTML
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class FindProjection(GeoAlgorithm):
+class FindProjection(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     TARGET_AREA = 'TARGET_AREA'
@@ -63,13 +63,8 @@ class FindProjection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'findprojection'
-
-    def displayName(self):
-        return self.tr('Find projection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,
@@ -82,10 +77,18 @@ class FindProjection(GeoAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
                                   self.tr('Candidates')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'findprojection'
+
+    def displayName(self):
+        return self.tr('Find projection')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
 
         extent = self.getParameterValue(self.TARGET_AREA).split(',')
+        if not extent:
+            extent = QgsProcessingUtils.combineLayerExtents([layer])
         target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))
 
         target_geom = QgsGeometry.fromRect(QgsRectangle(float(extent[0]), float(extent[2]),

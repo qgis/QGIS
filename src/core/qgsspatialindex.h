@@ -46,6 +46,7 @@ class QgsPointXY;
 
 class QgsSpatialIndexData;
 class QgsFeatureIterator;
+class QgsFeatureSource;
 
 /** \ingroup core
  * \class QgsSpatialIndex
@@ -66,6 +67,14 @@ class CORE_EXPORT QgsSpatialIndex
      * \since QGIS 2.8
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
+
+    /**
+     * Constructor - creates R-tree and bulk loads it with features from the source.
+     * This is much faster approach than creating an empty index and then inserting features one by one.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsSpatialIndex( const QgsFeatureSource &source );
 
     //! Copy constructor
     QgsSpatialIndex( const QgsSpatialIndex &other );

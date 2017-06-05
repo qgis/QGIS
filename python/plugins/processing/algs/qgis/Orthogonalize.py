@@ -26,15 +26,16 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition)
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class Orthogonalize(GeoAlgorithm):
+class Orthogonalize(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
@@ -54,13 +55,8 @@ class Orthogonalize(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def name(self):
-        return 'orthogonalize'
-
-    def displayName(self):
-        return self.tr('Orthogonalize')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))
@@ -71,12 +67,18 @@ class Orthogonalize(GeoAlgorithm):
         max_iterations = ParameterNumber(self.MAX_ITERATIONS,
                                          self.tr('Maximum algorithm iterations'),
                                          1, 10000, 1000)
-        max_iterations.isAdvanced = True
+        max_iterations.setFlags(max_iterations.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(max_iterations)
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'orthogonalize'
+
+    def displayName(self):
+        return self.tr('Orthogonalize')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
         angle_tolerance = self.getParameterValue(self.ANGLE_TOLERANCE)

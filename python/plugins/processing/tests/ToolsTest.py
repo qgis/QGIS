@@ -53,42 +53,31 @@ class VectorTest(unittest.TestCase):
             shutil.rmtree(path)
 
     def testValues(self):
-        context = QgsProcessingContext()
-
-        # disable check for geometry validity
-        context.setFlags(QgsProcessingContext.Flags(0))
-
         test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
 
         # field by index
-        res = vector.values(test_layer, context, 1)
+        res = vector.values(test_layer, 1)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # field by name
-        res = vector.values(test_layer, context, 'id')
+        res = vector.values(test_layer, 'id')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # two fields
-        res = vector.values(test_layer, context, 1, 2)
+        res = vector.values(test_layer, 1, 2)
         self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name
-        res = vector.values(test_layer, context, 'id', 'id2')
+        res = vector.values(test_layer, 'id', 'id2')
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res['id2'], [2, 1, 0, 2, 1, 0, 0, 0, 0])
 
         # two fields by name and index
-        res = vector.values(test_layer, context, 'id', 2)
+        res = vector.values(test_layer, 'id', 2)
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
-
-        # test with selected features
-        context.setFlags(QgsProcessingContext.UseSelectionIfPresent)
-        test_layer.selectByIds([2, 4, 6])
-        res = vector.values(test_layer, context, 1)
-        self.assertEqual(set(res[1]), set([5, 7, 3]))
 
     def testOgrLayerNameExtraction(self):
         outdir = tempfile.mkdtemp()

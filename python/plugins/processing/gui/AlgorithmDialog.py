@@ -31,13 +31,19 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget,
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsMessageLog,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingFeatureSinkDefinition,
+                       QgsProcessingParameterFeatureSink)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
+from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import execute, executeIterating
@@ -47,6 +53,7 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.GeoAlgorithm import executeAlgorithm
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
@@ -62,7 +69,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setMainWidget(alg.getParametersPanel(self))
+        self.setMainWidget(self.getParametersPanel(alg, self))
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -78,37 +85,40 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.cornerWidget.setLayout(layout)
         self.tabWidget.setCornerWidget(self.cornerWidget)
 
+    def getParametersPanel(self, alg, parent):
+        return ParametersPanel(parent, alg)
+
     def runAsBatch(self):
         self.close()
         dlg = BatchAlgorithmDialog(self.alg)
         dlg.show()
         dlg.exec_()
 
-    def setParamValues(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
+    def getParamValues(self):
+        parameters = {}
 
-        for param in params:
-            if param.hidden:
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            wrapper = self.mainWidget.wrappers[param.name]
-            if not self.setParamValue(param, wrapper):
-                raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+            if not param.isDestination():
+                wrapper = self.mainWidget.wrappers[param.name()]
+                value = None
+                if wrapper.widget:
+                    value = wrapper.value()
+                    parameters[param.name()] = value
 
-        for output in outputs:
-            if output.hidden:
-                continue
-            output.value = self.mainWidget.outputWidgets[output.name].getValue()
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
-                output.open = self.mainWidget.checkBoxes[output.name].isChecked()
+                    if not param.checkValueIsAcceptable(value):
+                        raise AlgorithmDialogBase.InvalidParameterValue(param, wrapper.widget)
+            else:
+                dest_project = None
+                if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
+                        isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
+                    if self.mainWidget.checkBoxes[param.name()].isChecked():
+                        dest_project = QgsProject.instance()
 
-        return True
+                parameters[param.name()] = QgsProcessingFeatureSinkDefinition(self.mainWidget.outputWidgets[param.name()].getValue(), dest_project)
 
-    def setParamValue(self, param, wrapper):
-        if wrapper.widget:
-            return param.setValue(wrapper.value())
-        else:
-            return True
+        return parameters
 
     def checkExtentCRS(self):
         unmatchingCRS = False
@@ -116,7 +126,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
         context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
         layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        for param in self.alg.parameters:
+        for param in self.alg.parameterDefinitions():
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:
                     if isinstance(param, ParameterMultipleInput):
@@ -137,7 +147,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if param.skip_crs_check:
                     continue
 
-                value = self.mainWidget.wrappers[param.name].widget.leText.text().strip()
+                value = self.mainWidget.wrappers[param.name()].widget.leText.text().strip()
                 if value:
                     hasExtent = True
 
@@ -150,8 +160,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            self.setParamValues()
-            if checkCRS and not self.alg.checkInputCRS():
+            parameters = self.getParamValues()
+
+            QgsMessageLog.logMessage(str(parameters), 'Processing', QgsMessageLog.CRITICAL)
+
+            # TODO
+            if False and checkCRS and not self.alg.checkInputCRS():
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                                              self.tr('Layers do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
@@ -161,7 +175,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if reply == QMessageBox.No:
                     return
             checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
-            if checkExtentCRS and self.checkExtentCRS():
+            #TODO
+            if False and checkExtentCRS and self.checkExtentCRS():
                 reply = QMessageBox.question(self, self.tr("Extent CRS"),
                                              self.tr('Extent parameters must use the same CRS as the input layers.\n'
                                                      'Your input layers do not have the same extent as the project, '
@@ -171,7 +186,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                                              QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg._checkParameterValuesBeforeExecuting(context)
+            ok, msg = self.alg.checkParameterValues(parameters, context)
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
@@ -202,20 +217,22 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
-                if executeIterating(self.alg, self.iterateParam, context, self.feedback):
-                    self.finish(context)
+                if executeIterating(self.alg, parameters, self.iterateParam, context, self.feedback):
+                    self.finish(parameters, context)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
-                command = self.alg.getAsCommand()
-                if command:
-                    ProcessingLog.addToLog(command)
-                if execute(self.alg, context, self.feedback):
-                    self.finish(context)
-                else:
-                    QApplication.restoreOverrideCursor()
-                    self.resetGUI()
+                # TODO
+                #command = self.alg.getAsCommand()
+                #if command:
+                #    ProcessingLog.addToLog(command)
+                result = executeAlgorithm(self.alg, parameters, context, self.feedback)
+                self.finish(result, context)
+                #TODO
+                #else:
+                #    QApplication.restoreOverrideCursor()
+                #    self.resetGUI()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda e=e:
@@ -226,13 +243,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
             except:
                 pass
             self.bar.clearWidgets()
-            self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
+            self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self, context):
+    def finish(self, result, context):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
+
             if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
                 self.resetGUI()
                 return

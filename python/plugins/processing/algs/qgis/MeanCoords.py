@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPointXY, QgsWkbTypes, QgsProcessingUtils, QgsFields
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterVector
@@ -43,7 +43,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class MeanCoords(GeoAlgorithm):
+class MeanCoords(QgisAlgorithm):
 
     POINTS = 'POINTS'
     WEIGHT = 'WEIGHT'
@@ -57,13 +57,8 @@ class MeanCoords(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'meancoordinates'
-
-    def displayName(self):
-        return self.tr('Mean coordinate(s)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.WEIGHT,
@@ -78,7 +73,13 @@ class MeanCoords(GeoAlgorithm):
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'meancoordinates'
+
+    def displayName(self):
+        return self.tr('Mean coordinate(s)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)

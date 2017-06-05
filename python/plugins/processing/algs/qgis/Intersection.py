@@ -37,7 +37,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsProcessingUtils)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import vector
@@ -54,7 +54,7 @@ for key, value in list(wkbTypeGroups.items()):
         wkbTypeGroups[const] = key
 
 
-class Intersection(GeoAlgorithm):
+class Intersection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     INPUT2 = 'INPUT2'
@@ -66,20 +66,21 @@ class Intersection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def name(self):
-        return 'intersection'
-
-    def displayName(self):
-        return self.tr('Intersection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.INPUT2,
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'intersection'
+
+    def displayName(self):
+        return self.tr('Intersection')
+
+    def processAlgorithm(self, parameters, context, feedback):
         vlayerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT2), context)
 

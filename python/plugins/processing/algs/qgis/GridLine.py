@@ -39,7 +39,7 @@ from qgis.core import (QgsRectangle,
                        QgsLineString,
                        QgsWkbTypes,
                        QgsFields)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
@@ -50,7 +50,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridLine(GeoAlgorithm):
+class GridLine(QgisAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
@@ -68,13 +68,8 @@ class GridLine(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'creategridlines'
-
-    def displayName(self):
-        return self.tr('Create grid (lines)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
@@ -89,7 +84,13 @@ class GridLine(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'creategridlines'
+
+    def displayName(self):
+        return self.tr('Create grid (lines)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)

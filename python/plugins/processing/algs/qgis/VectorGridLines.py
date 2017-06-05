@@ -41,7 +41,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsWkbTypes)
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
@@ -50,7 +50,7 @@ from processing.tools import dataobjects
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VectorGridLines(GeoAlgorithm):
+class VectorGridLines(QgisAlgorithm):
 
     EXTENT = 'EXTENT'
     STEP_X = 'STEP_X'
@@ -67,13 +67,8 @@ class VectorGridLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'vectorgridlines'
-
-    def displayName(self):
-        return self.tr('Vector grid (lines)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,
@@ -83,7 +78,13 @@ class VectorGridLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'vectorgridlines'
+
+    def displayName(self):
+        return self.tr('Vector grid (lines)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)

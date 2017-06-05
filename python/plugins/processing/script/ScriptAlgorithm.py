@@ -72,10 +72,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
 
-    def getCopy(self):
-        newone = self
-        return newone
-
     def icon(self):
         return self._icon
 
@@ -126,8 +122,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     pass
 
-    def checkBeforeOpeningParametersDialog(self):
-        return self.error
+    def canExecute(self):
+        return not self.error, self.error
 
     def checkInputCRS(self):
         if self.noCRSWarning:
@@ -172,14 +168,14 @@ class ScriptAlgorithm(GeoAlgorithm):
                 self.tr('Could not load script: {0}.\n'
                         'Problem with line "{1}"', 'ScriptAlgorithm').format(self.descriptionFile or '', line))
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         ns = {}
         ns['feedback'] = feedback
         ns['scriptDescriptionFile'] = self.descriptionFile
         ns['context'] = context
 
-        for param in self.parameters:
-            ns[param.name] = param.value
+        for param in self.parameterDefinitions():
+            ns[param.name] = parameters[param.name()]
 
         for out in self.outputs:
             ns[out.name] = out.value
@@ -202,16 +198,16 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             out.setValue(ns[out.name])
 
-    def help(self):
+    def helpString(self):
         if self.descriptionFile is None:
             return False, None
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
-            return True, getHtmlFromHelpFile(self, helpfile)
+            return getHtmlFromHelpFile(self, helpfile)
         else:
-            return False, None
+            return None
 
-    def shortHelp(self):
+    def shortHelpString(self):
         if self.descriptionFile is None:
             return None
         helpFile = str(self.descriptionFile) + '.help'
@@ -220,7 +216,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     descriptions = json.load(f)
                     if 'ALG_DESC' in descriptions:
-                        return self._formatHelp(str(descriptions['ALG_DESC']))
+                        return str(descriptions['ALG_DESC'])
                 except:
                     return None
         return None
@@ -234,9 +230,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
-                    for param in self.parameters:
-                        if param.name in descriptions:
-                            descs[param.name] = str(descriptions[param.name])
+                    for param in self.parameterDefinitions():
+                        if param.name() in descriptions:
+                            descs[param.name()] = str(descriptions[param.name()])
                 except:
                     return descs
         return descs

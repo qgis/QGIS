@@ -26,26 +26,71 @@
 
 ///@cond PRIVATE
 
-QgsCentroidAlgorithm::QgsCentroidAlgorithm()
+QgsNativeAlgorithms::QgsNativeAlgorithms( QObject *parent )
+  : QgsProcessingProvider( parent )
+{}
+
+QIcon QgsNativeAlgorithms::icon() const
 {
-  addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
 }
 
-QVariantMap QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QString QgsNativeAlgorithms::svgIconPath() const
 {
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !layer )
+  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+}
+
+QString QgsNativeAlgorithms::id() const
+{
+  return QStringLiteral( "native" );
+}
+
+QString QgsNativeAlgorithms::name() const
+{
+  return tr( "QGIS" );
+}
+
+bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
+{
+  return true;
+}
+
+void QgsNativeAlgorithms::loadAlgorithms()
+{
+  addAlgorithm( new QgsCentroidAlgorithm() );
+  addAlgorithm( new QgsBufferAlgorithm() );
+}
+
+
+
+QgsCentroidAlgorithm::QgsCentroidAlgorithm()
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+}
+
+QString QgsCentroidAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.\n\n"
+                      "The attributes associated to each point in the output layer are the same ones associated to the original features." );
+}
+
+QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
     return QVariantMap();
 
-  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Point, source->sourceCrs(), dest ) );
 
-  long count = QgsProcessingUtils::featureCount( layer, context );
+  long count = source->featureCount();
   if ( count <= 0 )
     return QVariantMap();
 
   QgsFeature f;
-  QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
+  QgsFeatureIterator it = source->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -65,7 +110,7 @@ QVariantMap QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcess
         QgsMessageLog::logMessage( QObject::tr( "Error calculating centroid for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    writer->addFeature( out );
+    sink->addFeature( out );
 
     feedback->setProgress( current * step );
     current++;
@@ -82,37 +127,53 @@ QVariantMap QgsCentroidAlgorithm::run( const QVariantMap &parameters, QgsProcess
 
 QgsBufferAlgorithm::QgsBufferAlgorithm()
 {
-  addParameter( new QgsProcessingParameterVector( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsProcessingParameterNumber::Double, 10 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "END_CAP_STYLE" ), QObject::tr( "End cap style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Flat" ) << QObject::tr( "Square" ), false ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
+
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
 }
 
-QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QString QgsBufferAlgorithm::shortHelpString() const
 {
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !layer )
+  return QObject::tr( "This algorithm computes a buffer area for all the features in an input layer, using a fixed or dynamic distance.\n\n"
+                      "The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.\n\n"
+                      "The end cap style parameter controls how line endings are handled in the buffer.\n\n"
+                      "The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.\n\n"
+                      "The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join." );
+}
+
+QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
     return QVariantMap();
 
-  QString dest = parameterAsString( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
-  std::unique_ptr< QgsFeatureSink > writer( QgsProcessingUtils::createFeatureSink( dest, QString(), layer->fields(), QgsWkbTypes::Point, layer->crs(), context ) );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs(), dest ) );
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
   double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   const QgsProcessingParameterDefinition *distanceParamDef = parameterDefinition( QStringLiteral( "DISTANCE" ) );
 
-  long count = QgsProcessingUtils::featureCount( layer, context );
+  long count = source->featureCount();
   if ( count <= 0 )
     return QVariantMap();
 
   QgsFeature f;
-  QgsFeatureIterator it = QgsProcessingUtils::getFeatures( layer, context );
+  QgsFeatureIterator it = source->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -129,7 +190,7 @@ QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessin
       if ( dynamicBuffer )
       {
         context.expressionContext().setFeature( f );
-        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, QStringLiteral( "DISTANCE" ), context );
+        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, context );
       }
 
       out.setGeometry( f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit ) );
@@ -138,7 +199,7 @@ QVariantMap QgsBufferAlgorithm::run( const QVariantMap &parameters, QgsProcessin
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    writer->addFeature( out );
+    sink->addFeature( out );
 
     feedback->setProgress( current * step );
     current++;

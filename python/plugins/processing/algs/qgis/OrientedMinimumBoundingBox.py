@@ -34,7 +34,7 @@ from qgis.core import (QgsField,
                        QgsFeatureRequest,
                        QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -42,7 +42,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
 
-class OrientedMinimumBoundingBox(GeoAlgorithm):
+class OrientedMinimumBoundingBox(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     BY_FEATURE = 'BY_FEATURE'
@@ -58,13 +58,8 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'orientedminimumboundingbox'
-
-    def displayName(self):
-        return self.tr('Oriented minimum bounding box')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
@@ -72,7 +67,13 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Oriented_MBBox'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'orientedminimumboundingbox'
+
+    def displayName(self):
+        return self.tr('Oriented minimum bounding box')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
         byFeature = self.getParameterValue(self.BY_FEATURE)
 

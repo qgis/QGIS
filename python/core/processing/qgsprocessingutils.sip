@@ -86,59 +86,26 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
-    static QgsFeatureIterator getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request = QgsFeatureRequest() );
-%Docstring
- Returns an iterator for the features in a ``layer``, respecting
- the settings from the supplied ``context``.
- An optional base ``request`` can be used to optimise the returned
- iterator, eg by restricting the returned attributes or geometry.
- :rtype: QgsFeatureIterator
-%End
-
-    static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Returns an approximate feature count for a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return the count of selected features in the layer.
- :rtype: long
-%End
-
-    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
-%Docstring
- Creates a spatial index for a layer, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return an index containing only selected features in the layer.
- :rtype: QgsSpatialIndex
-%End
-
-    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
-%Docstring
- Returns a list of unique values contained in a single field in a ``layer``, when
- the settings from the supplied ``context`` are respected. E.g. if the
- context is set to only use selected features, then calling this will
- return unique values from selected features in the layer.
- :rtype: list of QVariant
-%End
-
 
     static void createFeatureSinkPython(
       QgsFeatureSink **sink /Out,TransferBack/,
       QString &destination /In,Out/,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) /PyName=createFeatureSink/;
+      const QVariantMap &createOptions = QVariantMap() ) /PyName=createFeatureSink/;
 %Docstring
  Creates a feature sink ready for adding features. The ``destination`` specifies a destination
  URI for the resultant layer. It may be updated in place to reflect the actual destination
  for the layer.
 
- Sink parameters such as desired ``encoding``, ``fields``, ``geometryType`` and ``crs`` must be specified.
+ Sink parameters such as desired ``fields``, ``geometryType`` and ``crs`` must be specified.
 
- If the ``encoding`` is not specified, the default encoding from the ``context`` will be used.
+ The ``createOptions`` map can be used to specify additional sink creation options, which
+ are passed to the underlying provider when creating new layers. Known options also
+ include 'fileEncoding', which is used to specify a file encoding to use for created
+ files. If 'fileEncoding' is not specified, the default encoding from the ``context`` will be used.
 
  If a layer is created for the feature sink, the layer will automatically be added to the ``context``'s
  temporary layer store.
@@ -152,8 +119,15 @@ class QgsProcessingUtils
    available in Python bindings as createFeatureSink()
 %End
 
+    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Combines the extent of several map ``layers``. If specified, the target ``crs``
+ will be used to transform the layer's extent to the desired output reference system.
+ :rtype: QgsRectangle
+%End
 
 };
+
 
 
 

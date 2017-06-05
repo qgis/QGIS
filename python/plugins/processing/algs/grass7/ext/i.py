@@ -33,6 +33,7 @@ from processing.core.parameters import getParameterFromString
 from processing.tools.system import isWindows
 from ..Grass7Utils import Grass7Utils
 from os import path
+from copy import deepcopy
 
 
 def multipleOutputDir(alg, field, basename=None):
@@ -93,7 +94,7 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     if cellsize:
         command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + str(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
     alignToResolution = \
         alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
@@ -102,67 +103,54 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
     return rootFilename
 
 
-def regroupRasters(alg, field, groupField, subgroupField=None, extFile=None):
+def regroupRasters(alg, parameters, field, groupField, subgroupField=None, extFile=None):
     """
     Group multiple input rasters into a group
     * If there is a subgroupField, a subgroup will automatically created.
     * When an external file is provided, the file is copied into the respective
       directory of the subgroup.
     * extFile is a dict of the form 'parameterName':'directory name'.
+    :param parameters:
     """
     # List of rasters names
+
+    new_parameters = deepcopy(parameters)
+
     rasters = alg.getParameterFromName(field)
     rastersList = rasters.value.split(';')
-    alg.parameters.remove(rasters)
+    del new_parameters[field]
 
     # Insert a i.group command
     group = getParameterFromString("ParameterString|{}|group of rasters|None|False|False".format(groupField))
-    group.value = alg.getTempFilename()
-    alg.addParameter(group)
+    new_parameters[group.name()] = alg.getTempFilename()
 
     if subgroupField:
         subgroup = getParameterFromString("ParameterString|{}|subgroup of rasters|None|False|False".format(subgroupField))
-        subgroup.value = alg.getTempFilename()
-        alg.addParameter(subgroup)
+        new_parameters[subgroup.name()] = alg.getTempFilename()
 
     command = 'i.group group={}{} input={}'.format(
-        group.value,
-        ' subgroup={}'.format(subgroup.value) if subgroupField else '',
+        new_parameters[group.name()],
+        ' subgroup={}'.format(new_parameters[subgroup.name()]) if subgroupField else '',
         ','.join([alg.exportedLayers[f] for f in rastersList])
     )
     alg.commands.append(command)
 
     # Handle external files
-    origExtParams = {}
     if subgroupField and extFile:
         for ext in list(extFile.keys()):
-            extFileName = alg.getParameterValue(ext)
+            extFileName = new_parameters[ext]
             if extFileName:
                 shortFileName = path.basename(extFileName)
                 destPath = path.join(Grass7Utils.grassMapsetFolder(),
                                      'PERMANENT',
-                                     'group', group.value,
-                                     'subgroup', subgroup.value,
+                                     'group', new_parameters[group.name()],
+                                     'subgroup', new_parameters[subgroup.name()],
                                      extFile[ext], shortFileName)
             copyFile(alg, extFileName, destPath)
-            origExtParams[ext] = extFileName
-            alg.setParameterValue(ext, shortFileName)
+            new_parameters[ext] = shortFileName
 
     # modify parameters values
-    alg.processCommand()
-
-    # Re-add input rasters
-    alg.addParameter(rasters)
-
-    # replace external files value with original value
-    for param in list(origExtParams.keys()):
-        alg.setParameterValue(param, origExtParams[param])
-
-    # Delete group:
-    alg.parameters.remove(group)
-    if subgroupField:
-        alg.parameters.remove(subgroup)
-        return group.value, subgroup.value
+    alg.processCommand(new_parameters)
 
     return group.value
 

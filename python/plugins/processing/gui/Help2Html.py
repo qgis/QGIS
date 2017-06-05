@@ -72,13 +72,13 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
     s = tr('<html><body><h2>Algorithm description</h2>\n')
     s += '<p>' + getDescription(ALG_DESC, descriptions) + '</p>\n'
     s += tr('<h2>Input parameters</h2>\n')
-    for param in alg.parameters:
-        s += '<h3>' + param.description + '</h3>\n'
-        s += '<p>' + getDescription(param.name, descriptions) + '</p>\n'
+    for param in alg.parameterDefinitions():
+        s += '<h3>' + param.description() + '</h3>\n'
+        s += '<p>' + getDescription(param.name(), descriptions) + '</p>\n'
     s += tr('<h2>Outputs</h2>\n')
     for out in alg.outputs:
-        s += '<h3>' + out.description + '</h3>\n'
-        s += '<p>' + getDescription(out.name, descriptions) + '</p>\n'
+        s += '<h3>' + out.description() + '</h3>\n'
+        s += '<p>' + getDescription(out.name(), descriptions) + '</p>\n'
     s += '<br>'
     s += tr('<p align="right">Algorithm author: {0}</p>').format(getDescription(ALG_CREATOR, descriptions))
     s += tr('<p align="right">Help author: {0}</p>').format(getDescription(ALG_HELP_CREATOR, descriptions))

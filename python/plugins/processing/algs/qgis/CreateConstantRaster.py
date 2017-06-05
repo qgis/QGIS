@@ -29,14 +29,14 @@ from osgeo import gdal
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.tools.raster import RasterWriter
 
 
-class CreateConstantRaster(GeoAlgorithm):
+class CreateConstantRaster(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -51,13 +51,8 @@ class CreateConstantRaster(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def name(self):
-        return 'createconstantrasterlayer'
-
-    def displayName(self):
-        return self.tr('Create constant raster layer')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,
@@ -67,7 +62,13 @@ class CreateConstantRaster(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Constant')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'createconstantrasterlayer'
+
+    def displayName(self):
+        return self.tr('Create constant raster layer')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         value = self.getParameterValue(self.NUMBER)
 

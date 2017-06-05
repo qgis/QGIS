@@ -33,7 +33,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingUtils)
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from processing.core.outputs import OutputVector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class DefineProjection(GeoAlgorithm):
+class DefineProjection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     CRS = 'CRS'
@@ -59,20 +59,21 @@ class DefineProjection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def name(self):
-        return 'definecurrentprojection'
-
-    def displayName(self):
-        return self.tr('Define current projection')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Layer with projection'), True))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'definecurrentprojection'
+
+    def displayName(self):
+        return self.tr('Define current projection')
+
+    def processAlgorithm(self, parameters, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))

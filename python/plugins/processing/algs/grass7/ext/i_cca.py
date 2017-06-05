@@ -34,7 +34,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return verifyRasterNum(alg, 'input', 2, 8)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')
@@ -45,7 +45,7 @@ def processCommand(alg):
     alg.addParameter(param)
 
     # Regroup rasters
-    regroupRasters(alg, 'input', 'group', 'subgroup', {'signature': 'sig'})
+    regroupRasters(alg, parameters, 'input', 'group', 'subgroup', {'signature': 'sig'})
 
     # re-add output
     alg.addOutput(output)

@@ -35,7 +35,7 @@ from qgis.core import (QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsWkb
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
@@ -45,7 +45,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class RandomPointsPolygonsFixed(GeoAlgorithm):
+class RandomPointsPolygonsFixed(QgisAlgorithm):
 
     VECTOR = 'VECTOR'
     VALUE = 'VALUE'
@@ -59,13 +59,8 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def name(self):
-        return 'randompointsinsidepolygonsfixed'
-
-    def displayName(self):
-        return self.tr('Random points inside polygons (fixed)')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 
@@ -80,7 +75,13 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randompointsinsidepolygonsfixed'
+
+    def displayName(self):
+        return self.tr('Random points inside polygons (fixed)')
+
+    def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.VECTOR), context)
         value = float(self.getParameterValue(self.VALUE))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))

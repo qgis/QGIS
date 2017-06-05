@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsRuggednessFilter
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
@@ -40,7 +40,7 @@ from processing.tools import raster
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Ruggedness(GeoAlgorithm):
+class Ruggedness(QgisAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     Z_FACTOR = 'Z_FACTOR'
@@ -52,13 +52,8 @@ class Ruggedness(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def name(self):
-        return 'ruggednessindex'
-
-    def displayName(self):
-        return self.tr('Ruggedness index')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
@@ -66,7 +61,13 @@ class Ruggedness(GeoAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT_LAYER,
                                     self.tr('Ruggedness index')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'ruggednessindex'
+
+    def displayName(self):
+        return self.tr('Ruggedness index')
+
+    def processAlgorithm(self, parameters, context, feedback):
         inputFile = self.getParameterValue(self.INPUT_LAYER)
         zFactor = self.getParameterValue(self.Z_FACTOR)
         outputFile = self.getOutputValue(self.OUTPUT_LAYER)

@@ -107,14 +107,14 @@ class GdalParametersPanel(ParametersPanel):
 
     def parametersHaveChanged(self):
         try:
-            self.parent.setParamValues()
-            for output in self.alg.outputs:
-                if output.value is None:
-                    output.value = self.tr("[temporary file]")
-            commands = self.alg.getConsoleCommands()
+            parameters = self.parent.getParamValues()
+            for output in self.alg.destinationParameterDefinitions():
+                if parameters[output.name()] is None:
+                    parameters[output.name()] = self.tr("[temporary file]")
+            commands = self.alg.getConsoleCommands(parameters)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description))
+            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
         except:
             self.text.setPlainText("")

@@ -30,6 +30,7 @@ class QgsProcessingContext;
 class QgsMapLayerStore;
 
 #include <QString>
+#include <QVariant>
 
 /**
  * \class QgsProcessingUtils
@@ -100,45 +101,16 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
-     * Returns an iterator for the features in a \a layer, respecting
-     * the settings from the supplied \a context.
-     * An optional base \a request can be used to optimise the returned
-     * iterator, eg by restricting the returned attributes or geometry.
-     */
-    static QgsFeatureIterator getFeatures( QgsVectorLayer *layer, const QgsProcessingContext &context, const QgsFeatureRequest &request = QgsFeatureRequest() );
-
-    /**
-     * Returns an approximate feature count for a \a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return the count of selected features in the layer.
-     */
-    static long featureCount( QgsVectorLayer *layer, const QgsProcessingContext &context );
-
-    /**
-     * Creates a spatial index for a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return an index containing only selected features in the layer.
-     */
-    static QgsSpatialIndex createSpatialIndex( QgsVectorLayer *layer, const QgsProcessingContext &context );
-
-    /**
-     * Returns a list of unique values contained in a single field in a \a layer, when
-     * the settings from the supplied \a context are respected. E.g. if the
-     * context is set to only use selected features, then calling this will
-     * return unique values from selected features in the layer.
-     */
-    static QList< QVariant > uniqueValues( QgsVectorLayer *layer, int fieldIndex, const QgsProcessingContext &context );
-
-    /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.
      *
      * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
      *
-     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     * The \a createOptions map can be used to specify additional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files. If 'fileEncoding' is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
      * temporary layer store.
@@ -148,11 +120,11 @@ class CORE_EXPORT QgsProcessingUtils
 #ifndef SIP_RUN
     static QgsFeatureSink *createFeatureSink(
       QString &destination,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) SIP_FACTORY;
+      const QVariantMap &createOptions = QVariantMap() ) SIP_FACTORY;
 #endif
 
     /**
@@ -160,9 +132,12 @@ class CORE_EXPORT QgsProcessingUtils
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.
      *
-     * Sink parameters such as desired \a encoding, \a fields, \a geometryType and \a crs must be specified.
+     * Sink parameters such as desired \a fields, \a geometryType and \a crs must be specified.
      *
-     * If the \a encoding is not specified, the default encoding from the \a context will be used.
+     * The \a createOptions map can be used to specify additional sink creation options, which
+     * are passed to the underlying provider when creating new layers. Known options also
+     * include 'fileEncoding', which is used to specify a file encoding to use for created
+     * files. If 'fileEncoding' is not specified, the default encoding from the \a context will be used.
      *
      * If a layer is created for the feature sink, the layer will automatically be added to the \a context's
      * temporary layer store.
@@ -174,12 +149,17 @@ class CORE_EXPORT QgsProcessingUtils
     static void createFeatureSinkPython(
       QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK,
       QString &destination SIP_INOUT,
-      const QString &encoding,
+      QgsProcessingContext &context,
       const QgsFields &fields,
       QgsWkbTypes::Type geometryType,
       const QgsCoordinateReferenceSystem &crs,
-      QgsProcessingContext &context ) SIP_PYNAME( createFeatureSink );
+      const QVariantMap &createOptions = QVariantMap() ) SIP_PYNAME( createFeatureSink );
 
+    /**
+     * Combines the extent of several map \a layers. If specified, the target \a crs
+     * will be used to transform the layer's extent to the desired output reference system.
+     */
+    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
   private:
 
@@ -210,6 +190,48 @@ class CORE_EXPORT QgsProcessingUtils
     friend class TestQgsProcessing;
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsProcessingFeatureSource
+ * \ingroup core
+ * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ * results according to the settings in a QgsProcessingContext.
+ * \note not available in Python bindings
+ * \since QGIS 3.0
+ */
+class QgsProcessingFeatureSource : public QgsFeatureSource
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
+     * and processing \a context.
+     * Ownership of \a originalSource is dictated by \a ownsOriginalSource. If \a ownsOriginalSource is false,
+     * ownership is not transferred, and callers must ensure that \a originalSource exists for the lifetime of this object.
+     * If \a ownsOriginalSource is true, then this object will take ownership of \a originalSource.
+     */
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+
+    ~QgsProcessingFeatureSource();
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
+    virtual QgsFields fields() const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
+    virtual long featureCount() const override;
+
+  private:
+
+    QgsFeatureSource *mSource = nullptr;
+    bool mOwnsSource = false;
+    QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+
+};
+
+#endif
 
 #endif // QGSPROCESSINGUTILS_H
 

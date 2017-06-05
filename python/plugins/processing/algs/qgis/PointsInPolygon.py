@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField, QgsProcessingUtils
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
@@ -41,7 +41,7 @@ from processing.tools import dataobjects, vector
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointsInPolygon(GeoAlgorithm):
+class PointsInPolygon(QgisAlgorithm):
 
     POLYGONS = 'POLYGONS'
     POINTS = 'POINTS'
@@ -54,13 +54,8 @@ class PointsInPolygon(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def name(self):
-        return 'countpointsinpolygon'
-
-    def displayName(self):
-        return self.tr('Count points in polygon')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -69,7 +64,13 @@ class PointsInPolygon(GeoAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'countpointsinpolygon'
+
+    def displayName(self):
+        return self.tr('Count points in polygon')
+
+    def processAlgorithm(self, parameters, context, feedback):
         polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
         pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
         fieldName = self.getParameterValue(self.FIELD)

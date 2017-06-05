@@ -30,7 +30,7 @@ import random
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils)
-from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.qgis import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
@@ -38,7 +38,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 
 
-class RandomExtract(GeoAlgorithm):
+class RandomExtract(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -54,13 +54,8 @@ class RandomExtract(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def name(self):
-        return 'randomextract'
-
-    def displayName(self):
-        return self.tr('Random extract')
-
-    def defineCharacteristics(self):
+    def __init__(self):
+        super().__init__()
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
@@ -73,7 +68,13 @@ class RandomExtract(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random)')))
 
-    def processAlgorithm(self, context, feedback):
+    def name(self):
+        return 'randomextract'
+
+    def displayName(self):
+        return self.tr('Random extract')
+
+    def processAlgorithm(self, parameters, context, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = QgsProcessingUtils.mapLayerFromString(filename, context)
         method = self.getParameterValue(self.METHOD)
