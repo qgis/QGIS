@@ -20,7 +20,8 @@ namespace QgsWms
 
   /** Output GetMap response in Dfx format
    */
-  void writeAsDxf( QgsServerInterface *serverIface, const QString &version,  const QgsServerRequest &request,
+  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
+                   const QString &version,  const QgsServerRequest &request,
                    QgsServerResponse &response );
 
 } // samespace QgsWms

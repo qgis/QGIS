@@ -96,7 +96,7 @@ namespace QgsWms
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
           {
-            writeAsDxf( mServerIface, versionString, request, response );
+            writeAsDxf( mServerIface, project, versionString, request, response );
           }
           else
           {
