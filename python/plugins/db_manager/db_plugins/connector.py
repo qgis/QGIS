@@ -196,7 +196,7 @@ class DBConnector:
     @classmethod
     def quoteString(self, txt):
         """ make the string safe - replace ' with '' """
-        if hasattr(txt, '__iter__'):
+        if hasattr(txt, '__iter__') and not isinstance(txt, str):
             txts = list()
             for i in txt:
                 if i is None:
