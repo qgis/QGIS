@@ -29,16 +29,26 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 
 
 class AutoincrementalField(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+
+    def __init__(self):
+        super().__init__()
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Incremented')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Incremented')))
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerQgis.svg")
@@ -49,12 +59,6 @@ class AutoincrementalField(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def __init__(self):
-        super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))
-
     def name(self):
         return 'addautoincrementalfield'
 
@@ -62,21 +66,25 @@ class AutoincrementalField(QgisAlgorithm):
         return self.tr('Add autoincremental field')
 
     def processAlgorithm(self, parameters, context, feedback):
-        output = self.getOutputFromName(self.OUTPUT)
-        vlayer = \
-            QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fields = vlayer.fields()
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fields = source.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
-        outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
-        for current, feat in enumerate(features):
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
+
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
+        for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            output_feature = input_feature
+            attributes = input_feature.attributes()
+            attributes.append(current)
+            output_feature.setAttributes(attributes)
+
+            sink.addFeature(output_feature)
             feedback.setProgress(int(current * total))
-            geom = feat.geometry()
-            outFeat.setGeometry(geom)
-            attrs = feat.attributes()
-            attrs.append(current)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
-        del writer
+
+        return {self.OUTPUT: dest_id}

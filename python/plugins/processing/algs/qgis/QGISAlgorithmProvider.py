@@ -108,7 +108,7 @@ from .AddTableField import AddTableField
 # from .FieldsCalculator import FieldsCalculator
 # from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
-# from .AutoincrementalField import AutoincrementalField
+from .AutoincrementalField import AutoincrementalField
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
 # from .CreateConstantRaster import CreateConstantRaster
@@ -222,7 +222,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         HubDistanceLines(), HubLines(), Merge(),
         #         GeometryConvert(), FieldsCalculator(),
         #         SaveSelectedFeatures(), JoinAttributes(),
-        #         AutoincrementalField(), Explode(), FieldsPyculator(),
+        #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(), PointsLayerFromTable(),
         #         StatisticsByCategories(), ConcaveHull(),
         #         RasterLayerStatistics(), PointsDisplacement(),
@@ -261,6 +261,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ]
         algs = [AddTableField(),
                 Aspect(),
+                AutoincrementalField(),
                 Boundary(),
                 BoundingBox()]
 
