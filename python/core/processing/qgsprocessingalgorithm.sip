@@ -207,6 +207,12 @@ class QgsProcessingAlgorithm
  :rtype: QgsProcessingOutputDefinition
 %End
 
+    bool hasHtmlOutputs() const;
+%Docstring
+ Returns true if this algorithm generates HTML outputs.
+ :rtype: bool
+%End
+
     QVariantMap run( const QVariantMap &parameters,
                      QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 %Docstring

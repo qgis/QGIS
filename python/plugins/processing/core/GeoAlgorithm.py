@@ -297,15 +297,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
             if out.name == outputName:
                 out.setValue(value)
 
-    def getHTMLOutputsCount(self):
-        """Returns the number of HTML outputs.
-        """
-        i = 0
-        for out in self.outputs:
-            if isinstance(out, OutputHTML):
-                i += 1
-        return i
-
     def removeOutputFromName(self, name):
         for out in self.outputs:
             if out.name == name:

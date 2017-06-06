@@ -211,6 +211,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
+     * Returns true if this algorithm generates HTML outputs.
+     */
+    bool hasHtmlOutputs() const;
+
+    /**
      * Executes the algorithm using the specified \a parameters.
      *
      * The \a context argument specifies the context in which the algorithm is being run.
