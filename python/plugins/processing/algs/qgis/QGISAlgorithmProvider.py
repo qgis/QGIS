@@ -170,7 +170,7 @@ from .Aspect import Aspect
 # from .RasterCalculator import RasterCalculator
 # from .CreateAttributeIndex import CreateAttributeIndex
 # from .DropGeometry import DropGeometry
-# from .BasicStatistics import BasicStatisticsForField
+from .BasicStatistics import BasicStatisticsForField
 # from .Heatmap import Heatmap
 # from .Orthogonalize import Orthogonalize
 # from .ShortestPathPointToPoint import ShortestPathPointToPoint
@@ -251,7 +251,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(), SnapGeometriesToLayer(),
         #         PoleOfInaccessibility(), CreateAttributeIndex(),
-        #         DropGeometry(), BasicStatisticsForField(),
+        #         DropGeometry(),
         #         RasterCalculator(), Heatmap(), Orthogonalize(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
@@ -262,6 +262,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         algs = [AddTableField(),
                 Aspect(),
                 AutoincrementalField(),
+                BasicStatisticsForField(),
                 Boundary(),
                 BoundingBox(),
                 Clip(),
