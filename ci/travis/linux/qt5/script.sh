@@ -14,7 +14,7 @@
 ###########################################################################
 
 export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
-export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${PATH}
+export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
 export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
 export CTEST_PARALLEL_LEVEL=1
 export CCACHE_TEMPDIR=/tmp
@@ -24,6 +24,9 @@ if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Set OTB application path (installed in before_install.sh script)
+export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
 
 xvfb-run ctest -V -E "qgis_filedownloader|qgis_openstreetmaptest|qgis_wcsprovidertest|qgis_ziplayertest|qgis_ogcutilstest|$(cat ${DIR}/blacklist.txt | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
 # xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure

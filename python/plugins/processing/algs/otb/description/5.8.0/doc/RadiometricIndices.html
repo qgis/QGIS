@@ -1,0 +1,25 @@
+<html><head>
+<style type="text/css">
+dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; text-align: left; font-weight: bold; color: green; } dt:after { content: ":"; } dd { margin: 0 0 0 220px; padding: 0 0 0.5em 0; }
+</style>
+</head><body><h1>RadiometricIndices</h1><h2>Brief Description</h2>Compute radiometric indices.<h2>Tags</h2>Radiometric Indices,Feature Extraction<h2>Long Description</h2>This application computes radiometric indices using the relevant channels of the input image. The output is a multi band image into which each channel is one of the selected indices.<h2>Parameters</h2><ul><li><b>[param] -in</b> &lt;string&gt; Input image. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -out</b> &lt;string&gt; Radiometric indices output image. Mandatory: True. Default Value: &quot;&quot;</li><li><b>[param] -ram</b> &lt;int32&gt; Available memory for processing (in MB). Mandatory: False. Default Value: &quot;128&quot;</li><li><b>[param] -channels</b> &lt;string&gt; Channels selection. Mandatory: True. Default Value: &quot;0&quot;</li><li><b>[param] -inxml</b> &lt;string&gt; Load otb application from xml file. Mandatory: False. Default Value: &quot;&quot;</li><li><b>[param] -outxml</b> &lt;string&gt; Save otb application to xml file. Mandatory: False. Default Value: &quot;&quot;</li><b>[choice] -list</b> List of available radiometric indices with their relevant channels in brackets:
+        Vegetation:NDVI - Normalized difference vegetation index (Red, NIR)
+        Vegetation:TNDVI - Transformed normalized difference vegetation index (Red, NIR)
+        Vegetation:RVI - Ratio vegetation index (Red, NIR)
+        Vegetation:SAVI - Soil adjusted vegetation index (Red, NIR)
+        Vegetation:TSAVI - Transformed soil adjusted vegetation index (Red, NIR)
+        Vegetation:MSAVI - Modified soil adjusted vegetation index (Red, NIR)
+        Vegetation:MSAVI2 - Modified soil adjusted vegetation index 2 (Red, NIR)
+        Vegetation:GEMI - Global environment monitoring index (Red, NIR)
+        Vegetation:IPVI - Infrared percentage vegetation index (Red, NIR)
+        
+        Water:NDWI - Normalized difference water index (Gao 1996) (NIR, MIR)
+        Water:NDWI2 - Normalized difference water index (Mc Feeters 1996) (Green, NIR)
+        Water:MNDWI - Modified normalized difference water index (Xu 2006) (Green, MIR)
+        Water:NDPI - Normalized difference pond index (Lacaux et al.) (MIR, Green)
+        Water:NDTI - Normalized difference turbidity index (Lacaux et al.) (Red, Green)
+        
+        Soil:RI - Redness index (Red, Green)
+        Soil:CI - Color index (Red, Green)
+        Soil:BI - Brightness index (Red, Green)
+        Soil:BI2 - Brightness index 2 (NIR, Red, Green) ndvi,tndvi,rvi,savi,tsavi,msavi,msavi2,gemi,ipvi,laindvilog,lairefl,laindviformo,ndwi,ndwi2,mndwi,ndpi,ndti,ri,ci,bi,bi2. Mandatory: True. Default Value: &quot;ndvi&quot;<ul><li><b>[group] -ndvi</b></li><ul></ul><li><b>[group] -tndvi</b></li><ul></ul><li><b>[group] -rvi</b></li><ul></ul><li><b>[group] -savi</b></li><ul></ul><li><b>[group] -tsavi</b></li><ul></ul><li><b>[group] -msavi</b></li><ul></ul><li><b>[group] -msavi2</b></li><ul></ul><li><b>[group] -gemi</b></li><ul></ul><li><b>[group] -ipvi</b></li><ul></ul><li><b>[group] -laindvilog</b></li><ul></ul><li><b>[group] -lairefl</b></li><ul></ul><li><b>[group] -laindviformo</b></li><ul></ul><li><b>[group] -ndwi</b></li><ul></ul><li><b>[group] -ndwi2</b></li><ul></ul><li><b>[group] -mndwi</b></li><ul></ul><li><b>[group] -ndpi</b></li><ul></ul><li><b>[group] -ndti</b></li><ul></ul><li><b>[group] -ri</b></li><ul></ul><li><b>[group] -ci</b></li><ul></ul><li><b>[group] -bi</b></li><ul></ul><li><b>[group] -bi2</b></li><ul></ul></ul></ul><h2>Limitations</h2>None<h2>Authors</h2>OTB-Team<h2>See Also</h2>otbVegetationIndicesFunctor, otbWaterIndicesFunctor and otbSoilIndicesFunctor classes<h2>Example of use</h2><ul><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">in: qb_RoadExtract.tif</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">list: Vegetation:NDVI Vegetation:RVI Vegetation:IPVI</p></li><li><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">out: RadiometricIndicesImage.tif</p></li></ul></body></html>

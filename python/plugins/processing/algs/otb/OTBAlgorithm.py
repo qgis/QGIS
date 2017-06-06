@@ -63,6 +63,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self.hasROI = None
+        self._icon = None
 
     def __str__(self):
         return("Algo : " + self.name + " from app : " + self.cliName + " in : " + self.group)
@@ -73,7 +74,9 @@ class OTBAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
+        if self._icon is None:
+            self._icon = QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
+        return self._icon
 
     def help(self):
         version = OTBUtils.getInstalledVersion()
@@ -124,8 +127,8 @@ class OTBAlgorithm(GeoAlgorithm):
         return all_params
 
     def defineCharacteristicsFromFile(self):
-        content = open(self.descriptionFile).read()
-        dom_model = ET.fromstring(content)
+        with open(self.descriptionFile) as content:
+            dom_model = ET.fromstring(content.read())
 
         self.appkey = dom_model.find('key').text
         self.cliName = dom_model.find('exec').text
@@ -175,7 +178,7 @@ class OTBAlgorithm(GeoAlgorithm):
         path = OTBUtils.otbPath()
 
         commands = []
-        commands.append(path + os.sep + self.cliName)
+        commands.append(os.path.join(path, self.cliName))
 
         self.roiVectors = {}
         self.roiRasters = {}
