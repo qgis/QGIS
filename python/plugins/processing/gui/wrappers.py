@@ -1232,40 +1232,6 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator)
 
 
-def getFileFilter(param):
-    """
-    Returns a suitable file filter pattern for the specified parameter definition
-    :param param:
-    :return:
-    """
-    if param.type() == 'multilayer':
-        if param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif param.layerType() == QgsProcessingParameterDefinition.TypeFile:
-            return self.tr('All files (*.*)', 'QgsProcessingParameterMultipleLayers')
-        else:
-            exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'raster':
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'table':
-        exts = ['csv', 'dbf']
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'sink':
-        exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    return ''
-
-
 class WidgetWrapperFactory:
 
     """
