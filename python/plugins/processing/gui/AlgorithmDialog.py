@@ -35,7 +35,7 @@ from qgis.core import (QgsProject,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingFeatureSinkDefinition,
+                       QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingAlgorithm)
 from qgis.gui import QgsMessageBar

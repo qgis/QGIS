@@ -39,7 +39,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsExpression,
                        QgsSettings,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingFeatureSinkDefinition)
+                       QgsProcessingOutputLayerDefinition)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
@@ -234,6 +234,6 @@ class DestinationSelectionPanel(BASE, WIDGET):
             key = 'memory:'
         else:
             key = self.leText.text()
-        value = QgsProcessingFeatureSinkDefinition(key)
+        value = QgsProcessingOutputLayerDefinition(key)
         value.createOptions = {'fileEncoding': self.encoding}
         return value

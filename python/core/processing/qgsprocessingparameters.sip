@@ -56,11 +56,11 @@ Allows direct construction of QVariants.
 
 
 
-class QgsProcessingFeatureSinkDefinition
+class QgsProcessingOutputLayerDefinition
 {
 %Docstring
 
- Encapsulates settings relating to a feature sink input to a processing algorithm.
+ Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
 
 .. versionadded:: 3.0
 %End
@@ -70,35 +70,35 @@ class QgsProcessingFeatureSinkDefinition
 %End
   public:
 
-    QgsProcessingFeatureSinkDefinition( const QString &sink = QString(), QgsProject *destinationProject = 0 );
+    QgsProcessingOutputLayerDefinition( const QString &sink = QString(), QgsProject *destinationProject = 0 );
 %Docstring
- Constructor for QgsProcessingFeatureSinkDefinition, accepting a static string sink.
+ Constructor for QgsProcessingOutputLayerDefinition, accepting a static sink/layer string.
  The ``destinationProject`` parameter can be set to a QgsProject instance in which
- to automatically load the resulting sink after completing processing.
+ to automatically load the resulting sink/layer after completing processing.
 %End
 
-    QgsProcessingFeatureSinkDefinition( const QgsProperty &sink, QgsProject *destinationProject = 0 );
+    QgsProcessingOutputLayerDefinition( const QgsProperty &sink, QgsProject *destinationProject = 0 );
 %Docstring
- Constructor for QgsProcessingFeatureSinkDefinition, accepting a QgsProperty sink.
+ Constructor for QgsProcessingOutputLayerDefinition, accepting a QgsProperty sink/layer.
  The ``destinationProject`` parameter can be set to a QgsProject instance in which
- to automatically load the resulting sink after completing processing.
+ to automatically load the resulting sink/layer after completing processing.
 %End
 
     QgsProperty sink;
 %Docstring
- Sink definition. Usually a static property set to the destination file name for the sink's layer.
+ Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.
 %End
 
     QgsProject *destinationProject;
 %Docstring
  Destination project. Can be set to a QgsProject instance in which
- to automatically load the resulting sink after completing processing.
+ to automatically load the resulting sink/layer after completing processing.
  The default behavior is not to load the result into any project (None).
 %End
 
     QVariantMap createOptions;
 %Docstring
- Map of optional sink creation options, which
+ Map of optional sink/layer creation options, which
  are passed to the underlying provider when creating new layers. Known options also
  include 'fileEncoding', which is used to specify a file encoding to use for created
  files.
