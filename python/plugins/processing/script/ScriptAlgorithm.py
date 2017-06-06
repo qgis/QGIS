@@ -198,9 +198,9 @@ class ScriptAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             out.setValue(ns[out.name])
 
-    def helpString(self):
+    def helpUrl(self):
         if self.descriptionFile is None:
-            return False, None
+            return None
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
             return getHtmlFromHelpFile(self, helpfile)

@@ -390,3 +390,6 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
       #  lines.append(traceback.format_exc())
         #QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
         #raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
+
+    def helpUrl(self):
+        return None
