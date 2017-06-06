@@ -509,7 +509,8 @@ Check if the given path is hidden from the browser model
 
   public slots:
     virtual void childrenCreated();
-    void directoryChanged();
+    virtual void directoryChanged();
+
 
   protected:
     void init();

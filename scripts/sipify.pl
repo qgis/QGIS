@@ -79,9 +79,10 @@ sub write_output {
 }
 
 sub dbg_info {
+    my $info = $_[0];
     if ($debug == 1){
-        push @OUTPUT, $_[0]."\n";
-        print $LINE_IDX." ".@ACCESS." ".$SIP_RUN." ".$MULTILINE_DEFINITION." ".$_[0]."\n";
+        push @OUTPUT, $info."\n";
+        print $LINE_IDX." ".@ACCESS." ".$SIP_RUN." ".$MULTILINE_DEFINITION." ".$info."\n";
     }
 }
 
@@ -533,7 +534,6 @@ while ($LINE_IDX < $LINE_COUNT){
                 if ($#ACCESS == 0){
                     dbg_info("reached top level");
                     # top level should stasy public
-                    dbg_info
                     $ACCESS[$#ACCESS] = PUBLIC;
                 }
                 $COMMENT = '';
@@ -626,6 +626,26 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
 
+    if ( $LINE =~ m/\boverride\b/){
+        $IS_OVERRIDE = 1;
+    }
+
+    # keyword fixes
+    do {no warnings 'uninitialized';
+        $LINE =~ s/^(\s*template<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
+        $LINE =~ s/\s*\boverride\b//;
+        $LINE =~ s/\s*\bextern \b//;
+        $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
+        $LINE =~ s/\bconstexpr\b/const/;
+        $LINE =~ s/\bnullptr\b/0/g;
+        $LINE =~ s/\s*=\s*default\b//g;
+    };
+
+    if( $LINE =~ /\b\w+_EXPORT\b/ ) {
+            $EXPORTED[-1]++;
+            $LINE =~ s/\b\w+_EXPORT\s+//g;
+    }
+
     # skip non-method member declaration in non-public sections
     # https://regex101.com/r/gUBZUk/9
     if ( $SIP_RUN != 1 &&
@@ -636,16 +656,19 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # remove static const value assignment
-    # https://regex101.com/r/DyWkgn/4
-    $LINE !~ m/^\s*const static \w+/ or exit_with_error("const static should be written static const in $CLASSNAME[$#CLASSNAME]");
-    $LINE =~ s/^(\s*static const(?:expr)? \w+(?:<(?:[\w()<>, ]|::)+>)? \w+) = .*([|;])\s*(\/\/.*)?$/$1;/;
-    if ( defined $2 && $2 =~ m/\|/ ){
-        dbg_info("multiline const static assignment");
-        my $skip = '';
-        while ( $skip !~ m/;\s*(\/\/.*?)?$/ ){
-            $skip = read_line();
+    # https://regex101.com/r/DyWkgn/6
+    do {no warnings 'uninitialized';
+        $LINE !~ m/^\s*const static \w+/ or exit_with_error("const static should be written static const in $CLASSNAME[$#CLASSNAME]");
+        $LINE =~ s/^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$/$1;/;
+        $COMMENT = '' if (defined $+{staticconst} && ! defined $+{static});
+        if ( defined $+{endingchar} && $+{endingchar} =~ m/\|/ ){
+            dbg_info("multiline const static assignment");
+            my $skip = '';
+            while ( $skip !~ m/;\s*(\/\/.*?)?$/ ){
+                $skip = read_line();
+            }
         }
-    }
+    };
 
     # remove struct member assignment
     if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
@@ -671,9 +694,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     do {no warnings 'uninitialized';
         # remove keywords
-        if ( $LINE =~ m/\boverride\b/){
-            $IS_OVERRIDE = 1;
-
+        if ( $IS_OVERRIDE == 1 ){
             # handle multiline definition to add virtual keyword on opening line
             if ( $MULTILINE_DEFINITION == 1 ){
                 my $virtual_line = $LINE;
@@ -695,19 +716,6 @@ while ($LINE_IDX < $LINE_COUNT){
                 #in overridden methods
                 $LINE =~ s/^(\s*?)\b(.*)$/$1virtual $2\n/;
             }
-        }
-
-        # keyword fixes
-        $LINE =~ s/^(\s*template<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
-        $LINE =~ s/\s*\boverride\b//;
-        $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
-        $LINE =~ s/\bconstexpr\b/const/;
-        $LINE =~ s/\bnullptr\b/0/g;
-        $LINE =~ s/\s*=\s*default\b//g;
-
-        if( $LINE =~ /\w+_EXPORT/ ) {
-                $EXPORTED[-1]++;
-                $LINE =~ s/\b\w+_EXPORT\s+//g;
         }
 
         # remove constructor definition, function bodies, member initializing list

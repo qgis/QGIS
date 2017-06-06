@@ -24,7 +24,8 @@ class QgsGeometryValidator : QThread
 
     virtual void run();
 
-    void stop();
+    virtual void stop();
+
 
     static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors /Out/, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 %Docstring

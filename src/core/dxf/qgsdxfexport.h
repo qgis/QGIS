@@ -35,7 +35,7 @@ class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
 
-namespace pal
+namespace pal SIP_SKIP
 {
   class LabelPosition;
 }
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsDxfExport
     };
 
     QgsDxfExport();
-    QgsDxfExport( const QgsDxfExport &dxfExport );
+    QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     /**
@@ -115,14 +115,14 @@ class CORE_EXPORT QgsDxfExport
      * Set symbology export mode
      * \param e the mode
      */
-    void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
+    void setSymbologyExport( QgsDxfExport::SymbologyExport e ) { mSymbologyExport = e; }
 
     /**
      * Get symbology export mode
      * \returns mode
      * \see setSymbologyExport
      */
-    SymbologyExport symbologyExport() const { return mSymbologyExport; }
+    QgsDxfExport::SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
     /**
      * Set extent of area to export

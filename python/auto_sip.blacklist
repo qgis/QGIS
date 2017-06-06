@@ -1,6 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-core/qgis.sip
 core/qgsrange.sip
 core/composer/qgsaddremoveitemcommand.sip
 core/composer/qgsgroupungroupitemscommand.sip
@@ -77,7 +76,6 @@ core/symbology-ng/qgssymbollayerregistry.sip
 core/symbology-ng/qgssymbollayerutils.sip
 core/symbology-ng/qgsvectorfieldsymbollayer.sip
 core/symbology-ng/qgsarrowsymbollayer.sip
-core/dxf/qgsdxfexport.sip
 gui/qgsmaptip.sip
 gui/qgsmaptool.sip
 gui/qgsmaptooladvanceddigitizing.sip
