@@ -90,6 +90,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnCollapse = QToolButton(splitterHandle)
         self.btnCollapse.setAutoRaise(True)
         self.btnCollapse.setFixedSize(12, 12)
+        self.btnCollapse.setCursor(Qt.ArrowCursor)
         handleLayout.addWidget(self.btnCollapse)
         handleLayout.insertStretch(0)
         splitterHandle.setLayout(handleLayout)
