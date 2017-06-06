@@ -69,7 +69,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     };
 
     //! A group of clustered points (ie features within the distance tolerance).
-    typedef QList< GroupedFeature > ClusteredGroup;
+    typedef QList< QgsPointDistanceRenderer::GroupedFeature > ClusteredGroup;
 
     /** Constructor for QgsPointDistanceRenderer.
      * \param rendererName name of renderer for registry
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual Capabilities capabilities() override;
+    virtual QgsFeatureRenderer::Capabilities capabilities() override;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
+    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
     void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \param context destination render context
      * \param group contents of group
      */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 SIP_FORCE;
 
     //! Creates a search rectangle with specified distance tolerance.
     QgsRectangle searchRect( const QgsPointXY &p, double distance ) const;

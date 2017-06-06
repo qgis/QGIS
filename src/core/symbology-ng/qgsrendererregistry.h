@@ -28,7 +28,7 @@ class QgsFeatureRenderer;
 class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsStyle;
-class QgsRendererWidget;
+class QgsRendererWidget SIP_EXTERNAL;
 
 /** \ingroup core
  Stores metadata about one renderer class.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     /** Returns flags indicating the types of layer the renderer is compatible with.
      * \since QGIS 2.16
      */
-    virtual LayerTypes compatibleLayerTypes() const { return All; }
+    virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const { return All; }
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
@@ -99,9 +99,9 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRendererAbstractMetadata::LayerTypes )
 
 
-typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & );
-typedef QgsRendererWidget *( *QgsRendererWidgetFunc )( QgsVectorLayer *, QgsStyle *, QgsFeatureRenderer * );
-typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, QgsWkbTypes::GeometryType geomType );
+typedef QgsFeatureRenderer *( *QgsRendererCreateFunc )( QDomElement &, const QgsReadWriteContext & ) SIP_SKIP;
+typedef QgsRendererWidget *( *QgsRendererWidgetFunc )( QgsVectorLayer *, QgsStyle *, QgsFeatureRenderer * ) SIP_SKIP;
+typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, QgsWkbTypes::GeometryType geomType ) SIP_SKIP;
 
 /** \ingroup core
  Convenience metadata class that uses static functions to create renderer and its widget.
@@ -142,9 +142,9 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 
     virtual ~QgsRendererMetadata() = default;
 
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override
+    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
     { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
-    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override
+    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override SIP_FACTORY
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
@@ -170,6 +170,9 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     QgsRendererCreateFromSldFunc mCreateFromSldFunc;
 
   private:
+#ifdef SIP_RUN
+    QgsRendererMetadata();
+#endif
 
     QgsRendererAbstractMetadata::LayerTypes mLayerTypes;
 };
@@ -222,6 +225,9 @@ class CORE_EXPORT QgsRendererRegistry
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 
   private:
+#ifdef SIP_RUN
+    QgsRendererRegistry( const QgsRendererRegistry &rh );
+#endif
 
     //! Map of name to renderer
     QMap<QString, QgsRendererAbstractMetadata *> mRenderers;

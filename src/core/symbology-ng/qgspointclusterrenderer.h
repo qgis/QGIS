@@ -59,11 +59,15 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPointClusterRenderer( const QgsPointClusterRenderer & );
+    QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
+#endif
 
     //! Symbol for point clusters
     std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
 };
 

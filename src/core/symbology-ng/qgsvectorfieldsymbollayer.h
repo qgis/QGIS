@@ -110,6 +110,10 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     virtual QRectF bounds( QPointF, QgsSymbolRenderContext & ) override { return QRectF(); }
 
   private:
+#ifdef SIP_RUN
+    QgsVectorFieldSymbolLayer( const QgsVectorFieldSymbolLayer &other );
+#endif
+
     QString mXAttribute;
     QString mYAttribute;
     QgsUnitTypes::RenderUnit mDistanceUnit;

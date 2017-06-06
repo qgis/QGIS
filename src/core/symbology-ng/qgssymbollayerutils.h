@@ -37,7 +37,7 @@ class QgsSymbolLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
-typedef QList< QPair< QColor, QString > > QgsNamedColorList;
+typedef QList< QPair< QColor, QString > > QgsNamedColorList SIP_SKIP;
 
 class QDomDocument;
 class QDomElement;
@@ -608,7 +608,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 class QPolygonF;
 
 //! calculate geometry shifted by a specified distance
-QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType );
+QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType ) SIP_SKIP;
 
 #endif
 

@@ -87,7 +87,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QString dump() const override;
     virtual QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QString filter( const QgsFields &fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override SIP_SKIP;
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
@@ -202,6 +202,10 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsSymbol *symbolForValue( const QVariant &value );
 
   private:
+#ifdef SIP_RUN
+    QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
+    QgsCategorizedSymbolRenderer &operator=( const QgsCategorizedSymbolRenderer & );
+#endif
 
     //! Returns calculated classification value for a feature
     QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;

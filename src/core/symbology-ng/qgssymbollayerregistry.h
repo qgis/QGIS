@@ -17,13 +17,12 @@
 #define QGSSYMBOLLAYERREGISTRY_H
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgssymbol.h"
 
 class QgsPathResolver;
 class QgsVectorLayer;
-class QgsSymbolLayerWidget;
+class QgsSymbolLayerWidget SIP_EXTERNAL;
 
 /** \ingroup core
  Stores metadata about one symbol layer class.
@@ -73,10 +72,10 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     QgsSymbol::SymbolType mType;
 };
 
-typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QgsStringMap & );
-typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( const QgsVectorLayer * );
-typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & );
-typedef void ( *QgsSymbolLayerPathResolverFunc )( QgsStringMap &, const QgsPathResolver &, bool );
+typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QgsStringMap & ) SIP_SKIP;
+typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( const QgsVectorLayer * ) SIP_SKIP;
+typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
+typedef void ( *QgsSymbolLayerPathResolverFunc )( QgsStringMap &, const QgsPathResolver &, bool ) SIP_SKIP;
 
 /** \ingroup core
  Convenience metadata class that uses static functions to create symbol layer and its widget.
@@ -90,12 +89,12 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerCreateFromSldFunc pfCreateFromSld = nullptr,
                             QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr,
-                            QgsSymbolLayerWidgetFunc pfWidget = nullptr )
-      : QgsSymbolLayerAbstractMetadata( name, visibleName, type ) SIP_SKIP
-      , mCreateFunc( pfCreate )
-      , mWidgetFunc( pfWidget )
-      , mCreateFromSldFunc( pfCreateFromSld )
-      , mPathResolverFunc( pfPathResolver )
+                            QgsSymbolLayerWidgetFunc pfWidget = nullptr ) SIP_SKIP
+  : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
+    , mCreateFunc( pfCreate )
+    , mWidgetFunc( pfWidget )
+    , mCreateFromSldFunc( pfCreateFromSld )
+    , mPathResolverFunc( pfPathResolver )
     {}
 
     //! \note not available in Python bindings
@@ -110,9 +109,9 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_FACTORY
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; } SIP_FACTORY
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; } SIP_FACTORY
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
       if ( mPathResolverFunc )
@@ -124,6 +123,11 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     QgsSymbolLayerWidgetFunc mWidgetFunc;
     QgsSymbolLayerCreateFromSldFunc mCreateFromSldFunc;
     QgsSymbolLayerPathResolverFunc mPathResolverFunc;
+
+  private:
+#ifdef SIP_RUN
+    QgsSymbolLayerMetadata();
+#endif
 };
 
 
@@ -171,6 +175,9 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry &rh );
+#endif
 
     QMap<QString, QgsSymbolLayerAbstractMetadata *> mMetadata;
 };

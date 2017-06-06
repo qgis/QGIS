@@ -1,46 +1,79 @@
-/** \class QgsPointClusterRenderer
- * \ingroup core
- * A renderer that automatically clusters points with the same geographic position.
- * \note added in QGIS 3.0
-*/
-class QgsPointClusterRenderer : QgsPointDistanceRenderer
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointclusterrenderer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointClusterRenderer: QgsPointDistanceRenderer
 {
+%Docstring
+ A renderer that automatically clusters points with the same geographic position.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgspointclusterrenderer.h>
+#include "qgspointclusterrenderer.h"
 %End
   public:
 
     QgsPointClusterRenderer();
 
-    virtual QgsPointClusterRenderer* clone() const /Factory/;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
-    void stopRender( QgsRenderContext& context );
-    QDomElement save( QDomDocument& doc, const QgsReadWriteContext &context );
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+    virtual QgsPointClusterRenderer *clone() const /Factory/;
 
-    //! Create a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+    virtual void stopRender( QgsRenderContext &context );
 
-    /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
-     * @see setClusterSymbol()
-    */
+    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Creates a renderer from XML element
+ :rtype: QgsFeatureRenderer
+%End
+
     QgsMarkerSymbol *clusterSymbol();
+%Docstring
+ Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
+.. seealso:: setClusterSymbol()
+ :rtype: QgsMarkerSymbol
+%End
 
-    /** Sets the symbol for rendering clustered groups.
-     * @param symbol new cluster symbol. Ownership is transferred to the renderer.
-     * @see clusterSymbol()
-    */
     void setClusterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+ Sets the symbol for rendering clustered groups.
+ \param symbol new cluster symbol. Ownership is transferred to the renderer.
+.. seealso:: clusterSymbol()
+%End
 
-    /** Creates a QgsPointDisplacementRenderer from an existing renderer.
-     * @note added in 2.5
-     * @returns a new renderer if the conversion was possible, otherwise nullptr.
-     */
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ Creates a QgsPointClusterRenderer from an existing renderer.
+ :return: a new renderer if the conversion was possible, otherwise None.
+ :rtype: QgsPointClusterRenderer
+%End
 
   private:
     QgsPointClusterRenderer( const QgsPointClusterRenderer & );
     QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
+%Docstring
+ :rtype: QgsPointClusterRenderer
+%End
+  private:
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointclusterrenderer.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
