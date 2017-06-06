@@ -215,10 +215,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
 
   QgsProject *destinationProject = nullptr;
   QVariantMap createOptions;
-  if ( val.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
-    // input is a QgsProcessingFeatureSinkDefinition - get extra properties from it
-    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( val );
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
     createOptions = fromVar.createOptions;
     val = fromVar.sink;
@@ -1323,9 +1323,9 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
   if ( !var.isValid() )
     return mFlags & FlagOptional;
 
-  if ( var.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
-    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( var );
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
     var = fromVar.sink;
   }
 
