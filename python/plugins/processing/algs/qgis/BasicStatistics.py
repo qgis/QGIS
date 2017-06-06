@@ -158,6 +158,8 @@ class BasicStatisticsForField(QgisAlgorithm):
         total = 100.0 / float(count)
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addVariant(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
@@ -205,6 +207,8 @@ class BasicStatisticsForField(QgisAlgorithm):
         total = 100.0 / float(count)
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addValue(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
@@ -235,6 +239,8 @@ class BasicStatisticsForField(QgisAlgorithm):
         total = 100.0 / float(count)
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):
+            if feedback.isCanceled():
+                break
             stat.addValue(ft[field.name()])
             feedback.setProgress(int(current * total))
         stat.finalize()
