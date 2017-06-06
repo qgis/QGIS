@@ -86,7 +86,7 @@ from .Clip import Clip
 # from .Union import Union
 # from .DensifyGeometriesInterval import DensifyGeometriesInterval
 # from .SpatialJoin import SpatialJoin
-# from .DeleteColumn import DeleteColumn
+from .DeleteColumn import DeleteColumn
 # from .DeleteHoles import DeleteHoles
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
@@ -216,7 +216,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
-        #         DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
+        #         DeleteDuplicateGeometries(), TextToFloat(),
         #         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(), Merge(),
@@ -264,7 +264,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 AutoincrementalField(),
                 Boundary(),
                 BoundingBox(),
-                Clip()]
+                Clip(),
+                DeleteColumn()
+                ]
 
         if hasPlotly:
             #     from .VectorLayerHistogram import VectorLayerHistogram
