@@ -48,6 +48,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagHideFromToolbox = 1 << 1, //!< Algorithm should be hidden from the toolbox
       FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
+      FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -140,6 +141,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+     * Default flags are FlagSupportsBatch and FlagCanCancel.
      */
     virtual Flags flags() const;
 
@@ -209,6 +211,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
 
     /**
+     * Returns true if this algorithm generates HTML outputs.
+     */
+    bool hasHtmlOutputs() const;
+
+    /**
      * Executes the algorithm using the specified \a parameters.
      *
      * The \a context argument specifies the context in which the algorithm is being run.
@@ -228,6 +235,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * parameters widget should be used.
      */
     virtual QWidget *createCustomParametersWidget( QWidget *parent = nullptr ) const SIP_FACTORY;
+
+    /**
+     * Creates an expression context relating to the algorithm. This can be called by algorithms
+     * to create a new expression context ready for evaluating expressions within the algorithm.
+     */
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+        QgsProcessingContext &context ) const;
+
 
   protected:
 
@@ -343,6 +358,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * need to handle deletion of the returned layer.
      */
     QgsRasterLayer *parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a raster output layer destination.
+     */
+    QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a file based output destination.
+     */
+    QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a vector layer.

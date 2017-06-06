@@ -26,11 +26,12 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.algs.qgis import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterTableField,
+                       QgsProcessingOutputVectorLayer)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class DeleteColumn(QgisAlgorithm):
@@ -53,11 +54,14 @@ class DeleteColumn(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.COLUMNS,
-                                              self.tr('Fields to delete'), self.INPUT, multiple=True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterTableField(self.COLUMNS,
+                                                           self.tr('Fields to delete'),
+                                                           None, self.INPUT, QgsProcessingParameterTableField.Any, True))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Output layer")))
 
     def name(self):
         return 'deletecolumn'
@@ -66,10 +70,10 @@ class DeleteColumn(QgisAlgorithm):
         return self.tr('Delete column')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
 
-        fields_to_delete = self.getParameterValue(self.COLUMNS).split(';')
-        fields = layer.fields()
+        fields = source.fields()
         field_indices = []
         # loop through twice - first we need to build up a list of original attribute indices
         for f in fields_to_delete:
@@ -83,18 +87,22 @@ class DeleteColumn(QgisAlgorithm):
         for index in field_indices:
             fields.remove(index)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
 
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             attributes = f.attributes()
             for index in field_indices:
                 del attributes[index]
             f.setAttributes(attributes)
-            writer.addFeature(f)
+            sink.addFeature(f)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

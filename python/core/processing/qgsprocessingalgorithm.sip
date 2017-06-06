@@ -28,6 +28,7 @@ class QgsProcessingAlgorithm
       FlagHideFromToolbox,
       FlagHideFromModeler,
       FlagSupportsBatch,
+      FlagCanCancel,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -128,6 +129,7 @@ class QgsProcessingAlgorithm
     virtual Flags flags() const;
 %Docstring
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+ Default flags are FlagSupportsBatch and FlagCanCancel.
  :rtype: Flags
 %End
 
@@ -205,6 +207,12 @@ class QgsProcessingAlgorithm
  :rtype: QgsProcessingOutputDefinition
 %End
 
+    bool hasHtmlOutputs() const;
+%Docstring
+ Returns true if this algorithm generates HTML outputs.
+ :rtype: bool
+%End
+
     QVariantMap run( const QVariantMap &parameters,
                      QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 %Docstring
@@ -227,6 +235,15 @@ class QgsProcessingAlgorithm
  parameters widget should be used.
  :rtype: QWidget
 %End
+
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+        QgsProcessingContext &context ) const;
+%Docstring
+ Creates an expression context relating to the algorithm. This can be called by algorithms
+ to create a new expression context ready for evaluating expressions within the algorithm.
+ :rtype: QgsExpressionContext
+%End
+
 
   protected:
 
@@ -355,6 +372,18 @@ class QgsProcessingAlgorithm
  sources and stored temporarily in the ``context``. In either case, callers do not
  need to handle deletion of the returned layer.
  :rtype: QgsRasterLayer
+%End
+
+    QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+ Evaluates the parameter with matching ``name`` to a raster output layer destination.
+ :rtype: str
+%End
+
+    QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+ Evaluates the parameter with matching ``name`` to a file based output destination.
+ :rtype: str
 %End
 
     QgsVectorLayer *parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

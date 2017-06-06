@@ -33,7 +33,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsMessageLog)
 
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects

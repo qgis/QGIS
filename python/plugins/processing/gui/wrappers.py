@@ -909,6 +909,21 @@ class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
                     widget.addItem(desc, val)
         return widget
 
+    def showExpressionsBuilder(self):
+        context = dataobjects.createExpressionContext()
+        value = self.value()
+        if not isinstance(value, str):
+            value = ''
+        dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
+        dlg.setWindowTitle(self.tr('Expression based input'))
+        if dlg.exec_() == QDialog.Accepted:
+            exp = QgsExpression(dlg.expressionText())
+            if not exp.hasParserError():
+                if self.dialogType == DIALOG_STANDARD:
+                    self.setValue(str(exp.evaluate(context)))
+                else:
+                    self.setValue(dlg.expressionText())
+
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiLine():
@@ -1158,6 +1173,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         context = dataobjects.createContext()
+        if isinstance(layer, QgsProcessingFeatureSourceDefinition):
+            layer, ok = layer.source.valueAsString(context.expressionContext())
         if isinstance(layer, str):
             layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self._layer = layer
@@ -1215,40 +1232,6 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             def validator(v):
                 return bool(v) or self.param.flags() & QgsProcessingParameterDefinition.FlagOptional
             return self.comboValue(validator)
-
-
-def getFileFilter(param):
-    """
-    Returns a suitable file filter pattern for the specified parameter definition
-    :param param:
-    :return:
-    """
-    if param.type() == 'multilayer':
-        if param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        elif param.layerType() == QgsProcessingParameterDefinition.TypeFile:
-            return self.tr('All files (*.*)', 'QgsProcessingParameterMultipleLayers')
-        else:
-            exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'raster':
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'table':
-        exts = ['csv', 'dbf']
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    elif param.type() == 'sink':
-        exts = QgsVectorFileWriter.supportedFormatExtensions()
-        for i in range(len(exts)):
-            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
-        return ';;'.join(exts)
-    return ''
 
 
 class WidgetWrapperFactory:

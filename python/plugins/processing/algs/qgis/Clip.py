@@ -34,11 +34,14 @@ from qgis.core import (QgsFeature,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterDefinition
+                       )
 
-from processing.algs.qgis import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -58,11 +61,12 @@ class Clip(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(Clip.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterVector(Clip.OVERLAY,
-                                          self.tr('Clip layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addOutput(OutputVector(Clip.OUTPUT, self.tr('Clipped')))
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY, self.tr('Clip layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon]))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Clipped')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Clipped")))
 
     def name(self):
         return 'clip'
@@ -71,17 +75,17 @@ class Clip(QgisAlgorithm):
         return self.tr('Clip')
 
     def processAlgorithm(self, parameters, context, feedback):
-        source_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.INPUT), context)
-        mask_layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Clip.OVERLAY), context)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(source_layer.fields(),
-                                                                     QgsWkbTypes.multiType(source_layer.wkbType()),
-                                                                     source_layer.crs(), context)
+        feature_source = self.parameterAsSource(parameters, self.INPUT, context)
+        mask_source = self.parameterAsSource(parameters, self.OVERLAY, context)
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               feature_source.fields(), QgsWkbTypes.multiType(feature_source.wkbType()), feature_source.sourceCrs())
 
         # first build up a list of clip geometries
         clip_geoms = []
-        for maskFeat in QgsProcessingUtils.getFeatures(mask_layer, context, QgsFeatureRequest().setSubsetOfAttributes([])):
-            clip_geoms.append(maskFeat.geometry())
+        for mask_feature in mask_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])):
+            clip_geoms.append(mask_feature.geometry())
 
         # are we clipping against a single feature? if so, we can show finer progress reports
         if len(clip_geoms) > 1:
@@ -98,8 +102,10 @@ class Clip(QgisAlgorithm):
         tested_feature_ids = set()
 
         for i, clip_geom in enumerate(clip_geoms):
-            input_features = [f for f in QgsProcessingUtils.getFeatures(source_layer, context,
-                                                                        QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
+            if feedback.isCanceled():
+                break
+
+            input_features = [f for f in feature_source.getFeatures(QgsFeatureRequest().setFilterRect(clip_geom.boundingBox()))]
 
             if not input_features:
                 continue
@@ -110,6 +116,9 @@ class Clip(QgisAlgorithm):
                 total = 0
 
             for current, in_feat in enumerate(input_features):
+                if feedback.isCanceled():
+                    break
+
                 if not in_feat.geometry():
                     continue
 
@@ -137,7 +146,7 @@ class Clip(QgisAlgorithm):
                     out_feat = QgsFeature()
                     out_feat.setGeometry(new_geom)
                     out_feat.setAttributes(in_feat.attributes())
-                    writer.addFeature(out_feat)
+                    sink.addFeature(out_feat)
                 except:
                     QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more '
                                                      'output features ignored due to '
@@ -151,4 +160,4 @@ class Clip(QgisAlgorithm):
                 # coarse progress report for multiple clip geometries
                 feedback.setProgress(100.0 * i / len(clip_geoms))
 
-        del writer
+        return {self.OUTPUT: dest_id}

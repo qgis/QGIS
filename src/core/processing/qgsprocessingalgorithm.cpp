@@ -21,6 +21,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsrectangle.h"
+#include "qgsprocessingcontext.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -63,7 +64,7 @@ QString QgsProcessingAlgorithm::svgIconPath() const
 
 QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
 {
-  return FlagSupportsBatch;
+  return FlagSupportsBatch | FlagCanCancel;
 }
 
 bool QgsProcessingAlgorithm::canExecute( QString * ) const
@@ -98,6 +99,22 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 {
   return nullptr;
+}
+
+QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
+    QgsProcessingContext &context ) const
+{
+  // start with context's expression context
+  QgsExpressionContext c = context.expressionContext();
+  if ( c.scopeCount() == 0 )
+  {
+    //empty scope, populate with initial scopes
+    c << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( context.project() );
+  }
+
+  c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
+  return c;
 }
 
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )
@@ -170,6 +187,16 @@ const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( c
   return nullptr;
 }
 
+bool QgsProcessingAlgorithm::hasHtmlOutputs() const
+{
+  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  {
+    if ( def->type() == QStringLiteral( "outputHtml" ) )
+      return true;
+  }
+  return false;
+}
+
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   return processAlgorithm( parameters, context, feedback );
@@ -228,6 +255,16 @@ QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parame
 QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsRasterOutputLayer( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsFileOutput( parameterDefinition( name ), parameters, context );
 }
 
 QgsVectorLayer *QgsProcessingAlgorithm::parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

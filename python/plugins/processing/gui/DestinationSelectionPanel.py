@@ -36,11 +36,14 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
+                       QgsExpression,
                        QgsSettings,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputLayerDefinition)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
+from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
@@ -62,9 +65,11 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
         self.parameter = parameter
         self.alg = alg
+        settings = QgsSettings()
+        self.encoding = settings.value('/Processing/encoding', 'System')
 
         if hasattr(self.leText, 'setPlaceholderText'):
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
@@ -79,7 +84,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             popupMenu = QMenu()
 
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary layers if supported
                 actionSaveToTemp = QAction(
@@ -100,7 +105,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             actionShowExpressionsBuilder.triggered.connect(self.showExpressionsBuilder)
             popupMenu.addAction(actionShowExpressionsBuilder)
 
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
                     self.tr('Save to Spatialite table...'), self.btnSelect)
@@ -119,11 +124,13 @@ class DestinationSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
+        context = self.alg.createExpressionContext({}, createContext())
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic',
-                                         self.parameter.expressionContext(self.alg))
+                                         context)
         dlg.setWindowTitle(self.tr('Expression based output'))
         if dlg.exec_() == QDialog.Accepted:
-            self.leText.setText(dlg.expressionText())
+            expression = QgsExpression(dlg.expressionText())
+            self.leText.setText(expression.evaluate(context))
 
     def saveToTemporary(self):
         self.leText.setText('')
@@ -142,7 +149,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             uri = QgsDataSourceUri()
             uri.setConnection(host, str(port), dbname, user, password)
             uri.setDataSource(dlg.schema, dlg.table,
-                              "the_geom" if self.parameter.hasGeometry() else None)
+                              "the_geom" if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
 
             connInfo = uri.connectionInfo()
             (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
@@ -159,17 +166,15 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        encoding = settings.value('/Processing/encoding', 'System')
         fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save Spatialite'), path, fileFilter, encoding)
+            self, self.tr('Save Spatialite'), path, fileFilter, self.encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = str(fileDialog.encoding())
-            self.parameter.encoding = encoding
+            self.encoding = str(fileDialog.encoding())
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
@@ -179,12 +184,12 @@ class DestinationSelectionPanel(BASE, WIDGET):
                     fileName += ext.group(1)
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
-            settings.setValue('/Processing/encoding', encoding)
+            settings.setValue('/Processing/encoding', self.encoding)
 
             uri = QgsDataSourceUri()
             uri.setDatabase(fileName)
             uri.setDataSource('', self.parameter.name().lower(),
-                              'the_geom' if self.parameter.hasGeometry() else None)
+                              'the_geom' if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
             self.leText.setText("spatialite:" + uri.uri())
 
     def selectFile(self):
@@ -196,17 +201,15 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        encoding = settings.value('/Processing/encoding', 'System')
         fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save file'), path, fileFilter, encoding)
+            self, self.tr('Save file'), path, fileFilter, self.encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = str(fileDialog.encoding())
-            self.parameter.encoding = encoding
+            self.encoding = str(fileDialog.encoding())
             fileName = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
@@ -217,7 +220,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText(fileName)
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
-            settings.setValue('/Processing/encoding', encoding)
+            settings.setValue('/Processing/encoding', self.encoding)
 
     def selectDirectory(self):
         lastDir = ''
@@ -226,6 +229,12 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.leText.setText(dirName)
 
     def getValue(self):
+        key = None
         if not self.leText.text():
-            return 'memory:'
-        return self.leText.text()
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink):
+                key = 'memory:'
+        else:
+            key = self.leText.text()
+        value = QgsProcessingOutputLayerDefinition(key)
+        value.createOptions = {'fileEncoding': self.encoding}
+        return value

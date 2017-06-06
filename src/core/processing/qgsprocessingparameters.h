@@ -83,52 +83,52 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
 
 /**
- * \class QgsProcessingFeatureSinkDefinition
+ * \class QgsProcessingOutputLayerDefinition
  * \ingroup core
  *
- * Encapsulates settings relating to a feature sink input to a processing algorithm.
+ * Encapsulates settings relating to a feature sink or output raster layer for a processing algorithm.
  *
  * \since QGIS 3.0
  */
 
-class CORE_EXPORT QgsProcessingFeatureSinkDefinition
+class CORE_EXPORT QgsProcessingOutputLayerDefinition
 {
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a static string sink.
+     * Constructor for QgsProcessingOutputLayerDefinition, accepting a static sink/layer string.
      * The \a destinationProject parameter can be set to a QgsProject instance in which
-     * to automatically load the resulting sink after completing processing.
+     * to automatically load the resulting sink/layer after completing processing.
      */
-    QgsProcessingFeatureSinkDefinition( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
+    QgsProcessingOutputLayerDefinition( const QString &sink = QString(), QgsProject *destinationProject = nullptr )
       : sink( QgsProperty::fromValue( sink ) )
       , destinationProject( destinationProject )
     {}
 
     /**
-     * Constructor for QgsProcessingFeatureSinkDefinition, accepting a QgsProperty sink.
+     * Constructor for QgsProcessingOutputLayerDefinition, accepting a QgsProperty sink/layer.
      * The \a destinationProject parameter can be set to a QgsProject instance in which
-     * to automatically load the resulting sink after completing processing.
+     * to automatically load the resulting sink/layer after completing processing.
      */
-    QgsProcessingFeatureSinkDefinition( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
+    QgsProcessingOutputLayerDefinition( const QgsProperty &sink, QgsProject *destinationProject = nullptr )
       : sink( sink )
       , destinationProject( destinationProject )
     {}
 
     /**
-     * Sink definition. Usually a static property set to the destination file name for the sink's layer.
+     * Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.
      */
     QgsProperty sink;
 
     /**
      * Destination project. Can be set to a QgsProject instance in which
-     * to automatically load the resulting sink after completing processing.
+     * to automatically load the resulting sink/layer after completing processing.
      * The default behavior is not to load the result into any project (nullptr).
      */
     QgsProject *destinationProject;
 
     /**
-     * Map of optional sink creation options, which
+     * Map of optional sink/layer creation options, which
      * are passed to the underlying provider when creating new layers. Known options also
      * include 'fileEncoding', which is used to specify a file encoding to use for created
      * files.
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsProcessingFeatureSinkDefinition
 
 };
 
-Q_DECLARE_METATYPE( QgsProcessingFeatureSinkDefinition )
+Q_DECLARE_METATYPE( QgsProcessingOutputLayerDefinition )
 
 
 
@@ -206,6 +206,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "rasterOut" )
+      sipType = sipType_QgsProcessingParameterRasterOutput;
+    else if ( sipCpp->type() == "fileOut" )
+      sipType = sipType_QgsProcessingParameterFileOutput;
     SIP_END
 #endif
 
@@ -444,6 +448,16 @@ class CORE_EXPORT QgsProcessingParameters
      * need to handle deletion of the returned layer.
      */
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a raster output layer destination.
+     */
+    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a file based output destination.
+     */
+    static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a vector layer.
@@ -1203,6 +1217,12 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
     QgsProcessingParameterDefinition::LayerType dataType() const;
 
     /**
+     * Returns true if sink is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning true.
+     */
+    bool hasGeometry() const;
+
+    /**
      * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
@@ -1211,6 +1231,67 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
   private:
 
     QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+};
+
+/**
+ * \class QgsProcessingParameterRasterOutput
+ * \ingroup core
+ * A raster layer output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterRasterOutput.
+     */
+    QgsProcessingParameterRasterOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "rasterOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+};
+
+/**
+ * \class QgsProcessingParameterFileOutput
+ * \ingroup core
+ * A generic file based output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterFileOutput.
+     */
+    QgsProcessingParameterFileOutput( const QString &name, const QString &description = QString(),
+                                      const QString &fileFilter = QString(),
+                                      const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+
+    QString type() const override { return QStringLiteral( "fileOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+
+    /**
+     * Returns the file filter string for files compatible with this output.
+     * \see setFileFilter()
+     */
+    QString fileFilter() const;
+
+    /**
+     * Sets the file \a filter string for files compatible with this output.
+     * \see fileFilter()
+     */
+    void setFileFilter( const QString &filter );
+
+  private:
+
+    QString mFileFilter;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

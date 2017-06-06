@@ -75,7 +75,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-# from .Clip import Clip
+from .Clip import Clip
 # from .Difference import Difference
 # from .Dissolve import Dissolve
 # from .Intersection import Intersection
@@ -86,7 +86,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .Union import Union
 # from .DensifyGeometriesInterval import DensifyGeometriesInterval
 # from .SpatialJoin import SpatialJoin
-# from .DeleteColumn import DeleteColumn
+from .DeleteColumn import DeleteColumn
 # from .DeleteHoles import DeleteHoles
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
@@ -104,11 +104,11 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
-# from .AddTableField import AddTableField
+from .AddTableField import AddTableField
 # from .FieldsCalculator import FieldsCalculator
 # from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
-# from .AutoincrementalField import AutoincrementalField
+from .AutoincrementalField import AutoincrementalField
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
 # from .CreateConstantRaster import CreateConstantRaster
@@ -153,7 +153,7 @@ from .Boundary import Boundary
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Aspect import Aspect
+from .Aspect import Aspect
 # from .Slope import Slope
 # from .Ruggedness import Ruggedness
 # from .Hillshade import Hillshade
@@ -210,19 +210,19 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(), Dissolve(), Difference(),
-        #         Intersection(), Union(), Clip(), ExtentFromLayer(),
+        #         Intersection(), Union(), ExtentFromLayer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(), RandomExtract(), DeleteHoles(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
-        #         DeleteColumn(), DeleteDuplicateGeometries(), TextToFloat(),
+        #         DeleteDuplicateGeometries(), TextToFloat(),
         #         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(), Merge(),
-        #         GeometryConvert(), AddTableField(), FieldsCalculator(),
+        #         GeometryConvert(), FieldsCalculator(),
         #         SaveSelectedFeatures(), JoinAttributes(),
-        #         AutoincrementalField(), Explode(), FieldsPyculator(),
+        #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(), PointsLayerFromTable(),
         #         StatisticsByCategories(), ConcaveHull(),
         #         RasterLayerStatistics(), PointsDisplacement(),
@@ -244,7 +244,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointOnSurface(),
         #         OffsetLine(), PolygonCentroids(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
-        #         Aspect(), Slope(), Ruggedness(), Hillshade(),
+        #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(), ZonalStatisticsQgis(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(), ExtractByExpression(),
@@ -259,20 +259,27 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FixGeometry(), ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
-        algs = [Boundary(),
-                BoundingBox()]
+        algs = [AddTableField(),
+                Aspect(),
+                AutoincrementalField(),
+                Boundary(),
+                BoundingBox(),
+                Clip(),
+                DeleteColumn()
+                ]
 
-        # if hasPlotly:
-        #     from .VectorLayerHistogram import VectorLayerHistogram
-        #     from .RasterLayerHistogram import RasterLayerHistogram
-        #     from .VectorLayerScatterplot import VectorLayerScatterplot
-        #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
-        #     from .BarPlot import BarPlot
+        if hasPlotly:
+            #     from .VectorLayerHistogram import VectorLayerHistogram
+            #     from .RasterLayerHistogram import RasterLayerHistogram
+            #     from .VectorLayerScatterplot import VectorLayerScatterplot
+            #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .BarPlot import BarPlot
         #     from .PolarPlot import PolarPlot
         #     from .BoxPlot import BoxPlot
         #     from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
         #
-        #     algs.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+            algs.extend([BarPlot()])
+            #[VectorLayerHistogram(), RasterLayerHistogram(),
         #                  VectorLayerScatterplot(), MeanAndStdDevPlot(),
         #                  BarPlot(), PolarPlot(), BoxPlot(),
         #                  VectorLayerScatterplot3D()])

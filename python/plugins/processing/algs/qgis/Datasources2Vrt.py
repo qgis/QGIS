@@ -33,7 +33,7 @@ from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
                        QgsApplication)
 from processing.tools import dataobjects
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterBoolean

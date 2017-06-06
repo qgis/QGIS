@@ -215,10 +215,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
 
   QgsProject *destinationProject = nullptr;
   QVariantMap createOptions;
-  if ( val.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
-    // input is a QgsProcessingFeatureSinkDefinition - get extra properties from it
-    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( val );
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
     createOptions = fromVar.createOptions;
     val = fromVar.sink;
@@ -301,7 +301,29 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
   if ( !definition )
     return nullptr;
 
-  QString layerRef = parameterAsString( definition, parameters, context );
+  QVariant val = parameters.value( definition->name() );
+  if ( val.canConvert<QgsProperty>() )
+  {
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  {
+    return layer;
+  }
+
+  if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    val = definition->defaultValue();
+  }
+
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  {
+    return layer;
+  }
+
+  QString layerRef = val.toString();
   if ( layerRef.isEmpty() )
     layerRef = definition->defaultValue().toString();
 
@@ -314,6 +336,79 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context ) );
+}
+
+QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+  }
+
+  QgsProject *destinationProject = nullptr;
+  QVariantMap createOptions;
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    destinationProject = fromVar.destinationProject;
+    createOptions = fromVar.createOptions;
+    val = fromVar.sink;
+  }
+
+  QString dest;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    dest = definition->defaultValue().toString();
+  }
+  else
+  {
+    dest = val.toString();
+  }
+
+  if ( destinationProject )
+    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( definition ? definition->description() : QString(), destinationProject ) );
+
+  return dest;
+}
+
+QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+  }
+
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  QString dest;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    dest = definition->defaultValue().toString();
+  }
+  else
+  {
+    dest = val.toString();
+  }
+
+  return dest;
 }
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -456,14 +551,31 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   if ( !definition )
     return QList<QgsMapLayer *>();
 
-  QStringList resultStringList;
   QVariant val = parameters.value( definition->name() );
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+  {
+    return QList<QgsMapLayer *>() << layer;
+  }
+
+  QList<QgsMapLayer *> layers;
+
+  QStringList resultStringList;
+
   if ( val.canConvert<QgsProperty>() )
     resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   else if ( val.type() == QVariant::List )
   {
     Q_FOREACH ( const QVariant &var, val.toList() )
-      resultStringList << var.toString();
+    {
+      if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+      {
+        layers << layer;
+      }
+      else
+      {
+        resultStringList << var.toString();
+      }
+    }
   }
   else
     resultStringList << val.toString();
@@ -472,16 +584,28 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
   {
     resultStringList.clear();
     // check default
-    if ( definition->defaultValue().type() == QVariant::List )
+    if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
+    {
+      layers << layer;
+    }
+    else if ( definition->defaultValue().type() == QVariant::List )
     {
       Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
-        resultStringList << var.toString();
+      {
+        if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( var ) ) )
+        {
+          layers << layer;
+        }
+        else
+        {
+          resultStringList << var.toString();
+        }
+      }
     }
     else
       resultStringList << definition->defaultValue().toString();
   }
 
-  QList<QgsMapLayer *> layers;
   Q_FOREACH ( const QString &s, resultStringList )
   {
     QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( s, context );
@@ -626,6 +750,11 @@ bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &inp
     return mFlags & FlagOptional;
 
   if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
   {
     return true;
   }
@@ -842,6 +971,11 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
   if ( !input.isValid() )
     return mFlags & FlagOptional;
 
+  if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( input ) ) )
+  {
+    return true;
+  }
+
   if ( input.type() == QVariant::String )
   {
     if ( input.toString().isEmpty() )
@@ -868,6 +1002,9 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
 
     Q_FOREACH ( const QVariant &v, input.toList() )
     {
+      if ( qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( v ) ) )
+        continue;
+
       if ( !QgsProcessingUtils::mapLayerFromString( v.toString(), *context ) )
         return false;
     }
@@ -1047,6 +1184,9 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
   {
     return true;
   }
+
+  if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( input ) ) )
+    return true;
 
   if ( input.type() != QVariant::String || input.toString().isEmpty() )
     return mFlags & FlagOptional;
@@ -1282,6 +1422,10 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   {
     return true;
   }
+  if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) ) )
+  {
+    return true;
+  }
 
   if ( var.type() != QVariant::String || var.toString().isEmpty() )
     return mFlags & FlagOptional;
@@ -1323,9 +1467,9 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
   if ( !var.isValid() )
     return mFlags & FlagOptional;
 
-  if ( var.canConvert<QgsProcessingFeatureSinkDefinition>() )
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
-    QgsProcessingFeatureSinkDefinition fromVar = qvariant_cast<QgsProcessingFeatureSinkDefinition>( var );
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
     var = fromVar.sink;
   }
 
@@ -1348,7 +1492,102 @@ QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::d
   return mDataType;
 }
 
+bool QgsProcessingParameterFeatureSink::hasGeometry() const
+{
+  switch ( mDataType )
+  {
+    case TypeAny:
+    case TypeVectorAny:
+    case TypeVectorPoint:
+    case TypeVectorLine:
+    case TypeVectorPolygon:
+    case TypeTable:
+      return true;
+
+    case TypeRaster:
+    case TypeFile:
+      return false;
+  }
+  return true;
+}
+
 void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefinition::LayerType type )
 {
   mDataType = type;
+}
+
+QgsProcessingParameterRasterOutput::QgsProcessingParameterRasterOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{}
+
+bool QgsProcessingParameterRasterOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+
+QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
+{
+
+}
+
+bool QgsProcessingParameterFileOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  // possible enhancement - check that value is compatible with file filter?
+
+  return true;
+}
+
+QString QgsProcessingParameterFileOutput::fileFilter() const
+{
+  return mFileFilter;
+}
+
+void QgsProcessingParameterFileOutput::setFileFilter( const QString &fileFilter )
+{
+  mFileFilter = fileFilter;
 }

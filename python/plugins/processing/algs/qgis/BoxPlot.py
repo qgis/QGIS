@@ -33,7 +33,7 @@ from qgis.core import (QgsApplication,
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
