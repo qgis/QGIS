@@ -36,12 +36,14 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
+                       QgsExpression,
                        QgsSettings,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingFeatureSinkDefinition)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
+from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
@@ -122,11 +124,13 @@ class DestinationSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
+        context = self.alg.createExpressionContext({}, createContext())
         dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic',
-                                         self.parameter.expressionContext(self.alg))
+                                         context)
         dlg.setWindowTitle(self.tr('Expression based output'))
         if dlg.exec_() == QDialog.Accepted:
-            self.leText.setText(dlg.expressionText())
+            expression = QgsExpression(dlg.expressionText())
+            self.leText.setText(expression.evaluate(context))
 
     def saveToTemporary(self):
         self.leText.setText('')

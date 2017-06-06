@@ -21,6 +21,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsrectangle.h"
+#include "qgsprocessingcontext.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -98,6 +99,22 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 {
   return nullptr;
+}
+
+QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
+    QgsProcessingContext &context ) const
+{
+  // start with context's expression context
+  QgsExpressionContext c = context.expressionContext();
+  if ( c.scopeCount() == 0 )
+  {
+    //empty scope, populate with initial scopes
+    c << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( context.project() );
+  }
+
+  c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
+  return c;
 }
 
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )

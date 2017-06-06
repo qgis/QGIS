@@ -36,6 +36,8 @@ class QgsAtlasComposition;
 class QgsMapSettings;
 class QgsProject;
 class QgsSymbol;
+class QgsProcessingAlgorithm;
+class QgsProcessingContext;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -787,6 +789,13 @@ class CORE_EXPORT QgsExpressionContextUtils
      * standard scopes such as the global and project scopes.
      */
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a processing \a algorithm,
+     * when used with the specified \a parameters and \a context.
+     * For instance, algorithm name and parameter functions.
+     */
+    static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
     /** Registers all known core functions provided by QgsExpressionContextScope objects.
      */

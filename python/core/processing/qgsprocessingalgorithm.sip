@@ -228,6 +228,15 @@ class QgsProcessingAlgorithm
  :rtype: QWidget
 %End
 
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+        QgsProcessingContext &context ) const;
+%Docstring
+ Creates an expression context relating to the algorithm. This can be called by algorithms
+ to create a new expression context ready for evaluating expressions within the algorithm.
+ :rtype: QgsExpressionContext
+%End
+
+
   protected:
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
