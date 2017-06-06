@@ -29,6 +29,8 @@
 #include "qgsapplication.h"
 #include "qgsmapsettings.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingalgorithm.h"
 
 #include <QSettings>
 #include <QDir>
@@ -707,6 +709,30 @@ class GetLayerVisibility : public QgsScopedExpressionFunction
 
 };
 
+class GetProcessingParameterValue : public QgsScopedExpressionFunction
+{
+  public:
+    GetProcessingParameterValue( const QVariantMap &params )
+      : QgsScopedExpressionFunction( QStringLiteral( "parameter" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "name" ) ), QStringLiteral( "Processing" ) )
+      , mParams( params )
+    {}
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    {
+      return mParams.value( values.at( 0 ).toString() );
+    }
+
+    QgsScopedExpressionFunction *clone() const override
+    {
+      return new GetProcessingParameterValue( mParams );
+    }
+
+  private:
+
+    const QVariantMap mParams;
+
+};
+
 ///@endcond
 
 QgsExpressionContextScope *QgsExpressionContextUtils::projectScope( const QgsProject *project )
@@ -1077,11 +1103,29 @@ QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const
   return QgsExpressionContext() << scope;
 }
 
+QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  // set aside for future use
+  Q_UNUSED( context );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Algorithm" ) ) );
+  if ( !algorithm )
+    return scope.release();
+
+  //add standard algorithm variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "algorithm_id" ), algorithm->id(), true ) );
+
+  scope->addFunction( QStringLiteral( "parameter" ), new GetProcessingParameterValue( parameters ) );
+
+  return scope.release();
+}
+
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
   QgsExpression::registerFunction( new GetComposerItemVariables( nullptr ) );
   QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>() ) );
+  QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const

@@ -229,6 +229,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     virtual QWidget *createCustomParametersWidget( QWidget *parent = nullptr ) const SIP_FACTORY;
 
+    /**
+     * Creates an expression context relating to the algorithm. This can be called by algorithms
+     * to create a new expression context ready for evaluating expressions within the algorithm.
+     */
+    QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
+        QgsProcessingContext &context ) const;
+
+
   protected:
 
     /**

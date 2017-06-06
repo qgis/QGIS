@@ -30,6 +30,7 @@
 #include "qgspoint.h"
 #include "qgsgeometry.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsexpressioncontext.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -219,6 +220,7 @@ class TestQgsProcessing: public QObject
     void combineLayerExtent();
     void processingFeatureSource();
     void processingFeatureSink();
+    void algorithmScope();
 
   private:
 
@@ -2423,6 +2425,30 @@ void TestQgsProcessing::processingFeatureSink()
   QgsVectorLayer *layer2 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
   QVERIFY( layer2 );
   QCOMPARE( layer2->crs().authid(), QStringLiteral( "EPSG:3113" ) );
+}
+
+void TestQgsProcessing::algorithmScope()
+{
+  QgsProcessingContext pc;
+
+  // no alg
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::processingAlgorithmScope( nullptr, QVariantMap(), pc ) );
+  QVERIFY( scope.get() );
+
+  // with alg
+  std::unique_ptr< QgsProcessingAlgorithm > alg( new DummyAlgorithm( "alg1" ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "a_param" ), 5 );
+  scope.reset( QgsExpressionContextUtils::processingAlgorithmScope( alg.get(), params, pc ) );
+  QVERIFY( scope.get() );
+  QCOMPARE( scope->variable( QStringLiteral( "algorithm_id" ) ).toString(), alg->id() );
+
+  QgsExpressionContext context;
+  context.appendScope( scope.release() );
+  QgsExpression exp( "parameter('bad')" );
+  QVERIFY( !exp.evaluate( &context ).isValid() );
+  QgsExpression exp2( "parameter('a_param')" );
+  QCOMPARE( exp2.evaluate( &context ).toInt(), 5 );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
