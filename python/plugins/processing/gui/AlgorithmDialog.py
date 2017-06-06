@@ -36,7 +36,8 @@ from qgis.core import (QgsProject,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingFeatureSinkDefinition,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingAlgorithm)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
@@ -229,7 +230,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #command = self.alg.getAsCommand()
                 #if command:
                 #    ProcessingLog.addToLog(command)
+                self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 result = executeAlgorithm(self.alg, parameters, context, self.feedback)
+                self.buttonCancel.setEnabled(False)
                 self.finish(result, context)
                 #TODO
                 #else:

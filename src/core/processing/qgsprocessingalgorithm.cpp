@@ -64,7 +64,7 @@ QString QgsProcessingAlgorithm::svgIconPath() const
 
 QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
 {
-  return FlagSupportsBatch;
+  return FlagSupportsBatch | FlagCanCancel;
 }
 
 bool QgsProcessingAlgorithm::canExecute( QString * ) const
