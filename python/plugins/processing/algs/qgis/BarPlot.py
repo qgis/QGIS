@@ -30,11 +30,12 @@ import plotly.graph_objs as go
 
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterFileOutput,
+                       QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
@@ -56,17 +57,19 @@ class BarPlot(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterTableField(self.NAME_FIELD,
+                                                           self.tr('Category name field'),
+                                                           None, self.INPUT, QgsProcessingParameterTableField.Any))
+        self.addParameter(QgsProcessingParameterTableField(self.VALUE_FIELD,
+                                                           self.tr('Value field'),
+                                                           None, self.INPUT, QgsProcessingParameterTableField.Numeric))
+
+        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
+
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Bar plot')))
 
     def name(self):
         return 'barplot'
@@ -75,16 +78,19 @@ class BarPlot(QgisAlgorithm):
         return self.tr('Bar plot')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
-        values = vector.values(layer, valuefieldname)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        x_var = [i[namefieldname] for i in layer.getFeatures()]
+        values = vector.values(source, valuefieldname)
+
+        x_var = [i[namefieldname] for i in source.getFeatures()]
 
         data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}
