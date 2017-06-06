@@ -173,6 +173,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSink;
     else if ( sipCpp->type() == "rasterOut" )
       sipType = sipType_QgsProcessingParameterRasterOutput;
+    else if ( sipCpp->type() == "fileOut" )
+      sipType = sipType_QgsProcessingParameterFileOutput;
 %End
   public:
 
@@ -424,6 +426,12 @@ class QgsProcessingParameters
     static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a raster output layer destination.
+ :rtype: str
+%End
+
+    static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a file based output destination.
  :rtype: str
 %End
 
@@ -1251,6 +1259,46 @@ class QgsProcessingParameterRasterOutput : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+};
+
+class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
+{
+%Docstring
+ A generic file based output parameter.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterFileOutput( const QString &name, const QString &description = QString(),
+                                      const QString &fileFilter = QString(),
+                                      const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterFileOutput.
+%End
+
+    virtual QString type() const;
+    virtual bool isDestination() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+
+    QString fileFilter() const;
+%Docstring
+ Returns the file filter string for files compatible with this output.
+.. seealso:: setFileFilter()
+ :rtype: str
+%End
+
+    void setFileFilter( const QString &filter );
+%Docstring
+ Sets the file ``filter`` string for files compatible with this output.
+.. seealso:: fileFilter()
+%End
 
 };
 

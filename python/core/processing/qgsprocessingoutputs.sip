@@ -32,6 +32,8 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == "outputRaster" )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == "outputHtml" )
+      sipType = sipType_QgsProcessingOutputHtml;
 %End
   public:
 
@@ -140,6 +142,25 @@ class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
     virtual QString type() const;
 };
 
+class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
+{
+%Docstring
+ A HTML file output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputHtml.
+%End
+
+    virtual QString type() const;
+};
 
 
 

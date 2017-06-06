@@ -360,6 +360,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
+     * Evaluates the parameter with matching \a name to a file based output destination.
+     */
+    QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
      * Evaluates the parameter with matching \a name to a vector layer.
      *
      * Layers will either be taken from \a context's active project, or loaded from external

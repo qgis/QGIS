@@ -208,6 +208,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSink;
     else if ( sipCpp->type() == "rasterOut" )
       sipType = sipType_QgsProcessingParameterRasterOutput;
+    else if ( sipCpp->type() == "fileOut" )
+      sipType = sipType_QgsProcessingParameterFileOutput;
     SIP_END
 #endif
 
@@ -451,6 +453,11 @@ class CORE_EXPORT QgsProcessingParameters
      * Evaluates the parameter with matching \a definition to a raster output layer destination.
      */
     static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a file based output destination.
+     */
+    static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a vector layer.
@@ -1246,6 +1253,45 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
     QString type() const override { return QStringLiteral( "rasterOut" ); }
     bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+};
+
+/**
+ * \class QgsProcessingParameterFileOutput
+ * \ingroup core
+ * A generic file based output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterFileOutput.
+     */
+    QgsProcessingParameterFileOutput( const QString &name, const QString &description = QString(),
+                                      const QString &fileFilter = QString(),
+                                      const QVariant &defaultValue = QVariant(),
+                                      bool optional = false );
+
+    QString type() const override { return QStringLiteral( "fileOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+
+    /**
+     * Returns the file filter string for files compatible with this output.
+     * \see setFileFilter()
+     */
+    QString fileFilter() const;
+
+    /**
+     * Sets the file \a filter string for files compatible with this output.
+     * \see fileFilter()
+     */
+    void setFileFilter( const QString &filter );
+
+  private:
+
+    QString mFileFilter;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

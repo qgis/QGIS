@@ -378,6 +378,39 @@ QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessi
   return dest;
 }
 
+QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val;
+  if ( definition )
+  {
+    val = parameters.value( definition->name() );
+  }
+
+  if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  QString dest;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    dest = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    dest = definition->defaultValue().toString();
+  }
+  else
+  {
+    dest = val.toString();
+  }
+
+  return dest;
+}
+
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context ) );
@@ -1513,3 +1546,48 @@ bool QgsProcessingParameterRasterOutput::checkValueIsAcceptable( const QVariant 
   return true;
 }
 
+
+QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
+{
+
+}
+
+bool QgsProcessingParameterFileOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  QVariant var = input;
+  if ( !var.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
+  }
+
+  if ( var.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( var.type() != QVariant::String )
+    return false;
+
+  if ( var.toString().isEmpty() )
+    return mFlags & FlagOptional;
+
+  // possible enhancement - check that value is compatible with file filter?
+
+  return true;
+}
+
+QString QgsProcessingParameterFileOutput::fileFilter() const
+{
+  return mFileFilter;
+}
+
+void QgsProcessingParameterFileOutput::setFileFilter( const QString &fileFilter )
+{
+  mFileFilter = fileFilter;
+}
