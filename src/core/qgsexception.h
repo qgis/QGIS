@@ -17,10 +17,13 @@
 #ifndef QGSEXCEPTION_H
 #define QGSEXCEPTION_H
 
+#define SIP_NO_CREATION
+
 #include <QString>
-#include "qgis_sip.h"
 
 #include "qgis_core.h"
+
+
 
 /** \ingroup core
   * Defines a qgis exception class.
@@ -28,7 +31,7 @@
 class CORE_EXPORT QgsException
 {
   public:
-    QgsException( QString const &what )
+    QgsException( const QString &what )
       : what_( what )
     {}
 
@@ -36,7 +39,7 @@ class CORE_EXPORT QgsException
     {}
 
     //! \note not available in Python bindings
-    QString what() const throw() SIP_SKIP
+    QString what() const throw()
     {
       return what_;
     }
