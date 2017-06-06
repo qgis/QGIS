@@ -119,6 +119,11 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // parameterDefinition should be case insensitive
       QCOMPARE( outputDefinition( "P1" ), outputDefinitions().at( 0 ) );
       QVERIFY( !outputDefinition( "invalid" ) );
+
+      QVERIFY( !hasHtmlOutputs() );
+      QgsProcessingOutputHtml *p3 = new QgsProcessingOutputHtml( "p3" );
+      QVERIFY( addOutput( p3 ) );
+      QVERIFY( hasHtmlOutputs() );
     }
 
 };

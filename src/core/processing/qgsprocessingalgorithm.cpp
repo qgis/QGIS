@@ -187,6 +187,16 @@ const QgsProcessingOutputDefinition *QgsProcessingAlgorithm::outputDefinition( c
   return nullptr;
 }
 
+bool QgsProcessingAlgorithm::hasHtmlOutputs() const
+{
+  Q_FOREACH ( const QgsProcessingOutputDefinition *def, mOutputs )
+  {
+    if ( def->type() == QStringLiteral( "outputHtml" ) )
+      return true;
+  }
+  return false;
+}
+
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   return processAlgorithm( parameters, context, feedback );
@@ -250,6 +260,11 @@ QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMa
 QString QgsProcessingAlgorithm::parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsRasterOutputLayer( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+{
+  return QgsProcessingParameters::parameterAsFileOutput( parameterDefinition( name ), parameters, context );
 }
 
 QgsVectorLayer *QgsProcessingAlgorithm::parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
