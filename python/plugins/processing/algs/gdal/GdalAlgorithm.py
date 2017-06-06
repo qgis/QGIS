@@ -80,19 +80,15 @@ class GdalAlgorithm(GeoAlgorithm):
             commands[i] = c
         GdalUtils.runGdal(commands, feedback)
 
-    def shortHelpString(self):
+    def helpUrl(self):
         helpPath = GdalUtils.gdalHelpPath()
         if helpPath == '':
-            return
+            return None
 
         if os.path.exists(helpPath):
-            url = QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.commandName()))).toString()
+            return QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.commandName()))).toString()
         else:
-            url = helpPath + '{}.html'.format(self.commandName())
-
-        return '''This algorithm is based on the GDAL {} module.
-                For more info, see the <a href={}> module help</a>
-                '''.format(self.commandName(), url)
+            return helpPath + '{}.html'.format(self.commandName())
 
     def commandName(self):
         parameters = {}

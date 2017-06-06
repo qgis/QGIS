@@ -539,7 +539,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-    def helpString(self):
+    def helpUrl(self):
         try:
             return getHtmlFromDescriptionsDict(self, self.helpContent)
         except:

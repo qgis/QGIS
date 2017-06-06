@@ -142,6 +142,14 @@ def mkdir(newdir):
             os.mkdir(newdir)
 
 
+def tempHelpFolder():
+    tmp = os.path.join(str(QDir.tempPath()), 'processing_help')
+    if not QDir(tmp).exists():
+        QDir().mkpath(tmp)
+
+    return str(os.path.abspath(tmp))
+
+
 def escapeAndJoin(strList):
     joined = ''
     for s in strList:
