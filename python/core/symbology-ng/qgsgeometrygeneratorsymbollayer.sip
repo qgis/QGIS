@@ -1,62 +1,72 @@
-/***************************************************************************
- qgsgeometrygeneratorsymbollayer.sip
- ---------------------
- begin                : November 2015
- copyright            : (C) 2015 by Matthias Kuhn
- email                : matthias at opengis dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsgeometrygeneratorsymbollayer.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 {
+
 %TypeHeaderCode
 #include "qgsgeometrygeneratorsymbollayer.h"
 %End
   public:
-    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    ~QgsGeometryGeneratorSymbolLayer();
 
-    QString layerType() const;
+    static QgsSymbolLayer *create( const QgsStringMap &properties ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayer
+%End
 
-    /**
-     * Set the type of symbol which should be created.
-     * Should match with the return type of the expression.
-     *
-     * @param symbolType The symbol type which shall be used below this symbol.
-     */
+    virtual QString layerType() const;
+
+
     void setSymbolType( QgsSymbol::SymbolType symbolType );
+%Docstring
+ Set the type of symbol which should be created.
+ Should match with the return type of the expression.
 
-    /**
-     * Access the symbol type. This defines the type of geometry
-     * that is created by this generator.
-     *
-     * @return Symbol type
-     */
+ \param symbolType The symbol type which shall be used below this symbol.
+%End
+
     QgsSymbol::SymbolType symbolType() const;
+%Docstring
+ Access the symbol type. This defines the type of geometry
+ that is created by this generator.
 
-    void startRender( QgsSymbolRenderContext &context );
+ :return: Symbol type
+ :rtype: QgsSymbol.SymbolType
+%End
 
-    void stopRender( QgsSymbolRenderContext &context );
+    virtual void startRender( QgsSymbolRenderContext &context );
 
-    QgsSymbolLayer *clone() const;
 
-    QgsStringMap properties() const;
+    virtual void stopRender( QgsSymbolRenderContext &context );
 
-    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
-    /**
-     * Set the expression to generate this geometry.
-     */
+    virtual QgsSymbolLayer *clone() const /Factory/;
+
+
+    virtual QgsStringMap properties() const;
+
+
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
+
+
     void setGeometryExpression( const QString &exp );
+%Docstring
+ Set the expression to generate this geometry.
+%End
 
-    /**
-     * Get the expression to generate this geometry.
-     */
     QString geometryExpression() const;
+%Docstring
+ Get the expression to generate this geometry.
+ :rtype: str
+%End
 
     virtual QgsSymbol *subSymbol();
 
@@ -64,25 +74,36 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    //! Will always return true.
-    //! This is a hybrid layer, it constructs its own geometry so it does not
-    //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbol *symbol );
+    virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
-    /**
-     * Will render this symbol layer using the context.
-     * In comparison to other symbols there is no geometry passed in, since
-     * the geometry will be created based on information from the context
-     * which contains a QgsRenderContext which in turn contains an expression
-     * context which is available to the evaluated expression.
-     *
-     * @param context The rendering context which will be used to render and to
-     *                construct a geometry.
-     */
+%Docstring
+care about the geometry of its parents.
+ :rtype: bool
+%End
+
     virtual void render( QgsSymbolRenderContext &context );
+%Docstring
+ Will render this symbol layer using the context.
+ In comparison to other symbols there is no geometry passed in, since
+ the geometry will be created based on information from the context
+ which contains a QgsRenderContext which in turn contains an expression
+ context which is available to the evaluated expression.
 
-    void setColor( const QColor &color );
+ \param context The rendering context which will be used to render and to
+                construct a geometry.
+%End
+
+    virtual void setColor( const QColor &color );
+
 
   private:
     QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgsgeometrygeneratorsymbollayer.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

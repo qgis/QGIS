@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual QString dump() const override;
     virtual QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual Capabilities capabilities() override { return SymbolLevels | Filter; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
@@ -238,22 +238,20 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param legendFormat
      * \returns new QgsGraduatedSymbolRenderer object
      */
-    static QgsGraduatedSymbolRenderer *createRenderer(
-      QgsVectorLayer *vlayer,
-      const QString &attrName,
-      int classes,
-      Mode mode,
-      QgsSymbol *symbol,
-      QgsColorRamp *ramp,
-      const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat()
-    );
+    static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
+        const QString &attrName,
+        int classes,
+        Mode mode,
+        QgsSymbol *symbol SIP_TRANSFER,
+        QgsColorRamp *ramp SIP_TRANSFER,
+        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override SIP_SKIP;
     QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
@@ -309,7 +307,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! \since QGIS 2.10
     double maxSymbolSize() const;
 
-    enum GraduatedMethod {GraduatedColor = 0, GraduatedSize = 1 };
+    enum GraduatedMethod
+    {
+      GraduatedColor = 0,
+      GraduatedSize = 1
+    };
 
     //! return the method used for graduation (either size or color)
     //! \since QGIS 2.10
@@ -358,6 +360,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /** Returns calculated value used for classifying a feature.
      */
     QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+
+#ifdef SIP_RUN
+    QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
+    QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
+#endif
 
 };
 

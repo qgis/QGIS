@@ -46,14 +46,14 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
 
-    virtual Capabilities capabilities() override { return SymbolLevels; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels; }
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override;
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = QString() ) override SIP_SKIP;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -65,6 +65,12 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
   protected:
     std::unique_ptr<QgsSymbol> mSymbol;
+
+  private:
+#ifdef SIP_RUN
+    QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
+    QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
+#endif
 
 };
 

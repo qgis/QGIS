@@ -73,13 +73,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     };
 
     //! Returns a list of all available shape types.
-    static QList< Shape > availableShapes();
+    static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
 
     /** Returns true if a symbol shape has a fill.
      * \param shape shape to test
      * \returns true if shape uses a fill, or false if shape uses lines only
      */
-    static bool shapeIsFilled( Shape shape );
+    static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
     /** Constructor for QgsSimpleMarkerSymbolLayerBase.
     * \param shape symbol shape for markers
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod scaling method for data defined scaling
     */
-    QgsSimpleMarkerSymbolLayerBase( Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                     double size = DEFAULT_SIMPLEMARKER_SIZE,
                                     double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                     QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -95,13 +95,13 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
     /** Returns the shape for the rendered marker symbol.
      * \see setShape()
      */
-    Shape shape() const { return mShape; }
+    QgsSimpleMarkerSymbolLayerBase::Shape shape() const { return mShape; }
 
     /** Sets the rendered marker shape.
      * \param shape new marker shape
      * \see shape()
      */
-    void setShape( Shape shape ) { mShape = shape; }
+    void setShape( QgsSimpleMarkerSymbolLayerBase::Shape shape ) { mShape = shape; }
 
     /** Attempts to decode a string representation of a shape name to the corresponding
      * shape.
@@ -110,14 +110,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns decoded name
      * \see encodeShape()
      */
-    static Shape decodeShape( const QString &name, bool *ok = nullptr );
+    static QgsSimpleMarkerSymbolLayerBase::Shape decodeShape( const QString &name, bool *ok = nullptr );
 
     /** Encodes a shape to its string representation.
      * \param shape shape to encode
      * \returns encoded string
      * \see decodeShape()
      */
-    static QString encodeShape( Shape shape );
+    static QString encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * in the path argument.
      * \param path transformed painter path representing shape to draw
      */
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
+    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 SIP_FORCE;
 };
 
 /** \ingroup core
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param strokeColor stroke color for symbol
     * \param penJoinStyle join style for stroke pen
     */
-    QgsSimpleMarkerSymbolLayer( Shape shape = Circle,
+    QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD,
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
   private:
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override;
+    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 };
 
 /** \ingroup core
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     * \param angle symbol rotation angle
     * \param scaleMethod size scaling method
     */
-    QgsFilledMarkerSymbolLayer( Shape shape = Circle,
+    QgsFilledMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
                                 double size = DEFAULT_SIMPLEMARKER_SIZE,
                                 double angle = DEFAULT_SIMPLEMARKER_ANGLE,
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
@@ -426,8 +426,11 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     virtual QColor color() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
+#endif
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override;
+    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     //! Fill subsymbol
     std::unique_ptr< QgsFillSymbol > mFill;

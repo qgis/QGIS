@@ -38,10 +38,10 @@ class QgsVectorLayer;
 class QgsPaintEffect;
 class QgsReadWriteContext;
 
-typedef QMap<QString, QString> QgsStringMap;
+typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 typedef QList<QgsSymbol *> QgsSymbolList;
-typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
+typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
 typedef QList< QPair<QString, QgsSymbol *> > QgsLegendSymbolList;
@@ -75,7 +75,11 @@ class CORE_EXPORT QgsSymbolLevelItem
 typedef QList< QgsSymbolLevelItem > QgsSymbolLevel;
 
 // this is a list of levels
+#ifndef SIP_RUN
 typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
+#else
+typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
+#endif
 
 
 //////////////
@@ -237,7 +241,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *     skip_the_curren_feature()
      * ~~~
      */
-    virtual Capabilities capabilities() { return 0; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() { return 0; }
 
     /** Returns list of symbols used by the renderer.
      * \param context render context
@@ -481,6 +485,11 @@ class CORE_EXPORT QgsFeatureRenderer
     bool mOrderByEnabled;
 
   private:
+#ifdef SIP_RUN
+    QgsFeatureRenderer( const QgsFeatureRenderer & );
+    QgsFeatureRenderer &operator=( const QgsFeatureRenderer & );
+#endif
+
     Q_DISABLE_COPY( QgsFeatureRenderer )
 };
 

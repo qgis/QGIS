@@ -90,6 +90,11 @@ class CORE_EXPORT QgsCptCityArchive
     // mapping of copyinginfo, key is fileName
     static QMap< QString, QMap< QString, QString > > sCopyingInfoMap;
 
+  private:
+#ifdef SIP_RUN
+    QgsCptCityArchive( const QgsCptCityArchive &rh );
+#endif
+
 };
 
 /** Base class for all items in the model
@@ -327,7 +332,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
       List = 2 // not used anymore
     };
 
-    QgsCptCityBrowserModel( QObject *parent = nullptr,
+    QgsCptCityBrowserModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
                             QgsCptCityArchive *archive = QgsCptCityArchive::defaultArchive(),
                             ViewType Type = Authors );
     ~QgsCptCityBrowserModel();

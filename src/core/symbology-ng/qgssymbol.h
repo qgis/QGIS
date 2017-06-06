@@ -384,6 +384,10 @@ class CORE_EXPORT QgsSymbol
     const QgsVectorLayer *mLayer; //current vectorlayer
 
   private:
+#ifdef SIP_RUN
+    QgsSymbol( const QgsSymbol & );
+#endif
+
     //! Initialized in startRender, destroyed in stopRender
     std::unique_ptr< QgsSymbolRenderContext > mSymbolRenderContext;
 
@@ -415,7 +419,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     QgsRenderContext &renderContext() { return mRenderContext; }
-    const QgsRenderContext &renderContext() const { return mRenderContext; }
+    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
     /** Sets the original value variable value for data defined symbology
      * \param value value for original value variable. This usually represents the symbol property value
@@ -530,6 +534,8 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
+
     QgsRenderContext &mRenderContext;
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
     QgsUnitTypes::RenderUnit mOutputUnit;
@@ -542,9 +548,6 @@ class CORE_EXPORT QgsSymbolRenderContext
     int mGeometryPartCount;
     int mGeometryPartNum;
     QgsWkbTypes::GeometryType mOriginalGeometryType = QgsWkbTypes::UnknownGeometry;
-
-
-    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
 };
 
 

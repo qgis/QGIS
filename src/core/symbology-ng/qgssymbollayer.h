@@ -50,10 +50,11 @@ class QgsPaintEffect;
  * \class QgsSymbolLayer
  */
 class CORE_EXPORT QgsSymbolLayer
+{
 #ifdef SIP_RUN
 #include <qgslinesymbollayer.h>
 #endif
-{
+
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -347,7 +348,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 2.9
      * \see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect *effect );
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.0
      * \see setProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the symbol layer's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.

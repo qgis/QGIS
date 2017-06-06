@@ -634,6 +634,11 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     std::unique_ptr< QgsLineSymbol > mStroke;
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context ) { Q_UNUSED( context ); }
+
+  private:
+#ifdef SIP_RUN
+    QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
+#endif
 };
 
 /** \ingroup core
@@ -1073,6 +1078,10 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
   private:
+#ifdef SIP_RUN
+    QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer &other );
+#endif
+
     //! Applies the svg pattern to the brush
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance );
 
@@ -1214,6 +1223,10 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
   private:
+#ifdef SIP_RUN
+    QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer &other );
+#endif
+
     void applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double distanceX, double distanceY,
                        double displacementX, double displacementY );
 };
@@ -1279,6 +1292,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     QgsFeatureId mCurrentFeatureId;
     int mBiggestPartIndex;
+
+  private:
+#ifdef SIP_RUN
+    QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
+#endif
 };
 
 #endif

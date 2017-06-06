@@ -120,6 +120,10 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPointDisplacementRenderer( const QgsPointDisplacementRenderer & );
+    QgsPointDisplacementRenderer &operator=( const QgsPointDisplacementRenderer & );
+#endif
 
     //! Center symbol for a displacement group
     std::unique_ptr< QgsMarkerSymbol > mCenterSymbol;
@@ -134,7 +138,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     //! Addition to the default circle radius
     double mCircleRadiusAddition;
 
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
     //helper functions
     void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius ) const;

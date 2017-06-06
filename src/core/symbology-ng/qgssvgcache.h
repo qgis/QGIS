@@ -85,6 +85,11 @@ class CORE_EXPORT QgsSvgCacheEntry
     //! Return memory usage in bytes
     int dataSize() const;
 
+  private:
+#ifdef SIP_RUN
+    QgsSvgCacheEntry( const QgsSvgCacheEntry &rh );
+#endif
+
 };
 
 /** \ingroup core

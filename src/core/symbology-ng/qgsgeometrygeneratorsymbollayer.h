@@ -27,7 +27,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer *create( const QgsStringMap &properties );
+    static QgsSymbolLayer *create( const QgsStringMap &properties ) SIP_FACTORY;
 
     QString layerType() const override;
 
@@ -94,6 +94,10 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
   private:
     QgsGeometryGeneratorSymbolLayer( const QString &expression );
+
+#ifdef SIP_RUN
+    QgsGeometryGeneratorSymbolLayer( const QgsGeometryGeneratorSymbolLayer &copy );
+#endif
 
     std::unique_ptr<QgsExpression> mExpression;
     QgsFillSymbol *mFillSymbol = nullptr;

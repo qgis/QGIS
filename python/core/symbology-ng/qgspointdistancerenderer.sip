@@ -1,199 +1,268 @@
-/** \class QgsPointDistanceRenderer
- * \ingroup core
- * An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
- * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
- * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
- * in the desired style.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointdistancerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsPointDistanceRenderer : QgsFeatureRenderer
+
+
+
+
+
+class QgsPointDistanceRenderer: QgsFeatureRenderer
 {
-%TypeHeaderCode
-#include <qgspointdistancerenderer.h>
+%Docstring
+ An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
+ QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
+ Subclasses must implement drawGroup() to handle the rendering of individual point clusters
+ in the desired style.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgspointdistancerenderer.h"
+%End
   public:
 
-    //! Contains properties for a feature within a clustered group.
     struct GroupedFeature
     {
-      /** Constructor for GroupedFeature.
-       * @param feature feature
-       * @param symbol base symbol for rendering feature
-       * @param isSelected set to true if feature is selected and should be rendered in a selected state
-       * @param label optional label text, or empty string for no label
-       */
+
       GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() );
+%Docstring
+ Constructor for GroupedFeature.
+ \param feature feature
+ \param symbol base symbol for rendering feature
+ \param isSelected set to true if feature is selected and should be rendered in a selected state
+ \param label optional label text, or empty string for no label
+%End
 
-      //! Feature
       QgsFeature feature;
+%Docstring
+Feature
+%End
 
-      //! Base symbol for rendering feature
       QgsMarkerSymbol *symbol;
+%Docstring
+Base symbol for rendering feature
+%End
 
-      //! True if feature is selected and should be rendered in a selected state
       bool isSelected;
+%Docstring
+True if feature is selected and should be rendered in a selected state
+%End
 
-      //! Optional label text
       QString label;
+%Docstring
+Optional label text
+%End
     };
 
-    //! A group of clustered points (ie features within the distance tolerance).
     typedef QList< QgsPointDistanceRenderer::GroupedFeature > ClusteredGroup;
 
-    /** Constructor for QgsPointDistanceRenderer.
-     * @param rendererName name of renderer for registry
-     * @param labelAttributeName optional attribute for labeling points
-     */
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
+%Docstring
+ Constructor for QgsPointDistanceRenderer.
+ \param rendererName name of renderer for registry
+ \param labelAttributeName optional attribute for labeling points
+%End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
-    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
-    virtual Capabilities capabilities();
+    virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
-    void stopRender( QgsRenderContext &context );
-    QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-    //QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
-    void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
-    const QgsFeatureRenderer *embeddedRenderer() const;
-    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol  /Transfer/ );
-    bool legendSymbolItemsCheckable() const;
-    bool legendSymbolItemChecked( const QString &key );
-    void checkLegendSymbolItem( const QString &key, bool state );
+    virtual void stopRender( QgsRenderContext &context );
+
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+
+    virtual void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
+
+    virtual const QgsFeatureRenderer *embeddedRenderer() const;
+
+    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
+    virtual bool legendSymbolItemsCheckable() const;
+
+    virtual bool legendSymbolItemChecked( const QString &key );
+
+    virtual void checkLegendSymbolItem( const QString &key, bool state );
+
     virtual QString filter( const QgsFields &fields = QgsFields() );
 
-    /** Sets the attribute name for labeling points.
-     * @param name attribute name, or empty string to avoid labeling features by the renderer
-     * @see labelAttributeName()
-     * @see setLabelFont()
-     * @see setLabelColor()
-     * @see setMaxLabelScaleDenominator()
-     */
     void setLabelAttributeName( const QString &name );
+%Docstring
+ Sets the attribute name for labeling points.
+ \param name attribute name, or empty string to avoid labeling features by the renderer
+.. seealso:: labelAttributeName()
+.. seealso:: setLabelFont()
+.. seealso:: setLabelColor()
+.. seealso:: setMaxLabelScaleDenominator()
+%End
 
-    /** Returns the attribute name used for labeling points, or an empty string if no labeling
-     * will be done by the renderer.
-     * @see setLabelAttributeName()
-     * @see labelFont()
-     * @see maxLabelScaleDenominator()
-     * @see labelColor()
-     */
     QString labelAttributeName() const;
+%Docstring
+ Returns the attribute name used for labeling points, or an empty string if no labeling
+ will be done by the renderer.
+.. seealso:: setLabelAttributeName()
+.. seealso:: labelFont()
+.. seealso:: maxLabelScaleDenominator()
+.. seealso:: labelColor()
+ :rtype: str
+%End
 
-    /** Sets the font used for labeling points.
-     * @param font label font
-     * @see labelFont()
-     * @see setLabelAttributeName()
-     * @see setLabelColor()
-     */
     void setLabelFont( const QFont &font );
+%Docstring
+ Sets the font used for labeling points.
+ \param font label font
+.. seealso:: labelFont()
+.. seealso:: setLabelAttributeName()
+.. seealso:: setLabelColor()
+%End
 
-    /** Returns the font used for labeling points.
-     * @see setLabelFont()
-     * @see labelAttributeName()
-     * @see labelColor()
-     */
     QFont labelFont() const;
+%Docstring
+ Returns the font used for labeling points.
+.. seealso:: setLabelFont()
+.. seealso:: labelAttributeName()
+.. seealso:: labelColor()
+ :rtype: QFont
+%End
 
-    /** Sets the maximum scale at which points should be labeled by the renderer.
-     * @param denominator maximum scale denominator
-     * @see maxLabelScaleDenominator()
-     * @see setLabelAttributeName()
-     */
     void setMaxLabelScaleDenominator( double denominator );
+%Docstring
+ Sets the maximum scale at which points should be labeled by the renderer.
+ \param denominator maximum scale denominator
+.. seealso:: maxLabelScaleDenominator()
+.. seealso:: setLabelAttributeName()
+%End
 
-    /** Returns the denominator for the maximum scale at which points should be labeled by the renderer.
-     * @see setMaxLabelScaleDenominator()
-     * @see labelAttributeName()
-     */
     double maxLabelScaleDenominator() const;
+%Docstring
+ Returns the denominator for the maximum scale at which points should be labeled by the renderer.
+.. seealso:: setMaxLabelScaleDenominator()
+.. seealso:: labelAttributeName()
+ :rtype: float
+%End
 
-    /** Sets the color to use for for labeling points.
-     * @param color label color
-     * @see labelColor()
-     * @see setLabelAttributeName()
-     * @see setLabelFont()
-     */
     void setLabelColor( const QColor &color );
+%Docstring
+ Sets the color to use for for labeling points.
+ \param color label color
+.. seealso:: labelColor()
+.. seealso:: setLabelAttributeName()
+.. seealso:: setLabelFont()
+%End
 
-    /** Returns the color used for for labeling points.
-     * @see setLabelColor()
-     * @see labelAttributeName()
-     * @see labelFont()
-     */
     QColor labelColor() const;
+%Docstring
+ Returns the color used for for labeling points.
+.. seealso:: setLabelColor()
+.. seealso:: labelAttributeName()
+.. seealso:: labelFont()
+ :rtype: QColor
+%End
 
-    /** Sets the tolerance distance for grouping points. Units are specified using
-     * setToleranceUnit().
-     * @param distance tolerance distance
-     * @see tolerance()
-     * @see setToleranceUnit()
-     */
     void setTolerance( double distance );
+%Docstring
+ Sets the tolerance distance for grouping points. Units are specified using
+ setToleranceUnit().
+ \param distance tolerance distance
+.. seealso:: tolerance()
+.. seealso:: setToleranceUnit()
+%End
 
-    /** Returns the tolerance distance for grouping points. Units are retrieved using
-     * toleranceUnit().
-     * @see setTolerance()
-     * @see toleranceUnit()
-     */
     double tolerance() const;
+%Docstring
+ Returns the tolerance distance for grouping points. Units are retrieved using
+ toleranceUnit().
+.. seealso:: setTolerance()
+.. seealso:: toleranceUnit()
+ :rtype: float
+%End
 
-    /** Sets the units for the tolerance distance.
-     * @param unit tolerance distance units
-     * @see setTolerance()
-     * @see toleranceUnit()
-     * @note added in QGIS 2.12
-     */
     void setToleranceUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+ Sets the units for the tolerance distance.
+ \param unit tolerance distance units
+.. seealso:: setTolerance()
+.. seealso:: toleranceUnit()
+.. versionadded:: 2.12
+%End
 
-    /** Returns the units for the tolerance distance.
-     * @see tolerance()
-     * @see setToleranceUnit()
-     * @note added in QGIS 2.12
-     */
     QgsUnitTypes::RenderUnit toleranceUnit() const;
+%Docstring
+ Returns the units for the tolerance distance.
+.. seealso:: tolerance()
+.. seealso:: setToleranceUnit()
+.. versionadded:: 2.12
+ :rtype: QgsUnitTypes.RenderUnit
+%End
 
-    /** Sets the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
-     * @param scale scale for distance tolerance
-     * @see toleranceMapUnitScale()
-     * @see setToleranceUnit()
-     */
     void setToleranceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+ Sets the map unit scale object for the distance tolerance. This is only used if the
+ toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
+ \param scale scale for distance tolerance
+.. seealso:: toleranceMapUnitScale()
+.. seealso:: setToleranceUnit()
+%End
 
-    /** Returns the map unit scale object for the distance tolerance. This is only used if the
-     * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
-     * @see setToleranceMapUnitScale()
-     * @see toleranceUnit()
-     */
     const QgsMapUnitScale &toleranceMapUnitScale() const;
+%Docstring
+ Returns the map unit scale object for the distance tolerance. This is only used if the
+ toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
+.. seealso:: setToleranceMapUnitScale()
+.. seealso:: toleranceUnit()
+ :rtype: QgsMapUnitScale
+%End
 
   protected:
 
-    /** Renders the labels for a group.
-     * @param centerPoint center point of group
-     * @param context destination render context
-     * @param labelShifts displacement for individual label positions
-     * @param group group of clustered features to label
-     * @note may not be available in Python bindings on some platforms
-     */
-    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const  QgsPointDistanceRenderer::ClusteredGroup &group );
+
+
+
+
+
+
+
+
+
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
+%Docstring
+ Renders the labels for a group.
+ \param centerPoint center point of group
+ \param context destination render context
+ \param labelShifts displacement for individual label positions
+ \param group group of clustered features to label
+.. note::
+
+   may not be available in Python bindings on some platforms
+%End
 
   private:
-
-    /** Draws a group of clustered points.
-     * @param centerPoint central point (geographic centroid) of all points contained within the cluster
-     * @param context destination render context
-     * @param group contents of group
-     */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) = 0;
-
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 ;
+%Docstring
+ Draws a group of clustered points.
+ \param centerPoint central point (geographic centroid) of all points contained within the cluster
+ \param context destination render context
+ \param group contents of group
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology-ng/qgspointdistancerenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

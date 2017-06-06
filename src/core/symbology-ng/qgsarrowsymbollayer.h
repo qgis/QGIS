@@ -144,6 +144,10 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     virtual QColor color() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsArrowSymbolLayer( const QgsArrowSymbolLayer & );
+#endif
+
     //! Filling sub symbol
     std::unique_ptr<QgsFillSymbol> mSymbol;
 
