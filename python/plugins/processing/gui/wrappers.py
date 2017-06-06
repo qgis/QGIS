@@ -1173,6 +1173,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         context = dataobjects.createContext()
+        if isinstance(layer, QgsProcessingFeatureSourceDefinition):
+            layer, ok = layer.source.valueAsString(context.expressionContext())
         if isinstance(layer, str):
             layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self._layer = layer
