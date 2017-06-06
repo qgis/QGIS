@@ -126,6 +126,8 @@ Bitmask of all provider's editing capabilities
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
 
+    virtual QgsRectangle sourceExtent() const;
+
 
     virtual QString dataComment() const;
 %Docstring

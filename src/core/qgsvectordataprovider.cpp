@@ -52,6 +52,11 @@ QgsCoordinateReferenceSystem QgsVectorDataProvider::sourceCrs() const
   return crs();
 }
 
+QgsRectangle QgsVectorDataProvider::sourceExtent() const
+{
+  return extent();
+}
+
 QString QgsVectorDataProvider::dataComment() const
 {
   return QString();

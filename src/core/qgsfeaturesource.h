@@ -87,6 +87,13 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
+    /**
+     * Returns the extent of all geometries from the source.
+     * The base class implementation uses a non-optimised approach of looping through
+     * all features in the source.
+     */
+    virtual QgsRectangle sourceExtent() const;
+
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )

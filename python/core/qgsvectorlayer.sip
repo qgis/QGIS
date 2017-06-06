@@ -1103,10 +1103,8 @@ Synchronises with changes in the datasource
 
     virtual QgsRectangle extent() const;
 
-%Docstring
-Return the extent of the layer
- :rtype: QgsRectangle
-%End
+    virtual QgsRectangle sourceExtent() const;
+
 
     virtual QgsFields fields() const;
 %Docstring

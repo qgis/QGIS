@@ -78,6 +78,14 @@ class QgsFeatureSource
  :rtype: set of QVariant
 %End
 
+    virtual QgsRectangle sourceExtent() const;
+%Docstring
+ Returns the extent of all geometries from the source.
+ The base class implementation uses a non-optimised approach of looping through
+ all features in the source.
+ :rtype: QgsRectangle
+%End
+
 };
 
 

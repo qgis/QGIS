@@ -40,3 +40,20 @@ QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
   return values;
 }
 
+QgsRectangle QgsFeatureSource::sourceExtent() const
+{
+  QgsRectangle r;
+
+  QgsFeatureRequest req;
+  req.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator it = getFeatures( req );
+  QgsFeature f;
+  while ( it.nextFeature( f ) )
+  {
+    if ( f.hasGeometry() )
+      r.combineExtentWith( f.geometry().boundingBox() );
+  }
+  return r;
+}
+
