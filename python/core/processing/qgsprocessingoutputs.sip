@@ -34,6 +34,8 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == "outputHtml" )
       sipType = sipType_QgsProcessingOutputHtml;
+    else if ( sipCpp->type() == "outputNumber" )
+      sipType = sipType_QgsProcessingOutputNumber;
 %End
   public:
 
@@ -157,6 +159,26 @@ class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
     QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
 %Docstring
  Constructor for QgsProcessingOutputHtml.
+%End
+
+    virtual QString type() const;
+};
+
+class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
+{
+%Docstring
+ A numeric output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputNumber.
 %End
 
     virtual QString type() const;
