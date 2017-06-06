@@ -48,6 +48,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagHideFromToolbox = 1 << 1, //!< Algorithm should be hidden from the toolbox
       FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
+      FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -140,6 +141,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+     * Default flags are FlagSupportsBatch and FlagCanCancel.
      */
     virtual Flags flags() const;
 

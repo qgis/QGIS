@@ -84,6 +84,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.feedback = AlgorithmDialogFeedback(self)
         self.feedback.progressChanged.connect(self.setPercentage)
+        self.buttonCancel.clicked.connect(self.feedback.cancel)
 
         self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
@@ -95,6 +96,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
         self.btnRun.setText(self.tr('Run'))
+
+        self.buttonCancel.setEnabled(False)
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 

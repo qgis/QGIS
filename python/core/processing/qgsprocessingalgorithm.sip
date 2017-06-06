@@ -28,6 +28,7 @@ class QgsProcessingAlgorithm
       FlagHideFromToolbox,
       FlagHideFromModeler,
       FlagSupportsBatch,
+      FlagCanCancel,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -128,6 +129,7 @@ class QgsProcessingAlgorithm
     virtual Flags flags() const;
 %Docstring
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+ Default flags are FlagSupportsBatch and FlagCanCancel.
  :rtype: Flags
 %End
 
