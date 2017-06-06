@@ -2562,11 +2562,11 @@ void TestQgsProcessing::processingFeatureSink()
   context.setProject( &p );
 
   // first using static string definition
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( "memory:test", nullptr ) );
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), context, dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3111" ), context, dest ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
   QVERIFY( layer );
@@ -2574,11 +2574,46 @@ void TestQgsProcessing::processingFeatureSink()
 
   // next using property based definition
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('memory' + ':test2')" ) ), nullptr ) );
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer2 = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( dest, context, false ) );
   QVERIFY( layer2 );
   QCOMPARE( layer2->crs().authid(), QStringLiteral( "EPSG:3113" ) );
+
+
+  // non optional sink
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessingParameterDefinition::TypeAny, QVariant(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "memory:test" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "memory:test" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( "memory:test" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QString() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  params.insert( QStringLiteral( "layer" ), QStringLiteral( "memory:test" ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  QVERIFY( sink.get() );
+
+  // optional sink
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessingParameterDefinition::TypeAny, QVariant(), true ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "memory:test" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "memory:test" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( "memory:test" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QString() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  params.insert( QStringLiteral( "layer" ), QStringLiteral( "memory:test" ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  QVERIFY( sink.get() );
+  // optional sink, not set - should be no sink
+  params.insert( QStringLiteral( "layer" ), QVariant() );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  QVERIFY( !sink.get() );
+
+  //.... unless there's a default set
+  def.reset( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ), QString(), QgsProcessingParameterDefinition::TypeAny, QStringLiteral( "memory:defaultlayer" ), true ) );
+  params.insert( QStringLiteral( "layer" ), QVariant() );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
+  QVERIFY( sink.get() );
 }
 
 void TestQgsProcessing::algorithmScope()
