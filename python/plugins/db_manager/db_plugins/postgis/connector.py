@@ -60,7 +60,7 @@ class PostGisDBConnector(DBConnector):
 
         expandedConnInfo = self._connectionInfo()
         try:
-            self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
+            self.connection = psycopg2.connect(expandedConnInfo)
         except self.connection_error_types() as e:
             err = unicode(e)
             uri = self.uri()
@@ -79,7 +79,7 @@ class PostGisDBConnector(DBConnector):
 
                 newExpandedConnInfo = uri.connectionInfo(True)
                 try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo.encode('utf-8'))
+                    self.connection = psycopg2.connect(newExpandedConnInfo)
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
