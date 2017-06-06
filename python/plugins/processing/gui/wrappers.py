@@ -909,6 +909,21 @@ class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
                     widget.addItem(desc, val)
         return widget
 
+    def showExpressionsBuilder(self):
+        context = dataobjects.createExpressionContext()
+        value = self.value()
+        if not isinstance(value, str):
+            value = ''
+        dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
+        dlg.setWindowTitle(self.tr('Expression based input'))
+        if dlg.exec_() == QDialog.Accepted:
+            exp = QgsExpression(dlg.expressionText())
+            if not exp.hasParserError():
+                if self.dialogType == DIALOG_STANDARD:
+                    self.setValue(str(exp.evaluate(context)))
+                else:
+                    self.setValue(dlg.expressionText())
+
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiLine():
