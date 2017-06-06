@@ -45,10 +45,10 @@ qgis:centroids: >
 
   The attributes associated to each point in the output layer are the same ones associated to the original features.
 
-qgis:checkvalidity:
+qgis:checkvalidity: >
   This algorithm performs a validity check on the geometries of a vector layer.
 
-  The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each on of this categories.
+  The geometries are classified in three groups (valid, invalid and error), and a vector layer is generated with the features in each of these categories.
 
 qgis:clip: >
   This algorithm clips a vector layer using the polygons of an additional polygons layer. Only the parts of the features in the input layer that falls within the polygons of the clipping layer will be added to the resulting layer.
@@ -95,14 +95,14 @@ qgis:createattributeindex: >
 qgis:createconstantrasterlayer: >
   Given an input raster layer an a value, this algorithm generates a new layer with the same extent and cell size as the input one, and all cells with the specified value.
 
-qgis:creategridlines:
+qgis:creategridlines: >
   This algorithm creates a line vector layer with a grid covering a given extent.
 
   The size of each element in the grid is defined using a horizontal and vertical spacing.
 
   The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS.
 
-qgis:creategridpolygon:
+qgis:creategridpolygon: >
   This algorithm creates a polygon vector layer with a grid covering a given extent. The grid shape can be rectangles, diamond or hexagons.
 
   The size of each element in the grid is defined using a horizontal and vertical spacing.
@@ -124,21 +124,21 @@ qgis:deletecolumn: >
   This algorithm takes a vector layer and generates a new one that has the exact same content but without the selected columns.
 
 qgis:deleteduplicategeometries: >
-  This algorithm finds duplicated geometries and removes them.  Attributes are not checked, so in case two feature have identical geometries but different attributes, only one of them will be added to the result layer.
+  This algorithm finds duplicated geometries and removes them. Attributes are not checked, so in case two feature have identical geometries but different attributes, only one of them will be added to the result layer.
 
 qgis:deleteholes: >
   This algorithm takes a polygon layer and removes holes in polygons. It creates a new vector layer in which polygons with holes have been replaced by polygons with only their external ring. Attributes are not modified.
 
   An optional minimum area parameter allows removing only holes which are smaller than a specified area threshold. Leaving this parameter as 0.0 results in all holes being removed.
 
-qgis:densifygeometries:
+qgis:densifygeometries: >
   This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one.
 
   If the geometries have z or m values present then these will be linearly interpolated at the added nodes.
 
   The number of new vertices to add to each feature geometry is specified as an input parameter.
 
-qgis:densifygeometriesgivenaninterval:
+qgis:densifygeometriesgivenaninterval: >
   This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one. The geometries are densified by adding regularly placed extra nodes inside each segment so that the maximum distance between any two nodes does not exceed the specified distance.
 
   E.g. specifying a distance 3 would cause the segment [0 0] -> [10 0] to be converted to [0 0] -> [2.5 0] -> [5 0] -> [7.5 0] -> [10 0], since 3 extra nodes are required on the segment and spacing these at 2.5 increments allows them to be evenly spaced over the segment.
@@ -153,7 +153,9 @@ qgis:difference: >
   Attributes are not modified
 
 qgis:dissolve: >
-  This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. An attribute can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attribute), alternatively all geometries can be dissolved. If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
+  This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively all geometries can be dissolved.
+
+  If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
 
 qgis:distancematrix: >
   This algorithms creates a table containing a distance matrix, with distances between all the points in a points layer.
@@ -225,6 +227,11 @@ qgis:fixeddistancebuffer: >
 
   The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
 
+qgis:fixgeometries: >
+  This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
+
+  NOTE: M values will be dropped from the output.
+
 qgis:frequencyanalysis: >
   This algorithms generates a table with frequency analysis of the values of a selected attribute from an input vector layer
 
@@ -272,14 +279,14 @@ qgis:joinattributestable: >
 qgis:keepnbiggestparts: >
   This algorithms takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts
 
-qgis:lineintersections:
+qgis:lineintersections: >
   This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.
 
   An ID field is specified for each of the input layers. Each point in the resulting layer will have the ID's of both input layer, allowing to identify them.
 
   If no Input Unique and Intersect Unique ID fields are specified then the point features are given the values of the last field (i.e. the last field/column in the attribute table) of the intersecting lines.
 
-qgis:linestopolygons:
+qgis:linestopolygons: >
   This algorithm generates a polygon layer using as polygon rings the lines from an input line layer.
 
   The attribute table of the output layer is the same as the one from of the input line layer.
@@ -344,16 +351,16 @@ qgis:orthogonalize: >
 
   The algorithm is iterative. Setting a larger number for the maximum iterations will result in a more orthogonal geometry at the cost of extra processing time.
 
+qgis:pointonsurface: >
+  Returns a point guaranteed to lie on the surface of a geometry.
+
+
 qgis:pointsalonglines: >
   Creates points at regular intervals along line or polygon geometries. Created points will have new attributes added for the distance along the geometry and the angle of the line at the point.
 
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
 qgis:pointsdisplacement:
-
-
-qgis:pointonsurface: >
-  Returns a point guaranteed to lie on the surface of a geometry.
 
 
 qgis:pointslayerfromtable: >
@@ -425,22 +432,37 @@ qgis:randompointsinlayerbounds: >
   This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.
 
 qgis:randompointsinsidepolygonsfixed: >
-  This algorithms creates a new point layer with random points insides the polygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value, and it will be the same for all polygons.
+  This algorithm creates a new point layer with random points inside the polygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value, and it will be the same for all polygons.
 
 qgis:randompointsinsidepolygonsvariable: >
-  This algorithm creates a new point layer with random points insides the polygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value. The count/density value is taken from an attribute, so it can be different for each polygons in the input layer.
+  This algorithm creates a new point layer with random points inside the polygons of a given layer. The number of points in each polygon can be defined as a fixed count or as a density value. The count/density value is taken from an attribute, so it can be different for each polygon in the input layer.
 
 qgis:randomselection: >
   This algorithm takes a vector layer and selects a subset of its features. No new layer is generated by this algorithm.
 
-  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+  The subset is defined randomly, using a percentage or count value to define the total number of features in the subset.
 
 qgis:randomselectionwithinsubsets: >
   This algorithm takes a vector layer and selects a subset of its features. No new layer is generated by this algorithm.
 
-  The subset is defined randomly,  using a percentage or count value to define the total number of features in the subset.
+  The subset is defined randomly, using a percentage or count value to define the total number of features in the subset.
 
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
+
+qgis:rastercalculator: >
+  This algorithm allows to perform algebraic operations using raster layers.
+
+  The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
+
+  - sin(), cos(), tan(), atan2(), ln(), log10()
+
+  The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
+
+  The cell size is assumed to be the same in both X and Y axes.
+
+  Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
+
+  When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
 
 qgis:rasterlayerhistogram: >
   This algorithm generates a histogram with the values of a raster layer.
@@ -453,14 +475,14 @@ qgis:rasterlayerstatistics: >
   The raster layer must have a single band.
 
 qgis:refactorfields: >
-  This algorithms allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping
+  This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping.
 
-  The original layer is not modified. A new layer is generated, which contains a modified attributes table, according to the provided fields mapping
+  The original layer is not modified. A new layer is generated, which contains a modified attribute table, according to the provided fields mapping.
 
 qgis:regularpoints:
 
 qgis:removenullgeometries: >
-  This algorithms removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
+  This algorithm removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
 
 qgis:reprojectlayer: >
   This algorithm reprojects a vector layer. It creates a new layer with the same features as the input one, but with geometries reprojected to a new CRS.
@@ -473,26 +495,26 @@ qgis:saveselectedfeatures: >
   If the selected layer has no selected features, all features will be added to the resulting feature.
 
 qgis:selectbyattribute: >
-  This algorithms creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
+  This algorithm creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
 
 qgis:selectbyattributesum:
 
 
 qgis:selectbyexpression: >
-  This algorithms creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
+  This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
 
 qgis:selectbylocation: >
-  This algorithms creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
+  This algorithm creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
 
 
 qgis:setstyleforrasterlayer: >
-  This algorithms sets the style of a raster layer. The style must be defined in a QML file.
+  This algorithm sets the style of a raster layer. The style must be defined in a QML file.
 
 qgis:setstyleforvectorlayer: >
-  This algorithms sets the style of a vector layer. The style must be defined in a QML file.
+  This algorithm sets the style of a vector layer. The style must be defined in a QML file.
 
 qgis:simplifygeometries: >
   This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.
@@ -601,24 +623,4 @@ qgis:voronoipolygons: >
   This algorithm takes a points layer and generates a polygon layer containing the voronoi polygons corresponding to those input points.
 
 qgis:zonalstatistics:
-
-qgis:rastercalculator: >
-    This algorithm allows to perform algebraic operations using raster layers.
-
-    The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
-
-    - sin(), cos(), tan(), atan2(), ln(), log10()
-
-    The extent and cellsize can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
-
-    The cell size is assumed to be the same in both X and Y axes.
-
-    Layers are referred by their name as displayed in the layer list and the number of the band to use (based on 1), using the pattern 'layer_name@band number'. For instance, the first band from a layer named DEM will be referred as DEM@1.
-
-    When using the calculator in the batch interface or from the console, the files to use have to be specified. The corresponding layers are referred using the base name of the file (without the full path). For instance, is using a layer at path/to/my/rasterfile.tif, the first band of that layer will be referred as rasterfile.tif@1.
-
-qgis:fixgeometries: >
-    This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
-
-    NOTE: M values will be dropped from the output.
 
