@@ -1,5 +1,0 @@
-Polygons to Edges and Nodes
-shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
-OutputVector|EDGES|Edges
-OutputVector|NODES|Nodes

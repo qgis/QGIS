@@ -1,8 +1,0 @@
-Function
-grid_calculus
-ParameterNumber|XMIN|xmin|None|None|0.0
-ParameterNumber|XMAX|xmax|None|None|0.0
-ParameterNumber|YMIN|ymin|None|None|0.0
-ParameterNumber|YMAX|ymax|None|None|0.0
-ParameterString|FORMUL|Formula|
-OutputRaster|RESULT|Function

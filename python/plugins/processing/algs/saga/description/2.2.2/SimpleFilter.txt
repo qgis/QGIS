@@ -1,7 +1,0 @@
-Simple Filter
-grid_filter
-ParameterRaster|INPUT|Grid|False
-ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterSelection|METHOD|Filter|[0] Smooth;[1] Sharpen;[2] Edge
-ParameterNumber|RADIUS|Radius|None|None|2
-OutputRaster|RESULT|Filtered Grid

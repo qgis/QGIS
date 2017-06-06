@@ -1,6 +1,0 @@
-Convex Hull
-shapes_points
-ParameterVector|SHAPES|Points|0|False
-ParameterSelection|POLYPOINTS|Hull Construction|[0] one hull for all shapes;[1] one hull per shape;[2] one hull per shape part
-OutputVector|HULLS|Convex Hull
-OutputVector|BOXES|Minimum Bounding Box

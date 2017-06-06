@@ -1,7 +1,0 @@
-Geometric Figures
-grid_calculus
-ParameterNumber|CELL_COUNT|Cell Count|None|None|0
-ParameterNumber|CELL_SIZE|Cell Size|None|None|0
-ParameterSelection|FIGURE|Figure|[0] Cone (up);[1] Cone (down);[2] Plane
-ParameterNumber|PLANE|Direction of Plane [Degree]|None|None|0
-OutputRaster|RESULT|Result
