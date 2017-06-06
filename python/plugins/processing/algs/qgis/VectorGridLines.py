@@ -41,7 +41,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsWkbTypes)
 from qgis.utils import iface
 
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector

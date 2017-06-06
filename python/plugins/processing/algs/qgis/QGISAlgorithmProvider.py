@@ -153,7 +153,7 @@ from .Boundary import Boundary
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-# from .Aspect import Aspect
+from .Aspect import Aspect
 # from .Slope import Slope
 # from .Ruggedness import Ruggedness
 # from .Hillshade import Hillshade
@@ -244,7 +244,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PointOnSurface(),
         #         OffsetLine(), PolygonCentroids(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
-        #         Aspect(), Slope(), Ruggedness(), Hillshade(),
+        #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(), ZonalStatisticsQgis(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(), ExtractByExpression(),
@@ -260,6 +260,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         TopoColor(), EliminateSelection()
         #         ]
         algs = [AddTableField(),
+                Aspect(),
                 Boundary(),
                 BoundingBox()]
 

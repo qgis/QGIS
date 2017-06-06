@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 
 from qgis.analysis import QgsRelief
 from qgis.core import QgsProcessingParameterDefinition
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
