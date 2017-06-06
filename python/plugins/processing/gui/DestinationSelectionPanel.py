@@ -37,7 +37,7 @@ from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsSettings,
-                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterFeatureSink,
                        QgsProcessingFeatureSinkDefinition)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
@@ -67,7 +67,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.encoding = settings.value('/Processing/encoding', 'System')
 
         if hasattr(self.leText, 'setPlaceholderText'):
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
@@ -82,7 +82,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             popupMenu = QMenu()
 
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary layers if supported
                 actionSaveToTemp = QAction(
@@ -103,7 +103,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             actionShowExpressionsBuilder.triggered.connect(self.showExpressionsBuilder)
             popupMenu.addAction(actionShowExpressionsBuilder)
 
-            if isinstance(self.parameter, QgsProcessingOutputVectorLayer) \
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
                     self.tr('Save to Spatialite table...'), self.btnSelect)
@@ -145,7 +145,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             uri = QgsDataSourceUri()
             uri.setConnection(host, str(port), dbname, user, password)
             uri.setDataSource(dlg.schema, dlg.table,
-                              "the_geom" if self.parameter.hasGeometry() else None)
+                              "the_geom" if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
 
             connInfo = uri.connectionInfo()
             (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
@@ -185,7 +185,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             uri = QgsDataSourceUri()
             uri.setDatabase(fileName)
             uri.setDataSource('', self.parameter.name().lower(),
-                              'the_geom' if self.parameter.hasGeometry() else None)
+                              'the_geom' if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
             self.leText.setText("spatialite:" + uri.uri())
 
     def selectFile(self):

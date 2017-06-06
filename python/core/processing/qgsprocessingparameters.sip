@@ -1206,6 +1206,13 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
  :rtype: QgsProcessingParameterDefinition.LayerType
 %End
 
+    bool hasGeometry() const;
+%Docstring
+ Returns true if sink is likely to include geometries. In cases were presence of geometry
+ cannot be reliably determined in advance, this method will default to returning true.
+ :rtype: bool
+%End
+
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.

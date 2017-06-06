@@ -1348,6 +1348,25 @@ QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::d
   return mDataType;
 }
 
+bool QgsProcessingParameterFeatureSink::hasGeometry() const
+{
+  switch ( mDataType )
+  {
+    case TypeAny:
+    case TypeVectorAny:
+    case TypeVectorPoint:
+    case TypeVectorLine:
+    case TypeVectorPolygon:
+    case TypeTable:
+      return true;
+
+    case TypeRaster:
+    case TypeFile:
+      return false;
+  }
+  return true;
+}
+
 void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefinition::LayerType type )
 {
   mDataType = type;
