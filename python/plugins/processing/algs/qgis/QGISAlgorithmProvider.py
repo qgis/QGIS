@@ -265,17 +265,18 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Boundary(),
                 BoundingBox()]
 
-        # if hasPlotly:
-        #     from .VectorLayerHistogram import VectorLayerHistogram
-        #     from .RasterLayerHistogram import RasterLayerHistogram
-        #     from .VectorLayerScatterplot import VectorLayerScatterplot
-        #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
-        #     from .BarPlot import BarPlot
+        if hasPlotly:
+            #     from .VectorLayerHistogram import VectorLayerHistogram
+            #     from .RasterLayerHistogram import RasterLayerHistogram
+            #     from .VectorLayerScatterplot import VectorLayerScatterplot
+            #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .BarPlot import BarPlot
         #     from .PolarPlot import PolarPlot
         #     from .BoxPlot import BoxPlot
         #     from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
         #
-        #     algs.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+            algs.extend([BarPlot()])
+            #[VectorLayerHistogram(), RasterLayerHistogram(),
         #                  VectorLayerScatterplot(), MeanAndStdDevPlot(),
         #                  BarPlot(), PolarPlot(), BoxPlot(),
         #                  VectorLayerScatterplot3D()])
