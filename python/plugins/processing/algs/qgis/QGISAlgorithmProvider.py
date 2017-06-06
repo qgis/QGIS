@@ -136,7 +136,7 @@ from .AutoincrementalField import AutoincrementalField
 # from .SplitLinesWithLines import SplitLinesWithLines
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
-# from .CheckValidity import CheckValidity
+from .CheckValidity import CheckValidity
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .Smooth import Smooth
 # from .ReverseLineDirection import ReverseLineDirection
@@ -237,7 +237,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByExpression(), HypsometricCurves(),
         #         SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-        #         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
+        #         OrientedMinimumBoundingBox(), Smooth(),
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
@@ -265,6 +265,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 BasicStatisticsForField(),
                 Boundary(),
                 BoundingBox(),
+                CheckValidity(),
                 Clip(),
                 DeleteColumn(),
                 ExtentFromLayer()
