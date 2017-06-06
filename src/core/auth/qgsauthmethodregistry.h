@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
 
   public:
     //! Means of accessing canonical single instance
-    static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString::null );
+    static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString() );
 
     //! Virtual dectructor
     virtual ~QgsAuthMethodRegistry();

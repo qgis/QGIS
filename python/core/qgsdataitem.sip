@@ -447,7 +447,7 @@ class QgsDataCollectionItem : QgsDataItem
 #include "qgsdataitem.h"
 %End
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString::null );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );

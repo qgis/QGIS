@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setControlPathPrefix( const QString &prefix );
 
     /**
-     * Set the path to the rendered image. If this is not set or set to QString::Null, an image
+     * Set the path to the rendered image. If this is not set or set to null QString, an image
      * will be rendered based on the provided mapsettings
      *
      * \param renderedImagePath A path to the rendered image with which control images will be compared

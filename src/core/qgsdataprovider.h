@@ -207,7 +207,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString subsetString() const
     {
-      return QString::null;
+      return QString();
     }
 
 

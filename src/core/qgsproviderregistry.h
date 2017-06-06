@@ -63,7 +63,7 @@ class CORE_EXPORT QgsProviderRegistry
     };
 
     //! Means of accessing canonical single instance
-    static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 
     virtual ~QgsProviderRegistry();
 

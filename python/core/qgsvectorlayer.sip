@@ -890,7 +890,7 @@ Return the provider type for this layer
     virtual QString subsetString() const;
 %Docstring
  Get the string (typically sql) used to define a subset of the layer
- :return: The subset string or QString.null if not implemented by the provider
+ :return: The subset string or null QString if not implemented by the provider
  :rtype: str
 %End
 

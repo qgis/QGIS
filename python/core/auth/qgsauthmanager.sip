@@ -61,7 +61,7 @@ Name of the authentication database table that stores server exceptions/configs
  :rtype: str
 %End
 
-    bool init( const QString &pluginPath = QString::null );
+    bool init( const QString &pluginPath = QString() );
 %Docstring
 Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
  :rtype: bool
@@ -107,7 +107,7 @@ Standard message for when QCA's qca-ossl plugin is missing and system is disable
  :rtype: bool
 %End
 
-    bool verifyMasterPassword( const QString &compare = QString::null );
+    bool verifyMasterPassword( const QString &compare = QString() );
 %Docstring
  Verify the supplied master password against any existing hash in authentication database
 .. note::

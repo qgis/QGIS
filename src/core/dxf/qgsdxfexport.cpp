@@ -4262,7 +4262,7 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
     return DXF_ENCODINGS[i][0];
   }
 
-  return QString::null;
+  return QString();
 }
 
 QStringList QgsDxfExport::encodings()

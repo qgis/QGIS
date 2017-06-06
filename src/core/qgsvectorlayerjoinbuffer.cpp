@@ -330,7 +330,7 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode &layer_node )
       if ( infoElem.attribute( QStringLiteral( "hasCustomPrefix" ) ).toInt() )
         info.setPrefix( infoElem.attribute( QStringLiteral( "customPrefix" ) ) );
       else
-        info.setPrefix( QString::null );
+        info.setPrefix( QString() );
 
       addJoin( info );
     }

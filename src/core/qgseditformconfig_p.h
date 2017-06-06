@@ -27,7 +27,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 {
   public:
     QgsEditFormConfigPrivate()
-      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
+      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString(), nullptr ) )
       , mConfiguredRootContainer( false )
       , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
       , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )

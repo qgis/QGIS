@@ -50,7 +50,7 @@ class CORE_EXPORT QgsErrorMessage
      *  \param function the function where error was created
      *  \param line the line where error was created
      */
-    QgsErrorMessage( const QString &message, const QString &tag = QString::null, const QString &file = QString::null, const QString &function = QString::null, int line = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 
     QString message() const { return mMessage; }
     QString tag() const { return mTag; }

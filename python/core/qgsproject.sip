@@ -268,7 +268,7 @@ Returns the QgsProject singleton instance
  :rtype: list of str
 %End
 
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString::null, bool *ok = 0 ) const;
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = 0 ) const;
 %Docstring
  :rtype: str
 %End
@@ -411,7 +411,7 @@ Convenience function to query topological editing status
     QString homePath() const;
 %Docstring
  Return project's home path
-:return: home path of project (or QString.null if not set) *
+:return: home path of project (or null QString if not set) *
  :rtype: str
 %End
 

@@ -218,7 +218,7 @@ class QgsPkiBundle
 
     static const QgsPkiBundle fromPemPaths( const QString &certPath,
                                             const QString &keyPath,
-                                            const QString &keyPass = QString::null,
+                                            const QString &keyPass = QString(),
                                             const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 %Docstring
  Construct a bundle of PKI components from PEM-formatted file paths
@@ -230,7 +230,7 @@ class QgsPkiBundle
 %End
 
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString::null );
+        const QString &bundlepass = QString() );
 %Docstring
  Construct a bundle of PKI components from a PKCS#12 file path
  \param bundlepath Bundle file path

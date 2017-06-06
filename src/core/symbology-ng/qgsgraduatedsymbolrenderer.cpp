@@ -338,12 +338,12 @@ QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
       if ( range.renderState() || mCounting )
         return QString::number( i );
       else
-        return QString::null;
+        return QString();
     }
     i++;
   }
   // the value is out of the range: return NULL
-  return QString::null;
+  return QString();
 }
 
 QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )

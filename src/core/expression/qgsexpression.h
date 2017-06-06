@@ -474,7 +474,7 @@ class CORE_EXPORT QgsExpression
 
     struct HelpExample SIP_SKIP
     {
-      HelpExample( const QString &expression, const QString &returns, const QString &note = QString::null )
+      HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
         : mExpression( expression )
         , mReturns( returns )
         , mNote( note )
@@ -491,7 +491,7 @@ class CORE_EXPORT QgsExpression
                    const QList<QgsExpression::HelpArg> &arguments = QList<QgsExpression::HelpArg>(),
                    bool variableLenArguments = false,
                    const QList<QgsExpression::HelpExample> &examples = QList<QgsExpression::HelpExample>(),
-                   const QString &notes = QString::null )
+                   const QString &notes = QString() )
         : mName( name )
         , mDescription( description )
         , mArguments( arguments )

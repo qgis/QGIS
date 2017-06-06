@@ -42,7 +42,7 @@ class QgsProviderRegistry
       Manager,
     };
 
-    static QgsProviderRegistry *instance( const QString &pluginPath = QString::null );
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 %Docstring
 Means of accessing canonical single instance
  :rtype: QgsProviderRegistry
