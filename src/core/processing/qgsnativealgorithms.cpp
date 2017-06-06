@@ -84,6 +84,8 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Point, source->sourceCrs(), dest ) );
+  if ( !sink )
+    return QVariantMap();
 
   long count = source->featureCount();
   if ( count <= 0 )
@@ -157,6 +159,8 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs(), dest ) );
+  if ( !sink )
+    return QVariantMap();
 
   // fixed parameters
   //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );

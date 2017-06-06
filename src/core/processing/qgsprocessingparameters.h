@@ -1203,6 +1203,12 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
     QgsProcessingParameterDefinition::LayerType dataType() const;
 
     /**
+     * Returns true if sink is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning true.
+     */
+    bool hasGeometry() const;
+
+    /**
      * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */

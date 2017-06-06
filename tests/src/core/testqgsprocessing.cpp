@@ -2286,6 +2286,17 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSinkDefinition( "layer1231123" ) ) );
+
+  // test hasGeometry
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeVectorAny ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeVectorPoint ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeVectorLine ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeVectorPolygon ).hasGeometry() );
+  QVERIFY( !QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeRaster ).hasGeometry() );
+  QVERIFY( !QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeFile ).hasGeometry() );
+  QVERIFY( QgsProcessingParameterFeatureSink( "test", QString(), QgsProcessingParameterDefinition::TypeTable ).hasGeometry() );
+
 }
 
 void TestQgsProcessing::checkParamValues()

@@ -265,7 +265,6 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
 QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions )
 {
   QVariantMap options = createOptions;
-  QgsVectorLayer *layer = nullptr;
   if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
   {
     // no destination encoding specified, use default
@@ -275,7 +274,23 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
   if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
   {
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
-    layer = QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs );
+    std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
+    if ( !layer )
+      return nullptr;
+
+    if ( !layer->isValid() )
+    {
+      return nullptr;
+    }
+
+    // update destination to layer ID
+    destination = layer->id();
+
+    // this is a factory, so we need to return a proxy
+    std::unique_ptr< QgsProxyFeatureSink > sink( new QgsProxyFeatureSink( layer->dataProvider() ) );
+    context.temporaryLayerStore()->addMapLayer( layer.release() );
+
+    return sink.release();
   }
   else
   {
@@ -297,33 +312,19 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     else
     {
       //create empty layer
-      {
-        QgsVectorLayerExporter import( uri, providerKey, fields, geometryType, crs, false, &options );
-        if ( import.errorCode() )
-          return nullptr;
-      }
+      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, &options ) );
+      if ( exporter->errorCode() )
+        return nullptr;
 
       // use destination string as layer name (eg "postgis:..." )
-      layer = new QgsVectorLayer( uri, destination, providerKey );
+      std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( uri, destination, providerKey ) );
+      // update destination to layer ID
+      destination = layer->id();
+      context.temporaryLayerStore()->addMapLayer( layer.release() );
+      return exporter.release();
     }
   }
-
-  if ( !layer )
-    return nullptr;
-
-  if ( !layer->isValid() )
-  {
-    delete layer;
-    return nullptr;
-  }
-
-  // update destination to layer ID
-  destination = layer->id();
-
-  context.temporaryLayerStore()->addMapLayer( layer );
-
-  // this is a factory, so we need to return a proxy
-  return new QgsProxyFeatureSink( layer->dataProvider() );
+  return nullptr;
 }
 
 void QgsProcessingUtils::createFeatureSinkPython( QgsFeatureSink **sink, QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &options )
