@@ -104,7 +104,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
-# from .AddTableField import AddTableField
+from .AddTableField import AddTableField
 # from .FieldsCalculator import FieldsCalculator
 # from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
@@ -220,7 +220,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(), Merge(),
-        #         GeometryConvert(), AddTableField(), FieldsCalculator(),
+        #         GeometryConvert(), FieldsCalculator(),
         #         SaveSelectedFeatures(), JoinAttributes(),
         #         AutoincrementalField(), Explode(), FieldsPyculator(),
         #         EquivalentNumField(), PointsLayerFromTable(),
@@ -259,7 +259,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         FixGeometry(), ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
-        algs = [Boundary(),
+        algs = [AddTableField(),
+                Boundary(),
                 BoundingBox()]
 
         # if hasPlotly:

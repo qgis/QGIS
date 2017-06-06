@@ -29,13 +29,14 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
                        QgsApplication,
-                       QgsProcessingUtils)
-from processing.algs.qgis import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class AddTableField(QgisAlgorithm):
@@ -64,18 +65,19 @@ class AddTableField(QgisAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterString(self.FIELD_NAME,
-                                          self.tr('Field name')))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE,
-                                             self.tr('Field type'), self.type_names))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-                                          self.tr('Field length'), 1, 255, 10))
-        self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                                          self.tr('Field precision'), 0, 10, 0))
-        self.addOutput(OutputVector(
-            self.OUTPUT_LAYER, self.tr('Added')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
+                                                       self.tr('Field name')))
+        self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
+                                                     self.tr('Field type'), self.type_names))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
+                                                       self.tr('Field length'), QgsProcessingParameterNumber.Integer,
+                                                       10, False, 1, 255))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
+                                                       self.tr('Field precision'), QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Added')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr('Added')))
 
     def name(self):
         return 'addfieldtoattributestable'
@@ -84,27 +86,32 @@ class AddTableField(QgisAlgorithm):
         return self.tr('Add field to attributes table')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fieldType = self.getParameterValue(self.FIELD_TYPE)
-        fieldName = self.getParameterValue(self.FIELD_NAME)
-        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
-        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
+        fieldType = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        fieldLength = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
+        fieldPrecision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
 
-        fields = layer.fields()
+        fields = source.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
                                fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-        outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
-        for current, feat in enumerate(features):
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
+                                               fields, source.wkbType(), source.sourceCrs())
+
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
+
+        for current, input_feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            output_feature = input_feature
+            attributes = input_feature.attributes()
+            attributes.append(None)
+            output_feature.setAttributes(attributes)
+
+            sink.addFeature(output_feature)
             feedback.setProgress(int(current * total))
-            geom = feat.geometry()
-            outFeat.setGeometry(geom)
-            atMap = feat.attributes()
-            atMap.append(None)
-            outFeat.setAttributes(atMap)
-            writer.addFeature(outFeat)
-        del writer
+
+        return {self.OUTPUT_LAYER: dest_id}
