@@ -403,7 +403,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString::null );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }

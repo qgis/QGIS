@@ -53,7 +53,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
   // get the type so that we can properly parse the key value
   QString typeString = subkeyElement.attribute( QStringLiteral( "type" ) );
 
-  if ( QString::null == typeString )
+  if ( typeString.isNull() )
   {
     QgsDebugMsg( QString( "null ``type'' attribute for %1" ).arg( keyNode.nodeName() ) );
 

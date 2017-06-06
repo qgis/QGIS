@@ -89,7 +89,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
 
     //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
-    bool init( const QString &pluginPath = QString::null );
+    bool init( const QString &pluginPath = QString() );
 
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
     bool isDisabled() const;
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \note Do not emit verification signals when only comparing
      * \param compare Password to compare against
      */
-    bool verifyMasterPassword( const QString &compare = QString::null );
+    bool verifyMasterPassword( const QString &compare = QString() );
 
     //! Whether master password has be input and verified, i.e. authentication database is accessible
     bool masterPasswordIsSet() const;
@@ -639,7 +639,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordRowsInDb( int *rows ) const;
 
-    bool masterPasswordCheckAgainstDb( const QString &compare = QString::null ) const;
+    bool masterPasswordCheckAgainstDb( const QString &compare = QString() ) const;
 
     bool masterPasswordStoreInDb() const;
 

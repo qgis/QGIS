@@ -33,7 +33,7 @@ QgsProjectBadLayerHandler::DataType QgsProjectBadLayerHandler::dataType( const Q
 {
   QString type = layerNode.toElement().attribute( QStringLiteral( "type" ) );
 
-  if ( QString::null == type )
+  if ( type.isNull() )
   {
     QgsDebugMsg( "cannot find ``type'' attribute" );
 
@@ -66,7 +66,7 @@ QString QgsProjectBadLayerHandler::dataSource( const QDomNode &layerNode )
   {
     QgsDebugMsg( "cannot find datasource node" );
 
-    return QString::null;
+    return QString();
   }
 
   return dataSourceNode.toElement().text();

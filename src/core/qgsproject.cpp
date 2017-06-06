@@ -97,7 +97,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString::null, QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
 
     }
 
@@ -1945,7 +1945,7 @@ QString QgsProject::homePath() const
 {
   QFileInfo pfi( fileName() );
   if ( !pfi.exists() )
-    return QString::null;
+    return QString();
 
   return pfi.canonicalPath();
 }

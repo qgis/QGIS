@@ -28,7 +28,7 @@ class QgsErrorMessage
 
     QgsErrorMessage();
 
-    QgsErrorMessage( const QString &message, const QString &tag = QString::null, const QString &file = QString::null, const QString &function = QString::null, int line = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 %Docstring
  Constructor.
   \param message error message string

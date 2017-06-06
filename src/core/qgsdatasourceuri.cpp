@@ -122,7 +122,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
         }
         else
         {
-          mGeometryColumn = QString::null;
+          mGeometryColumn = QString();
         }
       }
       else if ( pname == QLatin1String( "key" ) )

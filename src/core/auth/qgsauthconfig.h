@@ -207,7 +207,7 @@ class CORE_EXPORT QgsPkiBundle
      */
     static const QgsPkiBundle fromPemPaths( const QString &certPath,
                                             const QString &keyPath,
-                                            const QString &keyPass = QString::null,
+                                            const QString &keyPass = QString(),
                                             const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsPkiBundle
      * \param bundlepass Optional bundle passphrase
      */
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString::null );
+        const QString &bundlepass = QString() );
 
     //! Whether the bundle, either its certificate or private key, is null
     bool isNull() const;

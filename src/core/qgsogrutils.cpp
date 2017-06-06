@@ -170,7 +170,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   }
   else
   {
-    value = QVariant( QString::null );
+    value = QVariant( QString() );
   }
 
   return value;
