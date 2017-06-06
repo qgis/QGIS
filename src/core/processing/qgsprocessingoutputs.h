@@ -47,6 +47,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == "outputRaster" )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == "outputHtml" )
+      sipType = sipType_QgsProcessingOutputHtml;
     SIP_END
 #endif
 
@@ -157,6 +159,23 @@ class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDef
     QString type() const override { return QStringLiteral( "outputRaster" ); }
 };
 
+/**
+ * \class QgsProcessingOutputHtml
+ * \ingroup core
+ * A HTML file output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputHtml : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputHtml.
+     */
+    QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputHtml" ); }
+};
 
 #endif // QGSPROCESSINGOUTPUTS_H
 
