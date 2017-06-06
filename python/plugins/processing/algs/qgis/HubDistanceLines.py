@@ -36,7 +36,7 @@ from qgis.core import (QgsField,
                        QgsApplication,
                        QgsProject,
                        QgsProcessingUtils)
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField

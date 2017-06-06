@@ -41,7 +41,7 @@ from qgis.core import (QgsApplication,
 
 from qgis.PyQt.QtCore import (QVariant)
 
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterSelection,
                                         ParameterNumber)

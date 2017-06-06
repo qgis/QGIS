@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsProcessingUtils)
 
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputVector

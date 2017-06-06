@@ -37,7 +37,7 @@ from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbT
                        QgsMessageLog,
                        QgsProcessingUtils)
 
-from processing.algs.qgis import QgisAlgorithm
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
