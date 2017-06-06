@@ -368,6 +368,12 @@ class QgsProcessingAlgorithm
  :rtype: QgsRasterLayer
 %End
 
+    QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+ Evaluates the parameter with matching ``name`` to a raster output layer destination.
+ :rtype: str
+%End
+
     QgsVectorLayer *parameterAsVectorLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
  Evaluates the parameter with matching ``name`` to a vector layer.

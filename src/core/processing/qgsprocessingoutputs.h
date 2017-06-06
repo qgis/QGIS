@@ -45,6 +45,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == "outputVector" )
       sipType = sipType_QgsProcessingOutputVectorLayer;
+    else if ( sipCpp->type() == "outputRaster" )
+      sipType = sipType_QgsProcessingOutputRasterLayer;
     SIP_END
 #endif
 
@@ -135,6 +137,24 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
   private:
 
     QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+};
+
+/**
+ * \class QgsProcessingOutputRasterLayer
+ * \ingroup core
+ * A raster layer output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputRasterLayer : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputRasterLayer.
+     */
+    QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputRaster" ); }
 };
 
 

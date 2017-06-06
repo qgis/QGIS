@@ -34,9 +34,11 @@ from qgis.core import (QgsProject,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterRasterOutput,
                        QgsProcessingAlgorithm)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
@@ -56,8 +58,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.GeoAlgorithm import executeAlgorithm
 
-from processing.core.outputs import OutputRaster
-from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
 
 from processing.tools import dataobjects
@@ -113,7 +113,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (OutputRaster, QgsProcessingParameterFeatureSink, OutputTable)):
+                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, OutputTable)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 

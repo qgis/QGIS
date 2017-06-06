@@ -38,3 +38,7 @@ void QgsProcessingOutputVectorLayer::setDataType( QgsProcessingParameterDefiniti
 {
   mDataType = type;
 }
+
+QgsProcessingOutputRasterLayer::QgsProcessingOutputRasterLayer( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
