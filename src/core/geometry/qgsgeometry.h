@@ -946,11 +946,22 @@ class CORE_EXPORT QgsGeometry
         bool hasWhere() { return hasLocation; }
     };
 
-    /** Validate geometry and produce a list of geometry errors
+    /**
+     * Available methods for validating geometries.
+     * \since QGIS 3.0
+     */
+    enum ValidationMethod
+    {
+      ValidatorQgisInternal, //!< Use internal QgsGeometryValidator method
+      ValidatorGeos, //!< Use GEOS validation methods
+    };
+
+    /** Validate geometry and produce a list of geometry errors.
+     * The \a method argument dictates which validator to utilize.
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT );
+    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal );
 
     /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the

@@ -29,15 +29,18 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     Q_OBJECT
 
   public:
-    //! Constructor
-    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr );
+
+    /**
+     * Constructor for QgsGeometryValidator.
+     */
+    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = nullptr, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
     ~QgsGeometryValidator();
 
     void run() override;
     void stop();
 
     //! Validate geometry and produce a list of geometry errors
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors SIP_OUT );
+    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors SIP_OUT, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 
   signals:
     void errorFound( const QgsGeometry::Error & );
@@ -58,6 +61,7 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     QList<QgsGeometry::Error> *mErrors;
     bool mStop;
     int mErrorCount;
-}; // class QgsGeometryValidator
+    QgsGeometry::ValidationMethod mMethod = QgsGeometry::ValidatorQgisInternal;
+};
 
 #endif

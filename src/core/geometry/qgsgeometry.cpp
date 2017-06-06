@@ -1964,9 +1964,9 @@ QgsGeometry QgsGeometry::makeValid()
 }
 
 
-void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors )
+void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors, ValidationMethod method )
 {
-  QgsGeometryValidator::validateGeometry( this, errors );
+  QgsGeometryValidator::validateGeometry( this, errors, method );
 }
 
 bool QgsGeometry::isGeosValid() const
