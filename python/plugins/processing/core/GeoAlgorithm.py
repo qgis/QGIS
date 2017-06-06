@@ -25,6 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from builtins import str
+from builtins import object
+
 import os.path
 import traceback
 import subprocess
@@ -39,9 +42,8 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsMessageLog)
+from qgis.gui import QgsHelp
 
-from builtins import str
-from builtins import object
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
@@ -392,4 +394,5 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
         #raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
 
     def helpUrl(self):
-        return None
+        return QgsHelp.helpUrl("processing_algs/{}/{}".format(
+            self.provider().id(), self.id())).toString()
