@@ -413,6 +413,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerLegendElem.setAttribute( "legendFilterByMap", "1" );
   }
 
+  composerLegendElem.setAttribute( "legendFilterByAtlas", mFilterOutAtlas ? "1" : "0" );
+
   return _writeXML( composerLegendElem, doc );
 }
 
@@ -522,6 +524,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() ) );
   }
+  mFilterOutAtlas = itemElem.attribute( "legendFilterByAtlas", "0" ).toInt();
 
   QDomElement oldLegendModelElem = itemElem.firstChildElement( "Model" );
   if ( !oldLegendModelElem.isNull() )
