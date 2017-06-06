@@ -124,7 +124,7 @@ QFileInfo QgsServer::defaultProjectFile()
   {
     QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
-  if ( projectFiles.size() < 1 )
+  if ( projectFiles.isEmpty() )
   {
     return QFileInfo();
   }

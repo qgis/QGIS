@@ -356,7 +356,7 @@ namespace QgsWms
           //keyword list
           if ( !l->keywordList().isEmpty() )
           {
-            QStringList keywordStringList = l->keywordList().split( QStringLiteral( "," ) );
+            QStringList keywordStringList = l->keywordList().split( ',' );
             bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
             QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );

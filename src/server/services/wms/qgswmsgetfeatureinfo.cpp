@@ -74,7 +74,7 @@ namespace QgsWms
         QDomNodeList featureNodeList = layerElem.elementsByTagName( QStringLiteral( "Feature" ) );
         QDomElement currentFeatureElement;
 
-        if ( featureNodeList.size() < 1 ) //raster layer?
+        if ( featureNodeList.isEmpty() ) //raster layer?
         {
           QDomNodeList attributeNodeList = layerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
           for ( int j = 0; j < attributeNodeList.size(); ++j )

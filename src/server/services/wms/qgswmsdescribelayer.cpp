@@ -58,8 +58,8 @@ namespace QgsWms
                                  QStringLiteral( "LAYERS is mandatory for DescribeLayer operation" ), 400 );
     }
 
-    QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    if ( layersList.size() < 1 )
+    QStringList layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', QString::SkipEmptyParts );
+    if ( layersList.isEmpty() )
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );
     }

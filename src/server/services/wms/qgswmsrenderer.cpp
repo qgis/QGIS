@@ -173,7 +173,7 @@ namespace QgsWms
 
     readLayersAndStyles( mParameters, layersList, stylesList );
 
-    if ( layersList.size() < 1 )
+    if ( layersList.isEmpty() )
     {
       return nullptr;
     }
@@ -193,7 +193,7 @@ namespace QgsWms
 
     QgsCoordinateReferenceSystem dummyCRS;
     QStringList layerIds = layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
-    if ( layerIds.size() < 1 )
+    if ( layerIds.isEmpty() )
     {
       return nullptr;
     }
@@ -965,8 +965,8 @@ namespace QgsWms
       throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "No QUERY_LAYERS" ) );
     }
 
-    QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( QStringLiteral( "," ), QString::SkipEmptyParts );
-    if ( queryLayerList.size() < 1 )
+    QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( ',', QString::SkipEmptyParts );
+    if ( queryLayerList.isEmpty() )
     {
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
     }
@@ -1921,10 +1921,10 @@ namespace QgsWms
     QString filterParameter = mParameters.value( QStringLiteral( "FILTER" ) );
     if ( !filterParameter.isEmpty() )
     {
-      QStringList layerSplit = filterParameter.split( QStringLiteral( ";" ) );
+      QStringList layerSplit = filterParameter.split( ';' );
       for ( auto layerIt = layerSplit.constBegin(); layerIt != layerSplit.constEnd(); ++layerIt )
       {
-        QStringList eqSplit = layerIt->split( QStringLiteral( ":" ) );
+        QStringList eqSplit = layerIt->split( ':' );
         if ( eqSplit.size() < 2 )
         {
           continue;
@@ -2027,7 +2027,7 @@ namespace QgsWms
       return false;
     }
 
-    QStringList tokens = filter.split( QStringLiteral( " " ), QString::SkipEmptyParts );
+    QStringList tokens = filter.split( ' ', QString::SkipEmptyParts );
     groupStringList( tokens, QStringLiteral( "'" ) );
     groupStringList( tokens, QStringLiteral( "\"" ) );
 
@@ -2161,7 +2161,7 @@ namespace QgsWms
     Q_FOREACH ( const QString &selectionLayer, selectionString.split( ";" ) )
     {
       //separate layer name from id list
-      QStringList layerIdSplit = selectionLayer.split( QStringLiteral( ":" ) );
+      QStringList layerIdSplit = selectionLayer.split( ':' );
       if ( layerIdSplit.size() < 2 )
       {
         continue;
@@ -2194,7 +2194,7 @@ namespace QgsWms
         continue;
       }
 
-      QStringList idList = layerIdSplit.at( 1 ).split( QStringLiteral( "," ) );
+      QStringList idList = layerIdSplit.at( 1 ).split( ',' );
       QgsFeatureIds selectedIds;
 
       Q_FOREACH ( const QString &id, idList )
@@ -2236,7 +2236,7 @@ namespace QgsWms
     {
       return;
     }
-    QStringList opacityList = opIt.value().split( QStringLiteral( "," ) );
+    QStringList opacityList = opIt.value().split( ',' );
 
     //collect leaf layers and their opacity
     QVector< QPair< QgsMapLayer *, int > > layerOpacityList;
@@ -2386,7 +2386,7 @@ namespace QgsWms
       QDomElement currentFeatureElem;
 
       QDomNodeList featureList = currentLayerElem.elementsByTagName( QStringLiteral( "Feature" ) );
-      if ( featureList.size() < 1 )
+      if ( featureList.isEmpty() )
       {
         //raster?
         QDomNodeList attributeList = currentLayerElem.elementsByTagName( QStringLiteral( "Attribute" ) );
@@ -2989,6 +2989,11 @@ namespace QgsWms
               mNicknameLayers[lname]->setCustomProperty( "readSLD", true );
               layers.append( mNicknameLayers[lname] );
             }
+            else
+            {
+              throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
+                                            QStringLiteral( "Layer \"%1\" does not exist" ).arg( lname ) );
+            }
           }
         }
       }
@@ -3005,7 +3010,7 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) )
+      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -3017,6 +3022,11 @@ namespace QgsWms
         }
 
         layers.append( mNicknameLayers[nickname] );
+      }
+      else
+      {
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
+                                      QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
       }
     }
 
