@@ -185,7 +185,10 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
     delete vm;
   }
 
-  mValidator = new QgsGeometryValidator( g );
+  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+    method = QgsGeometry::ValidatorGeos;
+  mValidator = new QgsGeometryValidator( g, nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsSelectedFeature::addError );
   connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
   mValidator->start();

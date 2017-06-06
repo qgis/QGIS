@@ -15,9 +15,10 @@ class QgsGeometryValidator : QThread
 #include "qgsgeometryvalidator.h"
 %End
   public:
-    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0 );
+
+    QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 %Docstring
-Constructor
+ Constructor for QgsGeometryValidator.
 %End
     ~QgsGeometryValidator();
 
@@ -25,7 +26,7 @@ Constructor
 
     void stop();
 
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors /Out/ );
+    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors /Out/, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 %Docstring
 Validate geometry and produce a list of geometry errors
 %End
@@ -36,7 +37,7 @@ Validate geometry and produce a list of geometry errors
   public slots:
     void addError( const QgsGeometry::Error & );
 
-}; // class QgsGeometryValidator
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
