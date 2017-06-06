@@ -231,7 +231,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
     def getValue(self):
         key = None
         if not self.leText.text():
-            key = 'memory:'
+            if isinstance(self.parameter, QgsProcessingParameterFeatureSink):
+                key = 'memory:'
         else:
             key = self.leText.text()
         value = QgsProcessingOutputLayerDefinition(key)
