@@ -171,6 +171,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "rasterOut" )
+      sipType = sipType_QgsProcessingParameterRasterOutput;
 %End
   public:
 
@@ -417,6 +419,12 @@ class QgsProcessingParameters
  sources and stored temporarily in the ``context``. In either case, callers do not
  need to handle deletion of the returned layer.
  :rtype: QgsRasterLayer
+%End
+
+    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a raster output layer destination.
+ :rtype: str
 %End
 
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1218,6 +1226,31 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
 %End
+
+};
+
+class QgsProcessingParameterRasterOutput : QgsProcessingParameterDefinition
+{
+%Docstring
+ A raster layer output parameter.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterRasterOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterRasterOutput.
+%End
+
+    virtual QString type() const;
+    virtual bool isDestination() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
 };
 

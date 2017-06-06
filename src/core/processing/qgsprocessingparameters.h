@@ -206,6 +206,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "rasterOut" )
+      sipType = sipType_QgsProcessingParameterRasterOutput;
     SIP_END
 #endif
 
@@ -444,6 +446,11 @@ class CORE_EXPORT QgsProcessingParameters
      * need to handle deletion of the returned layer.
      */
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a raster output layer destination.
+     */
+    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a vector layer.
@@ -1217,6 +1224,28 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
   private:
 
     QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+};
+
+/**
+ * \class QgsProcessingParameterRasterOutput
+ * \ingroup core
+ * A raster layer output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterRasterOutput.
+     */
+    QgsProcessingParameterRasterOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "rasterOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

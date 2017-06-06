@@ -56,10 +56,10 @@ def getFileFilter(param):
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterMultipleLayers').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
-    elif param.type() == 'raster':
+    elif param.type() in ('raster', 'rasterOut'):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
+            exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterRasterOutput').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
     elif param.type() == 'table':
         exts = ['csv', 'dbf']

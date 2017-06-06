@@ -30,6 +30,8 @@ class QgsProcessingOutputDefinition
 %ConvertToSubClassCode
     if ( sipCpp->type() == "outputVector" )
       sipType = sipType_QgsProcessingOutputVectorLayer;
+    else if ( sipCpp->type() == "outputRaster" )
+      sipType = sipType_QgsProcessingOutputRasterLayer;
 %End
   public:
 
@@ -116,6 +118,26 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 .. seealso:: dataType()
 %End
 
+};
+
+class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
+{
+%Docstring
+ A raster layer output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputRasterLayer.
+%End
+
+    virtual QString type() const;
 };
 
 
