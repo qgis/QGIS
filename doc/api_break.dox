@@ -1598,6 +1598,7 @@ be returned instead of a null pointer if no transformation is required.
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.
 - setCrsTransformEnabled() and hasCrsTransformEnabled() were removed. CRS transformation is now always enabled.
+- the default destination CRS has changed from WGS 84 to invalid CRS (i.e. undefined, no reprojection will be done).
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 
 
