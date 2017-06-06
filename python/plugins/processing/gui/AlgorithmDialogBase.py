@@ -30,8 +30,8 @@ import os
 import webbrowser
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray, QUrl
-from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QVBoxLayout, QToolButton
 
 from qgis.utils import iface
 from qgis.core import (QgsProject,
@@ -80,6 +80,20 @@ class AlgorithmDialogBase(BASE, WIDGET):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
+        # don't collapse parameters panel
+        self.splitter.setCollapsible(0, False)
+
+        # add collapse button to splitter
+        splitterHandle = self.splitter.handle(1)
+        handleLayout = QVBoxLayout()
+        handleLayout.setContentsMargins(0, 0, 0, 0)
+        self.btnCollapse = QToolButton(splitterHandle)
+        self.btnCollapse.setAutoRaise(True)
+        self.btnCollapse.setFixedSize(12, 12)
+        handleLayout.addWidget(self.btnCollapse)
+        handleLayout.insertStretch(0)
+        splitterHandle.setLayout(handleLayout)
+
         self.feedback = AlgorithmDialogFeedback(self)
         self.feedback.progressChanged.connect(self.setPercentage)
         self.buttonCancel.clicked.connect(self.feedback.cancel)
@@ -87,6 +101,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.settings = QgsSettings()
         self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
+        self.splitterState = self.splitter.saveState()
+        self.splitterChanged(0, 0)
 
         self.setWindowTitle(self.alg.displayName())
 
@@ -103,8 +119,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
         self.buttonBox.helpRequested.connect(self.openHelp)
 
-        # don't collapse parameters panel
-        self.splitter.setCollapsible(0, False)
+        self.btnCollapse.clicked.connect(self.toggleCollapsed)
+        self.splitter.splitterMoved.connect(self.splitterChanged)
 
         # desktop = QDesktopWidget()
         # if desktop.physicalDpiX() > 96:
@@ -208,6 +224,24 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def finish(self, context):
         pass
+
+    def toggleCollapsed(self):
+        if self.helpCollapsed:
+            self.splitter.restoreState(self.splitterState)
+            self.btnCollapse.setArrowType(Qt.RightArrow)
+        else:
+            self.splitterState = self.splitter.saveState()
+            self.splitter.setSizes([1, 0])
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        self.helpCollapsed = not self.helpCollapsed
+
+    def splitterChanged(self, pos, index):
+        if self.splitter.sizes()[1] == 0:
+            self.helpCollapsed = True
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        else:
+            self.helpCollapsed = False
+            self.btnCollapse.setArrowType(Qt.RightArrow)
 
     def openHelp(self):
         algHelp = self.alg.helpUrl()
