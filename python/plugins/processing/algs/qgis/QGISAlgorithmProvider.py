@@ -75,7 +75,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-# from .Clip import Clip
+from .Clip import Clip
 # from .Difference import Difference
 # from .Dissolve import Dissolve
 # from .Intersection import Intersection
@@ -210,7 +210,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(), Dissolve(), Difference(),
-        #         Intersection(), Union(), Clip(), ExtentFromLayer(),
+        #         Intersection(), Union(), ExtentFromLayer(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(), RandomExtract(), DeleteHoles(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
@@ -263,7 +263,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Aspect(),
                 AutoincrementalField(),
                 Boundary(),
-                BoundingBox()]
+                BoundingBox(),
+                Clip()]
 
         if hasPlotly:
             #     from .VectorLayerHistogram import VectorLayerHistogram
