@@ -85,6 +85,10 @@ sub dbg_info {
     }
 }
 
+sub exit_with_error {
+  die "! Sipify error in $headerfile at line :: $LINE_IDX\n! $_[0]\n";
+}
+
 sub write_header_footer {
     push @OUTPUT,  "/************************************************************************\n";
     push @OUTPUT,  " * This file has been generated automatically from                      *\n";
@@ -403,7 +407,7 @@ while ($LINE_IDX < $LINE_COUNT){
             my $opening_line = '';
             while ( $opening_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
                 $opening_line = pop(@OUTPUT);
-                $#OUTPUT >= 0 or die 'could not reach opening definition';
+                $#OUTPUT >= 0 or exit_with_error('could not reach opening definition');
             }
         dbg_info("removed multiline definition of SIP_SKIP method");
         $MULTILINE_DEFINITION = 0;
@@ -500,7 +504,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
         # Skip opening curly bracket, incrementing hereunder
         my $skip = read_line();
-        $skip =~ m/^\s*{\s*$/ || die "Unexpected content on line $skip";
+        $skip =~ m/^\s*{\s*$/ or exit_with_error("expecting { after class definition");
         $GLOB_BRACKET_NESTING_IDX[$#GLOB_BRACKET_NESTING_IDX]++;
 
         $COMMENT = '';
@@ -521,7 +525,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 if ($#ACCESS > 0){
                     pop(@GLOB_BRACKET_NESTING_IDX);
                     pop(@ACCESS);
-                    die "Class $CLASSNAME[$#CLASSNAME] in $headerfile at line $LINE_IDX should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block."
+                    exit_with_error("Class $CLASSNAME[$#CLASSNAME] should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.")
                         if $EXPORTED[-1] == 0;
                     pop @EXPORTED;
                 }
@@ -592,13 +596,13 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("ENU1", "$LINE\n");
         if ($LINE =~ m/\{((\s*\w+)(\s*=\s*[\w\s\d<|]+.*?)?(,?))+\s*\}/){
           # one line declaration
-          $LINE !~ m/=/ or die 'spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.';
+          $LINE !~ m/=/ or exit_with_error("spify.pl does not handle enum one liners with value assignment. Use multiple lines instead.");
           next;
         }
         else
         {
             $LINE = read_line();
-            $LINE =~ m/^\s*\{\s*$/ || die "Unexpected content: enum should be followed by {\nline: $LINE";
+            $LINE =~ m/^\s*\{\s*$/ or exit_with_error('Unexpected content: enum should be followed by {');
             write_output("ENU2", "$LINE\n");
             while ($LINE_IDX < $LINE_COUNT){
                 $LINE = read_line();
@@ -633,7 +637,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # remove static const value assignment
     # https://regex101.com/r/DyWkgn/4
-    $LINE !~ m/^\s*const static \w+/ or die "const static should be written static const in $CLASSNAME[$#CLASSNAME] at line $LINE_IDX";
+    $LINE !~ m/^\s*const static \w+/ or exit_with_error("const static should be written static const in $CLASSNAME[$#CLASSNAME]");
     $LINE =~ s/^(\s*static const(?:expr)? \w+(?:<(?:[\w()<>, ]|::)+>)? \w+) = .*([|;])\s*(\/\/.*)?$/$1;/;
     if ( defined $2 && $2 =~ m/\|/ ){
         dbg_info("multiline const static assignment");
@@ -678,7 +682,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 while ( $virtual_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
                     $virtual_line_idx--;
                     $virtual_line = $INPUT_LINES[$virtual_line_idx];
-                    $virtual_line_idx >= 0 or die 'could not reach opening definition';
+                    $virtual_line_idx >= 0 or exit_with_error('could not reach opening definition');
                 }
                 if ( $virtual_line !~ m/^(\s*)virtual\b(.*)$/ ){
                     my $idx = $#OUTPUT-$LINE_IDX+$virtual_line_idx+2;
