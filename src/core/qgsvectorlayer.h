@@ -1077,8 +1077,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
-    //! Return the extent of the layer
     QgsRectangle extent() const override;
+    QgsRectangle sourceExtent() const override;
 
     /**
      * Returns the list of fields of this layer.

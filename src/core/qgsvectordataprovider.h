@@ -159,6 +159,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsFields fields() const override = 0;
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
+    QgsRectangle sourceExtent() const override;
 
     /**
      * Return a short comment for the data that this provider is

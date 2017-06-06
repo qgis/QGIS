@@ -879,6 +879,11 @@ QgsRectangle QgsVectorLayer::extent() const
   return rect;
 }
 
+QgsRectangle QgsVectorLayer::sourceExtent() const
+{
+  return extent();
+}
+
 QString QgsVectorLayer::subsetString() const
 {
   if ( !mValid || !mDataProvider )
