@@ -318,8 +318,6 @@ ADD_DEFINITIONS(-DENABLE_TESTS)
 ENABLE_TESTING()
 # Adds some testing specific build targets e.g. make Experimental
 INCLUDE(Dart)
-# Define "make check" as alias for "make test" - thanks geos :-)
-add_custom_target(check COMMAND ctest --output-on-failure)
 # Additional test configuration options e.g. max upload size of test report
 CONFIGURE_FILE(
   "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
@@ -327,7 +325,7 @@ CONFIGURE_FILE(
   IMMEDIATE @ONLY)
 # For server side testing we have no X, we can use xfvb as a fake x
 # sudo apt-get install xfvb
-add_custom_target(check-no-x COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
+add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
 ENDIF(ENABLE_TESTS)
 
 IF (WITH_CORE)
