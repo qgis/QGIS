@@ -27,10 +27,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication
 import os
 import re
 import json
+
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
+
+from processing.tools import system
 
 ALG_DESC = 'ALG_DESC'
 ALG_CREATOR = 'ALG_CREATOR'
@@ -63,7 +66,13 @@ def getHtmlFromHelpFile(alg, helpFile):
     try:
         with open(helpFile) as f:
             descriptions = json.load(f)
-            return getHtmlFromDescriptionsDict(alg, descriptions)
+
+        content = getHtmlFromDescriptionsDict(alg, descriptions)
+        algGroup, algName = alg.id().split(':')
+        filePath = os.path.join(system.tempHelpFolder(), "{}_{}.html".format(algGroup, algName))
+        with open(filePath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return QUrl.fromLocalFile(filePath).toString()
     except:
         return None
 

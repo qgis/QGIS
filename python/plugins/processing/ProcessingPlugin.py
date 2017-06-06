@@ -44,7 +44,7 @@ from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
 from processing.gui.AlgorithmLocatorFilter import AlgorithmLocatorFilter
 from processing.modeler.ModelerDialog import ModelerDialog
-from processing.tools.system import tempFolder
+from processing.tools.system import tempFolder, tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.ProcessingResults import resultsList
 
@@ -143,6 +143,11 @@ class ProcessingPlugin(object):
 
         # delete temporary output files
         folder = tempFolder()
+        if QDir(folder).exists():
+            shutil.rmtree(folder, True)
+
+        # also delete temporary help files
+        folder = tempHelpFolder()
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
 

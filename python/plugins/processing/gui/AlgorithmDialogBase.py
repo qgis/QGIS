@@ -30,13 +30,11 @@ import os
 import webbrowser
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QByteArray, QUrl
-from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QVBoxLayout, QToolButton
 
 from qgis.utils import iface
-from qgis.core import (QgsNetworkAccessManager,
-                       QgsProject,
+from qgis.core import (QgsProject,
                        QgsProcessingFeedback,
                        QgsSettings)
 
@@ -82,16 +80,36 @@ class AlgorithmDialogBase(BASE, WIDGET):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
+        # don't collapse parameters panel
+        self.splitter.setCollapsible(0, False)
+
+        # add collapse button to splitter
+        splitterHandle = self.splitter.handle(1)
+        handleLayout = QVBoxLayout()
+        handleLayout.setContentsMargins(0, 0, 0, 0)
+        self.btnCollapse = QToolButton(splitterHandle)
+        self.btnCollapse.setAutoRaise(True)
+        self.btnCollapse.setFixedSize(12, 12)
+        self.btnCollapse.setCursor(Qt.ArrowCursor)
+        handleLayout.addWidget(self.btnCollapse)
+        handleLayout.addStretch()
+        splitterHandle.setLayout(handleLayout)
+
         self.feedback = AlgorithmDialogFeedback(self)
         self.feedback.progressChanged.connect(self.setPercentage)
         self.buttonCancel.clicked.connect(self.feedback.cancel)
 
         self.settings = QgsSettings()
+        self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
+        self.splitterState = self.splitter.saveState()
+        self.splitterChanged(0, 0)
 
         self.executed = False
         self.mainWidget = None
         self.alg = alg
+
+        self.setWindowTitle(self.alg.displayName())
 
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
@@ -100,8 +118,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.buttonCancel.setEnabled(False)
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
+        self.buttonBox.helpRequested.connect(self.openHelp)
 
-        self.setWindowTitle(self.alg.displayName())
+        self.btnCollapse.clicked.connect(self.toggleCollapsed)
+        self.splitter.splitterMoved.connect(self.splitterChanged)
 
         # desktop = QDesktopWidget()
         # if desktop.physicalDpiX() > 96:
@@ -109,7 +129,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         algHelp = self.formatHelp(self.alg)
         if algHelp is None:
-            self.textShortHelp.setVisible(False)
+            self.textShortHelp.hide()
         else:
             self.textShortHelp.document().setDefaultStyleSheet('''.summary { margin-left: 10px; margin-right: 10px; }
                                                     h2 { color: #555555; padding-bottom: 15px; }
@@ -119,29 +139,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
                                                     dl dd { margin-bottom: 5px; }''')
             self.textShortHelp.setHtml(algHelp)
 
-        self.textShortHelp.setOpenLinks(False)
-
         def linkClicked(url):
             webbrowser.open(url.toString())
 
         self.textShortHelp.anchorClicked.connect(linkClicked)
-
-        if self.alg.helpString() is not None:
-            try:
-                self.txtHelp.setHtml(self.alg.helpString())
-            except Exception:
-                self.tabWidget.removeTab(2)
-        elif self.alg.helpUrl() is not None:
-            try:
-                html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
-                self.txtHelp.setHtml(html)
-                rq = QNetworkRequest(QUrl(self.alg.helpUrl()))
-                self.reply = QgsNetworkAccessManager.instance().get(rq)
-                self.reply.finished.connect(self.requestFinished)
-            except Exception:
-                self.tabWidget.removeTab(2)
-        else:
-            self.tabWidget.removeTab(2)
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
@@ -152,19 +153,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
             return None
         return "<h2>%s</h2>%s" % (alg.displayName(), "".join(["<p>%s</p>" % s for s in text.split("\n")]))
 
-    def requestFinished(self):
-        """Change the webview HTML content"""
-        reply = self.sender()
-        if reply.error() != QNetworkReply.NoError:
-            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
-        else:
-            html = str(reply.readAll())
-        reply.deleteLater()
-        self.txtHelp.setHtml(html)
-
-    def closeEvent(self, evt):
-        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
-        super(AlgorithmDialogBase, self).closeEvent(evt)
+    def closeEvent(self, event):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).closeEvent(event)
 
     def setMainWidget(self, widget):
         if self.mainWidget is not None:
@@ -228,8 +219,39 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def accept(self):
         pass
 
+    def reject(self):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).reject()
+
     def finish(self, context):
         pass
+
+    def toggleCollapsed(self):
+        if self.helpCollapsed:
+            self.splitter.restoreState(self.splitterState)
+            self.btnCollapse.setArrowType(Qt.RightArrow)
+        else:
+            self.splitterState = self.splitter.saveState()
+            self.splitter.setSizes([1, 0])
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        self.helpCollapsed = not self.helpCollapsed
+
+    def splitterChanged(self, pos, index):
+        if self.splitter.sizes()[1] == 0:
+            self.helpCollapsed = True
+            self.btnCollapse.setArrowType(Qt.LeftArrow)
+        else:
+            self.helpCollapsed = False
+            self.btnCollapse.setArrowType(Qt.RightArrow)
+
+    def openHelp(self):
+        algHelp = self.alg.helpUrl()
+        if algHelp not in [None, ""]:
+            webbrowser.open(algHelp)
+
+    def _saveGeometry(self):
+        self.settings.setValue("/Processing/dialogBaseSplitter", self.splitter.saveState())
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
     class InvalidParameterValue(Exception):
 
