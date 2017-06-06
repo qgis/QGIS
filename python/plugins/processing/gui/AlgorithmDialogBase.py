@@ -87,7 +87,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.buttonCancel.clicked.connect(self.feedback.cancel)
 
         self.settings = QgsSettings()
+        self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
+
+        self.setWindowTitle(self.alg.displayName())
 
         self.executed = False
         self.mainWidget = None
@@ -101,7 +104,8 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
 
-        self.setWindowTitle(self.alg.displayName())
+        # don't collapse parameters panel
+        self.splitter.setCollapsible(0, False)
 
         # desktop = QDesktopWidget()
         # if desktop.physicalDpiX() > 96:
@@ -109,7 +113,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         algHelp = self.formatHelp(self.alg)
         if algHelp is None:
-            self.textShortHelp.setVisible(False)
+            self.textShortHelp.hide()
         else:
             self.textShortHelp.document().setDefaultStyleSheet('''.summary { margin-left: 10px; margin-right: 10px; }
                                                     h2 { color: #555555; padding-bottom: 15px; }
@@ -118,8 +122,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
                                                     b { color: #333333; }
                                                     dl dd { margin-bottom: 5px; }''')
             self.textShortHelp.setHtml(algHelp)
-
-        self.textShortHelp.setOpenLinks(False)
 
         def linkClicked(url):
             webbrowser.open(url.toString())
@@ -162,9 +164,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 
-    def closeEvent(self, evt):
-        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
-        super(AlgorithmDialogBase, self).closeEvent(evt)
+    def closeEvent(self, event):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).closeEvent(event)
 
     def setMainWidget(self, widget):
         if self.mainWidget is not None:
@@ -228,8 +230,16 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def accept(self):
         pass
 
+    def reject(self):
+        self._saveGeometry()
+        super(AlgorithmDialogBase, self).reject()
+
     def finish(self, context):
         pass
+
+    def _saveGeometry(self):
+        self.settings.setValue("/Processing/dialogBaseSplitter", self.splitter.saveState())
+        self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
 
     class InvalidParameterValue(Exception):
 

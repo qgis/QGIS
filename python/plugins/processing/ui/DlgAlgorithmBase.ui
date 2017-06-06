@@ -26,6 +26,12 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>2</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -99,7 +105,17 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QTextBrowser" name="textShortHelp"/>
+     <widget class="QTextBrowser" name="textShortHelp">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="openLinks">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
