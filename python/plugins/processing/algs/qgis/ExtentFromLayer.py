@@ -36,6 +36,11 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterDefinition,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -65,12 +70,13 @@ class ExtentFromLayer(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterBoolean(self.BY_FEATURE,
-                                           self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extent'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
+                                                        self.tr('Calculate extent for each feature separately'), False))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Extent"), QgsProcessingParameterDefinition.TypeVectorPolygon))
 
     def name(self):
         return 'polygonfromlayerextent'
@@ -79,8 +85,8 @@ class ExtentFromLayer(QgisAlgorithm):
         return self.tr('Polygon from layer extent')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        byFeature = self.getParameterValue(self.BY_FEATURE)
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
@@ -94,17 +100,19 @@ class ExtentFromLayer(QgisAlgorithm):
         fields.append(QgsField('HEIGHT', QVariant.Double))
         fields.append(QgsField('WIDTH', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Polygon, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
 
         if byFeature:
-            self.featureExtent(layer, context, writer, feedback)
+            self.featureExtent(source, context, sink, feedback)
         else:
-            self.layerExtent(layer, writer, feedback)
+            self.layerExtent(source, sink, feedback)
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
-    def layerExtent(self, layer, writer, feedback):
-        rect = layer.extent()
+    def layerExtent(self, source, sink, feedback):
+        rect = source.sourceExtent()
+        geometry = QgsGeometry.fromRect(rect)
         minx = rect.xMinimum()
         miny = rect.yMinimum()
         maxx = rect.xMaximum()
@@ -116,9 +124,6 @@ class ExtentFromLayer(QgisAlgorithm):
         area = width * height
         perim = 2 * width + 2 * height
 
-        rect = [QgsPointXY(minx, miny), QgsPointXY(minx, maxy), QgsPointXY(maxx,
-                                                                           maxy), QgsPointXY(maxx, miny), QgsPointXY(minx, miny)]
-        geometry = QgsGeometry().fromPolygon([rect])
         feat = QgsFeature()
         feat.setGeometry(geometry)
         attrs = [
@@ -134,13 +139,16 @@ class ExtentFromLayer(QgisAlgorithm):
             width,
         ]
         feat.setAttributes(attrs)
-        writer.addFeature(feat)
+        sink.addFeature(feat)
 
-    def featureExtent(self, layer, context, writer, feedback):
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+    def featureExtent(self, source, context, sink, feedback):
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
         feat = QgsFeature()
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             rect = f.geometry().boundingBox()
             minx = rect.xMinimum()
             miny = rect.yMinimum()
@@ -171,5 +179,5 @@ class ExtentFromLayer(QgisAlgorithm):
             ]
             feat.setAttributes(attrs)
 
-            writer.addFeature(feat)
+            sink.addFeature(feat)
             feedback.setProgress(int(current * total))

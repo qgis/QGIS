@@ -13,7 +13,7 @@
                                                                                                                                                              
   <gml:featureMember>
     <ogr:polygon_from_extent fid="polygon_from_extent.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-3 -1,6 10,6 10,-3 -1,-3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-3 10,-3 10,6 -1,6 -1,-3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:MINX>-1</ogr:MINX>
       <ogr:MINY>-3</ogr:MINY>
       <ogr:MAXX>10</ogr:MAXX>

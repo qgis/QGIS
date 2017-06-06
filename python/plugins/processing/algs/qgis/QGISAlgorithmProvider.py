@@ -79,7 +79,7 @@ from .Clip import Clip
 # from .Difference import Difference
 # from .Dissolve import Dissolve
 # from .Intersection import Intersection
-# from .ExtentFromLayer import ExtentFromLayer
+from .ExtentFromLayer import ExtentFromLayer
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
@@ -210,7 +210,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(), Dissolve(), Difference(),
-        #         Intersection(), Union(), ExtentFromLayer(),
+        #         Intersection(), Union(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(), RandomExtract(), DeleteHoles(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
@@ -265,7 +265,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Boundary(),
                 BoundingBox(),
                 Clip(),
-                DeleteColumn()
+                DeleteColumn(),
+                ExtentFromLayer()
                 ]
 
         if hasPlotly:
