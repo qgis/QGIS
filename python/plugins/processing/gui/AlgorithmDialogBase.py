@@ -92,7 +92,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnCollapse.setFixedSize(12, 12)
         self.btnCollapse.setCursor(Qt.ArrowCursor)
         handleLayout.addWidget(self.btnCollapse)
-        handleLayout.insertStretch(0)
+        handleLayout.addStretch()
         splitterHandle.setLayout(handleLayout)
 
         self.feedback = AlgorithmDialogFeedback(self)
