@@ -105,11 +105,11 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.splitterState = self.splitter.saveState()
         self.splitterChanged(0, 0)
 
-        self.setWindowTitle(self.alg.displayName())
-
         self.executed = False
         self.mainWidget = None
         self.alg = alg
+
+        self.setWindowTitle(self.alg.displayName())
 
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
@@ -246,7 +246,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def openHelp(self):
         algHelp = self.alg.helpUrl()
-        if algHelp is not None:
+        if algHelp not in [None, ""]:
             webbrowser.open(algHelp)
 
     def _saveGeometry(self):
