@@ -1035,18 +1035,18 @@ tests:
 #        name: expected/points_in_polys.gml
 #        type: vector
 #
-#  - algorithm: qgis:aspect
-#    name: Aspect from QGIS analysis library
-#    params:
-#      INPUT_LAYER:
-#        name: dem.tif
-#        type: raster
-#      Z_FACTOR: 1.0
-#    results:
-#      OUTPUT_LAYER:
-#        hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
-#        type: rasterhash
-#
+  - algorithm: qgis:aspect
+    name: Aspect from QGIS analysis library
+    params:
+      INPUT_LAYER:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT_LAYER:
+        hash: 762865ee485a6736d188402aa10e6fd38a812a9e45a7dd2d4885a63a
+        type: rasterhash
+
 #  - algorithm: qgis:slope
 #    name: Slope from QGIS analysis library
 #    params:
