@@ -413,7 +413,7 @@ class RAlgorithm(GeoAlgorithm):
                 value = out.value
                 value = value.replace('\\', '/')
                 commands.append('write.csv(' + out.name + ',"' + value + '")')
-            elif out.name != RAlgorithm.R_OUTPUT_VALUES:
+            elif out.name != RAlgorithm.R_OUTPUT_VALUES and self.saveOutputValues:
                 commands.append('cat("##' + out.name + '",file="' + outputDataFile + '",sep="\n",append=TRUE)')
                 commands.append('cat(' + out.name + ',file="' + outputDataFile + '",sep="\n",append=TRUE)')
 
