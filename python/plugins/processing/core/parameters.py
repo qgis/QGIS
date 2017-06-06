@@ -585,36 +585,6 @@ class ParameterRaster(ParameterDataObject):
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
         ParameterDataObject.__init__(self, name, description, None, optional)
         self.showSublayersDialog = parseBool(showSublayersDialog)
-        self.exported = None
-
-    def getSafeExportedLayer(self):
-        """Returns not the value entered by the user, but a string with
-        a filename which contains the data of this layer, but saved in
-        a standard format (currently always a geotiff file) so that it
-        can be opened by most external applications.
-
-        Works only if the layer represented by the parameter value is
-        currently loaded in QGIS. Otherwise, it will not perform any
-        export and return the current value string.
-
-        If the current value represents a layer in a suitable format,
-        it does not export at all and returns that value.
-
-        The layer is exported just the first time the method is called.
-        The method can be called several times and it will always
-        return the same file, performing the export only the first
-        time.
-        """
-        context = dataobjects.createContext()
-
-        if self.exported:
-            return self.exported
-        layer = QgsProcessingUtils.mapLayerFromString(self.value, context, False)
-        if layer:
-            self.exported = dataobjects.exportRasterLayer(layer)
-        else:
-            self.exported = self.value
-        return self.exported
 
     def getAsScriptCode(self):
         param_type = ''
