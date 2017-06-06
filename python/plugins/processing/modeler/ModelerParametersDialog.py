@@ -27,15 +27,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import webbrowser
+
 from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
-                                 QHBoxLayout, QTabWidget, QWidget,
-                                 QTextBrowser)
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+                                 QHBoxLayout, QWidget)
 
-from qgis.core import (QgsNetworkAccessManager,
-                       QgsProcessingParameterDefinition)
+from qgis.core import (QgsProcessingParameterDefinition)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
@@ -89,7 +88,8 @@ class ModelerParametersDialog(QDialog):
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
-                                          QDialogButtonBox.Ok)
+                                          +                                          QDialogButtonBox.Ok |
+                                          +                                          QDialogButtonBox.Help)
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
         self.verticalLayout = QVBoxLayout()
@@ -182,52 +182,23 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout2 = QVBoxLayout()
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
-        self.tabWidget = QTabWidget()
-        self.tabWidget.setMinimumWidth(300)
+
         self.paramPanel = QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
         self.scrollArea = QgsScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
-        self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))
 
-        self.txtHelp = QTextBrowser()
-
-        html = None
-        isText, algHelp = self._alg.help()
-        if algHelp is not None:
-            algHelp = algHelp if isText else QUrl(algHelp)
-            try:
-                if isText:
-                    self.txtHelp.setHtml(algHelp)
-                else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
-                    self.txtHelp.setHtml(html)
-                    self.tabWidget.addTab(self.txtHelp, 'Help')
-                    self.reply = QgsNetworkAccessManager.instance().get(QNetworkRequest(algHelp))
-                    self.reply.finished.connect(self.requestFinished)
-            except:
-                pass
-
-        self.verticalLayout2.addWidget(self.tabWidget)
+        self.verticalLayout2.addWidget(self.scrollArea)
         self.verticalLayout2.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout2)
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
+        self.buttonBox.helpRequested.connect(self.openHelp)
         QMetaObject.connectSlotsByName(self)
 
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
-
-    def requestFinished(self):
-        """Change the webview HTML content"""
-        reply = self.sender()
-        if reply.error() != QNetworkReply.NoError:
-            html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
-        else:
-            html = str(reply.readAll())
-        reply.deleteLater()
-        self.txtHelp.setHtml(html)
 
     def getAvailableDependencies(self):  # spellok
         if self._algName is None:
@@ -353,3 +324,8 @@ class ModelerParametersDialog(QDialog):
     def cancelPressed(self):
         self.alg = None
         self.close()
+
+    def openHelp(self):
+        algHelp = self._alg.help()
+        if algHelp is not None:
+            webbrowser.open(algHelp)
