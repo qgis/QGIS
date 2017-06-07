@@ -50,6 +50,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     QString mDecimalPoint;
     bool mXyDms;
     QList<int> attributeColumns;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsDelimitedTextFeatureIterator;
 };
@@ -94,6 +95,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool mTestGeometry = false;
     bool mTestGeometryExact = false;
     bool mLoadGeometry = false;
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 };
 
 

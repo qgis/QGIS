@@ -46,6 +46,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
     sqlite3 *mSqlite = nullptr;
     QString mTableName;
     QString mSubset;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsVirtualLayerFeatureIterator;
 };
@@ -70,6 +71,8 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsAttributeList mAttributes;
     QString mSqlQuery;
     QgsFeatureId mFid = 0;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 
 };
 

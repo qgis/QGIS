@@ -48,6 +48,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
     QgsOraclePrimaryKeyType mPrimaryKeyType;
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;
+    QgsCoordinateReferenceSystem mCrs;
 
     QSharedPointer<QgsOracleSharedData> mShared;
 
@@ -80,6 +81,9 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     QgsAttributeList mAttributeList;
     QString mSql;
     QVariantList mArgs;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H

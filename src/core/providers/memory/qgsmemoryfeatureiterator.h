@@ -42,6 +42,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
     std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsMemoryFeatureIterator;
 };
@@ -67,11 +68,13 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
 
     QgsGeometry mSelectRectGeom;
     std::unique_ptr< QgsGeometryEngine > mSelectRectEngine;
+    QgsRectangle mFilterRect;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
     QgsExpression *mSubsetExpression = nullptr;
+    QgsCoordinateTransform mTransform;
 
 };
 

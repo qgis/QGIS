@@ -51,6 +51,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;
     // TODO: loadFields()
+    QgsCoordinateReferenceSystem mCrs;
 
     std::shared_ptr<QgsPostgresSharedData> mShared;
 
@@ -123,6 +124,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool mOrderByCompiled;
     bool mLastFetch;
     bool mFilterRequiresGeometry;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H
