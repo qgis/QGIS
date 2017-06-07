@@ -66,6 +66,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool nextFeatureTraverseAll( QgsFeature &feature );
 
     QgsGeometry mSelectRectGeom;
+    std::unique_ptr< QgsGeometryEngine > mSelectRectEngine;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;

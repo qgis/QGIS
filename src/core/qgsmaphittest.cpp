@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgscrscache.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
@@ -121,6 +122,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
 
   QgsFeature f;
   QgsFeatureRequest request;
+  std::unique_ptr< QgsGeometryEngine > polygonEngine;
   if ( !mOnlyExpressions )
   {
     if ( mPolygon.isNull() )
@@ -131,6 +133,8 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
+      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.geometry() ) );
+      polygonEngine->prepareGeometry();
     }
   }
   QgsFeatureIterator fi = vl->getFeatures( request );
@@ -149,9 +153,9 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   {
     context.expressionContext().setFeature( f );
     // filter out elements outside of the polygon
-    if ( !mOnlyExpressions && !mPolygon.isNull() )
+    if ( f.geometry() && polygonEngine )
     {
-      if ( !transformedPolygon.intersects( f.geometry() ) )
+      if ( !polygonEngine->intersects( *f.geometry().geometry() ) )
       {
         continue;
       }
