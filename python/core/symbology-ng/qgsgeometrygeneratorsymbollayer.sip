@@ -70,7 +70,7 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 
     virtual QgsSymbol *subSymbol();
 
-    virtual bool setSubSymbol( QgsSymbol *symbol );
+    virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
