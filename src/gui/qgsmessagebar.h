@@ -63,7 +63,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      *
      * \param item Item to display
      */
-    void pushItem( QgsMessageBarItem *item );
+    void pushItem( QgsMessageBarItem *item SIP_TRANSFER );
 
     /** Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.

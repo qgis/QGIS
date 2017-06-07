@@ -48,7 +48,7 @@ class QDomElement;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QDialog, protected Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsOWSSourceSelect( const QString &service, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsOWSSourceSelect();
 
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
      * List of image formats (encodings) supported by provider
      * \returns list of format/label pairs
      */
-    virtual QList<SupportedFormat> providerFormats();
+    virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
     virtual QStringList selectedLayersFormats();

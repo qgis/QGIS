@@ -1,115 +1,135 @@
-/***************************************************************************
-    qgsmaptooladvanceddigitizing.h  - map tool with event in map coordinates
-    ----------------------
-    begin                : October 2014
-    copyright            : (C) Denis Rouzaud
-    email                : denis.rouzaud@gmail.com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooladvanceddigitizing.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * @brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
- * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
- * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
- * An event filter can be set on the map tool to filter and modify the events in map coordinates (@see QgsMapToolMapEventFilter).
- * @note at the moment, the event filter is used by the CAD tools (@see QgsCadDocWidget).
- * @note the event filter definition is not exposed in python API to avoid any unexpected behavior.
- */
+
+
+
+
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
+%Docstring
+ The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
+ Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
+ Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
+.. seealso:: QgsMapToolMapEventFilter).
+.. seealso:: QgsCadDocWidget).
+.. note::
+
+   the event filter definition is not exposed in Python API to avoid any unexpected behavior.
+%End
+
 %TypeHeaderCode
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
-    //! Different capture modes
     enum CaptureMode
     {
-      CaptureNone,    //!< Do not capture
-      CapturePoint,   //!< Capture points
-      CaptureSegment, //!< Capture a segment (i.e. 2 points)
-      CaptureLine,    //!< Capture lines
-      CapturePolygon  //!< Capture polygons
+      CaptureNone,
+      CapturePoint,
+      CaptureSegment,
+      CaptureLine,
+      CapturePolygon
     };
 
-    /**
-     * Creates an advanced digitizing maptool
-     * @param canvas         The map canvas on which the tool works
-     * @param cadDockWidget  The cad dock widget which will be used to adjust mouse events
-     */
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
+%Docstring
+ Creates an advanced digitizing maptool
+ \param canvas         The map canvas on which the tool works
+ \param cadDockWidget  The cad dock widget which will be used to adjust mouse events
+%End
 
-    ~QgsMapToolAdvancedDigitizing();
-
-    //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
-    //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
+%Docstring
+Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
+%End
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
-    //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
+%Docstring
+Catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
+%End
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
+%End
 
-    /**
-     * The capture mode
-     *
-     * @return Capture mode
-     */
     CaptureMode mode() const;
+%Docstring
+ The capture mode
 
-    /**
-     * Set capture mode. This should correspond to the layer on which the digitizing
-     * happens.
-     *
-     * @param mode Capture Mode
-     */
+ :return: Capture mode
+ :rtype: CaptureMode
+%End
+
     void setMode( CaptureMode mode );
+%Docstring
+ Set capture mode. This should correspond to the layer on which the digitizing
+ happens.
 
-    /**
-     * Registers this maptool with the cad dock widget
-     */
+ \param mode Capture Mode
+%End
+
     virtual void activate();
+%Docstring
+ Registers this maptool with the cad dock widget
+%End
 
-    /**
-     * Unregisters this maptool from the cad dock widget
-     */
     virtual void deactivate();
+%Docstring
+ Unregisters this maptool from the cad dock widget
+%End
 
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
+%Docstring
+ :rtype: QgsAdvancedDigitizingDockWidget
+%End
+
 
   protected:
-    /**
-     * Override this method when subclassing this class.
-     * This will receive adapted events from the cad system whenever a
-     * canvasPressEvent is triggered and it's not hidden by the cad's
-     * construction mode.
-     *
-     * @param e Mouse events prepared by the cad system
-     */
+
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
+%Docstring
+ Override this method when subclassing this class.
+ This will receive adapted events from the cad system whenever a
+ canvasPressEvent is triggered and it's not hidden by the cad's
+ construction mode.
+
+ \param e Mouse events prepared by the cad system
+%End
 
 
-    /**
-     * Override this method when subclassing this class.
-     * This will receive adapted events from the cad system whenever a
-     * canvasReleaseEvent is triggered and it's not hidden by the cad's
-     * construction mode.
-     *
-     * @param e Mouse events prepared by the cad system
-     */
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
+%Docstring
+ Override this method when subclassing this class.
+ This will receive adapted events from the cad system whenever a
+ canvasReleaseEvent is triggered and it's not hidden by the cad's
+ construction mode.
+
+ \param e Mouse events prepared by the cad system
+%End
 
 
-    /**
-     * Override this method when subclassing this class.
-     * This will receive adapted events from the cad system whenever a
-     * canvasMoveEvent is triggered and it's not hidden by the cad's
-     * construction mode.
-     *
-     * @param e Mouse events prepared by the cad system
-     */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
+%Docstring
+ Override this method when subclassing this class.
+ This will receive adapted events from the cad system whenever a
+ canvasMoveEvent is triggered and it's not hidden by the cad's
+ construction mode.
+
+ \param e Mouse events prepared by the cad system
+%End
+
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooladvanceddigitizing.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

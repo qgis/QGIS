@@ -1,75 +1,101 @@
-/** \ingroup gui
- * \class QgsPresetColorRampWidget
- * A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspresetcolorrampdialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 
 class QgsPresetColorRampWidget : QgsPanelWidget
 {
-%TypeHeaderCode
-#include <qgspresetcolorrampdialog.h>
+%Docstring
+ A widget which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgspresetcolorrampdialog.h"
+%End
   public:
 
-/** Constructor for QgsPresetColorRampWidget.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsPresetColorRampWidget.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    ~QgsPresetColorRampWidget();
-
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsPresetSchemeColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsPresetSchemeColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsPresetSchemeColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
-};
+%Docstring
+Emitted when the dialog settings change
+%End
 
-/** \ingroup gui
- * \class QgsPresetColorRampDialog
- * A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
- * \note added in QGIS 3.0
- */
+};
 
 class QgsPresetColorRampDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgspresetcolorrampdialog.h>
+%Docstring
+ A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgspresetcolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsPresetColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsPresetColorRampDialog.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsPresetSchemeColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsPresetSchemeColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsPresetSchemeColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspresetcolorrampdialog.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

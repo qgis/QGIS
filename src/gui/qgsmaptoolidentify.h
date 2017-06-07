@@ -70,14 +70,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     {
       IdentifyResult() : mLayer( nullptr ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes ):
-        mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes ):
-        mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes ):
-        mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
+        : mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
       QgsMapLayer *mLayer = nullptr;
       QString mLabel;
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     \param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
     \returns a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param mode Identification mode. Can use Qgis default settings or a defined mode.
     \param layerType Only performs identification in a certain type of layers (raster, vector). Default value is AllLayers.
     \returns a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
     //! return a pointer to the identify menu which will be used in layer selection mode
     //! this menu can also be customized
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
   signals:
     void identifyProgress( int, int );
     void identifyMessage( const QString & );
-    void changedRasterResults( QList<IdentifyResult> & );
+    void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> & );
 
   protected:
 
@@ -141,15 +141,15 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \param layerList Performs the identification within the given list of layers.
     \param layerType Only performs identification in a certain type of layers (raster, vector).
     \returns a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
-    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsPointXY &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, QgsPointXY point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point );
 
   private:
 
