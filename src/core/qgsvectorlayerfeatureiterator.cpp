@@ -208,6 +208,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
       }
 
       mProviderRequest.setLimit( providerLimit );
+      mChangedFeaturesRequest.setLimit( providerLimit );
     }
   }
 
@@ -274,6 +275,9 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
     if ( fetchNextChangedAttributeFeature( f ) )
+      return true;
+
+    if ( fetchNextChangedGeomFeature( f ) )
       return true;
 
     // no more changed features
@@ -410,6 +414,10 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature &src, QgsF
   {
     f.setGeometry( src.geometry() );
   }
+  else
+  {
+    f.clearGeometry();
+  }
 
   // TODO[MD]: if subset set just some attributes
 
@@ -434,11 +442,20 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     mFetchConsidered << fid;
 
-    if ( !mFetchChangedGeomIt->intersects( mRequest.filterRect() ) )
+    if ( !mRequest.filterRect().isNull() && !mFetchChangedGeomIt->intersects( mRequest.filterRect() ) )
       // skip changed geometries not in rectangle and don't check again
       continue;
 
     useChangedAttributeFeature( fid, *mFetchChangedGeomIt, f );
+
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      mRequest.expressionContext()->setFeature( f );
+      if ( !mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
+      {
+        continue;
+      }
+    }
 
     if ( testFeature( f ) )
     {
@@ -483,7 +500,8 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
   f.setValid( true );
   f.setFields( mSource->mFields );
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+       ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
   {
     f.setGeometry( geom );
   }
