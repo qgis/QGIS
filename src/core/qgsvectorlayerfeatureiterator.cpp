@@ -109,6 +109,17 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   , mFetchedFid( false )
   , mInterruptionChecker( nullptr )
 {
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  mFilterRect = transformedFilterRect( mTransform );
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
     mRequest.expressionContext()->setFields( mSource->mFields );
@@ -129,6 +140,13 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   // by default provider's request is the same
   mProviderRequest = mRequest;
+  // but we remove any destination CRS parameter - that is handled in QgsVectorLayerFeatureIterator,
+  // not at the provider level. Otherwise virtual fields depending on geometry would have incorrect
+  // values
+  if ( mRequest.destinationCrs().isValid() )
+  {
+    mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem() );
+  }
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
@@ -253,7 +271,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mFetchedFid )
       return false;
     bool res = nextFeatureFid( f );
-    if ( res && testFeature( f ) )
+    if ( res && postProcessFeature( f ) )
     {
       mFetchedFid = true;
       return res;
@@ -264,7 +282,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     }
   }
 
-  if ( !mRequest.filterRect().isNull() )
+  if ( !mFilterRect.isNull() )
   {
     if ( fetchNextChangedGeomFeature( f ) )
       return true;
@@ -327,7 +345,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature &f )
     if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
       updateFeatureGeometry( f );
 
-    if ( !testFeature( f ) )
+    if ( !postProcessFeature( f ) )
       continue;
 
     return true;
@@ -387,14 +405,16 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
       // must have changed geometry outside rectangle
       continue;
 
-    if ( !mRequest.acceptFeature( *mFetchAddedFeaturesIt ) )
+    useAddedFeature( *mFetchAddedFeaturesIt, f );
+
+    // can't test for feature acceptance until after calling useAddedFeature
+    // since acceptFeature may rely on virtual fields
+    if ( !mRequest.acceptFeature( f ) )
       // skip features which are not accepted by the filter
       continue;
 
-    if ( !testFeature( *mFetchAddedFeaturesIt ) )
+    if ( !postProcessFeature( f ) )
       continue;
-
-    useAddedFeature( *mFetchAddedFeaturesIt, f );
 
     return true;
   }
@@ -406,22 +426,12 @@ bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
 
 void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature &src, QgsFeature &f )
 {
-  f.setId( src.id() );
+  // since QgsFeature is implicitly shared, it's more efficient to just copy the
+  // whole feature, even if flags like NoGeometry or a subset of attributes is set at the request.
+  // This helps potentially avoid an unnecessary detach of the feature
+  f = src;
   f.setValid( true );
   f.setFields( mSource->mFields );
-
-  if ( src.hasGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
-  {
-    f.setGeometry( src.geometry() );
-  }
-  else
-  {
-    f.clearGeometry();
-  }
-
-  // TODO[MD]: if subset set just some attributes
-
-  f.setAttributes( src.attributes() );
 
   if ( mHasVirtualAttributes )
     addVirtualAttributes( f );
@@ -442,7 +452,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
 
     mFetchConsidered << fid;
 
-    if ( !mRequest.filterRect().isNull() && !mFetchChangedGeomIt->intersects( mRequest.filterRect() ) )
+    if ( !mFilterRect.isNull() && !mFetchChangedGeomIt->intersects( mFilterRect ) )
       // skip changed geometries not in rectangle and don't check again
       continue;
 
@@ -457,7 +467,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedGeomFeature( QgsFeature &f )
       }
     }
 
-    if ( testFeature( f ) )
+    if ( postProcessFeature( f ) )
     {
       // return complete feature
       mFetchChangedGeomIt++;
@@ -484,7 +494,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
       addVirtualAttributes( f );
 
     mRequest.expressionContext()->setFeature( f );
-    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && testFeature( f ) )
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() && postProcessFeature( f ) )
     {
       return true;
     }
@@ -703,9 +713,11 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
   }
 }
 
-bool QgsVectorLayerFeatureIterator::testFeature( const QgsFeature &feature )
+bool QgsVectorLayerFeatureIterator::postProcessFeature( QgsFeature &feature )
 {
   bool result = checkGeometryValidity( feature );
+  if ( result )
+    transformFeatureGeometry( feature, mTransform );
   return result;
 }
 
