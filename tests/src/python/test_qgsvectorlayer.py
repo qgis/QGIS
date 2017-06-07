@@ -2572,10 +2572,96 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
         """
         pass
 
+
+class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
+
+    @classmethod
+    def getSource(cls):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
+
+        # add a bunch of similar features to the provider
+        b1 = QgsFeature()
+        b1.setAttributes([5, -300, 'Apple', 'PEaR', '1'])
+        b1.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+
+        b2 = QgsFeature()
+        b2.setAttributes([3, 100, 'Orange', 'NuLl', '2'])
+        b2.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+
+        b3 = QgsFeature()
+        b3.setAttributes([1, -200, 'Honey', 'oranGe', '5'])
+
+        b4 = QgsFeature()
+        b4.setAttributes([2, 400, 'Pear', 'Honey', '3'])
+        b4.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+
+        b5 = QgsFeature()
+        b5.setAttributes([4, 200, NULL, 'oranGe', '3'])
+        b5.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+
+        vl.dataProvider().addFeatures([b1, b2, b3, b4, b5])
+
+        bad_ids = [f['pk'] for f in vl.getFeatures()]
+
+        # here's our good features
+        f1 = QgsFeature()
+        f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+
+        f2 = QgsFeature()
+        f2.setAttributes([3, 300, 'Pear', 'PEaR', '3'])
+
+        f3 = QgsFeature()
+        f3.setAttributes([1, 100, 'Orange', 'oranGe', '1'])
+        f3.setGeometry(QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+
+        f4 = QgsFeature()
+        f4.setAttributes([2, 200, 'Apple', 'Apple', '2'])
+        f4.setGeometry(QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+
+        f5 = QgsFeature()
+        f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
+        f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+
+        vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
+
+        # delete the bad features, but don't commit
+        vl.startEditing()
+        vl.deleteFeatures(bad_ids)
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # Create test layer for FeatureSourceTestCase
+        cls.source = cls.getSource()
+
+    def testGetFeaturesSubsetAttributes2(self):
+        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature)
+        """
+        pass
+
+    def testGetFeaturesNoGeometry(self):
+        """ Override and skip this QgsFeatureSource test. We are using a memory provider, and it's actually more efficient for the memory provider to return
+        its features as direct copies (due to implicit sharing of QgsFeature)
+        """
+        pass
+
+    def testOrderBy(self):
+        """ Skip order by tests - edited features are not sorted in iterators.
+        (Maybe they should be??)
+        """
+        pass
+
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
 # - more join tests
 # - import
+
 
 if __name__ == '__main__':
     unittest.main()
