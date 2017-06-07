@@ -35,6 +35,9 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
+%Docstring
+ :rtype: QgsFeatureRenderer
+%End
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
