@@ -647,10 +647,10 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # skip non-method member declaration in non-public sections
-    # https://regex101.com/r/gUBZUk/9
+    # https://regex101.com/r/gUBZUk/10
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $LINE =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|\w+(\([^()]+\))?)|\[\d+\])?)+;/){
+         $LINE =~ m/^\s*(?:template<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
@@ -714,7 +714,7 @@ while ($LINE_IDX < $LINE_COUNT){
             elsif ( $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
                 #sip often requires the virtual keyword to be present, or it chokes on covariant return types
                 #in overridden methods
-                dbg_info('adding virtual keyword for overriden method');
+                dbg_info('adding virtual keyword for overridden method');
                 $LINE =~ s/^(\s*?)\b(.*)$/$1virtual $2\n/;
             }
         }
