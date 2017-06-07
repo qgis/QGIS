@@ -613,7 +613,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     last;
                 }
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*[\w\s\d<|]+.*?)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*[\w\s\d<|-]+.*?)?(,?).*$/$1$2$3/r;
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };
