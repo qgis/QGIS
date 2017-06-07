@@ -24,6 +24,7 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import QRegExp
 from qgis.core import QgsCredentials, QgsDataSourceURI
+from functools import cmp_to_key
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
