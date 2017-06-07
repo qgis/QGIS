@@ -663,7 +663,10 @@ void QgsMapToolCapture::validateGeometry()
   if ( !g )
     return;
 
-  mValidator = new QgsGeometryValidator( g.get() );
+  QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+    method = QgsGeometry::ValidatorGeos;
+  mValidator = new QgsGeometryValidator( g.get(), nullptr, method );
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();

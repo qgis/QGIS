@@ -1077,9 +1077,16 @@ Ring 0 is outer ring and can't be deleted.
 %End
     };
 
-    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/ );
+    enum ValidationMethod
+    {
+      ValidatorQgisInternal,
+      ValidatorGeos,
+    };
+
+    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal );
 %Docstring
- Validate geometry and produce a list of geometry errors
+ Validate geometry and produce a list of geometry errors.
+ The ``method`` argument dictates which validator to utilize.
 .. versionadded:: 1.5
 .. note::
 
