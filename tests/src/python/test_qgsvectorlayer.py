@@ -2364,6 +2364,32 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         ids = set([f.id() for f in source.getFeatures()])
         self.assertEqual(ids, {f1.id(), f3.id(), f5.id()})
 
+    def testFeatureRequestWithReprojectionAndVirtualFields(self):
+        layer = self.getSource()
+        field = QgsField('virtual', QVariant.Double)
+        layer.addExpressionField('$x', field)
+        virtual_values = [f['virtual'] for f in layer.getFeatures()]
+        self.assertAlmostEqual(virtual_values[0], -71.123, 2)
+        self.assertEqual(virtual_values[1], NULL)
+        self.assertAlmostEqual(virtual_values[2], -70.332, 2)
+        self.assertAlmostEqual(virtual_values[3], -68.2, 2)
+        self.assertAlmostEqual(virtual_values[4], -65.32, 2)
+
+        # repeat, with reprojection on request
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
+        features = [f for f in layer.getFeatures(request)]
+        # virtual field value should not change, even though geometry has
+        self.assertAlmostEqual(features[0]['virtual'], -71.123, 2)
+        self.assertAlmostEqual(features[0].geometry().geometry().x(), -7917376, -5)
+        self.assertEqual(features[1]['virtual'], NULL)
+        self.assertFalse(features[1].hasGeometry())
+        self.assertAlmostEqual(features[2]['virtual'], -70.332, 2)
+        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7829322, -5)
+        self.assertAlmostEqual(features[3]['virtual'], -68.2, 2)
+        self.assertAlmostEqual(features[3].geometry().geometry().x(), -7591989, -5)
+        self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
+        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
+
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):
 

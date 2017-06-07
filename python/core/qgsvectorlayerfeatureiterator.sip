@@ -141,6 +141,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 
 
 
+
   private:
     QgsVectorLayerFeatureIterator( const QgsVectorLayerFeatureIterator &rhs );
 };
