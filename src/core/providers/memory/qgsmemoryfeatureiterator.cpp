@@ -16,6 +16,7 @@
 #include "qgsmemoryprovider.h"
 
 #include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
@@ -35,6 +36,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( request.filterRect() );
+    mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.geometry() ) );
+    mSelectRectEngine->prepareGeometry();
   }
 
   // if there's spatial index, use it!
@@ -92,7 +95,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
     if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().intersects( mSelectRectGeom ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( *mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().geometry() ) )
         hasFeature = true;
     }
     else
@@ -144,7 +147,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( *mSelectIterator->geometry().geometry() ) )
           hasFeature = true;
       }
       else
