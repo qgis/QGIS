@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     virtual QgsSymbol *subSymbol() override { return mSymbol; }
 
-    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 

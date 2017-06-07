@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbol *symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(),
+        Rule( QgsSymbol *symbol SIP_TRANSFER, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(),
               const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 

@@ -128,11 +128,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     //! Prepares the layer for drawing the specified shape (QPolygonF version)
     //! \note not available in Python bindings
-    bool prepareMarkerShape( Shape shape ) SIP_SKIP;
+    bool prepareMarkerShape( Shape shape );
 
     //! Prepares the layer for drawing the specified shape (QPainterPath version)
     //! \note not available in Python bindings
-    bool prepareMarkerPath( Shape symbol ) SIP_SKIP;
+    bool prepareMarkerPath( Shape symbol );
 
     /** Creates a polygon representing the specified shape.
      * \param shape shape to create
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns true if shape was successfully stored in polygon
      * \note not available in Python bindings
      */
-    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const SIP_SKIP;
+    bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
     /** Calculates the desired size of the marker, considering data defined size overrides.
      * \param context symbol render context
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \returns marker size, in original size units
      * \note not available in Python bindings
      */
-    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const SIP_SKIP;
+    double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 
     /** Calculates the marker offset and rotation.
      * \param context symbol render context
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param angle will be set to calculated marker angle
      * \note not available in Python bindings
      */
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const SIP_SKIP;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 
     //! Polygon of points in shape. If polygon is empty then shape is using mPath.
     QPolygonF mPolygon;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * in the path argument.
      * \param path transformed painter path representing shape to draw
      */
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 SIP_FORCE;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 SIP_FORCE;
 };
 
 /** \ingroup core
@@ -383,7 +383,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
   private:
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 };
 
 /** \ingroup core
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
 #endif
 
-    virtual void draw( QgsSymbolRenderContext &context, Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) override SIP_FORCE;
 
     //! Fill subsymbol
     std::unique_ptr< QgsFillSymbol > mFill;
