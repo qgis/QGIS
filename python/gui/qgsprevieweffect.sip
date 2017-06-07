@@ -1,14 +1,25 @@
-/** \ingroup gui
- * A graphics effect which can be applied to a widget to simulate various printing and
- * color blindness modes.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprevieweffect.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsPreviewEffect : QGraphicsEffect
+
+
+
+
+class QgsPreviewEffect: QGraphicsEffect
 {
+%Docstring
+ A graphics effect which can be applied to a widget to simulate various printing and
+ color blindness modes.
+%End
+
 %TypeHeaderCode
 #include "qgsprevieweffect.h"
 %End
-
   public:
     enum PreviewMode
     {
@@ -19,21 +30,33 @@ class QgsPreviewEffect : QGraphicsEffect
     };
 
     QgsPreviewEffect( QObject *parent /TransferThis/ );
-    ~QgsPreviewEffect();
 
-    /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
-     * @param mode PreviewMode to use to draw the widget
-     * @note added in 2.3
-     * @see mode
-     */
     void setMode( PreviewMode mode );
-    /** Returns the mode used for the preview effect.
-     * @returns PreviewMode currently used by the effect
-     * @note added in 2.3
-     * @see setMode
-     */
+%Docstring
+ Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+ \param mode PreviewMode to use to draw the widget
+.. versionadded:: 2.3
+.. seealso:: mode
+%End
+
     PreviewMode mode() const;
+%Docstring
+ Returns the mode used for the preview effect.
+ :return: PreviewMode currently used by the effect
+.. versionadded:: 2.3
+.. seealso:: setMode
+ :rtype: PreviewMode
+%End
 
   protected:
     virtual void draw( QPainter *painter );
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprevieweffect.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

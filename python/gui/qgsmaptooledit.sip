@@ -1,60 +1,96 @@
-/***************************************************************************
-    qgsmaptooledit.h  -  base class for editing map tools
-    ---------------------
-    begin                : Juli 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooledit.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-/** Base class for map tools that edit vector geometry*/
+
+
 class QgsMapToolEdit: QgsMapTool
 {
+%Docstring
+ Base class for map tools that edit vector geometry
+%End
+
 %TypeHeaderCode
 #include "qgsmaptooledit.h"
 %End
-
   public:
     QgsMapToolEdit( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolEdit();
 
     virtual Flags flags() const;
 
     double defaultZValue() const;
+%Docstring
+ Return default Z value
+ Use for set Z coordinate to new vertex for 2.5d geometries
+ :rtype: float
+%End
+
   protected:
 
     static QColor digitizingStrokeColor();
+%Docstring
+Returns stroke color for rubber bands (from global settings)
+ :rtype: QColor
+%End
     static int digitizingStrokeWidth();
+%Docstring
+Returns stroke width for rubber bands (from global settings)
+ :rtype: int
+%End
     static QColor digitizingFillColor();
+%Docstring
+Returns fill color for rubber bands (from global settings)
+ :rtype: QColor
+%End
 
-    /** Creates a rubber band with the color/line width from
-     *   the QGIS settings. The caller takes ownership of the
-     *   returned object
-     *   @param geometryType
-     *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
-     */
     QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) /Factory/;
+%Docstring
+ Creates a rubber band with the color/line width from
+   the QGIS settings. The caller takes ownership of the
+   returned object
+   \param geometryType
+   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
+ :rtype: QgsRubberBand
+%End
 
     QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const /Factory/;
+%Docstring
+ :rtype: QgsGeometryRubberBand
+%End
 
-    /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer *currentVectorLayer();
+%Docstring
+Returns the current vector layer of the map canvas or 0
+ :rtype: QgsVectorLayer
+%End
 
-    /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
-     * @param geom list of points (in layer coordinate system)
-     * @return 0 in case of success
-     */
     int addTopologicalPoints( const QList<QgsPointXY> &geom );
+%Docstring
+ Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+ \param geom list of points (in layer coordinate system)
+ :return: 0 in case of success
+ :rtype: int
+%End
 
-    /** Display a timed message bar noting the active layer is not vector. */
     void notifyNotVectorLayer();
-    /** Display a timed message bar noting the active vector layer is not editable. */
+%Docstring
+Display a timed message bar noting the active layer is not vector.
+%End
     void notifyNotEditableLayer();
+%Docstring
+Display a timed message bar noting the active vector layer is not editable.
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptooledit.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
