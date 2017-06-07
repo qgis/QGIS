@@ -24,6 +24,7 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import QRegExp
 from qgis.core import QgsCredentials, QgsDataSourceURI
+from functools import cmp_to_key
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -60,7 +61,7 @@ class PostGisDBConnector(DBConnector):
 
         expandedConnInfo = self._connectionInfo()
         try:
-            self.connection = psycopg2.connect(expandedConnInfo.encode('utf-8'))
+            self.connection = psycopg2.connect(expandedConnInfo)
         except self.connection_error_types() as e:
             err = unicode(e)
             uri = self.uri()
@@ -79,7 +80,7 @@ class PostGisDBConnector(DBConnector):
 
                 newExpandedConnInfo = uri.connectionInfo(True)
                 try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo.encode('utf-8'))
+                    self.connection = psycopg2.connect(newExpandedConnInfo)
                     QgsCredentials.instance().put(conninfo, username, password)
                 except self.connection_error_types() as e:
                     if i == 2:
@@ -135,7 +136,7 @@ class PostGisDBConnector(DBConnector):
         self._checkRasterColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self.uri().connectionInfo(True))
+        return str(self.uri().connectionInfo(True))
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
@@ -331,7 +332,7 @@ class PostGisDBConnector(DBConnector):
                 items.append(item)
         self._close_cursor(c)
 
-        return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def getVectorTables(self, schema=None):
         """ get list of table with a geometry column
