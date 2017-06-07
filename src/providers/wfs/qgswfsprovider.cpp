@@ -1287,11 +1287,11 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       geometryAttribute = name;
       geomType = QGis::WKBMultiPolygon;
     }
-    else if ( type == QLatin1String( "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" ) )
+    else if ( type == "gmgml:LineString_Curve_MultiCurve_CompositeCurvePropertyType" )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
-      geomType = QgsWkbTypes::MultiLineString;
+      geomType = QGis::WKBMultiLineString;
     }
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
