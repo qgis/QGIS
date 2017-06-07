@@ -189,8 +189,8 @@ class QgsProcessingParameterDefinition
 
     enum LayerType
     {
-      TypeAny
-      TypeVectorAny
+      TypeAny,
+      TypeVectorAny,
       TypeVectorPoint,
       TypeVectorLine,
       TypeVectorPolygon,
@@ -1091,7 +1091,7 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
 
     enum DataType
     {
-      Any
+      Any,
       Numeric,
       String,
       DateTime

@@ -61,9 +61,9 @@ Bitmask of all provider's editing capabilities
     enum FeatureCountState
     {
       //! Feature
-      Uncounted
+      Uncounted,
       //! Provider
-      UnknownCount
+      UnknownCount,
     };
 
     QgsVectorDataProvider( const QString &uri = QString() );
