@@ -33,6 +33,12 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
 {
   mClosed = false;
 
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  mFilterRect = transformedFilterRect( mTransform );
+
   BuildStatement( request );
 
   // connect to the database
@@ -113,11 +119,11 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
+  if ( !mFilterRect.isNull() && mSource->isSpatial() && !mFilterRect.isEmpty() )
   {
     if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
-      QString rectangleWkt = request.filterRect().asWktPolygon();
+      QString rectangleWkt = mFilterRect.asWktPolygon();
       QgsDebugMsg( "filter polygon: " + rectangleWkt );
       mStatement += QStringLiteral( " WHERE DB2GSE.ST_Intersects(%1, DB2GSE.ST_POLYGON('%2', %3)) = 1" ).arg(
                       mSource->mGeometryColName,
@@ -128,10 +134,10 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     {
       mStatement += QStringLiteral( " WHERE DB2GSE.ENVELOPESINTERSECT(%1, %2, %3, %4, %5, %6) = 1" ).arg(
                       mSource->mGeometryColName,
-                      qgsDoubleToString( request.filterRect().xMinimum() ),
-                      qgsDoubleToString( request.filterRect().yMinimum() ),
-                      qgsDoubleToString( request.filterRect().xMaximum() ),
-                      qgsDoubleToString( request.filterRect().yMaximum() ),
+                      qgsDoubleToString( mFilterRect.xMinimum() ),
+                      qgsDoubleToString( mFilterRect.yMinimum() ),
+                      qgsDoubleToString( mFilterRect.xMaximum() ),
+                      qgsDoubleToString( mFilterRect.yMaximum() ),
                       QString::number( mSource->mSRId ) );
     }
     filterAdded = true;
@@ -372,6 +378,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     }
     feature.setValid( true );
     mFetchCount++;
+    transformFeatureGeometry( feature, mTransform );
     if ( mFetchCount % 100 == 0 )
     {
       QgsDebugMsg( QString( "Fetch count: %1" ).arg( mFetchCount ) );
@@ -452,6 +459,7 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   , mTableName( p->mTableName )
   , mConnInfo( p->mConnInfo )
   , mSqlWhereClause( p->mSqlWhereClause )
+  , mCrs( p->crs() )
 {}
 
 QgsDb2FeatureSource::~QgsDb2FeatureSource()

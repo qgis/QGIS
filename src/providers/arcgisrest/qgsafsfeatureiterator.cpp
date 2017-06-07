@@ -22,6 +22,7 @@
 QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider *provider )
 // FIXME: ugly const_cast...
   : mProvider( const_cast<QgsAfsProvider *>( provider ) )
+  , mCrs( provider->crs() )
 {
 }
 
@@ -39,7 +40,13 @@ QgsAfsProvider *QgsAfsFeatureSource::provider() const
 
 QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
-{}
+{
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  mFilterRect = transformedFilterRect( mTransform );
+}
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
 {
@@ -66,19 +73,22 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    return mSource->provider()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
+    bool result = mSource->provider()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
+    transformFeatureGeometry( f, mTransform );
+    return result;
   }
   else
   {
     QgsRectangle filterRect = mSource->provider()->extent();
     if ( !mRequest.filterRect().isNull() )
-      filterRect = filterRect.intersect( &mRequest.filterRect() );
+      filterRect = filterRect.intersect( &mFilterRect );
     while ( mFeatureIterator < mSource->provider()->featureCount() )
     {
       bool success = mSource->provider()->getFeature( mFeatureIterator, f, fetchGeometries, fetchAttribures, filterRect );
       ++mFeatureIterator;
       if ( !success )
         continue;
+      transformFeatureGeometry( f, mTransform );
       return true;
     }
   }

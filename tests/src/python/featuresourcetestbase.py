@@ -25,6 +25,7 @@ from qgis.core import (
     QgsExpressionContextScope,
     QgsExpressionContext,
     QgsVectorLayerFeatureSource,
+    QgsCoordinateReferenceSystem,
     NULL
 )
 
@@ -506,6 +507,31 @@ class FeatureSourceTestCase(object):
         # test that results match QgsFeatureRequest.acceptFeature
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
+
+    def testGetFeaturesDestinationCrs(self):
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
+        features = {f['pk']:f for f in self.source.getFeatures(request)}
+        # test that features have been reprojected
+        self.assertAlmostEqual(features[1].geometry().geometry().x(), -7829322, -5)
+        self.assertAlmostEqual(features[1].geometry().geometry().y(), 9967753, -5)
+        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
+        self.assertFalse(features[3].hasGeometry())
+        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
+        self.assertAlmostEqual(features[5].geometry().geometry().x(), -7917376, -5)
+        self.assertAlmostEqual(features[5].geometry().geometry().y(), 14493008, -5)
+
+        # when destination crs is set, filter rect should be in destination crs
+        rect = QgsRectangle(-7650000,10500000,-7200000,15000000)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785')).setFilterRect(rect)
+        features = {f['pk']:f for f in self.source.getFeatures(request)}
+        self.assertEqual(set(features.keys()),{2,4})
+        # test that features have been reprojected
+        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
+        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
 
     def testGetFeaturesLimit(self):
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(2))
