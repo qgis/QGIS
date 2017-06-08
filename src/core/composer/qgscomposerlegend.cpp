@@ -406,7 +406,7 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   {
     composerLegendElem.setAttribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "1" ) );
   }
-  composerLegendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral("1") : QStringLiteral("0") );
+  composerLegendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   return _writeXml( composerLegendElem, doc );
 }
@@ -480,7 +480,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
-  mFilterOutAtlas = itemElem.attribute( QStringLiteral("legendFilterByAtlas"), QStringLiteral("0") ).toInt();
+  mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
   // QGIS >= 2.6
   QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
