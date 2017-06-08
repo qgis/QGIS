@@ -714,6 +714,7 @@ while ($LINE_IDX < $LINE_COUNT){
             elsif ( $LINE !~ m/^(\s*)virtual\b(.*)$/ ){
                 #sip often requires the virtual keyword to be present, or it chokes on covariant return types
                 #in overridden methods
+                dbg_info('adding virtual keyword for overriden method');
                 $LINE =~ s/^(\s*?)\b(.*)$/$1virtual $2\n/;
             }
         }
@@ -831,6 +832,9 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         $COMMENT = '';
         $RETURN_TYPE = '';
+        $IS_OVERRIDE = 0;
+    }
+    else {
         $IS_OVERRIDE = 0;
     }
 }
