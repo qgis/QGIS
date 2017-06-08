@@ -6776,7 +6776,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer, options, this );
 
-  dialog->setCanvasExtent( mMapCanvas->mapSettings().visibleExtent(), mMapCanvas->mapSettings().destinationCrs() );
+  dialog->setMapCanvas( mMapCanvas );
   dialog->setIncludeZ( QgsWkbTypes::hasZ( vlayer->wkbType() ) );
 
   if ( dialog->exec() == QDialog::Accepted )
@@ -6835,7 +6835,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     options.layerOptions = dialog->layerOptions();
     options.skipAttributeCreation = dialog->selectedAttributes().isEmpty();
     options.symbologyExport = static_cast< QgsVectorFileWriter::SymbologyExport >( dialog->symbologyExport() );
-    options.symbologyScale = dialog->scaleDenominator();
+    options.symbologyScale = dialog->scale();
     if ( dialog->hasFilterExtent() )
       options.filterExtent = filterExtent;
     options.overrideGeometryType = autoGeometryType ? QgsWkbTypes::Unknown : forcedGeometryType;
