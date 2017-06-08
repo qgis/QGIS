@@ -1390,7 +1390,11 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
     if ( addingAtEndpoint && vid.vertex != 0 )  // appending?
       vid.vertex++;
 
-    if ( !geomTmp->insertVertex( vid, QgsPoint( layerPoint ) ) )
+    QgsPoint pt( layerPoint );
+    if ( QgsWkbTypes::hasZ( dragLayer->wkbType() ) )
+      pt.addZValue( defaultZValue() );
+
+    if ( !geomTmp->insertVertex( vid, pt ) )
     {
       QgsDebugMsg( "append vertex failed!" );
       return;
