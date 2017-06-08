@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsTableWidgetBase</class>
- <widget class="QWidget" name="QgsKeyValueWidgetBase">
+ <class>QgsTableWidgetUiBase</class>
+ <widget class="QWidget" name="QgsTableWidgetUiBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,7 +20,16 @@
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -34,7 +43,7 @@
         <string>…</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../images/images.qrc">
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
        </property>
       </widget>
@@ -51,7 +60,7 @@
         <string>…</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../images/images.qrc">
+        <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/mActionRemove.svg</normaloff>:/images/themes/default/mActionRemove.svg</iconset>
        </property>
       </widget>
@@ -99,7 +108,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

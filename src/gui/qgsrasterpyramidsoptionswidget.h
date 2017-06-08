@@ -27,8 +27,7 @@ class QCheckBox;
 /** \ingroup gui
  * A widget to select format-specific raster saving options
  */
-class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
-  private Ui::QgsRasterPyramidsOptionsWidgetBase
+class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -52,10 +51,10 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   private slots:
 
-    void on_cbxPyramidsLevelsCustom_toggled( bool toggled );
-    void on_cbxPyramidsFormat_currentIndexChanged( int index );
-    void setOverviewList();
-    void updateUi();
+    void on_cbxPyramidsLevelsCustom_toggled( bool toggled ) SIP_FORCE;
+    void on_cbxPyramidsFormat_currentIndexChanged( int index ) SIP_FORCE;
+    void setOverviewList() SIP_FORCE;
+    void updateUi() SIP_FORCE;
 
   signals:
     void overviewListChanged();

@@ -1,26 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsquerybuilder.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 class QgsQueryBuilder : QDialog
 {
-%TypeHeaderCode
-#include <qgsquerybuilder.h>
+%Docstring
+ Query Builder for layers.
+
+ The query builder allows interactive creation of a SQL for limiting the
+ features displayed in a vector layer.  The fields in the table are
+ displayed and sample values (or all values) can be viewed to aid in
+ constructing the query. A test function returns the number of features that
+ will be returned.
 %End
 
+%TypeHeaderCode
+#include "qgsquerybuilder.h"
+%End
   public:
-    /** This constructor is used when the query builder is called from the
-     * vector layer properties dialog
-     * @param layer existing vector layer
-     * @param parent Parent widget
-     * @param fl dialog flags
-     */
+
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0,
-                     const Qt::WindowFlags &fl = QgsGuiUtils::ModalDialogFlags );
+                     Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+ This constructor is used when the query builder is called from the
+ vector layer properties dialog
+ \param layer existing vector layer
+ \param parent Parent widget
+ \param fl dialog flags
+%End
 
     ~QgsQueryBuilder();
 
-    void showEvent( QShowEvent *event );
+    virtual void showEvent( QShowEvent *event );
+
 
   public slots:
-    void accept();
-    void reject();
+    virtual void accept();
+
+    virtual void reject();
+
     void clear();
     void on_btnEqual_clicked();
     void on_btnLessThan_clicked();
@@ -31,6 +54,9 @@ class QgsQueryBuilder : QDialog
     void on_btnLike_clicked();
     void on_btnILike_clicked();
     QString sql();
+%Docstring
+ :rtype: str
+%End
     void setSql( const QString &sqlStatement );
     void on_lstFields_clicked( const QModelIndex &index );
     void on_lstFields_doubleClicked( const QModelIndex &index );
@@ -44,23 +70,34 @@ class QgsQueryBuilder : QDialog
 
     void on_buttonBox_helpRequested();
 
-    /** Test the constructed sql statement to see if the database likes it.
-     * The number of rows that would be returned is displayed in a message box.
-     * The test uses a "select count(*) from ..." query to test the SQL
-     * statement.
-     */
     void test();
-    /*!
-     * Get all distinct values for the field. Values are inserted
-     * into the value list box
-     */
+%Docstring
+ Test the constructed sql statement to see if the vector layer data provider likes it.
+ The number of rows that would be returned is displayed in a message box.
+ The test uses a "select count(*) from ..." query to test the SQL
+ statement.
+%End
+
     void on_btnGetAllValues_clicked();
-    /*!
-     * Get sample distinct values for the selected field. The sample size is
-     * limited to an arbitrary value (currently set to 25). The values
-     * are inserted into the values list box.
-     */
+%Docstring
+ Get all distinct values for the field. Values are inserted
+ into the value list box
+%End
+
     void on_btnSampleValues_clicked();
+%Docstring
+ Get sample distinct values for the selected field. The sample size is
+ limited to an arbitrary value (currently set to 25). The values
+ are inserted into the values list box.
+%End
 
     void setDatasourceDescription( const QString &uri );
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsquerybuilder.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

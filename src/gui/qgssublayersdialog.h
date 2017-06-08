@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     //! A structure that defines layers for the purpose of this dialog
     //! \since QGIS 2.16
-    typedef struct LayerDefinition
+    struct LayerDefinition
     {
       LayerDefinition() : layerId( -1 ), count( -1 ) {}
 
@@ -47,13 +47,17 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
-    } LayerDefinition;
+    };
 
     //! List of layer definitions for the purpose of this dialog
     //! \since QGIS 2.16
-    typedef QList<LayerDefinition> LayerDefinitionList;
+    typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
-    QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsSublayersDialog( ProviderType providerType,
+                        const QString &name,
+                        QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                        Qt::WindowFlags fl = 0 );
+
     ~QgsSublayersDialog();
 
     //! Populate the table with layers

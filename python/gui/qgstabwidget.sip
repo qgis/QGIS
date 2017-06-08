@@ -1,84 +1,88 @@
-/***************************************************************************
-  qgstabwidget.sip - QgsTabWidget
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstabwidget.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 8.9.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** \ingroup gui
- * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
- * temporarily hide/show tabs.
- *
- * @note Added in QGIS 3.0
- */
 class QgsTabWidget : QTabWidget
 {
-%TypeHeaderCode
-#include <qgstabwidget.h>
+%Docstring
+ The QgsTabWidget class is the same as the QTabWidget but with additional methods to
+ temporarily hide/show tabs.
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgstabwidget.h"
+%End
   public:
-    /**
-     * Create a new QgsTabWidget with the optionally provided parent.
-     *
-     * @note Added in QGIS 3.0
-     */
+
     QgsTabWidget( QWidget *parent = 0 );
+%Docstring
+ Create a new QgsTabWidget with the optionally provided parent.
 
-    /**
-     * Hides the tab with the given widget
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     void hideTab( QWidget *tab );
+%Docstring
+ Hides the tab with the given widget
 
-    /**
-     * Shows the tab with the given widget
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     void showTab( QWidget *tab );
+%Docstring
+ Shows the tab with the given widget
 
-    /**
-     * Control the visibility for the tab with the given widget.
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     void setTabVisible( QWidget *tab, bool visible );
+%Docstring
+ Control the visibility for the tab with the given widget.
 
-    /**
-     * Returns the index of the tab with the given widget.
-     * This index is not the same as the one provided to insertTab and removeTab
-     * since these methods are not aware of hidden tabs.
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+%End
+
     int realTabIndex( QWidget *widget );
+%Docstring
+ Returns the index of the tab with the given widget.
+ This index is not the same as the one provided to insertTab and removeTab
+ since these methods are not aware of hidden tabs.
 
-    /**
-     * Is called internally whenever a new tab has been inserted.
-     *
-     * Is used to keep track of currently available and visible tabs.
-     *
-     * @note Added in QGIS 3.0
-     */
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
     virtual void tabInserted( int index );
+%Docstring
+ Is called internally whenever a new tab has been inserted.
 
-    /**
-     * Is called internally whenever a tab has been removed.
-     *
-     * Is used to keep track of currently available and visible tabs.
-     *
-     * @note Added in QGIS 3.0
-     */
+ Is used to keep track of currently available and visible tabs.
+
+.. versionadded:: 3.0
+%End
+
     virtual void tabRemoved( int index );
+%Docstring
+ Is called internally whenever a tab has been removed.
+
+ Is used to keep track of currently available and visible tabs.
+
+.. versionadded:: 3.0
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstabwidget.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

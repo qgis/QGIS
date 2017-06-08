@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog
     /** Constructor for QgsMapUnitScaleDialog.
      * \param parent parent widget
      */
-    QgsMapUnitScaleDialog( QWidget *parent = nullptr );
+    QgsMapUnitScaleDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /** Returns a QgsMapUnitScale representing the settings shown in the
      * dialog.

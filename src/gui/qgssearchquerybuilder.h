@@ -39,7 +39,8 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
+    QgsSearchQueryBuilder( QgsVectorLayer *layer,
+                           QWidget *parent SIP_TRANSFERTHIS = nullptr,
                            Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! returns newly created search string

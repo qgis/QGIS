@@ -1,166 +1,210 @@
-/** \class QgsMapUnitScaleWidget
- * \ingroup gui
- * A widget which allows the user to choose the minimum and maximum scale of an object in map units
- * and millimeters. This widget is designed to allow users to edit the properties of a
- * QgsMapUnitScale object.
- * \note added in QGIS 3.0
- * \see QgsMapUnitScaleDialog
- * \see QgsUnitSelectionWidget
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsunitselectionwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsMapUnitScaleWidget : QgsPanelWidget
 {
+%Docstring
+ A widget which allows the user to choose the minimum and maximum scale of an object in map units
+ and millimeters. This widget is designed to allow users to edit the properties of a
+ QgsMapUnitScale object.
+.. versionadded:: 3.0
+.. seealso:: QgsMapUnitScaleDialog
+.. seealso:: QgsUnitSelectionWidget
+%End
+
 %TypeHeaderCode
-#include <qgsunitselectionwidget.h>
+#include "qgsunitselectionwidget.h"
 %End
   public:
 
-    /** Constructor for QgsMapUnitScaleWidget.
-     * @param parent parent widget
-     */
     QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsMapUnitScaleWidget.
+ \param parent parent widget
+%End
 
-    /** Returns a QgsMapUnitScale representing the settings shown in the
-     * widget.
-     * @see setMapUnitScale()
-     * @see mapUnitScaleChanged()
-     */
     QgsMapUnitScale mapUnitScale() const;
+%Docstring
+ Returns a QgsMapUnitScale representing the settings shown in the
+ widget.
+.. seealso:: setMapUnitScale()
+.. seealso:: mapUnitScaleChanged()
+ :rtype: QgsMapUnitScale
+%End
 
-    /** Updates the widget to reflect the settings from the specified
-     * QgsMapUnitScale object.
-     * @param scale map unit scale to show in widget
-     * @see mapUnitScale()
-     * @see mapUnitScaleChanged()
-     */
     void setMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+ Updates the widget to reflect the settings from the specified
+ QgsMapUnitScale object.
+ \param scale map unit scale to show in widget
+.. seealso:: mapUnitScale()
+.. seealso:: mapUnitScaleChanged()
+%End
 
-    /** Sets the map canvas associated with the widget. This allows the
-     * widget to retrieve the current map scale from the canvas.
-     * @param canvas map canvas
-     */
     void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets the map canvas associated with the widget. This allows the
+ widget to retrieve the current map scale from the canvas.
+ \param canvas map canvas
+%End
 
   signals:
 
-    /** Emitted when the settings in the widget are modified.
-     * @param scale QgsMapUnitScale reflecting new settings from the widget
-     */
     void mapUnitScaleChanged( const QgsMapUnitScale &scale );
+%Docstring
+ Emitted when the settings in the widget are modified.
+ \param scale QgsMapUnitScale reflecting new settings from the widget
+%End
 
 };
 
-
-/** \class QgsMapUnitScaleDialog
- * \ingroup gui
- * A dialog which allows the user to choose the minimum and maximum scale of an object in map units
- * and millimeters. This dialog is designed to allow users to edit the properties of a
- * QgsMapUnitScale object.
- * \see QgsMapUnitScaleWidget
- * \see QgsUnitSelectionWidget
-*/
 class QgsMapUnitScaleDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsunitselectionwidget.h>
+%Docstring
+ A dialog which allows the user to choose the minimum and maximum scale of an object in map units
+ and millimeters. This dialog is designed to allow users to edit the properties of a
+ QgsMapUnitScale object.
+.. seealso:: QgsMapUnitScaleWidget
+.. seealso:: QgsUnitSelectionWidget
 %End
 
+%TypeHeaderCode
+#include "qgsunitselectionwidget.h"
+%End
   public:
 
-    /** Constructor for QgsMapUnitScaleDialog.
-     * @param parent parent widget
-     */
-    QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0);
+    QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsMapUnitScaleDialog.
+ \param parent parent widget
+%End
 
-    /** Returns a QgsMapUnitScale representing the settings shown in the
-     * dialog.
-     * @see setMapUnitScale()
-     */
     QgsMapUnitScale getMapUnitScale() const;
+%Docstring
+ Returns a QgsMapUnitScale representing the settings shown in the
+ dialog.
+.. seealso:: setMapUnitScale()
+ :rtype: QgsMapUnitScale
+%End
 
-    /** Updates the dialog to reflect the settings from the specified
-     * QgsMapUnitScale object.
-     * @param scale map unit scale to show in dialog
-     * @see mapUnitScale()
-     */
     void setMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+ Updates the dialog to reflect the settings from the specified
+ QgsMapUnitScale object.
+ \param scale map unit scale to show in dialog
+.. seealso:: mapUnitScale()
+%End
 
-    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
-     * map scale from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
-     */
     void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
+ map scale from the canvas.
+ \param canvas map canvas
+.. versionadded:: 2.12
+%End
 
 };
 
-/** \class QgsUnitSelectionWidget
- * \ingroup gui
- * A widget displaying a combobox allowing the user to choose between various display units,
- * such as millimeters or map unit. If the user chooses map units, a button appears allowing
- * adjustment of minimum and maximum scaling.
- * \see QgsMapUnitScaleWidget
- * \see QgsMapUnitScaleDialog
- */
 class QgsUnitSelectionWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgsunitselectionwidget.h>
+%Docstring
+ A widget displaying a combobox allowing the user to choose between various display units,
+ such as millimeters or map unit. If the user chooses map units, a button appears allowing
+ adjustment of minimum and maximum scaling.
+.. seealso:: QgsMapUnitScaleWidget
+.. seealso:: QgsMapUnitScaleDialog
 %End
 
+%TypeHeaderCode
+#include "qgsunitselectionwidget.h"
+%End
   public:
 
-    /** Constructor for QgsUnitSelectionWidget.
-     * @param parent parent widget
-     */
     QgsUnitSelectionWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsUnitSelectionWidget.
+ \param parent parent widget
+%End
 
-    /** Sets the units which the user can choose from in the combobox.
-     * @param units list of strings for custom units to display in the widget
-     * @param mapUnitIdx specifies which entry corresponds to the map units, or -1 if none
-     */
     void setUnits( const QStringList &units, int mapUnitIdx );
+%Docstring
+ Sets the units which the user can choose from in the combobox.
+ \param units list of strings for custom units to display in the widget
+ \param mapUnitIdx specifies which entry corresponds to the map units, or -1 if none
+%End
 
-    /** Sets the units which the user can choose from in the combobox. Clears any existing units.
-     * @param units list of valid units
-     * @note added in QGIS 2.9
-     */
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
+%Docstring
+ Sets the units which the user can choose from in the combobox. Clears any existing units.
+ \param units list of valid units
+.. versionadded:: 2.9
+%End
 
-    /** Get the selected unit index */
     int getUnit() const;
+%Docstring
+Get the selected unit index
+ :rtype: int
+%End
 
-    /** Returns the current predefined selected unit (if applicable).
-     * @returns selected output unit, or QgsUnitTypes::RenderUnknownUnit if the widget was populated with custom unit types
-     * @note added in QGIS 2.9
-     */
     QgsUnitTypes::RenderUnit unit() const;
+%Docstring
+ Returns the current predefined selected unit (if applicable).
+ :return: selected output unit, or QgsUnitTypes.RenderUnknownUnit if the widget was populated with custom unit types
+.. versionadded:: 2.9
+ :rtype: QgsUnitTypes.RenderUnit
+%End
 
-    /** Sets the selected unit index
-     * @param unitIndex index of unit to set as current
-     * @note available in Python bindings as setUnitIndex
-     */
     void setUnit( int unitIndex ) /PyName=setUnitIndex/;
+%Docstring
+ Sets the selected unit index
+ \param unitIndex index of unit to set as current
+.. note::
 
-    /** Sets the selected unit
-     * @param unit predefined unit to set as current
-     */
+   available in Python bindings as setUnitIndex
+%End
+
     void setUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+ Sets the selected unit
+ \param unit predefined unit to set as current
+%End
 
-    /** Returns the map unit scale */
     QgsMapUnitScale getMapUnitScale() const;
+%Docstring
+Returns the map unit scale
+ :rtype: QgsMapUnitScale
+%End
 
-    /** Sets the map unit scale */
     void setMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit scale
+%End
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
-     */
     void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+ Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+ map scale from the canvas.
+ \param canvas map canvas
+.. versionadded:: 2.12
+%End
 
   signals:
     void changed();
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsunitselectionwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

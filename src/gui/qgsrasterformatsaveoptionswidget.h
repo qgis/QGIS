@@ -27,8 +27,7 @@ class QgsRasterLayer;
 /** \ingroup gui
  * A widget to select format-specific raster saving options
  */
-class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
-  private Ui::QgsRasterFormatSaveOptionsWidgetBase
+class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -43,7 +42,8 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
       ProfileLineEdit // Profile + LineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget *parent = nullptr, const QString &format = "GTiff",
+    QgsRasterFormatSaveOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                      const QString &format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
                                       const QString &provider = "gdal" );
 
@@ -116,17 +116,17 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
   private slots:
 
-    void on_mProfileNewButton_clicked();
-    void on_mProfileDeleteButton_clicked();
-    void on_mProfileResetButton_clicked();
-    void on_mOptionsAddButton_clicked();
-    void on_mOptionsDeleteButton_clicked();
-    void on_mOptionsLineEdit_editingFinished();
-    void optionsTableChanged();
-    void optionsTableEnableDeleteButton();
-    void updateOptions();
-    void swapOptionsUI( int newIndex = -1 );
-    void updateControls();
+    void on_mProfileNewButton_clicked() SIP_FORCE;
+    void on_mProfileDeleteButton_clicked() SIP_FORCE;
+    void on_mProfileResetButton_clicked() SIP_FORCE;
+    void on_mOptionsAddButton_clicked() SIP_FORCE;
+    void on_mOptionsDeleteButton_clicked() SIP_FORCE;
+    void on_mOptionsLineEdit_editingFinished() SIP_FORCE;
+    void optionsTableChanged() SIP_FORCE;
+    void optionsTableEnableDeleteButton() SIP_FORCE;
+    void updateOptions() SIP_FORCE;
+    void swapOptionsUI( int newIndex = -1 ) SIP_FORCE;
+    void updateControls() SIP_FORCE;
 
   protected:
     virtual void showEvent( QShowEvent *event ) override;
@@ -145,16 +145,16 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     bool mPyramids;
     QgsRaster::RasterPyramidsFormat mPyramidsFormat;
 
-    QString settingsKey( QString profile ) const;
-    QString currentProfileKey() const;
-    QString createOptions( const QString &profile ) const;
-    void deleteCreateOptions( const QString &profile );
-    void setCreateOptions();
-    void setCreateOptions( const QString &profile, const QString &options );
-    void setCreateOptions( const QString &profile, const QStringList &list );
-    QStringList profiles() const;
-    bool eventFilter( QObject *obj, QEvent *event ) override;
-    QString pseudoFormat() const;
+    QString settingsKey( QString profile ) const SIP_FORCE;
+    QString currentProfileKey() const SIP_FORCE;
+    QString createOptions( const QString &profile ) const SIP_FORCE;
+    void deleteCreateOptions( const QString &profile ) SIP_FORCE;
+    void setCreateOptions() SIP_FORCE;
+    void setCreateOptions( const QString &profile, const QString &options ) SIP_FORCE;
+    void setCreateOptions( const QString &profile, const QStringList &list ) SIP_FORCE;
+    QStringList profiles() const SIP_FORCE;
+    bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
+    QString pseudoFormat() const SIP_FORCE;
 
 };
 

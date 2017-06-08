@@ -50,9 +50,12 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     };
 
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
-                                QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,
-                                const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs,
-                                QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+                                QgsRasterDataProvider *sourceProvider,
+                                const QgsRectangle &currentExtent,
+                                const QgsCoordinateReferenceSystem &layerCrs,
+                                const QgsCoordinateReferenceSystem &currentCrs,
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                Qt::WindowFlags f = 0 );
 
     Mode mode() const;
     int nColumns() const;
