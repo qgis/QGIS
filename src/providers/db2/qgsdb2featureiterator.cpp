@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgscsexception.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -37,7 +38,16 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 

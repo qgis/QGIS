@@ -124,15 +124,7 @@ QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordin
   if ( mRequest.filterRect().isNull() )
     return QgsRectangle();
 
-  try
-  {
-    return transform.transformBoundingBox( mRequest.filterRect(), QgsCoordinateTransform::ReverseTransform );
-  }
-  catch ( QgsCsException & )
-  {
-    // can't reproject mFilterRect
-    return mRequest.filterRect();
-  }
+  return transform.transformBoundingBox( mRequest.filterRect(), QgsCoordinateTransform::ReverseTransform );
 }
 
 void QgsAbstractFeatureIterator::ref()

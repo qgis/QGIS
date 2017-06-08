@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgssettings.h"
+#include "qgscsexception.h"
 
 #include <QObject>
 
@@ -42,7 +43,16 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   QVariantList args;
   mQry = QSqlQuery( *mConnection );
