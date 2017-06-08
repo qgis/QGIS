@@ -31,14 +31,19 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsPoint::QgsPoint( double x, double y, double z, double m )
+QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
   : QgsAbstractGeometry()
   , mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
 {
-  if ( qIsNaN( z ) )
+  if ( wkbType != QgsWkbTypes::Unknown )
+  {
+    Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+    mWkbType = wkbType;
+  }
+  else if ( qIsNaN( z ) )
   {
     if ( qIsNaN( m ) )
       mWkbType = QgsWkbTypes::Point;
@@ -71,15 +76,15 @@ QgsPoint::QgsPoint( QPointF p )
   mWkbType = QgsWkbTypes::Point;
 }
 
-QgsPoint::QgsPoint( QgsWkbTypes::Type type, double x, double y, double z, double m )
-  : mX( x )
+QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
+  : QgsAbstractGeometry()
+  , mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
 {
-  //protect against non-point WKB types
-  Q_ASSERT( QgsWkbTypes::flatType( type ) == QgsWkbTypes::Point );
-  mWkbType = type;
+  Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
+  mWkbType = wkbType;
 }
 
 /***************************************************************************
@@ -535,5 +540,5 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
     pType = QgsWkbTypes::addM( pType );
   }
 
-  return QgsPoint( pType, mX + dx, mY + dy, mZ + dz, mM );
+  return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
 }
