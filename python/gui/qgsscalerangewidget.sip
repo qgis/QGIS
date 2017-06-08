@@ -33,7 +33,7 @@ class QgsScaleRangeWidget : QWidget
 
     double minimumScale() const;
 %Docstring
- Returns the selected minimum scale, or 0 if minimum scale is not set.
+ Returns the selected minimum scale (i.e. most "zoomed out" scale), or 0 if minimum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: maximumScale()
 .. seealso:: setMinimumScale()
@@ -42,7 +42,7 @@ class QgsScaleRangeWidget : QWidget
 
     double maximumScale() const;
 %Docstring
- Returns the selected maximum scale, or 0 if maximum scale is not set.
+ Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: minimumScale()
 .. seealso:: setMaximumScale()
@@ -58,7 +58,7 @@ class QgsScaleRangeWidget : QWidget
 
     void setMinimumScale( double scale );
 %Docstring
- Set the minimum ``scale``, or 0 to indicate the minimum is not set.
+ Set the minimum ``scale`` (i.e. most "zoomed out" scale), or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: minimumScale()
 .. seealso:: setMaximumScale()
@@ -67,7 +67,7 @@ class QgsScaleRangeWidget : QWidget
 
     void setMaximumScale( double scale );
 %Docstring
- Set the maximum ``scale``, or 0 to indicate the minimum is not set.
+ Set the maximum ``scale`` (i.e. most "zoomed in" scale), or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: maximumScale()
 .. seealso:: setMinimumScale()
@@ -76,7 +76,7 @@ class QgsScaleRangeWidget : QWidget
 
     void setScaleRange( double min, double max );
 %Docstring
- Sets the scale range, from ``min`` scale to ``max`` scale.
+ Sets the scale range, from ``min`` scale (i.e. most "zoomed out" scale) to ``max`` scale (most "zoomed in" scale).
  The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map,
  or 0 to indicate not set.
 .. seealso:: setMinimumScale()

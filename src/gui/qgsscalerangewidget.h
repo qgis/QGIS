@@ -49,7 +49,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
-     * Returns the selected minimum scale, or 0 if minimum scale is not set.
+     * Returns the selected minimum scale (i.e. most "zoomed out" scale), or 0 if minimum scale is not set.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see maximumScale()
      * \see setMinimumScale()
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     double minimumScale() const;
 
     /**
-     * Returns the selected maximum scale, or 0 if maximum scale is not set.
+     * Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see minimumScale()
      * \see setMaximumScale()
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
   public slots:
 
     /**
-     * Set the minimum \a scale, or 0 to indicate the minimum is not set.
+     * Set the minimum \a scale (i.e. most "zoomed out" scale), or 0 to indicate the minimum is not set.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see minimumScale()
      * \see setMaximumScale()
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     void setMinimumScale( double scale );
 
     /**
-     * Set the maximum \a scale, or 0 to indicate the minimum is not set.
+     * Set the maximum \a scale (i.e. most "zoomed in" scale), or 0 to indicate the minimum is not set.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \see maximumScale()
      * \see setMinimumScale()
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     void setMaximumScale( double scale );
 
     /**
-     * Sets the scale range, from \a min scale to \a max scale.
+     * Sets the scale range, from \a min scale (i.e. most "zoomed out" scale) to \a max scale (most "zoomed in" scale).
      * The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map,
      * or 0 to indicate not set.
      * \see setMinimumScale()
