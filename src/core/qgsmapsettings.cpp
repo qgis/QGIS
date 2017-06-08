@@ -50,8 +50,7 @@ QgsMapSettings::QgsMapSettings()
   , mMapUnitsPerPixel( 1 )
   , mScale( 1 )
 {
-  // set default map units - we use WGS 84 thus use degrees
-  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceDegrees );
+  mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
 
   updateDerived();
 }
