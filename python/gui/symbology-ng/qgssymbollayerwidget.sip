@@ -1,71 +1,103 @@
-class QgsSymbolLayerWidget : QWidget
-{
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbollayerwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
+
+
+
+class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
+{
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
     QgsSymbolLayerWidget( QWidget *parent /TransferThis/, const QgsVectorLayer *vl = 0 );
-    virtual ~QgsSymbolLayerWidget();
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
+%Docstring
+ :rtype: QgsSymbolLayer
+%End
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
-     */
     void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+ Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+ \param context symbol widget context
+.. seealso:: context()
+.. versionadded:: 3.0
+%End
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
-     */
     QgsSymbolWidgetContext context() const;
+%Docstring
+ Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+.. seealso:: setContext()
+.. versionadded:: 3.0
+ :rtype: QgsSymbolWidgetContext
+%End
 
-    /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
-     */
     const QgsVectorLayer *vectorLayer() const;
+%Docstring
+ Returns the vector layer associated with the widget.
+.. versionadded:: 2.12
+ :rtype: QgsVectorLayer
+%End
 
   protected:
-    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
-    QgsExpressionContext createExpressionContext() const;
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+%Docstring
+ Registers a data defined override button. Handles setting up connections
+ for the button and initializing the button to show the correct descriptions
+ and help text for the associated property.
+.. versionadded:: 3.0
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
   signals:
-    /**
-     * Should be emitted whenever configuration changes happened on this symbol layer configuration.
-     * If the subsymbol is changed, {@link symbolChanged()} should be emitted instead.
-     */
+
     void changed();
-    /**
-     * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
-     * Normally {@link changed()} should be preferred.
-     *
-     * @see {@link changed()}
-     */
+%Docstring
+ Should be emitted whenever configuration changes happened on this symbol layer configuration.
+ If the subsymbol is changed, symbolChanged() should be emitted instead.
+%End
+
     void symbolChanged();
+%Docstring
+ Should be emitted whenever the sub symbol changed on this symbol layer configuration.
+ Normally changed() should be preferred.
+
+.. seealso:: changed()
+%End
 
   protected slots:
     void updateDataDefinedProperty();
+
 };
 
-///////////
+
+
 
 class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -82,29 +114,33 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
-    //creates a new icon for the 'change pattern' button
+
     void updatePatternIcon();
+
 };
 
-///////////
+
+
 
 class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
-    ~QgsSimpleMarkerSymbolLayerWidget();
+    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
+
     void setColorStroke( const QColor &color );
     void setColorFill( const QColor &color );
     void setSize();
@@ -117,22 +153,28 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+
+  protected:
+
 };
 
-///////////
+
+
 
 class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -145,64 +187,76 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
     void offsetChanged();
     void on_mStrokeWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
+
+  protected:
 };
 
 
-///////////
 
-/** \ingroup gui
- * \class QgsFilledMarkerSymbolLayerWidget
- * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
- * \note Added in version 2.16
- */
+
+
 class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+%Docstring
+ Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
 
-    /** Constructor for QgsFilledMarkerSymbolLayerWidget.
-     * @param vl associated vector layer
-     * @param parent parent widget
-     */
     QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsFilledMarkerSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
-    ~QgsFilledMarkerSymbolLayerWidget();
-
-    /** Creates a new QgsFilledMarkerSymbolLayerWidget.
-     * @param vl associated vector layer
-     */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ Creates a new QgsFilledMarkerSymbolLayerWidget.
+ \param vl associated vector layer
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
+  protected:
+
 };
 
-///////////
+
 
 
 class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
   public:
-    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
   public slots:
     void setColor( const QColor &color );
     void setColor2( const QColor &color );
+
     void applyColorRamp();
+%Docstring
+ Applies the color ramp passed on by the color ramp button
+%End
+
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
@@ -211,21 +265,27 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mOffsetUnitWidget_changed();
     void colorModeChanged();
     void on_mSpinAngle_valueChanged( double value );
+
+  protected:
 };
 
-///////////
+
+
 
 class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
   public:
-    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -241,21 +301,27 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
+
+  protected:
 };
 
-///////////
+
+
 
 class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
   public:
-    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -269,24 +335,29 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mIntervalUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOffsetAlongLineUnitWidget_changed();
+
+  protected:
+
 };
 
 
-///////////
+
+
 
 class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
-    ~QgsSvgMarkerSymbolLayerWidget();
+    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -311,104 +382,132 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
   protected:
 
     void populateList();
-    //update gui for svg file (insert new path, update activation of gui elements for svg params)
     void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+
 };
 
-///////////
+
+
 
 class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
+  protected:
+
 };
 
-///////////
+
+
 
 class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
   protected:
     void insertIcons();
-    /** Enables or disables svg fill color, stroke color and stroke width based on whether the
-     * svg file supports custom parameters.
-     * @param resetValues set to true to overwrite existing layer fill color, stroke color and stroke width
-     * with default values from svg file
-     */
+
     void updateParamGui( bool resetValues = true );
+%Docstring
+ Enables or disables svg fill color, stroke color and stroke width based on whether the
+ svg file supports custom parameters.
+ \param resetValues set to true to overwrite existing layer fill color, stroke color and stroke width
+ with default values from svg file
+%End
+
 };
 
-//////////
+
+
 
 class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
   public:
 
-    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
+
+  protected:
+
 };
 
-//////////
+
+
 
 class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
+
+  protected:
+
 };
 
-/////////
+
+
 
 class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
-
   public:
-    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
-
-    ~QgsFontMarkerSymbolLayerWidget();
+    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
@@ -416,9 +515,11 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void setFontFamily( const QFont &font );
     void setColor( const QColor &color );
 
-    /** Set stroke color.
-     * @note added in 2.16 */
     void setColorStroke( const QColor &color );
+%Docstring
+ Set stroke color.
+.. versionadded:: 2.16
+%End
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
@@ -429,41 +530,63 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void on_mStrokeWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+
+  protected:
+
 };
 
-//////////
+
+
+
 
 class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
-%TypeHeaderCode
-#include <qgssymbollayerwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
   public:
-    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
+    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
+
+  protected:
+
 };
+
+
 
 
 class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgssymbollayerwidget.h>
+#include "qgssymbollayerwidget.h"
 %End
   public:
     QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
-    /**
-     * Will be registered as factory
-     */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ Will be registered as factory
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbollayerwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

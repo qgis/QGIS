@@ -1,46 +1,79 @@
-/** \ingroup gui
- * \class QgsCptCityColorRampDialog
- * A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgscptcitycolorrampdialog.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 class QgsCptCityColorRampDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgscptcitycolorrampdialog.h>
+%Docstring
+ A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgscptcitycolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsCptCityColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
     QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
-    ~QgsCptCityColorRampDialog();
+%Docstring
+ Constructor for QgsCptCityColorRampDialog.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsCptCityColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsCptCityColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
     void setRamp( const QgsCptCityColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
-    /** Returns the name of the ramp currently selected in the dialog.
-     */
     QString selectedName() const;
+%Docstring
+ Returns the name of the ramp currently selected in the dialog.
+ :rtype: str
+%End
 
-    /** Returns true if the ramp should be converted to a QgsGradientColorRamp.
-     */
     bool saveAsGradientRamp() const;
+%Docstring
+ Returns true if the ramp should be converted to a QgsGradientColorRamp.
+ :rtype: bool
+%End
 
-    bool eventFilter( QObject *obj, QEvent *event );
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgscptcitycolorrampdialog.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

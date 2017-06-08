@@ -1,22 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsarrowsymbollayerwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsArrowSymbolLayerWidget: QgsSymbolLayerWidget
 {
+
 %TypeHeaderCode
-#include <qgsarrowsymbollayerwidget.h>
+#include "qgsarrowsymbollayerwidget.h"
 %End
   public:
-    /** Constructor
-     * @param layer the layer where this symbol layer is applied
-     * @param parent the parent widget
-     */
+
     QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor
+ \param layer the layer where this symbol layer is applied
+ \param parent the parent widget
+%End
 
-    /** Static creation method
-     * @param layer the layer where this symbol layer is applied
-     */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) /Factory/;
+%Docstring
+ Static creation method
+ \param layer the layer where this symbol layer is applied
+ :rtype: QgsSymbolLayerWidget
+%End
 
-    /** Set the symbol layer */
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
-    /** Get the current symbol layer */
     virtual QgsSymbolLayer *symbolLayer();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsarrowsymbollayerwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
