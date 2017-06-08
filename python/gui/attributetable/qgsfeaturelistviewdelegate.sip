@@ -1,7 +1,18 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsfeaturelistviewdelegate.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsFeatureListViewDelegate : QItemDelegate
 {
+
 %TypeHeaderCode
-#include <qgsfeaturelistviewdelegate.h>
+#include "qgsfeaturelistviewdelegate.h"
 %End
   public:
     static const int ICON_SIZE;
@@ -17,6 +28,9 @@ class QgsFeatureListViewDelegate : QItemDelegate
     void setEditSelectionModel( QItemSelectionModel *editSelectionModel );
 
     Element positionToElement( QPoint pos );
+%Docstring
+ :rtype: Element
+%End
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel );
 
@@ -28,4 +42,13 @@ class QgsFeatureListViewDelegate : QItemDelegate
   protected:
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsfeaturelistviewdelegate.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
