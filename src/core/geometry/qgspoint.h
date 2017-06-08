@@ -50,15 +50,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * If only z and m are not specified, the type will be a 2D point.
      * If any or both of the others are specified, the Z and M values will be added accordingly.
      */
+#ifndef SIP_RUN
     QgsPoint( double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
-#ifdef SIP_RUN
+#else
     QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 )];
-    % Docstring
-    Construct a point with the provided initial coordinate values.
-
-    If only z and m are not specified, the type will be a 2D point.
-    If any or both of the others are specified, the Z and M values will be added accordingly.
-    % End
     % MethodCode
     double z;
     double m;
