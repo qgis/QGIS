@@ -1104,8 +1104,7 @@ namespace QgsWms
 #endif
 
         //skip layer if not visible at current map scale
-        bool useScaleConstraint = ( scaleDenominator > 0 && currentLayer->hasScaleBasedVisibility() );
-        if ( useScaleConstraint && ( currentLayer->minimumScale() > scaleDenominator || currentLayer->maximumScale() < scaleDenominator ) )
+        if ( scaleDenominator > 0 && !currentLayer->isInScaleRange( scaleDenominator ) )
         {
           continue;
         }
@@ -1886,9 +1885,7 @@ namespace QgsWms
             lName = mapLayer->shortName();
           QgsMessageLog::logMessage( QStringLiteral( "Checking layer: %1" ).arg( lName ) );
           //test if layer is visible in requested scale
-          bool useScaleConstraint = ( scaleDenominator > 0 && mapLayer->hasScaleBasedVisibility() );
-          if ( !useScaleConstraint ||
-               ( mapLayer->minimumScale() <= scaleDenominator && mapLayer->maximumScale() >= scaleDenominator ) )
+          if ( scaleDenominator == 0 || mapLayer->isInScaleRange( scaleDenominator ) )
           {
             layerKeys.push_front( mapLayer->id() );
             QgsProject::instance()->addMapLayers(

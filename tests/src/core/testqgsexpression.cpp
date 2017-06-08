@@ -93,8 +93,8 @@ class TestQgsExpression: public QObject
       mPointsLayer->setDataUrl( QStringLiteral( "data url" ) );
       mPointsLayer->setAttribution( QStringLiteral( "layer attribution" ) );
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
-      mPointsLayer->setMaximumScale( 500 );
-      mPointsLayer->setMinimumScale( 1000 );
+      mPointsLayer->setMinimumScale( 500 );
+      mPointsLayer->setMaximumScale( 1000 );
 
       QString rasterFileName = testDataDir + "tenbytenraster.asc";
       QFileInfo rasterFileInfo( rasterFileName );
