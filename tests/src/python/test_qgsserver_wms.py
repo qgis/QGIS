@@ -1059,6 +1059,12 @@ class TestQgsServerWMS(QgsServerTestBase):
             # "HEIGHT": "500",
             # "WIDTH": "500",
             "LAYERSPACE": "50.0",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
             "LAYERTITLE": "TRUE",
             "CRS": "EPSG:3857"
         }.items())])
@@ -1077,15 +1083,24 @@ class TestQgsServerWMS(QgsServerTestBase):
             # "HEIGHT": "500",
             # "WIDTH": "500",
             "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
             "SHOWFEATURECOUNT": "TRUE",
             "CRS": "EPSG:3857"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ShowFeatureCount")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ShowFeatureCount", max_size_diff=QSize(1, 1))
 
     def test_getLegendGraphics_layertitle(self):
         """Test that does not return an exception but an image"""
+
+        print("TEST FONT FAMILY: ", self.fontFamily)
+
         parms = {
             'MAP': self.testdata_path + "test_project.qgs",
             'SERVICE': 'WMS',
@@ -1095,6 +1110,12 @@ class TestQgsServerWMS(QgsServerTestBase):
             # 'WIDTH': '20', # optional
             # 'HEIGHT': '20', # optional
             'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTSIZE': '20',
             'LAYERTITLE': 'TRUE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
@@ -1125,6 +1146,12 @@ class TestQgsServerWMS(QgsServerTestBase):
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
             'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
             'RULELABEL': 'TRUE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
@@ -1138,6 +1165,12 @@ class TestQgsServerWMS(QgsServerTestBase):
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
             'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
             'RULELABEL': 'FALSE',
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
@@ -1330,6 +1363,10 @@ class TestQgsServerWMS(QgsServerTestBase):
             "LAYERFONTBOLD": "TRUE",
             "LAYERFONTITALIC": "TRUE",
             "LAYERFONTSIZE": "30",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -1337,7 +1374,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerFont")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerFont", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_ItemFont(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1347,9 +1384,13 @@ class TestQgsServerWMS(QgsServerTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTSIZE": "30",
             "ITEMFONTBOLD": "TRUE",
             "ITEMFONTITALIC": "TRUE",
-            "ITEMFONTSIZE": "30",
+            "ITEMFONTSIZE": "20",
+            "LAYERFONTFAMILY": self.fontFamily,
+            "ITEMFONTFAMILY": self.fontFamily,
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -1357,7 +1398,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ItemFont")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ItemFont", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_BBox(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
