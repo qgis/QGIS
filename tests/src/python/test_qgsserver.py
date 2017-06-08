@@ -39,7 +39,7 @@ import email
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -94,6 +94,9 @@ class QgsServerTestBase(unittest.TestCase):
 
     def setUp(self):
         """Create the server instance"""
+        self.fontFamily = QgsFontUtils.standardTestFontFamily()
+        QgsFontUtils.loadStandardTestFonts(['All'])
+
         self.testdata_path = unitTestDataPath('qgis_server') + '/'
 
         d = unitTestDataPath('qgis_server_accesscontrol') + '/'
