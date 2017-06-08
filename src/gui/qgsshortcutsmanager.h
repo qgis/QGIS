@@ -20,6 +20,7 @@
 #include <QList>
 #include <QAction>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QShortcut;
 
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */
-    QgsShortcutsManager( QObject *parent = nullptr, const QString &settingsRoot = "/shortcuts/" );
+    QgsShortcutsManager( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &settingsRoot = "/shortcuts/" );
 
     /** Automatically registers all QActions and QShortcuts which are children of the
      * passed object.

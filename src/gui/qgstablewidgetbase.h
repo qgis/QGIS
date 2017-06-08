@@ -16,7 +16,7 @@
 #ifndef QGSTABLEWIDGETBASE_H
 #define QGSTABLEWIDGETBASE_H
 
-#include "ui_qgstablewidgetbase.h"
+#include "ui_qgstablewidgetuibase.h"
 #include <QAbstractTableModel>
 #include <QVariant>
 #include "qgis_gui.h"
@@ -29,7 +29,7 @@
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBase
+class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidgetUiBase
 {
     Q_OBJECT
   public:
@@ -70,6 +70,10 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, public Ui::QgsTableWidgetBa
      * Called when the selection is changed to enable/disable the delete button.
      */
     void onSelectionChanged();
+
+    friend class TestQgsKeyValueWidget;
+    friend class TestQgsListWidget;
+
 };
 
 

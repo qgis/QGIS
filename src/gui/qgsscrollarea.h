@@ -69,6 +69,8 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     ScrollAreaFilter *mFilter = nullptr;
 };
 
+#ifndef SIP_RUN
+
 ///@cond PRIVATE
 
 /**
@@ -97,5 +99,7 @@ class ScrollAreaFilter : public QObject
 };
 
 ///@endcond PRIVATE
+
+#endif
 
 #endif // QGSSCROLLAREA_H
