@@ -38,7 +38,17 @@ QgsPoint::QgsPoint( double x, double y, double z, double m )
   , mZ( z )
   , mM( m )
 {
-  mWkbType = QgsWkbTypes::Point;
+  if ( qIsNaN( z ) )
+  {
+    if ( qIsNaN( m ) )
+      mWkbType = QgsWkbTypes::Point;
+    else
+      mWkbType = QgsWkbTypes::PointM;
+  }
+  else if ( qIsNaN( m ) )
+    mWkbType = QgsWkbTypes::PointZ;
+  else
+    mWkbType = QgsWkbTypes::PointZM;
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )

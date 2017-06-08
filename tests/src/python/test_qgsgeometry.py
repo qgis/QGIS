@@ -4129,6 +4129,12 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertFalse(QgsGeometry.compare(lp, lp2))
         self.assertTrue(QgsGeometry.compare(lp, lp2, 1e-6))
 
+    def testPoint(self):
+        self.assertEqual(QgsPoint(1, 2).wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(QgsPoint(1, 2, 3).wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(QgsPoint(1, 2, m=3).wkbType(), QgsWkbTypes.PointM)
+        self.assertEqual(QgsPoint(1, 2, 3, 4).wkbType(), QgsWkbTypes.PointZM)
+
 
 if __name__ == '__main__':
     unittest.main()
