@@ -1,10 +1,26 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsgraduatedsymbolrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 {
+
 %TypeHeaderCode
-#include <qgsgraduatedsymbolrendererwidget.h>
+#include "qgsgraduatedsymbolrendererwidget.h"
 %End
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ :rtype: QgsRendererWidget
+%End
 
     QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsGraduatedSymbolRendererWidget();
@@ -21,14 +37,22 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
     void rangesClicked( const QModelIndex &idx );
     void changeCurrentValue( QStandardItem *item );
 
-    /** Adds a class manually to the classification*/
     void addClass();
-    /** Removes currently selected classes */
+%Docstring
+Adds a class manually to the classification
+%End
     void deleteClasses();
-    /** Removes all classes from the classification*/
+%Docstring
+Removes currently selected classes
+%End
     void deleteAllClasses();
-    /** Toggle the link between classes boundaries */
+%Docstring
+Removes all classes from the classification
+%End
     void toggleBoundariesLink( bool linked );
+%Docstring
+Toggle the link between classes boundaries
+%End
 
     void labelFormatChanged();
 
@@ -36,7 +60,6 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 
     void rowsMoved();
     void modelDataChanged();
-
     void on_mSizeUnitWidget_changed();
     void on_methodComboBox_currentIndexChanged( int );
     void refreshRanges( bool reset = false );
@@ -46,21 +69,46 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();
+%Docstring
+ :rtype: bool
+%End
 
     void updateGraduatedSymbolIcon();
 
-    //! return a list of indexes for the classes under selection
     QList<int> selectedClasses();
+%Docstring
+return a list of indexes for the classes under selection
+ :rtype: list of int
+%End
     QgsRangeList selectedRanges();
+%Docstring
+ :rtype: QgsRangeList
+%End
 
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
 
     void changeSelectedSymbols();
 
-    QList<QgsSymbol*> selectedSymbols();
-    QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
-    void refreshSymbolView();
+    virtual QList<QgsSymbol *> selectedSymbols();
 
-    void keyPressEvent( QKeyEvent *event );
+    QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
+%Docstring
+ :rtype: QgsSymbol
+%End
+    virtual void refreshSymbolView();
+
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsgraduatedsymbolrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

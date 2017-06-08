@@ -46,6 +46,7 @@ class QgsLineSymbolLayer;
 
 class QgsMapCanvas;
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 class DataDefinedRestorer: public QObject
@@ -75,6 +76,7 @@ class DataDefinedRestorer: public QObject
     void save();
 };
 ///@endcond
+#endif
 
 class QgsSymbolSelectorDialog;
 
@@ -96,7 +98,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
        * \param vl The vector layer for the symbol.
        * \param parent
        */
-    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
@@ -126,14 +128,14 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      * Reload the current symbol in the view.
      */
     void loadSymbol();
-    //! \note not available in Python bindings
 
     /**
-     * Load the given symbol into the widget..
+     * Load the given symbol into the widget.
      * \param symbol The symbol to load.
      * \param parent The parent symbol layer item.
+     * \note not available in Python bindings
      */
-    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
+    void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
 
     /**
      * Update the state of the UI based on the currently set symbol layer.
@@ -249,7 +251,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
@@ -279,6 +281,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void keyPressEvent( QKeyEvent *e ) override;
 
     void loadSymbol();
+
     //! \note not available in Python bindings
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent ) SIP_SKIP;
 

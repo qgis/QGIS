@@ -1,16 +1,29 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbollevelsdialog.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsSymbolLevelsDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgssymbollevelsdialog.h>
-%End
 
+%TypeHeaderCode
+#include "qgssymbollevelsdialog.h"
+%End
   public:
-    //! @note not available in python bindings
-    // QgsSymbolLevelsDialog( const QList< QPair<QString, QgsSymbol*> > &list, bool usingSymbolLevels, QWidget *parent = NULL );
+
+    ~QgsSymbolLevelsDialog();
 
     bool usingLevels() const;
+%Docstring
+ :rtype: bool
+%End
 
-    // used by rule-based renderer (to hide checkbox to enable/disable ordering)
     void setForceOrderingEnabled( bool enabled );
 
   public slots:
@@ -19,11 +32,17 @@ class QgsSymbolLevelsDialog : QDialog
     void renderingPassChanged( int row, int column );
 
   protected:
-    //! @note not available in python bindings
-    //void populateTable();
-    //! @note not available in python bindings
-    //void setDefaultLevels();
+
 
   private:
     QgsSymbolLevelsDialog();
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssymbollevelsdialog.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

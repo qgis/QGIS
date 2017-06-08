@@ -1,42 +1,50 @@
-/***************************************************************************
-  qgs25drendererwidget.sip - Qgs25DRendererWidget
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgs25drendererwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 14.1.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-class Qgs25DRendererWidget : QgsRendererWidget
+
+class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
 {
+
 %TypeHeaderCode
 #include "qgs25drendererwidget.h"
 %End
   public:
-    /** Static creation method
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will take ownership)
-     */
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer /Transfer/ ) /Factory/;
+%Docstring
+ Static creation method
+ \param layer the layer where this renderer is applied
+ \param style
+ \param renderer the mask renderer (will not take ownership)
+ :rtype: QgsRendererWidget
+%End
 
-    /** Constructor
-     * @param layer the layer where this renderer is applied
-     * @param style
-     * @param renderer the mask renderer (will take ownership)
-     */
     Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer /Transfer/ );
+%Docstring
+ Constructor
+ \param layer the layer where this renderer is applied
+ \param style
+ \param renderer the mask renderer (will not take ownership)
+%End
 
-    QgsFeatureRenderer *renderer();
+    virtual QgsFeatureRenderer *renderer();
+
 
   private:
-    void apply();
+    virtual void apply() ;
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgs25drendererwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

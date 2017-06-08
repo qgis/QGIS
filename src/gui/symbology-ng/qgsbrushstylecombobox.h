@@ -18,6 +18,7 @@
 
 #include <QComboBox>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /** \ingroup gui
  * \class QgsBrushStyleComboBox
@@ -27,7 +28,7 @@ class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsBrushStyleComboBox( QWidget *parent = nullptr );
+    QgsBrushStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qt::BrushStyle brushStyle() const;
 
