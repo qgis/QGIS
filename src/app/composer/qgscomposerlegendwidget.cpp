@@ -157,6 +157,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
 
   mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
+  mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
 
   const QgsComposerMap *map = mLegend->composerMap();
   mMapComboBox->setItem( map );
@@ -937,6 +938,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mWmsLegendHeightSpinBox->blockSignals( b );
   mCheckboxResizeContents->blockSignals( b );
   mTitleSpaceBottomSpinBox->blockSignals( b );
+  mFilterLegendByAtlasCheckBox->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )
