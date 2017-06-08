@@ -158,7 +158,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      * \param parent parent widget
      * \param f window flags
      */
-    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = 0 );
 
     /** Returns effect stack attached to the dialog
      * \returns QgsEffectStack modified by the dialog
