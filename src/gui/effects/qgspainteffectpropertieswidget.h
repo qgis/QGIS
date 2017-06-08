@@ -18,6 +18,7 @@
 
 #include "ui_qgseffectpropertieswidget.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsPaintEffect;
 
@@ -39,7 +40,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
      * \param effect QgsPaintEffect to modify in the widget
      * \param parent parent widget
      */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent = nullptr );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   public slots:
 

@@ -73,11 +73,6 @@ gui/symbology-ng/qgssymbolslistwidget.sip
 gui/symbology-ng/qgssymbolselectordialog.sip
 gui/symbology-ng/qgssymbolwidgetcontext.sip
 gui/symbology-ng/qgsvectorfieldsymbollayerwidget.sip
-gui/effects/qgseffectdrawmodecombobox.sip
-gui/effects/qgseffectstackpropertieswidget.sip
-gui/effects/qgspainteffectpropertieswidget.sip
-gui/effects/qgspainteffectwidget.sip
-gui/layertree/qgslayertreeview.sip
 analysis/vector/qgsgeometryanalyzer.sip
 analysis/vector/qgsgeometrysnapper.sip
 analysis/vector/qgspointsample.sip
