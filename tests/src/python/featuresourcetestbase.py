@@ -139,7 +139,7 @@ class FeatureSourceTestCase(object):
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def runGetFeatureTests(self, source):
-        assert len([f for f in source.getFeatures()]) == 5
+        self.assertEqual(len([f for f in source.getFeatures()]), 5)
         self.assert_query(source, 'name ILIKE \'QGIS\'', [])
         self.assert_query(source, '"name" IS NULL', [5])
         self.assert_query(source, '"name" IS NOT NULL', [1, 2, 3, 4])

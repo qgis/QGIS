@@ -177,6 +177,26 @@ QgsVectorLayer *QgsVectorLayerCache::layer()
   return mLayer;
 }
 
+QgsCoordinateReferenceSystem QgsVectorLayerCache::sourceCrs() const
+{
+  return mLayer->crs();
+}
+
+QgsWkbTypes::Type QgsVectorLayerCache::wkbType() const
+{
+  return mLayer->wkbType();
+}
+
+QgsFields QgsVectorLayerCache::fields() const
+{
+  return mLayer->fields();
+}
+
+long QgsVectorLayerCache::featureCount() const
+{
+  return mLayer->featureCount();
+}
+
 void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests

@@ -195,6 +195,42 @@ class QgsVectorLayerCache : QObject
  :rtype: QgsVectorLayer
 %End
 
+    QgsCoordinateReferenceSystem sourceCrs() const;
+%Docstring
+ Returns the coordinate reference system for features in the cache.
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
+    QgsFields fields() const;
+%Docstring
+ Returns the fields associated with features in the cache.
+ :rtype: QgsFields
+%End
+
+    QgsWkbTypes::Type wkbType() const;
+%Docstring
+ Returns the geometry type for features in the cache.
+ :rtype: QgsWkbTypes.Type
+%End
+
+
+    int __len__() const;
+%Docstring
+ Returns the number of features contained in the source, or -1
+ if the feature count is unknown.
+ :rtype: int
+%End
+%MethodCode
+    sipRes = sipCpp->featureCount();
+%End
+
+    long featureCount() const;
+%Docstring
+ Returns the number of features contained in the source, or -1
+ if the feature count is unknown.
+ :rtype: long
+%End
+
   protected:
 
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
