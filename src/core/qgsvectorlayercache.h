@@ -248,6 +248,39 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     QgsVectorLayer *layer();
 
+    /**
+     * Returns the coordinate reference system for features in the cache.
+     */
+    QgsCoordinateReferenceSystem sourceCrs() const;
+
+    /**
+     * Returns the fields associated with features in the cache.
+     */
+    QgsFields fields() const;
+
+    /**
+     * Returns the geometry type for features in the cache.
+     */
+    QgsWkbTypes::Type wkbType() const;
+
+#ifdef SIP_RUN
+
+    /**
+     * Returns the number of features contained in the source, or -1
+     * if the feature count is unknown.
+     */
+    int __len__() const;
+    % MethodCode
+    sipRes = sipCpp->featureCount();
+    % End
+#endif
+
+    /**
+     * Returns the number of features contained in the source, or -1
+     * if the feature count is unknown.
+     */
+    long featureCount() const;
+
   protected:
 
     /**
