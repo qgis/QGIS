@@ -62,11 +62,12 @@ struct CORE_EXPORT QgsGPSInformation
 /** \ingroup core
  * Abstract base class for connection to a GPS device*/
 class CORE_EXPORT QgsGPSConnection : public QObject
+{
 #ifdef SIP_RUN
 #include <qgsgpsdconnection.h>
 #include <qgsnmeaconnection.h>
 #endif
-{
+
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
