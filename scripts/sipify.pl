@@ -768,7 +768,7 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
-    $LINE =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End)/%$1/;
+    $LINE =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End|Docstring)/%$1/;
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     write_output("NOR", "$LINE\n");
