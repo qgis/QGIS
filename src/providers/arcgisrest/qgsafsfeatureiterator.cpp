@@ -45,7 +45,7 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 }
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
@@ -74,7 +74,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     bool result = mSource->provider()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
-    transformFeatureGeometry( f, mTransform );
+    geometryToDestinationCrs( f, mTransform );
     return result;
   }
   else
@@ -88,7 +88,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
       ++mFeatureIterator;
       if ( !success )
         continue;
-      transformFeatureGeometry( f, mTransform );
+      geometryToDestinationCrs( f, mTransform );
       return true;
     }
   }

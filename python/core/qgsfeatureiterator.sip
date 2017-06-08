@@ -102,7 +102,7 @@ end of iterating: free the resources / lock
  :rtype: bool
 %End
 
-    void transformFeatureGeometry( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 %Docstring
  Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
  If ``feature`` has no geometry or ``transform`` is invalid then calling this method
@@ -113,7 +113,7 @@ end of iterating: free the resources / lock
 %End
 
 
-    QgsRectangle transformedFilterRect( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 %Docstring
  Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
  If ``transform`` is a valid coordinate transform, the return rectangle will represent

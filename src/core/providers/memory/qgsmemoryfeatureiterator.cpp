@@ -31,7 +31,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
@@ -132,7 +132,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   if ( hasFeature )
   {
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
   }
 
   return hasFeature;
@@ -187,7 +187,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
     ++mSelectIterator;
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
   }
   else
     close();

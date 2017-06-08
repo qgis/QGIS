@@ -24,7 +24,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   {
     mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect
@@ -72,7 +72,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mRequest.acceptFeature( f ) )
     {
       f.setValid( true );
-      transformFeatureGeometry( f, mTransform );
+      geometryToDestinationCrs( f, mTransform );
       return true;
     }
   }
@@ -101,7 +101,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   {
     mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect
@@ -123,7 +123,7 @@ bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
     // As long as features can be fetched from the provider: Write them to cache
     mVectorLayerCache->cacheFeature( f );
     mFids.insert( f.id() );
-    transformFeatureGeometry( f, mTransform );
+    geometryToDestinationCrs( f, mTransform );
     return true;
   }
   else

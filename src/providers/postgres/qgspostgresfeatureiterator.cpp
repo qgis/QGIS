@@ -57,7 +57,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
@@ -303,7 +303,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
-  transformFeatureGeometry( feature, mTransform );
+  geometryToDestinationCrs( feature, mTransform );
 
   return true;
 }

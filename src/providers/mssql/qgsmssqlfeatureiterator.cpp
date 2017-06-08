@@ -37,7 +37,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   BuildStatement( request );
 
@@ -330,7 +330,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
     }
 
     feature.setValid( true );
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
     return true;
   }
   return false;

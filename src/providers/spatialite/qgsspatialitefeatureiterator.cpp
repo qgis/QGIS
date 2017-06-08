@@ -47,7 +47,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   //beware - limitAtProvider needs to be set to false if the request cannot be completely handled
   //by the provider (e.g., utilising QGIS expression filters)
@@ -239,7 +239,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
   }
 
   feature.setValid( true );
-  transformFeatureGeometry( feature, mTransform );
+  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 
