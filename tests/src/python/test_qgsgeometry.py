@@ -1706,13 +1706,13 @@ class TestQgsGeometry(unittest.TestCase):
     def testReshape(self):
         """ Test geometry reshaping """
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
-        g.reshapeGeometry([QgsPointXY(0, 1.5), QgsPointXY(1.5, 0)])
+        g.reshapeGeometry(QgsLineString([QgsPoint(0, 1.5), QgsPoint(1.5, 0)]))
         expWkt = 'Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # Test reshape a geometry involving the first/last vertex (https://issues.qgis.org/issues/14443)
-        g.reshapeGeometry([QgsPointXY(0.5, 1), QgsPointXY(0, 0.5)])
+        g.reshapeGeometry(QgsLineString([QgsPoint(0.5, 1), QgsPoint(0, 0.5)]))
 
         expWkt = 'Polygon ((0 0.5, 0 0, 1 0, 1 0.5, 0.5 1, 0 0.5))'
         wkt = g.exportToWkt()
@@ -1721,24 +1721,24 @@ class TestQgsGeometry(unittest.TestCase):
         # Test reshape a line from first/last vertex
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
         # extend start
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(0, 0), QgsPointXY(-1, 0)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(0, 0), QgsPoint(-1, 0)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # extend end
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(5, 1), QgsPointXY(10, 1), QgsPointXY(10, 2)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(5, 1), QgsPoint(10, 1), QgsPoint(10, 2)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # test with reversed lines
         g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1)')
         # extend start
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(-1, 0), QgsPointXY(0, 0)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(-1, 0), QgsPoint(0, 0)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # extend end
-        self.assertEqual(g.reshapeGeometry([QgsPointXY(10, 2), QgsPointXY(10, 1), QgsPointXY(5, 1)]), 0)
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)])), 0)
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
