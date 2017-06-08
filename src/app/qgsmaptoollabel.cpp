@@ -469,7 +469,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
 
 bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
   {
     return false;
   }
@@ -590,7 +590,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
 
 bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
   {
     return false;
   }
@@ -623,7 +623,7 @@ bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol 
 
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
   {
     return false;
   }
