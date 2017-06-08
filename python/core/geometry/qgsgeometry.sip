@@ -488,7 +488,7 @@ not disjoint with existing polygons of the feature
  :rtype: int
 %End
 
-    int reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine );
+    int reshapeGeometry( const QgsLineString &reshapeLineString );
 %Docstring
  Replaces a part of this geometry with another line
  :return: 0 in case of success
