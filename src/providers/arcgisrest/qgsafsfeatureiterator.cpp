@@ -17,7 +17,7 @@
 #include "qgsafsprovider.h"
 #include "qgsmessagelog.h"
 #include "geometry/qgsgeometry.h"
-
+#include "qgscsexception.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider *provider )
 // FIXME: ugly const_cast...
@@ -45,7 +45,16 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 }
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()

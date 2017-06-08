@@ -533,6 +533,12 @@ class FeatureSourceTestCase(object):
         self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
         self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
 
+        # bad rect for transform
+        rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356')).setFilterRect(rect)
+        features = [f for f in self.source.getFeatures(request)]
+        self.assertFalse(features)
+
     def testGetFeaturesLimit(self):
         it = self.source.getFeatures(QgsFeatureRequest().setLimit(2))
         features = [f['pk'] for f in it]

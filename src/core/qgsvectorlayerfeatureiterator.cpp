@@ -25,6 +25,7 @@
 #include "qgsdistancearea.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
+#include "qgscsexception.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -113,7 +114,16 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect

@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgscsexception.h"
 
 #include <QElapsedTimer>
 #include <QObject>
@@ -57,7 +58,16 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;

@@ -131,6 +131,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * the requested filterRect() transformed to the source's coordinate reference system.
      * Iterators should call this method and use the returned rectangle for filtering
      * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
      * \since QGIS 3.0
      */
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;

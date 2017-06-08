@@ -15,6 +15,7 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
+#include "qgscsexception.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
   : QgsAbstractFeatureIterator( featureRequest )
@@ -24,7 +25,16 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   {
     mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect
@@ -101,7 +111,16 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   {
     mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
   if ( !mFilterRect.isNull() )
   {
     // update request to be the unprojected filter rect

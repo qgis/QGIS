@@ -20,6 +20,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgscsexception.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -37,7 +38,16 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 

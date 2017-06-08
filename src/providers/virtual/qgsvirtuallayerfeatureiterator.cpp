@@ -19,6 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgsvirtuallayerblob.h"
+#include "qgscsexception.h"
 
 #include <stdexcept>
 
@@ -46,7 +47,16 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   try
   {

@@ -21,6 +21,7 @@
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
+#include "qgscsexception.h"
 
 ///@cond PRIVATE
 
@@ -31,7 +32,16 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = filterRectToSourceCrs( mTransform );
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
