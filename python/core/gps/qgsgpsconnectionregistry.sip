@@ -43,6 +43,8 @@ Unregisters connection. The registry does no longer own the connection
  :rtype: list of QgsGPSConnection
 %End
 
+  private:
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
 };
 
 /************************************************************************
