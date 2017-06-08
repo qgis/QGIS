@@ -43,15 +43,26 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
 
 bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
+  f.setValid( false );
+
   if ( mClosed )
     return false;
 
   while ( mFeatureIdIterator != mFeatureIds.constEnd() )
   {
+    if ( !mVectorLayerCache->mCache.contains( *mFeatureIdIterator ) )
+    {
+      ++mFeatureIdIterator;
+      continue;
+    }
+
     f = QgsFeature( *mVectorLayerCache->mCache[*mFeatureIdIterator]->feature() );
     ++mFeatureIdIterator;
     if ( mRequest.acceptFeature( f ) )
+    {
+      f.setValid( true );
       return true;
+    }
   }
   close();
   return false;
@@ -79,6 +90,11 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
 
 bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
 {
+  if ( mClosed )
+  {
+    f.setValid( false );
+    return false;
+  }
   if ( mFeatIt.nextFeature( f ) )
   {
     // As long as features can be fetched from the provider: Write them to cache
