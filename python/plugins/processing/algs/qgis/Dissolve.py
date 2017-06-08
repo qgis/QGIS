@@ -105,7 +105,7 @@ class Dissolve(QgisAlgorithm):
                 errors = tmpInGeom.validateGeometry()
                 if len(errors) != 0:
                     for error in errors:
-                        QgsMessageLog.logMessage(self.tr('ValidateGeometry()'
+                        QgsMessageLog.logMessage(self.tr('ValidateGeometry() '
                                                          'error: One or more '
                                                          'input features have '
                                                          'invalid geometry: ') +
@@ -148,7 +148,7 @@ class Dissolve(QgisAlgorithm):
                 if len(errors) != 0:
                     for error in errors:
                         QgsMessageLog.logMessage(self.tr('ValidateGeometry() '
-                                                         'error: One or more input'
+                                                         'error: One or more input '
                                                          'features have invalid '
                                                          'geometry: ') +
                                                  error.what(), self.tr('Processing'), QgsMessageLog.CRITICAL)
