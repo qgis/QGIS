@@ -1027,6 +1027,63 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.assertEqual(-1, h.find(b'Content-Type: text/xml; charset=utf-8'), "Header: %s\nResponse:\n%s" % (h, r))
         self.assertNotEqual(-1, h.find(b'Content-Type: image/png'), "Header: %s\nResponse:\n%s" % (h, r))
 
+    def test_getLegendGraphics_invalid_parameters(self):
+        """Test that does return an exception"""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello,db_point",
+            "LAYERTITLE": "FALSE",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "RULE": "1",
+            "BBOX": "-151.7,-38.9,51.0,78.0",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        err = b"BBOX parameter cannot be combined with RULE" in r
+        self.assertTrue(err)
+
+    def test_wms_GetLegendGraphic_LayerSpace(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            # "HEIGHT": "500",
+            # "WIDTH": "500",
+            "LAYERSPACE": "50.0",
+            "LAYERTITLE": "TRUE",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerSpace")
+
+    def test_wms_GetLegendGraphic_ShowFeatureCount(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "FORMAT": "image/png",
+            # "HEIGHT": "500",
+            # "WIDTH": "500",
+            "LAYERTITLE": "TRUE",
+            "SHOWFEATURECOUNT": "TRUE",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ShowFeatureCount")
+
     def test_getLegendGraphics_layertitle(self):
         """Test that does not return an exception but an image"""
         parms = {
@@ -1058,6 +1115,66 @@ class TestQgsServerWMS(QgsServerTestBase):
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
+
+    def test_getLegendGraphics_rulelabel(self):
+        """Test that does not return an exception but an image"""
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'RULELABEL': 'TRUE',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
+
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'RULELABEL': 'FALSE',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
+
+    def test_getLegendGraphics_rule(self):
+        """Test that does not return an exception but an image"""
+        parms = {
+            'MAP': self.testdata_path + "test_project_legend_rule.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'WIDTH': '20',
+            'HEIGHT': '20',
+            'RULE': 'rule0',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule0", 250, QSize(15, 15))
+
+        parms = {
+            'MAP': self.testdata_path + "test_project_legend_rule.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'WIDTH': '20',
+            'HEIGHT': '20',
+            'RULE': 'rule1',
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rule1", 250, QSize(15, 15))
 
     def test_wms_GetLegendGraphic_Basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1201,6 +1318,46 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_SymbolSize")
+
+    def test_wms_GetLegendGraphic_LayerFont(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "TRUE",
+            "LAYERFONTBOLD": "TRUE",
+            "LAYERFONTITALIC": "TRUE",
+            "LAYERFONTSIZE": "30",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_LayerFont")
+
+    def test_wms_GetLegendGraphic_ItemFont(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetLegendGraphic",
+            "LAYER": "Country,Hello",
+            "LAYERTITLE": "TRUE",
+            "ITEMFONTBOLD": "TRUE",
+            "ITEMFONTITALIC": "TRUE",
+            "ITEMFONTSIZE": "30",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_ItemFont")
 
     def test_wms_GetLegendGraphic_BBox(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
