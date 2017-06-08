@@ -27,32 +27,32 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertEqual(c.minScale, 0)
         self.assertEqual(c.maxScale, 0)
 
-        c = QgsMapUnitScale(0.0001, 0.005)
-        self.assertEqual(c.minScale, 0.0001)
-        self.assertEqual(c.maxScale, 0.005)
+        c = QgsMapUnitScale(10000, 200)
+        self.assertEqual(c.minScale, 10000)
+        self.assertEqual(c.maxScale, 200)
 
     def testEquality(self):
         # test equality operator
 
-        c1 = QgsMapUnitScale(0.0001, 0.005)
+        c1 = QgsMapUnitScale(10000, 200)
         c1.minSizeMMEnabled = True
         c1.minSizeMM = 3
         c1.maxSizeMMEnabled = True
         c1.maxSizeMM = 8
-        c2 = QgsMapUnitScale(0.0001, 0.005)
+        c2 = QgsMapUnitScale(10000, 200)
         c2.minSizeMMEnabled = True
         c2.minSizeMM = 3
         c2.maxSizeMMEnabled = True
         c2.maxSizeMM = 8
         self.assertEqual(c1, c2)
 
-        c2.minScale = 0.0004
+        c2.minScale = 2500.0
         self.assertNotEqual(c1, c2)
-        c2.minScale = 0.0001
+        c2.minScale = 10000
 
-        c2.maxScale = 0.007
+        c2.maxScale = 142.857
         self.assertNotEqual(c1, c2)
-        c2.maxScale = 0.005
+        c2.maxScale = 200
 
         c2.minSizeMMEnabled = False
         self.assertNotEqual(c1, c2)
@@ -90,29 +90,29 @@ class PyQgsMapUnitScale(unittest.TestCase):
         self.assertAlmostEqual(mup, 2.0, places=5)
 
         # add a minimum scale less than the renderer scale, so should be no change
-        c.minScale = 1 / 350000000.0
+        c.minScale = 350000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
         # minimum scale greater than the renderer scale, so should be limited to minScale
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 1.0276160, places=5)
-        c.minScale = 1 / 50000000.0
+        c.minScale = 50000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 0.3425386, places=5)
-        c.minScale = 1 / 350000000.0
+        c.minScale = 350000000.0
 
         # add a maximum scale greater than the renderer scale, so should be no change
-        c.maxScale = 1 / 150000000.0
+        c.maxScale = 150000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.0, places=5)
 
         # maximum scale less than the renderer scale, so should be limited to maxScale
-        c.maxScale = 1 / 350000000.0
+        c.maxScale = 350000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 2.3977706, places=5)
-        c.maxScale = 1 / 500000000.0
+        c.maxScale = 500000000.0
         mup = c.computeMapUnitsPerPixel(r)
         self.assertAlmostEqual(mup, 3.4253867, places=5)
 
@@ -126,8 +126,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # test encoding and decoding QgsMapUnitScale
 
         s = QgsMapUnitScale()
-        s.minScale = 50
-        s.maxScale = 100
+        s.minScale = 100
+        s.maxScale = 50
         s.minSizeMMEnabled = True
         s.minSizeMM = 3
         s.maxSizeMMEnabled = False
@@ -140,8 +140,8 @@ class PyQgsMapUnitScale(unittest.TestCase):
         # check old style encoding
         encode = '9,78.3'
         r = QgsSymbolLayerUtils.decodeMapUnitScale(encode)
-        self.assertEqual(r.minScale, 9)
-        self.assertEqual(r.maxScale, 78.3)
+        self.assertAlmostEqual(r.minScale, 1.0 / 9, 3)
+        self.assertAlmostEqual(r.maxScale, 1.0 / 78.3, 3)
         self.assertFalse(r.minSizeMMEnabled)
         self.assertEqual(r.minSizeMM, 0)
         self.assertFalse(r.maxSizeMMEnabled)
