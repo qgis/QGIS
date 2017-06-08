@@ -20,6 +20,17 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+  }
+  mFilterRect = transformedFilterRect( mTransform );
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
   switch ( featureRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFids:
@@ -61,6 +72,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mRequest.acceptFeature( f ) )
     {
       f.setValid( true );
+      transformFeatureGeometry( f, mTransform );
       return true;
     }
   }
@@ -85,7 +97,18 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
-  mFeatIt = vlCache->layer()->getFeatures( featureRequest );
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+  }
+  mFilterRect = transformedFilterRect( mTransform );
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
+  mFeatIt = vlCache->layer()->getFeatures( mRequest );
 }
 
 bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
@@ -100,6 +123,7 @@ bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
     // As long as features can be fetched from the provider: Write them to cache
     mVectorLayerCache->cacheFeature( f );
     mFids.insert( f.id() );
+    transformFeatureGeometry( f, mTransform );
     return true;
   }
   else

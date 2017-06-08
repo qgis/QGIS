@@ -78,6 +78,8 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     QgsFeatureIds mFeatureIds;
     QgsVectorLayerCache *mVectorLayerCache = nullptr;
     QgsFeatureIds::ConstIterator mFeatureIdIterator;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 /** \ingroup core
@@ -127,5 +129,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     QgsFeatureIterator mFeatIt;
     QgsVectorLayerCache *mVectorLayerCache = nullptr;
     QgsFeatureIds mFids;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 #endif // QGSCACHEDFEATUREITERATOR_H
