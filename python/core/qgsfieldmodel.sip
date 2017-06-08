@@ -27,14 +27,14 @@ class QgsFieldModel : QAbstractItemModel
 
     enum FieldRoles
     {
-      FieldNameRole
-      FieldIndexRole
-      ExpressionRole
-      IsExpressionRole
-      ExpressionValidityRole
-      FieldTypeRole
-      FieldOriginRole
-      IsEmptyRole
+      FieldNameRole,
+      FieldIndexRole,
+      ExpressionRole,
+      IsExpressionRole,
+      ExpressionValidityRole,
+      FieldTypeRole,
+      FieldOriginRole,
+      IsEmptyRole,
     };
 
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );

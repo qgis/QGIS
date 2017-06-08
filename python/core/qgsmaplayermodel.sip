@@ -27,7 +27,7 @@ class QgsMapLayerModel : QAbstractItemModel
 
     enum ItemDataRole
     {
-      LayerIdRole
+      LayerIdRole,
       LayerRole,
       EmptyRole,
       AdditionalRole,
