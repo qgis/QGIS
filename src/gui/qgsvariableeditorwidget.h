@@ -142,6 +142,8 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 };
 
 
+#ifndef SIP_RUN
+
 /// @cond PRIVATE
 
 /* QgsVariableEditorTree is NOT part of the public QGIS api. It's only
@@ -230,5 +232,7 @@ class VariableEditorDelegate : public QItemDelegate
 };
 
 /// @endcond
+
+#endif
 
 #endif //QGSVARIABLEEDITORWIDGET_H

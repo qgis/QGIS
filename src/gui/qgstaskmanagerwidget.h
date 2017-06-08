@@ -61,6 +61,8 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
     QgsTaskManagerModel *mModel = nullptr;
 };
 
+#ifndef SIP_RUN
+
 ///@cond PRIVATE
 
 /**
@@ -237,5 +239,8 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 };
 
 ///@endcond
+///
+
+#endif
 
 #endif //QGSTASKMANAGERWIDGET_H
