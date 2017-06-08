@@ -897,8 +897,18 @@ void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( i
 {
   int currentIndexData = mGeometryTypeComboBox->itemData( index ).toInt();
 
-  mForceMultiCheckBox->setEnabled( currentIndexData != -1 );
-  mIncludeZCheckBox->setEnabled( currentIndexData != -1 );
+  if ( currentIndexData != -1 && currentIndexData != QgsWkbTypes::NoGeometry )
+  {
+    mForceMultiCheckBox->setEnabled( true );
+    mIncludeZCheckBox->setEnabled( true );
+  }
+  else
+  {
+    mForceMultiCheckBox->setEnabled( false );
+    mForceMultiCheckBox->setChecked( false );
+    mIncludeZCheckBox->setEnabled( false );
+    mIncludeZCheckBox->setChecked( false );
+  }
 }
 
 void QgsVectorLayerSaveAsDialog::on_mSelectAllAttributes_clicked()
