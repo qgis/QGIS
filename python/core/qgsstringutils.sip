@@ -161,10 +161,10 @@ class QgsStringUtils
 
     enum Capitalization
     {
-      MixedCase
-      AllUppercase
-      AllLowercase
-      ForceFirstLetterToCapital
+      MixedCase,
+      AllUppercase,
+      AllLowercase,
+      ForceFirstLetterToCapital,
     };
 
     static QString capitalize( const QString &string, Capitalization capitalization );
