@@ -18,6 +18,7 @@
 
 #include <QComboBox>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /** \ingroup gui
  * \class QgsPenStyleComboBox
@@ -27,7 +28,7 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenStyleComboBox( QWidget *parent = nullptr );
+    QgsPenStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qt::PenStyle penStyle() const;
 
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenJoinStyleComboBox( QWidget *parent = nullptr );
+    QgsPenJoinStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qt::PenJoinStyle penJoinStyle() const;
 
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
     Q_OBJECT
 
   public:
-    QgsPenCapStyleComboBox( QWidget *parent = nullptr );
+    QgsPenCapStyleComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qt::PenCapStyle penCapStyle() const;
 

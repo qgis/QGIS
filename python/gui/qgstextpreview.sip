@@ -54,8 +54,8 @@ class QgsTextPreview : QLabel
 
     void setScale( double scale );
 %Docstring
- Sets the scale to use for previewing format sizes in map units.
- \param scale preview map scale
+ Sets the ``scale`` to use for previewing format sizes in map units.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: scale()
 .. seealso:: setMapUnits()
 %End
@@ -63,6 +63,7 @@ class QgsTextPreview : QLabel
     double scale() const;
 %Docstring
  Returns the scale used for previewing format sizes in map units.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. seealso:: setScale()
 .. seealso:: mapUnits()
  :rtype: float

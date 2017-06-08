@@ -1,187 +1,267 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsrendererwidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsRendererWidget : QgsPanelWidget
 {
-%TypeHeaderCode
-#include <qgsrendererwidget.h>
+%Docstring
+Base class for renderer settings widgets
+
+WORKFLOW:
+- open renderer dialog with some RENDERER  (never null!)
+- find out which widget to use
+- instantiate it and set in stacked widget
+- on any change of renderer type, create some default (dummy?) version and change the stacked widget
+- when clicked ok/apply, get the renderer from active widget and clone it for the layer
 %End
 
+%TypeHeaderCode
+#include "qgsrendererwidget.h"
+%End
   public:
     QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
 
-    virtual ~QgsRendererWidget();
-
-    //! return pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer *renderer() = 0;
+%Docstring
+return pointer to the renderer (no transfer of ownership)
+ :rtype: QgsFeatureRenderer
+%End
 
-    //! show a dialog with renderer's symbol level settings
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
+%Docstring
+show a dialog with renderer's symbol level settings
+%End
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
-     */
-    void setContext( const QgsSymbolWidgetContext &context );
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+ Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+ \param context symbol widget context
+.. seealso:: context()
+.. versionadded:: 3.0
+%End
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
-     */
     QgsSymbolWidgetContext context() const;
+%Docstring
+ Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+.. seealso:: setContext()
+.. versionadded:: 3.0
+ :rtype: QgsSymbolWidgetContext
+%End
 
-    /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
-     */
     const QgsVectorLayer *vectorLayer() const;
+%Docstring
+ Returns the vector layer associated with the widget.
+.. versionadded:: 2.12
+ :rtype: QgsVectorLayer
+%End
 
-    /**
-     * This method should be called whenever the renderer is actually set on the layer.
-     */
     void applyChanges();
+%Docstring
+ This method should be called whenever the renderer is actually set on the layer.
+%End
 
   signals:
-    /**
-     * Emitted when expression context variables on the associated
-     * vector layers have been changed. Will request the parent dialog
-     * to re-synchronize with the variables.
-     */
+
     void layerVariablesChanged();
+%Docstring
+ Emitted when expression context variables on the associated
+ vector layers have been changed. Will request the parent dialog
+ to re-synchronize with the variables.
+%End
 
   protected:
-    /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
-      and by connecting the slot contextMenuViewCategories(const QPoint&)*/
-    virtual QList<QgsSymbol*> selectedSymbols();
+
+
+    virtual QList<QgsSymbol *> selectedSymbols();
+%Docstring
+ Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
+and by connecting the slot contextMenuViewCategories(const QPoint&)*
+ :rtype: list of QgsSymbol
+%End
     virtual void refreshSymbolView();
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
-    /** Change color of selected symbols*/
     void changeSymbolColor();
-    /** Change opacity of selected symbols*/
+%Docstring
+Change color of selected symbols
+%End
     void changeSymbolOpacity();
-    /** Change units mm/map units of selected symbols*/
+%Docstring
+Change opacity of selected symbols
+%End
     void changeSymbolUnit();
-    /** Change line widths of selected symbols*/
+%Docstring
+Change units mm/map units of selected symbols
+%End
     void changeSymbolWidth();
-    /** Change marker sizes of selected symbols*/
+%Docstring
+Change line widths of selected symbols
+%End
     void changeSymbolSize();
-    /** Change marker angles of selected symbols*/
+%Docstring
+Change marker sizes of selected symbols
+%End
     void changeSymbolAngle();
+%Docstring
+Change marker angles of selected symbols
+%End
 
     virtual void copy();
     virtual void paste();
 
   private:
-    /**
-     * This will be called whenever the renderer is set on a layer.
-     * This can be overwritten in subclasses.
-     */
-    virtual void apply();
-
+    virtual void apply() ;
+%Docstring
+ This will be called whenever the renderer is set on a layer.
+ This can be overwritten in subclasses.
+%End
 };
 
 
-/**
-Utility classes for "en masse" size definition
-*/
+
+
+
+
+
 class QgsDataDefinedValueDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsrendererwidget.h>
+%Docstring
+Utility classes for "en masse" size definition
 %End
 
+%TypeHeaderCode
+#include "qgsrendererwidget.h"
+%End
   public:
-    /** Constructor
-     * @param symbolList must not be empty
-     * @param layer must not be null
-     * @param label value label
-     */
-    QgsDataDefinedValueDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer, const QString &label );
-    virtual ~QgsDataDefinedValueDialog();
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
-     */
+    QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
+%Docstring
+ Constructor
+ \param symbolList must not be empty
+ \param layer must not be null
+ \param label value label
+%End
+
     void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+ Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+ \param context symbol widget context
+.. seealso:: context()
+.. versionadded:: 3.0
+%End
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
-     */
     QgsSymbolWidgetContext context() const;
+%Docstring
+ Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+.. seealso:: setContext()
+.. versionadded:: 3.0
+ :rtype: QgsSymbolWidgetContext
+%End
 
-    /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
-     */
     const QgsVectorLayer *vectorLayer() const;
+%Docstring
+ Returns the vector layer associated with the widget.
+.. versionadded:: 2.12
+ :rtype: QgsVectorLayer
+%End
 
   public slots:
     void dataDefinedChanged();
 
   protected:
-    /**
-     * Should be called in the constructor of child classes.
-     *
-     * @note May be missing Python bindings depending on the platform.
-     */
+
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsProperty symbolDataDefined() const;
-    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const = 0;
-    virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
+    QgsProperty symbolDataDefined() const ;
+%Docstring
+ :rtype: QgsProperty
+%End
+  private:
+    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 ;
+%Docstring
+ :rtype: QgsProperty
+%End
+  private:
+    virtual double value( const QgsSymbol * ) const = 0 ;
+%Docstring
+ :rtype: float
+%End
+  private:
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 ;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
 {
-%TypeHeaderCode
-#include <qgsrendererwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgsrendererwidget.h"
+%End
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
-    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
-    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+    virtual double value( const QgsSymbol *symbol ) const;
+
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+
+
 };
 
 class QgsDataDefinedRotationDialog : QgsDataDefinedValueDialog
 {
-%TypeHeaderCode
-#include <qgsrendererwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgsrendererwidget.h"
+%End
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
-    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
-    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+    virtual double value( const QgsSymbol *symbol ) const;
+
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+
 };
-
 
 class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
 {
-%TypeHeaderCode
-#include <qgsrendererwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgsrendererwidget.h"
+%End
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol*> &symbolList, QgsVectorLayer *layer );
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer );
 
   protected:
-    virtual QgsProperty symbolDataDefined( const QgsSymbol* ) const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const;
 
-    double value( const QgsSymbol *symbol ) const;
 
-    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+    virtual double value( const QgsSymbol *symbol ) const;
+
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsrendererwidget.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

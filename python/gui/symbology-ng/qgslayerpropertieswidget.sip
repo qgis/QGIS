@@ -1,25 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgslayerpropertieswidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
+
 %TypeHeaderCode
-#include <qgslayerpropertieswidget.h>
+#include "qgslayerpropertieswidget.h"
+%End
+  public:
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+
+    void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+ Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+ \param context symbol widget context
+.. seealso:: context()
+.. versionadded:: 3.0
 %End
 
-  public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = NULL );
-
-   /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @param context symbol widget context
-     * @see context()
-     * @note added in QGIS 3.0
-     */
-    void setContext( const QgsSymbolWidgetContext &context );
-
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-     * @see setContext()
-     * @note added in QGIS 3.0
-     */
     QgsSymbolWidgetContext context() const;
+%Docstring
+ Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+.. seealso:: setContext()
+.. versionadded:: 3.0
+ :rtype: QgsSymbolWidgetContext
+%End
 
+    virtual void setDockMode( bool dockMode );
+%Docstring
+ Set the widget in dock mode which tells the widget to emit panel
+ widgets and not open dialogs
+ \param dockMode True to enable dock mode.
+%End
 
   public slots:
     void layerTypeChanged();
@@ -27,11 +49,32 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayer* );
+    void changeLayer( QgsSymbolLayer * );
 
   protected:
     void populateLayerTypes();
     void updateSymbolLayerWidget( QgsSymbolLayer *layer );
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
+%Docstring
+ Registers a data defined override button. Handles setting up connections
+ for the button and initializing the button to show the correct descriptions
+ and help text for the associated property.
+.. versionadded:: 3.0
+%End
+
+  protected: // data
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgslayerpropertieswidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

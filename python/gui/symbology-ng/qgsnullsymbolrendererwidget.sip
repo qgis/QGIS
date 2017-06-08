@@ -1,24 +1,55 @@
-/** \ingroup gui
- * \class QgsNullSymbolRendererWidget
- * \brief Blank widget for customising QgsNullSymbolRenderer.
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsnullsymbolrendererwidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsNullSymbolRendererWidget : QgsRendererWidget
 {
-%TypeHeaderCode
-#include <qgsnullsymbolrendererwidget.h>
+%Docstring
+ Blank widget for customising QgsNullSymbolRenderer.
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsnullsymbolrendererwidget.h"
+%End
   public:
 
-    //! Creates a new QgsNullSymbolRendererWidget object
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Creates a new QgsNullSymbolRendererWidget object
+ :rtype: QgsRendererWidget
+%End
 
-    //! Constructor for QgsNullSymbolRendererWidget
     QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+%Docstring
+Constructor for QgsNullSymbolRendererWidget
+%End
     ~QgsNullSymbolRendererWidget();
 
-    //! Returns a pointer to the configured renderer
     virtual QgsFeatureRenderer *renderer();
+%Docstring
+Returns a pointer to the configured renderer
+ :rtype: QgsFeatureRenderer
+%End
+
+  protected:
+
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsnullsymbolrendererwidget.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
