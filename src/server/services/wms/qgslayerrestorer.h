@@ -30,6 +30,7 @@ class QgsLayerRestorer
 {
     struct QgsLayerSettings
     {
+      QString name;
       double mOpacity;
       QString mNamedStyle;
       QDomDocument mSldStyle;
