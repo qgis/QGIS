@@ -572,8 +572,7 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         item_found = False
         for item in str(r).split("\\n"):
-            if "OnlineResource" in item:
-                self.assertEqual("xlink:href=\"my_wms_advertised_url?" in item, True)
+            if "OnlineResource" in item and "xlink:href=\"my_wms_advertised_url?" in item:
                 item_found = True
         self.assertTrue(item_found)
 

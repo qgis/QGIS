@@ -195,7 +195,7 @@ namespace QgsWms
     doc.appendChild( wmsCapabilitiesElement );
 
     //INSERT Service
-    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version ) );
+    wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version, request ) );
 
     //wms:Capability element
     QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings );
@@ -222,7 +222,8 @@ namespace QgsWms
     return doc;
   }
 
-  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version )
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                 const QgsServerRequest &request )
   {
     bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
 
@@ -283,14 +284,15 @@ namespace QgsWms
     }
 
     QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
-    if ( !onlineResource.isEmpty() )
+    if ( onlineResource.isEmpty() )
     {
-      QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
-      onlineResourceElem.setAttribute( QStringLiteral( "xlink:href" ), onlineResource );
-      serviceElem.appendChild( onlineResourceElem );
+      onlineResource = serviceUrl( request, project ).toString();
     }
+    QDomElement onlineResourceElem = doc.createElement( QStringLiteral( "OnlineResource" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xmlns:xlink" ), QStringLiteral( "http://www.w3.org/1999/xlink" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
+    onlineResourceElem.setAttribute( QStringLiteral( "xlink:href" ), onlineResource );
+    serviceElem.appendChild( onlineResourceElem );
 
     QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
     QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );

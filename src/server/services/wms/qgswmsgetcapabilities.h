@@ -61,7 +61,8 @@ namespace QgsWms
   /**
    * Create Service element for get capabilities document
    */
-  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version );
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                 const QgsServerRequest &request );
 
   /** Output GetCapabilities response
    */
