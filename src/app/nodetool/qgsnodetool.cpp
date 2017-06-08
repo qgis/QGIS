@@ -626,8 +626,13 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
     QgsPointLocator::Match lastMatch = snapUtils->snapToMap( mapPoint, &filterLast );
-    if ( lastMatch.isValid() && lastMatch.distance() <= m.distance() )
+    // but skip the the previously used feature if it would only snap to segment, while now we have snap to vertex
+    // so that if there is a point on a line, it gets priority (as is usual with combined vertex+segment snapping)
+    bool matchHasVertexLastHasEdge = m.hasVertex() && lastMatch.hasEdge();
+    if ( lastMatch.isValid() && lastMatch.distance() <= m.distance() && !matchHasVertexLastHasEdge )
+    {
       m = lastMatch;
+    }
   }
 
   snapUtils->setConfig( oldConfig );
