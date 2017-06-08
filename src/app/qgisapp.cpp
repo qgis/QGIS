@@ -9010,11 +9010,11 @@ void QgisApp::zoomToLayerScale()
   if ( layer && layer->hasScaleBasedVisibility() )
   {
     const double scale = mMapCanvas->scale();
-    if ( scale > layer->minimumScale() )
+    if ( scale > layer->minimumScale() && layer->minimumScale() > 0 )
     {
       mMapCanvas->zoomScale( layer->minimumScale() * Qgis::SCALE_PRECISION );
     }
-    else if ( scale <= layer->maximumScale() )
+    else if ( scale <= layer->maximumScale() && layer->maximumScale() > 0 )
     {
       mMapCanvas->zoomScale( layer->maximumScale() );
     }
