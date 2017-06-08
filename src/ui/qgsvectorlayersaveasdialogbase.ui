@@ -106,9 +106,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-303</y>
         <width>557</width>
-        <height>922</height>
+        <height>1004</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -235,15 +235,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="mScaleSpinBox">
-           <property name="prefix">
-            <string>1:</string>
-           </property>
-           <property name="maximum">
-            <number>999999999</number>
-           </property>
-           <property name="value">
-            <number>50000</number>
+          <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
@@ -469,6 +463,11 @@
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mFormatComboBox</tabstop>
@@ -482,15 +481,15 @@
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
-  <tabstop>mScaleSpinBox</tabstop>
-  <tabstop>mGeometryGroupBox</tabstop>
+  <tabstop>mScaleWidget</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
-  <tabstop>mExtentGroupBox</tabstop>
-  <tabstop>mDatasourceOptionsGroupBox</tabstop>
-  <tabstop>mLayerOptionsGroupBox</tabstop>
-  <tabstop>mOgrOptionsGroupBox</tabstop>
+  <tabstop>mAddToCanvas</tabstop>
+  <tabstop>mAttributeTable</tabstop>
+  <tabstop>mReplaceRawFieldValues</tabstop>
+  <tabstop>mOgrDatasourceOptions</tabstop>
+  <tabstop>mOgrLayerOptions</tabstop>
  </tabstops>
  <resources/>
  <connections>
