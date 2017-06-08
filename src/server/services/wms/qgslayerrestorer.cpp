@@ -21,24 +21,15 @@
 #include "qgsrasterrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 
-const QString DEFAULT_NAMED_STYLE = "server_default_style";
-
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     QgsLayerSettings settings;
+    settings.name = layer->name();
 
     QString style = layer->styleManager()->currentStyle();
-    if ( style.isEmpty() )
-    {
-      layer->styleManager()->addStyleFromLayer( DEFAULT_NAMED_STYLE );
-      settings.mNamedStyle = DEFAULT_NAMED_STYLE;
-    }
-    else
-    {
-      settings.mNamedStyle = style;
-    }
+    settings.mNamedStyle = layer->styleManager()->currentStyle();
 
     // set a custom property allowing to keep in memory if a SLD file has
     // been loaded for rendering
@@ -80,6 +71,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
   {
     QgsLayerSettings settings = mLayerSettings[layer];
     layer->styleManager()->setCurrentStyle( settings.mNamedStyle );
+    layer->setName( mLayerSettings[layer].name );
 
     // if a SLD file has been loaded for rendering, we restore the previous one
     QString errMsg;

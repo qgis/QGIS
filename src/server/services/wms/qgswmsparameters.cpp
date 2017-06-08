@@ -23,12 +23,103 @@ namespace QgsWms
 {
   QgsWmsParameters::QgsWmsParameters()
   {
+    const Parameter pBoxSpace = { ParameterName::BOXSPACE,
+                                  QVariant::Double,
+                                  QVariant( 2.0 ),
+                                  QVariant()
+                                };
+    save( pBoxSpace );
+
+    const Parameter pSymbSpace = { ParameterName::SYMBOLSPACE,
+                                   QVariant::Double,
+                                   QVariant( 2.0 ),
+                                   QVariant()
+                                 };
+    save( pSymbSpace );
+
+    const Parameter pLayerSpace = { ParameterName::LAYERSPACE,
+                                    QVariant::Double,
+                                    QVariant( 3.0 ),
+                                    QVariant()
+                                  };
+    save( pLayerSpace );
+
+    const Parameter pTitleSpace = { ParameterName::LAYERTITLESPACE,
+                                    QVariant::Double,
+                                    QVariant( 3.0 ),
+                                    QVariant()
+                                  };
+    save( pTitleSpace );
+
+    const Parameter pSymbHeight = { ParameterName::SYMBOLHEIGHT,
+                                    QVariant::Double,
+                                    QVariant( 4.0 ),
+                                    QVariant()
+                                  };
+    save( pSymbHeight );
+
+    const Parameter pSymbWidth = { ParameterName::SYMBOLWIDTH,
+                                   QVariant::Double,
+                                   QVariant( 7.0 ),
+                                   QVariant()
+                                 };
+    save( pSymbWidth );
+
+    const Parameter pIcLabelSpace = { ParameterName::ICONLABELSPACE,
+                                      QVariant::Double,
+                                      QVariant( 2.0 ),
+                                      QVariant()
+                                    };
+    save( pIcLabelSpace );
+
+    const Parameter pItFontFamily = { ParameterName::ITEMFONTFAMILY,
+                                      QVariant::String,
+                                      QVariant( "" ),
+                                      QVariant()
+                                    };
+    save( pItFontFamily );
+
+    const Parameter pItFontBold = { ParameterName::ITEMFONTBOLD,
+                                    QVariant::Bool,
+                                    QVariant( false ),
+                                    QVariant()
+                                  };
+    save( pItFontBold );
+
+    const Parameter pItFontItalic = { ParameterName::ITEMFONTITALIC,
+                                      QVariant::Bool,
+                                      QVariant( false ),
+                                      QVariant()
+                                    };
+    save( pItFontItalic );
+
+    const Parameter pItFontSize = { ParameterName::ITEMFONTSIZE,
+                                    QVariant::Double,
+                                    QVariant( -1 ),
+                                    QVariant()
+                                  };
+    save( pItFontSize );
+
+    const Parameter pItFontColor = { ParameterName::ITEMFONTCOLOR,
+                                     QVariant::String,
+                                     QVariant( "black" ),
+                                     QVariant()
+                                   };
+    save( pItFontColor );
+
     const Parameter pHighlightGeom = { ParameterName::HIGHLIGHT_GEOM,
                                        QVariant::String,
                                        QVariant( "" ),
                                        QVariant()
                                      };
     save( pHighlightGeom );
+
+    const Parameter pShowFeatureCount = { ParameterName::SHOWFEATURECOUNT,
+                                          QVariant::Bool,
+                                          QVariant( false ),
+                                          QVariant()
+                                        };
+    save( pShowFeatureCount );
 
     const Parameter pHighlightSymbol = { ParameterName::HIGHLIGHT_SYMBOL,
                                          QVariant::String,
@@ -46,7 +137,7 @@ namespace QgsWms
 
     const Parameter pHighlightColor = { ParameterName::HIGHLIGHT_LABELCOLOR,
                                         QVariant::String,
-                                        QVariant( "" ),
+                                        QVariant( "black" ),
                                         QVariant()
                                       };
     save( pHighlightColor );
@@ -74,7 +165,7 @@ namespace QgsWms
 
     const Parameter pHighlightBufferColor = { ParameterName::HIGHLIGHT_LABELBUFFERCOLOR,
                                               QVariant::String,
-                                              QVariant( "" ),
+                                              QVariant( "black" ),
                                               QVariant()
                                             };
     save( pHighlightBufferColor );
@@ -92,6 +183,34 @@ namespace QgsWms
                              QVariant()
                            };
     save( pCRS );
+
+    const Parameter pFormat = { ParameterName::FORMAT,
+                                QVariant::String,
+                                QVariant( "" ),
+                                QVariant()
+                              };
+    save( pFormat );
+
+    const Parameter pRule = { ParameterName::RULE,
+                              QVariant::String,
+                              QVariant( "" ),
+                              QVariant()
+                            };
+    save( pRule );
+
+    const Parameter pRuleLabel = { ParameterName::RULELABEL,
+                                   QVariant::Bool,
+                                   QVariant( true ),
+                                   QVariant()
+                                 };
+    save( pRuleLabel );
+
+    const Parameter pScale = { ParameterName::SCALE,
+                               QVariant::Double,
+                               QVariant( "" ),
+                               QVariant()
+                             };
+    save( pScale );
 
     const Parameter pHeight = { ParameterName::HEIGHT,
                                 QVariant::Int,
@@ -134,6 +253,48 @@ namespace QgsWms
                                 QVariant()
                               };
     save( pLayers );
+
+    const Parameter pLayerTitle = { ParameterName::LAYERTITLE,
+                                    QVariant::Bool,
+                                    QVariant( true ),
+                                    QVariant()
+                                  };
+    save( pLayerTitle );
+
+    const Parameter pLayerFtFamily = { ParameterName::LAYERFONTFAMILY,
+                                       QVariant::String,
+                                       QVariant( "" ),
+                                       QVariant()
+                                     };
+    save( pLayerFtFamily );
+
+    const Parameter pLayerFtBold = { ParameterName::LAYERFONTBOLD,
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+    save( pLayerFtBold );
+
+    const Parameter pLayerFtItalic = { ParameterName::LAYERFONTITALIC,
+                                       QVariant::Bool,
+                                       QVariant( false ),
+                                       QVariant()
+                                     };
+    save( pLayerFtItalic );
+
+    const Parameter pLayerFtSize = { ParameterName::LAYERFONTSIZE,
+                                     QVariant::Double,
+                                     QVariant( -1 ),
+                                     QVariant()
+                                   };
+    save( pLayerFtSize );
+
+    const Parameter pLayerFtColor = { ParameterName::LAYERFONTCOLOR,
+                                      QVariant::String,
+                                      QVariant( "black" ),
+                                      QVariant()
+                                    };
+    save( pLayerFtColor );
 
     const Parameter pStyle = { ParameterName::STYLE,
                                QVariant::String,
@@ -226,6 +387,11 @@ namespace QgsWms
     return mParameters[name].mValue;
   }
 
+  QVariant QgsWmsParameters::defaultValue( ParameterName name ) const
+  {
+    return mParameters[name].mDefaultValue;
+  }
+
   QStringList QgsWmsParameters::highlightGeom() const
   {
     return toStringList( ParameterName::HIGHLIGHT_GEOM, ';' );
@@ -303,26 +469,77 @@ namespace QgsWms
     return extent;
   }
 
-  int QgsWmsParameters::height() const
+  QString QgsWmsParameters::height() const
   {
-    bool ok = false;
-    int height = value( ParameterName::HEIGHT ).toInt( &ok );
-
-    if ( ! ok )
-      raiseError( ParameterName::HEIGHT );
-
-    return height;
+    return value( ParameterName::HEIGHT ).toString();
   }
 
-  int QgsWmsParameters::width() const
+  QString QgsWmsParameters::width() const
   {
-    bool ok = false;
-    int width = value( ParameterName::WIDTH ).toInt( &ok );
+    return value( ParameterName::WIDTH ).toString();
+  }
 
-    if ( ! ok )
-      raiseError( ParameterName::WIDTH );
+  int QgsWmsParameters::heightAsInt() const
+  {
+    return toInt( ParameterName::HEIGHT );
+  }
 
-    return width;
+  int QgsWmsParameters::widthAsInt() const
+  {
+    return toInt( ParameterName::WIDTH );
+  }
+
+  double QgsWmsParameters::toDouble( ParameterName p ) const
+  {
+    double val = defaultValue( p ).toDouble();
+    QString valStr = value( p ).toString();
+
+    if ( ! valStr.isEmpty() )
+    {
+      bool ok;
+      val = value( p ).toDouble( &ok );
+
+      if ( !ok )
+      {
+        QString n = name( p );
+        QString msg = n + " ('" + valStr + "') cannot be converted into a double";
+        raiseError( msg );
+      }
+    }
+
+    return val;
+  }
+
+  bool QgsWmsParameters::toBool( ParameterName p ) const
+  {
+    bool val = defaultValue( p ).toBool();
+    QString valStr = value( p ).toString();
+
+    if ( ! valStr.isEmpty() )
+      val = value( p ).toBool();
+
+    return val;
+  }
+
+  int QgsWmsParameters::toInt( ParameterName p ) const
+  {
+    int val = defaultValue( p ).toInt();
+    QString valStr = value( p ).toString();
+
+    if ( ! valStr.isEmpty() )
+    {
+      bool ok;
+      val = value( p ).toInt( &ok );
+
+      if ( !ok )
+      {
+        QString n = name( p );
+        QString msg = n + " ('" + valStr + "') cannot be converted into int";
+        raiseError( msg );
+      }
+    }
+
+    return val;
   }
 
   QStringList QgsWmsParameters::toStringList( ParameterName name, char delimiter ) const
@@ -402,6 +619,285 @@ namespace QgsWms
     }
 
     return elements;
+  }
+
+  QString QgsWmsParameters::formatAsString() const
+  {
+    return value( ParameterName::FORMAT ).toString();
+  }
+
+  QgsWmsParameters::Format QgsWmsParameters::format() const
+  {
+    Format f = Format::PNG;
+    QString fStr = formatAsString();
+
+    if ( fStr.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
+         || fStr.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
+         || fStr.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+      f = Format::JPG;
+
+    return f;
+  }
+
+  QString QgsWmsParameters::rule() const
+  {
+    return value( ParameterName::RULE ).toString();
+  }
+
+  QString QgsWmsParameters::ruleLabel() const
+  {
+    return value( ParameterName::RULELABEL ).toString();
+  }
+
+  bool QgsWmsParameters::ruleLabelAsBool() const
+  {
+    return toBool( ParameterName::RULELABEL );
+  }
+
+  QString QgsWmsParameters::scale() const
+  {
+    return value( ParameterName::SCALE ).toString();
+  }
+
+  double QgsWmsParameters::scaleAsDouble() const
+  {
+    return toDouble( ParameterName::SCALE );
+  }
+
+  QString QgsWmsParameters::showFeatureCount() const
+  {
+    return value( ParameterName::SHOWFEATURECOUNT ).toString();
+  }
+
+  bool QgsWmsParameters::showFeatureCountAsBool() const
+  {
+    return toBool( ParameterName::SHOWFEATURECOUNT );
+  }
+
+  QString QgsWmsParameters::boxSpace() const
+  {
+    return value( ParameterName::BOXSPACE ).toString();
+  }
+
+  double QgsWmsParameters::boxSpaceAsDouble() const
+  {
+    return toDouble( ParameterName::BOXSPACE );
+  }
+
+  QString QgsWmsParameters::layerSpace() const
+  {
+    return value( ParameterName::LAYERSPACE ).toString();
+  }
+
+  double QgsWmsParameters::layerSpaceAsDouble() const
+  {
+    return toDouble( ParameterName::LAYERSPACE );
+  }
+
+  QString QgsWmsParameters::layerTitleSpace() const
+  {
+    return value( ParameterName::LAYERTITLESPACE ).toString();
+  }
+
+  double QgsWmsParameters::layerTitleSpaceAsDouble() const
+  {
+    return toDouble( ParameterName::LAYERTITLESPACE );
+  }
+
+  QString QgsWmsParameters::symbolSpace() const
+  {
+    return value( ParameterName::SYMBOLSPACE ).toString();
+  }
+
+  double QgsWmsParameters::symbolSpaceAsDouble() const
+  {
+    return toDouble( ParameterName::SYMBOLSPACE );
+  }
+
+  QString QgsWmsParameters::symbolHeight() const
+  {
+    return value( ParameterName::SYMBOLHEIGHT ).toString();
+  }
+
+  double QgsWmsParameters::symbolHeightAsDouble() const
+  {
+    return toDouble( SYMBOLHEIGHT );
+  }
+
+  QString QgsWmsParameters::symbolWidth() const
+  {
+    return value( ParameterName::SYMBOLWIDTH ).toString();
+  }
+
+  double QgsWmsParameters::symbolWidthAsDouble() const
+  {
+    return toDouble( SYMBOLWIDTH );
+  }
+
+  QString QgsWmsParameters::iconLabelSpace() const
+  {
+    return value( ParameterName::ICONLABELSPACE ).toString();
+  }
+
+  double QgsWmsParameters::iconLabelSpaceAsDouble() const
+  {
+    return toDouble( ICONLABELSPACE );
+  }
+
+  QString QgsWmsParameters::layerFontFamily() const
+  {
+    return value( ParameterName::LAYERFONTFAMILY ).toString();
+  }
+
+  QString QgsWmsParameters::itemFontFamily() const
+  {
+    return value( ParameterName::ITEMFONTFAMILY ).toString();
+  }
+
+  QString QgsWmsParameters::layerFontBold() const
+  {
+    return value( ParameterName::LAYERFONTBOLD ).toString();
+  }
+
+  bool QgsWmsParameters::layerFontBoldAsBool() const
+  {
+    return toBool( ParameterName::LAYERFONTBOLD );
+  }
+
+  QString QgsWmsParameters::itemFontBold() const
+  {
+    return value( ParameterName::ITEMFONTBOLD ).toString();
+  }
+
+  bool QgsWmsParameters::itemFontBoldAsBool() const
+  {
+    return toBool( ParameterName::ITEMFONTBOLD );
+  }
+
+  QString QgsWmsParameters::layerFontItalic() const
+  {
+    return value( ParameterName::LAYERFONTITALIC ).toString();
+  }
+
+  bool QgsWmsParameters::layerFontItalicAsBool() const
+  {
+    return toBool( ParameterName::LAYERFONTITALIC );
+  }
+
+  QString QgsWmsParameters::itemFontItalic() const
+  {
+    return value( ParameterName::ITEMFONTITALIC ).toString();
+  }
+
+  bool QgsWmsParameters::itemFontItalicAsBool() const
+  {
+    return toBool( ParameterName::ITEMFONTITALIC );
+  }
+
+  QString QgsWmsParameters::layerFontSize() const
+  {
+    return value( ParameterName::LAYERFONTSIZE ).toString();
+  }
+
+  double QgsWmsParameters::layerFontSizeAsDouble() const
+  {
+    return toDouble( LAYERFONTSIZE );
+  }
+
+  QString QgsWmsParameters::layerFontColor() const
+  {
+    return value( ParameterName::LAYERFONTCOLOR ).toString();
+  }
+
+  QColor QgsWmsParameters::layerFontColorAsColor() const
+  {
+    ParameterName p = ParameterName::LAYERFONTCOLOR;
+    QColor c = defaultValue( p ).value<QColor>();
+
+    if ( !layerFontColor().isEmpty() )
+    {
+      c = QColor( layerFontColor() );
+
+      if ( !c.isValid() )
+      {
+        QString val = value( p ).toString();
+        QString n = name( p );
+        QString msg = n + " ('" + val + "') cannot be converted into a color";
+        raiseError( msg );
+      }
+    }
+
+    return c;
+  }
+
+  QString QgsWmsParameters::itemFontSize() const
+  {
+    return value( ParameterName::ITEMFONTSIZE ).toString();
+  }
+
+  double QgsWmsParameters::itemFontSizeAsDouble() const
+  {
+    return toDouble( ITEMFONTSIZE );
+  }
+
+  QFont QgsWmsParameters::layerFont() const
+  {
+    QFont font;
+    font.fromString( "" );
+    font.setBold( layerFontBoldAsBool() );
+    font.setItalic( layerFontItalicAsBool() );
+
+    if ( ! layerFontSize().isEmpty() )
+      font.setPointSizeF( layerFontSizeAsDouble() );
+
+    if ( !layerFontFamily().isEmpty() )
+      font.setFamily( layerFontFamily() );
+
+    return font;
+  }
+
+  QFont QgsWmsParameters::itemFont() const
+  {
+    QFont font;
+    font.fromString( "" );
+
+    font.setBold( itemFontBoldAsBool() );
+    font.setItalic( itemFontItalicAsBool() );
+
+    if ( ! itemFontSize().isEmpty() )
+      font.setPointSizeF( itemFontSizeAsDouble() );
+
+    if ( !itemFontFamily().isEmpty() )
+      font.setFamily( itemFontFamily() );
+
+    return font;
+  }
+
+  QString QgsWmsParameters::layerTitle() const
+  {
+    return value( ParameterName::LAYERTITLE ).toString();
+  }
+
+  bool QgsWmsParameters::layerTitleAsBool() const
+  {
+    return toBool( ParameterName::LAYERTITLE );
+  }
+
+  QgsLegendSettings QgsWmsParameters::legendSettings() const
+  {
+    QgsLegendSettings settings;
+    settings.setTitle( QString() );
+    settings.setBoxSpace( boxSpaceAsDouble() );
+    settings.setSymbolSize( QSizeF( symbolWidthAsDouble(), symbolHeightAsDouble() ) );
+
+    settings.rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, layerSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::Subgroup ).setFont( layerFont() );
+
+    settings.rstyle( QgsLegendStyle::SymbolLabel ).setFont( itemFont() );
+    settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, symbolSpaceAsDouble() );
+    settings.rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Left, iconLabelSpaceAsDouble() );
+
+    return settings;
   }
 
   QStringList QgsWmsParameters::highlightLabelString() const
