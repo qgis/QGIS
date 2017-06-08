@@ -24,6 +24,8 @@
 #include "qgsrenderer.h"
 #include "qgsmaplayerlistutils.h"
 
+#include <QtConcurrentRun>
+
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter )
   : QgsMapRendererJob( settings )
   , mPainter( painter )

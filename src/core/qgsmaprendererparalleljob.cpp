@@ -24,6 +24,7 @@
 #include "qgsmaplayerlistutils.h"
 
 #include <QtConcurrentMap>
+#include <QtConcurrentRun>
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
