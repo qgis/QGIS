@@ -143,6 +143,11 @@
 #define SIP_IF_FEATURE(feature)
 
 /*
+ * Will place the current line with an `%If feature` directive in sip file
+ */
+#define SIP_WHEN_FEATURE(feature)
+
+/*
  * Convert to subclass code
  */
 #define SIP_CONVERT_TO_SUBCLASS_CODE(code)

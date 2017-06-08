@@ -44,6 +44,7 @@ my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
 my $RETURN_TYPE = '';
 my $IS_OVERRIDE = 0;
+my $IF_FEATURE_CONDITION = '';
 my %QFLAG_HASH;
 
 my $LINE_COUNT = @INPUT_LINES;
@@ -75,7 +76,10 @@ sub write_output {
     else{
         $dbg_code = '';
     }
+    push @OUTPUT, "%If ($IF_FEATURE_CONDITION)\n" if $IF_FEATURE_CONDITION ne '';
     push @OUTPUT, $dbg_code.$out;
+    push @OUTPUT, "%End\n" if $IF_FEATURE_CONDITION ne '';
+    $IF_FEATURE_CONDITION = '';
 }
 
 sub dbg_info {
@@ -273,6 +277,11 @@ while ($LINE_IDX < $LINE_COUNT){
     if ($LINE =~ m/^\s*SIP_END(.*)$/){
         write_output("SEN", "%End$1\n");
         next;
+    }
+
+    if ( $LINE =~ s/SIP_WHEN_FEATURE\(\s*(.*?)\s*\)// ){
+        dbg_info('found SIP_WHEN_FEATURE');
+        $IF_FEATURE_CONDITION = $1;
     }
 
     # Skip preprocessor stuff
@@ -626,9 +635,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
     }
 
-    if ( $LINE =~ m/\boverride\b/){
-        $IS_OVERRIDE = 1;
-    }
+    $IS_OVERRIDE = 1 if ( $LINE =~ m/\boverride\b/);
 
     # keyword fixes
     do {no warnings 'uninitialized';
