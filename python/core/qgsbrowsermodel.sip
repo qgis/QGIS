@@ -21,8 +21,8 @@ class QgsBrowserModel : QAbstractItemModel
 
     enum ItemDataRole
     {
-      PathRole
-      CommentRole
+      PathRole,
+      CommentRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
