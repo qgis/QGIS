@@ -42,7 +42,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   QVariantList args;
   mQry = QSqlQuery( *mConnection );
@@ -400,7 +400,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
 
     return true;
   }

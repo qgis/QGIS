@@ -98,7 +98,7 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature &f )
   return false;
 }
 
-void QgsAbstractFeatureIterator::transformFeatureGeometry( QgsFeature &feature, const QgsCoordinateTransform &transform ) const
+void QgsAbstractFeatureIterator::geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const
 {
   if ( transform.isValid() && feature.hasGeometry() )
   {
@@ -119,7 +119,7 @@ void QgsAbstractFeatureIterator::transformFeatureGeometry( QgsFeature &feature, 
   }
 }
 
-QgsRectangle QgsAbstractFeatureIterator::transformedFilterRect( const QgsCoordinateTransform &transform ) const
+QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const
 {
   if ( mRequest.filterRect().isNull() )
     return QgsRectangle();

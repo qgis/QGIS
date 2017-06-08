@@ -43,7 +43,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   if ( !mFilterRect.isNull() && hasGeometry )
   {
@@ -216,7 +216,7 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( ! gotFeature ) close();
 
-  transformFeatureGeometry( feature, mTransform );
+  geometryToDestinationCrs( feature, mTransform );
 
   return gotFeature;
 }

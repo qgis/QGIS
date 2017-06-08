@@ -32,7 +32,7 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   rewind();
 }
@@ -87,7 +87,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
     bool res = readFid( feature );
     close();
     if ( res )
-      transformFeatureGeometry( feature, mTransform );
+      geometryToDestinationCrs( feature, mTransform );
     return res;
   }
 
@@ -100,7 +100,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( readWaypoint( *mWptIter, feature ) )
       {
         ++mWptIter;
-        transformFeatureGeometry( feature, mTransform );
+        geometryToDestinationCrs( feature, mTransform );
         return true;
       }
     }
@@ -114,7 +114,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( readRoute( *mRteIter, feature ) )
       {
         ++mRteIter;
-        transformFeatureGeometry( feature, mTransform );
+        geometryToDestinationCrs( feature, mTransform );
         return true;
       }
     }
@@ -128,7 +128,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( readTrack( *mTrkIter, feature ) )
       {
         ++mTrkIter;
-        transformFeatureGeometry( feature, mTransform );
+        geometryToDestinationCrs( feature, mTransform );
         return true;
       }
     }

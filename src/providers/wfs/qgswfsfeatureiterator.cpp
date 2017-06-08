@@ -793,7 +793,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
@@ -1051,7 +1051,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     }
 
     copyFeature( cachedFeature, f );
-    transformFeatureGeometry( f, mTransform );
+    geometryToDestinationCrs( f, mTransform );
     return true;
   }
 

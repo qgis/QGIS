@@ -80,7 +80,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   mFetchGeometry = ( !mFilterRect.isNull() ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
@@ -197,7 +197,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
     OGR_F_Destroy( fet );
 
   feature.setValid( true );
-  transformFeatureGeometry( feature, mTransform );
+  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 
@@ -242,7 +242,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
     // we have a feature, end this cycle
     feature.setValid( true );
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
     return true;
 
   } // while

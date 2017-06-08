@@ -37,7 +37,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   BuildStatement( request );
 
@@ -378,7 +378,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     }
     feature.setValid( true );
     mFetchCount++;
-    transformFeatureGeometry( feature, mTransform );
+    geometryToDestinationCrs( feature, mTransform );
     if ( mFetchCount % 100 == 0 )
     {
       QgsDebugMsg( QString( "Fetch count: %1" ).arg( mFetchCount ) );

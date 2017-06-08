@@ -46,7 +46,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
   {
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
   }
-  mFilterRect = transformedFilterRect( mTransform );
+  mFilterRect = filterRectToSourceCrs( mTransform );
 
   try
   {
@@ -266,7 +266,7 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
   }
 
   feature.setValid( true );
-  transformFeatureGeometry( feature, mTransform );
+  geometryToDestinationCrs( feature, mTransform );
   return true;
 }
 

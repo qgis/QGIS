@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * QgsFeatureRequest::destinationCrs() set on the request is respected.
      * \since QGIS 3.0
      */
-    void transformFeatureGeometry( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 
 
     /**
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
      * \since QGIS 3.0
      */
-    QgsRectangle transformedFilterRect( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
