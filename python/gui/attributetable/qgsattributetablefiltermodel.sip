@@ -1,12 +1,23 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsattributetablefiltermodel.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 {
+
 %TypeHeaderCode
-#include <qgsattributetablefiltermodel.h>
+#include "qgsattributetablefiltermodel.h"
 %End
   public:
-    /**
-     * The filter mode defines how the rows should be filtered.
-     */
+
     enum FilterMode
     {
       ShowAll,
@@ -16,123 +27,132 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
       ShowEdited
     };
 
-    /**
-     * The type of a column.
-     */
     enum ColumnType
     {
-      ColumnTypeField,       //!< This column shows a field
-      ColumnTypeActionButton //!< This column shows action buttons
+      ColumnTypeField,
+      ColumnTypeActionButton
     };
 
-    /**
-     * The additional roles defined by this filter model.
-     * The values of these roles start just after the roles defined by
-     * QgsAttributeTableModel so they do not conflict.
-     */
     enum Role
     {
-      TypeRole = QgsAttributeTableModel::UserRole //!< The type of a given column
+      TypeRole
     };
 
 
-    /**
-     * Make sure, the master model is already loaded, so the selection will get synchronized.
-     *
-     * @param parent parent object (owner)
-     * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
-     * @param canvas  The mapCanvas. Used to identify the currently visible features.
-     */
     QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Make sure, the master model is already loaded, so the selection will get synchronized.
 
-    /**
-     * Set the attribute table model that backs this model
-     *
-     * @param sourceModel The model
-     *
-     * @note added in 2.0
-     */
+ \param parent parent object (owner)
+ \param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
+ \param canvas  The mapCanvas. Used to identify the currently visible features.
+%End
+
     void setSourceModel( QgsAttributeTableModel *sourceModel );
+%Docstring
+ Set the attribute table model that backs this model
 
-    /**
-     * Changes the sort order of the features. If set to true, selected features
-     * will be sorted on top, regardless of the current sort column
-     *
-     * @param selectedOnTop Specify, if selected features should be sorted on top
-     */
+ \param sourceModel The model
+
+.. versionadded:: 2.0
+%End
+
     void setSelectedOnTop( bool selectedOnTop );
+%Docstring
+ Changes the sort order of the features. If set to true, selected features
+ will be sorted on top, regardless of the current sort column
 
-    /**
-     * Returns if selected features are currently shown on top
-     *
-     * @return True if selected are shown on top
-     */
+ \param selectedOnTop Specify, if selected features should be sorted on top
+%End
+
     bool selectedOnTop();
+%Docstring
+ Returns if selected features are currently shown on top
 
-    /**
-     * Specify a list of features, which the filter will accept.
-     * The filter mode will automatically be adjusted to show only these features (ShowFilteredList).
-     *
-     * @param ids  The list of feature ids which will be accepted by the filter
-     */
+ :return: True if selected are shown on top
+ :rtype: bool
+%End
+
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
+%Docstring
+ Specify a list of features, which the filter will accept.
+ The filter mode will automatically be adjusted to show only these features (ShowFilteredList).
 
-    /**
-     * Get a list of currently filtered feature ids
-     *
-     * @return A list of feature ids
-     */
+ \param ids  The list of feature ids which will be accepted by the filter
+%End
+
     QgsFeatureIds filteredFeatures();
+%Docstring
+ Get a list of currently filtered feature ids
 
-    /**
-     * Set the filter mode the filter will use.
-     *
-     * @param filterMode Sets the current mode of the filter
-     */
+ :return: A list of feature ids
+ :rtype: QgsFeatureIds
+%End
+
     void setFilterMode( FilterMode filterMode );
+%Docstring
+ Set the filter mode the filter will use.
 
-    /**
-     * The current filterModel
-     */
+ \param filterMode Sets the current mode of the filter
+%End
+
     FilterMode filterMode();
+%Docstring
+ The current filterModel
+ :rtype: FilterMode
+%End
 
-    /**
-     * Returns the layer this filter acts on.
-     *
-     * @return Abovementioned layer
-     */
     QgsVectorLayer *layer() const;
+%Docstring
+ Returns the layer this filter acts on.
 
-    /**
-     * Returns the layerCache this filter acts on.
-     *
-     * @return The layer cache
-     */
+ :return: Abovementioned layer
+ :rtype: QgsVectorLayer
+%End
+
     QgsVectorLayerCache *layerCache() const;
+%Docstring
+ Returns the layerCache this filter acts on.
 
-    /**
-     * Returns the table model this filter is using
-     *
-     * @return the table model in quesion
-     */
+ :return: The layer cache
+ :rtype: QgsVectorLayerCache
+%End
+
     QgsAttributeTableModel *masterModel() const;
+%Docstring
+ Returns the table model this filter is using
 
-    /**
-     * Returns the feature id for a given model index.
-     *
-     * @param row A model index of the row in question
-     *
-     * @return The feature id of the feature visible in the provided row
-     */
+ :return: the table model in quesion
+ :rtype: QgsAttributeTableModel
+%End
+
     QgsFeatureId rowToId( const QModelIndex &row );
+%Docstring
+ Returns the feature id for a given model index.
 
-    QModelIndex fidToIndex( QgsFeatureId fid );
+ \param row A model index of the row in question
+
+ :return: The feature id of the feature visible in the provided row
+ :rtype: QgsFeatureId
+%End
+
+    virtual QModelIndex fidToIndex( QgsFeatureId fid );
+
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
+%Docstring
+ :rtype: QModelIndexList
+%End
 
-    virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
+    QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
+%Docstring
+ :rtype: QModelIndex
+%End
 
     QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+%Docstring
+ :rtype: QModelIndex
+%End
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
@@ -140,85 +160,107 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-    /**
-     * Sort by the given column using the given order.
-     * Prefetches all the data from the layer to speed up sorting.
-     *
-     * @param column The column which should be sorted
-     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
-     */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+%Docstring
+ Sort by the given column using the given order.
+ Prefetches all the data from the layer to speed up sorting.
 
-    /**
-     * Sort by the given expression using the given order.
-     * Prefetches all the data from the layer to speed up sorting.
-     *
-     * @param expression The expression which should be used for sorting
-     * @param order      The order ( Qt::AscendingOrder or Qt::DescendingOrder )
-     */
-    void sort( QString expression, Qt::SortOrder order = Qt::AscendingOrder );
+ \param column The column which should be sorted
+ \param order  The order ( Qt.AscendingOrder or Qt.DescendingOrder )
+%End
 
-    /**
-     * The expression which is used to sort the attribute table.
-     */
+    void sort( const QString &expression, Qt::SortOrder order = Qt::AscendingOrder );
+%Docstring
+ Sort by the given expression using the given order.
+ Prefetches all the data from the layer to speed up sorting.
+
+ \param expression The expression which should be used for sorting
+ \param order      The order ( Qt.AscendingOrder or Qt.DescendingOrder )
+%End
+
     QString sortExpression() const;
+%Docstring
+ The expression which is used to sort the attribute table.
+ :rtype: str
+%End
 
-    /** Returns the map canvas*/
     QgsMapCanvas *mapCanvas() const;
+%Docstring
+Returns the map canvas
+ :rtype: QgsMapCanvas
+%End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
-    /**
-     * Get the index of the first column that contains an action widget.
-     * Returns -1 if none is defined.
-     */
+
     int actionColumnIndex() const;
+%Docstring
+ Get the index of the first column that contains an action widget.
+ Returns -1 if none is defined.
+ :rtype: int
+%End
 
-    int columnCount( const QModelIndex &parent ) const;
+    virtual int columnCount( const QModelIndex &parent ) const;
 
-    /**
-     * Set the attribute table configuration to control which fields are shown,
-     * in which order they are shown as well as if and where an action column
-     * is shown.
-     */
+
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
+%Docstring
+ Set the attribute table configuration to control which fields are shown,
+ in which order they are shown as well as if and where an action column
+ is shown.
+%End
 
   signals:
-    /**
-     * Is emitted whenever the sort column is changed
-     * @param column The sort column
-     * @param order The sort order
-     */
+
     void sortColumnChanged( int column, Qt::SortOrder order );
+%Docstring
+ Is emitted whenever the sort column is changed
+ \param column The sort column
+ \param order The sort order
+%End
 
   protected:
-    /**
-     * Returns true if the source row will be accepted
-     *
-     * @param sourceRow row from the source model
-     * @param sourceParent parent index in the source model
-     */
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
-    /**
-     * Updates the list of currently visible features on the map canvas.
-     * Is called automatically when the filter mode is adjusted or the extents changed.
-     */
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+%Docstring
+ Returns true if the source row will be accepted
+
+ \param sourceRow row from the source model
+ \param sourceParent parent index in the source model
+ :rtype: bool
+%End
+
     void generateListOfVisibleFeatures();
+%Docstring
+ Updates the list of currently visible features on the map canvas.
+ Is called automatically when the filter mode is adjusted or the extents changed.
+%End
 
-    /**
-     * Used by the sorting algorithm. Compares the two model indices. Will also consider the
-     * selection state of the feature in case selected features are to be shown on top.
-     */
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+%Docstring
+ Used by the sorting algorithm. Compares the two model indices. Will also consider the
+ selection state of the feature in case selected features are to be shown on top.
+ :rtype: bool
+%End
 
   public slots:
-    /**
-     * Is called upon every change of the visible extents on the map canvas.
-     * When a change is signalled, the filter is updated and invalidated if needed.
-     */
+
     void extentsChanged();
+%Docstring
+ Is called upon every change of the visible extents on the map canvas.
+ When a change is signalled, the filter is updated and invalidated if needed.
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsattributetablefiltermodel.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

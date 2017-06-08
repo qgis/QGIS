@@ -32,7 +32,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    static int const ICON_SIZE = 24;
+    static const int ICON_SIZE = 24;
 
     enum Element
     {

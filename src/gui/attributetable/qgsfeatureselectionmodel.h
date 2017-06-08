@@ -104,7 +104,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      */
     virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
 
-    virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
+    virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
   private slots:
     virtual void layerSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );

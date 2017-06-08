@@ -119,6 +119,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * \param featureSelectionManager We will take ownership
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
