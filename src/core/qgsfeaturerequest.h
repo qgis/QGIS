@@ -522,6 +522,15 @@ class CORE_EXPORT QgsFeatureRequest
      * set on the request is expected to be in the same CRS as the destination
      * CRS.
      *
+     * The feature geometry transformation to the destination CRS is performed
+     * after all filter expressions are tested and any virtual fields are
+     * calculated. Accordingly, any geometric expressions used in
+     * filterExpression() will be performed in the original
+     * source CRS. This ensures consistent results are returned regardless of the
+     * destination CRS. Similarly, virtual field values will be calculated using the
+     * original geometry in the source CRS, so these values are not affected by
+     * any destination CRS transform present in the feature request.
+     *
      * \see destinationCrs()
      * \since QGIS 3.0
      */
