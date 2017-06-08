@@ -816,14 +816,12 @@ int QgsGeometry::splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeo
   return result;
 }
 
-int QgsGeometry::reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine )
+int QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
 {
   if ( !d->geometry )
   {
     return 0;
   }
-
-  QgsLineString reshapeLineString( reshapeWithLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;

@@ -43,6 +43,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString();
 
     /**
+     * Construct a linestring from a vector of points.
+     * \since QGIS 3.0
+     */
+    QgsLineString( const QVector<QgsPoint> &points );
+
+    /**
      * Construct a linestring from arrays of coordinates. If the z or m
      * arrays are non-empty then the resultant linestring will have
      * z and m types accordingly.

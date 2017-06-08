@@ -126,6 +126,8 @@ class TestQgsGeometry : public QObject
 
     void isSimple();
 
+    void reshapeGeometryLineMerge();
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
@@ -1078,7 +1080,27 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromPts.xAt( 2 ), 21.0 );
   QCOMPARE( fromPts.yAt( 2 ), 22.0 );
 
-
+  // from QVector<QgsPoint>
+  QVector<QgsPoint> ptsVector;
+  ptsVector << QgsPoint( 10, 20 ) << QgsPoint( 30, 40 );
+  QgsLineString fromVector( ptsVector );
+  QCOMPARE( fromVector.wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( fromVector.numPoints(), 2 );
+  QCOMPARE( fromVector.xAt( 0 ), 10.0 );
+  QCOMPARE( fromVector.yAt( 0 ), 20.0 );
+  QCOMPARE( fromVector.xAt( 1 ), 30.0 );
+  QCOMPARE( fromVector.yAt( 1 ), 40.0 );
+  QVector<QgsPoint> ptsVector3D;
+  ptsVector3D << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 30, 40, 200 );
+  QgsLineString fromVector3D( ptsVector3D );
+  QCOMPARE( fromVector3D.wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( fromVector3D.numPoints(), 2 );
+  QCOMPARE( fromVector3D.xAt( 0 ), 10.0 );
+  QCOMPARE( fromVector3D.yAt( 0 ), 20.0 );
+  QCOMPARE( fromVector3D.zAt( 0 ), 100.0 );
+  QCOMPARE( fromVector3D.xAt( 1 ), 30.0 );
+  QCOMPARE( fromVector3D.yAt( 1 ), 40.0 );
+  QCOMPARE( fromVector3D.zAt( 1 ), 200.0 );
 
   //addVertex
   QgsLineString l2;
@@ -5450,6 +5472,49 @@ void TestQgsGeometry::isSimple()
     bool res = gInput.isSimple();
     QCOMPARE( res, pair.second );
   }
+}
+
+void TestQgsGeometry::reshapeGeometryLineMerge()
+{
+  int res;
+  QgsGeometry g2D = QgsGeometry::fromWkt( "LINESTRING(10 10, 20 20)" );
+  QgsGeometry g3D = QgsGeometry::fromWkt( "LINESTRINGZ(10 10 1, 20 20 2)" );
+
+  // prepare 2D reshaping line
+  QVector<QgsPoint> v2D_1, v2D_2;
+  v2D_1 << QgsPoint( 20, 20 ) << QgsPoint( 30, 30 );
+  v2D_2 << QgsPoint( 10, 10 ) << QgsPoint( -10, -10 );
+  QgsLineString line2D_1( v2D_1 ), line2D_2( v2D_2 );
+
+  // prepare 3D reshaping line
+  QVector<QgsPoint> v3D_1, v3D_2;
+  v3D_1 << QgsPoint( QgsWkbTypes::PointZ, 20, 20, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 30, 30, 3 );
+  v3D_2 << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZ, -10, -10, -1 );
+  QgsLineString line3D_1( v3D_1 ), line3D_2( v3D_2 );
+
+  // append with 2D line
+  QgsGeometry g2D_1 = g2D;
+  res = g2D_1.reshapeGeometry( line2D_1 );
+  QCOMPARE( res, 0 );
+  QCOMPARE( g2D_1.exportToWkt(), QString( "LineString (10 10, 20 20, 30 30)" ) );
+
+  // prepend with 2D line
+  QgsGeometry g2D_2 = g2D;
+  res = g2D_2.reshapeGeometry( line2D_2 );
+  QCOMPARE( res, 0 );
+  QCOMPARE( g2D_2.exportToWkt(), QString( "LineString (-10 -10, 10 10, 20 20)" ) );
+
+  // append with 3D line
+  QgsGeometry g3D_1 = g3D;
+  res = g3D_1.reshapeGeometry( line3D_1 );
+  QCOMPARE( res, 0 );
+  QCOMPARE( g3D_1.exportToWkt(), QString( "LineStringZ (10 10 1, 20 20 2, 30 30 3)" ) );
+
+  // prepend with 3D line
+  QgsGeometry g3D_2 = g3D;
+  res = g3D_2.reshapeGeometry( line3D_2 );
+  QCOMPARE( res, 0 );
+  QCOMPARE( g3D_2.exportToWkt(), QString( "LineStringZ (-10 -10 -1, 10 10 1, 20 20 2)" ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

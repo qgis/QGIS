@@ -26,6 +26,12 @@ class QgsLineString: QgsCurve
   public:
     QgsLineString();
 
+    QgsLineString( const QVector<QgsPoint> &points );
+%Docstring
+ Construct a linestring from a vector of points.
+.. versionadded:: 3.0
+%End
+
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
                    const QVector<double> &m = QVector<double>() );

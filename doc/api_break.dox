@@ -1233,6 +1233,7 @@ empty geometry collection)
 - smoothLine and smoothPolygon are no longer public API (use smooth() instead)
 - avoidIntersections() got an extra argument: list of layers to include in the operation (previously read from active QgsProject)
 - isGeosEmpty() was removed. Use isEmpty() instead.
+- reshapeGeometry() expects QgsLineString as a parameter instead of a list of 2D points (so that it can support 3D geometries)
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}

@@ -491,7 +491,7 @@ class CORE_EXPORT QgsGeometry
      * \returns 0 in case of success
      * \since QGIS 1.3
      */
-    int reshapeGeometry( const QList<QgsPointXY> &reshapeWithLine );
+    int reshapeGeometry( const QgsLineString &reshapeLineString );
 
     /** Changes this geometry such that it does not intersect the other geometry
      * \param other geometry that should not be intersect
