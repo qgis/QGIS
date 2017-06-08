@@ -15,9 +15,11 @@
 #ifndef QGSSYMBOLWIDGETCONTEXT_H
 #define QGSSYMBOLWIDGETCONTEXT_H
 
+#include <memory>
+
 #include "qgsexpressioncontext.h"
 #include "qgis_gui.h"
-#include <memory>
+
 
 class QgsMapCanvas;
 
@@ -85,7 +87,7 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * Ownership is transferred to the caller.
      * \since QGIS 3.0
      */
-    QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const;
+    QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const SIP_FACTORY;
 
   private:
 

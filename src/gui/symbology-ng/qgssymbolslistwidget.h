@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, const QgsVectorLayer *layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, const QgsVectorLayer *layer = nullptr );
 
 
     virtual ~QgsSymbolsListWidget();

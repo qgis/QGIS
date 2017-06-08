@@ -1,33 +1,59 @@
-/** \class QgsPointClusterRendererWidget
- * \ingroup gui
- * A widget which allows configuration of the properties for a QgsPointClusterRenderer.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgspointclusterrendererwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsPointClusterRendererWidget: QgsRendererWidget
 {
+%Docstring
+ A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgspointclusterrendererwidget.h>
+#include "qgspointclusterrendererwidget.h"
 %End
   public:
 
-    /** Returns a new QgsPointClusterRendererWidget.
-     * @param layer associated vector layer
-     * @param style style collection
-     * @param renderer source QgsPointClusterRenderer renderer
-     * @returns new QgsRendererWidget
-     */
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ Returns a new QgsPointClusterRendererWidget.
+ \param layer associated vector layer
+ \param style style collection
+ \param renderer source QgsPointClusterRenderer renderer
+ :return: new QgsRendererWidget
+ :rtype: QgsRendererWidget
+%End
 
-    /** Constructor for QgsPointClusterRendererWidget.
-     * @param layer associated vector layer
-     * @param style style collection
-     * @param renderer source QgsPointClusterRenderer renderer
-     */
     QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+%Docstring
+ Constructor for QgsPointClusterRendererWidget.
+ \param layer associated vector layer
+ \param style style collection
+ \param renderer source QgsPointClusterRenderer renderer
+%End
 
     ~QgsPointClusterRendererWidget();
 
-    QgsFeatureRenderer *renderer();
-    void setContext( const QgsSymbolWidgetContext &context );
+    virtual QgsFeatureRenderer *renderer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgspointclusterrendererwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

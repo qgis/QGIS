@@ -1,7 +1,20 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstyleexportimportdialog.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsStyleExportImportDialog : QDialog
 {
+
 %TypeHeaderCode
-#include <qgsstyleexportimportdialog.h>
+#include "qgsstyleexportimportdialog.h"
 %End
   public:
     enum Mode
@@ -10,57 +23,72 @@ class QgsStyleExportImportDialog : QDialog
       Import
     };
 
-    // constructor
-    // mode argument must be 0 for saving and 1 for loading
-    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent /TransferThis/ = NULL, Mode mode = Export );
+    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Mode mode = Export );
     ~QgsStyleExportImportDialog();
 
-    /**
-     * @brief selectSymbols select symbols by name
-     * @param symbolNames list of symbol names
-     */
     void selectSymbols( const QStringList &symbolNames );
-    /**
-     * @brief deselectSymbols deselect symbols by name
-     * @param symbolNames list of symbol names
-     */
+%Docstring
+ selectSymbols select symbols by name
+ \param symbolNames list of symbol names
+%End
+
     void deselectSymbols( const QStringList &symbolNames );
+%Docstring
+ deselectSymbols deselect symbols by name
+ \param symbolNames list of symbol names
+%End
 
   public slots:
     void doExportImport();
-    /**
-     * @brief selectByGroup open select by group dialog
-     */
+
     void selectByGroup();
-    /**
-     * @brief selectAll selects all symbols
-     */
+%Docstring
+ selectByGroup open select by group dialog
+%End
+
     void selectAll();
-    /**
-     * @brief clearSelection deselects all symbols
-     */
+%Docstring
+ selectAll selects all symbols
+%End
+
     void clearSelection();
-    /**
-     * Select the symbols belonging to the given tag
-     * @param tagName the name of the tag to be selected
-     */
+%Docstring
+ clearSelection deselects all symbols
+%End
+
     void selectTag( const QString &tagName );
-    /**
-     * Deselect the symbols belonging to the given tag
-     * @param tagName the name of the tag to be deselected
-     */
+%Docstring
+ Select the symbols belonging to the given tag
+ \param tagName the name of the group to be selected
+%End
+
     void deselectTag( const QString &tagName );
-    /**
-     * @brief selectSmartgroup selects all symbols from a smart group
-     * @param groupName
-     */
+%Docstring
+ Deselect the symbols belonging to the given tag
+ \param tagName the name of the group to be deselected
+%End
+
     void selectSmartgroup( const QString &groupName );
-    /**
-     * @brief deselectSmartgroup deselects all symbols from a smart group
-     * @param groupName
-     */
+%Docstring
+ selectSmartgroup selects all symbols from a smart group
+ \param groupName
+%End
+
     void deselectSmartgroup( const QString &groupName );
+%Docstring
+ deselectSmartgroup deselects all symbols from a smart group
+ \param groupName
+%End
 
     void importTypeChanged( int );
     void browse();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstyleexportimportdialog.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,15 +1,30 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstylemanagerdialog.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsStyleManagerDialog : QDialog
 {
+
 %TypeHeaderCode
-#include <qgsstylemanagerdialog.h>
+#include "qgsstylemanagerdialog.h"
 %End
-
   public:
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = NULL );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
 
-    //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
+%Docstring
+open add color ramp dialog, return color ramp's name if the ramp has been added
+ :rtype: str
+%End
 
   public slots:
     void addItem();
@@ -22,97 +37,195 @@ class QgsStyleManagerDialog : QDialog
     void importItems();
 
     void on_tabItemType_currentChanged( int );
-    //! adds symbols of some type to list
     void populateList();
+%Docstring
+adds symbols of some type to list
+%End
 
-    //! called when the dialog is going to be closed
     void onFinished();
+%Docstring
+called when the dialog is going to be closed
+%End
 
     void on_buttonBox_helpRequested();
 
     void itemChanged( QStandardItem *item );
 
-    void groupChanged( const QModelIndex& );
+    void groupChanged( const QModelIndex & );
     void groupRenamed( QStandardItem * );
-    //! add a tag
     int addTag();
-    //! add a smartgroup
+%Docstring
+add a tag
+ :rtype: int
+%End
     int addSmartgroup();
-    //! remove a tag or smartgroup
+%Docstring
+add a smartgroup
+ :rtype: int
+%End
     void removeGroup();
+%Docstring
+remove a tag or smartgroup
+%End
 
-    //! carry out symbol tagging using check boxes
     void tagSymbolsAction();
+%Docstring
+carry out symbol tagging using check boxes
+%End
 
-    //! edit the selected smart group
     void editSmartgroupAction();
+%Docstring
+edit the selected smart group
+%End
 
-    //! symbol changed from one group
-    void regrouped( QStandardItem* );
+    void regrouped( QStandardItem * );
+%Docstring
+symbol changed from one group
+%End
 
-    //! filter the symbols based on input search term
-    void filterSymbols( const QString& );
+    void filterSymbols( const QString & );
+%Docstring
+filter the symbols based on input search term
+%End
 
-    //! Perform symbol specific tasks when selected
-    void symbolSelected( const QModelIndex& );
+    void symbolSelected( const QModelIndex & );
+%Docstring
+Perform symbol specific tasks when selected
+%End
 
-    //! Perform tasks when the selected symbols change
     void selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected );
+%Docstring
+Perform tasks when the selected symbols change
+%End
 
-    //! Context menu for the groupTree
     void grouptreeContextMenu( QPoint );
+%Docstring
+Context menu for the groupTree
+%End
 
-    //! Context menu for the listItems ( symbols list )
     void listitemsContextMenu( QPoint );
+%Docstring
+Context menu for the listItems ( symbols list )
+%End
 
   protected slots:
     bool addColorRamp( QAction *action );
-    //! Add selected symbols to favorites
+%Docstring
+ :rtype: bool
+%End
     void addFavoriteSelectedSymbols();
-    //! Remove selected symbols from favorites
+%Docstring
+Add selected symbols to favorites
+%End
     void removeFavoriteSelectedSymbols();
-    //! Tag selected symbols using menu item selection
+%Docstring
+Remove selected symbols from favorites
+%End
     void tagSelectedSymbols( bool newTag = false );
-    //! Remove all tags from selected symbols
+%Docstring
+Tag selected symbols using menu item selection
+%End
     void detagSelectedSymbols();
+%Docstring
+Remove all tags from selected symbols
+%End
 
   protected:
 
-    //! populate combo box with known style items (symbols, color ramps)
     void populateTypes();
+%Docstring
+populate combo box with known style items (symbols, color ramps)
+%End
 
-    //! populate the groups
     void populateGroups();
-    //! to set symbols checked when in editing mode
-    void setSymbolsChecked( const QStringList& );
+%Docstring
+populate the groups
+%End
+    void setSymbolsChecked( const QStringList & );
+%Docstring
+to set symbols checked when in editing mode
+%End
 
-    //! populate list view with symbols of the current type with the given names
     void populateSymbols( const QStringList &symbolNames, bool checkable = false );
+%Docstring
+populate list view with symbols of the current type with the given names
+%End
 
-    //! populate list view with color ramps
     void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
+%Docstring
+populate list view with color ramps
+%End
 
     int currentItemType();
+%Docstring
+ :rtype: int
+%End
     QString currentItemName();
+%Docstring
+ :rtype: str
+%End
 
-    //! add a new symbol to style
     bool addSymbol();
-    //! add a new color ramp to style
+%Docstring
+add a new symbol to style
+ :rtype: bool
+%End
     bool addColorRamp();
+%Docstring
+add a new color ramp to style
+ :rtype: bool
+%End
 
     bool editSymbol();
+%Docstring
+ :rtype: bool
+%End
     bool editColorRamp();
+%Docstring
+ :rtype: bool
+%End
 
     bool removeSymbol();
+%Docstring
+ :rtype: bool
+%End
     bool removeColorRamp();
+%Docstring
+ :rtype: bool
+%End
 
-    //! Enables or disbables the symbol specific inputs
     void enableSymbolInputs( bool );
-    //! Enables or disables the groupTree specific inputs
+%Docstring
+Enables or disbables the symbol specific inputs
+%End
     void enableGroupInputs( bool );
-    //! Enables or disables the groupTree items for grouping mode
+%Docstring
+Enables or disables the groupTree specific inputs
+%End
     void enableItemsForGroupingMode( bool );
+%Docstring
+Enables or disables the groupTree items for grouping mode
+%End
 
-    //! sets the text of the item with bold font
-    void setBold( QStandardItem* );
+    void setBold( QStandardItem * );
+%Docstring
+sets the text of the item with bold font
+%End
+
+
+
+
+
+
+
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstylemanagerdialog.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

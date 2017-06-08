@@ -122,7 +122,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
      */
-    virtual void apply();
+    virtual void apply() SIP_FORCE;
 
 
 };
@@ -139,11 +139,13 @@ class QgsFields;
 #include "ui_widget_set_dd_value.h"
 #include "qgis_gui.h"
 
+
 /** \ingroup gui
 Utility classes for "en masse" size definition
 */
-class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueDialog, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataDefinedValueBaseDialog, private QgsExpressionContextGenerator
 {
+
     Q_OBJECT
 
   public:
@@ -186,11 +188,11 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsProperty symbolDataDefined() const;
+    QgsProperty symbolDataDefined() const SIP_FORCE;
 
-    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0;
-    virtual double value( const QgsSymbol * ) const = 0;
-    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 SIP_FORCE;
+    virtual double value( const QgsSymbol * ) const = 0 SIP_FORCE;
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 SIP_FORCE;
 
     QList<QgsSymbol *> mSymbolList;
     QgsVectorLayer *mLayer = nullptr;

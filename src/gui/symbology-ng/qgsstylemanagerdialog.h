@@ -35,7 +35,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     Q_OBJECT
 
   public:
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent = nullptr );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,

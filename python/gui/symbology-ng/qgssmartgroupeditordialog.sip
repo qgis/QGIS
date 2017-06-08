@@ -1,71 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssmartgroupeditordialog.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsSmartGroupCondition : QWidget
 {
+
 %TypeHeaderCode
-#include <qgssmartgroupeditordialog.h>
+#include "qgssmartgroupeditordialog.h"
+%End
+  public:
+    QgsSmartGroupCondition( int id,  QWidget *parent /TransferThis/ = 0 );
+
+    QString constraint();
+%Docstring
+returns the constraint key
+ :rtype: str
 %End
 
-  public:
-    QgsSmartGroupCondition( int id,  QWidget *parent /TransferThis/ = NULL );
-
-    //! returns the constraint key
-    QString constraint();
-
-    //! returns the parameter
     QString parameter();
+%Docstring
+returns the parameter
+ :rtype: str
+%End
 
-    //! sets the given constraint
     void setConstraint( const QString &constraint );
+%Docstring
+sets the given constraint
+%End
 
-    //! sets the given param
     void setParameter( const QString &param );
+%Docstring
+sets the given param
+%End
 
-    //! sets the remove button hidden state to 'hide'
     void hideRemoveButton( bool hide );
+%Docstring
+sets the remove button hidden state to 'hide'
+%End
 
   public slots:
     void destruct();
 
   signals:
     void removed( int );
+
+  protected:
+
 };
+
+
+
+
 
 class QgsSmartGroupEditorDialog : QDialog
 {
+
 %TypeHeaderCode
-#include <qgssmartgroupeditordialog.h>
+#include "qgssmartgroupeditordialog.h"
+%End
+  public:
+    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
+
+    QString smartgroupName();
+%Docstring
+returns the value from mNameLineEdit
+ :rtype: str
 %End
 
-  public:
-    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent /TransferThis/ = NULL );
-    ~QgsSmartGroupEditorDialog();
 
-    //! returns the value from mNameLineEdit
-    QString smartgroupName();
-
-    //! returns the condition map
-    //! @note not available in python bindings
-    // QgsSmartConditionMap conditionMap();
-
-    //! returns the AND/OR condition
     QString conditionOperator();
+%Docstring
+returns the AND/OR condition
+ :rtype: str
+%End
 
-    //! sets up the GUI for the given conditionmap
-    //! @note not available in python bindings
-    // void setConditionMap( const QgsSmartConditionMap& );
 
-    //! sets the operator AND/OR
-    void setOperator( const QString& );
+    void setOperator( const QString & );
+%Docstring
+sets the operator AND/OR
+%End
 
-    //! sets the smart group Name
-    void setSmartgroupName( const QString& );
+    void setSmartgroupName( const QString & );
+%Docstring
+sets the smart group Name
+%End
 
   public slots:
 
-    //! function to create a new ConditionBox and update UI
     void addCondition();
+%Docstring
+function to create a new ConditionBox and update UI
+%End
 
-    //! slot to remove the condition with id int
     void removeCondition( int );
+%Docstring
+slot to remove the condition with id int
+%End
 
     void on_buttonBox_accepted();
+
+  protected:
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgssmartgroupeditordialog.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

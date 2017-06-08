@@ -26,7 +26,7 @@ class Qgs25DRenderer;
 /** \ingroup gui
  * \class Qgs25DRendererWidget
  */
-class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRendererWidgetBase
+class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
      * \param style
      * \param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer SIP_TRANSFER ) SIP_FACTORY;
 
     /** Constructor
      * \param layer the layer where this renderer is applied
@@ -52,7 +52,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
     void updateRenderer();
 
   private:
-    void apply() override;
+    void apply() override SIP_FORCE;
 
     Qgs25DRenderer *mRenderer = nullptr;
 };

@@ -27,6 +27,7 @@
 
 #include "ui_qgsstyleexportimportdialogbase.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent = nullptr, Mode mode = Export );
+    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export );
     ~QgsStyleExportImportDialog();
 
     /**

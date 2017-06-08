@@ -38,6 +38,8 @@ class QListView;
 class QPushButton;
 class QTreeView;
 
+
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /** \ingroup gui
@@ -155,7 +157,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
 };
 
 ///@endcond
-///
+#endif
 
 /** \ingroup gui
  * \class QgsSvgSelectorListModel
@@ -272,7 +274,8 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

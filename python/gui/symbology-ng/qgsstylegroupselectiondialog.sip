@@ -1,45 +1,60 @@
-/***************************************************************************
-    qgsstylegroupselectiondialog.h
-    ---------------------
-    begin                : Oct 2015
-    copyright            : (C) 2015 by Alessandro Pasotti
-    email                : elpaso at itopen dot it
-
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstylegroupselectiondialog.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-class QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
+
+
+
+class QgsStyleGroupSelectionDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsstylegroupselectiondialog.h>
-%End
 
+%TypeHeaderCode
+#include "qgsstylegroupselectiondialog.h"
+%End
   public:
     QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent = 0 );
-    ~QgsStyleGroupSelectionDialog();
-    //! Set bold font for item
     void setBold( QStandardItem *item );
+%Docstring
+Set bold font for item
+%End
 
   signals:
-    //! tag with tagName has been selected
     void tagSelected( const QString &tagName );
-    //! tag with tagName has been deselected
+%Docstring
+tag with tagName has been selected
+%End
     void tagDeselected( const QString &tagName );
-    //! smartgroup with groupName has been selected
+%Docstring
+tag with tagName has been deselected
+%End
     void smartgroupSelected( const QString &groupName );
-    //! smart group with groupName has been deselected
+%Docstring
+smartgroup with groupName has been selected
+%End
     void smartgroupDeselected( const QString &groupName );
-    //! all deselected
+%Docstring
+smart group with groupName has been deselected
+%End
     void allDeselected();
-    //! all selected
+%Docstring
+all deselected
+%End
     void allSelected();
+%Docstring
+all selected
+%End
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgsstylegroupselectiondialog.h                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,26 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgscategorizedsymbolrendererwidget.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 {
-%TypeHeaderCode
-#include <qgscategorizedsymbolrendererwidget.h>
-%End
 
+%TypeHeaderCode
+#include "qgscategorizedsymbolrendererwidget.h"
+%End
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+ :rtype: QgsRendererWidget
+%End
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
 
-    /** Replaces category symbols with the symbols from a style that have a matching
-     * name.
-     * @param style style containing symbols to match with
-     * @return number of symbols matched
-     * @see matchToSymbolsFromLibrary
-     * @see matchToSymbolsFromXml
-     * @note added in QGIS 2.9
-     */
     int matchToSymbols( QgsStyle *style );
+%Docstring
+ Replaces category symbols with the symbols from a style that have a matching
+ name.
+ \param style style containing symbols to match with
+ :return: number of symbols matched
+.. seealso:: matchToSymbolsFromLibrary
+.. seealso:: matchToSymbolsFromXml
+.. versionadded:: 2.9
+ :rtype: int
+%End
 
   public slots:
     void changeCategorizedSymbol();
@@ -28,7 +46,12 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
     void categoriesDoubleClicked( const QModelIndex &idx );
     void addCategory();
     void addCategories();
+
     void applyColorRamp();
+%Docstring
+ Applies the color ramp passed on by the color ramp button
+%End
+
     void deleteCategories();
     void deleteAllCategories();
 
@@ -36,21 +59,23 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     void rowsMoved();
 
-    /** Replaces category symbols with the symbols from the users' symbol library that have a
-     * matching name.
-     * @see matchToSymbolsFromXml
-     * @see matchToSymbols
-     * @note added in QGIS 2.9
-     */
     void matchToSymbolsFromLibrary();
+%Docstring
+ Replaces category symbols with the symbols from the users' symbol library that have a
+ matching name.
+.. seealso:: matchToSymbolsFromXml
+.. seealso:: matchToSymbols
+.. versionadded:: 2.9
+%End
 
-    /** Prompts for selection of an xml file, then replaces category symbols with the symbols
-     * from the XML file with a matching name.
-     * @see matchToSymbolsFromLibrary
-     * @see matchToSymbols
-     * @note added in QGIS 2.9
-     */
     void matchToSymbolsFromXml();
+%Docstring
+ Prompts for selection of an xml file, then replaces category symbols with the symbols
+ from the XML file with a matching name.
+.. seealso:: matchToSymbolsFromLibrary
+.. seealso:: matchToSymbols
+.. versionadded:: 2.9
+%End
 
   protected:
 
@@ -58,22 +83,48 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     void updateCategorizedSymbolIcon();
 
-    // Called by virtual refreshSymbolView()
     void populateCategories();
 
-    //! return row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
+%Docstring
+return row index for the currently selected category (-1 if on no selection)
+ :rtype: int
+%End
 
-    //! return a list of indexes for the categories unders selection
     QList<int> selectedCategories();
+%Docstring
+return a list of indexes for the categories unders selection
+ :rtype: list of int
+%End
 
-    //! change the selected symbols alone for the change button, if there is a selection
     void changeSelectedSymbols();
+%Docstring
+change the selected symbols alone for the change button, if there is a selection
+%End
 
     void changeCategorySymbol();
 
-    QList<QgsSymbol*> selectedSymbols();
+    virtual QList<QgsSymbol *> selectedSymbols();
+
     QgsCategoryList selectedCategoryList();
-    void refreshSymbolView();
-    void keyPressEvent( QKeyEvent *event );
+%Docstring
+ :rtype: QgsCategoryList
+%End
+    virtual void refreshSymbolView();
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+  protected:
+
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology-ng/qgscategorizedsymbolrendererwidget.h            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

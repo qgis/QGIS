@@ -28,7 +28,7 @@ class QgsSymbolSelectorWidget;
 #include <QAbstractItemModel>
 
 /* Features count fro rule */
-struct QgsRuleBasedRendererCount
+struct QgsRuleBasedRendererCount SIP_SKIP
 {
   int count; // number of features
   int duplicateCount; // number of features present also in other rule(s)
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void finishedAddingRules(); // call endInsertRows
 
     //! \note not available in Python bindungs
-    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap );
+    void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap ) SIP_SKIP;
     void clearFeatureCounts();
 
   protected:
@@ -192,7 +192,11 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
        * \param parent The parent widget.
        * \param context the symbol widget context
        */
-    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Rule *rule,
+                                QgsVectorLayer *layer,
+                                QgsStyle *style,
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     /**
      * Return the current set rule.
