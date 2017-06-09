@@ -46,6 +46,7 @@ class QgsVectorLayer;
 class QgsSymbol;
 class QgsSymbol;
 class QgsAccessControl;
+class QgsDxfExport;
 
 class QColor;
 class QFile;
@@ -101,6 +102,11 @@ namespace QgsWms
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
       QImage *getMapOld( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
+      /** Returns the map as DXF data
+       \param options: extracted from the FORMAT_OPTIONS parameter
+       \returns the map as DXF data
+       \since QGIS 3.0*/
+      QgsDxfExport getDxf( const QMap<QString, QString> &options );
 
       /** Returns printed page as binary
         \param formatString out: format of the print output (e.g. pdf, svg, png, ...)

@@ -20,6 +20,7 @@ email                : david dot marteau at 3liz dot com
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
+#include "qgswmsrenderer.h"
 
 namespace QgsWms
 {
@@ -44,118 +45,20 @@ namespace QgsWms
       return options;
     }
 
-    void readDxfLayerSettings( const QgsServerRequest::Parameters &parameters, QgsWmsConfigParser *configParser,
-                               QList< QPair<QgsVectorLayer *, int > > &layers,
-                               const QMap<QString, QString> &options )
-    {
-      QSet<QString> wfsLayers = QSet<QString>::fromList( configParser->wfsLayerNames() );
-
-      QStringList layerAttributes;
-      QMap<QString, QString>::const_iterator layerAttributesIt = options.find( QStringLiteral( "LAYERATTRIBUTES" ) );
-      if ( layerAttributesIt != options.constEnd() )
-      {
-        layerAttributes = options.value( QStringLiteral( "LAYERATTRIBUTES" ) ).split( ',' );
-      }
-
-      //LAYERS and STYLES
-      QStringList layerList, styleList;
-      readLayersAndStyles( parameters, layerList, styleList );
-
-      for ( int i = 0; i < layerList.size(); ++i )
-      {
-        QString layerName = layerList.at( i );
-        QString styleName;
-        if ( styleList.size() > i )
-        {
-          styleName = styleList.at( i );
-        }
-
-        QList<QgsMapLayer *> layerList = configParser->mapLayerFromStyle( layerName, styleName );
-        for ( auto layerIt = layerList.constBegin(); layerIt != layerList.constEnd(); ++layerIt )
-        {
-          if ( !( *layerIt ) )
-          {
-            continue;
-          }
-
-          //vector layer?
-          if ( ( *layerIt )->type() != QgsMapLayer::VectorLayer )
-          {
-            continue;
-          }
-
-          QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( *layerIt );
-
-          int layerAttribute = -1;
-          if ( layerAttributes.size() > i )
-          {
-            layerAttribute = vlayer->pendingFields().indexFromName( layerAttributes.at( i ) );
-          }
-
-          //only wfs layers are allowed to be published
-          if ( !wfsLayers.contains( vlayer->name() ) )
-          {
-            continue;
-          }
-
-          layers.append( qMakePair( vlayer, layerAttribute ) );
-        }
-      }
-    }
-
   }
 
-  void writeAsDxf( QgsServerInterface *serverIface,  const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
+  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
+                   const QString &version,  const QgsServerRequest &request,
+                   QgsServerResponse &response )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
-
-    QgsDxfExport dxf;
     QgsServerRequest::Parameters params = request.parameters();
-
-    QgsRectangle extent = parseBbox( params.value( QStringLiteral( "BBOX" ) ) );
-    dxf.setExtent( extent );
+    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
     QMap<QString, QString> formatOptionsMap = parseFormatOptions( params.value( QStringLiteral( "FORMAT_OPTIONS" ) ) );
 
-    QList< QPair<QgsVectorLayer *, int > > layers;
-    readDxfLayerSettings( params, configParser, layers, formatOptionsMap );
-    dxf.addLayers( layers );
-
-    dxf.setLayerTitleAsName( formatOptionsMap.contains( QStringLiteral( "USE_TITLE_AS_LAYERNAME" ) ) );
-
-    //MODE
-    QMap<QString, QString>::const_iterator modeIt = formatOptionsMap.find( QStringLiteral( "MODE" ) );
-
-    QgsDxfExport::SymbologyExport se;
-    if ( modeIt == formatOptionsMap.constEnd() )
-    {
-      se = QgsDxfExport::NoSymbology;
-    }
-    else
-    {
-      if ( modeIt->compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
-      {
-        se = QgsDxfExport::SymbolLayerSymbology;
-      }
-      else if ( modeIt->compare( QLatin1String( "FeatureSymbology" ), Qt::CaseInsensitive ) == 0 )
-      {
-        se = QgsDxfExport::FeatureSymbology;
-      }
-      else
-      {
-        se = QgsDxfExport::NoSymbology;
-      }
-    }
-    dxf.setSymbologyExport( se );
-
-    //SCALE
-    QMap<QString, QString>::const_iterator scaleIt = formatOptionsMap.find( QStringLiteral( "SCALE" ) );
-    if ( scaleIt != formatOptionsMap.constEnd() )
-    {
-      dxf.setSymbologyScale( scaleIt->toDouble() );
-    }
+    QgsDxfExport dxf = renderer.getDxf( formatOptionsMap );
 
     QString codec = QStringLiteral( "ISO-8859-1" );
     QMap<QString, QString>::const_iterator codecIt = formatOptionsMap.find( QStringLiteral( "CODEC" ) );
