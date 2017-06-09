@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
+                       QgsFeatureRequest,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
@@ -104,12 +105,13 @@ class Merge(QgisAlgorithm):
                     fields.append(sfield)
 
         total = 100.0 / totalFeatureCount
+        dest_crs = layers[0].crs()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, layers[0].wkbType(), layers[0].crs())
+                                               fields, layers[0].wkbType(), dest_crs)
 
         featureCount = 0
         for layer in layers:
-            for feature in layer.getFeatures():
+            for feature in layer.getFeatures(QgsFeatureRequest().setDestinationCrs(dest_crs)):
                 if feedback.isCanceled():
                     break
 
