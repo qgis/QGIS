@@ -4142,28 +4142,28 @@ class TestQgsGeometry(unittest.TestCase):
 
         point_z = QgsPoint(1, 2, 3)
         self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
-        self.assertEqual(point.x(), 1)
-        self.assertEqual(point.y(), 2)
-        self.assertEqual(point.z(), 3)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
 
         point_z = QgsPoint(1, 2, 3, 4, wkbType=QgsWkbTypes.PointZ)
         self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
-        self.assertEqual(point.x(), 1)
-        self.assertEqual(point.y(), 2)
-        self.assertEqual(point.z(), 3)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
 
         point_m = QgsPoint(1, 2, m=3)
         self.assertEqual(point_m.wkbType(), QgsWkbTypes.PointM)
-        self.assertEqual(point.x(), 1)
-        self.assertEqual(point.y(), 2)
-        self.assertEqual(point.m(), 3)
+        self.assertEqual(point_m.x(), 1)
+        self.assertEqual(point_m.y(), 2)
+        self.assertEqual(point_m.m(), 3)
 
         point_zm = QgsPoint(1, 2, 3, 4)
         self.assertEqual(point_zm.wkbType(), QgsWkbTypes.PointZM)
-        self.assertEqual(point.x(), 1)
-        self.assertEqual(point.y(), 2)
-        self.assertEqual(point.z(), 3)
-        self.assertEqual(point.m(), 4)
+        self.assertEqual(point_zm.x(), 1)
+        self.assertEqual(point_zm.y(), 2)
+        self.assertEqual(point_zm.z(), 3)
+        self.assertEqual(point_zm.m(), 4)
 
 
 if __name__ == '__main__':
