@@ -176,7 +176,8 @@ Create new data item.
       NoCapabilities,
       SetCrs,
       Fertile,
-      Fast
+      Fast,
+      Collapse
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
