@@ -62,8 +62,8 @@ QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
 QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &description, bool elseRule )
   : mParent( nullptr )
   , mSettings( settings )
-  , mScaleMinDenom( scaleMinDenom )
-  , mScaleMaxDenom( scaleMaxDenom )
+  , mMaximumScale( scaleMinDenom )
+  , mMinimumScale( scaleMaxDenom )
   , mFilterExp( filterExp )
   , mDescription( description )
   , mElseRule( elseRule )
@@ -185,7 +185,7 @@ const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( con
 QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
 {
   QgsPalLayerSettings *s = mSettings ? new QgsPalLayerSettings( *mSettings ) : nullptr;
-  Rule *newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
+  Rule *newrule = new Rule( s, mMaximumScale, mMinimumScale, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
   Q_FOREACH ( Rule *rule, mChildren )
@@ -243,10 +243,10 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc, const QgsReadWr
   }
   if ( !mFilterExp.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
-  if ( mScaleMinDenom != 0 )
-    ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mScaleMinDenom );
-  if ( mScaleMaxDenom != 0 )
-    ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mScaleMaxDenom );
+  if ( mMaximumScale != 0 )
+    ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mMaximumScale );
+  if ( mMinimumScale != 0 )
+    ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mMinimumScale );
   if ( !mDescription.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "description" ), mDescription );
   if ( !mIsActive )
@@ -364,11 +364,11 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) ) // so that we can count features in classes without scale context
     return true;
-  if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
+  if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( mScaleMinDenom != 0 && mScaleMinDenom > scale )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
     return false;
-  if ( mScaleMaxDenom != 0 && mScaleMaxDenom < scale )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
     return false;
   return true;
 }

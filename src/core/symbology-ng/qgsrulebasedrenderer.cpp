@@ -283,11 +283,11 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) ) // so that we can count features in classes without scale context
     return true;
-  if ( mMaximumScale == 0 && mMinimumScale == 0 )
+  if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( mMaximumScale != 0 && mMaximumScale > scale )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
     return false;
-  if ( mMinimumScale != 0 && mMinimumScale < scale )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
     return false;
   return true;
 }
