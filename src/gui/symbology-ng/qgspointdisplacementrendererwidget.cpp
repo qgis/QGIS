@@ -166,6 +166,11 @@ void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContex
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
+  if ( mMinLabelScaleWidget )
+  {
+    mMinLabelScaleWidget->setMapCanvas( context.mapCanvas() );
+    mMinLabelScaleWidget->setShowCurrentScaleButton( true );
+  }
 }
 
 void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString &text )

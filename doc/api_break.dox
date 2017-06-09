@@ -1027,6 +1027,7 @@ QgsDiagramSettings        {#qgis_api_break_3_0_QgsDiagramSettings}
 - readXml() and writeXml() do not take QgsVectorLayer as an argument anymore.
 - transparency was removed. Use opacity instead.
 - angleOffset was removed. Use rotationOffset instead.
+- minScaleDenominator and maxScaleDenominator were removed. Use maximumScale and minimumScale instead.
 
 
 QgsDial        {#qgis_api_break_3_0_QgsDial}
