@@ -126,10 +126,18 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Sets new scene rectangle bounds and recalculates hight and extent
     void setSceneRect( const QRectF &rectangle ) override;
 
-    //! \brief Scale
+    /**
+     * Returns the map scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setNewScale()
+     */
     double scale() const;
 
-    //! Sets new scale and changes only mExtent
+    /**
+     * Sets new map \a scale and changes only the map extent.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see scale()
+     */
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
     /** Sets new extent for the map. This method may change the width or height of the map
