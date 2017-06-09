@@ -216,6 +216,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::ScaleVisibility, QgsPropertyDefinition( "ScaleVisibility", QObject::tr( "Scale based visibility" ), QgsPropertyDefinition::Boolean ) },
     { QgsPalLayerSettings::MinScale, QgsPropertyDefinition( "MinScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double ) },
     { QgsPalLayerSettings::MaxScale, QgsPropertyDefinition( "MaxScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double ) },
+    { QgsPalLayerSettings::MinimumScale, QgsPropertyDefinition( "MinimumScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double ) },
+    { QgsPalLayerSettings::MaximumScale, QgsPropertyDefinition( "MaximumScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double ) },
 
     { QgsPalLayerSettings::FontLimitPixel, QgsPropertyDefinition( "FontLimitPixel", QObject::tr( "Limit font pixel size" ), QgsPropertyDefinition::Boolean ) },
     { QgsPalLayerSettings::FontMinPixel, QgsPropertyDefinition( "FontMinPixel", QObject::tr( "Minimum pixel size" ), QgsPropertyDefinition::IntegerPositive ) },
@@ -281,8 +283,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // rendering
   scaleVisibility = false;
-  scaleMin = 1;
-  scaleMax = 10000000;
+  maximumScale = 0.0;
+  minimumScale = 0.0;
   fontLimitPixelSize = false;
   fontMinPixelSize = 0; //trigger to turn it on by default for map unit labels
   fontMaxPixelSize = 10000;
@@ -369,8 +371,8 @@ QgsPalLayerSettings &QgsPalLayerSettings::operator=( const QgsPalLayerSettings &
 
   // rendering
   scaleVisibility = s.scaleVisibility;
-  scaleMin = s.scaleMin;
-  scaleMax = s.scaleMax;
+  maximumScale = s.maximumScale;
+  minimumScale = s.minimumScale;
   fontLimitPixelSize = s.fontLimitPixelSize;
   fontMinPixelSize = s.fontMinPixelSize;
   fontMaxPixelSize = s.fontMaxPixelSize;
@@ -635,22 +637,22 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   }
 
   // rendering
-  int scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toInt();
-  int scalemx = layer->customProperty( QStringLiteral( "labeling/scaleMax" ), QVariant( 0 ) ).toInt();
+  double scalemn = layer->customProperty( QStringLiteral( "labeling/scaleMin" ), QVariant( 0 ) ).toDouble();
+  double scalemx = layer->customProperty( QStringLiteral( "labeling/scaleMax" ), QVariant( 0 ) ).toDouble();
 
   // fix for scale visibility limits being keyed off of just its values in the past (<2.0)
   QVariant scalevis = layer->customProperty( QStringLiteral( "labeling/scaleVisibility" ), QVariant() );
   if ( scalevis.isValid() )
   {
     scaleVisibility = scalevis.toBool();
-    scaleMin = scalemn;
-    scaleMax = scalemx;
+    maximumScale = scalemn;
+    minimumScale = scalemx;
   }
   else if ( scalemn > 0 || scalemx > 0 )
   {
     scaleVisibility = true;
-    scaleMin = scalemn;
-    scaleMax = scalemx;
+    maximumScale = scalemn;
+    minimumScale = scalemx;
   }
   else
   {
@@ -713,6 +715,17 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     mDataDefinedProperties.setProperty( LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( Rotation ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( Rotation, QgsProperty() );
+  }
+  // older 2.x projects had min/max scale flipped - so change them here.
+  if ( mDataDefinedProperties.isActive( MinScale ) )
+  {
+    mDataDefinedProperties.setProperty( MaximumScale, mDataDefinedProperties.property( MinScale ) );
+    mDataDefinedProperties.setProperty( MinScale, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( MaxScale ) )
+  {
+    mDataDefinedProperties.setProperty( MinimumScale, mDataDefinedProperties.property( MaxScale ) );
+    mDataDefinedProperties.setProperty( MaxScale, QgsProperty() );
   }
 }
 
@@ -817,8 +830,8 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
 
   drawLabels = renderingElem.attribute( QStringLiteral( "drawLabels" ), QStringLiteral( "1" ) ).toInt();
 
-  scaleMin = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toInt();
-  scaleMax = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toInt();
+  maximumScale = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toDouble();
+  minimumScale = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toDouble();
   scaleVisibility = renderingElem.attribute( QStringLiteral( "scaleVisibility" ) ).toInt();
 
   fontLimitPixelSize = renderingElem.attribute( QStringLiteral( "fontLimitPixelSize" ), QStringLiteral( "0" ) ).toInt();
@@ -874,6 +887,17 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   {
     mDataDefinedProperties.setProperty( LabelRotation, QgsProperty::fromExpression( QStringLiteral( "360 - (%1)" ).arg( mDataDefinedProperties.property( Rotation ).asExpression() ) ) );
     mDataDefinedProperties.setProperty( Rotation, QgsProperty() );
+  }
+  // older 2.x projects had min/max scale flipped - so change them here.
+  if ( mDataDefinedProperties.isActive( MinScale ) )
+  {
+    mDataDefinedProperties.setProperty( MaximumScale, mDataDefinedProperties.property( MinScale ) );
+    mDataDefinedProperties.setProperty( MinScale, QgsProperty() );
+  }
+  if ( mDataDefinedProperties.isActive( MaxScale ) )
+  {
+    mDataDefinedProperties.setProperty( MinimumScale, mDataDefinedProperties.property( MaxScale ) );
+    mDataDefinedProperties.setProperty( MaxScale, QgsProperty() );
   }
 }
 
@@ -935,8 +959,8 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
   renderingElem.setAttribute( QStringLiteral( "drawLabels" ), drawLabels );
   renderingElem.setAttribute( QStringLiteral( "scaleVisibility" ), scaleVisibility );
-  renderingElem.setAttribute( QStringLiteral( "scaleMin" ), scaleMin );
-  renderingElem.setAttribute( QStringLiteral( "scaleMax" ), scaleMax );
+  renderingElem.setAttribute( QStringLiteral( "scaleMin" ), maximumScale );
+  renderingElem.setAttribute( QStringLiteral( "scaleMax" ), minimumScale );
   renderingElem.setAttribute( QStringLiteral( "fontLimitPixelSize" ), fontLimitPixelSize );
   renderingElem.setAttribute( QStringLiteral( "fontMinPixelSize" ), fontMinPixelSize );
   renderingElem.setAttribute( QStringLiteral( "fontMaxPixelSize" ), fontMaxPixelSize );
@@ -1147,23 +1171,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( useScaleVisibility )
   {
     // data defined min scale?
-    context.expressionContext().setOriginalValueVariable( scaleMin );
-    double minScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MinScale, context.expressionContext(), scaleMin );
-
-    // scales closer than 1:1
-    if ( minScale < 0 )
-    {
-      minScale = 1 / qAbs( minScale );
-    }
-
-    if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() < minScale )
-    {
-      return;
-    }
-
-    // data defined max scale?
-    context.expressionContext().setOriginalValueVariable( scaleMax );
-    double maxScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MaxScale, context.expressionContext(), scaleMax );
+    context.expressionContext().setOriginalValueVariable( maximumScale );
+    double maxScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MaximumScale, context.expressionContext(), maximumScale );
 
     // scales closer than 1:1
     if ( maxScale < 0 )
@@ -1171,7 +1180,22 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
       maxScale = 1 / qAbs( maxScale );
     }
 
-    if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() > maxScale )
+    if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() < maxScale )
+    {
+      return;
+    }
+
+    // data defined max scale?
+    context.expressionContext().setOriginalValueVariable( minimumScale );
+    double minScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MinimumScale, context.expressionContext(), minimumScale );
+
+    // scales closer than 1:1
+    if ( minScale < 0 )
+    {
+      minScale = 1 / qAbs( minScale );
+    }
+
+    if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() > minScale )
     {
       return;
     }

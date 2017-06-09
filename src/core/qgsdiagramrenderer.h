@@ -426,7 +426,7 @@ class CORE_EXPORT QgsDiagramSettings
     bool scaleBasedVisibility;
 
     /**
-     * The maximum map scale (i.e. most "zoomed in" scale) at which the layer will be visible.
+     * The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
      * \see minimumScale
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsDiagramSettings
     double maximumScale = 0;
 
     /**
-     * The minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
+     * The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
      * \see maximumScale

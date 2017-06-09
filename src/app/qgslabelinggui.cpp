@@ -73,6 +73,11 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
+  mMinScaleWidget->setMapCanvas( mapCanvas );
+  mMinScaleWidget->setShowCurrentScaleButton( true );
+  mMaxScaleWidget->setMapCanvas( mapCanvas );
+  mMaxScaleWidget->setShowCurrentScaleButton( true );
+
   setLayer( layer );
 }
 
@@ -243,8 +248,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   setPreviewBackground( lyr.previewBkgrdColor );
 
   mScaleBasedVisibilityChkBx->setChecked( lyr.scaleVisibility );
-  mScaleBasedVisibilityMinSpnBx->setValue( lyr.scaleMin );
-  mScaleBasedVisibilityMaxSpnBx->setValue( lyr.scaleMax );
+  mMinScaleWidget->setScale( lyr.minimumScale );
+  mMaxScaleWidget->setScale( lyr.maximumScale );
 
   mFormatNumChkBx->setChecked( lyr.formatNumbers );
   mFormatNumDecimalsSpnBx->setValue( lyr.decimals );
@@ -385,8 +390,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.mergeLines = chkMergeLines->isChecked();
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
-  lyr.scaleMin = mScaleBasedVisibilityMinSpnBx->value();
-  lyr.scaleMax = mScaleBasedVisibilityMaxSpnBx->value();
+  lyr.minimumScale = mMinScaleWidget->scale();
+  lyr.maximumScale = mMaxScaleWidget->scale();
   lyr.useSubstitutions = mCheckBoxSubstituteText->isChecked();
   lyr.substitutions = mSubstitutions;
 
@@ -553,9 +558,9 @@ void QgsLabelingGui::populateDataDefinedButtons()
                                "Value of 0 disables the specific limit." );
   registerDataDefinedButton( mScaleBasedVisibilityDDBtn, QgsPalLayerSettings::ScaleVisibility );
   mScaleBasedVisibilityDDBtn->registerCheckedWidget( mScaleBasedVisibilityChkBx );
-  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::MinScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMinDDBtn, QgsPalLayerSettings::MinimumScale );
   mScaleBasedVisibilityMinDDBtn->setUsageInfo( ddScaleVisInfo );
-  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::MaxScale );
+  registerDataDefinedButton( mScaleBasedVisibilityMaxDDBtn, QgsPalLayerSettings::MaximumScale );
   mScaleBasedVisibilityMaxDDBtn->setUsageInfo( ddScaleVisInfo );
 
   registerDataDefinedButton( mFontLimitPixelDDBtn, QgsPalLayerSettings::FontLimitPixel );
