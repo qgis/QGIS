@@ -265,6 +265,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsDataDefined was removed. Use the QgsProperty framework instead.
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
+- QgsDefaultPluginLayerLegend was removed. Use QgsMapLayer::setLegend() to provide legend nodes for plugin layers.
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
@@ -1181,6 +1182,9 @@ QgsFeatureRendererV2        {#qgis_api_break_3_0_QgsFeatureRendererV2}
 - usedAttributes() now requires a QgsRenderContext argument.
 - save() expects QgsReadWriteContext reference as the last argument
 - static create() method in subclasses expects QgsReadWriteContext reference as the last argument
+- legendSymbologyItems() was removed.
+- legendSymbolItems() was removed.
+- legendSymbolItemsV2() has been renamed to legendSymbolItems()
 
 
 QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
@@ -1530,6 +1534,12 @@ QgsMapLayerActionRegistry        {#qgis_api_break_3_0_QgsMapLayerActionRegistry}
 - This class is no longer a singleton and instance() has been removed. Instead use QgsGui::mapLayerActionRegistry().
 
 
+QgsMapLayerLegend        {#qgis_api_break_3_0_QgsMapLayerLegend}
+-----------------
+
+- defaultPluginLegend() was removed. Plugin layers have to provide their legend implementation.
+
+
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 --------------------
 
@@ -1768,6 +1778,7 @@ QgsPluginLayer        {#qgis_api_break_3_0_QgsPluginLayer}
 
 - createMapRenderer(): default implementation (which called plugin's draw() method) has been removed. Plugin layers must implement createMapRenderer().
 - clone(): new pure virtual method. Plugin layer must implement clone().
+- legendSymbologyItems() has been removed. Use QgsMapLayer::setLegend() to provide legend nodes.
 
 
 QgsPluginLayerRegistry        {#qgis_api_break_3_0_QgsPluginLayerRegistry}
@@ -1786,7 +1797,7 @@ QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRen
 ----------------------------
 
 - The deprecated method setDisplacementGroups() has been removed. This method has had no effect since QGIS 2.4
-- setMaxLabelScaleDenominator() and maxLabelScaleDenominator() were renamed to setMinimumLabelScale() and 
+- setMaxLabelScaleDenominator() and maxLabelScaleDenominator() were renamed to setMinimumLabelScale() and
 minimumLabelScale() for consistency with other areas in the QGIS API.
 
 
@@ -2008,6 +2019,8 @@ QgsRuleBasedRenderer        {#qgis_api_break_3_0_QgsRuleBasedRenderer}
 - QgsRuleBasedRenderer.Rule checkState() and setCheckState() were removed. Use active() and setActive() instead.
 - QgsRuleBasedRenderer.Rule updateElseRules() was removed.
 - QgsRuleBasedRenderer.Rule scaleMinDenom(), scaleMaxDenom(), setScaleMaxDenom() and setScaleMinDenom() were removed. Use minimumScale(), maximumScale(), setMinimumScale() and setMaximumScale() instead.
+- QgsRuleBasedRenderer.Rule legendSymbolItems() was removed.
+- QgsRuleBasedRenderer.Rule legendSymbolItemsV2() was renamed to legendSymbolItems()
 - startRender( QgsRenderContext& context, const QgsFields& fields ) was removed. Use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead.
 
 

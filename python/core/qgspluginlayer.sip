@@ -52,12 +52,6 @@ Set extent of the layer
 .. versionadded:: 2.16
 %End
 
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-%Docstring
-.. versionadded:: 2.1
- :rtype: QgsLegendSymbologyList
-%End
-
   protected:
 };
 

@@ -56,9 +56,6 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     //! Create new legend implementation for raster layer
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) SIP_FACTORY;
 
-    //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl ) SIP_FACTORY;
-
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
     void itemsChanged();
@@ -123,22 +120,5 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
     QgsRasterLayer *mLayer = nullptr;
 };
 
-
-/** \ingroup core
- * Default legend implementation for plugin layers
- * \since QGIS 2.6
- */
-class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer *pl );
-
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-
-  private:
-    QgsPluginLayer *mLayer = nullptr;
-};
 
 #endif // QGSMAPLAYERLEGEND_H

@@ -118,11 +118,10 @@ Constructor takes ownership of the symbol
  :rtype: QgsSymbolList
 %End
 
-
-        QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
+        QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
 %Docstring
 .. versionadded:: 2.6
- :rtype: QgsLegendSymbolListV2
+ :rtype: QgsLegendSymbolList
 %End
 
         bool isFilterOK( QgsFeature &f, QgsRenderContext *context = 0 ) const;
@@ -486,13 +485,12 @@ return symbol for current feature. Should not be used individually: there could 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
     virtual bool legendSymbolItemsCheckable() const;
     virtual bool legendSymbolItemChecked( const QString &key );
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
     virtual QString dump() const;
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );

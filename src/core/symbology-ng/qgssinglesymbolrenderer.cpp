@@ -278,29 +278,9 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
   return rendererElem;
 }
 
-QgsLegendSymbologyList QgsSingleSymbolRenderer::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbologyList lst;
-  if ( mSymbol )
-  {
-    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mSymbol.get(), iconSize );
-    lst << qMakePair( QString(), pix );
-  }
-  return lst;
-}
-
-QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
-{
-  Q_UNUSED( scale );
-  Q_UNUSED( rule );
   QgsLegendSymbolList lst;
-  lst << qMakePair( QString(), mSymbol.get() );
-  return lst;
-}
-
-QgsLegendSymbolListV2 QgsSingleSymbolRenderer::legendSymbolItemsV2() const
-{
-  QgsLegendSymbolListV2 lst;
   if ( mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );

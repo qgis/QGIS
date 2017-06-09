@@ -96,6 +96,6 @@ class CORE_EXPORT QgsLegendSymbolItem
 };
 
 
-typedef QList< QgsLegendSymbolItem > QgsLegendSymbolListV2;
+typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
 #endif // QGSLEGENDSYMBOLITEMV2_H

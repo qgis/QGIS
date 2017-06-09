@@ -308,8 +308,7 @@ create renderer from XML element
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 

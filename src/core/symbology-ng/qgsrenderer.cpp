@@ -274,13 +274,6 @@ QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styl
   return userStyleElem;
 }
 
-QgsLegendSymbologyList QgsFeatureRenderer::legendSymbologyItems( QSize iconSize )
-{
-  Q_UNUSED( iconSize );
-  // empty list by default
-  return QgsLegendSymbologyList();
-}
-
 bool QgsFeatureRenderer::legendSymbolItemsCheckable() const
 {
   return false;
@@ -304,23 +297,9 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
   delete symbol;
 }
 
-QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scale, const QString &rule )
+QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
 {
-  Q_UNUSED( scale );
-  Q_UNUSED( rule );
   return QgsLegendSymbolList();
-}
-
-QgsLegendSymbolListV2 QgsFeatureRenderer::legendSymbolItemsV2() const
-{
-  QgsLegendSymbolList lst = const_cast<QgsFeatureRenderer *>( this )->legendSymbolItems();
-  QgsLegendSymbolListV2 lst2;
-  int i = 0;
-  for ( QgsLegendSymbolList::const_iterator it = lst.begin(); it != lst.end(); ++it, ++i )
-  {
-    lst2 << QgsLegendSymbolItem( it->second, it->first, QString::number( i ), legendSymbolItemsCheckable() );
-  }
-  return lst2;
 }
 
 void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )

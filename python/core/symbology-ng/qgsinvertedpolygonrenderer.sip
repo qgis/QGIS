@@ -105,12 +105,12 @@ Proxy that will call this method on the embedded renderer.
  Proxy that will call this method on the embedded renderer.
  :rtype: QgsSymbolList
 %End
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-%Docstring
-Proxy that will call this method on the embedded renderer.
- :rtype: QgsLegendSymbologyList
-%End
 
+    virtual QgsLegendSymbolList legendSymbolItems() const;
+%Docstring
+ Proxy that will call this method on the embedded renderer.
+ :rtype: QgsLegendSymbolList
+%End
 
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 %Docstring

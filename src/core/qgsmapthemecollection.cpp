@@ -308,7 +308,7 @@ void QgsMapThemeCollection::applyMapThemeCheckedLegendNodesToLayer( const MapThe
 
   bool someNodesUnchecked = layerRec.usingLegendItems;
 
-  Q_FOREACH ( const QgsLegendSymbolItem &item, vlayer->renderer()->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem &item, vlayer->renderer()->legendSymbolItems() )
   {
     bool checked = renderer->legendSymbolItemChecked( item.ruleKey() );
     bool shouldBeChecked = someNodesUnchecked ? layerRec.checkedLegendItems.contains( item.ruleKey() ) : true;

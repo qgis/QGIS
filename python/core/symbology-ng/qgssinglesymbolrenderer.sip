@@ -48,8 +48,7 @@ create renderer from XML element
  :rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 

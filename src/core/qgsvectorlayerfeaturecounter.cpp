@@ -20,7 +20,7 @@ bool QgsVectorLayerFeatureCounter::run()
 
   for ( ; symbolIt != symbolList.constEnd(); ++symbolIt )
   {
-    mSymbolFeatureCountMap.insert( symbolIt->first, 0 );
+    mSymbolFeatureCountMap.insert( symbolIt->label(), 0 );
   }
 
   // If there are no features to be counted, we can spare us the trouble

@@ -330,24 +330,14 @@ void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
   mRenderer->stopRender( context );
 }
 
-QgsLegendSymbologyList QgsPointDistanceRenderer::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems() const
 {
   if ( mRenderer )
   {
-    return mRenderer->legendSymbologyItems( iconSize );
-  }
-  return QgsLegendSymbologyList();
-}
-
-QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems( double scale, const QString &rule )
-{
-  if ( mRenderer )
-  {
-    return mRenderer->legendSymbolItems( scale, rule );
+    return mRenderer->legendSymbolItems();
   }
   return QgsLegendSymbolList();
 }
-
 
 QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPointXY &p, double distance ) const
 {

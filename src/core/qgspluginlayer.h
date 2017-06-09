@@ -18,7 +18,6 @@
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList SIP_SKIP;
 
 /** \ingroup core
   Base class for plugin layers. These can be implemented by plugins
@@ -52,11 +51,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      * \since QGIS 2.16
      */
     void setSource( const QString &source );
-
-    //! return a list of symbology items for the legend
-    //! (default implementation returns nothing)
-    //! \since QGIS v2.1
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
   protected:
     QString mPluginLayerType;

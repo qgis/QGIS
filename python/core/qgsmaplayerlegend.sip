@@ -47,12 +47,6 @@ Create new legend implementation for raster layer
  :rtype: QgsMapLayerLegend
 %End
 
-    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl ) /Factory/;
-%Docstring
-Create new legend implementation for raster layer
- :rtype: QgsMapLayerLegend
-%End
-
   signals:
     void itemsChanged();
 %Docstring
@@ -136,23 +130,6 @@ class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 
 };
 
-
-class QgsDefaultPluginLayerLegend : QgsMapLayerLegend
-{
-%Docstring
- Default legend implementation for plugin layers
-.. versionadded:: 2.6
-%End
-
-%TypeHeaderCode
-#include "qgsmaplayerlegend.h"
-%End
-  public:
-    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer *pl );
-
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
-
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *

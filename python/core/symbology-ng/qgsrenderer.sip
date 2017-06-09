@@ -13,9 +13,6 @@
 
 typedef QList<QgsSymbol *> QgsSymbolList;
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
-typedef QList< QPair<QString, QgsSymbol *> > QgsLegendSymbolList;
-
 
 
 
@@ -267,12 +264,6 @@ store renderer info to XML element
 used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %End
 
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-%Docstring
-return a list of symbology items for the legend
- :rtype: QgsLegendSymbologyList
-%End
-
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
 .. versionadded:: 2.5
@@ -298,11 +289,10 @@ return a list of symbology items for the legend
 .. versionadded:: 2.14
 %End
 
-
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolList legendSymbolItems() const;
 %Docstring
 .. versionadded:: 2.6
- :rtype: QgsLegendSymbolListV2
+ :rtype: QgsLegendSymbolList
 %End
 
     virtual QString legendClassificationAttribute() const;
