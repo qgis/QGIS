@@ -94,7 +94,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertFalse(layer.editBuffer().isFeatureAdded(1))
         self.assertFalse(layer.editBuffer().isFeatureAdded(3))
 
-        # add a features with a multi line geometry of not toched lines =>
+        # add a features with a multi line geometry of not touched lines =>
         # cannot be forced to be linestring
         multiline = [
             [QgsPoint(1, 1), QgsPoint(2, 2)],
