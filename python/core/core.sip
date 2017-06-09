@@ -123,7 +123,7 @@
 %Include qgspathresolver.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
-%Include qgspoint.sip
+%Include qgspointxy.sip
 %Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectbadlayerhandler.sip
