@@ -289,9 +289,9 @@ QgsLegendSymbologyList QgsSingleSymbolRenderer::legendSymbologyItems( QSize icon
   return lst;
 }
 
-QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
 {
-  Q_UNUSED( scaleDenominator );
+  Q_UNUSED( scale );
   Q_UNUSED( rule );
   QgsLegendSymbolList lst;
   lst << qMakePair( QString(), mSymbol.get() );

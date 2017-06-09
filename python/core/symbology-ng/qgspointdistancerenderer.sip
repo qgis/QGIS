@@ -106,7 +106,7 @@ Optional label text
 .. seealso:: labelAttributeName()
 .. seealso:: setLabelFont()
 .. seealso:: setLabelColor()
-.. seealso:: setMaxLabelScaleDenominator()
+.. seealso:: setMinimumLabelScale()
 %End
 
     QString labelAttributeName() const;
@@ -115,7 +115,7 @@ Optional label text
  will be done by the renderer.
 .. seealso:: setLabelAttributeName()
 .. seealso:: labelFont()
-.. seealso:: maxLabelScaleDenominator()
+.. seealso:: minimumLabelScale()
 .. seealso:: labelColor()
  :rtype: str
 %End
@@ -138,18 +138,19 @@ Optional label text
  :rtype: QFont
 %End
 
-    void setMaxLabelScaleDenominator( double denominator );
+    void setMinimumLabelScale( double scale );
 %Docstring
- Sets the maximum scale at which points should be labeled by the renderer.
- \param denominator maximum scale denominator
-.. seealso:: maxLabelScaleDenominator()
+ Sets the minimum map ``scale`` (i.e. most "zoomed out") at which points should be labeled by the renderer.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: minimumLabelScale()
 .. seealso:: setLabelAttributeName()
 %End
 
-    double maxLabelScaleDenominator() const;
+    double minimumLabelScale() const;
 %Docstring
- Returns the denominator for the maximum scale at which points should be labeled by the renderer.
-.. seealso:: setMaxLabelScaleDenominator()
+ Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: setMinimumLabelScale()
 .. seealso:: labelAttributeName()
  :rtype: float
 %End

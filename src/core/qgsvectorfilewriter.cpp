@@ -84,7 +84,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   , mCodec( nullptr )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
-  , mSymbologyScaleDenominator( 1.0 )
+  , mSymbologyScale( 1.0 )
   , mFieldValueConverter( nullptr )
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
@@ -112,7 +112,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
   , mCodec( nullptr )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
-  , mSymbologyScaleDenominator( 1.0 )
+  , mSymbologyScale( 1.0 )
   , mFieldValueConverter( nullptr )
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
@@ -133,7 +133,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                                 const QString &layerNameIn,
                                 ActionOnExistingFile action )
 {
-  mRenderContext.setRendererScale( mSymbologyScaleDenominator );
+  mRenderContext.setRendererScale( mSymbologyScale );
 
   if ( vectorFileName.isEmpty() )
   {
@@ -1866,8 +1866,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *r
           continue;
         }
 #endif
-        double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
-        double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), outputUnit );
+        double mmsf = mmScaleFactor( mSymbologyScale, ( *symbolIt )->outputUnit(), outputUnit );
+        double musf = mapUnitScaleFactor( mSymbologyScale, ( *symbolIt )->outputUnit(), outputUnit );
 
         currentStyle = ( *symbolIt )->symbolLayer( i )->ogrFeatureStyle( mmsf, musf );//"@" + it.value();
 
@@ -2383,7 +2383,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
                              options.fieldValueConverter,
                              options.layerName,
                              options.actionOnExistingFile );
-  writer->setSymbologyScaleDenominator( options.symbologyScale );
+  writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
   {
@@ -2619,10 +2619,10 @@ bool QgsVectorFileWriter::deleteShapeFile( const QString &fileName )
   return ok;
 }
 
-void QgsVectorFileWriter::setSymbologyScaleDenominator( double d )
+void QgsVectorFileWriter::setSymbologyScale( double d )
 {
-  mSymbologyScaleDenominator = d;
-  mRenderContext.setRendererScale( mSymbologyScaleDenominator );
+  mSymbologyScale = d;
+  mRenderContext.setRendererScale( mSymbologyScale );
 }
 
 QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
@@ -2852,8 +2852,8 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer *vl,  const Qgs
   QgsSymbolList::iterator symbolIt = symbolList.begin();
   for ( ; symbolIt != symbolList.end(); ++symbolIt )
   {
-    double mmsf = mmScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits );
-    double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, ( *symbolIt )->outputUnit(), mapUnits );
+    double mmsf = mmScaleFactor( mSymbologyScale, ( *symbolIt )->outputUnit(), mapUnits );
+    double musf = mapUnitScaleFactor( mSymbologyScale, ( *symbolIt )->outputUnit(), mapUnits );
 
     int nLevels = ( *symbolIt )->symbolLayerCount();
     for ( int i = 0; i < nLevels; ++i )
@@ -2968,8 +2968,8 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         continue;
       }
 
-      double mmsf = mmScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(), mapUnits );
-      double musf = mapUnitScaleFactor( mSymbologyScaleDenominator, levelIt.key()->outputUnit(), mapUnits );
+      double mmsf = mmScaleFactor( mSymbologyScale, levelIt.key()->outputUnit(), mapUnits );
+      double musf = mapUnitScaleFactor( mSymbologyScale, levelIt.key()->outputUnit(), mapUnits );
 
       int llayer = item.layer();
       QList<QgsFeature> &featureList = levelIt.value();
@@ -3008,7 +3008,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   return ( nErrors > 0 ) ? QgsVectorFileWriter::ErrFeatureWriteFailed : QgsVectorFileWriter::NoError;
 }
 
-double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mmScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
 {
   if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
   {
@@ -3019,14 +3019,14 @@ double QgsVectorFileWriter::mmScaleFactor( double scaleDenominator, QgsUnitTypes
     //conversion factor map units -> mm
     if ( mapUnits == QgsUnitTypes::DistanceMeters )
     {
-      return 1000 / scaleDenominator;
+      return 1000 / scale;
     }
 
   }
   return 1.0; //todo: map units
 }
 
-double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
 {
   if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
   {
@@ -3036,7 +3036,7 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsUnit
   {
     if ( symbolUnits == QgsUnitTypes::RenderMillimeters && mapUnits == QgsUnitTypes::DistanceMeters )
     {
-      return scaleDenominator / 1000;
+      return scale / 1000;
     }
   }
   return 1.0;

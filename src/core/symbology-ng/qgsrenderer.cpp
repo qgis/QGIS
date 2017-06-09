@@ -304,9 +304,9 @@ void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *sym
   delete symbol;
 }
 
-QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scale, const QString &rule )
 {
-  Q_UNUSED( scaleDenominator );
+  Q_UNUSED( scale );
   Q_UNUSED( rule );
   return QgsLegendSymbolList();
 }

@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
+    QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) override SIP_SKIP;
     void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see labelAttributeName()
      * \see setLabelFont()
      * \see setLabelColor()
-     * \see setMaxLabelScaleDenominator()
+     * \see setMinimumLabelScale()
      */
     void setLabelAttributeName( const QString &name ) { mLabelAttributeName = name; }
 
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * will be done by the renderer.
      * \see setLabelAttributeName()
      * \see labelFont()
-     * \see maxLabelScaleDenominator()
+     * \see minimumLabelScale()
      * \see labelColor()
      */
     QString labelAttributeName() const { return mLabelAttributeName; }
@@ -133,18 +133,21 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QFont labelFont() const { return mLabelFont;}
 
-    /** Sets the maximum scale at which points should be labeled by the renderer.
-     * \param denominator maximum scale denominator
-     * \see maxLabelScaleDenominator()
+    /**
+     * Sets the minimum map \a scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see minimumLabelScale()
      * \see setLabelAttributeName()
      */
-    void setMaxLabelScaleDenominator( double denominator ) { mMaxLabelScaleDenominator = denominator; }
+    void setMinimumLabelScale( double scale ) { mMinLabelScale = scale; }
 
-    /** Returns the denominator for the maximum scale at which points should be labeled by the renderer.
-     * \see setMaxLabelScaleDenominator()
+    /**
+     * Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \see setMinimumLabelScale()
      * \see labelAttributeName()
      */
-    double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
+    double minimumLabelScale() const { return mMinLabelScale; }
 
     /** Sets the color to use for for labeling points.
      * \param color label color
@@ -230,8 +233,8 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QColor mLabelColor;
     //! Whether labels should be drawn for points. This is set internally from startRender() depending on scale denominator.
     bool mDrawLabels;
-    //! Maximum scale denominator for label display. A negative number indicatese no scale limitation.
-    double mMaxLabelScaleDenominator;
+    //! Maximum scale denominator for label display. A zero value indicates no scale limitation.
+    double mMinLabelScale = 0;
 
     //! Groups of features that are considered clustered together.
     QList<ClusteredGroup> mClusteredGroups;

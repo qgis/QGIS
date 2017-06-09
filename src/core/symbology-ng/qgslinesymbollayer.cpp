@@ -604,10 +604,10 @@ double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRende
   {
     context.setOriginalValueVariable( mWidth );
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth )
-            * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+            * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
   }
 
-  return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
 }
 
 QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const

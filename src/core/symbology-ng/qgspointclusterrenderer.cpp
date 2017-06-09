@@ -51,7 +51,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
     r->setEmbeddedRenderer( mRenderer->clone() );
   r->setLabelFont( mLabelFont );
   r->setLabelColor( mLabelColor );
-  r->setMaxLabelScaleDenominator( mMaxLabelScaleDenominator );
+  r->setMinimumLabelScale( mMinLabelScale );
   r->setTolerance( mTolerance );
   r->setToleranceUnit( mToleranceUnit );
   r->setToleranceMapUnitScale( mToleranceMapUnitScale );

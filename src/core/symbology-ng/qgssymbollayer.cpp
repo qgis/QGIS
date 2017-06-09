@@ -629,7 +629,7 @@ void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPo
 double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( context );
-  return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+  return width() * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
 }
 
 

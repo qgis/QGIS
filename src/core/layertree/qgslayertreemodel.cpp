@@ -601,9 +601,9 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
   }
 }
 
-void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
+void QgsLayerTreeModel::setLegendFilterByScale( double scale )
 {
-  mLegendFilterByScale = scaleDenominator;
+  mLegendFilterByScale = scale;
 
   // this could be later done in more efficient way
   // by just updating active legend nodes, without refreshing original legend nodes

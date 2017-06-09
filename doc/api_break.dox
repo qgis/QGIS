@@ -1067,6 +1067,8 @@ QgsDxfExport        {#qgis_api_break_3_0_QgsDxfExport}
 - The signature for writeLine() has changed.
 - writePoint(), writeFilledCircle(), writeCircle(), writeText() and writeMText() now take QgsPointV2 arguments
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
+- setSymbologyScaleDenominator() and symbologyScaleDenominator() were renamed to setSymbologyScale() and symbologyScale()
+for consistency with other parts of the QGIS API.
 
 
 QgsEditFormConfig        {#qgis_api_break_3_0_QgsEditFormConfig}
@@ -1781,6 +1783,8 @@ QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRen
 ----------------------------
 
 - The deprecated method setDisplacementGroups() has been removed. This method has had no effect since QGIS 2.4
+- setMaxLabelScaleDenominator() and maxLabelScaleDenominator() were renamed to setMinimumLabelScale() and 
+minimumLabelScale() for consistency with other areas in the QGIS API.
 
 
 QgsPointLocator        {#qgis_api_break_3_0_QgsPointLocator}
@@ -2442,6 +2446,8 @@ QgsCoordinateReferenceSystem is now implicitly shared, using references to QgsCo
 pointers makes for more robust, safer code. Use an invalid (default constructed) QgsCoordinateReferenceSystem
 in code which previously passed a null pointer to QgsVectorFileWriter.
 - writeAsVectorFormat() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
+- setSymbologyScaleDenominator() and symbologyScaleDenominator() were renamed to setSymbologyScale() and symbologyScale()
+for consistency with other parts of the QGIS API.
 
 
 QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}

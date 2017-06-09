@@ -367,7 +367,7 @@ const char *QgsDxfExport::DXF_ENCODINGS[][2] =
 };
 
 QgsDxfExport::QgsDxfExport()
-  : mSymbologyScaleDenominator( 1.0 )
+  : mSymbologyScale( 1.0 )
   , mSymbologyExport( NoSymbology )
   , mMapUnits( QgsUnitTypes::DistanceMeters )
   , mLayerTitleAsName( false )
@@ -387,7 +387,7 @@ QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport &dxfExport )
 {
   mMapSettings = dxfExport.mMapSettings;
   mLayerNameAttribute = dxfExport.mLayerNameAttribute;
-  mSymbologyScaleDenominator = dxfExport.mSymbologyScaleDenominator;
+  mSymbologyScale = dxfExport.mSymbologyScale;
   mSymbologyExport = dxfExport.mSymbologyExport;
   mMapUnits = dxfExport.mMapUnits;
   mLayerTitleAsName = dxfExport.mLayerTitleAsName;
@@ -540,7 +540,7 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mMapSettings.setExtent( mExtent );
 
   int dpi = 96;
-  mFactor = 1000 * dpi / mSymbologyScaleDenominator / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
+  mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
   if ( mCrs.isValid() )
@@ -921,13 +921,13 @@ void QgsDxfExport::writeBlocks()
     // x/y/z coordinates of reference point
     // todo: consider anchor point
     // double size = ml->size();
-    // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
+    // size *= mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits );
     writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ ) );
     writeGroup( 3, block );
     writeGroup( 1, QLatin1String( "" ) );
 
     // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), QStringLiteral( "0" ), ctx );
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits ), QStringLiteral( "0" ), ctx );
 
     writeGroup( 0, QStringLiteral( "ENDBLK" ) );
     writeHandle();
@@ -956,7 +956,7 @@ void QgsDxfExport::writeEntities()
 
   QgsRenderContext ctx;
   ctx.setPainter( &painter );
-  ctx.setRendererScale( mSymbologyScaleDenominator );
+  ctx.setRendererScale( mSymbologyScale );
   ctx.setExtent( mExtent );
 
   ctx.setScaleFactor( 96.0 / 25.4 );
@@ -3398,7 +3398,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
   const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
   if ( msl )
   {
-    double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScaleDenominator,
+    double halfSize = msl->size() * mapUnitScaleFactor( mSymbologyScale,
                       msl->sizeUnit(), mMapUnits ) / 2.0;
     writeGroup( 0, "SOLID" );
     writeGroup( 8, layer );
@@ -3418,7 +3418,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
     if ( msl && symbol )
     {
-      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, msl->sizeUnit(), mMapUnits ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
       {
         return;
       }
@@ -3960,18 +3960,18 @@ QRgb QgsDxfExport::createRgbEntry( qreal r, qreal g, qreal b )
 QgsRenderContext QgsDxfExport::renderContext() const
 {
   QgsRenderContext context;
-  context.setRendererScale( mSymbologyScaleDenominator );
+  context.setRendererScale( mSymbologyScale );
   return context;
 }
 
-double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsDxfExport::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
 {
   if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
   {
     return 1.0;
   }
   // MM symbol unit
-  return scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0;
+  return scale * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0;
 }
 
 QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
@@ -4102,7 +4102,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   QVector<qreal>::const_iterator dashIt = pattern.constBegin();
   for ( ; dashIt != pattern.constEnd(); ++dashIt )
   {
-    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits ) );
+    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits ) );
   }
 
   writeGroup( 0, QStringLiteral( "LTYPE" ) );
@@ -4123,7 +4123,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   {
     // map units or mm?
     double segmentLength = ( isGap ? -*dashIt : *dashIt );
-    segmentLength *= mapUnitScaleFactor( mSymbologyScaleDenominator, u, mMapUnits );
+    segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits );
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
     isGap = !isGap;
@@ -4147,19 +4147,19 @@ bool QgsDxfExport::hasDataDefinedProperties( const QgsSymbolLayer *sl, const Qgs
 
 double QgsDxfExport::dashSize() const
 {
-  double size = mSymbologyScaleDenominator * 0.002;
+  double size = mSymbologyScale * 0.002;
   return sizeToMapUnits( size );
 }
 
 double QgsDxfExport::dotSize() const
 {
-  double size = mSymbologyScaleDenominator * 0.0006;
+  double size = mSymbologyScale * 0.0006;
   return sizeToMapUnits( size );
 }
 
 double QgsDxfExport::dashSeparatorSize() const
 {
-  double size = mSymbologyScaleDenominator * 0.0006;
+  double size = mSymbologyScale * 0.0006;
   return sizeToMapUnits( size );
 }
 
@@ -4227,7 +4227,7 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer *layer ) const
   if ( mSymbologyExport == QgsDxfExport::NoSymbology )
     return true;
 
-  return layer->isInScaleRange( mSymbologyScaleDenominator );
+  return layer->isInScaleRange( mSymbologyScale );
 }
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const

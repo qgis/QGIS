@@ -154,7 +154,7 @@ namespace QgsWms
     QMap<QString, QString>::const_iterator scaleIt = formatOptionsMap.find( QStringLiteral( "SCALE" ) );
     if ( scaleIt != formatOptionsMap.constEnd() )
     {
-      dxf.setSymbologyScaleDenominator( scaleIt->toDouble() );
+      dxf.setSymbologyScale( scaleIt->toDouble() );
     }
 
     QString codec = QStringLiteral( "ISO-8859-1" );
