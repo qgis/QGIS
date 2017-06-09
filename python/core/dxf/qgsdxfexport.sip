@@ -43,17 +43,20 @@ class QgsDxfExport
 
     int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
-    void setSymbologyScaleDenominator( double d );
+    void setSymbologyScale( double scale );
 %Docstring
- Set reference scale for output
- \param d scale denominator
+ Set reference ``scale`` for output.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: symbologyScale()
 %End
 
-    double symbologyScaleDenominator() const;
+    double symbologyScale() const;
 %Docstring
- Retrieve reference scale for output
- :return: reference scale
-.. seealso:: setSymbologyScaleDenominator
+ Returns the reference scale for output.
+ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: setSymbologyScale()
  :rtype: float
 %End
 
@@ -263,9 +266,10 @@ class QgsDxfExport
 .. versionadded:: 2.15
 %End
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 %Docstring
-Calculates a scaling factor to convert from map units to a specified symbol unit.
+ Calculates a scaling factor to convert from map units to a specified symbol unit.
+ The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :rtype: float
 %End
 

@@ -511,7 +511,7 @@ int main( int argc, char *argv[] )
 
   QString dxfOutputFile;
   QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
-  double dxfScaleDenom = 50000.0;
+  double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
   QString dxfPreset;
   QgsRectangle dxfExtent;
@@ -702,7 +702,7 @@ int main( int argc, char *argv[] )
       {
         bool ok;
         QString scale( args[++i] );
-        dxfScaleDenom = scale.toDouble( &ok );
+        dxfScale = scale.toDouble( &ok );
         if ( !ok )
         {
           std::cerr << "invalid dxf scale " << scale.toStdString() << std::endl;
@@ -1236,7 +1236,7 @@ int main( int argc, char *argv[] )
     qgis->hide();
 
     QgsDxfExport dxfExport;
-    dxfExport.setSymbologyScaleDenominator( dxfScaleDenom );
+    dxfExport.setSymbologyScale( dxfScale );
     dxfExport.setSymbologyExport( dxfSymbologyMode );
     dxfExport.setExtent( dxfExtent );
 

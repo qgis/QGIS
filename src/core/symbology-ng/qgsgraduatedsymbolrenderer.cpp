@@ -1220,9 +1220,9 @@ QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &fe
     return QSet< QString >();
 }
 
-QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
 {
-  Q_UNUSED( scaleDenominator );
+  Q_UNUSED( scale );
   QgsLegendSymbolList lst;
 
   Q_FOREACH ( const QgsRendererRange &range, mRanges )

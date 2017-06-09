@@ -38,7 +38,6 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   , mTolerance( 3 )
   , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
   , mDrawLabels( true )
-  , mMaxLabelScaleDenominator( -1 )
   , mSpatialIndex( nullptr )
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
@@ -303,13 +302,13 @@ void QgsPointDistanceRenderer::startRender( QgsRenderContext &context, const Qgs
     mLabelIndex = fields.lookupField( mLabelAttributeName );
   }
 
-  if ( mMaxLabelScaleDenominator > 0 && context.rendererScale() > mMaxLabelScaleDenominator )
+  if ( mMinLabelScale <= 0 || context.rendererScale() < mMinLabelScale )
   {
-    mDrawLabels = false;
+    mDrawLabels = true;
   }
   else
   {
-    mDrawLabels = true;
+    mDrawLabels = false;
   }
 }
 
@@ -340,11 +339,11 @@ QgsLegendSymbologyList QgsPointDistanceRenderer::legendSymbologyItems( QSize ico
   return QgsLegendSymbologyList();
 }
 
-QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems( double scale, const QString &rule )
 {
   if ( mRenderer )
   {
-    return mRenderer->legendSymbolItems( scaleDenominator, rule );
+    return mRenderer->legendSymbolItems( scale, rule );
   }
   return QgsLegendSymbolList();
 }

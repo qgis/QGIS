@@ -156,7 +156,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         //! \note not available in Python bindings
-        QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const SIP_SKIP;
+        QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) const SIP_SKIP;
 
         //! \since QGIS 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
@@ -452,7 +452,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override SIP_SKIP;
+    virtual QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) override SIP_SKIP;
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
     virtual QString dump() const override;
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;

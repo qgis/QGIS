@@ -527,8 +527,21 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsVectorFileWriter::SymbologyExport symbologyExport() const { return mSymbologyExport; }
     void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport ) { mSymbologyExport = symExport; }
 
-    double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
-    void setSymbologyScaleDenominator( double d );
+    /**
+     * Returns the reference scale for output.
+     * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \since QGIS 3.0
+     * \see setSymbologyScale()
+     */
+    double symbologyScale() const { return mSymbologyScale; }
+
+    /**
+     * Set reference \a scale for output.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * \since QGIS 3.0
+     * \see symbologyScale()
+     */
+    void setSymbologyScale( double scale );
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
 
@@ -603,7 +616,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QMap< QgsSymbolLayer *, QString > mSymbolLayerTable;
 
     //! Scale for symbology export (e.g. for symbols units in map units)
-    double mSymbologyScaleDenominator;
+    double mSymbologyScale;
 
     QString mOgrDriverName;
 
@@ -633,8 +646,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     //! Writes features considering symbol level order
     QgsVectorFileWriter::WriterError exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit, const QgsCoordinateTransform &ct, QString *errorMessage = nullptr );
-    double mmScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
-    double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mmScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+    double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     void startRender( QgsVectorLayer *vl );
     void stopRender( QgsVectorLayer *vl );
