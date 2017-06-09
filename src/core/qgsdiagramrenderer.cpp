@@ -188,15 +188,15 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   penColor.setAlpha( penAlpha );
   penWidth = elem.attribute( QStringLiteral( "penWidth" ) ).toDouble();
 
-  minScaleDenominator = elem.attribute( QStringLiteral( "minScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
-  maxScaleDenominator = elem.attribute( QStringLiteral( "maxScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
+  maximumScale = elem.attribute( QStringLiteral( "minScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
+  minimumScale = elem.attribute( QStringLiteral( "maxScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
   if ( elem.hasAttribute( QStringLiteral( "scaleBasedVisibility" ) ) )
   {
     scaleBasedVisibility = ( elem.attribute( QStringLiteral( "scaleBasedVisibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   }
   else
   {
-    scaleBasedVisibility = minScaleDenominator >= 0 && maxScaleDenominator >= 0;
+    scaleBasedVisibility = maximumScale >= 0 && minimumScale >= 0;
   }
 
   //diagram size unit type and scale
@@ -320,8 +320,8 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   categoryElem.setAttribute( QStringLiteral( "penAlpha" ), penColor.alpha() );
   categoryElem.setAttribute( QStringLiteral( "penWidth" ), QString::number( penWidth ) );
   categoryElem.setAttribute( QStringLiteral( "scaleBasedVisibility" ), scaleBasedVisibility );
-  categoryElem.setAttribute( QStringLiteral( "minScaleDenominator" ), QString::number( minScaleDenominator ) );
-  categoryElem.setAttribute( QStringLiteral( "maxScaleDenominator" ), QString::number( maxScaleDenominator ) );
+  categoryElem.setAttribute( QStringLiteral( "minScaleDenominator" ), QString::number( maximumScale ) );
+  categoryElem.setAttribute( QStringLiteral( "maxScaleDenominator" ), QString::number( minimumScale ) );
   categoryElem.setAttribute( QStringLiteral( "opacity" ), QString::number( opacity ) );
 
   //diagram size unit type and scale

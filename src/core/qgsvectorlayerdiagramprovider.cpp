@@ -177,14 +177,14 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() && settingList.at( 0 ).scaleBasedVisibility )
     {
-      double minScale = settingList.at( 0 ).minScaleDenominator;
-      if ( minScale > 0 && context.rendererScale() < minScale )
+      double maxScale = settingList.at( 0 ).maximumScale;
+      if ( maxScale > 0 && context.rendererScale() < maxScale )
       {
         return nullptr;
       }
 
-      double maxScale = settingList.at( 0 ).maxScaleDenominator;
-      if ( maxScale > 0 && context.rendererScale() > maxScale )
+      double minScale = settingList.at( 0 ).minimumScale;
+      if ( minScale > 0 && context.rendererScale() > minScale )
       {
         return nullptr;
       }
