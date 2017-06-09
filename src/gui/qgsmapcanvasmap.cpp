@@ -16,7 +16,9 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
+#include "qgsmaprendererjob.h"
 #include "qgsmapsettings.h"
+#include "qgsmaplayer.h"
 
 #include <QPainter>
 
@@ -30,6 +32,8 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas *canvas )
 
 void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect )
 {
+  mPreviewImages.clear();
+
   mImage = image;
 
   // For true retro fans: this is approximately how the graphics looked like in 1990
@@ -40,14 +44,43 @@ void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect 
   setRect( rect );
 }
 
+void QgsMapCanvasMap::addPreviewImage( const QImage &image, const QgsRectangle &rect )
+{
+  mPreviewImages.append( qMakePair( image, rect ) );
+  update();
+}
+
+QRectF QgsMapCanvasMap::boundingRect() const
+{
+  double width = mItemSize.width();
+  double height = mItemSize.height();
+
+  return QRectF( -width, -height, 3 * width, 3 * height );
+}
+
 void QgsMapCanvasMap::paint( QPainter *painter )
 {
-  int w = qRound( boundingRect().width() ) - 2, h = qRound( boundingRect().height() ) - 2; // setRect() makes the size +2 :-(
+  int w = qRound( mItemSize.width() ) - 2, h = qRound( mItemSize.height() ) - 2; // setRect() makes the size +2 :-(
   if ( mImage.size() != QSize( w, h ) )
   {
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
     // This happens on zoom events when ::paint is called before
     // the renderer has completed
+  }
+
+  /*Offset between 0/0 and mRect.xMinimum/mRect.yMinimum.
+  We need to consider the offset, because mRect is not updated yet and there might be an offset*/
+  QgsPoint pt = toMapCoordinates( QPoint( 0, 0 ) );
+  double offsetX = pt.x() - mRect.xMinimum();
+  double offsetY = pt.y() - mRect.yMaximum();
+
+  //draw preview images first
+  QMap< QgsRectangle, QImage >::const_iterator previewIt = mPreviewImages.constBegin();
+  for ( ; previewIt != mPreviewImages.constEnd(); ++previewIt )
+  {
+    QPointF ul = toCanvasCoordinates( QgsPoint( previewIt.key().xMinimum() + offsetX, previewIt.key().yMaximum() + offsetY ) );
+    QPointF lr = toCanvasCoordinates( QgsPoint( previewIt.key().xMaximum() + offsetX, previewIt.key().yMinimum() + offsetY ) );
+    painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), previewIt.value(), QRect( 0, 0, previewIt.value().width(), previewIt.value().height() ) );
   }
 
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
