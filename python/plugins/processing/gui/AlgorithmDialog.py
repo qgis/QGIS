@@ -168,8 +168,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             QgsMessageLog.logMessage(str(parameters), 'Processing', QgsMessageLog.CRITICAL)
 
-            # TODO
-            if False and checkCRS and not self.alg.checkInputCRS():
+            if checkCRS and not self.alg.validateInputCrs(parameters, context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                                              self.tr('Layers do not all use the same CRS. This can '
                                                      'cause unexpected results.\nDo you want to '
