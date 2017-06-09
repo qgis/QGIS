@@ -29,6 +29,7 @@ class QgsProcessingAlgorithm
       FlagHideFromModeler,
       FlagSupportsBatch,
       FlagCanCancel,
+      FlagRequiresMatchingCrs,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -244,6 +245,15 @@ class QgsProcessingAlgorithm
  :rtype: QgsExpressionContext
 %End
 
+    virtual bool validateInputCrs( const QVariantMap &parameters,
+                                   QgsProcessingContext &context ) const;
+%Docstring
+ Checks whether the coordinate reference systems for the specified set of ``parameters``
+ are valid for the algorithm. For instance, the base implementation performs
+ checks to ensure that all input CRS are equal
+ Returns true if ``parameters`` have passed the CRS check.
+ :rtype: bool
+%End
 
   protected:
 

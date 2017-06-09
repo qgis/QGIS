@@ -125,11 +125,11 @@ class ScriptAlgorithm(GeoAlgorithm):
     def canExecute(self):
         return not self.error, self.error
 
-    def checkInputCRS(self):
+    def validateInputCrs(self, parameters, context):
         if self.noCRSWarning:
             return True
         else:
-            return GeoAlgorithm.checkInputCRS(self)
+            return QgsProcessingAlgorithm.validateInputCrs(self, parameters, context)
 
     def createDescriptiveName(self, s):
         return s.replace('_', ' ')

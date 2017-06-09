@@ -212,7 +212,7 @@ class Processing(object):
                                      Processing.tr("Processing"))
             return
 
-        if not alg.checkInputCRS(context):
+        if not alg.validateInputCrs(parameters, context):
             print('Warning: Not all input layers use the same CRS.\n' +
                   'This can cause unexpected results.')
             QgsMessageLog.logMessage(

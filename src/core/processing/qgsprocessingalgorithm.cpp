@@ -22,6 +22,7 @@
 #include "qgsprocessingoutputs.h"
 #include "qgsrectangle.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingutils.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -115,6 +116,73 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
 
   c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
   return c;
+}
+
+bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  if ( !( flags() & FlagRequiresMatchingCrs ) )
+  {
+    // I'm a well behaved algorithm - I take work AWAY from users!
+    return true;
+  }
+
+  bool foundCrs = false;
+  QgsCoordinateReferenceSystem crs;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( def->type() == QStringLiteral( "layer" ) || def->type() == QStringLiteral( "raster" ) )
+    {
+      QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( def, parameters, context );
+      if ( layer )
+      {
+        if ( foundCrs && layer->crs().isValid() && crs != layer->crs() )
+        {
+          return false;
+        }
+        else if ( !foundCrs && layer->crs().isValid() )
+        {
+          foundCrs = true;
+          crs = layer->crs();
+        }
+      }
+    }
+    else if ( def->type() == QStringLiteral( "source" ) )
+    {
+      QgsFeatureSource *source = QgsProcessingParameters::parameterAsSource( def, parameters, context );
+      if ( source )
+      {
+        if ( foundCrs && source->sourceCrs().isValid() && crs != source->sourceCrs() )
+        {
+          return false;
+        }
+        else if ( !foundCrs && source->sourceCrs().isValid() )
+        {
+          foundCrs = true;
+          crs = source->sourceCrs();
+        }
+      }
+    }
+    else if ( def->type() == QStringLiteral( "multilayer" ) )
+    {
+      QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
+      Q_FOREACH ( QgsMapLayer *layer, layers )
+      {
+        if ( !layer )
+          continue;
+
+        if ( foundCrs && layer->crs().isValid() && crs != layer->crs() )
+        {
+          return false;
+        }
+        else if ( !foundCrs && layer->crs().isValid() )
+        {
+          foundCrs = true;
+          crs = layer->crs();
+        }
+      }
+    }
+  }
+  return true;
 }
 
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )

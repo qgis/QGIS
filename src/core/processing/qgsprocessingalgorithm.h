@@ -49,6 +49,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
+      FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -243,6 +244,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
         QgsProcessingContext &context ) const;
 
+    /**
+     * Checks whether the coordinate reference systems for the specified set of \a parameters
+     * are valid for the algorithm. For instance, the base implementation performs
+     * checks to ensure that all input CRS are equal
+     * Returns true if \a parameters have passed the CRS check.
+     */
+    virtual bool validateInputCrs( const QVariantMap &parameters,
+                                   QgsProcessingContext &context ) const;
 
   protected:
 

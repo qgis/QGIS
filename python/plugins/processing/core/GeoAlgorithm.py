@@ -264,26 +264,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         except:
             pass
 
-    def checkInputCRS(self, context=None):
-        """It checks that all input layers use the same CRS. If so,
-        returns True. False otherwise.
-        """
-        if context is None:
-            context = dataobjects.createContext()
-        crsList = []
-        for param in self.parameterDefinitions():
-            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
-                if param.value:
-                    if isinstance(param, ParameterMultipleInput):
-                        layers = param.value.split(';')
-                    else:
-                        layers = [param.value]
-                    for item in layers:
-                        crs = QgsProcessingUtils.mapLayerFromString(item, context).crs()
-                        if crs not in crsList:
-                            crsList.append(crs)
-        return len(crsList) < 2
-
     def addOutput(self, output):
         # TODO: check that name does not exist
         if isinstance(output, Output):
