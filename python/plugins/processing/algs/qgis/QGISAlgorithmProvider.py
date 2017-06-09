@@ -92,7 +92,7 @@ from .DeleteColumn import DeleteColumn
 # from .TextToFloat import TextToFloat
 # from .ExtractByAttribute import ExtractByAttribute
 # from .SelectByAttribute import SelectByAttribute
-# from .GridPolygon import GridPolygon
+from .GridPolygon import GridPolygon
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
@@ -217,7 +217,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
-        #         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
+        #         ExtractByAttribute(), SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(), Merge(),
         #         GeometryConvert(), FieldsCalculator(),
@@ -269,7 +269,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Clip(),
                 DeleteColumn(),
                 ExtentFromLayer(),
-                ExtractByExpression()
+                ExtractByExpression(),
+                GridPolygon()
                 ]
 
         if hasPlotly:
