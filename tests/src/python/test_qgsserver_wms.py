@@ -62,7 +62,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
     def test_project_wms(self):
         """Test some WMS request"""
@@ -151,7 +151,7 @@ class TestQgsServerWMS(QgsServerTestBase):
         f.close()
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
     def test_project_wms_inspire(self):
         """Test some WMS request"""
