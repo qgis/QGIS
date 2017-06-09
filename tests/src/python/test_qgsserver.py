@@ -66,7 +66,7 @@ class QgsServerTestBase(unittest.TestCase):
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
-        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!")
+        self.assertEqual(len(expected_lines), len(response_lines), "Expected and response have different number of lines!\n{}".format(msg))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
