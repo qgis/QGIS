@@ -36,6 +36,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     //! Returns properties changed by the user
     const QgsAttributeMap &changedProperties() const { return mChangedProperties; }
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   signals:
 
     /** Emitted when dialog settings are applied
@@ -47,8 +49,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void on_buttonBox_clicked( QAbstractButton *button );
     void on_mShowLabelChkbx_toggled( bool chkd );
     void on_mAlwaysShowChkbx_toggled( bool chkd );
-    void on_mMinScaleSpinBox_valueChanged( int i );
-    void on_mMaxScaleSpinBox_valueChanged( int i );
+    void minScaleChanged( double scale );
+    void maxScaleChanged( double scale );
     void on_mLabelDistanceSpinBox_valueChanged( double d );
     void on_mXCoordSpinBox_valueChanged( double d );
     void on_mYCoordSpinBox_valueChanged( double d );

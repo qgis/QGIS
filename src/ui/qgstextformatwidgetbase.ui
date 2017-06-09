@@ -29,7 +29,67 @@
    <property name="verticalSpacing">
     <number>6</number>
    </property>
-   <item row="5" column="0">
+   <item row="0" column="0">
+    <widget class="QFrame" name="frameLabelWith">
+     <layout class="QHBoxLayout" name="horizontalLayout_19">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Label with</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QFrame" name="mLabelingFrame">
      <property name="minimumSize">
       <size>
@@ -1406,7 +1466,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>452</width>
+                       <width>359</width>
                        <height>410</height>
                       </rect>
                      </property>
@@ -2041,8 +2101,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>466</width>
-                       <height>322</height>
+                       <width>302</width>
+                       <height>317</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2392,8 +2452,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-308</y>
-                       <width>459</width>
+                       <y>0</y>
+                       <width>458</width>
                        <height>778</height>
                       </rect>
                      </property>
@@ -3206,8 +3266,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-105</y>
-                       <width>452</width>
+                       <y>0</y>
+                       <width>311</width>
                        <height>470</height>
                       </rect>
                      </property>
@@ -5315,7 +5375,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>452</width>
-                       <height>881</height>
+                       <height>877</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5357,7 +5417,7 @@ font-style: italic;</string>
                               </sizepolicy>
                              </property>
                              <property name="text">
-                              <string>Scale-based visibility</string>
+                              <string>Scale dependent visibility</string>
                              </property>
                             </widget>
                            </item>
@@ -5386,7 +5446,7 @@ font-style: italic;</string>
                              <property name="frameShape">
                               <enum>QFrame::NoFrame</enum>
                              </property>
-                             <layout class="QGridLayout" name="gridLayout_2">
+                             <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
                               <property name="leftMargin">
                                <number>20</number>
                               </property>
@@ -5402,70 +5462,63 @@ font-style: italic;</string>
                               <property name="verticalSpacing">
                                <number>6</number>
                               </property>
-                              <item row="0" column="0">
-                               <widget class="QgsSpinBox" name="mScaleBasedVisibilityMinSpnBx">
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
+                              <item row="1" column="1">
+                               <widget class="QgsScaleWidget" name="mMaxScaleWidget" native="true">
+                                <property name="focusPolicy">
+                                 <enum>Qt::StrongFocus</enum>
                                 </property>
                                 <property name="toolTip">
-                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</string>
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
                                 </property>
-                                <property name="prefix">
-                                 <string>Minimum </string>
-                                </property>
-                                <property name="minimum">
-                                 <number>-999999999</number>
-                                </property>
-                                <property name="maximum">
-                                 <number>999999999</number>
-                                </property>
-                                <property name="showClearButton" stdset="0">
-                                 <bool>false</bool>
+                               </widget>
+                              </item>
+                              <item row="1" column="2">
+                               <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityMaxDDBtn">
+                                <property name="text">
+                                 <string>…</string>
                                 </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
+                               <widget class="QgsScaleWidget" name="mMinScaleWidget" native="true">
+                                <property name="focusPolicy">
+                                 <enum>Qt::StrongFocus</enum>
+                                </property>
+                                <property name="toolTip">
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="2">
                                <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityMinDDBtn">
                                 <property name="text">
                                  <string>…</string>
                                 </property>
                                </widget>
                               </item>
-                              <item row="1" column="0">
-                               <widget class="QgsSpinBox" name="mScaleBasedVisibilityMaxSpnBx">
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
-                                </property>
+                              <item row="0" column="0">
+                               <widget class="QLabel" name="label">
                                 <property name="toolTip">
-                                 <string>Value &amp;lt; 0 represents a scale closer than 1:1, e.g. -10 = 10:1.&lt;br&gt;Value of 0 disables the specific limit.</string>
+                                 <string>Minimum scale, i.e. most &quot;zoomed out&quot;.</string>
                                 </property>
-                                <property name="prefix">
-                                 <string>Maximum </string>
+                                <property name="text">
+                                 <string/>
                                 </property>
-                                <property name="minimum">
-                                 <number>-999999999</number>
-                                </property>
-                                <property name="maximum">
-                                 <number>999999999</number>
-                                </property>
-                                <property name="value">
-                                 <number>10000000</number>
-                                </property>
-                                <property name="showClearButton" stdset="0">
-                                 <bool>false</bool>
+                                <property name="pixmap">
+                                 <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomOut.svg</pixmap>
                                 </property>
                                </widget>
                               </item>
-                              <item row="1" column="1">
-                               <widget class="QgsPropertyOverrideButton" name="mScaleBasedVisibilityMaxDDBtn">
+                              <item row="1" column="0">
+                               <widget class="QLabel" name="label_11">
+                                <property name="toolTip">
+                                 <string>Maximum scale, i.e. most &quot;zoomed in&quot;.</string>
+                                </property>
                                 <property name="text">
-                                 <string>…</string>
+                                 <string/>
+                                </property>
+                                <property name="pixmap">
+                                 <pixmap resource="../../images/images.qrc">:/images/themes/default/mActionZoomIn.svg</pixmap>
                                 </property>
                                </widget>
                               </item>
@@ -6234,70 +6287,43 @@ font-style: italic;</string>
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QFrame" name="frameLabelWith">
-     <layout class="QHBoxLayout" name="horizontalLayout_19">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Label with</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
@@ -6310,14 +6336,9 @@ font-style: italic;</string>
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -6325,38 +6346,10 @@ font-style: italic;</string>
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsTextPreview</class>
@@ -6590,9 +6583,9 @@ font-style: italic;</string>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mScaleBasedVisibilityChkBx</tabstop>
   <tabstop>mScaleBasedVisibilityDDBtn</tabstop>
-  <tabstop>mScaleBasedVisibilityMinSpnBx</tabstop>
+  <tabstop>mMinScaleWidget</tabstop>
   <tabstop>mScaleBasedVisibilityMinDDBtn</tabstop>
-  <tabstop>mScaleBasedVisibilityMaxSpnBx</tabstop>
+  <tabstop>mMaxScaleWidget</tabstop>
   <tabstop>mScaleBasedVisibilityMaxDDBtn</tabstop>
   <tabstop>mFontLimitPixelChkBox</tabstop>
   <tabstop>mFontLimitPixelDDBtn</tabstop>
@@ -6622,6 +6615,30 @@ font-style: italic;</string>
   <tabstop>scrollArea_mPreview</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

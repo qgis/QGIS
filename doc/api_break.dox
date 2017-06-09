@@ -1751,6 +1751,8 @@ and setDataDefinedProperties() instead.
 - readXml() and writeXml() now expect a reference to QgsReadWriteContext.
 - fromLayer() has been reoved. Labeling is read/written in QgsAbstractVectorLayerLabeling and its subclasses.
 - angleOffset is now in degrees clockwise. QGIS 2.x used degrees counterclockwise.
+- scaleMin and scaleMax were removed. Use minimumScale and maximumScale instead (note that the definition
+of these are the opposite of scaleMin/scaleMax).
 
 
 QgsPanelWidgetStack        {#qgis_api_break_3_0_QgsPanelWidgetStack}

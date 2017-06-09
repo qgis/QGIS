@@ -248,7 +248,9 @@ class QgsPalLayerSettings
       // rendering
       ScaleVisibility,
       MinScale,
+      MinimumScale,
       MaxScale,
+      MaximumScale,
       FontLimitPixel,
       FontMinPixel,
       FontMaxPixel,
@@ -362,8 +364,22 @@ Label rotation, in degrees clockwise
 
 
     bool scaleVisibility;
-    int scaleMin;
-    int scaleMax;
+
+    double maximumScale;
+%Docstring
+ The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. seealso:: minimumScale
+%End
+
+    double minimumScale;
+%Docstring
+ The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. seealso:: maximumScale
+%End
 
     bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
     int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)

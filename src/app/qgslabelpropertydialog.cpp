@@ -44,12 +44,22 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::minScaleChanged );
+  connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::maxScaleChanged );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+}
+
+void QgsLabelPropertyDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMinScaleWidget->setMapCanvas( canvas );
+  mMinScaleWidget->setShowCurrentScaleButton( true );
+  mMaxScaleWidget->setMapCanvas( canvas );
+  mMaxScaleWidget->setShowCurrentScaleButton( true );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
@@ -143,8 +153,8 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mShowLabelChkbx->setChecked( true );
   mFontColorButton->setColor( format.color() );
   mBufferColorButton->setColor( buffer.color() );
-  mMinScaleSpinBox->setValue( layerSettings.scaleMin );
-  mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
+  mMinScaleWidget->setScale( layerSettings.minimumScale );
+  mMaxScaleWidget->setScale( layerSettings.maximumScale );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
   mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
   mFontColorButton->setColorDialogTitle( tr( "Font color" ) );
@@ -166,8 +176,8 @@ void QgsLabelPropertyDialog::disableGuiElements()
 {
   mShowLabelChkbx->setEnabled( false );
   mAlwaysShowChkbx->setEnabled( false );
-  mMinScaleSpinBox->setEnabled( false );
-  mMaxScaleSpinBox->setEnabled( false );
+  mMinScaleWidget->setEnabled( false );
+  mMaxScaleWidget->setEnabled( false );
   mFontFamilyCmbBx->setEnabled( false );
   mFontStyleCmbBx->setEnabled( false );
   mFontUnderlineBtn->setEnabled( false );
@@ -190,8 +200,8 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
   mShowLabelChkbx->blockSignals( block );
   mAlwaysShowChkbx->blockSignals( block );
-  mMinScaleSpinBox->blockSignals( block );
-  mMaxScaleSpinBox->blockSignals( block );
+  mMinScaleWidget->blockSignals( block );
+  mMaxScaleWidget->blockSignals( block );
   mFontFamilyCmbBx->blockSignals( block );
   mFontStyleCmbBx->blockSignals( block );
   mFontUnderlineBtn->blockSignals( block );
@@ -249,21 +259,21 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setChecked( result.toBool() );
         break;
-      case QgsPalLayerSettings::MinScale:
+      case QgsPalLayerSettings::MinimumScale:
       {
-        int minScale = result.toInt( &ok );
+        double minScale = result.toDouble( &ok );
         if ( ok )
         {
-          mMinScaleSpinBox->setValue( minScale );
+          mMinScaleWidget->setScale( minScale );
         }
         break;
       }
-      case QgsPalLayerSettings::MaxScale:
+      case QgsPalLayerSettings::MaximumScale:
       {
-        int maxScale = result.toInt( &ok );
+        double maxScale = result.toDouble( &ok );
         if ( ok )
         {
-          mMaxScaleSpinBox->setValue( maxScale );
+          mMaxScaleWidget->setScale( maxScale );
         }
         break;
       }
@@ -378,11 +388,11 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setEnabled( true );
         break;
-      case QgsPalLayerSettings::MinScale:
-        mMinScaleSpinBox->setEnabled( true );
+      case QgsPalLayerSettings::MinimumScale:
+        mMinScaleWidget->setEnabled( true );
         break;
-      case QgsPalLayerSettings::MaxScale:
-        mMaxScaleSpinBox->setEnabled( true );
+      case QgsPalLayerSettings::MaximumScale:
+        mMaxScaleWidget->setEnabled( true );
         break;
       case QgsPalLayerSettings::BufferSize:
         mBufferSizeSpinBox->setEnabled( true );
@@ -504,14 +514,14 @@ void QgsLabelPropertyDialog::on_mAlwaysShowChkbx_toggled( bool chkd )
   insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
 }
 
-void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )
+void QgsLabelPropertyDialog::minScaleChanged( double scale )
 {
-  insertChangedValue( QgsPalLayerSettings::MinScale, i );
+  insertChangedValue( QgsPalLayerSettings::MinimumScale, scale );
 }
 
-void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged( int i )
+void QgsLabelPropertyDialog::maxScaleChanged( double scale )
 {
-  insertChangedValue( QgsPalLayerSettings::MaxScale, i );
+  insertChangedValue( QgsPalLayerSettings::MaximumScale, scale );
 }
 
 void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
