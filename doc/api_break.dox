@@ -2004,6 +2004,7 @@ QgsRuleBasedRenderer        {#qgis_api_break_3_0_QgsRuleBasedRenderer}
 
 - QgsRuleBasedRenderer.Rule checkState() and setCheckState() were removed. Use active() and setActive() instead.
 - QgsRuleBasedRenderer.Rule updateElseRules() was removed.
+- QgsRuleBasedRenderer.Rule scaleMinDenom(), scaleMaxDenom(), setScaleMaxDenom() and setScaleMinDenom() were removed. Use minimumScale(), maximumScale(), setMinimumScale() and setMaximumScale() instead.
 - startRender( QgsRenderContext& context, const QgsFields& fields ) was removed. Use startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter ) instead.
 
 
