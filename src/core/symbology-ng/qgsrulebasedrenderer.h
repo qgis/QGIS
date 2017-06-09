@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         };
 
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbol *symbol SIP_TRANSFER, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(),
+        Rule( QgsSymbol *symbol SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(),
               const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -171,8 +171,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         bool isFilterOK( QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
         /**
-         * Check if this rule applies for a given scale
-         * \param scale The scale to check. If set to 0, it will always return true.
+         * Check if this rule applies for a given \a scale.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * If set to 0, it will always return true.
          *
          * \returns If the rule will be evaluated at this scale
          */
@@ -180,9 +181,27 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         QgsSymbol *symbol() { return mSymbol; }
         QString label() const { return mLabel; }
-        bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
-        int scaleMinDenom() const { return mScaleMinDenom; }
-        int scaleMaxDenom() const { return mScaleMaxDenom; }
+        bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
+
+        /**
+         * Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no maximum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
+         * \since QGIS 3.0
+        */
+        double maximumScale() const { return mMaximumScale; }
+
+        /**
+         * Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule will be active.
+         * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A scale of 0 indicates no minimum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
+         * \since QGIS 3.0
+        */
+        double minimumScale() const { return mMinimumScale; }
 
         /**
          * A filter that will check if this rule applies
@@ -222,20 +241,22 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         void setLabel( const QString &label ) { mLabel = label; }
 
         /**
-         * Set the minimum denominator for which this rule shall apply.
-         * E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the minimum check
-         * \param scaleMinDenom The minimum scale denominator for this rule
+         * Sets the minimum map \a scale (i.e. most "zoomed out" scale) at which the rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no minimum scale visibility.
+         * \see minimumScale()
+         * \see setMaximumScale()
          */
-        void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
+        void setMinimumScale( double scale ) { mMinimumScale = scale; }
 
         /**
-         * Set the maximum denominator for which this rule shall apply.
-         * E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
-         * Set to 0 to disable the maximum check
-         * \param scaleMaxDenom maximum scale denominator for this rule
+         * Sets the maximum map \a scale (i.e. most "zoomed in" scale) at which the rule will be active.
+         * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+         * A \a scale of 0 indicates no maximum scale visibility.
+         * \see maximumScale()
+         * \see setMinimumScale()
          */
-        void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
+        void setMaximumScale( double scale ) { mMaximumScale = scale; }
 
         /**
          * Set the expression used to check if a given feature shall be rendered with this rule
@@ -383,7 +404,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
         Rule *mParent; // parent rule (NULL only for root rule)
         QgsSymbol *mSymbol = nullptr;
-        int mScaleMinDenom, mScaleMaxDenom;
+        double mMaximumScale = 0;
+        double mMinimumScale = 0;
         QString mFilterExp, mLabel, mDescription;
         bool mElseRule;
         RuleList mChildren;
