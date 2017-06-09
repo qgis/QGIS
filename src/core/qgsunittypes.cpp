@@ -1759,7 +1759,7 @@ QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
       return QObject::tr( "millimeters", "render" );
 
     case RenderMetersInMapUnits:
-      return QObject::tr( "meters_in_map units", "render" );
+      return QObject::tr( "meters (in map units)", "render" );
 
     case RenderMapUnits:
       return QObject::tr( "map units", "render" );
