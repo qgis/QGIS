@@ -95,11 +95,17 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
 
 bool QgsPoint::operator==( const QgsPoint &pt ) const
 {
-  return ( pt.wkbType() == wkbType() &&
-           qgsDoubleNear( pt.x(), mX, 1E-8 ) &&
-           qgsDoubleNear( pt.y(), mY, 1E-8 ) &&
-           qgsDoubleNear( pt.z(), mZ, 1E-8 ) &&
-           qgsDoubleNear( pt.m(), mM, 1E-8 ) );
+  const QgsWkbTypes::Type type = wkbType();
+
+  bool equal = pt.wkbType() == type;
+  equal &= qgsDoubleNear( pt.x(), mX, 1E-8 );
+  equal &= qgsDoubleNear( pt.y(), mY, 1E-8 );
+  if ( QgsWkbTypes::hasZ( type ) )
+    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 );
+  if ( QgsWkbTypes::hasM( type ) )
+    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 );
+
+  return equal;
 }
 
 bool QgsPoint::operator!=( const QgsPoint &pt ) const
