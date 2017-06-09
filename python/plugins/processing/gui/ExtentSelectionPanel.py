@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProject)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -65,15 +66,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool = RectangleMapTool(canvas)
         self.tool.rectangleCreated.connect(self.updateExtent)
 
-        if param.default:
-            tokens = param.default.split(',')
-            if len(tokens) == 4:
+        if param.defaultValue() is not None:
+            context = createContext()
+            rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            if not rect.isNull():
                 try:
-                    float(tokens[0])
-                    float(tokens[1])
-                    float(tokens[2])
-                    float(tokens[3])
-                    self.leText.setText(param.default)
+                    s = '{},{},{},{}'.format(
+                        rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    self.leText.setText(s)
                 except:
                     pass
 

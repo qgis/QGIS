@@ -515,7 +515,7 @@ class ParameterNumber(Parameter):
 
     def _layerVariables(self, element, alg=None):
         variables = {}
-        context = dataobjects.createContext()
+        context = createContext()
         layer = QgsProcessingUtils.mapLayerFromString(element.value, context)
         if layer is not None:
             name = element.name if alg is None else "%s_%s" % (alg.name, element.name)
