@@ -84,7 +84,7 @@ class Clip(QgisAlgorithm):
 
         # first build up a list of clip geometries
         clip_geoms = []
-        for mask_feature in mask_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])):
+        for mask_feature in mask_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(feature_source.sourceCrs())):
             clip_geoms.append(mask_feature.geometry())
 
         # are we clipping against a single feature? if so, we can show finer progress reports
