@@ -1136,23 +1136,20 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
   return rendererElem;
 }
 
-QgsLegendSymbologyList QgsGraduatedSymbolRenderer::legendSymbologyItems( QSize iconSize )
+QgsLegendSymbolList QgsGraduatedSymbolRenderer::baseLegendSymbolItems() const
 {
-  QgsLegendSymbologyList lst;
-  int count = ranges().count();
-  lst.reserve( count );
-  for ( int i = 0; i < count; i++ )
+  QgsLegendSymbolList lst;
+  int i = 0;
+  Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
-    const QgsRendererRange &range = ranges()[i];
-    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( range.symbol(), iconSize );
-    lst << qMakePair( range.label(), pix );
+    lst << QgsLegendSymbolItem( range.symbol(), range.label(), QString::number( i++ ), true );
   }
   return lst;
 }
 
-QgsLegendSymbolListV2 QgsGraduatedSymbolRenderer::legendSymbolItemsV2() const
+QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolListV2 list;
+  QgsLegendSymbolList list;
   if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
@@ -1166,7 +1163,7 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRenderer::legendSymbolItemsV2() const
         if ( sSize && sSize != ddSize )
         {
           // no common size expression
-          return QgsFeatureRenderer::legendSymbolItemsV2();
+          return baseLegendSymbolItems();
         }
       }
       else
@@ -1177,7 +1174,7 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRenderer::legendSymbolItemsV2() const
 
     if ( !ddSize || !ddSize.isActive() )
     {
-      return QgsFeatureRenderer::legendSymbolItemsV2();
+      return baseLegendSymbolItems();
     }
 
     if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
@@ -1194,14 +1191,14 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRenderer::legendSymbolItemsV2() const
         list << si;
       }
       // now list the graduated symbols
-      const QgsLegendSymbolListV2 list2 = QgsFeatureRenderer::legendSymbolItemsV2() ;
+      const QgsLegendSymbolList list2 = baseLegendSymbolItems();
       Q_FOREACH ( const QgsLegendSymbolItem &item, list2 )
         list << item;
       return list;
     }
   }
 
-  return QgsFeatureRenderer::legendSymbolItemsV2();
+  return baseLegendSymbolItems();
 }
 
 QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
@@ -1218,21 +1215,6 @@ QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &fe
     return QSet< QString >() << key;
   else
     return QSet< QString >();
-}
-
-QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
-{
-  Q_UNUSED( scale );
-  QgsLegendSymbolList lst;
-
-  Q_FOREACH ( const QgsRendererRange &range, mRanges )
-  {
-    if ( rule.isEmpty() || range.label() == rule )
-    {
-      lst << qMakePair( range.label(), range.symbol() );
-    }
-  }
-  return lst;
 }
 
 QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()

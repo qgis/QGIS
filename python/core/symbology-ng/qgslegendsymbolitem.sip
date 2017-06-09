@@ -97,7 +97,7 @@ Set symbol of the item. Takes ownership of symbol.
 };
 
 
-typedef QList< QgsLegendSymbolItem > QgsLegendSymbolListV2;
+typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
 
 /************************************************************************
  * This file has been generated automatically from                      *

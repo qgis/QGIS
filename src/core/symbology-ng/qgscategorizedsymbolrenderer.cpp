@@ -730,38 +730,21 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   return rendererElem;
 }
 
-QgsLegendSymbologyList QgsCategorizedSymbolRenderer::legendSymbologyItems( QSize iconSize )
-{
-  QgsLegendSymbologyList lst;
-  int count = categories().count();
-  lst.reserve( count );
-  for ( int i = 0; i < count; i++ )
-  {
-    const QgsRendererCategory &cat = categories()[i];
-    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( cat.symbol(), iconSize );
-    lst << qMakePair( cat.label(), pix );
-  }
-  return lst;
-}
 
-QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
+QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 {
-  Q_UNUSED( scale );
   QgsLegendSymbolList lst;
-
+  int i = 0;
   Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
   {
-    if ( rule.isEmpty() || cat.label() == rule )
-    {
-      lst << qMakePair( cat.label(), cat.symbol() );
-    }
+    lst << QgsLegendSymbolItem( cat.symbol(), cat.label(), QString::number( i++ ), true );
   }
   return lst;
 }
 
-QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
+QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolListV2 lst;
+  QgsLegendSymbolList lst;
   if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
@@ -775,7 +758,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
         if ( sSize != ddSize )
         {
           // no common size expression
-          return QgsFeatureRenderer::legendSymbolItemsV2();
+          return baseLegendSymbolItems();
         }
       }
       else
@@ -786,7 +769,7 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
 
     if ( !ddSize || !ddSize.isActive() )
     {
-      return QgsFeatureRenderer::legendSymbolItemsV2();
+      return baseLegendSymbolItems();
     }
 
     if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
@@ -803,14 +786,14 @@ QgsLegendSymbolListV2 QgsCategorizedSymbolRenderer::legendSymbolItemsV2() const
         lst << si;
       }
       // now list the categorized symbols
-      const QgsLegendSymbolListV2 list2 = QgsFeatureRenderer::legendSymbolItemsV2() ;
+      const QgsLegendSymbolList list2 = baseLegendSymbolItems();
       Q_FOREACH ( const QgsLegendSymbolItem &item, list2 )
         lst << item;
       return lst;
     }
   }
 
-  return QgsFeatureRenderer::legendSymbolItemsV2();
+  return baseLegendSymbolItems();
 }
 
 QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )

@@ -239,7 +239,7 @@ void QgsSymbolLegendNode::checkAll( bool state )
   if ( !vlayer || !vlayer->renderer() )
     return;
 
-  QgsLegendSymbolListV2 symbolList = vlayer->renderer()->legendSymbolItemsV2();
+  QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
   Q_FOREACH ( const QgsLegendSymbolItem &item, symbolList )
   {
     vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
