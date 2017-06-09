@@ -102,8 +102,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     }
 
     txtName->setText( connName );
-    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
 }
 /** Autoconnected SLOTS **/
 void QgsPgNewConnection::accept()

@@ -80,8 +80,8 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     }
 
     txtName->setText( connName );
-    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
 /** Autoconnected SLOTS **/
 void QgsOracleNewConnection::accept()

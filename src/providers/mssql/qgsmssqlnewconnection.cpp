@@ -63,8 +63,8 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
     }
 
     txtName->setText( connName );
-    txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   on_cb_trustedConnection_clicked();
 }
 /** Autoconnected SLOTS **/
