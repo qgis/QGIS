@@ -23,7 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslogger.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -393,7 +393,7 @@ double QgsRenderContext::convertMetersToMapUnits( double meters ) const
       return meters;
     case QgsUnitTypes::DistanceDegrees:
     {
-      QgsPoint pointCenter = mExtent.center();
+      QgsPointXY pointCenter = mExtent.center();
       // The Extent is in the sourceCrs(), when different from destinationCrs()
       // - the point must be transformed, since DistanceArea uses the destinationCrs()
       // Note: the default QgsCoordinateTransform() : authid() will return an expty String

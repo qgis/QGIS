@@ -167,40 +167,6 @@ Get units of map's geographical coordinates - used for scale calculation
      * \since QGIS 3.0
      * \see setEllipsoid()
      */
-    QString ellipsoid() const { return mEllipsoid; }
-
-    /**
-     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
-     * retrieved using QgsEllipsoidUtils::acronyms().
-     * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \returns true if ellipsoid was successfully set
-     * \since QGIS 3.0
-     * \see ellipsoid()
-     */
-    bool setEllipsoid( const QString &ellipsoid );
-
-    /** Returns ellipsoid's acronym. Calculations will only use the
-     * ellipsoid if a valid ellipsoid has been set.
-     * \since QGIS 3.0
-     * \see setEllipsoid()
-     */
-    QString ellipsoid() const;
-
-    /**
-     * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
-     * retrieved using QgsEllipsoidUtils::acronyms().
-     * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
-     * \returns true if ellipsoid was successfully set
-     * \since QGIS 3.0
-     * \see ellipsoid()
-     */
-    bool setEllipsoid( const QString &ellipsoid );
-
-    /** Returns ellipsoid's acronym. Calculations will only use the
-     * ellipsoid if a valid ellipsoid has been set.
-     * \since QGIS 3.0
-     * \see setEllipsoid()
-     */
     QString ellipsoid() const;
 
     //! Set the background color of the map

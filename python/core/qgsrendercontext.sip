@@ -101,29 +101,17 @@ class QgsRenderContext
  :rtype: QgsCoordinateTransform
 %End
 
+    const QgsDistanceArea &distanceArea() const;
+%Docstring
+ A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+.. versionadded:: 3.0
+ :rtype: QgsDistanceArea
+%End
+
     const QgsRectangle &extent() const;
 %Docstring
  :rtype: QgsRectangle
 %End
-    /**
-     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * \since QGIS 3.0
-     */
-    QgsDistanceArea distanceArea() {return mDistanceArea;}
-
-    /**
-     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * \since QGIS 3.0
-     */
-    const QgsDistanceArea distanceArea() const;
-
-    /**
-     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * \since QGIS 3.0
-     */
-    const QgsDistanceArea distanceArea() const;
-
-    const QgsRectangle &extent() const;
 
     const QgsMapToPixel &mapToPixel() const;
 %Docstring
@@ -200,12 +188,14 @@ Sets coordinate transformation.
     void setDrawEditingInformation( bool b );
 
     void setRenderingStopped( bool stopped );
-    /**
-     * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \since QGIS 3.0
-     */
+
     void setDistanceArea( const QgsDistanceArea distanceArea );
+%Docstring
+ A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
+ Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+.. versionadded:: 3.0
+%End
+
     void setScaleFactor( double factor );
 %Docstring
  Sets the scaling factor for the render to convert painter units
@@ -351,12 +341,24 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  :rtype: float
 %End
 
-    /**
-     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
-     * \note
-      * When the sourceCrs() is geographic, the center of the Extent will be used
-     * \since QGIS 3.0
-     */
     double convertMetersToMapUnits( double meters ) const;
+%Docstring
+ Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+ \note
+ When the sourceCrs() is geographic, the center of the Extent will be used
+.. versionadded:: 3.0
+ :rtype: float
+%End
 
 };
+
+QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrendercontext.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

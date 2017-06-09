@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import (QgsRenderContext,
                        QgsMapSettings,
                        QgsDistanceArea,
-                       QgsRectangle, QgsPoint,
+                       QgsRectangle, QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes)
@@ -61,7 +61,7 @@ class TestQgsRenderContext(unittest.TestCase):
 
         crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
         rt_extent = QgsRectangle(13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762)
-        point_berlin_wsg84 = QgsPoint(13.37770458660236, 52.51627178856762)
+        point_berlin_wsg84 = QgsPointXY(13.37770458660236, 52.51627178856762)
         length_wsg84_mapunits = 0.00001473026350140572
         meters_test = 2.40
         da_wsg84 = QgsDistanceArea()
