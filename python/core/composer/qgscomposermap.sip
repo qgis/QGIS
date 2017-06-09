@@ -107,13 +107,17 @@ Sets new scene rectangle bounds and recalculates hight and extent
 
     double scale() const;
 %Docstring
- Scale
+ Returns the map scale.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: setNewScale()
  :rtype: float
 %End
 
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 %Docstring
-Sets new scale and changes only mExtent
+ Sets new map ``scale`` and changes only the map extent.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. seealso:: scale()
 %End
 
     void setNewExtent( const QgsRectangle &extent );
