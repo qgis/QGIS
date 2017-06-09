@@ -98,7 +98,7 @@ from .GridPolygon import GridPolygon
 # from .HubDistancePoints import HubDistancePoints
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
-# from .Merge import Merge
+from .Merge import Merge
 # from .GeometryConvert import GeometryConvert
 # from .ConcaveHull import ConcaveHull
 # from .RasterLayerStatistics import RasterLayerStatistics
@@ -219,7 +219,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         DeleteDuplicateGeometries(), TextToFloat(),
         #         ExtractByAttribute(), SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
-        #         HubDistanceLines(), HubLines(), Merge(),
+        #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
         #         SaveSelectedFeatures(), JoinAttributes(),
         #         Explode(), FieldsPyculator(),
@@ -270,7 +270,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DeleteColumn(),
                 ExtentFromLayer(),
                 ExtractByExpression(),
-                GridPolygon()
+                GridPolygon(),
+                Merge()
                 ]
 
         if hasPlotly:

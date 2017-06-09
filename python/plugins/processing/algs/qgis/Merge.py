@@ -30,7 +30,12 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsMapLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -53,11 +58,12 @@ class Merge(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterMultipleInput(self.LAYERS,
-                                                 self.tr('Layers to merge'),
-                                                 datatype=dataobjects.TYPE_VECTOR_ANY))
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
+                                                               self.tr('Layers to merge'),
+                                                               QgsProcessingParameterDefinition.TypeVectorAny))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Merged')))
 
     def name(self):
         return 'mergevectorlayers'
@@ -66,13 +72,15 @@ class Merge(QgisAlgorithm):
         return self.tr('Merge vector layers')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inLayers = self.getParameterValue(self.LAYERS)
+        input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
 
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for layerSource in inLayers.split(';'):
-            layer = QgsProcessingUtils.mapLayerFromString(layerSource, context)
+        for layer in input_layers:
+            if layer.type() != QgsMapLayer.VectorLayer:
+                raise GeoAlgorithmExecutionException(
+                    self.tr('All layers must be vector layers!'))
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
@@ -96,12 +104,15 @@ class Merge(QgisAlgorithm):
                     fields.append(sfield)
 
         total = 100.0 / totalFeatureCount
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layers[0].wkbType(),
-                                                                     layers[0].crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, layers[0].wkbType(), layers[0].crs())
 
         featureCount = 0
         for layer in layers:
             for feature in layer.getFeatures():
+                if feedback.isCanceled():
+                    break
+
                 sattributes = feature.attributes()
                 dattributes = []
                 for dindex, dfield in enumerate(fields):
@@ -123,8 +134,8 @@ class Merge(QgisAlgorithm):
                     dattributes.append(dattribute)
 
                 feature.setAttributes(dattributes)
-                writer.addFeature(feature)
+                sink.addFeature(feature)
                 featureCount += 1
                 feedback.setProgress(int(featureCount * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
