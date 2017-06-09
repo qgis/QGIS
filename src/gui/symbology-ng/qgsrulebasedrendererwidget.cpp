@@ -396,9 +396,7 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsLegendSymbolList lst = mRenderer->legendSymbolItems();
-
-  QgsSymbolLevelsDialog dlg( lst, true, this );
+  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
   dlg.setForceOrderingEnabled( true );
 
   dlg.exec();

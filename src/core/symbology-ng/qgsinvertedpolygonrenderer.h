@@ -98,13 +98,10 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     /** Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    //! Proxy that will call this method on the embedded renderer.
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
 
     /** Proxy that will call this method on the embedded renderer.
-     * \note not available in Python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) override SIP_SKIP;
+    virtual QgsLegendSymbolList legendSymbolItems() const override;
 
     /** Proxy that will call this method on the embedded renderer.
      */

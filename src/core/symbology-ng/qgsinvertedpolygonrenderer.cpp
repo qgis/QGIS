@@ -471,22 +471,13 @@ QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext
   return mSubRenderer->usedAttributes( context );
 }
 
-QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize iconSize )
-{
-  if ( !mSubRenderer )
-  {
-    return QgsLegendSymbologyList();
-  }
-  return mSubRenderer->legendSymbologyItems( iconSize );
-}
-
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scale, const QString &rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems() const
 {
   if ( !mSubRenderer )
   {
     return QgsLegendSymbolList();
   }
-  return mSubRenderer->legendSymbolItems( scale, rule );
+  return mSubRenderer->legendSymbolItems();
 }
 
 bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )

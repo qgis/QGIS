@@ -2974,7 +2974,7 @@ namespace QgsWms
         const SymbolSet &usedSymbols = hitTest[vl];
         QList<int> order;
         int i = 0;
-        Q_FOREACH ( const QgsLegendSymbolItem &legendItem, vl->renderer()->legendSymbolItemsV2() )
+        Q_FOREACH ( const QgsLegendSymbolItem &legendItem, vl->renderer()->legendSymbolItems() )
         {
           QString sProp = QgsSymbolLayerUtils::symbolProperties( legendItem.legacyRuleKey() );
           if ( usedSymbols.contains( sProp ) )

@@ -236,25 +236,9 @@ void QgsRuleBasedRenderer::Rule::setFilterExpression( const QString &filterExp )
   initFilter();
 }
 
-QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( double scale, const QString &ruleFilter ) const
+QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( int currentLevel ) const
 {
   QgsLegendSymbolList lst;
-  if ( mSymbol && ( ruleFilter.isEmpty() || mLabel == ruleFilter ) )
-    lst << qMakePair( mLabel, mSymbol );
-
-  Q_FOREACH ( Rule *rule, mChildren )
-  {
-    if ( qgsDoubleNear( scale, -1 ) || rule->isScaleOK( scale ) )
-    {
-      lst << rule->legendSymbolItems( scale, ruleFilter );
-    }
-  }
-  return lst;
-}
-
-QgsLegendSymbolListV2 QgsRuleBasedRenderer::Rule::legendSymbolItemsV2( int currentLevel ) const
-{
-  QgsLegendSymbolListV2 lst;
   if ( currentLevel != -1 ) // root rule should not be shown
   {
     lst << QgsLegendSymbolItem( mSymbol, mLabel, mRuleKey, true, mMaximumScale, mMinimumScale, currentLevel, mParent ? mParent->mRuleKey : QString() );
@@ -263,7 +247,7 @@ QgsLegendSymbolListV2 QgsRuleBasedRenderer::Rule::legendSymbolItemsV2( int curre
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
     Rule *rule = *it;
-    lst << rule->legendSymbolItemsV2( currentLevel + 1 );
+    lst << rule->legendSymbolItems( currentLevel + 1 );
   }
   return lst;
 }
@@ -981,19 +965,6 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
   return rendererElem;
 }
 
-QgsLegendSymbologyList QgsRuleBasedRenderer::legendSymbologyItems( QSize iconSize )
-{
-  QgsLegendSymbologyList lst;
-  QgsLegendSymbolList items = legendSymbolItems();
-  for ( QgsLegendSymbolList::iterator it = items.begin(); it != items.end(); ++it )
-  {
-    QPair<QString, QgsSymbol *> pair = *it;
-    QPixmap pix = QgsSymbolLayerUtils::symbolPreviewPixmap( pair.second, iconSize );
-    lst << qMakePair( pair.first, pix );
-  }
-  return lst;
-}
-
 bool QgsRuleBasedRenderer::legendSymbolItemsCheckable() const
 {
   return true;
@@ -1021,14 +992,9 @@ void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *s
     delete symbol;
 }
 
-QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems( double scale, const QString &rule )
+QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems() const
 {
-  return mRootRule->legendSymbolItems( scale, rule );
-}
-
-QgsLegendSymbolListV2 QgsRuleBasedRenderer::legendSymbolItemsV2() const
-{
-  return mRootRule->legendSymbolItemsV2();
+  return mRootRule->legendSymbolItems();
 }
 
 

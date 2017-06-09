@@ -90,8 +90,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) override SIP_SKIP;
+    virtual QgsLegendSymbolList legendSymbolItems() const override;
     void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;

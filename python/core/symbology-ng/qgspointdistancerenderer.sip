@@ -83,8 +83,7 @@ Optional label text
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
     virtual void stopRender( QgsRenderContext &context );
 
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
+    virtual QgsLegendSymbolList legendSymbolItems() const;
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;

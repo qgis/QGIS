@@ -131,9 +131,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    virtual QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = QString() ) override SIP_SKIP;
-    QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+    QgsLegendSymbolList legendSymbolItems() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
@@ -210,6 +208,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! Returns calculated classification value for a feature
     QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
 
+    //! Returns list of legend symbol items from individual categories
+    QgsLegendSymbolList baseLegendSymbolItems() const;
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERERV2_H
