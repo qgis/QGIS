@@ -28,7 +28,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent = nullptr );
+    QgsSmartGroupCondition( int id,  QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent = nullptr );
+    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! returns the value from mNameLineEdit
     QString smartgroupName();

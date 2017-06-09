@@ -89,8 +89,12 @@ Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
 
 };
 
-class QgsScopeLogger // clazy:exclude=rule-of-three
+class QgsScopeLogger
 {
+
+%TypeHeaderCode
+#include "qgslogger.h"
+%End
   public:
     QgsScopeLogger( const char *file, const char *func, int line );
     ~QgsScopeLogger();

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget *parent = nullptr ) : QWidget( parent ) {}
+    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr ) : QWidget( parent ) {}
 
     /**
      * Sets the paint effect to modify with the widget
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     Q_OBJECT
 
   public:
-    QgsDrawSourceWidget( QWidget *parent = nullptr );
+    QgsDrawSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsDrawSourceWidget(); }
 
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsBlurWidget( QWidget *parent = nullptr );
+    QgsBlurWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsBlurWidget(); }
 
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     Q_OBJECT
 
   public:
-    QgsShadowEffectWidget( QWidget *parent = nullptr );
+    QgsShadowEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsShadowEffectWidget(); }
 
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     Q_OBJECT
 
   public:
-    QgsGlowWidget( QWidget *parent = nullptr );
+    QgsGlowWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsGlowWidget(); }
 
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     Q_OBJECT
 
   public:
-    QgsTransformWidget( QWidget *parent = nullptr );
+    QgsTransformWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsTransformWidget(); }
 

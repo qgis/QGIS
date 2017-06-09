@@ -116,7 +116,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineSymbolLayerWidget( vl ); }
 
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleMarkerSymbolLayerWidget( vl ); }
 
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleFillSymbolLayerWidget( vl ); }
 
@@ -305,7 +305,7 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsGradientFillSymbolLayerWidget( vl ); }
 
@@ -348,7 +348,7 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
     Q_OBJECT
 
   public:
-    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsShapeburstFillSymbolLayerWidget( vl ); }
 
@@ -387,7 +387,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsMarkerLineSymbolLayerWidget( vl ); }
 
@@ -426,7 +426,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     Q_OBJECT
 
   public:
-    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSvgMarkerSymbolLayerWidget( vl ); }
 
@@ -484,7 +484,7 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsRasterFillSymbolLayerWidget( vl ); }
 
@@ -524,7 +524,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     Q_OBJECT
 
   public:
-    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSVGFillSymbolLayerWidget( vl ); }
 
@@ -573,7 +573,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
 
   public:
 
-    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsLinePatternFillSymbolLayerWidget( vl ); }
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
@@ -604,7 +604,7 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
     Q_OBJECT
 
   public:
-    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsPointPatternFillSymbolLayerWidget( vl ); }
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
@@ -639,7 +639,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     Q_OBJECT
 
   public:
-    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsFontMarkerSymbolLayerWidget( vl ); }
 
@@ -695,7 +695,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
     Q_OBJECT
 
   public:
-    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsCentroidFillSymbolLayerWidget( vl ); }
 
@@ -726,7 +726,7 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
     Q_OBJECT
 
   public:
-    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Will be registered as factory

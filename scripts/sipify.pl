@@ -442,8 +442,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/7
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?(?!;)$/ ){
+    # https://regex101.com/r/6FWntP/8
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -463,8 +463,9 @@ while ($LINE_IDX < $LINE_COUNT){
         # Inheritance
         if ($4){
             my $m = $4;
-            $m =~ s/public //g;
-            $m =~ s/[,:]?\s*private \w+(::\w+)?//g;
+            $m =~ s/public +(\w+, *)*(Ui::\w+,? *)+//g; # remove Ui::xxx public inheritance as the namespace is causing troubles
+            $m =~ s/public +//g;
+            $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
             # detect template based inheritance
             while ($m =~ /[,:]\s+((?!QList)\w+)<((\w|::)+)>/g){
                 dbg_info("template class");
@@ -622,7 +623,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     last;
                 }
                 do {no warnings 'uninitialized';
-                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*[\w\s\d<|-]+.*?)?(,?).*$/$1$2$3/r;
+                    my $enum_decl = $LINE =~ s/(\s*\w+)(\s+SIP_\w+(?:\([^()]+\))?)?(?:\s*=\s*(?:[\w\s\d|+-]|::|<<)+.*?)?(,?).*$/$1$2$3/r;
                     $enum_decl = fix_annotations($enum_decl);
                     write_output("ENU3", "$enum_decl\n");
                 };

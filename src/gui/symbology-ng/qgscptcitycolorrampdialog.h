@@ -119,6 +119,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
 
 };
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 /** \ingroup gui
@@ -140,6 +141,6 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
 };
 
 ///@endcond
-
+#endif
 
 #endif

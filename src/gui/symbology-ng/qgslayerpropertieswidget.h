@@ -42,7 +42,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent = nullptr );
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context

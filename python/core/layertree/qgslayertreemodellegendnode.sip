@@ -31,7 +31,7 @@ class QgsLayerTreeModelLegendNode : QObject
 
     enum LegendNodeRoles
     {
-      RuleKeyRole
+      RuleKeyRole,
       ParentRuleKeyRole
     };
 

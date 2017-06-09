@@ -25,6 +25,7 @@
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 #include "qgis_gui.h"
 
+#ifndef SIP_RUN
 /// @cond PRIVATE
 
 class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
@@ -76,6 +77,7 @@ class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
 };
 
 ///@endcond
+#endif
 
 /** \ingroup gui
  * \class QgsGraduatedSymbolRendererWidget
