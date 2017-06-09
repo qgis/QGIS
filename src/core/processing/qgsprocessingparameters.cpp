@@ -231,6 +231,11 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
   else if ( !val.isValid() || val.toString().isEmpty() )
   {
+    if ( definition && definition->flags() & QgsProcessingParameterDefinition::FlagOptional && !definition->defaultValue().isValid() )
+    {
+      // unset, optional sink, no default => no sink
+      return nullptr;
+    }
     // fall back to default
     dest = definition->defaultValue().toString();
   }
