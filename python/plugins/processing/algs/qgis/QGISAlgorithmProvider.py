@@ -48,7 +48,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RandomExtract import RandomExtract
 # from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 # from .ExtractByLocation import ExtractByLocation
-# from .ExtractByExpression import ExtractByExpression
+from .ExtractByExpression import ExtractByExpression
 # from .PointsInPolygon import PointsInPolygon
 # from .PointsInPolygonUnique import PointsInPolygonUnique
 # from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -247,7 +247,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(), ZonalStatisticsQgis(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         RemoveNullGeometry(), ExtractByExpression(),
+        #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(), SnapGeometriesToLayer(),
         #         PoleOfInaccessibility(), CreateAttributeIndex(),
@@ -268,7 +268,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Clip(),
                 DeleteColumn(),
-                ExtentFromLayer()
+                ExtentFromLayer(),
+                ExtractByExpression()
                 ]
 
         if hasPlotly:
