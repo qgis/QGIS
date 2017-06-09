@@ -15,11 +15,32 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
+#include "qgscsexception.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
   switch ( featureRequest.filterType() )
   {
     case QgsFeatureRequest::FilterFids:
@@ -61,6 +82,7 @@ bool QgsCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mRequest.acceptFeature( f ) )
     {
       f.setValid( true );
+      geometryToDestinationCrs( f, mTransform );
       return true;
     }
   }
@@ -85,7 +107,27 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   : QgsAbstractFeatureIterator( featureRequest )
   , mVectorLayerCache( vlCache )
 {
-  mFeatIt = vlCache->layer()->getFeatures( featureRequest );
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
+  {
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+  if ( !mFilterRect.isNull() )
+  {
+    // update request to be the unprojected filter rect
+    mRequest.setFilterRect( mFilterRect );
+  }
+
+  mFeatIt = vlCache->layer()->getFeatures( mRequest );
 }
 
 bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
@@ -100,6 +142,7 @@ bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
     // As long as features can be fetched from the provider: Write them to cache
     mVectorLayerCache->cacheFeature( f );
     mFids.insert( f.id() );
+    geometryToDestinationCrs( f, mTransform );
     return true;
   }
   else

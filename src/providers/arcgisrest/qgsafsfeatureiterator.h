@@ -31,6 +31,7 @@ class QgsAfsFeatureSource : public QgsAbstractFeatureSource
 
   protected:
     QgsAfsProvider *mProvider = nullptr;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsAfsFeatureIterator;
 };
@@ -48,6 +49,8 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
 
   private:
     QgsFeatureId mFeatureIterator = 0;
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSAFSFEATUREITERATOR_H

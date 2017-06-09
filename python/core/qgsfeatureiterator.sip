@@ -102,6 +102,29 @@ end of iterating: free the resources / lock
  :rtype: bool
 %End
 
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+%Docstring
+ Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
+ If ``feature`` has no geometry or ``transform`` is invalid then calling this method
+ has no effect and will be shortcut.
+ Iterators should call this method before returning features to ensure that any
+ QgsFeatureRequest.destinationCrs() set on the request is respected.
+.. versionadded:: 3.0
+%End
+
+
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+%Docstring
+ Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
+ If ``transform`` is a valid coordinate transform, the return rectangle will represent
+ the requested filterRect() transformed to the source's coordinate reference system.
+ Iterators should call this method and use the returned rectangle for filtering
+ features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
+ Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
 
 
 

@@ -114,6 +114,28 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 
+    /**
+     * Transforms \a feature's geometry according to the specified coordinate \a transform.
+     * If \a feature has no geometry or \a transform is invalid then calling this method
+     * has no effect and will be shortcut.
+     * Iterators should call this method before returning features to ensure that any
+     * QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * \since QGIS 3.0
+     */
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+
+
+    /**
+     * Returns a rectangle representing the original request's QgsFeatureRequest::filterRect().
+     * If \a transform is a valid coordinate transform, the return rectangle will represent
+     * the requested filterRect() transformed to the source's coordinate reference system.
+     * Iterators should call this method and use the returned rectangle for filtering
+     * features to ensure that any QgsFeatureRequest::destinationCrs() set on the request is respected.
+     * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+     * \since QGIS 3.0
+     */
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 

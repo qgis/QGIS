@@ -52,6 +52,8 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     // Return True if this feature source has spatial attributes.
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
@@ -100,6 +102,9 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     bool mOrderByCompiled;
 
     int mFetchCount = 0;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

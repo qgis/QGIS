@@ -267,10 +267,16 @@ construct a request with feature ID filter
 %Docstring
 construct a request with feature ID filter
 %End
-    explicit QgsFeatureRequest( const QgsRectangle &rect );
+
+    explicit QgsFeatureRequest( const QgsRectangle &rectangle );
 %Docstring
-construct a request with rectangle filter
+ Construct a request with ``rectangle`` bounding box filter.
+
+ When a destination CRS is set using setDestinationCrs(), ``rectangle``
+ is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
+ should use the same CRS as the source layer/provider.
 %End
+
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
 %Docstring
 construct a request with a filter expression
@@ -288,16 +294,28 @@ copy constructor
  :rtype: FilterType
 %End
 
-    QgsFeatureRequest &setFilterRect( const QgsRectangle &rect );
+    QgsFeatureRequest &setFilterRect( const QgsRectangle &rectangle );
 %Docstring
- Set rectangle from which features will be taken. Empty rectangle removes the filter.
+ Sets the ``rectangle`` from which features will be taken. An empty rectangle removes the filter.
+
+ When a destination CRS is set using setDestinationCrs(), ``rectangle``
+ is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
+ should use the same CRS as the source layer/provider.
+
+.. seealso:: filterRect()
  :rtype: QgsFeatureRequest
 %End
 
     const QgsRectangle &filterRect() const;
 %Docstring
- Get the rectangle from which features will be taken. If the returned
+ Returns the rectangle from which features will be taken. If the returned
  rectangle is null, then no filter rectangle is set.
+
+ When a destination CRS is set using setDestinationCrs(), the rectangle
+ will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
+ will use the same CRS as the source layer/provider.
+
+.. seealso:: setFilterRect()
  :rtype: QgsRectangle
 %End
 
@@ -527,6 +545,69 @@ Set a subset of attributes by names that will be fetched
 .. versionadded:: 2.2
  :rtype: QgsSimplifyMethod
 %End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+ Returns the destination coordinate reference system for feature's geometries,
+ or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
+ and all features will be left with their original geometry.
+.. seealso:: setDestinationCrs()
+.. versionadded:: 3.0
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
+    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Sets the destination ``crs`` for feature's geometries. If set, all
+ geometries will be reprojected from their original coordinate reference
+ system to this desired reference system. If ``crs`` is an invalid
+ QgsCoordinateReferenceSystem then no reprojection will be done
+ and all features will be left with their original geometry.
+
+ When a ``crs`` is set using setDestinationCrs(), then any filterRect()
+ set on the request is expected to be in the same CRS as the destination
+ CRS.
+
+ The feature geometry transformation to the destination CRS is performed
+ after all filter expressions are tested and any virtual fields are
+ calculated. Accordingly, any geometric expressions used in
+ filterExpression() will be performed in the original
+ source CRS. This ensures consistent results are returned regardless of the
+ destination CRS. Similarly, virtual field values will be calculated using the
+ original geometry in the source CRS, so these values are not affected by
+ any destination CRS transform present in the feature request.
+
+.. seealso:: destinationCrs()
+.. versionadded:: 3.0
+ :rtype: QgsFeatureRequest
+%End
+
+    QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+ Sets a callback function to use when encountering a transform error when iterating
+ features and a destinationCrs() is set. This function will be
+ called using the feature which encountered the transform error as a parameter.
+.. versionadded:: 3.0
+.. seealso:: transformErrorCallback()
+.. seealso:: setDestinationCrs()
+ :rtype: QgsFeatureRequest
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    sipRes = sipCpp;
+
+    Py_END_ALLOW_THREADS
+%End
+
+
 
     bool acceptFeature( const QgsFeature &feature );
 %Docstring

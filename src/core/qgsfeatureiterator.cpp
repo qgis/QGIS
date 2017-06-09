@@ -16,7 +16,7 @@
 #include "qgslogger.h"
 
 #include "qgssimplifymethod.h"
-
+#include "qgscsexception.h"
 #include "qgsexpressionsorter.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
@@ -96,6 +96,35 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterFids( QgsFeature &f )
       return true;
   }
   return false;
+}
+
+void QgsAbstractFeatureIterator::geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const
+{
+  if ( transform.isValid() && feature.hasGeometry() )
+  {
+    try
+    {
+      QgsGeometry g = feature.geometry();
+      g.transform( transform );
+      feature.setGeometry( g );
+    }
+    catch ( QgsCsException & )
+    {
+      // transform error
+      if ( mRequest.transformErrorCallback() )
+      {
+        mRequest.transformErrorCallback()( feature );
+      }
+    }
+  }
+}
+
+QgsRectangle QgsAbstractFeatureIterator::filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const
+{
+  if ( mRequest.filterRect().isNull() )
+    return QgsRectangle();
+
+  return transform.transformBoundingBox( mRequest.filterRect(), QgsCoordinateTransform::ReverseTransform );
 }
 
 void QgsAbstractFeatureIterator::ref()

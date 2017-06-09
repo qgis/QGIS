@@ -208,6 +208,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsFeatureRequest mChangedFeaturesRequest;
     QgsFeatureIterator mChangedFeaturesIterator;
 
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
+
     // only related to editing
     QSet<QgsFeatureId> mFetchConsidered;
     QgsGeometryMap::ConstIterator mFetchChangedGeomIt;
@@ -250,9 +253,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     void createOrderedJoinList();
 
     /**
-     * Performs any feature based validity checking, e.g. checking for geometry validity.
+     * Performs any post-processing (such as transformation) and feature based validity checking, e.g. checking for geometry validity.
      */
-    bool testFeature( const QgsFeature &feature );
+    bool postProcessFeature( QgsFeature &feature );
 
     /**
      * Checks a feature's geometry for validity, if requested in feature request.

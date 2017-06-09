@@ -21,31 +21,47 @@
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
+#include "qgscsexception.h"
 
 ///@cond PRIVATE
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
 {
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
+
   if ( !mSource->mSubsetString.isEmpty() )
   {
     mSubsetExpression = new QgsExpression( mSource->mSubsetString );
     mSubsetExpression->prepare( &mSource->mExpressionContext );
   }
 
-  if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
-    mSelectRectGeom = QgsGeometry::fromRect( request.filterRect() );
+    mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
     mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.geometry() ) );
     mSelectRectEngine->prepareGeometry();
   }
 
   // if there's spatial index, use it!
   // (but don't use it when selection rect is not specified)
-  if ( !mRequest.filterRect().isNull() && mSource->mSpatialIndex )
+  if ( !mFilterRect.isNull() && mSource->mSpatialIndex )
   {
     mUsingFeatureIdList = true;
-    mFeatureIdList = mSource->mSpatialIndex->intersects( mRequest.filterRect() );
+    mFeatureIdList = mSource->mSpatialIndex->intersects( mFilterRect );
     QgsDebugMsg( "Features returned by spatial index: " + QString::number( mFeatureIdList.count() ) );
   }
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
@@ -92,7 +108,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
   // option 1: we have a list of features to traverse
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
       if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( *mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().geometry() ) )
@@ -124,7 +140,10 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
     close();
 
   if ( hasFeature )
+  {
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+    geometryToDestinationCrs( feature, mTransform );
+  }
 
   return hasFeature;
 }
@@ -137,7 +156,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
   // option 2: traversing the whole layer
   while ( mSelectIterator != mSource->mFeatures.constEnd() )
   {
-    if ( mRequest.filterRect().isNull() )
+    if ( mFilterRect.isNull() )
     {
       // selection rect empty => using all features
       hasFeature = true;
@@ -153,7 +172,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->hasGeometry() && mSelectIterator->geometry().boundingBox().intersects( mFilterRect ) )
           hasFeature = true;
       }
     }
@@ -178,6 +197,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
     ++mSelectIterator;
     feature.setValid( true );
     feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+    geometryToDestinationCrs( feature, mTransform );
   }
   else
     close();
@@ -216,6 +236,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   , mFeatures( p->mFeatures )
   , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
   , mSubsetString( p->mSubsetString )
+  , mCrs( p->mCrs )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
