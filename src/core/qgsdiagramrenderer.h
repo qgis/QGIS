@@ -376,8 +376,6 @@ class CORE_EXPORT QgsDiagramSettings
       , scaleByArea( true )
       , rotationOffset( 270 ) //top
       , scaleBasedVisibility( false )
-      , minScaleDenominator( -1 )
-      , maxScaleDenominator( -1 )
       , minimumSize( 0.0 )
     {}
     bool enabled;
@@ -426,9 +424,22 @@ class CORE_EXPORT QgsDiagramSettings
     double rotationOffset;
 
     bool scaleBasedVisibility;
-    //scale range (-1 if no lower / upper bound )
-    double minScaleDenominator;
-    double maxScaleDenominator;
+
+    /**
+     * The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no maximum scale visibility.
+     * \see minimumScale
+    */
+    double maximumScale = 0;
+
+    /**
+     * The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale of 0 indicates no minimum scale visibility.
+     * \see maximumScale
+    */
+    double minimumScale = 0;
 
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
     double minimumSize;

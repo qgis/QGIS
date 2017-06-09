@@ -373,8 +373,22 @@ Opacity, from 0 (transparent) to 1.0 (opaque)
 %End
 
     bool scaleBasedVisibility;
-    double minScaleDenominator;
-    double maxScaleDenominator;
+
+    double maximumScale;
+%Docstring
+ The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. seealso:: minimumScale
+%End
+
+    double minimumScale;
+%Docstring
+ The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. seealso:: maximumScale
+%End
 
     double minimumSize;
 %Docstring

@@ -23,10 +23,12 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
+#include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
+#include <QSpinBox>
 
 static const int COLUMN_IDX_NAME = 0;
 static const int COLUMN_IDX_TYPE = 1;
@@ -61,7 +63,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
     mSymbologyExportLabel->hide();
     mSymbologyExportComboBox->hide();
     mScaleLabel->hide();
-    mScaleSpinBox->hide();
+    mScaleWidget->hide();
   }
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
@@ -814,14 +816,17 @@ int QgsVectorLayerSaveAsDialog::symbologyExport() const
   return mSymbologyExportComboBox->currentData().toInt();
 }
 
-double QgsVectorLayerSaveAsDialog::scaleDenominator() const
+double QgsVectorLayerSaveAsDialog::scale() const
 {
-  return mScaleSpinBox->value();
+  return mScaleWidget->scale();
 }
 
-void QgsVectorLayerSaveAsDialog::setCanvasExtent( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs )
+void QgsVectorLayerSaveAsDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
-  mExtentGroupBox->setCurrentExtent( canvasExtent, canvasCrs );
+  mMapCanvas = canvas;
+  mScaleWidget->setMapCanvas( canvas );
+  mScaleWidget->setShowCurrentScaleButton( true );
+  mExtentGroupBox->setCurrentExtent( canvas->mapSettings().visibleExtent(), canvas->mapSettings().destinationCrs() );
 }
 
 bool QgsVectorLayerSaveAsDialog::hasFilterExtent() const
@@ -889,7 +894,7 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   {
     scaleEnabled = false;
   }
-  mScaleSpinBox->setEnabled( scaleEnabled );
+  mScaleWidget->setEnabled( scaleEnabled );
   mScaleLabel->setEnabled( scaleEnabled );
 }
 

@@ -38,8 +38,8 @@
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &label, const QString &description, bool elseRule )
   : mParent( nullptr )
   , mSymbol( symbol )
-  , mScaleMinDenom( scaleMinDenom )
-  , mScaleMaxDenom( scaleMaxDenom )
+  , mMaximumScale( scaleMinDenom )
+  , mMinimumScale( scaleMaxDenom )
   , mFilterExp( filterExp )
   , mLabel( label )
   , mDescription( description )
@@ -168,7 +168,7 @@ QString QgsRuleBasedRenderer::Rule::dump( int indent ) const
   off.fill( QChar( ' ' ), indent );
   QString symbolDump = ( mSymbol ? mSymbol->dump() : QStringLiteral( "[]" ) );
   QString msg = off + QStringLiteral( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5\n" )
-                .arg( mLabel ).arg( mScaleMinDenom ).arg( mScaleMaxDenom )
+                .arg( mLabel ).arg( mMaximumScale ).arg( mMinimumScale )
                 .arg( mFilterExp, symbolDump );
 
   QStringList lst;
@@ -236,7 +236,7 @@ void QgsRuleBasedRenderer::Rule::setFilterExpression( const QString &filterExp )
   initFilter();
 }
 
-QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( double scaleDenominator, const QString &ruleFilter ) const
+QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( double scale, const QString &ruleFilter ) const
 {
   QgsLegendSymbolList lst;
   if ( mSymbol && ( ruleFilter.isEmpty() || mLabel == ruleFilter ) )
@@ -244,9 +244,9 @@ QgsLegendSymbolList QgsRuleBasedRenderer::Rule::legendSymbolItems( double scaleD
 
   Q_FOREACH ( Rule *rule, mChildren )
   {
-    if ( qgsDoubleNear( scaleDenominator, -1 ) || rule->isScaleOK( scaleDenominator ) )
+    if ( qgsDoubleNear( scale, -1 ) || rule->isScaleOK( scale ) )
     {
-      lst << rule->legendSymbolItems( scaleDenominator, ruleFilter );
+      lst << rule->legendSymbolItems( scale, ruleFilter );
     }
   }
   return lst;
@@ -257,7 +257,7 @@ QgsLegendSymbolListV2 QgsRuleBasedRenderer::Rule::legendSymbolItemsV2( int curre
   QgsLegendSymbolListV2 lst;
   if ( currentLevel != -1 ) // root rule should not be shown
   {
-    lst << QgsLegendSymbolItem( mSymbol, mLabel, mRuleKey, true, mScaleMinDenom, mScaleMaxDenom, currentLevel, mParent ? mParent->mRuleKey : QString() );
+    lst << QgsLegendSymbolItem( mSymbol, mLabel, mRuleKey, true, mMaximumScale, mMinimumScale, currentLevel, mParent ? mParent->mRuleKey : QString() );
   }
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
@@ -283,11 +283,11 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) ) // so that we can count features in classes without scale context
     return true;
-  if ( mScaleMinDenom == 0 && mScaleMaxDenom == 0 )
+  if ( qgsDoubleNear( mMaximumScale, 0.0 ) && qgsDoubleNear( mMinimumScale, 0.0 ) )
     return true;
-  if ( mScaleMinDenom != 0 && mScaleMinDenom > scale )
+  if ( !qgsDoubleNear( mMaximumScale, 0.0 ) && mMaximumScale > scale )
     return false;
-  if ( mScaleMaxDenom != 0 && mScaleMaxDenom < scale )
+  if ( !qgsDoubleNear( mMinimumScale, 0.0 ) && mMinimumScale < scale )
     return false;
   return true;
 }
@@ -295,7 +295,7 @@ bool QgsRuleBasedRenderer::Rule::isScaleOK( double scale ) const
 QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::clone() const
 {
   QgsSymbol *sym = mSymbol ? mSymbol->clone() : nullptr;
-  Rule *newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
+  Rule *newrule = new Rule( sym, mMaximumScale, mMinimumScale, mFilterExp, mLabel, mDescription );
   newrule->setActive( mIsActive );
   // clone children
   Q_FOREACH ( Rule *rule, mChildren )
@@ -315,10 +315,10 @@ QDomElement QgsRuleBasedRenderer::Rule::save( QDomDocument &doc, QgsSymbolMap &s
   }
   if ( !mFilterExp.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "filter" ), mFilterExp );
-  if ( mScaleMinDenom != 0 )
-    ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mScaleMinDenom );
-  if ( mScaleMaxDenom != 0 )
-    ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mScaleMaxDenom );
+  if ( mMaximumScale != 0 )
+    ruleElem.setAttribute( QStringLiteral( "scalemindenom" ), mMaximumScale );
+  if ( mMinimumScale != 0 )
+    ruleElem.setAttribute( QStringLiteral( "scalemaxdenom" ), mMinimumScale );
   if ( !mLabel.isEmpty() )
     ruleElem.setAttribute( QStringLiteral( "label" ), mLabel );
   if ( !mDescription.isEmpty() )
@@ -348,7 +348,7 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
     props[ QStringLiteral( "filter" )] += mFilterExp;
   }
 
-  QgsSymbolLayerUtils::mergeScaleDependencies( mScaleMinDenom, mScaleMaxDenom, props );
+  QgsSymbolLayerUtils::mergeScaleDependencies( mMaximumScale, mMinimumScale, props );
 
   if ( mSymbol )
   {
@@ -1021,9 +1021,9 @@ void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *s
     delete symbol;
 }
 
-QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsRuleBasedRenderer::legendSymbolItems( double scale, const QString &rule )
 {
-  return mRootRule->legendSymbolItems( scaleDenominator, rule );
+  return mRootRule->legendSymbolItems( scale, rule );
 }
 
 QgsLegendSymbolListV2 QgsRuleBasedRenderer::legendSymbolItemsV2() const
@@ -1153,12 +1153,12 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
 void QgsRuleBasedRenderer::refineRuleScales( QgsRuleBasedRenderer::Rule *initialRule, QList<int> scales )
 {
   std::sort( scales.begin(), scales.end() ); // make sure the scales are in ascending order
-  int oldScale = initialRule->scaleMinDenom();
-  int maxDenom = initialRule->scaleMaxDenom();
+  double oldScale = initialRule->maximumScale();
+  double maxDenom = initialRule->minimumScale();
   QgsSymbol *symbol = initialRule->symbol();
   Q_FOREACH ( int scale, scales )
   {
-    if ( initialRule->scaleMinDenom() >= scale )
+    if ( initialRule->maximumScale() >= scale )
       continue; // jump over the first scales out of the interval
     if ( maxDenom != 0 && maxDenom  <= scale )
       break; // ignore the latter scales out of the interval

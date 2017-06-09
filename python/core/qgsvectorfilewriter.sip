@@ -544,11 +544,22 @@ Close opened shapefile for writing
 %End
     void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport );
 
-    double symbologyScaleDenominator() const;
+    double symbologyScale() const;
 %Docstring
+ Returns the reference scale for output.
+ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: setSymbologyScale()
  :rtype: float
 %End
-    void setSymbologyScaleDenominator( double d );
+
+    void setSymbologyScale( double scale );
+%Docstring
+ Set reference ``scale`` for output.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+.. versionadded:: 3.0
+.. seealso:: symbologyScale()
+%End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
 %Docstring

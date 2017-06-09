@@ -303,9 +303,12 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
 
-    //! return a list of item text / symbol
-    //! \note not available in Python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) SIP_SKIP;
+    /**
+     * Return a list of legend item text / symbol.
+     * The \a scale value indicates the scale denominator for the legend symbols, e.g. 1000.0 for a 1:1000 map.
+     * \note not available in Python bindings
+     */
+    virtual QgsLegendSymbolList legendSymbolItems( double scale = -1, const QString &rule = "" ) SIP_SKIP;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation

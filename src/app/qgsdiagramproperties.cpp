@@ -205,7 +205,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mIncreaseMinimumSizeLabel->setEnabled( false );
     mBarWidthSpinBox->setValue( 5 );
     mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
-    mScaleRangeWidget->setScaleRange( 1.0 / layer->minimumScale(), 1.0 / layer->maximumScale() ); // caution: layer uses scale denoms, widget uses true scales
+    mScaleRangeWidget->setScaleRange( layer->minimumScale(), layer->maximumScale() );
     mShowAllCheckBox->setChecked( true );
     mCheckBoxAttributeLegend->setChecked( true );
     mCheckBoxSizeLegend->setChecked( false );
@@ -265,9 +265,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
-      // caution: layer uses scale denoms, widget uses true scales
-      mScaleRangeWidget->setScaleRange( 1.0 / ( settingList.at( 0 ).maxScaleDenominator > 0 ? settingList.at( 0 ).maxScaleDenominator : layer->minimumScale() ),
-                                        1.0 / ( settingList.at( 0 ).minScaleDenominator > 0 ? settingList.at( 0 ).minScaleDenominator : layer->maximumScale() ) );
+      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : layer->minimumScale() ),
+                                        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : layer->maximumScale() ) );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
       mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
       mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
@@ -773,9 +772,8 @@ void QgsDiagramProperties::apply()
   ds.backgroundColor = mBackgroundColorButton->color();
   ds.penColor = mDiagramPenColorButton->color();
   ds.penWidth = mPenWidthSpinBox->value();
-  // caution: layer uses scale denoms, widget uses true scales
-  ds.maxScaleDenominator = 1.0 / mScaleRangeWidget->minimumScale();
-  ds.minScaleDenominator = 1.0 / mScaleRangeWidget->maximumScale();
+  ds.minimumScale = mScaleRangeWidget->minimumScale();
+  ds.maximumScale = mScaleRangeWidget->maximumScale();
   ds.scaleBasedVisibility = mScaleVisibilityGroupBox->isChecked();
 
   // Diagram angle offset (pie)

@@ -172,8 +172,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.4
     int mapUpdateInterval() const;
 
-    //! Get the last reported scale of the canvas
-    double scale();
+    /**
+     * Returns the last reported scale of the canvas.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
+    double scale() const;
 
     //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
     double mapUnitsPerPixel() const;
@@ -365,7 +368,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! set wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
-    //! Zoom to a specific scale
+    /**
+     * Zooms the canvas to a specific \a scale.
+     * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     */
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in

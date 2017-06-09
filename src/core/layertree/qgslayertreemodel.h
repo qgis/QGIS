@@ -183,10 +183,22 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
     int autoCollapseLegendNodes() const { return mAutoCollapseLegendNodesCount; }
 
-    //! Force only display of legend nodes which are valid for given scale denominator.
-    //! Setting value <= 0 will disable the functionality
-    //! \since QGIS 2.6
-    void setLegendFilterByScale( double scaleDenominator );
+    /**
+     * Force only display of legend nodes which are valid for a given \a scale.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * Setting \a scale <= 0 will disable the functionality.
+     * \since QGIS 2.6
+     * \see legendFilterByScale()
+     */
+    void setLegendFilterByScale( double scale );
+
+    /**
+     * Returns the scale which restricts the legend nodes which are visible.
+     * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+     * A scale <= 0 indicates that no scale filtering is being performed.
+     * \since QGIS 2.6
+     * \see setLegendFilterByScale()
+     */
     double legendFilterByScale() const { return mLegendFilterByScale; }
 
     //! Force only display of legend nodes which are valid for given map settings.

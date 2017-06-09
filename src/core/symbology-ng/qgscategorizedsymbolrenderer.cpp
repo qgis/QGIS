@@ -744,9 +744,9 @@ QgsLegendSymbologyList QgsCategorizedSymbolRenderer::legendSymbologyItems( QSize
   return lst;
 }
 
-QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems( double scale, const QString &rule )
 {
-  Q_UNUSED( scaleDenominator );
+  Q_UNUSED( scale );
   QgsLegendSymbolList lst;
 
   Q_FOREACH ( const QgsRendererCategory &cat, mCategories )

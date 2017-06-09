@@ -141,9 +141,10 @@ Constructor
  :rtype: int
 %End
 
-    double scale();
+    double scale() const;
 %Docstring
-Get the last reported scale of the canvas
+ Returns the last reported scale of the canvas.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  :rtype: float
 %End
 
@@ -405,7 +406,8 @@ set wheel zoom factor (should be greater than 1)
 
     void zoomScale( double scale );
 %Docstring
-Zoom to a specific scale
+ Zooms the canvas to a specific ``scale``.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );

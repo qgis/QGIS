@@ -480,13 +480,13 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scale, const QString &rule )
 {
   if ( !mSubRenderer )
   {
     return QgsLegendSymbolList();
   }
-  return mSubRenderer->legendSymbolItems( scaleDenominator, rule );
+  return mSubRenderer->legendSymbolItems( scale, rule );
 }
 
 bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )

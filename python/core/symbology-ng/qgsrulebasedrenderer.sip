@@ -81,7 +81,7 @@ A rule matches if both filter and scale range match.
           Rendered
         };
 
-        Rule( QgsSymbol *symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, const QString &filterExp = QString(),
+        Rule( QgsSymbol *symbol /Transfer/, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(),
               const QString &label = QString(), const QString &description = QString(), bool elseRule = false );
 %Docstring
 Constructor takes ownership of the symbol
@@ -137,8 +137,9 @@ Constructor takes ownership of the symbol
 
         bool isScaleOK( double scale ) const;
 %Docstring
- Check if this rule applies for a given scale
- \param scale The scale to check. If set to 0, it will always return true.
+ Check if this rule applies for a given ``scale``.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ If set to 0, it will always return true.
 
  :return: If the rule will be evaluated at this scale
  :rtype: bool
@@ -156,13 +157,27 @@ Constructor takes ownership of the symbol
 %Docstring
  :rtype: bool
 %End
-        int scaleMinDenom() const;
+
+        double maximumScale() const;
 %Docstring
- :rtype: int
+ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no maximum scale visibility.
+.. seealso:: minimumScale()
+.. seealso:: setMaximumScale()
+.. versionadded:: 3.0
+ :rtype: float
 %End
-        int scaleMaxDenom() const;
+
+        double minimumScale() const;
 %Docstring
- :rtype: int
+ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule will be active.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A scale of 0 indicates no minimum scale visibility.
+.. seealso:: maximumScale()
+.. seealso:: setMinimumScale()
+.. versionadded:: 3.0
+ :rtype: float
 %End
 
         QgsExpression *filter() const;
@@ -211,20 +226,22 @@ set a new symbol (or NULL). Deletes old symbol.
 %End
         void setLabel( const QString &label );
 
-        void setScaleMinDenom( int scaleMinDenom );
+        void setMinimumScale( double scale );
 %Docstring
- Set the minimum denominator for which this rule shall apply.
- E.g. 1000 if it shall be evaluated between 1:1000 and 1:100'000
- Set to 0 to disable the minimum check
- \param scaleMinDenom The minimum scale denominator for this rule
+ Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the rule will be active.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no minimum scale visibility.
+.. seealso:: minimumScale()
+.. seealso:: setMaximumScale()
 %End
 
-        void setScaleMaxDenom( int scaleMaxDenom );
+        void setMaximumScale( double scale );
 %Docstring
- Set the maximum denominator for which this rule shall apply.
- E.g. 100'000 if it shall be evaluated between 1:1000 and 1:100'000
- Set to 0 to disable the maximum check
- \param scaleMaxDenom maximum scale denominator for this rule
+ Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the rule will be active.
+ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+ A ``scale`` of 0 indicates no maximum scale visibility.
+.. seealso:: maximumScale()
+.. seealso:: setMinimumScale()
 %End
 
         void setFilterExpression( const QString &filterExp );

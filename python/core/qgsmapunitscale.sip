@@ -30,15 +30,19 @@ class QgsMapUnitScale
  Constructor for QgsMapUnitScale
  \param minScale minimum allowed scale, or 0.0 if no minimum scale set
  \param maxScale maximum allowed scale, or 0.0 if no maximum scale set
+ The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     double minScale;
 %Docstring
-The minimum scale, or 0.0 if unset
+ The minimum scale, or 0.0 if unset.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
+
     double maxScale;
 %Docstring
-The maximum scale, or 0.0 if unset
+ The maximum scale, or 0.0 if unset.
+ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     bool minSizeMMEnabled;

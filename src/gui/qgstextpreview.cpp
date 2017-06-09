@@ -19,7 +19,6 @@
 
 QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )
-  , mScale( -1 )
   , mMapUnits( QgsUnitTypes::DistanceMeters )
 {
   // initially use a basic transform with no scale
