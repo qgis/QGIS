@@ -294,7 +294,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * M value is preserved.
      * \param distance distance to project
      * \param azimuth angle to project in X Y, clockwise in degrees starting from north
-     * \param inclination angle to project in Z (3D)
+     * \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
      * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:

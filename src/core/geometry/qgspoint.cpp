@@ -546,5 +546,6 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
     pType = QgsWkbTypes::addM( pType );
   }
 
-  return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+  double z = qIsNaN( mZ ) ? 0 : mZ;
+  return QgsPoint( mX + dx, mY + dy, z + dz, mM, pType );
 }
