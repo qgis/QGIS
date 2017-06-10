@@ -68,13 +68,9 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     virtual QgsRectangle extent() const override;
+    void updateExtents() override;
     bool isValid() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
-
-  protected:
-
-    // called when added / removed features or geometries has been changed
-    void updateExtent();
 
   private:
     // Coordinate reference system
@@ -83,7 +79,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     // fields
     QgsFields mFields;
     QgsWkbTypes::Type mWkbType;
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     // features
     QgsFeatureMap mFeatures;
