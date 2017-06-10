@@ -137,5 +137,6 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         self.assertTrue(self.success)
         self.assertFalse(self.fail)
 
+
 if __name__ == '__main__':
     unittest.main()
