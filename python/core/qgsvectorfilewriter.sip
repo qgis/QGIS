@@ -179,6 +179,12 @@ Constructor
  :return: possibly modified value.
  :rtype: QVariant
 %End
+
+        virtual QgsVectorFileWriter::FieldValueConverter *clone() const /Factory/;
+%Docstring
+ Creates a clone of the FieldValueConverter.
+ :rtype: QgsVectorFileWriter.FieldValueConverter
+%End
     };
 
     enum EditionCapability
@@ -409,7 +415,10 @@ Set to true to include z dimension in output. This option is only valid if overr
 
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter;
 %Docstring
-Field value converter
+ Field value converter.
+
+ Ownership is not transferred and callers must ensure that the lifetime of fieldValueConverter
+ exceeds the lifetime of the QgsVectorFileWriter object.
 %End
 
         QgsFeedback *feedback;

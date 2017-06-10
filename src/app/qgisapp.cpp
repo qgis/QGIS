@@ -6722,8 +6722,10 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
 
     virtual QVariant convert( int idx, const QVariant &value ) override;
 
+    QgisAppFieldValueConverter *clone() const override;
+
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer;
     QgsAttributeList mAttributesAsDisplayedValues;
 };
 
@@ -6735,6 +6737,9 @@ QgisAppFieldValueConverter::QgisAppFieldValueConverter( QgsVectorLayer *vl, cons
 
 QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 {
+  if ( !mLayer )
+    return field;
+
   int idx = mLayer->fields().indexFromName( field.name() );
   if ( mAttributesAsDisplayedValues.contains( idx ) )
   {
@@ -6745,13 +6750,18 @@ QgsField QgisAppFieldValueConverter::fieldDefinition( const QgsField &field )
 
 QVariant QgisAppFieldValueConverter::convert( int idx, const QVariant &value )
 {
-  if ( !mAttributesAsDisplayedValues.contains( idx ) )
+  if ( !mLayer || !mAttributesAsDisplayedValues.contains( idx ) )
   {
     return value;
   }
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, mLayer->fields().field( idx ).name() );
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   return fieldFormatter->representValue( mLayer, idx, setup.config(), QVariant(), value );
+}
+
+QgisAppFieldValueConverter *QgisAppFieldValueConverter::clone() const
+{
+  return new QgisAppFieldValueConverter( *this );
 }
 
 ///@endcond
