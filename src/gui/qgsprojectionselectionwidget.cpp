@@ -259,11 +259,11 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
   {
     if ( layerItemIndex > -1 )
     {
-      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
+      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ) );
     }
     else
     {
-      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -280,13 +280,13 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 {
   if ( mProjectCrs.isValid() )
   {
-    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
+    mCrsComboBox->addItem( tr( "Project CRS: %1 - %2" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
   }
 }
 
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
-  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+  mCrsComboBox->addItem( tr( "Default CRS: %1 - %2" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
 }
 
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
@@ -299,7 +299,7 @@ void QgsProjectionSelectionWidget::addCurrentCrsOption()
 QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const
 {
   if ( crs.isValid() )
-    return tr( "Selected CRS (%1, %2)" ).arg( crs.authid(), crs.description() );
+    return tr( "%1 - %2" ).arg( crs.authid(), crs.description() );
   else
     return tr( "invalid projection" );
 }
