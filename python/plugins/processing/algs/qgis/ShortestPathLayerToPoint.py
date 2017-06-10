@@ -154,7 +154,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         return 'shortestpathlayertopoint'
 
     def displayName(self):
-        return self.tr('Shortest path (layer to point)')
+        return self.tr('Shortest path (many origins to one destination)')
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_VECTOR), context)
