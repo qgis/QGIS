@@ -24,6 +24,13 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
   , mDestFileName( fileName )
   , mOptions( options )
 {
+  if ( mOptions.fieldValueConverter )
+  {
+    // fieldValueConverter is not owned - so we need to clone it here
+    // to ensure it exists for lifetime of task
+    mFieldValueConverter.reset( mOptions.fieldValueConverter->clone() );
+    mOptions.fieldValueConverter = mFieldValueConverter.get();
+  }
   if ( !mOptions.feedback )
   {
     mOwnedFeedback.reset( new QgsFeedback() );

@@ -65,6 +65,11 @@ QVariant QgsVectorFileWriter::FieldValueConverter::convert( int /*fieldIdxInLaye
   return value;
 }
 
+QgsVectorFileWriter::FieldValueConverter *QgsVectorFileWriter::FieldValueConverter::clone() const
+{
+  return new FieldValueConverter( *this );
+}
+
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &vectorFileName,
   const QString &fileEncoding,

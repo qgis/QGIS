@@ -202,6 +202,11 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * \returns possibly modified value.
          */
         virtual QVariant convert( int fieldIdxInLayer, const QVariant &value );
+
+        /**
+         * Creates a clone of the FieldValueConverter.
+         */
+        virtual QgsVectorFileWriter::FieldValueConverter *clone() const SIP_FACTORY;
     };
 
     /** Edition capability flags
@@ -394,7 +399,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         //! Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
         bool includeZ;
 
-        //! Field value converter
+        /**
+         * Field value converter.
+         *
+         * Ownership is not transferred and callers must ensure that the lifetime of fieldValueConverter
+         * exceeds the lifetime of the QgsVectorFileWriter object.
+         */
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr;
 
         //! Optional feedback object allowing cancelation of layer save
