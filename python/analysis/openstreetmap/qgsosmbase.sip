@@ -8,7 +8,7 @@ struct QgsOSMElementID
   enum Type { Invalid, Node, Way, Relation };
 
   Type type;
-  qint64 id;
+  QgsOSMId id;
 };
 
 
@@ -27,13 +27,13 @@ class QgsOSMElement
 
   public:
     QgsOSMElement();
-    QgsOSMElement( QgsOSMElementID::Type t, qint64 id );
+    QgsOSMElement( QgsOSMElementID::Type t, QgsOSMId id );
 
     bool isValid() const;
 
     // fetched automatically from DB
     QgsOSMElementID elemID() const;
-    qint64 id() const;
+    QgsOSMId id() const;
     //QString username() const;
     //QDateTime timestamp() const;
     //int version() const;
@@ -55,7 +55,7 @@ class QgsOSMNode : QgsOSMElement
 %End
   public:
     QgsOSMNode();
-    QgsOSMNode( qint64 id, const QgsPoint& point );
+    QgsOSMNode( QgsOSMId id, const QgsPoint& point );
 
     QgsPoint point() const;
 
@@ -76,9 +76,9 @@ class QgsOSMWay : QgsOSMElement
 %End
   public:
     QgsOSMWay();
-    QgsOSMWay( qint64 id, const QList<qint64>& nodes );
+    QgsOSMWay( QgsOSMId id, const QList<QgsOSMId>& nodes );
 
-    QList<qint64> nodes() const;
+    QList<QgsOSMId> nodes() const;
 
     // fetched on-demand
     //QList<OSMElementID> relations() const;
