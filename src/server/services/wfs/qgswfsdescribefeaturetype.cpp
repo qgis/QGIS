@@ -291,7 +291,4 @@ namespace QgsWfs
     }
   }
 
-} // samespace QgsWfs
-
-
-
+} // namespace QgsWfs

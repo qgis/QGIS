@@ -42,7 +42,7 @@ namespace QgsWfs
   void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request, QgsServerResponse &response );
 
-} // samespace QgsWfs
+} // namespace QgsWfs
 
 #endif
 

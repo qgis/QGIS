@@ -22,7 +22,7 @@
 namespace QgsWms
 {
 
-  /** Output GetMap response in Dfx format
+  /** Output GetMap response in DXF format
    */
   void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request,
@@ -34,8 +34,4 @@ namespace QgsWms
   QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project,
                               const QString &version, const QgsServerRequest &request );
 
-} // samespace QgsWms
-
-
-
-
+} // namespace QgsWms
