@@ -34,7 +34,6 @@ namespace QgsWcs
    */
   QByteArray getCoverageData( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request );
 
-} // samespace QgsWcs
+} // namespace QgsWcs
 
 #endif
-
