@@ -672,27 +672,33 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
 
   QStringList resultStringList;
   QVariant val = parameters.value( definition->name() );
-  if ( val.canConvert<QgsProperty>() )
-    resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  else if ( val.type() == QVariant::List )
+  if ( val.isValid() )
   {
-    Q_FOREACH ( const QVariant &var, val.toList() )
-      resultStringList << var.toString();
+    if ( val.canConvert<QgsProperty>() )
+      resultStringList << val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+    else if ( val.type() == QVariant::List )
+    {
+      Q_FOREACH ( const QVariant &var, val.toList() )
+        resultStringList << var.toString();
+    }
+    else
+      resultStringList.append( val.toString().split( ';' ) );
   }
-  else
-    resultStringList.append( val.toString().split( ';' ) );
 
   if ( ( resultStringList.isEmpty() || resultStringList.at( 0 ).isEmpty() ) )
   {
     resultStringList.clear();
     // check default
-    if ( definition->defaultValue().type() == QVariant::List )
+    if ( definition->defaultValue().isValid() )
     {
-      Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
-        resultStringList << var.toString();
+      if ( definition->defaultValue().type() == QVariant::List )
+      {
+        Q_FOREACH ( const QVariant &var, definition->defaultValue().toList() )
+          resultStringList << var.toString();
+      }
+      else
+        resultStringList.append( definition->defaultValue().toString().split( ';' ) );
     }
-    else
-      resultStringList.append( definition->defaultValue().toString().split( ';' ) );
   }
 
   return resultStringList;
