@@ -213,7 +213,9 @@ void QgsPalettedRendererWidget::addEntry()
   {
     color = ramp->color( 1.0 );
   }
-  mModel->addEntry( color );
+  QModelIndex newEntry = mModel->addEntry( color );
+  mTreeView->scrollTo( newEntry );
+  mTreeView->selectionModel()->select( newEntry, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   emit widgetChanged();
 }
@@ -785,10 +787,12 @@ bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropActi
   return true;
 }
 
-void QgsPalettedRendererModel::addEntry( const QColor &color )
+QModelIndex QgsPalettedRendererModel::addEntry( const QColor &color )
 {
   insertRow( rowCount() );
-  setData( index( mData.count() - 1, 1 ), color );
+  QModelIndex newRow = index( mData.count() - 1, 1 );
+  setData( newRow, color );
+  return newRow;
 }
 
 void QgsPalettedRendererModel::deleteAll()
