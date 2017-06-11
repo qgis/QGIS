@@ -2288,6 +2288,12 @@ void TestQgsProcessing::parameterField()
   fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" );
 
+  // optional, no default
+  def.reset( new QgsProcessingParameterTableField( "optional", QString(), QVariant(), QString(), QgsProcessingParameterTableField::Any, false, true ) );
+  params.insert( "optional",  QVariant() );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QVERIFY( fields.isEmpty() );
+
   //optional with multiples
   def.reset( new QgsProcessingParameterTableField( "optional", QString(), QString( "abc;def" ), QString(), QgsProcessingParameterTableField::Any, true, true ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
