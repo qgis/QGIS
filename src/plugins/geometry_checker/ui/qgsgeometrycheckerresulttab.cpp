@@ -366,7 +366,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
       }
       else
       {
-        totextent.unionRect( geomextent );
+        totextent.combineExtentWith( geomextent );
       }
     }
   }
@@ -392,12 +392,12 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
       extent.setXMaximum( extent.xMaximum() + diff.x() );
       extent.setYMinimum( extent.yMinimum() + diff.y() );
       extent.setYMaximum( extent.yMaximum() + diff.y() );
-      extent.unionRect( pointExtent );
+      extent.combineExtentWith( pointExtent );
       totextent = extent;
     }
     else
     {
-      totextent.unionRect( pointExtent );
+      totextent.combineExtentWith( pointExtent );
     }
   }
 

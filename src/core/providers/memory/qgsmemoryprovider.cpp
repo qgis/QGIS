@@ -278,7 +278,7 @@ QgsRectangle QgsMemoryProvider::extent() const
     Q_FOREACH ( const QgsFeature &feat, mFeatures )
     {
       if ( feat.hasGeometry() )
-        mExtent.unionRect( feat.geometry().boundingBox() );
+        mExtent.combineExtentWith( feat.geometry().boundingBox() );
     }
   }
 

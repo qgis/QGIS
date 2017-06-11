@@ -523,7 +523,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
       QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
 
       QgsDebugMsg( "Output extent: " + extent.toString() );
-      fullExtent.unionRect( extent );
+      fullExtent.combineExtentWith( extent );
     }
   }
 

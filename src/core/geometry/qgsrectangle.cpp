@@ -342,18 +342,6 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
   return *this;
 }
 
-void QgsRectangle::unionRect( const QgsRectangle &r )
-{
-  if ( r.xMinimum() < xMinimum() )
-    setXMinimum( r.xMinimum() );
-  if ( r.xMaximum() > xMaximum() )
-    setXMaximum( r.xMaximum() );
-  if ( r.yMinimum() < yMinimum() )
-    setYMinimum( r.yMinimum() );
-  if ( r.yMaximum() > yMaximum() )
-    setYMaximum( r.yMaximum() );
-}
-
 bool QgsRectangle::isFinite() const
 {
   if ( qIsInf( mXmin ) || qIsInf( mYmin ) || qIsInf( mXmax ) || qIsInf( mYmax ) )
