@@ -107,6 +107,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(self.alg.displayName())
 
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.accepted.connect(self.accept)
+
         # Rename OK button to Run
         self.btnRun = self.buttonBox.button(QDialogButtonBox.Ok)
         self.btnRun.setText(self.tr('Run'))
@@ -114,6 +117,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.buttonCancel.setEnabled(False)
 
         self.btnClose = self.buttonBox.button(QDialogButtonBox.Close)
+
         self.buttonBox.helpRequested.connect(self.openHelp)
 
         self.btnCollapse.clicked.connect(self.toggleCollapsed)

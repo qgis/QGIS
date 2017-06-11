@@ -267,6 +267,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
             if alg.countVisibleParameters() > 0:
                 dlg = alg.createCustomParametersWidget(self)
+
                 if not dlg:
                     dlg = AlgorithmDialog(alg)
                 canvas = iface.mapCanvas()
