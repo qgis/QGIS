@@ -1409,7 +1409,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         point = QgsGeometry.fromPoint(points[0])
         point.geometry().addZValue(4.0)
-        self.assertEqual(point.addPointsV2([QgsPoint(QgsWkbTypes.PointZ, points[1][0], points[1][1], 3.0)]), 0)
+        self.assertEqual(point.addPointsV2([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
         expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
         wkt = point.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1438,7 +1438,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         polyline = QgsGeometry.fromPolyline(points[0])
         polyline.geometry().addZValue(4.0)
-        points2 = [QgsPoint(QgsWkbTypes.PointZ, p[0], p[1], 3.0) for p in points[1]]
+        points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
         self.assertEqual(polyline.addPointsV2(points2), 0)
         expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
         wkt = polyline.exportToWkt()
@@ -1482,7 +1482,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         polygon = QgsGeometry.fromPolygon(points[0])
         polygon.geometry().addZValue(4.0)
-        points2 = [QgsPoint(QgsWkbTypes.PointZ, pi[0], pi[1], 3.0) for pi in points[1][0]]
+        points2 = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in points[1][0]]
         self.assertEqual(polygon.addPointsV2(points2), 0)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.exportToWkt()
@@ -4128,6 +4128,42 @@ class TestQgsGeometry(unittest.TestCase):
         # tolerance
         self.assertFalse(QgsGeometry.compare(lp, lp2))
         self.assertTrue(QgsGeometry.compare(lp, lp2, 1e-6))
+
+    def testPoint(self):
+        point = QgsPoint(1, 2)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(point.x(), 1)
+        self.assertEqual(point.y(), 2)
+
+        point = QgsPoint(1, 2, wkbType=QgsWkbTypes.Point)
+        self.assertEqual(point.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(point.x(), 1)
+        self.assertEqual(point.y(), 2)
+
+        point_z = QgsPoint(1, 2, 3)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
+
+        point_z = QgsPoint(1, 2, 3, 4, wkbType=QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEqual(point_z.x(), 1)
+        self.assertEqual(point_z.y(), 2)
+        self.assertEqual(point_z.z(), 3)
+
+        point_m = QgsPoint(1, 2, m=3)
+        self.assertEqual(point_m.wkbType(), QgsWkbTypes.PointM)
+        self.assertEqual(point_m.x(), 1)
+        self.assertEqual(point_m.y(), 2)
+        self.assertEqual(point_m.m(), 3)
+
+        point_zm = QgsPoint(1, 2, 3, 4)
+        self.assertEqual(point_zm.wkbType(), QgsWkbTypes.PointZM)
+        self.assertEqual(point_zm.x(), 1)
+        self.assertEqual(point_zm.y(), 2)
+        self.assertEqual(point_zm.z(), 3)
+        self.assertEqual(point_zm.m(), 4)
 
 
 if __name__ == '__main__':

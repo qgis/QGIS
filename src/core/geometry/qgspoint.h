@@ -46,8 +46,58 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Construct a point with the provided initial coordinate values.
+     *
+     * If \a wkbType is set to `QgsWkbTypes::Point`, `QgsWkbTypes::PointZ`, `QgsWkbTypes::PointM` or `QgsWkbTypes::PointZM`
+     * the type will be set accordingly. If it is left to the default `QgsWkbTypes::Unknown`, the type will be set
+     * based on the following rules:
+     * - If only x and y are specified, the type will be a 2D point.
+     * - If any or both of the Z and M are specified, the appropriate type will be created.
+     *
+     * \code{.py}
+     *   pt = QgsPoint(43.4, 5.3)
+     *   pt.exportToWkt() # Point(43.4 5.3)
+     *
+     *   pt_z = QgsPoint(120, 343, 77)
+     *   pt.exportToWkt() # PointZ(120 343 77)
+     *
+     *   pt_m = QgsPoint(33, 88, m=5)
+     *   pt_m.m() # 5
+     *   pt_m.wkbType() # QgsWkbTypes.PointM
+     *
+     *   pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
+     *   pt.z() # nan
+     *   pt.wkbType() # QgsWkbTypes.PointZ
+     * \endcode
      */
-    QgsPoint( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
+#ifndef SIP_RUN
+    QgsPoint( double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) SIP_SKIP;
+#else
+    QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
+    % MethodCode
+    double z;
+    double m;
+
+    if ( a2 == Py_None )
+    {
+      z = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      z = PyFloat_AsDouble( a2 );
+    }
+
+    if ( a3 == Py_None )
+    {
+      m = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      m = PyFloat_AsDouble( a3 );
+    }
+
+    sipCpp = new sipQgsPoint( a0, a1, z, m, a4 );
+    % End
+#endif
 
     /** Construct a QgsPoint from a QgsPointXY object
      */
@@ -57,28 +107,12 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QPointF p );
 
-    /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
-     * \param type point type
-     * \param x x-coordinate of point
-     * \param y y-coordinate of point
-     * \param z z-coordinate of point, for PointZ or PointZM types
-     * \param m m-value of point, for PointM or PointZM types
+    /**
+     * Create a new point with the given wkbtype and values.
+     *
+     * \note Not available in Python bindings
      */
-    QgsPoint( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
-#ifdef SIP_RUN
-    % MethodCode
-    if ( QgsWkbTypes::flatType( a0 ) != QgsWkbTypes::Point )
-    {
-      PyErr_SetString( PyExc_ValueError,
-                       QString( "%1 is not a valid WKB type for point geometries" ).arg( QgsWkbTypes::displayString( a0 ) ).toUtf8().constData() );
-      sipIsErr = 1;
-    }
-    else
-    {
-      sipCpp = new sipQgsPoint( a0, a1, a2, a3, a4 );
-    }
-    % End
-#endif
+    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
     bool operator==( const QgsPoint &pt ) const;
     bool operator!=( const QgsPoint &pt ) const;
@@ -260,7 +294,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * M value is preserved.
      * \param distance distance to project
      * \param azimuth angle to project in X Y, clockwise in degrees starting from north
-     * \param inclination angle to project in Z (3D)
+     * \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
      * \returns The point projected. If a 2D point is projected a 3D point will be returned except if
      *  inclination is 90. A 3D point is always returned if a 3D point is projected.
      * Example:
