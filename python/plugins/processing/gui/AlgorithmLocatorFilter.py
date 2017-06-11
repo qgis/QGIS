@@ -72,17 +72,16 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):
-        a = QgsApplication.processingRegistry().algorithmById(result.userData)
-        if a:
-            alg = a.getCopy()
-            message = alg.checkBeforeOpeningParametersDialog()
-            if message:
+        alg = QgsApplication.processingRegistry().algorithmById(result.userData)
+        if alg:
+            ok, message = alg.canExecute()
+            if not ok:
                 dlg = MessageDialog()
                 dlg.setTitle(self.tr('Missing dependency'))
                 dlg.setMessage(message)
                 dlg.exec_()
                 return
-            dlg = alg.getCustomParametersDialog()
+            dlg = alg.createCustomParametersWidget()
             if not dlg:
                 dlg = AlgorithmDialog(alg)
             canvas = iface.mapCanvas()
