@@ -260,11 +260,6 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle &operator=( const QgsRectangle &r1 );
 
     /**
-     * Updates the rectangle to include another rectangle.
-     */
-    void unionRect( const QgsRectangle &rect );
-
-    /**
      * Returns true if the rectangle has finite boundaries. Will
      * return false if any of the rectangle boundaries are NaN or Inf.
      */

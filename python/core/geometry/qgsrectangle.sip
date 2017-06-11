@@ -267,11 +267,6 @@ Copy constructor
 %End
 
 
-    void unionRect( const QgsRectangle &rect );
-%Docstring
- Updates the rectangle to include another rectangle.
-%End
-
     bool isFinite() const;
 %Docstring
  Returns true if the rectangle has finite boundaries. Will

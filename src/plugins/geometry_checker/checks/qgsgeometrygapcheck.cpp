@@ -117,7 +117,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
       if ( QgsGeometryCheckerUtils::sharedEdgeLength( geom, geom2, QgsGeometryCheckPrecision::reducedTolerance() ) > 0 )
       {
         neighboringIds.insert( feature.id() );
-        gapAreaBBox.unionRect( geom2->boundingBox() );
+        gapAreaBBox.combineExtentWith( geom2->boundingBox() );
       }
     }
     if ( neighboringIds.isEmpty() )

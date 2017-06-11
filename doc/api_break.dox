@@ -1927,6 +1927,7 @@ QgsRectangle        {#qgis_api_break_3_0_QgsRectangle}
 ------------
 
 - The protected members were removed - QgsRectangle is not intended to be subclassed.
+- unionRect was removed. Use combineExtentWith instead.
 
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
