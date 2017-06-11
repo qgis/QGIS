@@ -115,6 +115,8 @@ void QgsAbstractFeatureIterator::geometryToDestinationCrs( QgsFeature &feature, 
       {
         mRequest.transformErrorCallback()( feature );
       }
+      // remove geometry - we can't reproject so better not return a geometry in a different crs
+      feature.clearGeometry();
     }
   }
 }
