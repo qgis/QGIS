@@ -91,6 +91,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
     def skipOutput(self):
         self.leText.setPlaceholderText(self.SKIP_OUTPUT)
+        self.leText.setText('')
         self.use_temporary = False
 
     def selectOutput(self):
@@ -99,8 +100,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             popupMenu = QMenu()
 
-            if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
-                    and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 actionSkipOutput = QAction(
                     self.tr('Skip output'), self.btnSelect)
                 actionSkipOutput.triggered.connect(self.skipOutput)

@@ -94,7 +94,7 @@ class BasicStatisticsForField(QgisAlgorithm):
                                                            self.tr('Field to calculate statistics on'),
                                                            None, self.INPUT_LAYER, QgsProcessingParameterTableField.Any))
 
-        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)')))
+        self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
@@ -149,9 +149,10 @@ class BasicStatisticsForField(QgisAlgorithm):
             d, results = self.calcStringStats(features, feedback, field, count)
             data.extend(d)
 
-        self.createHTML(output_file, data)
+        if output_file:
+            self.createHTML(output_file, data)
+            results[self.OUTPUT_HTML_FILE] = output_file
 
-        results[self.OUTPUT_HTML_FILE] = output_file
         return results
 
     def calcNumericStats(self, features, feedback, field, count):
