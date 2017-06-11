@@ -60,8 +60,8 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
   : QgsAbstractGeometry()
   , mX( p.x() )
   , mY( p.y() )
-  , mZ( 0.0 )
-  , mM( 0.0 )
+  , mZ( std::numeric_limits<double>::quiet_NaN() )
+  , mM( std::numeric_limits<double>::quiet_NaN() )
 {
   mWkbType = QgsWkbTypes::Point;
 }
@@ -70,8 +70,8 @@ QgsPoint::QgsPoint( QPointF p )
   : QgsAbstractGeometry()
   , mX( p.x() )
   , mY( p.y() )
-  , mZ( 0.0 )
-  , mM( 0.0 )
+  , mZ( std::numeric_limits<double>::quiet_NaN() )
+  , mM( std::numeric_limits<double>::quiet_NaN() )
 {
   mWkbType = QgsWkbTypes::Point;
 }
@@ -272,7 +272,17 @@ void QgsPoint::draw( QPainter &p ) const
 
 void QgsPoint::clear()
 {
-  mX = mY = mZ = mM = 0.;
+  mX = mY = 0.;
+  if ( is3D() )
+    mZ = 0.;
+  else
+    mZ = std::numeric_limits<double>::quiet_NaN();
+
+  if ( isMeasure() )
+    mM = 0.;
+  else
+    mM = std::numeric_limits<double>::quiet_NaN();
+
   clearCache();
 }
 
@@ -404,7 +414,7 @@ bool QgsPoint::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  mZ = 0.0;
+  mZ = std::numeric_limits<double>::quiet_NaN();
   clearCache();
   return true;
 }
@@ -415,7 +425,7 @@ bool QgsPoint::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  mM = 0.0;
+  mM = std::numeric_limits<double>::quiet_NaN();
   clearCache();
   return true;
 }
@@ -430,17 +440,17 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
   switch ( type )
   {
     case QgsWkbTypes::Point:
-      mZ = 0.0;
-      mM = 0.0;
+      mZ = std::numeric_limits<double>::quiet_NaN();
+      mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
     case QgsWkbTypes::PointZ:
     case QgsWkbTypes::Point25D:
-      mM = 0.0;
+      mM = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
     case QgsWkbTypes::PointM:
-      mZ = 0.0;
+      mZ = std::numeric_limits<double>::quiet_NaN();
       mWkbType = type;
       return true;
     case QgsWkbTypes::PointZM:
@@ -481,22 +491,38 @@ double QgsPoint::distanceSquared( const QgsPoint &other ) const
 
 double QgsPoint::distance3D( double x, double y, double z ) const
 {
-  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z ) );
+  double zDistSquared = 0.0;
+  if ( is3D() || !qIsNaN( z ) )
+    zDistSquared = ( mZ - z ) * ( mZ - z );
+
+  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
 }
 
 double QgsPoint::distance3D( const QgsPoint &other ) const
 {
-  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() ) );
+  double zDistSquared = 0.0;
+  if ( is3D() || other.is3D() )
+    zDistSquared = ( mZ - other.z() ) * ( mZ - other.z() );
+
+  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared );
 }
 
 double QgsPoint::distanceSquared3D( double x, double y, double z ) const
 {
-  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + ( mZ - z ) * ( mZ - z );
+  double zDistSquared = 0.0;
+  if ( is3D() || !qIsNaN( z ) )
+    zDistSquared = ( mZ - z ) * ( mZ - z );
+
+  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared;
 }
 
 double QgsPoint::distanceSquared3D( const QgsPoint &other ) const
 {
-  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() );
+  double zDistSquared = 0.0;
+  if ( is3D() || other.is3D() )
+    zDistSquared = ( mZ - other.z() ) * ( mZ - other.z() );
+
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared;
 }
 
 double QgsPoint::azimuth( const QgsPoint &other ) const
@@ -520,8 +546,6 @@ double QgsPoint::inclination( const QgsPoint &other ) const
 
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
-  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
-
   double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
@@ -534,18 +558,11 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
   else
   {
-    pType = QgsWkbTypes::addZ( pType );
     double radsZ = inclination * M_PI / 180.0;
     dx = distance * sin( radsZ ) * sin( radsXy );
     dy = distance * sin( radsZ ) * cos( radsXy );
     dz = distance * cos( radsZ );
   }
 
-  if ( isMeasure() )
-  {
-    pType = QgsWkbTypes::addM( pType );
-  }
-
-  double z = qIsNaN( mZ ) ? 0 : mZ;
-  return QgsPoint( mX + dx, mY + dy, z + dz, mM, pType );
+  return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, mWkbType );
 }
