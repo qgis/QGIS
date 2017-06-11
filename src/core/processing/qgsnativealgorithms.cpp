@@ -59,6 +59,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
+  addAlgorithm( new QgsDissolveAlgorithm() );
 }
 
 
@@ -211,6 +212,151 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  return outputs;
+}
+
+
+QgsDissolveAlgorithm::QgsDissolveAlgorithm()
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterTableField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
+                QStringLiteral( "INPUT" ), QgsProcessingParameterTableField::Any, true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ) ) );
+}
+
+QString QgsDissolveAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can "
+                      "be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
+                      "all geometries can be dissolved.\n\n"
+                      "If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. "
+                      "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
+}
+
+QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), dest ) );
+
+  if ( !sink )
+    return QVariantMap();
+
+  QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
+
+  long count = source->featureCount();
+  if ( count <= 0 )
+    return QVariantMap();
+
+  QgsFeature f;
+  QgsFeatureIterator it = source->getFeatures();
+
+  double step = 100.0 / count;
+  int current = 0;
+
+  if ( fields.isEmpty() )
+  {
+    // dissolve all - not using fields
+    bool firstFeature = true;
+    // we dissolve geometries in blocks using unaryUnion
+    QList< QgsGeometry > geomQueue;
+    QgsFeature outputFeature;
+
+    while ( it.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( firstFeature )
+      {
+        outputFeature = f;
+        firstFeature = false;
+      }
+
+      if ( f.hasGeometry() && f.geometry() )
+      {
+        geomQueue.append( f.geometry() );
+        if ( geomQueue.length() > 10000 )
+        {
+          // queue too long, combine it
+          QgsGeometry tempOutputGeometry = QgsGeometry::unaryUnion( geomQueue );
+          geomQueue.clear();
+          geomQueue << tempOutputGeometry;
+        }
+      }
+
+      feedback->setProgress( current * step );
+      current++;
+    }
+
+    outputFeature.setGeometry( QgsGeometry::unaryUnion( geomQueue ) );
+    sink->addFeature( outputFeature );
+  }
+  else
+  {
+    QList< int > fieldIndexes;
+    Q_FOREACH ( const QString &field, fields )
+    {
+      int index = source->fields().lookupField( field );
+      if ( index >= 0 )
+        fieldIndexes << index;
+    }
+
+    QHash< QVariant, QgsAttributes > attributeHash;
+    QHash< QVariant, QList< QgsGeometry > > geometryHash;
+
+    while ( it.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      if ( f.hasGeometry() && f.geometry() )
+      {
+        QVariantList indexAttributes;
+        Q_FOREACH ( int index, fieldIndexes )
+        {
+          indexAttributes << f.attribute( index );
+        }
+
+        if ( !attributeHash.contains( indexAttributes ) )
+        {
+          // keep attributes of first feature
+          attributeHash.insert( indexAttributes, f.attributes() );
+        }
+        geometryHash[ indexAttributes ].append( f.geometry() );
+      }
+    }
+
+    int numberFeatures = attributeHash.count();
+    QHash< QVariant, QList< QgsGeometry > >::const_iterator geomIt = geometryHash.constBegin();
+    for ( ; geomIt != geometryHash.constEnd(); ++geomIt )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      QgsFeature outputFeature;
+      outputFeature.setGeometry( QgsGeometry::unaryUnion( geomIt.value() ) );
+      outputFeature.setAttributes( attributeHash.value( geomIt.key() ) );
+      sink->addFeature( outputFeature );
+
+      feedback->setProgress( current * 100.0 / numberFeatures );
+      current++;
+    }
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
