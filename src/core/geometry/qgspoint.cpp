@@ -101,9 +101,9 @@ bool QgsPoint::operator==( const QgsPoint &pt ) const
   equal &= qgsDoubleNear( pt.x(), mX, 1E-8 );
   equal &= qgsDoubleNear( pt.y(), mY, 1E-8 );
   if ( QgsWkbTypes::hasZ( type ) )
-    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 );
+    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( qIsNaN( pt.z() ) && qIsNaN( mZ ) );
   if ( QgsWkbTypes::hasM( type ) )
-    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 );
+    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( qIsNaN( pt.m() ) && qIsNaN( mM ) );
 
   return equal;
 }
@@ -546,10 +546,14 @@ double QgsPoint::inclination( const QgsPoint &other ) const
 
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
 {
+  QgsWkbTypes::Type pType = mWkbType;
   double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
   inclination = fmod( inclination, 360.0 );
+
+  if ( !qgsDoubleNear( inclination, 90.0 ) )
+    pType = QgsWkbTypes::addZ( pType );
 
   if ( !is3D() && qgsDoubleNear( inclination, 90.0 ) )
   {
@@ -564,5 +568,5 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
     dz = distance * cos( radsZ );
   }
 
-  return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, mWkbType );
+  return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
 }

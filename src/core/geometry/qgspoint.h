@@ -112,7 +112,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \note Not available in Python bindings
      */
-    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
+    explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
     bool operator==( const QgsPoint &pt ) const;
     bool operator!=( const QgsPoint &pt ) const;
