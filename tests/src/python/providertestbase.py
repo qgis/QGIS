@@ -361,6 +361,24 @@ class ProviderTestCase(FeatureSourceTestCase):
             # expect fail
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]), 'Provider reported no AddFeatures capability, but returned true to addFeatures')
 
+    def testAddFeaturesUpdateExtent(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        self.assertEqual(l.dataProvider().extent().toString(1), '-71.1,66.3 : -65.3,78.3')
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            f1 = QgsFeature()
+            f1.setAttributes([6, -220, NULL, 'String', '15'])
+            f1.setGeometry(QgsGeometry.fromWkt('Point (-50 90)'))
+            l.dataProvider().addFeatures([f1])
+
+            l.dataProvider().updateExtents()
+            self.assertEqual(l.dataProvider().extent().toString(1), '-71.1,66.3 : -50.0,90.0')
+
     def testDeleteFeatures(self):
         if not getattr(self, 'getEditableLayer', None):
             return
@@ -387,6 +405,23 @@ class ProviderTestCase(FeatureSourceTestCase):
             # expect fail
             self.assertFalse(l.dataProvider().deleteFeatures(to_delete),
                              'Provider reported no DeleteFeatures capability, but returned true to deleteFeatures')
+
+    def testDeleteFeaturesUpdateExtent(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        self.assertEqual(l.dataProvider().extent().toString(1), '-71.1,66.3 : -65.3,78.3')
+
+        to_delete = [f.id() for f in l.dataProvider().getFeatures() if f.attributes()[0] in [5, 4]]
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures:
+            l.dataProvider().deleteFeatures(to_delete)
+
+            l.dataProvider().updateExtents()
+            self.assertEqual(l.dataProvider().extent().toString(1), '-70.3,66.3 : -68.2,70.8')
 
     def testTruncate(self):
         if not getattr(self, 'getEditableLayer', None):
