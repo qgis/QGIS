@@ -32,7 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsGeometry,
                        QgsProcessingUtils)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTableField
@@ -40,7 +40,7 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
-class PointsInPolygonUnique(QgisAlgorithm):
+class PointsInPolygonUnique(GeoAlgorithm):
 
     POLYGONS = 'POLYGONS'
     POINTS = 'POINTS'
@@ -57,8 +57,13 @@ class PointsInPolygonUnique(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def __init__(self):
-        super().__init__()
+    def name(self):
+        return 'countuniquepointsinpolygon'
+
+    def displayName(self):
+        return self.tr('Count unique points in polygon')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,
@@ -69,17 +74,18 @@ class PointsInPolygonUnique(QgisAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def name(self):
-        return 'countuniquepointsinpolygon'
-
-    def displayName(self):
-        return self.tr('Count unique points in polygon')
-
-    def processAlgorithm(self, parameters, context, feedback):
+    def processAlgorithm(self, context, feedback):
         polyLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POLYGONS), context)
         pointLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
-        fieldName = self.getParameterValue(self.FIELD)
+        fieldName = self.getParameterValue(self.FIELD) 
         classFieldName = self.getParameterValue(self.CLASSFIELD)
+
+        pointLayerFields=[field.name() for field in pointLayer.fields()]
+        
+        if classFieldName in pointLayerFields:
+            pass
+        else:
+            raise Exception("there is no field named '{}'in the point layer".format(classFieldName))
 
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
