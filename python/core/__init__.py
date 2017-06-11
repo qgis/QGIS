@@ -264,3 +264,14 @@ def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.A
 
 
 QgsTask.fromFunction = fromFunction
+
+
+# add some __repr__ methods to processing classes
+def processing_source_repr(self):
+    return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(self.source.staticValue(), self.selectedFeaturesOnly)
+QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
+
+
+def processing_output_layer_repr(self):
+    return "<QgsProcessingOutputLayerDefinition {{'sink':{}, 'createOptions': {}}}>".format(self.sink.staticValue(), self.createOptions)
+QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr
