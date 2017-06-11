@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import webbrowser
+import html
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
@@ -186,26 +187,28 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.btnRun.setEnabled(True)
         self.btnClose.setEnabled(True)
 
-    def setInfo(self, msg, error=False):
+    def setInfo(self, msg, error=False, escape_html=True):
         if error:
-            self.txtLog.append('<span style="color:red"><br>%s<br></span>' % msg)
+            self.txtLog.append('<span style="color:red"><br>{}<br></span>'.format(msg, quote=False))
+        elif escape_html:
+            self.txtLog.append(html.escape(msg))
         else:
             self.txtLog.append(msg)
         QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
-            self.setInfo('<code>%s<code>' % cmd)
+            self.txtLog.append('<code>{}<code>'.format(html.escape(cmd, quote=False)))
         QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
-            self.setInfo('<span style="color:blue">%s</span>' % msg)
+            self.txtLog.append('<span style="color:blue">{}</span>'.format(html.escape(msg, quote=False)))
         QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
-            self.setCommand('<span style="color:darkgray">%s</span>' % msg)
+            self.txtLog.append('<code><span style="color:darkgray">{}</span></code>'.format(html.escape(msg, quote=False)))
         QCoreApplication.processEvents()
 
     def setPercentage(self, value):
