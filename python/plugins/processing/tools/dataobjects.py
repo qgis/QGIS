@@ -85,6 +85,11 @@ def createContext():
 
     context.setInvalidGeometryCallback(raise_error)
 
+    def raise_transform_error(f):
+        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
+                                                                        'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
+    context.setTransformErrorCallback(raise_transform_error)
+
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
 
