@@ -163,6 +163,28 @@ Destination project
 %End
 
 
+    void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+%Docstring
+ Sets a callback function to use when encountering a transform error when iterating
+ features. This function will be
+ called using the feature which encountered the transform error as a parameter.
+.. versionadded:: 3.0
+.. seealso:: transformErrorCallback()
+%End
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+%End
+
+
     QString defaultEncoding() const;
 %Docstring
  Returns the default encoding to use for newly created files.

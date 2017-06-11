@@ -375,6 +375,7 @@ QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *origin
   , mOwnsSource( ownsOriginalSource )
   , mInvalidGeometryCheck( context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
+  , mTransformErrorCallback( context.transformErrorCallback() )
 {}
 
 QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
@@ -388,6 +389,7 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   QgsFeatureRequest req( request );
   req.setInvalidGeometryCheck( mInvalidGeometryCheck );
   req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  req.setTransformErrorCallback( mTransformErrorCallback );
   return mSource->getFeatures( req );
 }
 
