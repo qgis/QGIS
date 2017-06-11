@@ -244,6 +244,9 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     dest = val.toString();
   }
 
+  if ( dest.isEmpty() )
+    return nullptr;
+
   std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions ) );
   destinationIdentifier = dest;
 
