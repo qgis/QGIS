@@ -177,13 +177,21 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see x()
      * \see rx()
      */
-    void setX( double x ) { clearCache(); mX = x; }
+    void setX( double x )
+    {
+      clearCache();
+      mX = x;
+    }
 
     /** Sets the point's y-coordinate.
      * \see y()
      * \see ry()
      */
-    void setY( double y ) { clearCache(); mY = y; }
+    void setY( double y )
+    {
+      clearCache();
+      mY = y;
+    }
 
     /** Sets the point's z-coordinate.
      * \note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
@@ -191,7 +199,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see z()
      * \see rz()
      */
-    void setZ( double z ) { clearCache(); mZ = z; }
+    void setZ( double z )
+    {
+      if ( !is3D() )
+        return;
+      clearCache();
+      mZ = z;
+    }
 
     /** Sets the point's m-value.
      * \note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
@@ -199,7 +213,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see m()
      * \see rm()
      */
-    void setM( double m ) { clearCache(); mM = m; }
+    void setM( double m )
+    {
+      if ( !isMeasure() )
+        return;
+      clearCache();
+      mM = m;
+    }
 
     /** Returns the point as a QPointF.
      * \since QGIS 2.14
