@@ -172,7 +172,7 @@ class TestQgsRectangle(unittest.TestCase):
         self.assertEqual(myResult, myExpectedResult, myMessage)
 
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        rect1.unionRect(rect2)
+        rect1.combineExtentWith(rect2)
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (True, rect1.contains(rect2)))
         assert rect1.contains(rect2), myMessage

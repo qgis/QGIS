@@ -47,8 +47,8 @@ void TestQgsRectangle::manipulate()
   QVERIFY( ! rect2.contains( rect1 ) );
 
   // Create the union
-  rect3.unionRect( rect1 );
-  rect3.unionRect( rect2 );
+  rect3.combineExtentWith( rect1 );
+  rect3.combineExtentWith( rect2 );
   // Check union
   QVERIFY( rect3 == QgsRectangle( 1.0, 1.0, 7.0, 5.0 ) );
 }
