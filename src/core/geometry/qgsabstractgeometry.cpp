@@ -234,7 +234,7 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   }
   else if ( !is3D() )
   {
-    addZValue();
+    addZValue( std::numeric_limits<double>::quiet_NaN() );
   }
 
   if ( !needM )
@@ -243,7 +243,7 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   }
   else if ( !isMeasure() )
   {
-    addMValue();
+    addMValue( std::numeric_limits<double>::quiet_NaN() );
   }
 
   return true;
