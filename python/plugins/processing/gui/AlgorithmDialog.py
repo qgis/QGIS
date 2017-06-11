@@ -164,6 +164,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
+            feedback = self.createFeedback()
+
             parameters = self.getParamValues()
 
             QgsMessageLog.logMessage(str(parameters), 'Processing', QgsMessageLog.CRITICAL)
@@ -220,8 +222,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
-                if executeIterating(self.alg, parameters, self.iterateParam, context, self.feedback):
-                    self.finish(parameters, context)
+                if executeIterating(self.alg, parameters, self.iterateParam, context, feedback):
+                    self.finish(parameters, context, feedback)
                 else:
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
@@ -231,9 +233,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #if command:
                 #    ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
-                result = executeAlgorithm(self.alg, parameters, context, self.feedback)
+                result = executeAlgorithm(self.alg, parameters, context, feedback)
                 self.buttonCancel.setEnabled(False)
-                self.finish(result, context)
+                self.finish(result, context, feedback)
                 #TODO
                 #else:
                 #    QApplication.restoreOverrideCursor()
@@ -251,12 +253,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self, result, context):
+    def finish(self, result, context, feedback):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
 
-            if not handleAlgorithmResults(self.alg, context, self.feedback, not keepOpen):
+            if not handleAlgorithmResults(self.alg, context, feedback, not keepOpen):
                 self.resetGUI()
                 return
 
