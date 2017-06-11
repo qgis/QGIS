@@ -95,10 +95,6 @@ class AlgorithmDialogBase(BASE, WIDGET):
         handleLayout.addStretch()
         splitterHandle.setLayout(handleLayout)
 
-        self.feedback = AlgorithmDialogFeedback(self)
-        self.feedback.progressChanged.connect(self.setPercentage)
-        self.buttonCancel.clicked.connect(self.feedback.cancel)
-
         self.settings = QgsSettings()
         self.splitter.restoreState(self.settings.value("/Processing/dialogBaseSplitter", QByteArray()))
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
@@ -146,6 +142,12 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.showDebug = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+
+    def createFeedback(self):
+        feedback = AlgorithmDialogFeedback(self)
+        feedback.progressChanged.connect(self.setPercentage)
+        self.buttonCancel.clicked.connect(feedback.cancel)
+        return feedback
 
     def formatHelp(self, alg):
         text = alg.shortHelpString()
@@ -223,7 +225,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self._saveGeometry()
         super(AlgorithmDialogBase, self).reject()
 
-    def finish(self, context):
+    def finish(self, context, feedback):
         pass
 
     def toggleCollapsed(self):
