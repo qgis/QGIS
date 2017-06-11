@@ -26,6 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from pprint import pformat
+import time
+
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
@@ -168,8 +171,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             parameters = self.getParamValues()
 
-            QgsMessageLog.logMessage(str(parameters), 'Processing', QgsMessageLog.CRITICAL)
-
             if checkCRS and not self.alg.validateInputCrs(parameters, context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),
                                              self.tr('Layers do not all use the same CRS. This can '
@@ -221,6 +222,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.setInfo(
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
+            feedback.pushInfo(self.tr('Input parameters:\n{}\n'.format(pformat(parameters))))
+            start_time = time.time()
+
             if self.iterateParam:
                 if executeIterating(self.alg, parameters, self.iterateParam, context, feedback):
                     self.finish(parameters, context, feedback)
@@ -234,6 +238,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 #    ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 result = executeAlgorithm(self.alg, parameters, context, feedback)
+                feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                feedback.pushInfo(self.tr('Results:\n{}\n'.format(pformat(result))))
+
                 self.buttonCancel.setEnabled(False)
                 self.finish(result, context, feedback)
                 #TODO
