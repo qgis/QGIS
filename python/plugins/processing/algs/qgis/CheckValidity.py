@@ -41,7 +41,8 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingParameterDefinition
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputNumber
                        )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -54,8 +55,11 @@ class CheckValidity(QgisAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     METHOD = 'METHOD'
     VALID_OUTPUT = 'VALID_OUTPUT'
+    VALID_COUNT = 'VALID_COUNT'
     INVALID_OUTPUT = 'INVALID_OUTPUT'
+    INVALID_COUNT = 'INVALID_COUNT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
+    ERROR_COUNT = 'ERROR_COUNT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
@@ -76,10 +80,15 @@ class CheckValidity(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.VALID_OUTPUT, self.tr('Valid output')))
+        self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
+
         self.addParameter(QgsProcessingParameterFeatureSink(self.INVALID_OUTPUT, self.tr('Invalid output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INVALID_OUTPUT, self.tr('Invalid output')))
+        self.addOutput(QgsProcessingOutputNumber(self.INVALID_COUNT, self.tr('Count of invalid features')))
+
         self.addParameter(QgsProcessingParameterFeatureSink(self.ERROR_OUTPUT, self.tr('Error output'), QgsProcessingParameterDefinition.TypeVectorAny, '', True))
         self.addOutput(QgsProcessingOutputVectorLayer(self.ERROR_OUTPUT, self.tr('Error output')))
+        self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 
     def name(self):
         return 'checkvalidity'
@@ -168,7 +177,11 @@ class CheckValidity(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        results = {}
+        results = {
+            self.VALID_COUNT: valid_count,
+            self.INVALID_COUNT: invalid_count,
+            self.ERROR_COUNT: error_count
+        }
         if valid_output_sink:
             results[self.VALID_OUTPUT] = valid_output_dest_id
         if invalid_output_sink:

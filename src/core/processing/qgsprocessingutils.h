@@ -228,6 +228,7 @@ class QgsProcessingFeatureSource : public QgsFeatureSource
     bool mOwnsSource = false;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
 
 };
 

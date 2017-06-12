@@ -36,13 +36,18 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
 
-    DummyAlgorithm( const QString &name ) : mName( name ) {}
+    DummyAlgorithm( const QString &name ) : mName( name ) { mFlags = QgsProcessingAlgorithm::flags(); }
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
     virtual QVariantMap processAlgorithm( const QVariantMap &,
                                           QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
+
+    virtual Flags flags() const override { return mFlags; }
+
     QString mName;
+
+    Flags mFlags;
 
     void checkParameterVals()
     {
@@ -124,6 +129,62 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QgsProcessingOutputHtml *p3 = new QgsProcessingOutputHtml( "p3" );
       QVERIFY( addOutput( p3 ) );
       QVERIFY( hasHtmlOutputs() );
+    }
+
+    void runValidateInputCrsChecks()
+    {
+      addParameter( new QgsProcessingParameterMapLayer( "p1" ) );
+      addParameter( new QgsProcessingParameterMapLayer( "p2" ) );
+      QVariantMap parameters;
+
+      QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+      QgsProject p;
+      p.addMapLayer( layer3111 );
+
+      QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+      QString raster1 = testDataDir + "tenbytenraster.asc";
+      QFileInfo fi1( raster1 );
+      QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+      QVERIFY( r1->isValid() );
+      p.addMapLayer( r1 );
+
+      QgsVectorLayer *layer4326 = new QgsVectorLayer( "Point?crs=epsg:4326", "v1", "memory" );
+      p.addMapLayer( layer4326 );
+
+      QgsProcessingContext context;
+      context.setProject( &p );
+
+      // flag not set
+      mFlags = 0;
+      parameters.insert( "p1", QVariant::fromValue( layer3111 ) );
+      QVERIFY( validateInputCrs( parameters, context ) );
+      mFlags = FlagRequiresMatchingCrs;
+      QVERIFY( validateInputCrs( parameters, context ) );
+
+      // two layers, different crs
+      parameters.insert( "p2", QVariant::fromValue( layer4326 ) );
+      // flag not set
+      mFlags = 0;
+      QVERIFY( validateInputCrs( parameters, context ) );
+      mFlags = FlagRequiresMatchingCrs;
+      QVERIFY( !validateInputCrs( parameters, context ) );
+
+      // raster layer
+      parameters.remove( "p2" );
+      addParameter( new QgsProcessingParameterRasterLayer( "p3" ) );
+      parameters.insert( "p3", QVariant::fromValue( r1 ) );
+      QVERIFY( !validateInputCrs( parameters, context ) );
+
+      // feature source
+      parameters.remove( "p3" );
+      addParameter( new QgsProcessingParameterFeatureSource( "p4" ) );
+      parameters.insert( "p4", layer4326->id() );
+      QVERIFY( !validateInputCrs( parameters, context ) );
+
+      parameters.remove( "p4" );
+      addParameter( new QgsProcessingParameterMultipleLayers( "p5" ) );
+      parameters.insert( "p5", QVariantList() << layer4326->id() << r1->id() );
+      QVERIFY( !validateInputCrs( parameters, context ) );
     }
 
 };
@@ -228,6 +289,7 @@ class TestQgsProcessing: public QObject
     void processingFeatureSource();
     void processingFeatureSink();
     void algorithmScope();
+    void validateInputCrs();
 
   private:
 
@@ -2226,6 +2288,12 @@ void TestQgsProcessing::parameterField()
   fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" );
 
+  // optional, no default
+  def.reset( new QgsProcessingParameterTableField( "optional", QString(), QVariant(), QString(), QgsProcessingParameterTableField::Any, false, true ) );
+  params.insert( "optional",  QVariant() );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QVERIFY( fields.isEmpty() );
+
   //optional with multiples
   def.reset( new QgsProcessingParameterTableField( "optional", QString(), QString( "abc;def" ), QString(), QgsProcessingParameterTableField::Any, true, true ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
@@ -2638,6 +2706,12 @@ void TestQgsProcessing::algorithmScope()
   QVERIFY( !exp.evaluate( &context ).isValid() );
   QgsExpression exp2( "parameter('a_param')" );
   QCOMPARE( exp2.evaluate( &context ).toInt(), 5 );
+}
+
+void TestQgsProcessing::validateInputCrs()
+{
+  DummyAlgorithm alg( "test" );
+  alg.runValidateInputCrsChecks();
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -207,6 +207,41 @@ class CORE_EXPORT QgsProcessingContext
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
     /**
+     * Sets a callback function to use when encountering a transform error when iterating
+     * features. This function will be
+     * called using the feature which encountered the transform error as a parameter.
+     * \since QGIS 3.0
+     * \see transformErrorCallback()
+     */
+#ifndef SIP_RUN
+    void setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback ) { mTransformErrorCallback = callback; }
+#else
+    void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
+    {
+      SIP_BLOCK_THREADS
+      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+      SIP_UNBLOCK_THREADS
+    } );
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
+
+    /**
+     * Returns the callback function to use when encountering a transform error when iterating
+     * features.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     * \see setTransformErrorCallback()
+     * \see destinationCrs()
+     */
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+
+    /**
      * Returns the default encoding to use for newly created files.
      * \see setDefaultEncoding()
      */
@@ -228,6 +263,7 @@ class CORE_EXPORT QgsProcessingContext
     QgsExpressionContext mExpressionContext;
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
 

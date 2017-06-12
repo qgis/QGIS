@@ -38,6 +38,7 @@ from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
     QgsExpression,
+    QgsExpressionContextGenerator,
     QgsFieldProxyModel,
     QgsMapLayerProxyModel,
     QgsWkbTypes,
@@ -776,7 +777,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(vl)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes():
+            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
                 filters = QgsMapLayerProxyModel.HasGeometry
             if QgsProcessingParameterDefinition.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
@@ -868,7 +869,10 @@ class VectorWidgetWrapper(WidgetWrapper):
                 if layer:
                     return QgsProcessingFeatureSourceDefinition(layer.id(), use_selected_features)
                 else:
-                    return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
+                    if self.combo.currentText():
+                        return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
+                    else:
+                        return None
             except:
                 return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
         elif self.dialogType == DIALOG_BATCH:
@@ -1004,6 +1008,8 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def setLayer(self, layer):
         context = dataobjects.createContext()
+        if isinstance(layer, QgsProcessingFeatureSourceDefinition):
+            layer, ok = layer.source.valueAsString(context.expressionContext())
         if isinstance(layer, str):
             layer = QgsProcessingUtils.mapLayerFromString(layer, context)
         self.widget.setLayer(layer)

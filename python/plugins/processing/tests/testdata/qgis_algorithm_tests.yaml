@@ -1258,18 +1258,18 @@ tests:
 #        name: expected/remove_null_polys.gml
 #        type: vector
 #
-#  - algorithm: qgis:extractbyexpression
-#    name: Extract by Expression
-#    params:
-#      EXPRESSION: left( "Name",1)='A'
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/extract_expression.gml
-#        type: vector
-#
+  - algorithm: qgis:extractbyexpression
+    name: Extract by Expression
+    params:
+      EXPRESSION: left( "Name",1)='A'
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_expression.gml
+        type: vector
+
 #  - algorithm: qgis:extendlines
 #    name: Extend lines
 #    params:
@@ -1692,54 +1692,54 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (rectangles)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '0'
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_rectangles.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (diamond)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '1'
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_diamond.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (hexagon)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HSPACING: 5.0
-#      TYPE: '2'
-#      VSPACING: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_hexagon.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangles)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '0'
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangles.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '1'
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HSPACING: 5.0
+      TYPE: '2'
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:creategridlines
 #    name: Create grid (lines with overlay)
 #    params:
@@ -1754,60 +1754,60 @@ tests:
 #        name: expected/grid_lines_overlay.gml
 #        type: vector
 #
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (rectangle with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '0'
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_rectangle_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (diamond with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '1'
-#      VOVERLAY: 1.0
-#      VSPACING: 3.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_diamond_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:creategridpolygon
-#    name: Create grid (hexagon with overlay)
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: -1,11.2,-4,6.5
-#      HOVERLAY: 2.0
-#      HSPACING: 5.0
-#      TYPE: '2'
-#      VOVERLAY: 1.0
-#      VSPACING: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/grid_hexagon_overlay.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (rectangle with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '0'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_rectangle_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (diamond with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '1'
+      VOVERLAY: 1.0
+      VSPACING: 3.0
+    results:
+      OUTPUT:
+        name: expected/grid_diamond_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:creategridpolygon
+    name: Create grid (hexagon with overlay)
+    params:
+      CRS: EPSG:4326
+      EXTENT: -1,11.2,-4,6.5
+      HOVERLAY: 2.0
+      HSPACING: 5.0
+      TYPE: '2'
+      VOVERLAY: 1.0
+      VSPACING: 5.0
+    results:
+      OUTPUT:
+        name: expected/grid_hexagon_overlay.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:deleteholes
 #    name: Delete holes (no min)
 #    params:

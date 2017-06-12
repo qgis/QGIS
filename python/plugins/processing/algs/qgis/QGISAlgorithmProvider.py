@@ -48,7 +48,7 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RandomExtract import RandomExtract
 # from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 # from .ExtractByLocation import ExtractByLocation
-# from .ExtractByExpression import ExtractByExpression
+from .ExtractByExpression import ExtractByExpression
 # from .PointsInPolygon import PointsInPolygon
 # from .PointsInPolygonUnique import PointsInPolygonUnique
 # from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -92,13 +92,13 @@ from .DeleteColumn import DeleteColumn
 # from .TextToFloat import TextToFloat
 # from .ExtractByAttribute import ExtractByAttribute
 # from .SelectByAttribute import SelectByAttribute
-# from .GridPolygon import GridPolygon
+from .GridPolygon import GridPolygon
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
-# from .Merge import Merge
+from .Merge import Merge
 # from .GeometryConvert import GeometryConvert
 # from .ConcaveHull import ConcaveHull
 # from .RasterLayerStatistics import RasterLayerStatistics
@@ -217,9 +217,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
-        #         ExtractByAttribute(), SelectByAttribute(), GridPolygon(),
+        #         ExtractByAttribute(), SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
-        #         HubDistanceLines(), HubLines(), Merge(),
+        #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
         #         SaveSelectedFeatures(), JoinAttributes(),
         #         Explode(), FieldsPyculator(),
@@ -247,7 +247,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(), ZonalStatisticsQgis(),
         #         IdwInterpolation(), TinInterpolation(),
-        #         RemoveNullGeometry(), ExtractByExpression(),
+        #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(), SnapGeometriesToLayer(),
         #         PoleOfInaccessibility(), CreateAttributeIndex(),
@@ -268,7 +268,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Clip(),
                 DeleteColumn(),
-                ExtentFromLayer()
+                ExtentFromLayer(),
+                ExtractByExpression(),
+                GridPolygon(),
+                Merge()
                 ]
 
         if hasPlotly:
@@ -292,7 +295,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         scripts = ScriptUtils.loadFromFolder(folder)
         for script in scripts:
             script.allowEdit = False
-        algs.extend(scripts)
+        #algs.extend(scripts)
 
         return algs
 

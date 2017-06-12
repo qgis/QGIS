@@ -56,7 +56,6 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
     for l, details in context.layersToLoadOnCompletion().items():
-        feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
         try:
             layer = QgsProcessingUtils.mapLayerFromString(l, context)
             if layer is not None:

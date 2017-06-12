@@ -89,6 +89,52 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native dissolve algorithm.
+ */
+class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsDissolveAlgorithm();
+
+    QString name() const override { return QStringLiteral( "dissolve" ); }
+    QString displayName() const override { return QObject::tr( "Dissolve" ); }
+    virtual QStringList tags() const override { return QObject::tr( "dissolve,union,combine,collect" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native clip algorithm.
+ */
+class QgsClipAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsClipAlgorithm();
+
+    QString name() const override { return QStringLiteral( "clip" ); }
+    QString displayName() const override { return QObject::tr( "Clip" ); }
+    virtual QStringList tags() const override { return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector overlay tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
