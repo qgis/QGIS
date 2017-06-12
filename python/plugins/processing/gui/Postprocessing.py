@@ -56,6 +56,13 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
     for l, details in context.layersToLoadOnCompletion().items():
+        if feedback.isCanceled():
+            return False
+
+        if len(context.layersToLoadOnCompletion()) > 2:
+            # only show progress feedback if we're loading a bunch of layers
+            feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
+
         try:
             layer = QgsProcessingUtils.mapLayerFromString(l, context)
             if layer is not None:
@@ -98,7 +105,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     #             wrongLayers.append(out.description)
     #     elif isinstance(out, OutputHTML):
     #         resultsList.addResult(alg.icon(), out.description, out.value)
-    #     i += 1
+        i += 1
 
     QApplication.restoreOverrideCursor()
     if wrongLayers:
