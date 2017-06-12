@@ -118,7 +118,7 @@ class ParametersPanel(BASE, WIDGET):
                         button = QToolButton()
                         icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                         button.setIcon(icon)
-                        button.setToolTip(self.tr('Iterate over this layer'))
+                        button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
                         button.setCheckable(True)
                         layout.addWidget(button)
                         self.iterateButtons[param.name()] = button
