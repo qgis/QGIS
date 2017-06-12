@@ -777,7 +777,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             widget.setLayout(vl)
 
             filters = QgsMapLayerProxyModel.Filters()
-            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes():
+            if QgsProcessingParameterDefinition.TypeVectorAny in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
                 filters = QgsMapLayerProxyModel.HasGeometry
             if QgsProcessingParameterDefinition.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
