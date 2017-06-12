@@ -471,7 +471,12 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
       offset = d;
   }
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  width = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, width );
+  offset = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
+  l->setOutputUnit( QgsSymbolV2::Pixel );
   l->setOffset( offset );
   l->setPenJoinStyle( penJoinStyle );
   l->setPenCapStyle( penCapStyle );
@@ -1551,7 +1556,12 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::createFromSld( QDomElement &elemen
       offset = d;
   }
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  interval = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, interval );
+  offset = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset );
+
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotateMarker );
+  x->setOutputUnit( QgsSymbolV2::Pixel );
   x->setPlacement( placement );
   x->setInterval( interval );
   x->setSubSymbol( marker );

@@ -1239,7 +1239,13 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
 
   Shape shape = decodeShape( name );
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+  offset.setX( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.x() ) );
+  offset.setY( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+
   QgsSimpleMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( shape, size );
+  m->setOutputUnit( QgsSymbolV2::Pixel );
   m->setColor( color );
   m->setBorderColor( borderColor );
   m->setAngle( angle );
@@ -2266,6 +2272,9 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
     return nullptr;
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+
   if ( mimeType != "image/svg+xml" )
     return nullptr;
 
@@ -2283,6 +2292,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
 
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( path, size );
+  m->setOutputUnit( QgsSymbolV2::Pixel );
   m->setFillColor( fillColor );
   //m->setOutlineColor( outlineColor );
   //m->setOutlineWidth( outlineWidth );
@@ -2945,7 +2955,13 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
   QPointF offset;
   QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  offset.setX( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.x() ) );
+  offset.setY( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+
   QgsMarkerSymbolLayerV2 *m = new QgsFontMarkerSymbolLayerV2( fontFamily, chr, size, color );
+  m->setOutputUnit( QgsSymbolV2::Pixel );
   m->setAngle( angle );
   m->setOffset( offset );
   return m;
