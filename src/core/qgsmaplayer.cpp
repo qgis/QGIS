@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 
-#include <QDateTime>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
@@ -56,7 +55,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   : mValid( false ) // assume the layer is invalid
   , mDataSource( source )
   , mLayerOrigName( lyrname ) // store the original name
-  , mID( QLatin1String( "" ) )
   , mLayerType( type )
   , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
   , mLegend( nullptr )
@@ -65,12 +63,13 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // Set the display name = internal name
   mLayerName = capitalizeLayerName( mLayerOrigName );
 
-  mShortName = QLatin1String( "" );
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
-  QDateTime dt = QDateTime::currentDateTime();
-  mID = lyrname + dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) );
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
+
   // Tidy the ID up to avoid characters that may cause problems
   // elsewhere (e.g in some parts of XML). Replaces every non-word
   // character (word characters are the alphabet, numbers and
