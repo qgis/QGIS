@@ -526,11 +526,10 @@ class ProviderTestCase(object):
         self.assertEqual(max_value, 300)
 
     def testExtent(self):
-        reference = QgsGeometry.fromRect(
-            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
-        provider_extent = QgsGeometry.fromRect(self.provider.extent())
+        reference = QgsRectangle(-71.123, 66.33, -65.32, 78.3)
+        provider_extent = self.provider.extent()
 
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001))
+        self.assertEqual(provider_extent.toString(2), reference.toString(2))
 
     def testUnique(self):
         self.assertEqual(set(self.provider.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
