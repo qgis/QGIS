@@ -804,11 +804,11 @@ void TestQgsProcessing::features()
     return ids;
   };
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), layer->id() );
 
-  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
 
   // test with all features
   QgsFeatureIds ids = getIds( source->getFeatures() );
@@ -818,7 +818,7 @@ void TestQgsProcessing::features()
   // test with selected features
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
   QCOMPARE( source->featureCount(), 2L );
@@ -826,7 +826,7 @@ void TestQgsProcessing::features()
   // selection, but not using selected features
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 2 << 3 << 4 << 5 );
   QCOMPARE( source->featureCount(), 5L );
@@ -834,7 +834,7 @@ void TestQgsProcessing::features()
   // using selected features, but no selection
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->removeSelection();
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QVERIFY( ids.isEmpty() );
   QCOMPARE( source->featureCount(), 0L );
@@ -842,7 +842,7 @@ void TestQgsProcessing::features()
 
   // test that feature request is honored
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures( QgsFeatureRequest().setFilterFids( QgsFeatureIds() << 1 << 3 << 5 ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 1 << 3 << 5 );
 
@@ -852,7 +852,7 @@ void TestQgsProcessing::features()
   //test that feature request is honored when using selections
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
   layer->selectByIds( QgsFeatureIds() << 2 << 4 );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) ) );
   QCOMPARE( ids, QgsFeatureIds() << 2 << 4 );
 
@@ -872,13 +872,13 @@ void TestQgsProcessing::features()
   p.addMapLayer( polyLayer );
   params.insert( QStringLiteral( "layer" ), polyLayer->id() );
 
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QVERIFY( encountered );
 
   encountered = false;
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
   QVERIFY( !encountered );
 
@@ -901,11 +901,11 @@ void TestQgsProcessing::uniqueValues()
   p.addMapLayer( layer );
   context.setProject( &p );
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), layer->id() );
 
-  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
 
   // some bad checks
   QVERIFY( source->uniqueValues( -1 ).isEmpty() );
@@ -926,7 +926,7 @@ void TestQgsProcessing::uniqueValues()
   //using only selected features
   layer->selectByIds( QgsFeatureIds() << 1 << 2 << 4 );
   // but not using selection yet...
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   vals = source->uniqueValues( 0 );
   QCOMPARE( vals.count(), 3 );
   QVERIFY( vals.contains( 1 ) );
@@ -940,7 +940,7 @@ void TestQgsProcessing::uniqueValues()
 
   // selection and using selection
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   QVERIFY( source->uniqueValues( -1 ).isEmpty() );
   QVERIFY( source->uniqueValues( 10001 ).isEmpty() );
   vals = source->uniqueValues( 0 );
@@ -968,12 +968,12 @@ void TestQgsProcessing::createIndex()
   p.addMapLayer( layer );
   context.setProject( &p );
 
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), layer->id() );
 
   // disable selected features check
-  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   QVERIFY( source.get() );
   QgsSpatialIndex index( *source.get() );
   QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
@@ -981,7 +981,7 @@ void TestQgsProcessing::createIndex()
 
   // selected features check, but none selected
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), true ) ) );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   bool caught = false;
   try
   {
@@ -996,14 +996,14 @@ void TestQgsProcessing::createIndex()
 
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
 
   // selection but not using selection mode
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   index = QgsSpatialIndex( *source.get() );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
@@ -1121,7 +1121,7 @@ void TestQgsProcessing::parameters()
 {
   // test parameter utilities
 
-  QgsProcessingParameterDefinition *def = nullptr;
+  std::unique_ptr< QgsProcessingParameterDefinition > def;
   QVariantMap params;
   params.insert( QStringLiteral( "prop" ), QgsProperty::fromField( "a_field" ) );
   params.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
@@ -1137,20 +1137,20 @@ void TestQgsProcessing::parameters()
   QVERIFY( !QgsProcessingParameters::isDynamic( params, QStringLiteral( "bad" ) ) );
 
   // parameterAsString
-  def = new QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "desc" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QStringLiteral( "a string" ) );
+  def.reset( new QgsProcessingParameterString( QStringLiteral( "string" ), QStringLiteral( "desc" ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QStringLiteral( "a string" ) );
   def->setName( QStringLiteral( "double" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ).left( 3 ), QStringLiteral( "5.2" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ).left( 3 ), QStringLiteral( "5.2" ) );
   def->setName( QStringLiteral( "int" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QStringLiteral( "15" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QStringLiteral( "15" ) );
   def->setName( QStringLiteral( "bool" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QStringLiteral( "true" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QStringLiteral( "true" ) );
   def->setName( QStringLiteral( "bad" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QString() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
 
   // string with dynamic property (feature not set)
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QString() );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
 
   // correctly setup feature
   QgsFields fields;
@@ -1160,56 +1160,56 @@ void TestQgsProcessing::parameters()
   context.expressionContext().setFeature( f );
   context.expressionContext().setFields( fields );
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsString( def, params, context ), QStringLiteral( "field value" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QStringLiteral( "field value" ) );
 
   // as double
   def->setName( QStringLiteral( "double" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, context ), 5.2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def.get(), params, context ), 5.2 );
   def->setName( QStringLiteral( "int" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, context ), 15.0 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def.get(), params, context ), 15.0 );
   f.setAttribute( 0, QStringLiteral( "6.2" ) );
   context.expressionContext().setFeature( f );
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def, params, context ), 6.2 );
+  QCOMPARE( QgsProcessingParameters::parameterAsDouble( def.get(), params, context ), 6.2 );
 
   // as int
   def->setName( QStringLiteral( "double" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, context ), 5 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def.get(), params, context ), 5 );
   def->setName( QStringLiteral( "int" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, context ), 15 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def.get(), params, context ), 15 );
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsInt( def, params, context ), 6 );
+  QCOMPARE( QgsProcessingParameters::parameterAsInt( def.get(), params, context ), 6 );
 
   // as bool
   def->setName( QStringLiteral( "double" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
   def->setName( QStringLiteral( "int" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
   def->setName( QStringLiteral( "bool" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, context ), true );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), true );
   f.setAttribute( 0, false );
   context.expressionContext().setFeature( f );
   def->setName( QStringLiteral( "prop" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsBool( def, params, context ), false );
+  QCOMPARE( QgsProcessingParameters::parameterAsBool( def.get(), params, context ), false );
 
   // as layer
   def->setName( QStringLiteral( "double" ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
   def->setName( QStringLiteral( "int" ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def,  params, context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(),  params, context ) );
   def->setName( QStringLiteral( "bool" ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
   def->setName( QStringLiteral( "prop" ) );
-  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def, params, context ) );
+  QVERIFY( !QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
 
   QVERIFY( context.temporaryLayerStore()->mapLayers().isEmpty() );
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   f.setAttribute( 0, testDataDir + "/raster/band1_float32_noct_epsg4326.tif" );
   context.expressionContext().setFeature( f );
   def->setName( QStringLiteral( "prop" ) );
-  QVERIFY( QgsProcessingParameters::parameterAsLayer( def, params, context ) );
+  QVERIFY( QgsProcessingParameters::parameterAsLayer( def.get(), params, context ) );
   // make sure layer was loaded
   QVERIFY( !context.temporaryLayerStore()->mapLayers().isEmpty() );
 
@@ -1221,7 +1221,7 @@ void TestQgsProcessing::parameters()
   def->setName( QStringLiteral( "string" ) );
   params.insert( QStringLiteral( "string" ), QStringLiteral( "memory:mem" ) );
   std::unique_ptr< QgsFeatureSink > sink;
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
@@ -1235,7 +1235,7 @@ void TestQgsProcessing::parameters()
   params.insert( QStringLiteral( "prop" ), QgsProperty::fromExpression( "'memory:mem2'" ) );
   def->setName( QStringLiteral( "prop" ) );
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:3113" ) );
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destId, context ) );
   QVERIFY( layer );
@@ -1253,7 +1253,7 @@ void TestQgsProcessing::parameters()
   params.insert( QStringLiteral( "fs" ), QVariant::fromValue( fs ) );
   def->setName( QStringLiteral( "fs" ) );
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "epsg:28356" ) );
-  sink.reset( QgsProcessingParameters::parameterAsSink( def, params, fields, wkbType, crs, context, destId ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context, destId ) );
   QVERIFY( sink.get() );
   QgsVectorFileWriter *writer = dynamic_cast< QgsVectorFileWriter *>( sink.get() );
   QVERIFY( writer );
@@ -1267,8 +1267,6 @@ void TestQgsProcessing::parameters()
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), destId );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
-
-  delete def;
 }
 
 void TestQgsProcessing::algorithmParameters()
@@ -2720,10 +2718,10 @@ void TestQgsProcessing::processingFeatureSource()
   context.setProject( &p );
 
   // first using static string definition
-  QgsProcessingParameterDefinition *def = new QgsProcessingParameterString( QStringLiteral( "layer" ) );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterString( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
-  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QgsFeature f2;
   QVERIFY( source.get() );
@@ -2732,7 +2730,7 @@ void TestQgsProcessing::processingFeatureSource()
 
   // next using property based definition
   params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('%1' + ' ')" ).arg( layer->id() ) ), false ) );
-  source.reset( QgsProcessingParameters::parameterAsSource( def, params, context ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QVERIFY( source.get() );
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
