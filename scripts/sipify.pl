@@ -14,6 +14,10 @@ use constant PUBLIC => 2;
 use constant STRICT => 10;
 use constant UNSTRICT => 11;
 
+use constant MULTILINE_NO => 20;
+use constant MULTILINE_METHOD => 21;
+use constant MULTILINE_CONDITIONAL_STATEMENT => 22;
+
 # read arguments
 my $debug = 0;
 die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
@@ -35,8 +39,9 @@ my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
 my @CLASSNAME = ();
 my @EXPORTED = (0);
-my $MULTILINE_DEFINITION = 0;
+my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
+my $PYTHON_SIGNATURE = '';
 
 my $COMMENT = '';
 my $GLOB_IFDEF_NESTING_IDX = 0;
@@ -135,39 +140,64 @@ sub processDoxygenLine {
 
 sub detect_and_remove_following_body_or_initializerlist {
     # https://regex101.com/r/ZaP3tC/8
+    my $python_signature = '';
     do {no warnings 'uninitialized';
         if ( $LINE =~  m/^(\s*)?((?:(?:explicit|static|const|unsigned|virtual)\s+)*)(([\w:]+(<.*?>)?\s+[*&]?)?(~?\w+|(\w+::)?operator.{1,2})\s*\(([\w=()\/ ,&*<>."-]|::)*\)( +(?:const|SIP_[\w_]+?))*)\s*((\s*[:,]\s+\w+\(.*\))*\s*\{.*\}\s*(?:SIP_[\w_]+)?;?|(?!;))(\s*\/\/.*)?$/
              || $LINE =~ m/SIP_SKIP\s*(?!;)\s*(\/\/.*)?$/
              || $LINE =~ m/^\s*class.*SIP_SKIP/ ){
             dbg_info("remove constructor definition, function bodies, member initializing list");
             my $newline = "$1$2$3;";
-            remove_following_body_or_initializerlist() unless $LINE =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
+            $python_signature = remove_following_body_or_initializerlist() unless $LINE =~ m/{.*}(\s*SIP_\w+)*\s*(\/\/.*)?$/;
             $LINE = $newline;
         }
     };
+    return $python_signature;
 }
 
 sub remove_following_body_or_initializerlist {
+    my $python_signature = '';
     do {no warnings 'uninitialized';
         dbg_info("remove constructor definition, function bodies, member initializing list");
-        $LINE = read_line();
-        while ( $LINE =~ m/^\s*[:,]\s+([\w<>]|::)+\(.*?\)/){
-          dbg_info("  member initializing list");
-          $LINE = read_line();
+        my $line = read_line();
+        # python signature
+        if ($line =~ m/^\s*\[\s*(\w+\s*)?\(/){
+            dbg_info("python signature detected");
+            my $nesting_index = 0;
+            while ($LINE_IDX < $LINE_COUNT){
+                $nesting_index += $line =~ tr/\[//;
+                $nesting_index -= $line =~ tr/\]//;
+                if ($nesting_index == 0){
+                    if ($line =~ m/^(.*);\s*(\/\/.*)?$/){
+                        $line = $1; # remove semicolon (added later)
+                        $python_signature .= "\n$line";
+                        return $python_signature;
+                    }
+                    last;
+                }
+                $python_signature .= "\n$line";
+                $line = read_line();
+            }
         }
-        if ( $LINE =~ m/^\s*\{/ ){
+        # member initializing list
+        while ( $line =~ m/^\s*[:,]\s+([\w<>]|::)+\(.*?\)/){
+          dbg_info("member initializing list");
+          $line = read_line();
+        }
+        # body
+        if ( $line =~ m/^\s*\{/ ){
             my $nesting_index = 0;
             while ($LINE_IDX < $LINE_COUNT){
                 dbg_info("  remove body");
-                $nesting_index += $LINE =~ tr/\{//;
-                $nesting_index -= $LINE =~ tr/\}//;
+                $nesting_index += $line =~ tr/\{//;
+                $nesting_index -= $line =~ tr/\}//;
                 if ($nesting_index == 0){
                     last;
                 }
-                $LINE = read_line();
+                $line = read_line();
             }
         }
     };
+    return $python_signature;
 }
 
 sub fix_annotations {
@@ -206,14 +236,14 @@ sub fix_annotations {
     # remove argument
     if ($line =~ m/SIP_PYARGREMOVE/){
         dbg_info("remove arg");
-        if ( $MULTILINE_DEFINITION == 1 ){
+        if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
             my $prev_line = pop(@OUTPUT) =~ s/\n$//r;
             # update multi line status
             my $parenthesis_balance = 0;
             $parenthesis_balance += $prev_line =~ tr/\(//;
             $parenthesis_balance -= $prev_line =~ tr/\)//;
             if ($parenthesis_balance == 1){
-                $MULTILINE_DEFINITION = 0;
+                $MULTILINE_DEFINITION = MULTILINE_NO;
             }
             # concat with above line to bring previous commas
             $line =~ s/^\s+//;
@@ -257,9 +287,9 @@ $debug == 0 or push @OUTPUT, "CODE SIP_RUN MultiLine\n";
 # main loop
 while ($LINE_IDX < $LINE_COUNT){
 
+    $PYTHON_SIGNATURE = '';
     $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME] unless $#CLASSNAME < 0;
     $LINE = read_line();
-
 
     if ($LINE =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         write_output("SF1", "%Feature $1$2\n");
@@ -270,8 +300,8 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
     if ($LINE =~ m/^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$/){
-        write_output("SCS", "%ConvertToSubClassCode$1\n");
-        next;
+        $LINE = "%ConvertToSubClassCode$1";
+        # do not go next, let run the "do not process SIP code"
     }
 
     if ($LINE =~ m/^\s*SIP_END(.*)$/){
@@ -284,9 +314,24 @@ while ($LINE_IDX < $LINE_COUNT){
         $IF_FEATURE_CONDITION = $1;
     }
 
+    # do not process SIP code %XXXCode
+    if ( $SIP_RUN == 1 && $LINE =~ m/^ *% *(MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/ ){
+        $LINE = "%$1$2";
+        $COMMENT = '';
+        dbg_info("do not process SIP code");
+        while ( $LINE !~ m/^ *% *End/ ){
+            write_output("COD", $LINE."\n");
+            $LINE = read_line();
+            $LINE =~ s/^ *% *(MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode)(.*)?$/%$1$2/;
+            $LINE =~ s/^\s*SIP_END(.*)$/%End$1/;
+        }
+        $LINE =~ s/^\s*% End/%End/;
+        write_output("COD", $LINE."\n");
+        next;
+    }
+
     # Skip preprocessor stuff
     if ($LINE =~ m/^\s*#/){
-
         # skip #if 0 blocks
         if ( $LINE =~ m/^\s*#if (0|defined\(Q_OS_WIN\))/){
           dbg_info("skipping #if $1 block");
@@ -412,7 +457,7 @@ while ($LINE_IDX < $LINE_COUNT){
         dbg_info('SIP SKIP!');
         $COMMENT = '';
         # if multiline definition, remove previous lines
-        if ( $MULTILINE_DEFINITION == 1){
+        if ( $MULTILINE_DEFINITION != MULTILINE_NO){
             dbg_info('SIP_SKIP with MultiLine');
             my $opening_line = '';
             while ( $opening_line !~ m/^[^()]*\(([^()]*\([^()]*\)[^()]*)*[^()]*$/){
@@ -420,7 +465,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 $#OUTPUT >= 0 or exit_with_error('could not reach opening definition');
             }
         dbg_info("removed multiline definition of SIP_SKIP method");
-        $MULTILINE_DEFINITION = 0;
+        $MULTILINE_DEFINITION = MULTILINE_NO;
         }
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist();
@@ -704,7 +749,7 @@ while ($LINE_IDX < $LINE_COUNT){
         # remove keywords
         if ( $IS_OVERRIDE == 1 ){
             # handle multiline definition to add virtual keyword on opening line
-            if ( $MULTILINE_DEFINITION == 1 ){
+            if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
                 my $virtual_line = $LINE;
                 my $virtual_line_idx = $LINE_IDX;
                 dbg_info("handle multiline definition to add virtual keyword on opening line");
@@ -728,7 +773,7 @@ while ($LINE_IDX < $LINE_COUNT){
         }
 
         # remove constructor definition, function bodies, member initializing list
-        $SIP_RUN == 1 or detect_and_remove_following_body_or_initializerlist();
+        $PYTHON_SIGNATURE = detect_and_remove_following_body_or_initializerlist();
 
         # remove inline declarations
         if ( $LINE =~  m/^(\s*)?(static |const )*(([\w:]+(<.*?>)?\s+(\*|&)?)?(\w+)( (?:const*?))*)\s*(\{.*\});(\s*\/\/.*)?$/ ){
@@ -768,27 +813,29 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
-    $LINE =~ s/\s*% (MappedType|Type(Header)?Code|Module(Header)?Code|Convert(From|To)TypeCode|MethodCode|End)/%$1/;
     $LINE =~ s/\/\s+GetWrapper\s+\//\/GetWrapper\//;
 
     write_output("NOR", "$LINE\n");
+    if ($PYTHON_SIGNATURE ne ''){
+        write_output("PSI", "$PYTHON_SIGNATURE\n");
+    }
 
     # multiline definition (parenthesis left open)
-    if ( $MULTILINE_DEFINITION == 1 ){
+    if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
         dbg_info("on multiline");
         # https://regex101.com/r/DN01iM/2
         if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
-            $MULTILINE_DEFINITION = 0;
             dbg_info("ending multiline");
             # remove potential following body
-            if ( $SIP_RUN == 0 && $LINE !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){
+            if ( $MULTILINE_DEFINITION != MULTILINE_CONDITIONAL_STATEMENT && $LINE !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){
                 dbg_info("remove following body of multiline def");
                 my $last_line = $LINE;
-                remove_following_body_or_initializerlist();
+                $last_line .= remove_following_body_or_initializerlist();
                 # add missing semi column
                 my $dummy = pop(@OUTPUT);
                 write_output("MLT", "$last_line;\n");
             }
+            $MULTILINE_DEFINITION = MULTILINE_NO;
         }
         else
         {
@@ -797,7 +844,12 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $LINE =~ m/^[^()]+\([^()]*([^()]*\([^()]*\)[^()]*)*[^)]*$/ ){
       dbg_info("Mulitline detected");
-      $MULTILINE_DEFINITION = 1;
+      if ( $LINE =~ m/^\s*((else )?if|while|for) *\(/ ){
+          $MULTILINE_DEFINITION = MULTILINE_CONDITIONAL_STATEMENT;
+      }
+      else {
+          $MULTILINE_DEFINITION = MULTILINE_METHOD;
+      }
       next;
     }
 
