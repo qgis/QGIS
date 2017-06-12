@@ -324,8 +324,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
              ( f.geometry().wkbType() == provider->wkbType() ) )
           continue;
 
-        std::unique_ptr<QgsGeometry> convertedGeom( provider->convertToProviderType( f.geometry() ) );
-        if ( ! convertedGeom )
+        if ( provider->convertToProviderType( f.geometry() ).isNull() )
         {
           commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
           success = false;
