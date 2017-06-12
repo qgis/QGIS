@@ -38,7 +38,7 @@ class QgsAttributeEditorElement /Abstract/
         sipType = sipType_QgsAttributeEditorRelation;
         break;
       default:
-        sipType = 0;
+        sipType = nullptr;
         break;
     }
 %End
