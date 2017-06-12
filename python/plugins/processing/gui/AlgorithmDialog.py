@@ -228,9 +228,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
             start_time = time.time()
 
             if self.iterateParam:
+                self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 if executeIterating(self.alg, parameters, self.iterateParam, context, feedback):
+                    feedback.pushInfo(
+                        self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                    self.buttonCancel.setEnabled(False)
                     self.finish(parameters, context, feedback)
                 else:
+                    self.buttonCancel.setEnabled(False)
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
