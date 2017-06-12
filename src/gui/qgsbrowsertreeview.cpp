@@ -87,6 +87,7 @@ void QgsBrowserTreeView::restoreState()
           {
             QgsDebugMsgLevel( "do not expand index for path " + path, 4 );
             QModelIndex parentIndex = model()->parent( expandIndex );
+            // Still we need to store the parent in order to expand it
             if ( parentIndex.isValid() )
               expandIndexSet.insert( parentIndex );
           }

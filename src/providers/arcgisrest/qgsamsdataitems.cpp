@@ -26,7 +26,7 @@
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconAms.svg" );
   populate();
 }
