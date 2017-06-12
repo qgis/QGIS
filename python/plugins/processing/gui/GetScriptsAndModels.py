@@ -97,7 +97,7 @@ class GetRScriptsAction(ToolboxAction):
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
         dlg.exec_()
         if dlg.updateProvider:
-            self.toolbox.updateProvider('r')
+            algList.reloadProvider('r')
 
 
 class GetModelsAction(ToolboxAction):
