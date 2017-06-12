@@ -92,7 +92,7 @@ def variableOutput(alg, params, nocats=True):
             continue
 
         out = alg.getOutputValue(outputName)
-        command = u"v.out.ogr {} type={} layer={} -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+        command = u"v.out.ogr {} type={} layer={} -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={} --overwrite".format(
             u"" if typeList[0] == u"line" and nocats else u"-c",
             typeList[0],
             typeList[1],
