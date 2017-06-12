@@ -330,7 +330,7 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
         context = dataobjects.createContext()
 
     #self.model = model
-    if True:
+    try:
         #self.setOutputCRS()
         #self.resolveOutputs()
         #self.evaluateParameterValues()
@@ -341,12 +341,13 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
         return result
         #self.convertUnsupportedFormats(context, feedback)
         #self.runPostExecutionScript(feedback)
-    #except GeoAlgorithmExecutionException as gaee:
-        #lines = [self.tr('Error while executing algorithm')]
-     #   lines  = []
-      #  lines.append(traceback.format_exc())
-        #QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
+    except GeoAlgorithmExecutionException as gaee:
+        lines = [self.tr('Error while executing algorithm')]
+        lines = []
+        lines.append(traceback.format_exc())
+        feedback.reportError(gaee.msg)
+        QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
+        raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
     #except Exception as e:
         # If something goes wrong and is not caught in the
         # algorithm, we catch it here and wrap it
