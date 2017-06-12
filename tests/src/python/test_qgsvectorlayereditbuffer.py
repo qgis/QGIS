@@ -44,6 +44,13 @@ def createLayerWithOnePoint():
     return layer
 
 
+def createEmptyLinestringLayer():
+    layer = QgsVectorLayer("Linestring?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    assert layer.isValid()
+    return layer
+
+
 class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
     def testAddFeatures(self):
@@ -77,6 +84,27 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
+
+        # check if error in case adding not adaptable geometry
+        # eg. a Multiline in a Line
+        layer = createEmptyLinestringLayer()
+        self.assertTrue(layer.startEditing())
+
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        self.assertFalse(layer.editBuffer().isFeatureAdded(1))
+        self.assertFalse(layer.editBuffer().isFeatureAdded(3))
+
+        # add a features with a multi line geometry of not touched lines =>
+        # cannot be forced to be linestring
+        multiline = [
+            [QgsPointXY(1, 1), QgsPointXY(2, 2)],
+            [QgsPointXY(3, 3), QgsPointXY(4, 4)],
+        ]
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setAttributes(["test", 123])
+        self.assertTrue(layer.addFeatures([f1]))
+        self.assertFalse(layer.commitChanges())
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
