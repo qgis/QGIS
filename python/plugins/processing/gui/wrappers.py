@@ -869,7 +869,10 @@ class VectorWidgetWrapper(WidgetWrapper):
                 if layer:
                     return QgsProcessingFeatureSourceDefinition(layer.id(), use_selected_features)
                 else:
-                    return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
+                    if self.combo.currentText():
+                        return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
+                    else:
+                        return None
             except:
                 return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
         elif self.dialogType == DIALOG_BATCH:
