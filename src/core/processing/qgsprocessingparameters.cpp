@@ -585,6 +585,13 @@ QList<QgsMapLayer *> QgsProcessingParameters::parameterAsLayerList( const QgsPro
       }
     }
   }
+  else if ( val.type() == QVariant::StringList )
+  {
+    Q_FOREACH ( const QString &s, val.toStringList() )
+    {
+      resultStringList << s;
+    }
+  }
   else
     resultStringList << val.toString();
 
@@ -726,9 +733,24 @@ bool QgsProcessingParameterDefinition::checkValueIsAcceptable( const QVariant &i
   return true;
 }
 
+QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return value.toString().prepend( '\'' ).append( '\'' );
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
+
+QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val, QgsProcessingContext & ) const
+{
+  if ( val.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
+  return val.toBool() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
+}
 
 QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -750,6 +772,20 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
     return mFlags & FlagOptional;
 
   return true;
+}
+
+QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
+  if ( layer )
+    return QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+
+  return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
 QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -787,6 +823,17 @@ bool QgsProcessingParameterMapLayer::checkValueIsAcceptable( const QVariant &inp
     return true;
 
   return false;
+}
+
+QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
+{
+  if ( val.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), val );
+  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
+  return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
 }
 
 QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -834,6 +881,20 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
     return true;
 
   return false;
+}
+
+QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
+  if ( layer )
+    return QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+
+  return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
 QgsProcessingParameterPoint::QgsProcessingParameterPoint( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -943,6 +1004,36 @@ bool QgsProcessingParameterMatrix::checkValueIsAcceptable( const QVariant &input
   return false;
 }
 
+QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QVariantList list = QgsProcessingParameters::parameterAsMatrix( this, p, context );
+
+  QStringList parts;
+  Q_FOREACH ( const QVariant &v, list )
+  {
+    if ( v.type() == QVariant::List )
+    {
+      QStringList parts2;
+      Q_FOREACH ( const QVariant &v2, v.toList() )
+      {
+        parts2 << v2.toString();
+      }
+      parts << parts2.join( ',' ).prepend( '[' ).append( ']' );
+    }
+    else
+    {
+      parts << v.toString();
+    }
+  }
+
+  return parts.join( ',' ).prepend( '[' ).append( ']' );
+}
+
 QStringList QgsProcessingParameterMatrix::headers() const
 {
   return mHeaders;
@@ -1045,6 +1136,27 @@ bool QgsProcessingParameterMultipleLayers::checkValueIsAcceptable( const QVarian
   return false;
 }
 
+QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QList<QgsMapLayer *> list = QgsProcessingParameters::parameterAsLayerList( this, p, context );
+  if ( !list.isEmpty() )
+  {
+    QStringList parts;
+    Q_FOREACH ( const QgsMapLayer *layer, list )
+    {
+      parts << QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+
+  return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterMultipleLayers::layerType() const
 {
   return mLayerType;
@@ -1094,6 +1206,14 @@ bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input
     return false;
 
   return true;
+}
+
+QString QgsProcessingParameterNumber::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return value.toString();
 }
 
 double QgsProcessingParameterNumber::minimum() const
@@ -1173,6 +1293,23 @@ bool QgsProcessingParameterRange::checkValueIsAcceptable( const QVariant &input,
   return false;
 }
 
+QString QgsProcessingParameterRange::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), value );
+  QList< double > parts = QgsProcessingParameters::parameterAsRange( this, p, context );
+
+  QStringList stringParts;
+  Q_FOREACH ( double v, parts )
+  {
+    stringParts << QString::number( v );
+  }
+  return stringParts.join( ',' ).prepend( '[' ).append( ']' );
+}
+
 QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
 {
   return mDataType;
@@ -1216,6 +1353,17 @@ bool QgsProcessingParameterRasterLayer::checkValueIsAcceptable( const QVariant &
     return true;
 
   return false;
+}
+
+QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &val, QgsProcessingContext &context ) const
+{
+  if ( val.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
+
+  QVariantMap p;
+  p.insert( name(), val );
+  QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
+  return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
 }
 
 QgsProcessingParameterEnum::QgsProcessingParameterEnum( const QString &name, const QString &description, const QStringList &options, bool allowMultiple, const QVariant &defaultValue, bool optional )
@@ -1282,6 +1430,32 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, 
   return false;
 }
 
+QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.type() == QVariant::List )
+  {
+    QStringList parts;
+    Q_FOREACH ( const QVariant &val, value.toList() )
+    {
+      parts << QString::number( static_cast< int >( val.toDouble() ) );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else if ( value.type() == QVariant::String )
+  {
+    QStringList parts = value.toString().split( ',' );
+    if ( parts.count() > 1 )
+    {
+      return parts.join( ',' ).prepend( '[' ).append( ']' );
+    }
+  }
+
+  return QString::number( static_cast< int >( value.toDouble() ) );
+}
+
 QStringList QgsProcessingParameterEnum::options() const
 {
   return mOptions;
@@ -1309,6 +1483,16 @@ QgsProcessingParameterString::QgsProcessingParameterString( const QString &name,
 
 }
 
+QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QString s = value.toString();
+  s.replace( '\n', QStringLiteral( "\\n" ) );
+  return s.prepend( '\'' ).append( '\'' );
+}
+
 bool QgsProcessingParameterString::multiLine() const
 {
   return mMultiLine;
@@ -1324,6 +1508,16 @@ QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QStrin
   , mParentLayerParameter( parentLayerParameterName )
 {
 
+}
+
+QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  QString s = value.toString();
+  s.replace( '\n', QStringLiteral( "\\n" ) );
+  return s.prepend( '\'' ).append( '\'' );
 }
 
 QString QgsProcessingParameterExpression::parentLayerParameter() const
@@ -1381,6 +1575,33 @@ bool QgsProcessingParameterTableField::checkValueIsAcceptable( const QVariant &i
       return mFlags & FlagOptional;
   }
   return true;
+}
+
+QString QgsProcessingParameterTableField::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.type() == QVariant::List )
+  {
+    QStringList parts;
+    Q_FOREACH ( const QVariant &val, value.toList() )
+    {
+      parts << val.toString().prepend( '\'' ).append( '\'' );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+  else if ( value.type() == QVariant::StringList )
+  {
+    QStringList parts;
+    Q_FOREACH ( QString s, value.toStringList() )
+    {
+      parts << s.prepend( '\'' ).append( '\'' );
+    }
+    return parts.join( ',' ).prepend( '[' ).append( ']' );
+  }
+
+  return value.toString().prepend( '\'' ).append( '\'' );
 }
 
 QString QgsProcessingParameterTableField::parentLayerParameter() const
@@ -1457,6 +1678,29 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   return false;
 }
 
+QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', %2)" ).arg( fromVar.source.staticValue().toString(),
+             fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), %2)" ).arg( fromVar.source.asExpression(),
+             fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+    }
+  }
+
+  return value.toString().prepend( '\'' ).append( '\'' );
+}
+
 QList< int > QgsProcessingParameterFeatureSource::dataTypes() const
 {
   return mDataTypes;
@@ -1499,6 +1743,27 @@ bool QgsProcessingParameterFeatureSink::checkValueIsAcceptable( const QVariant &
     return mFlags & FlagOptional;
 
   return true;
+}
+
+QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition('%1')" ).arg( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('%1'))" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return value.toString().prepend( '\'' ).append( '\'' );
 }
 
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
@@ -1560,6 +1825,27 @@ bool QgsProcessingParameterRasterOutput::checkValueIsAcceptable( const QVariant 
   return true;
 }
 
+QString QgsProcessingParameterRasterOutput::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition('%1')" ).arg( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('%1'))" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return value.toString().prepend( '\'' ).append( '\'' );
+}
+
 
 QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
@@ -1594,6 +1880,27 @@ bool QgsProcessingParameterFileOutput::checkValueIsAcceptable( const QVariant &i
   // possible enhancement - check that value is compatible with file filter?
 
   return true;
+}
+
+QString QgsProcessingParameterFileOutput::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+    if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition('%1')" ).arg( fromVar.sink.staticValue().toString() );
+    }
+    else
+    {
+      return QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('%1'))" ).arg( fromVar.sink.asExpression() );
+    }
+  }
+
+  return value.toString().prepend( '\'' ).append( '\'' );
 }
 
 QString QgsProcessingParameterFileOutput::fileFilter() const

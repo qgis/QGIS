@@ -288,6 +288,14 @@ class QgsProcessingParameterDefinition
  :rtype: bool
 %End
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+%Docstring
+ Returns a string version of the parameter input ``value``, which is suitable for use as an input
+ parameter value when running an algorithm directly from a Python command.
+ The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
+ :rtype: str
+%End
+
   protected:
 
 
@@ -517,6 +525,8 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 };
 
 class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
@@ -539,6 +549,8 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 };
 
@@ -563,6 +575,8 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 };
 
 class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
@@ -585,6 +599,8 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
 };
@@ -693,6 +709,8 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QStringList headers() const;
 %Docstring
@@ -763,6 +781,8 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QgsProcessingParameterDefinition::LayerType layerType() const;
 %Docstring
@@ -825,6 +845,8 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
     double minimum() const;
@@ -891,6 +913,8 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QgsProcessingParameterNumber::Type dataType() const;
 %Docstring
@@ -928,6 +952,8 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
 };
 
@@ -953,6 +979,8 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
     QStringList options() const;
@@ -1003,6 +1031,8 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     bool multiLine() const;
 %Docstring
@@ -1039,6 +1069,8 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QString parentLayerParameter() const;
 %Docstring
@@ -1109,6 +1141,8 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QString parentLayerParameter() const;
 %Docstring
@@ -1173,6 +1207,8 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
     QList< int > dataTypes() const;
 %Docstring
@@ -1213,6 +1249,8 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
@@ -1260,6 +1298,8 @@ class QgsProcessingParameterRasterOutput : QgsProcessingParameterDefinition
     virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 };
 
 class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
@@ -1285,6 +1325,8 @@ class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
     QString fileFilter() const;

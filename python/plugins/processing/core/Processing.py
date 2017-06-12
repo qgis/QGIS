@@ -139,12 +139,7 @@ class Processing(object):
             for (name, value) in list(args[0].items()):
                 param = alg.parameterDefinition(name)
                 if param:
-                    # TODO
-                    # and param.setValue(value):
                     parameters[param.name()] = value
-                    continue
-                output = alg.getOutputFromName(name)
-                if output and output.setValue(value):
                     continue
                 # fix_print_with_import
                 print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
@@ -249,7 +244,7 @@ class Processing(object):
             QApplication.restoreOverrideCursor()
         if isinstance(feedback, MessageBarProgress):
             feedback.close()
-        return alg
+        return results
 
     @staticmethod
     def tr(string, context=''):

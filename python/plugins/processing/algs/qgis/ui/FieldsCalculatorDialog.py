@@ -224,9 +224,9 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             parameters = self.getParamValues()
             if parameters:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                ProcessingLog.addToLog(self.alg.getAsCommand())
-
                 context = dataobjects.createContext()
+                ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
+
                 self.executed, results = execute(self.alg, parameters, context, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
