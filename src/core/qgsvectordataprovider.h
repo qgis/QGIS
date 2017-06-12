@@ -52,6 +52,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     Q_OBJECT
 
     friend class QgsTransaction;
+    friend class QgsVectorLayerEditBuffer;
 
   public:
 
