@@ -84,18 +84,26 @@ QgsLocatorFiltersModel::QgsLocatorFiltersModel( QgsLocator *locator, QObject *pa
 {
 }
 
-int QgsLocatorFiltersModel::rowCount( const QModelIndex & ) const
+int QgsLocatorFiltersModel::rowCount( const QModelIndex &parent ) const
 {
+  if ( parent.isValid() )
+    return 0;
+
   return mLocator->filters().count() - HIDDEN_FILTER_OFFSET;
 }
 
-int QgsLocatorFiltersModel::columnCount( const QModelIndex & ) const
+int QgsLocatorFiltersModel::columnCount( const QModelIndex &parent ) const
 {
+  if ( parent.isValid() )
+    return 0;
+
   return 4;
 }
 
 QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) const
 {
+  if ( index.parent().isValid() )
+    return QVariant();
   if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
        index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QVariant();
@@ -151,7 +159,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
 
 bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
+  if ( !index.isValid() || index.parent().isValid() || index.row() < 0 || index.column() < 0 ||
        index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return false;
 
@@ -187,7 +195,7 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
 Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
+  if ( !index.isValid() || index.parent().isValid() || index.row() < 0 || index.column() < 0 ||
        index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QAbstractTableModel::flags( index );
 
