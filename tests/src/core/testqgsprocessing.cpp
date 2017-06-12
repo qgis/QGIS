@@ -290,6 +290,7 @@ class TestQgsProcessing: public QObject
     void processingFeatureSink();
     void algorithmScope();
     void validateInputCrs();
+    void generateIteratingDestination();
 
   private:
 
@@ -2712,6 +2713,33 @@ void TestQgsProcessing::validateInputCrs()
 {
   DummyAlgorithm alg( "test" );
   alg.runValidateInputCrsChecks();
+}
+
+void TestQgsProcessing::generateIteratingDestination()
+{
+  QgsProcessingContext context;
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "memory:x", 1, context ).toString(), QStringLiteral( "memory:x_1" ) );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "memory:x", 2, context ).toString(), QStringLiteral( "memory:x_2" ) );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "ape.shp", 1, context ).toString(), QStringLiteral( "ape_1.shp" ) );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "ape.shp", 2, context ).toString(), QStringLiteral( "ape_2.shp" ) );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/bif.o/ape.shp", 2, context ).toString(), QStringLiteral( "/home/bif.o/ape_2.shp" ) );
+
+  QgsProject p;
+  QgsProcessingOutputLayerDefinition def;
+  def.sink = QgsProperty::fromValue( "ape.shp" );
+  def.destinationProject = &p;
+  QVariant res = QgsProcessingUtils::generateIteratingDestination( def, 2, context );
+  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
+  QCOMPARE( fromVar.sink.staticValue().toString(), QStringLiteral( "ape_2.shp" ) );
+  QCOMPARE( fromVar.destinationProject, &p );
+
+  def.sink = QgsProperty::fromExpression( "'ape' || '.shp'" );
+  res = QgsProcessingUtils::generateIteratingDestination( def, 2, context );
+  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
+  QCOMPARE( fromVar.sink.staticValue().toString(), QStringLiteral( "ape_2.shp" ) );
+  QCOMPARE( fromVar.destinationProject, &p );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
