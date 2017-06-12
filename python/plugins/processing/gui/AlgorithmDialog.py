@@ -251,10 +251,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
                 self.buttonCancel.setEnabled(False)
                 self.finish(result, context, feedback)
-                #TODO
-                #else:
-                #    QApplication.restoreOverrideCursor()
-                #    self.resetGUI()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda e=e:
