@@ -276,8 +276,8 @@ class CORE_EXPORT QgsRasterInterface
     /** \brief Get histogram. Histograms are cached in providers.
      * \param bandNo The band (number).
      * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * \param minimum Minimum value, if NaN (None in Python), raster minimum value will be used.
-     * \param maximum Maximum value, if NaN (None in Python), raster maximum value will be used.
+     * \param minimum Minimum value, if NaN (None for Python), raster minimum value will be used.
+     * \param maximum Maximum value, if NaN (None for Python), raster maximum value will be used.
      * \param extent Extent used to calc histogram, if empty, whole raster extent is used.
      * \param sampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * \param includeOutOfRange include out of range values
@@ -296,21 +296,45 @@ class CORE_EXPORT QgsRasterInterface
                                           QgsRasterBlockFeedback *feedback = nullptr );
 #else
     virtual QgsRasterHistogram histogram( int bandNo,
-                                          int binCount,
-                                          double minimum,
-                                          double maximum,
+                                          int binCount = 0,
+                                          SIP_PYOBJECT minimum = Py_None,
+                                          SIP_PYOBJECT maximum = Py_None,
                                           const QgsRectangle &extent = QgsRectangle(),
                                           int sampleSize = 0,
                                           bool includeOutOfRange = false,
-                                          QgsRasterBlockFeedback *feedback = nullptr );
+                                          QgsRasterBlockFeedback *feedback = nullptr )
+    [QgsRasterHistogram( int bandNo,
+                         int binCount = 0,
+                         double minimum = 0.0,
+                         double maximum = 0.0,
+                         const QgsRectangle &extent = QgsRectangle(),
+                         int sampleSize = 0,
+                         bool includeOutOfRange = false,
+                         QgsRasterBlockFeedback *feedback = nullptr )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a2 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a2 );
+    }
 
-    /** \brief Get histogram. Histograms are cached in providers.
-     * \param bandNo The band (number).
-     * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
-     * \note available in Python bindings only to call histogram with automatic minimum and maximum values
-     */
-    virtual QgsRasterHistogram histogram( int bandNo,
-                                          int binCount = 0 );
+    if ( a3 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a3 );
+    }
+
+    QgsRasterHistogram h = sipCpp->histogram( a0, a1, minimum, maximum, *a4, a5, a6, a7 );
+    sipRes = &h;
+    % End
 #endif
 
 
@@ -328,18 +352,41 @@ class CORE_EXPORT QgsRasterInterface
 #else
     virtual bool hasHistogram( int bandNo,
                                int binCount,
-                               double minimum,
-                               double maximum,
+                               SIP_PYOBJECT minimum = Py_None,
+                               SIP_PYOBJECT maximum = Py_None,
                                const QgsRectangle &extent = QgsRectangle(),
                                int sampleSize = 0,
-                               bool includeOutOfRange = false );
+                               bool includeOutOfRange = false )
+    [bool( int bandNo,
+           int binCount,
+           double minimum = 0.0,
+           double maximum = 0.0,
+           const QgsRectangle &extent = QgsRectangle(),
+           int sampleSize = 0,
+           bool includeOutOfRange = false )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a2 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a2 );
+    }
 
-    /** \brief Returns true if histogram is available (cached, already calculated)
-     * \note the parameters are the same as in \see histogram()
-     * \note available in Python bindings only to call hasHistogram with automatic minimum and maximum values
-     */
-    virtual bool hasHistogram( int bandNo,
-                               int binCount = 0 );
+    if ( a3 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a3 );
+    }
+
+    sipRes = sipCpp->hasHistogram( a0, a1, minimum, maximum, *a4, a5, a6 );
+    % End
 #endif
 
 
@@ -394,19 +441,42 @@ class CORE_EXPORT QgsRasterInterface
     void initHistogram( QgsRasterHistogram &histogram,
                         int bandNo,
                         int binCount,
-                        double minimum,
-                        double maximum,
-                        const QgsRectangle &extent = QgsRectangle(),
+                        SIP_PYOBJECT minimum = Py_None,
+                        SIP_PYOBJECT maximum = Py_None,
+                        const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0,
-                        bool includeOutOfRange = false );
+                        bool includeOutOfRange = false )
+    [void ( QgsRasterHistogram & histogram,
+            int bandNo,
+            int binCount,
+            double minimum = 0.0,
+            double maximum = 0.0,
+            const QgsRectangle &boundingBox = QgsRectangle(),
+            int sampleSize = 0,
+            bool includeOutOfRange = false )];
+    % MethodCode
+    double minimum;
+    double maximum;
+    if ( a3 == Py_None )
+    {
+      minimum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minimum = PyFloat_AsDouble( a3 );
+    }
 
-    /** \brief Fill in histogram defaults if not specified
-     * \note the parameters are the same as in \see histogram()
-     * \note available in Python bindings only to call initHistogram with automatic minimum and maximum values
-     */
-    void initHistogram( QgsRasterHistogram &histogram,
-                        int bandNo,
-                        int binCount = 0 );
+    if ( a4 == Py_None )
+    {
+      maximum = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      maximum = PyFloat_AsDouble( a4 );
+    }
+
+    sipCpp->initHistogram( *a0, a1, a2, minimum, maximum, *a5, a6, a7 );
+    % End
 #endif
 
 
