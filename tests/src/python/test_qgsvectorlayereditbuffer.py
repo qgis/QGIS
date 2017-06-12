@@ -97,8 +97,8 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # add a features with a multi line geometry of not touched lines =>
         # cannot be forced to be linestring
         multiline = [
-            [QgsPoint(1, 1), QgsPoint(2, 2)],
-            [QgsPoint(3, 3), QgsPoint(4, 4)],
+            [QgsPoint(1, 1), QgsPointXY(2, 2)],
+            [QgsPoint(3, 3), QgsPointXY(4, 4)],
         ]
         f1 = QgsFeature(layer.fields(), 1)
         f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
