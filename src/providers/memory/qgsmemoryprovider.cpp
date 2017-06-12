@@ -352,7 +352,12 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
     if ( it->constGeometry() )
     {
       if ( updateExtent )
-        mExtent.combineExtentWith( it->constGeometry()->boundingBox() );
+      {
+        if ( mExtent.isNull() )
+          mExtent = it->constGeometry()->boundingBox();
+        else
+          mExtent.combineExtentWith( it->constGeometry()->boundingBox() );
+      }
 
       // update spatial index
       if ( mSpatialIndex )
