@@ -79,7 +79,11 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
     iter_source = QgsProcessingParameters.parameterAsSource(parameter_definition, parameters, context)
     sink_list = []
-    for feat in iter_source.getFeatures():
+    if iter_source.featureCount() == 0:
+        return False
+
+    total = 100.0 / iter_source.featureCount()
+    for current, feat in enumerate(iter_source.getFeatures()):
         if feedback.isCanceled():
             return False
 
@@ -87,6 +91,8 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
         sink_list.append(sink_id)
         sink.addFeature(feat)
         del sink
+
+        feedback.setProgress(int(current * total))
 
     # store output values to use them later as basenames for all outputs
     outputs = {}
