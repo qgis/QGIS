@@ -295,7 +295,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         scripts = ScriptUtils.loadFromFolder(folder)
         for script in scripts:
             script.allowEdit = False
-        algs.extend(scripts)
+        #algs.extend(scripts)
 
         return algs
 
