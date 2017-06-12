@@ -86,14 +86,6 @@ class Parameter(object):
     def __str__(self):
         return u'{} <{}>'.format(self.name(), self.__class__.__name__)
 
-    def getValueAsCommandLineParameter(self):
-        """
-        Returns the value of this parameter as it should have been
-        entered in the console if calling an algorithm using the
-        processing.run() method.
-        """
-        return str(self.value)
-
     def todict(self):
         o = deepcopy(self.__dict__)
         del o['metadata']
@@ -145,9 +137,6 @@ class ParameterCrs(Parameter):
         if self.value == 'ProjectCrs':
             self.value = QgsProject.instance().crs().authid()
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
     def getAsScriptCode(self):
         param_type = ''
         if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
@@ -169,17 +158,6 @@ class ParameterCrs(Parameter):
                 return ParameterCrs(name, descName, None, isOptional)
 
 
-class ParameterDataObject(Parameter):
-
-    def getValueAsCommandLineParameter(self):
-        if self.value is None:
-            return str(None)
-        else:
-            s = QgsProcessingUtils.normalizeLayerSource(str(self.value))
-            s = '"%s"' % s
-            return s
-
-
 class ParameterExtent(Parameter):
 
     USE_MIN_COVERING_EXTENT = 'USE_MIN_COVERING_EXTENT'
@@ -188,12 +166,6 @@ class ParameterExtent(Parameter):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "xmin, xmax, ymin, ymax"
         self.skip_crs_check = False
-
-    def getValueAsCommandLineParameter(self):
-        if self.value is not None:
-            return '"' + str(self.value) + '"'
-        else:
-            return str(None)
 
     def getAsScriptCode(self):
         param_type = ''
@@ -217,9 +189,6 @@ class ParameterPoint(Parameter):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "x, y"
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
     def getAsScriptCode(self):
         param_type = ''
         if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
@@ -242,9 +211,6 @@ class ParameterFile(Parameter):
         Parameter.__init__(self, name, description, None, parseBool(optional))
         self.ext = ext
         self.isFolder = parseBool(isFolder)
-
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
 
     def getAsScriptCode(self):
         param_type = ''
@@ -275,9 +241,6 @@ class ParameterFixedTable(Parameter):
         self.numRows = int(numRows)
         self.fixedNumOfRows = parseBool(fixedNumOfRows)
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"'
-
     @staticmethod
     def tableToString(table):
         tablestring = ''
@@ -302,7 +265,7 @@ class ParameterFixedTable(Parameter):
             return ParameterFixedTable(name, descName, optional=isOptional)
 
 
-class ParameterMultipleInput(ParameterDataObject):
+class ParameterMultipleInput(Parameter):
 
     """A parameter representing several data objects.
 
@@ -313,7 +276,7 @@ class ParameterMultipleInput(ParameterDataObject):
     exported = None
 
     def __init__(self, name='', description='', datatype=-1, optional=False, metadata={}):
-        ParameterDataObject.__init__(self, name, description, None, optional, metadata=metadata)
+        Parameter.__init__(self, name, description, None, optional, metadata=metadata)
         self.datatype = int(float(datatype))
         self.exported = None
         self.minNumInputs = 0
@@ -552,13 +515,6 @@ class ParameterNumber(Parameter):
 
         return value
 
-    def getValueAsCommandLineParameter(self):
-        if self.value is None:
-            return str(None)
-        if isinstance(self.value, str):
-            return '"%s"' + self.value
-        return str(self.value)
-
 
 class ParameterRange(Parameter):
 
@@ -576,14 +532,11 @@ class ParameterRange(Parameter):
         else:
             self.isInteger = False
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"' if self.value is not None else str(None)
 
-
-class ParameterRaster(ParameterDataObject):
+class ParameterRaster(Parameter):
 
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         self.showSublayersDialog = parseBool(showSublayersDialog)
 
     def getAsScriptCode(self):
@@ -663,18 +616,10 @@ class ParameterEvaluationException(Exception):
 
 class ParameterString(Parameter):
 
-    NEWLINE = '\n'
-    ESCAPED_NEWLINE = '\\n'
-
     def __init__(self, name='', description='', default=None, multiline=False,
                  optional=False, evaluateExpressions=False, metadata={}):
         Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiline = parseBool(multiline)
-
-    def getValueAsCommandLineParameter(self):
-        return ('"' + str(self.value.replace(ParameterString.NEWLINE,
-                                             ParameterString.ESCAPED_NEWLINE)) + '"'
-                if self.value is not None else str(None))
 
     def getAsScriptCode(self):
         param_type = ''
@@ -707,17 +652,9 @@ class ParameterString(Parameter):
 
 class ParameterExpression(Parameter):
 
-    NEWLINE = '\n'
-    ESCAPED_NEWLINE = '\\n'
-
     def __init__(self, name='', description='', default=None, optional=False, parent_layer=None):
         Parameter.__init__(self, name, description, default, optional)
         self.parent_layer = parent_layer
-
-    def getValueAsCommandLineParameter(self):
-        return ('"' + str(self.value.replace(ParameterExpression.NEWLINE,
-                                             ParameterExpression.ESCAPED_NEWLINE)) + '"'
-                if self.value is not None else str(None))
 
     def getAsScriptCode(self):
         param_type = ''
@@ -740,10 +677,10 @@ class ParameterExpression(Parameter):
                 return ParameterExpression(name, descName, optional=isOptional)
 
 
-class ParameterTable(ParameterDataObject):
+class ParameterTable(Parameter):
 
     def __init__(self, name='', description='', optional=False):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         self.exported = None
 
     def getSafeExportedTable(self):
@@ -807,9 +744,6 @@ class ParameterTableField(Parameter):
         self.multiple = multiple
         self.datatype = int(datatype)
 
-    def getValueAsCommandLineParameter(self):
-        return '"' + str(self.value) + '"' if self.value is not None else str(None)
-
     def __str__(self):
         return self.name() + ' <' + self.__module__.split('.')[-1] + ' from ' \
             + self.parent + '>'
@@ -852,11 +786,11 @@ class ParameterTableField(Parameter):
             return ParameterTableField(name, descName, parent, datatype, isOptional)
 
 
-class ParameterVector(ParameterDataObject):
+class ParameterVector(Parameter):
 
     def __init__(self, name='', description='', datatype=[-1],
                  optional=False):
-        ParameterDataObject.__init__(self, name, description, None, optional)
+        Parameter.__init__(self, name, description, None, optional)
         if isinstance(datatype, int):
             datatype = [datatype]
         elif isinstance(datatype, str):

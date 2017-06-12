@@ -57,17 +57,6 @@ start_app()
 
 class ParameterTest(unittest.TestCase):
 
-    def testGetValueAsCommandLineParameter(self):
-        parameter = Parameter('myName', 'myDesc')
-        parameter.setValue(None)
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), "None")
-
-        parameter.setValue("someValue")
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), 'someValue')
-
-        parameter.setValue(123)
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), '123')
-
     def testScriptCode(self):
         """Simple check that default constructed object export/import correctly"""
         paramClasses = [c for c in list(sys.modules[__name__].__dict__.values())
@@ -111,18 +100,6 @@ class ParameterCRSTest(unittest.TestCase):
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterCrs)
         self.assertTrue(result.optional)
-
-
-class ParameterDataObjectTest(unittest.TestCase):
-
-    def testGetValueAsCommandLineParameter(self):
-        parameter = ParameterDataObject('myName', 'myDesc')
-        parameter.setValue(None)
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), "None")
-
-        parameter = ParameterDataObject('myName', 'myDesc')
-        parameter.setValue("someFile.dat")
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), '"someFile.dat"')
 
 
 class ParameterExtentTest(unittest.TestCase):
@@ -175,11 +152,6 @@ class ParameterSelectionTest(unittest.TestCase):
 
 
 class ParameterFileTest(unittest.TestCase):
-
-    def testGetValueAsCommandLineParameter(self):
-        parameter = ParameterFile('myName', 'myDesc')
-        parameter.setValue('myFile.png')
-        self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
 
     def testScriptCode(self):
         parameter = ParameterFile('myName', 'myDescription')

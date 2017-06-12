@@ -255,6 +255,16 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
+%Docstring
+ Returns a Python command string which can be executed to run the algorithm
+ using the specified ``parameters``.
+
+ Algorithms which cannot be run from a Python command should return an empty
+ string.
+ :rtype: str
+%End
+
   protected:
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );

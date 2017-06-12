@@ -301,23 +301,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                 return out.value
         return None
 
-    def getAsCommand(self):
-        """Returns the command that would run this same algorithm from
-        the console.
-
-        Should return None if the algorithm cannot be run from the
-        console.
-        """
-
-        s = 'processing.run("' + self.id() + '",'
-        for param in self.parameterDefinitions():
-            s += param.getValueAsCommandLineParameter() + ','
-        for out in self.outputs:
-            if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                s += out.getValueAsCommandLineParameter() + ','
-        s = s[:-1] + ')'
-        return s
-
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__

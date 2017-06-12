@@ -239,10 +239,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
-                # TODO
-                #command = self.alg.getAsCommand()
-                #if command:
-                #    ProcessingLog.addToLog(command)
+                command = self.alg.asPythonCommand(parameters, context)
+                if command:
+                    ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 result = executeAlgorithm(self.alg, parameters, context, feedback)
                 feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
