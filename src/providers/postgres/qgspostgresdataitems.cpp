@@ -39,6 +39,7 @@ QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, QString name, QSt
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mCapabilities |= Collapse;
 }
 
 QVector<QgsDataItem *> QgsPGConnectionItem::createChildren()
