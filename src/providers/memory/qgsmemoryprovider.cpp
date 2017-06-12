@@ -285,6 +285,16 @@ QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest& requ
 
 QgsRectangle QgsMemoryProvider::extent()
 {
+  if ( mExtent.isEmpty() && !mFeatures.isEmpty() )
+  {
+    mExtent.setMinimal();
+    Q_FOREACH ( const QgsFeature &feat, mFeatures )
+    {
+      if ( feat.constGeometry() )
+        mExtent.unionRect( feat.constGeometry()->boundingBox() );
+    }
+  }
+
   return mExtent;
 }
 
@@ -328,6 +338,9 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs()
 
 bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
 {
+  // whether or not to update the layer extent on the fly as we add features
+  bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
+
   // TODO: sanity checks of fields and geometries
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -336,14 +349,18 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
 
     mFeatures.insert( mNextFeatureId, *it );
 
-    // update spatial index
-    if ( mSpatialIndex )
-      mSpatialIndex->insertFeature( *it );
+    if ( it->constGeometry() )
+    {
+      if ( updateExtent )
+        mExtent.combineExtentWith( it->constGeometry()->boundingBox() );
+
+      // update spatial index
+      if ( mSpatialIndex )
+        mSpatialIndex->insertFeature( *it );
+    }
 
     mNextFeatureId++;
   }
-
-  updateExtent();
 
   return true;
 }
@@ -365,7 +382,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
     mFeatures.erase( fit );
   }
 
-  updateExtent();
+  updateExtents();
 
   return true;
 }
@@ -482,7 +499,7 @@ bool QgsMemoryProvider::changeGeometryValues( const QgsGeometryMap &geometry_map
       mSpatialIndex->insertFeature( *fit );
   }
 
-  updateExtent();
+  updateExtents();
 
   return true;
 }
@@ -533,21 +550,9 @@ int QgsMemoryProvider::capabilities() const
 }
 
 
-void QgsMemoryProvider::updateExtent()
+void QgsMemoryProvider::updateExtents()
 {
-  if ( mFeatures.isEmpty() )
-  {
-    mExtent = QgsRectangle();
-  }
-  else
-  {
-    mExtent.setMinimal();
-    Q_FOREACH ( const QgsFeature& feat, mFeatures )
-    {
-      if ( feat.constGeometry() )
-        mExtent.unionRect( feat.constGeometry()->boundingBox() );
-    }
-  }
+  mExtent.setMinimal();
 }
 
 

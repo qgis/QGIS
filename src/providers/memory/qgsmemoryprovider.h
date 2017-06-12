@@ -158,10 +158,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     virtual QgsCoordinateReferenceSystem crs() override;
 
-  protected:
-
-    // called when added / removed features or geometries has been changed
-    void updateExtent();
+    void updateExtents() override;
 
   private:
     // Coordinate reference system
@@ -170,7 +167,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     // fields
     QgsFields mFields;
     QGis::WkbType mWkbType;
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     // features
     QgsFeatureMap mFeatures;
