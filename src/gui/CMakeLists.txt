@@ -639,6 +639,7 @@ SET(QGIS_GUI_HDRS
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsfiledropedit.h
+  qgsgeometryrubberband.h
   qgsgui.h
   qgsguiutils.h
   qgshelp.h
