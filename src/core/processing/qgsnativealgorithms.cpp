@@ -166,7 +166,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     return QVariantMap();
 
   // fixed parameters
-  //bool dissolve = QgsProcessingParameters::parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
+  bool dissolve = parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
   int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
   QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
   QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
@@ -184,12 +184,18 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
 
   double step = 100.0 / count;
   int current = 0;
+
+  QList< QgsGeometry > bufferedGeometriesForDissolve;
+  QgsAttributes dissolveAttrs;
+
   while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
     {
       break;
     }
+    if ( dissolveAttrs.isEmpty() )
+      dissolveAttrs = f.attributes();
 
     QgsFeature out = f;
     if ( out.hasGeometry() )
@@ -200,16 +206,31 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
         bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, context );
       }
 
-      out.setGeometry( f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit ) );
-      if ( !out.geometry() )
+      QgsGeometry outputGeometry = f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit );
+      if ( !outputGeometry )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
+      if ( dissolve )
+        bufferedGeometriesForDissolve << outputGeometry;
+      else
+        out.setGeometry( outputGeometry );
     }
-    sink->addFeature( out );
+
+    if ( !dissolve )
+      sink->addFeature( out );
 
     feedback->setProgress( current * step );
     current++;
+  }
+
+  if ( dissolve )
+  {
+    QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
+    QgsFeature f;
+    f.setGeometry( finalGeometry );
+    f.setAttributes( dissolveAttrs );
+    sink->addFeature( f );
   }
 
   QVariantMap outputs;
