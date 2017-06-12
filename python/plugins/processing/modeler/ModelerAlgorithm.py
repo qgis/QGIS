@@ -49,8 +49,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterTableField,
                                         ParameterBoolean,
                                         ParameterString,
-                                        ParameterNumber,
-                                        ParameterDataObject)
+                                        ParameterNumber)
 
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
@@ -424,13 +423,15 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = param.defaultValue()
                 # We allow unexistent filepaths, since that allows
                 # algorithms to skip some conversion routines
-                if not param.checkValueIsAcceptable(value) and not isinstance(param,
-                                                                              ParameterDataObject):
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
-                            value, param.__class__.__name__, param.name()
-                        )
-                    )
+
+                # TODO
+                #if not param.checkValueIsAcceptable(value) and not isinstance(param,
+                #                                                              ParameterDataObject):
+                #    raise GeoAlgorithmExecutionException(
+                #        self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
+                #            value, param.__class__.__name__, param.name()
+                #        )
+                #    )
 
         for out in algInstance.outputs:
             if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -519,9 +520,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         feedback.pushDebugInfo(
             self.tr('Model processed ok. Executed {0} algorithms total', 'ModelerAlgorithm').format(len(executed)))
 
-    def getAsCommand(self):
+    def asPythonCommand(self, parameters, context):
         if self.descriptionFile:
-            return GeoAlgorithm.getAsCommand(self)
+            return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
         else:
             return None
 

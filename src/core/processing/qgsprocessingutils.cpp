@@ -23,6 +23,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsmemoryproviderutils.h"
+#include "qgsprocessingparameters.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -363,6 +364,40 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
 
   }
   return extent;
+}
+
+QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context )
+{
+  if ( !input.isValid() )
+    return QStringLiteral( "memory:%1" ).arg( id.toString() );
+
+  if ( input.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( input );
+    QVariant newSink = generateIteratingDestination( fromVar.sink, id, context );
+    fromVar.sink = QgsProperty::fromValue( newSink );
+    return fromVar;
+  }
+  else if ( input.canConvert<QgsProperty>() )
+  {
+    QString res = input.value< QgsProperty>().valueAsString( context.expressionContext() );
+    return generateIteratingDestination( res, id, context );
+  }
+  else
+  {
+    QString res = input.toString();
+    if ( res.startsWith( QStringLiteral( "memory:" ) ) )
+    {
+      return res + '_' + id.toString();
+    }
+    else
+    {
+      // assume a filename type output for now
+      // TODO - uris?
+      int lastIndex = res.lastIndexOf( '.' );
+      return res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex );
+    }
+  }
 }
 
 

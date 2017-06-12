@@ -126,6 +126,15 @@ class QgsProcessingUtils
  :rtype: QgsRectangle
 %End
 
+    static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
+%Docstring
+ Converts an ``input`` parameter value for use in source iterating mode, where one individual sink
+ is created per input feature.
+ The ``id`` parameter represents the unique ID for this output, which is embedded into the resulting
+ parameter value.
+ :rtype: QVariant
+%End
+
 };
 
 

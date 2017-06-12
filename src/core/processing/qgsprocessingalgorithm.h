@@ -253,6 +253,15 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual bool validateInputCrs( const QVariantMap &parameters,
                                    QgsProcessingContext &context ) const;
 
+    /**
+     * Returns a Python command string which can be executed to run the algorithm
+     * using the specified \a parameters.
+     *
+     * Algorithms which cannot be run from a Python command should return an empty
+     * string.
+     */
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
+
   protected:
 
     /**

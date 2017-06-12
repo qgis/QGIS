@@ -185,6 +185,26 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
   return true;
 }
 
+QString QgsProcessingAlgorithm::asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  QString s = QStringLiteral( "processing.run(\"%1\"," ).arg( id() );
+
+  QStringList parts;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
+    if ( !parameters.contains( def->name() ) || !parameters.value( def->name() ).isValid() )
+      continue;
+
+    parts << QStringLiteral( "'%1':%2" ).arg( def->name(), def->valueAsPythonString( parameters.value( def->name() ), context ) );
+  }
+
+  s += QStringLiteral( " {%1})" ).arg( parts.join( ',' ) );
+  return s;
+}
+
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition )
 {
   if ( !definition )
