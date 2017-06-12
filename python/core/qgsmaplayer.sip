@@ -42,7 +42,7 @@ class QgsMapLayer : QObject
           sipType = sipType_QgsPluginLayer;
           break;
         default:
-          sipType = 0;
+          sipType = nullptr;
           break;
       }
     }

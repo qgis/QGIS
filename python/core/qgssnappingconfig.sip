@@ -207,7 +207,7 @@ return individual snapping settings for all layers
     // Create the dictionary.
     PyObject *d = PyDict_New();
     if ( !d )
-      return 0;
+      return nullptr;
     // Set the dictionary elements.
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> container = sipCpp->individualLayerSettings();
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
@@ -216,7 +216,7 @@ return individual snapping settings for all layers
       QgsVectorLayer *vl = i.key();
       QgsSnappingConfig::IndividualLayerSettings *ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
 
-      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, 0 );
+      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
       PyObject *ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
 
       if ( !vlobj || !ilsobj || PyDict_SetItem( d, vlobj, ilsobj ) < 0 )
