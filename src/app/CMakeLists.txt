@@ -551,6 +551,7 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/geocms
   ../core/layout
   ../core/geonode
   ../core/metadata

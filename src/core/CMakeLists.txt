@@ -459,6 +459,8 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
+  geocms/qgsgeocmsconnection.cpp
+
   geonode/qgsgeonodeconnection.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
@@ -706,6 +708,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   qgsuserprofilemanager.h
 
+  geocms/qgsgeocmsconnection.h
   geonode/qgsgeonodeconnection.h
 )
 
@@ -1080,6 +1083,8 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
 
+  geocms/qgsgeocmsconnection.h
+
   geonode/qgsgeonodeconnection.h
 
   metadata/qgslayermetadata.h
@@ -1104,6 +1109,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
+  geocms
+  geonode
   layertree
   layout
   metadata
