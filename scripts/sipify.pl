@@ -38,6 +38,7 @@ my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my @ACCESS = (PUBLIC);
 my @CLASSNAME = ();
+my @DECLARED_CLASSES = ();
 my @EXPORTED = (0);
 my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
@@ -487,8 +488,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # class declaration started
-    # https://regex101.com/r/6FWntP/8
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(<([\w]|::)+>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    # https://regex101.com/r/6FWntP/10
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -497,7 +498,14 @@ while ($LINE_IDX < $LINE_COUNT){
         my @template_inheritance_class = ();
         do {no warnings 'uninitialized';
             push @CLASSNAME, $3;
-            dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
+            if ($#CLASSNAME == 0){
+                dbg_info('www');
+                # might be worth to add in-class classes later on
+                # in case of a tamplate based class declaration
+                # based on an in-class and in the same file
+                push @DECLARED_CLASSES, $CLASSNAME[$#CLASSNAME];
+            }
+            dbg_info("class: ".$CLASSNAME[$#CLASSNAME].$#CLASSNAME);
             if ($LINE =~ m/\b[A-Z]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template</){
                 # class should be exported except those not at top level or template classes
                 # if class is not exported, then its methods should be (checked whenever leaving out the class)
@@ -512,13 +520,13 @@ while ($LINE_IDX < $LINE_COUNT){
             $m =~ s/public +//g;
             $m =~ s/[,:]?\s*private +\w+(::\w+)?//g;
             # detect template based inheritance
-            while ($m =~ /[,:]\s+((?!QList)\w+)<((\w|::)+)>/g){
+            while ($m =~ /[,:]\s+((?!QList)\w+)< *((\w|::)+) *>/g){
                 dbg_info("template class");
                 push @template_inheritance_template, $1;
                 push @template_inheritance_class, $2;
             }
-            $m =~ s/(\b(?!QList)\w+)<((?:\w|::)+)>/$1${2}Base/g; # use the typeded as template inheritance
-            $m =~ s/(\w+)<((?:\w|::)+)>//g; # remove remaining templates
+            $m =~ s/(\b(?!QList)\w+)<((?:[\w ]|::)+)>/$1${2}Base/g; # use the typeded as template inheritance
+            $m =~ s/(\w+)<((?:[\w ]|::)+)>//g; # remove remaining templates
             $m =~ s/([:,])\s*,/$1/g;
             $m =~ s/(\s*[:,])?\s*$//;
             $LINE .= $m;
@@ -538,15 +546,17 @@ while ($LINE_IDX < $LINE_COUNT){
         # add it to the class and to the TypeHeaderCode
         # also include the template header
         # see https://www.riverbankcomputing.com/pipermail/pyqt/2015-May/035893.html
-        while (@template_inheritance_template) {
+        while ( @template_inheritance_template ) {
             my $tpl = pop @template_inheritance_template;
             my $cls = pop @template_inheritance_class;
-            my $tpl_header = lc $tpl . ".h";
-            if (exists $SIP_CONFIG->{class_headerfile}->{$tpl}){
-                $tpl_header = $SIP_CONFIG->{class_headerfile}->{$tpl};
-            }
             $LINE = "\ntypedef $tpl<$cls> ${tpl}${cls}Base;\n\n$LINE";
-            $LINE .= "\n#include \"" . $tpl_header . "\"";
+            if ( not $tpl ~~ @DECLARED_CLASSES ){
+                my $tpl_header = lc $tpl . ".h";
+                if ( exists $SIP_CONFIG->{class_headerfile}->{$tpl} ){
+                    $tpl_header = $SIP_CONFIG->{class_headerfile}->{$tpl};
+                }
+                $LINE .= "\n#include \"" . $tpl_header . "\"";
+            }
             $LINE .= "\ntypedef $tpl<$cls> ${tpl}${cls}Base;";
         }
         if ( PRIVATE ~~ @ACCESS && $#ACCESS != 0){
