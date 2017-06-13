@@ -20,6 +20,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsgeocmsconnection.h"
 //#include "qgsstyle.h"
 //#include "../../providers/wms/qgswmsconnection.h"
 //#include "../../providers/wfs/qgswfsconnection.h"
@@ -32,7 +33,7 @@
 /*!
  * \brief   GeoNode Connections management
  */
-class CORE_EXPORT QgsGeoNodeConnection : public QObject
+class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
 {
     Q_OBJECT
 
@@ -56,17 +57,18 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
     static void setSelectedConnection( const QString &name );
 
     //! Return list of available layers
-    QVariantList getLayers();
-    QVariantList getLayers( QString serviceType );
+    virtual QVariantList getLayers();
+    virtual QVariantList getLayers( QString serviceType );
 
     //! Return list of available layers
-    QVariantList getMaps();
+    virtual QVariantList getMaps();
 
     //! Return WMS / WFS url for the layer / map / resource ID
-    QString serviceUrl( QString &resourceID, QString serviceType );
+    virtual QString serviceUrl() {}
+    virtual QString serviceUrl( QString &resourceID, QString serviceType );
 
     //! Return WMS / WFS url for the geonode
-    QString serviceUrl( QString serviceType );
+    virtual QString serviceUrl( QString serviceType );
 
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 
@@ -97,27 +99,6 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 //    void publishLayerFile( QgsMapLayer &layer );
 //    void publishQGISProject( QgsProject &project );
 //    void publishStyle( QgsStyle &style );
-
-
-  public:
-    //! The connection name
-    QString mConnName;
-
-    //! Getter for mUri
-    QgsDataSourceUri uri();
-
-    //! Property of mUri
-    QgsDataSourceUri mUri;
-
-    QMultiMap<QString, QString> mLayers;
-    QMultiMap<QString, QString> mMaps;
-    QString mData;
-
-    //! List of wms connection of the geonode instance
-    QStringList wmsConnectionNames;
-
-    //! List of wfs connection of the geonode instance
-    QStringList wfsConnectionNames;
 
     // Path in QSetting
     static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";

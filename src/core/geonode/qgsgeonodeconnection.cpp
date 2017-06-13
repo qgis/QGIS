@@ -17,6 +17,7 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsgeocmsconnection.h"
 
 #include <QMultiMap>
 #include <QNetworkRequest>
@@ -32,34 +33,9 @@ const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-ge
 const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
-  : mConnName( connName )
+  : QgsGeoCMSConnection( QStringLiteral( "GeoNode" ), connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
-
-  QgsSettings settings;
-
-  QString key = pathGeoNodeConnection + "/" + mConnName;
-  QString credentialsKey = pathGeoNodeConnectionDetails + "/" + mConnName;
-
-  QStringList connStringParts;
-
-  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
-
-  // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + "/username" ).toString();
-  QString password = settings.value( credentialsKey + "/password" ).toString();
-  if ( !username.isEmpty() )
-  {
-    mUri.setParam( QStringLiteral( "username" ), username );
-    mUri.setParam( QStringLiteral( "password" ), password );
-  }
-
-  QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
-  if ( !authcfg.isEmpty() )
-  {
-    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
-  }
-
   QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
@@ -68,35 +44,24 @@ QgsGeoNodeConnection::~QgsGeoNodeConnection()
 
 }
 
-QgsDataSourceUri QgsGeoNodeConnection::uri()
-{
-  return mUri;
-}
-
 QStringList QgsGeoNodeConnection::connectionList()
 {
-  QgsSettings settings;
-  settings.beginGroup( pathGeoNodeConnection );
-  return settings.childGroups();
+  return QgsGeoCMSConnection::connectionList( QStringLiteral( "GeoNode" ) );
 }
 
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.remove( pathGeoNodeConnection + '/' + name );
-  settings.remove( pathGeoNodeConnectionDetails + '/' + name );
+  return QgsGeoCMSConnection::deleteConnection( QStringLiteral( "GeoNode" ), name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
 {
-  QgsSettings settings;
-  return settings.value( pathGeoNodeConnection + QStringLiteral( "/selected" ) ).toString();
+  return QgsGeoCMSConnection::selectedConnection( QStringLiteral( "GeoNode" ) );
 }
 
 void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.setValue( pathGeoNodeConnection + QStringLiteral( "/selected" ), name );
+  return QgsGeoCMSConnection::setSelectedConnection( QStringLiteral( "GeoNode" ), name );
 }
 
 QVariantList QgsGeoNodeConnection::getLayers()
