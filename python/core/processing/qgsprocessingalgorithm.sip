@@ -276,6 +276,12 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
+    void removeParameter( const QString &name );
+%Docstring
+ Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
+ definition.
+%End
+
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition /Transfer/ );
 %Docstring
  Adds an output ``definition`` to the algorithm. Ownership of the definition is transferred to the algorithm.

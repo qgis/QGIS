@@ -28,10 +28,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
-from qgis.core import QgsProcessingParameterDefinition
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
+from processing.modeler.ModelerAlgorithm import CompoundValue
 
 
 class ModelerScene(QGraphicsScene):
@@ -66,93 +67,93 @@ class ModelerScene(QGraphicsScene):
         if isinstance(value, list):
             for v in value:
                 items.extend(self.getItemsFromParamValue(v))
+        elif isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
+            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+                items.append((self.paramItems[value.parameterName()], 0))
+            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+                outputs = self.model.childAlgorithm(value.outputChildId()).algorithm().outputDefinitions()
+                for i, out in enumerate(outputs):
+                    if out.name() == value.outputName():
+                        break
+                if value.outputChildId() in self.algItems:
+                    items.append((self.algItems[value.outputChildId()], i))
         elif isinstance(value, CompoundValue):
             for v in value.values:
                 items.extend(self.getItemsFromParamValue(v))
-        elif isinstance(value, ValueFromInput):
-            items.append((self.paramItems[value.name], 0))
-        elif isinstance(value, ValueFromOutput):
-            outputs = self.model.algs[value.alg].algorithm.outputDefinitions()
-            for i, out in enumerate(outputs):
-                if out.name() == value.output:
-                    break
-            if value.alg in self.algItems:
-                items.append((self.algItems[value.alg], i))
         return items
 
     def paintModel(self, model, controls=True):
         self.model = model
         # Inputs
-        for inp in list(model.inputs.values()):
+        for inp in list(model.parameterComponents().values()):
             item = ModelerGraphicItem(inp, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
-            item.setPos(inp.pos.x(), inp.pos.y())
-            self.paramItems[inp.param.name()] = item
+            item.setPos(inp.position().x(), inp.position().y())
+            self.paramItems[inp.parameterName()] = item
 
         # We add the algs
-        for alg in list(model.algs.values()):
+        for alg in list(model.childAlgorithms().values()):
             item = ModelerGraphicItem(alg, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
-            item.setPos(alg.pos.x(), alg.pos.y())
-            self.algItems[alg.modeler_name] = item
+            item.setPos(alg.position().x(), alg.position().y())
+            self.algItems[alg.childId()] = item
 
         # And then the arrows
-        for alg in list(model.algs.values()):
+        for alg in list(model.childAlgorithms().values()):
             idx = 0
-            for parameter in alg.algorithm.parameterDefinitions():
+            for parameter in alg.algorithm().parameterDefinitions():
                 if not parameter.isDestination() and not parameter.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                    if parameter.name() in alg.params:
-                        value = alg.params[parameter.name()]
+                    if parameter.name() in alg.parameterSources():
+                        value = alg.parameterSources()[parameter.name()]
                     else:
                         value = None
                     sourceItems = self.getItemsFromParamValue(value)
                     for sourceItem, sourceIdx in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.modeler_name], idx)
+                        arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
                         sourceItem.addArrow(arrow)
-                        self.algItems[alg.modeler_name].addArrow(arrow)
+                        self.algItems[alg.childId()].addArrow(arrow)
                         arrow.updatePath()
                         self.addItem(arrow)
                     idx += 1
-            for depend in alg.dependencies:
+            for depend in alg.dependencies():
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
-                                         self.algItems[alg.modeler_name], -1)
+                                         self.algItems[alg.childId()], -1)
                 self.algItems[depend].addArrow(arrow)
-                self.algItems[alg.modeler_name].addArrow(arrow)
+                self.algItems[alg.childId()].addArrow(arrow)
                 arrow.updatePath()
                 self.addItem(arrow)
 
         # And finally the outputs
-        for alg in list(model.algs.values()):
-            outputs = alg.outputs
+        for alg in list(model.childAlgorithms().values()):
+            outputs = alg.modelOutputs()
             outputItems = {}
             idx = 0
-            for key in outputs:
-                out = outputs[key]
+            for key, out in outputs.items():
                 if out is not None:
                     item = ModelerGraphicItem(out, model, controls)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
-                    pos = alg.outputs[key].pos
+                    pos = out.position()
                     if pos is None:
-                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
-                               self.algItems[alg.modeler_name].getLinkPointForOutput(idx))
-                    item.setPos(pos)
+                        pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
+                               self.algItems[alg.childId()].getLinkPointForOutput(idx))
+                    item.setPosition(pos)
                     outputItems[key] = item
-                    arrow = ModelerArrowItem(self.algItems[alg.modeler_name], idx, item,
+                    arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
                                              -1)
-                    self.algItems[alg.modeler_name].addArrow(arrow)
+                    self.algItems[alg.childId()].addArrow(arrow)
                     item.addArrow(arrow)
                     arrow.updatePath()
                     self.addItem(arrow)
                     idx += 1
                 else:
                     outputItems[key] = None
-            self.outputItems[alg.modeler_name] = outputItems
+            self.outputItems[alg.childId()] = outputItems
 
     def mousePressEvent(self, mouseEvent):
         if mouseEvent.button() != Qt.LeftButton:

@@ -127,11 +127,12 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
             idx = 0
-            for param in list(self.alg.inputs.values()):
-                if isinstance(param.param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
-                    self.parentCombo.addItem(param.param.description(), param.param.name())
+            for param in list(self.alg.parameterComponents().values()):
+                definition = self.alg.parameterDefinition(param.parameterName())
+                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
+                    self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == param.param.name():
+                        if self.param.parentLayerParameter() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -215,11 +216,12 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.parentCombo = QComboBox()
             self.parentCombo.addItem(self.tr("None"), None)
             idx = 1
-            for param in list(self.alg.inputs.values()):
-                if isinstance(param.param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
-                    self.parentCombo.addItem(param.param.description(), param.param.name())
+            for param in list(self.alg.parameterComponents().values()):
+                definition = self.alg.parameterDefinition(param.parameterName())
+                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
+                    self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == param.param.name():
+                        if self.param.parentLayerParameter() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -290,8 +292,9 @@ class ModelerParameterDefinitionDialog(QDialog):
             safeName = ''.join(c for c in description if c in validChars)
             name = safeName.lower()
             i = 2
-            while name in self.alg.inputs:
+            while self.alg.parameterDefinition(name):
                 name = safeName.lower() + str(i)
+                i += 1
         else:
             name = self.param.name()
         if (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or

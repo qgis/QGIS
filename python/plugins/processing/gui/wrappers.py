@@ -65,7 +65,8 @@ from qgis.core import (
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
     QgsProcessingOutputString,
-    QgsProcessingOutputNumber)
+    QgsProcessingOutputNumber,
+    QgsProcessingModelAlgorithm)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,

@@ -218,6 +218,16 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   return true;
 }
 
+void QgsProcessingAlgorithm::removeParameter( const QString &name )
+{
+  const QgsProcessingParameterDefinition *def = parameterDefinition( name );
+  if ( def )
+  {
+    delete def;
+    mParameters.removeAll( def );
+  }
+}
+
 bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
 {
   if ( !definition )
