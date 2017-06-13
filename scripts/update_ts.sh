@@ -21,7 +21,7 @@ pull|push|update)
 	;;
 
 *)
-	echo "usage: $(basename $0) {push|pull|update} builddirectory"
+	echo "usage: $(basename $0) {pull|{push|update} builddirectory}"
 	exit 1
 esac
 
@@ -72,8 +72,8 @@ if ! type tx >/dev/null 2>&1; then
 	exit 1
 fi
 
-builddir=$(realpath $2)
-if [ -d "$builddir" ]; then
+if [ -d "$2" ]; then
+	builddir=$(realpath $2)
 	textcpp=
 	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
 		if [ -f $i ]; then
