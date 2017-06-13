@@ -210,6 +210,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterRasterOutput;
     else if ( sipCpp->type() == "fileOut" )
       sipType = sipType_QgsProcessingParameterFileOutput;
+    else if ( sipCpp->type() == "folderOut" )
+      sipType = sipType_QgsProcessingParameterFolderOutput;
     SIP_END
 #endif
 
@@ -1316,6 +1318,29 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
   private:
 
     QString mFileFilter;
+};
+
+/**
+ * \class QgsProcessingParameterFolderOutput
+ * \ingroup core
+ * A folder output parameter.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterFolderOutput.
+     */
+    QgsProcessingParameterFolderOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "folderOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+
 };
 
 #endif // QGSPROCESSINGPARAMETERS_H

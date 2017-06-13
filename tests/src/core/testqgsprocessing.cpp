@@ -309,6 +309,7 @@ class TestQgsProcessing: public QObject
     void parameterFeatureSink();
     void parameterRasterOut();
     void parameterFileOut();
+    void parameterFolderOut();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -2649,6 +2650,48 @@ void TestQgsProcessing::parameterFileOut()
 
   params.insert( "optional", QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "default.txt" ) );
+}
+
+void TestQgsProcessing::parameterFolderOut()
+{
+  // setup a context
+  QgsProject p;
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterFolderOutput > def( new QgsProcessingParameterFolderOutput( "non_optional", QString(), QString(), false ) );
+
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "asdasd" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // should be OK with or without context - it's an output folder!
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/" ) );
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/", &context ) );
+
+  QVariantMap params;
+  params.insert( "non_optional", "c:/mine" );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "c:/mine" ) );
+
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterFolderOutput( "optional", QString(), QString( "c:/junk" ), true ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional", QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsFileOutput( def.get(), params, context ), QStringLiteral( "c:/junk" ) );
 }
 
 void TestQgsProcessing::checkParamValues()

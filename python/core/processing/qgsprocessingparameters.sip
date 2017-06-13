@@ -175,6 +175,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterRasterOutput;
     else if ( sipCpp->type() == "fileOut" )
       sipType = sipType_QgsProcessingParameterFileOutput;
+    else if ( sipCpp->type() == "folderOut" )
+      sipType = sipType_QgsProcessingParameterFolderOutput;
 %End
   public:
 
@@ -1341,6 +1343,32 @@ class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
  Sets the file ``filter`` string for files compatible with this output.
 .. seealso:: fileFilter()
 %End
+
+};
+
+class QgsProcessingParameterFolderOutput : QgsProcessingParameterDefinition
+{
+%Docstring
+ A folder output parameter.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterFolderOutput( const QString &name, const QString &description = QString(),
+                                        const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterFolderOutput.
+%End
+
+    virtual QString type() const;
+    virtual bool isDestination() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
 
 };
 
