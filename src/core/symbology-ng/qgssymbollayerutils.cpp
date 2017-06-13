@@ -1845,7 +1845,14 @@ void QgsSymbolLayerUtils::lineToSld( QDomDocument &doc, QDomElement &element,
       element.appendChild( createSvgParameterElement( doc, QStringLiteral( "stroke-opacity" ), encodeSldAlpha( color.alpha() ) ) );
   }
   if ( width > 0 )
+  {
     element.appendChild( createSvgParameterElement( doc, QStringLiteral( "stroke-width" ), qgsDoubleToString( width ) ) );
+  }
+  else if ( width == 0 )
+  {
+    // hairline, yet not zero. it's actually painted in qgis
+    element.appendChild( createSvgParameterElement( doc, QStringLiteral( "stroke-width" ), QStringLiteral( "0.5" ) ) );
+  }
   if ( penJoinStyle )
     element.appendChild( createSvgParameterElement( doc, QStringLiteral( "stroke-linejoin" ), encodeSldLineJoinStyle( *penJoinStyle ) ) );
   if ( penCapStyle )
