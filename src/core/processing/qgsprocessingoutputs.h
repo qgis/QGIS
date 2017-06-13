@@ -51,6 +51,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputHtml;
     else if ( sipCpp->type() == "outputNumber" )
       sipType = sipType_QgsProcessingOutputNumber;
+    else if ( sipCpp->type() == "outputString" )
+      sipType = sipType_QgsProcessingOutputString;
     SIP_END
 #endif
 
@@ -196,6 +198,25 @@ class CORE_EXPORT QgsProcessingOutputNumber : public QgsProcessingOutputDefiniti
 
     QString type() const override { return QStringLiteral( "outputNumber" ); }
 };
+
+/**
+ * \class QgsProcessingOutputString
+ * \ingroup core
+ * A string output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputString.
+     */
+    QgsProcessingOutputString( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputString" ); }
+};
+
 
 #endif // QGSPROCESSINGOUTPUTS_H
 
