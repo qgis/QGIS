@@ -74,7 +74,10 @@ class QgsCircularString: QgsCurve
  Returns a new line string geometry corresponding to a segmentized approximation
  of the curve.
  \param tolerance segmentation tolerance
- \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
+ \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+
+ Uses a MaximumAngle tolerance of 1 degrees by default (360
+ segments in a full circle)
  :rtype: QgsLineString
 %End
 
