@@ -1059,6 +1059,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultisurface.h
   geometry/qgspolygon.h
   geometry/qgsrectangle.h
+  geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
   geometry/qgstriangle.h
   geometry/qgssurface.h
