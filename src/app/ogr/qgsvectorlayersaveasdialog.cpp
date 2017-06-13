@@ -347,7 +347,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   bool fieldsAsDisplayedValues = false;
 
   const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "DXF" ) )
+  if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
   {
     mAttributesSelection->setEnabled( false );
     selectAllFields = false;
@@ -686,24 +686,27 @@ QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
+          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mDatasourceOptionsGroupBox->findChild<QSpinBox *>( it.key() );
-          if ( sb )
+          if ( opt && sb && sb->value() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
           break;
         }
 
         case QgsVectorFileWriter::Set:
         {
+          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mDatasourceOptionsGroupBox->findChild<QComboBox *>( it.key() );
-          if ( cb && !cb->currentData().isNull() )
+          if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
+          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mDatasourceOptionsGroupBox->findChild<QLineEdit *>( it.key() );
-          if ( le )
+          if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
@@ -738,24 +741,26 @@ QStringList QgsVectorLayerSaveAsDialog::layerOptions() const
       {
         case QgsVectorFileWriter::Int:
         {
+          QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption *>( *it );
           QSpinBox *sb = mLayerOptionsGroupBox->findChild<QSpinBox *>( it.key() );
-          if ( sb )
-            options << QStringLiteral( "%1=%2" ).arg( it.key() ).arg( sb->value() );
-          break;
+          if ( opt && sb && sb->value() != opt->defaultValue )
+            break;
         }
 
         case QgsVectorFileWriter::Set:
         {
+          QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption *>( *it );
           QComboBox *cb = mLayerOptionsGroupBox->findChild<QComboBox *>( it.key() );
-          if ( cb && !cb->currentData().isNull() )
+          if ( opt && cb && cb->itemData( cb->currentIndex() ) != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), cb->currentText() );
           break;
         }
 
         case QgsVectorFileWriter::String:
         {
+          QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( *it );
           QLineEdit *le = mLayerOptionsGroupBox->findChild<QLineEdit *>( it.key() );
-          if ( le && !le->text().isEmpty() )
+          if ( opt && le && le->text() != opt->defaultValue )
             options << QStringLiteral( "%1=%2" ).arg( it.key(), le->text() );
           break;
         }
