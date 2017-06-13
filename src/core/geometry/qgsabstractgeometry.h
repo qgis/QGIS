@@ -88,6 +88,7 @@ class CORE_EXPORT QgsAbstractGeometry
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
     enum SegmentationToleranceType
     {
+      // Maximum angle between lines from output vertices to arc center
       MaximumAngle = 0,
       MaximumDifference
     };

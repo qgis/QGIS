@@ -72,7 +72,11 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+     *
+     * Uses a MaximumAngle tolerance of 1 degrees by default (360
+     * segments in a full circle)
+     */
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     void draw( QPainter &p ) const override;
