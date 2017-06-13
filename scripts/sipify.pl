@@ -499,13 +499,12 @@ while ($LINE_IDX < $LINE_COUNT){
         do {no warnings 'uninitialized';
             push @CLASSNAME, $3;
             if ($#CLASSNAME == 0){
-                dbg_info('www');
                 # might be worth to add in-class classes later on
                 # in case of a tamplate based class declaration
                 # based on an in-class and in the same file
                 push @DECLARED_CLASSES, $CLASSNAME[$#CLASSNAME];
             }
-            dbg_info("class: ".$CLASSNAME[$#CLASSNAME].$#CLASSNAME);
+            dbg_info("class: ".$CLASSNAME[$#CLASSNAME]);
             if ($LINE =~ m/\b[A-Z]+_EXPORT\b/ || $#CLASSNAME != 0 || $INPUT_LINES[$LINE_IDX-2] =~ m/^\s*template</){
                 # class should be exported except those not at top level or template classes
                 # if class is not exported, then its methods should be (checked whenever leaving out the class)
