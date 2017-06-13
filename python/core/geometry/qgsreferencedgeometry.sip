@@ -36,11 +36,6 @@ class QgsReferencedGeometryPrimitive
  Constructor for QgsReferencedGeometryPrimitive, for the specified ``primitive`` and ``crs``.
 %End
 
-    T primitive() const;
-%Docstring
- Returns the geometry primitive.
- :rtype: T
-%End
 
     T &primitive();
 %Docstring
@@ -66,6 +61,7 @@ class QgsReferencedGeometryPrimitive
 };
 
 
+
 typedef QgsReferencedGeometryPrimitive<QgsRectangle> QgsReferencedGeometryPrimitiveQgsRectangleBase;
 
 class QgsReferencedRectangle : QgsReferencedGeometryPrimitiveQgsRectangleBase
@@ -81,7 +77,7 @@ typedef QgsReferencedGeometryPrimitive<QgsRectangle> QgsReferencedGeometryPrimit
 %End
   public:
 
-    QgsReferencedRectangle();
+    QgsReferencedRectangle( const QgsRectangle &rect );
 %Docstring
  Construct a default optional expression.
  It will be disabled and with an empty expression.
@@ -89,15 +85,11 @@ typedef QgsReferencedGeometryPrimitive<QgsRectangle> QgsReferencedGeometryPrimit
 
     QgsRectangle &rect();
 %Docstring
+ Returns the rectangles
  :rtype: QgsRectangle
 %End
 
-
 };
-
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

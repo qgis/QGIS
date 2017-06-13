@@ -53,7 +53,7 @@ class CORE_EXPORT QgsReferencedGeometryPrimitive
     /**
      * Returns the geometry primitive.
      */
-    T primitive() const { return mPrimitive; }
+    T primitive() const { return mPrimitive; } SIP_SKIP
 
     /**
      * Returns the geometry primitive.
@@ -81,7 +81,10 @@ class CORE_EXPORT QgsReferencedGeometryPrimitive
 
 };
 
+//template class  QgsReferencedGeometryPrimitive< QgsRectangle > QgsReferencedRectangle;
+
 /**
+ * \ingroup core
  * A QgsRectangle with associated coordinate reference system.
  * \since QGIS 3.0
  */
@@ -93,15 +96,13 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsReferencedGeometryPrimitive
      * Construct a default optional expression.
      * It will be disabled and with an empty expression.
      */
-    QgsReferencedRectangle();
+    QgsReferencedRectangle( const QgsRectangle &rect ) : QgsReferencedGeometryPrimitive( rect ) {}
 
+    /**
+     * Returns the rectangles
+     */
     QgsRectangle &rect() { return primitive(); }
-
 
 };
 
 #endif // QGSREFERENCEDGEOMETRY_H
-
-
-
-
