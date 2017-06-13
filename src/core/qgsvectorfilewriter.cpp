@@ -270,6 +270,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ datasourceOptions.size() + 1 ];
     for ( int i = 0; i < datasourceOptions.size(); i++ )
     {
+      QgsDebugMsg( QString( "-dsco=%1" ).arg( datasourceOptions[i] ) );
       options[i] = CPLStrdup( datasourceOptions[i].toLocal8Bit().constData() );
     }
     options[ datasourceOptions.size()] = nullptr;
@@ -374,6 +375,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = new char *[ layerOptions.size() + 1 ];
     for ( int i = 0; i < layerOptions.size(); i++ )
     {
+      QgsDebugMsg( QString( "-lco=%1" ).arg( layerOptions[i] ) );
       options[i] = CPLStrdup( layerOptions[i].toLocal8Bit().constData() );
     }
     options[ layerOptions.size()] = nullptr;
@@ -382,10 +384,18 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   // disable encoding conversion of OGR Shapefile layer
   CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
-  if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
+  if ( driverName == QLatin1String( "DGN" ) )
+  {
+    mLayer = OGR_DS_GetLayerByName( mDS, "elements" );
+  }
+  else if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
+  {
     mLayer = OGR_DS_CreateLayer( mDS, layerName.toUtf8().constData(), mOgrRef, wkbType, options );
+  }
   else
+  {
     mLayer = OGR_DS_GetLayerByName( mDS, layerName.toUtf8().constData() );
+  }
 
   if ( options )
   {
@@ -1329,7 +1339,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            false  // Default value
                          ) );
 
-  datasetOptions.insert( QStringLiteral( "COPY_SEED_FILE_COLOR_TABLEE" ), new BoolOption(
+  datasetOptions.insert( QStringLiteral( "COPY_SEED_FILE_COLOR_TABLE" ), new BoolOption(
                            QObject::tr( "Indicates whether the color table should be copied from the seed file." ),
                            false  // Default value
                          ) );
