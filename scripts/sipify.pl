@@ -525,7 +525,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 push @template_inheritance_class, $2;
             }
             $m =~ s/(\b(?!QList)\w+)< *((?:\w|::)+) *>/$1${2}Base/g; # use the typeded as template inheritance
-            $m =~ s/(\w+)< *((?:w|::)+) *>//g; # remove remaining templates
+            $m =~ s/(\w+)< *((?:\w|::)+) *>//g; # remove remaining templates
             $m =~ s/([:,])\s*,/$1/g;
             $m =~ s/(\s*[:,])?\s*$//;
             $LINE .= $m;
