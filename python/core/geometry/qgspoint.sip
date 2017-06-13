@@ -126,6 +126,7 @@ class QgsPoint: QgsAbstractGeometry
 
 
 
+
     void setX( double x );
 %Docstring
  Sets the point's x-coordinate.
