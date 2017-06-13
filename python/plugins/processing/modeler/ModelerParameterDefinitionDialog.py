@@ -31,7 +31,6 @@ import math
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,

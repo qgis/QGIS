@@ -100,13 +100,13 @@ class ModelerGraphicItem(QGraphicsItem):
 
         if isinstance(element, Algorithm):
             alg = element.algorithm
-            if alg.parameters:
+            if [a for a in alg.parameterDefinitions() if not a.isDestination()]:
                 pt = self.getLinkPointForParameter(-1)
                 pt = QPointF(0, pt.y())
                 if controls:
                     self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.paramsFolded)
                     self.inButton.setParentItem(self)
-            if alg.outputs:
+            if alg.outputDefinitions():
                 pt = self.getLinkPointForOutput(-1)
                 pt = QPointF(0, pt.y())
                 if controls:
@@ -116,7 +116,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def foldInput(self, folded):
         self.element.paramsFolded = folded
         self.prepareGeometryChange()
-        if self.element.algorithm.outputs:
+        if self.element.algorithm.outputDefinitions():
             pt = self.getLinkPointForOutput(-1)
             pt = QPointF(0, pt.y())
             self.outButton.position = pt
@@ -139,9 +139,9 @@ class ModelerGraphicItem(QGraphicsItem):
         font.setPixelSize(12)
         fm = QFontMetricsF(font)
         unfolded = isinstance(self.element, Algorithm) and not self.element.paramsFolded
-        numParams = len(self.element.algorithm.parameters) if unfolded else 0
+        numParams = len([a for a in self.element.algorithm.parameterDefinitions() if not a.isDestination()]) if unfolded else 0
         unfolded = isinstance(self.element, Algorithm) and not self.element.outputsFolded
-        numOutputs = len(self.element.algorithm.outputs) if unfolded else 0
+        numOutputs = len(self.element.algorithm.outputDefinitions()) if unfolded else 0
 
         hUp = fm.height() * 1.2 * (numParams + 2)
         hDown = fm.height() * 1.2 * (numOutputs + 2)
@@ -194,7 +194,11 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.text = dlg.param.description()
                 self.update()
         elif isinstance(self.element, Algorithm):
-            dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.modeler_name)
+            dlg = None
+            try:
+                dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.modeler_name)
+            except:
+                pass
             if not dlg:
                 dlg = ModelerParametersDialog(self.element.algorithm, self.model, self.element.modeler_name)
             dlg.exec_()
@@ -279,7 +283,7 @@ class ModelerGraphicItem(QGraphicsItem):
             painter.drawText(pt, 'In')
             i = 1
             if not self.element.paramsFolded:
-                for param in self.element.algorithm.parameterDefinitions():
+                for param in [p for p in self.element.algorithm.parameterDefinitions() if not p.isDestination()]:
                     if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         text = self.getAdjustedText(param.description())
                         h = -(fm.height() * 1.2) * (i + 1)
@@ -292,7 +296,7 @@ class ModelerGraphicItem(QGraphicsItem):
             pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
             painter.drawText(pt, 'Out')
             if not self.element.outputsFolded:
-                for i, out in enumerate(self.element.algorithm.outputs):
+                for i, out in enumerate(self.element.algorithm.outputDefinitions()):
                     text = self.getAdjustedText(out.description())
                     h = fm.height() * 1.2 * (i + 2)
                     h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
@@ -321,9 +325,9 @@ class ModelerGraphicItem(QGraphicsItem):
         return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
 
     def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.element, Algorithm) and self.element.algorithm.outputs:
+        if isinstance(self.element, Algorithm) and self.element.algorithm.outputDefinitions():
             outputIndex = (outputIndex if not self.element.outputsFolded else -1)
-            text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description())
+            text = self.getAdjustedText(self.element.algorithm.outputDefinitions()[outputIndex].description())
             font = QFont('Verdana', 8)
             font.setPixelSize(12)
             fm = QFontMetricsF(font)

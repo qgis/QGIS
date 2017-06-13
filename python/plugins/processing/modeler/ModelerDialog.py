@@ -552,7 +552,11 @@ class ModelerDialog(BASE, WIDGET):
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):
-        dlg = alg.getCustomModelerParametersDialog(self.alg)
+        dlg = None
+        try:
+            dlg = alg.getCustomModelerParametersDialog(self.alg)
+        except:
+            pass
         if not dlg:
             dlg = ModelerParametersDialog(alg, self.alg)
         dlg.exec_()

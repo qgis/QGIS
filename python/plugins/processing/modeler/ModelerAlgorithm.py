@@ -36,20 +36,29 @@ from qgis.PyQt.QtCore import QPointF
 from operator import attrgetter
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterMapLayer,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterMatrix,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRange,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingParameterTable,
+                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterFeatureSource)
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (Parameter,
-                                        ParameterRaster,
-                                        ParameterVector,
-                                        ParameterTable,
-                                        ParameterTableField,
-                                        ParameterBoolean,
-                                        ParameterString,
-                                        ParameterNumber)
 
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
@@ -240,8 +249,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.inputs = {}
         GeoAlgorithm.__init__(self)
 
-        classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
-                   ParameterBoolean, ParameterString, ParameterNumber]
+        classes = [c for c in QgsProcessingParameterDefinition.__subclasses__()]
         self.parameters = []
         for c in classes:
             for inp in list(self.inputs.values()):
