@@ -94,7 +94,7 @@ class BatchPanel(BASE, WIDGET):
 
     def initWidgets(self):
         # If there are advanced parameters — show corresponding button
-        for param in self.alg.parameters:
+        for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.btnAdvanced.show()
                 break
@@ -129,8 +129,8 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setHorizontalHeaderItem(
                 column, QTableWidgetItem(self.tr('Load in QGIS')))
 
-        # Add three empty rows by default
-        for i in range(3):
+        # Add two empty rows by default
+        for i in range(2):
             self.addRow()
 
         self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
