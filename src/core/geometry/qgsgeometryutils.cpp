@@ -957,8 +957,8 @@ QgsPoint QgsGeometryUtils::midpoint( const QgsPoint &pt1, const QgsPoint &pt2 )
 
   double x = ( pt1.x() + pt2.x() ) / 2.0;
   double y = ( pt1.y() + pt2.y() ) / 2.0;
-  double z = 0.0;
-  double m = 0.0;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
 
   if ( pt1.is3D() || pt2.is3D() )
   {
