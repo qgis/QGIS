@@ -131,9 +131,20 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStr
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
-  QString filterFunc = QStringLiteral( "%1 = '%2'" )
-                       .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                             mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  QString filterFunc;
+  if ( mValue.isNull() || mValue.toString().isEmpty() )
+  {
+    filterFunc = QStringLiteral( "%1 = '%2' or %1 is null" )
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  }
+  else
+  {
+    filterFunc = QStringLiteral( "%1 = '%2'" )
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  }
+
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
 
   // add the mix/max scale denoms if we got any from the callers
