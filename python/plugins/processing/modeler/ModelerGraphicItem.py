@@ -57,7 +57,7 @@ class ModelerGraphicItem(QGraphicsItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             self.pixmap = None
-            self.text = element.param.description
+            self.text = element.param.description()
         elif isinstance(element, ModelerOutput):
             # Output name
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
@@ -191,7 +191,7 @@ class ModelerGraphicItem(QGraphicsItem):
             if dlg.param is not None:
                 self.model.updateParameter(dlg.param)
                 self.element.param = dlg.param
-                self.text = dlg.param.description
+                self.text = dlg.param.description()
                 self.update()
         elif isinstance(self.element, Algorithm):
             dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.modeler_name)

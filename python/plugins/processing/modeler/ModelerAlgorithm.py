@@ -281,7 +281,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.inputs[param.param.name()] = param
 
     def updateParameter(self, param):
-        self.inputs[param.name].param = param
+        self.inputs[param.name()].param = param
 
     def addAlgorithm(self, alg):
         name = self.getNameForAlgorithm(alg)
