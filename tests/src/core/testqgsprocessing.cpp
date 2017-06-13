@@ -20,6 +20,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include "qgis.h"
@@ -103,6 +104,13 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QgsProcessingParameterFeatureSink *p6 = new QgsProcessingParameterFeatureSink( "p6" );
       QVERIFY( addParameter( p6 ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
+
+      // remove parameter
+      removeParameter( "non existent" );
+      removeParameter( "p6" );
+      QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 );
+      removeParameter( "p5" );
+      QVERIFY( destinationParameterDefinitions().isEmpty() );
     }
 
     void runOutputChecks()
@@ -318,6 +326,7 @@ class TestQgsProcessing: public QObject
     void validateInputCrs();
     void generateIteratingDestination();
     void asPythonCommand();
+    void modelerAlgorithm();
 
   private:
 
@@ -2916,6 +2925,251 @@ void TestQgsProcessing::asPythonCommand()
 {
   DummyAlgorithm alg( "test" );
   alg.runAsPythonCommandChecks();
+}
+
+void TestQgsProcessing::modelerAlgorithm()
+{
+  //static value source
+  QgsProcessingModelAlgorithm::ChildParameterSource svSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 );
+  QCOMPARE( svSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  QCOMPARE( svSource.staticValue().toInt(), 5 );
+  svSource.setStaticValue( 7 );
+  QCOMPARE( svSource.staticValue().toInt(), 7 );
+  svSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "a" );
+  // check that calling setStaticValue flips source to StaticValue
+  QCOMPARE( svSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  svSource.setStaticValue( 7 );
+  QCOMPARE( svSource.staticValue().toInt(), 7 );
+  QCOMPARE( svSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+
+  // model parameter source
+  QgsProcessingModelAlgorithm::ChildParameterSource mpSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "a" );
+  QCOMPARE( mpSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( mpSource.parameterName(), QStringLiteral( "a" ) );
+  mpSource.setParameterName( "b" );
+  QCOMPARE( mpSource.parameterName(), QStringLiteral( "b" ) );
+  mpSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 );
+  // check that calling setParameterName flips source to ModelParameter
+  QCOMPARE( mpSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  mpSource.setParameterName( "c" );
+  QCOMPARE( mpSource.parameterName(), QStringLiteral( "c" ) );
+  QCOMPARE( mpSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+
+  // child alg output source
+  QgsProcessingModelAlgorithm::ChildParameterSource oSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "a", "b" );
+  QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( oSource.outputChildId(), QStringLiteral( "a" ) );
+  QCOMPARE( oSource.outputName(), QStringLiteral( "b" ) );
+  oSource.setOutputChildId( "c" );
+  QCOMPARE( oSource.outputChildId(), QStringLiteral( "c" ) );
+  oSource.setOutputName( "d" );
+  QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
+  oSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 );
+  // check that calling setOutputChildId flips source to ChildOutput
+  QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  oSource.setOutputChildId( "c" );
+  QCOMPARE( oSource.outputChildId(), QStringLiteral( "c" ) );
+  QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  oSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 );
+  // check that calling setOutputName flips source to ChildOutput
+  QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  oSource.setOutputName( "d" );
+  QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
+  QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+
+  // source equality operator
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) ==
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 7 ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "a" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "a" ) ) ==
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "a" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "a" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "b" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( QStringLiteral( "a" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) ==
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg2" ), QStringLiteral( "out" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out2" ) ) );
+
+
+
+
+
+  QgsProcessingModelAlgorithm::ChildAlgorithm child( QStringLiteral( "some_id" ) );
+  QCOMPARE( child.algorithmId(), QStringLiteral( "some_id" ) );
+  QVERIFY( !child.algorithm() );
+  child.setAlgorithmId( QStringLiteral( "native:centroids" ) );
+  QVERIFY( child.algorithm() );
+  QCOMPARE( child.algorithm()->id(), QStringLiteral( "native:centroids" ) );
+  child.setDescription( QStringLiteral( "desc" ) );
+  QCOMPARE( child.description(), QStringLiteral( "desc" ) );
+  QVERIFY( child.isActive() );
+  child.setActive( false );
+  QVERIFY( !child.isActive() );
+  child.setPosition( QPointF( 1, 2 ) );
+  QCOMPARE( child.position(), QPointF( 1, 2 ) );
+  QVERIFY( child.parametersCollapsed() );
+  child.setParametersCollapsed( false );
+  QVERIFY( !child.parametersCollapsed() );
+  QVERIFY( child.outputsCollapsed() );
+  child.setOutputsCollapsed( false );
+  QVERIFY( !child.outputsCollapsed() );
+
+  child.setChildId( QStringLiteral( "my_id" ) );
+  QCOMPARE( child.childId(), QStringLiteral( "my_id" ) );
+
+  child.setDependencies( QStringList() << "a" << "b" );
+  QCOMPARE( child.dependencies(), QStringList() << "a" << "b" );
+
+  QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource > sources;
+  sources.insert( QStringLiteral( "a" ), QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  child.setParameterSources( sources );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).staticValue().toInt(), 5 );
+  child.addParameterSource( QStringLiteral( "b" ), QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 7 ) );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).staticValue().toInt(), 5 );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).staticValue().toInt(), 7 );
+
+  QgsProcessingModelAlgorithm::ModelOutput testModelOut;
+  testModelOut.setChildId( QStringLiteral( "my_id" ) );
+  QCOMPARE( testModelOut.childId(), QStringLiteral( "my_id" ) );
+  testModelOut.setOutputName( QStringLiteral( "my_output" ) );
+  QCOMPARE( testModelOut.outputName(), QStringLiteral( "my_output" ) );
+
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs;
+  QgsProcessingModelAlgorithm::ModelOutput out1;
+  out1.setDescription( QStringLiteral( "my output" ) );
+  outputs.insert( QStringLiteral( "a" ), out1 );
+  child.setModelOutputs( outputs );
+  QCOMPARE( child.modelOutputs().count(), 1 );
+  QCOMPARE( child.modelOutputs().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "my output" ) );
+  QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
+  child.modelOutput( "a" ).setDescription( QStringLiteral( "my output 2" ) );
+  QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output 2" ) );
+  // no existent
+  child.modelOutput( "b" ).setDescription( QStringLiteral( "my output 3" ) );
+  QCOMPARE( child.modelOutput( "b" ).description(), QStringLiteral( "my output 3" ) );
+  QCOMPARE( child.modelOutputs().count(), 2 );
+
+
+
+  // model algorithm tests
+
+
+  QgsProcessingModelAlgorithm alg( "test", "testGroup" );
+  QCOMPARE( alg.name(), QStringLiteral( "test" ) );
+  QCOMPARE( alg.displayName(), QStringLiteral( "test" ) );
+  QCOMPARE( alg.group(), QStringLiteral( "testGroup" ) );
+
+  // child algorithms
+  QMap<QString, QgsProcessingModelAlgorithm::ChildAlgorithm> algs;
+  QgsProcessingModelAlgorithm::ChildAlgorithm a1;
+  a1.setDescription( QStringLiteral( "alg1" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm a2;
+  a2.setDescription( QStringLiteral( "alg2" ) );
+  algs.insert( QStringLiteral( "a" ), a1 );
+  algs.insert( QStringLiteral( "b" ), a2 );
+  alg.setChildAlgorithms( algs );
+  QCOMPARE( alg.childAlgorithms().count(), 2 );
+  QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "alg1" ) );
+  QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "b" ) ).description(), QStringLiteral( "alg2" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm a3;
+  a3.setChildId( QStringLiteral( "c" ) );
+  a3.setDescription( QStringLiteral( "alg3" ) );
+  QCOMPARE( alg.addChildAlgorithm( a3 ), QStringLiteral( "c" ) );
+  QCOMPARE( alg.childAlgorithms().count(), 3 );
+  QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "alg1" ) );
+  QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "b" ) ).description(), QStringLiteral( "alg2" ) );
+  QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "c" ) ).description(), QStringLiteral( "alg3" ) );
+  QCOMPARE( alg.childAlgorithm( "a" ).description(), QStringLiteral( "alg1" ) );
+  QCOMPARE( alg.childAlgorithm( "b" ).description(), QStringLiteral( "alg2" ) );
+  QCOMPARE( alg.childAlgorithm( "c" ).description(), QStringLiteral( "alg3" ) );
+  // initially non-existent
+  QVERIFY( alg.childAlgorithm( "d" ).description().isEmpty() );
+  alg.childAlgorithm( "d" ).setDescription( QStringLiteral( "alg4" ) );
+  QCOMPARE( alg.childAlgorithm( "d" ).description(), QStringLiteral( "alg4" ) );
+  // overwrite existing
+  QgsProcessingModelAlgorithm::ChildAlgorithm a4a;
+  a4a.setChildId( "d" );
+  a4a.setDescription( "new" );
+  alg.setChildAlgorithm( a4a );
+  QCOMPARE( alg.childAlgorithm( "d" ).description(), QStringLiteral( "new" ) );
+
+  // generating child ids
+  QgsProcessingModelAlgorithm::ChildAlgorithm c1;
+  c1.setAlgorithmId( QStringLiteral( "buffer" ) );
+  c1.generateChildId( alg );
+  QCOMPARE( c1.childId(), QStringLiteral( "buffer_1" ) );
+  QCOMPARE( alg.addChildAlgorithm( c1 ), QStringLiteral( "buffer_1" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm c2;
+  c2.setAlgorithmId( QStringLiteral( "buffer" ) );
+  c2.generateChildId( alg );
+  QCOMPARE( c2.childId(), QStringLiteral( "buffer_2" ) );
+  QCOMPARE( alg.addChildAlgorithm( c2 ), QStringLiteral( "buffer_2" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm c3;
+  c3.setAlgorithmId( QStringLiteral( "centroid" ) );
+  c3.generateChildId( alg );
+  QCOMPARE( c3.childId(), QStringLiteral( "centroid_1" ) );
+  QCOMPARE( alg.addChildAlgorithm( c3 ), QStringLiteral( "centroid_1" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm c4;
+  c4.setAlgorithmId( QStringLiteral( "centroid" ) );
+  c4.setChildId( QStringLiteral( "centroid_1" ) );// dupe id
+  QCOMPARE( alg.addChildAlgorithm( c4 ), QStringLiteral( "centroid_2" ) );
+  QCOMPARE( alg.childAlgorithm( QStringLiteral( "centroid_2" ) ).childId(), QStringLiteral( "centroid_2" ) );
+
+  // parameter components
+  QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> pComponents;
+  QgsProcessingModelAlgorithm::ModelParameter pc1;
+  pc1.setParameterName( QStringLiteral( "my_param" ) );
+  QCOMPARE( pc1.parameterName(), QStringLiteral( "my_param" ) );
+  pComponents.insert( QStringLiteral( "my_param" ), pc1 );
+  alg.setParameterComponents( pComponents );
+  QCOMPARE( alg.parameterComponents().count(), 1 );
+  QCOMPARE( alg.parameterComponents().value( QStringLiteral( "my_param" ) ).parameterName(), QStringLiteral( "my_param" ) );
+  QCOMPARE( alg.parameterComponent( "my_param" ).parameterName(), QStringLiteral( "my_param" ) );
+  alg.parameterComponent( "my_param" ).setDescription( QStringLiteral( "my param 2" ) );
+  QCOMPARE( alg.parameterComponent( "my_param" ).description(), QStringLiteral( "my param 2" ) );
+  // no existent
+  alg.parameterComponent( "b" ).setDescription( QStringLiteral( "my param 3" ) );
+  QCOMPARE( alg.parameterComponent( "b" ).description(), QStringLiteral( "my param 3" ) );
+  QCOMPARE( alg.parameterComponent( "b" ).parameterName(), QStringLiteral( "b" ) );
+  QCOMPARE( alg.parameterComponents().count(), 2 );
+
+  // parameter definitions
+  QgsProcessingModelAlgorithm alg1a( "test", "testGroup" );
+  QgsProcessingModelAlgorithm::ModelParameter bool1;
+  bool1.setPosition( QPointF( 1, 2 ) );
+  alg1a.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
+  QCOMPARE( alg1a.parameterDefinitions().count(), 1 );
+  QCOMPARE( alg1a.parameterDefinition( "p1" )->type(), QStringLiteral( "boolean" ) );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).position().x(), 1.0 );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).position().y(), 2.0 );
+  alg1a.updateModelParameter( new QgsProcessingParameterBoolean( "p1", "descx" ) );
+  QCOMPARE( alg1a.parameterDefinition( "p1" )->description(), QStringLiteral( "descx" ) );
+  alg1a.removeModelParameter( "bad" );
+  QCOMPARE( alg1a.parameterDefinitions().count(), 1 );
+  alg1a.removeModelParameter( "p1" );
+  QVERIFY( alg1a.parameterDefinitions().isEmpty() );
+  QVERIFY( alg1a.parameterComponents().isEmpty() );
+
+
+  // test canExecute
+  QgsProcessingModelAlgorithm alg2( "test", "testGroup" );
+  QVERIFY( alg2.canExecute() );
+  QgsProcessingModelAlgorithm::ChildAlgorithm c5;
+  c5.setAlgorithmId( "native:centroids" );
+  alg2.addChildAlgorithm( c5 );
+  QVERIFY( alg2.canExecute() );
+  // non-existing alg
+  QgsProcessingModelAlgorithm::ChildAlgorithm c6;
+  c6.setAlgorithmId( "i'm not an alg" );
+  alg2.addChildAlgorithm( c6 );
+  QVERIFY( !alg2.canExecute() );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

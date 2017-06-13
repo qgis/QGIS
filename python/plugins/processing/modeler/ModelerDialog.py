@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import codecs
 import sys
 import os
+import math
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
@@ -40,12 +41,13 @@ from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsSettings,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingModelAlgorithm)
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
+from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
@@ -62,7 +64,7 @@ class ModelerDialog(BASE, WIDGET):
 
     update_model = pyqtSignal()
 
-    def __init__(self, alg=None):
+    def __init__(self, model=None):
         super(ModelerDialog, self).__init__(None)
         self.setupUi(self)
 
@@ -128,6 +130,11 @@ class ModelerDialog(BASE, WIDGET):
 
             settings = QgsSettings()
             factor = settings.value('/qgis/zoom_favor', 2.0)
+
+            # "Normal" mouse has an angle delta of 120, precision mouses provide data
+            # faster, in smaller steps
+            factor = 1.0 + (factor - 1.0) / 120.0 * abs(event.angleDelta().y())
+
             if (event.modifiers() == Qt.ControlModifier):
                 factor = 1.0 + (factor - 1.0) / 20.0
 
@@ -135,7 +142,6 @@ class ModelerDialog(BASE, WIDGET):
                 factor = 1 / factor
 
             self.view.scale(factor, factor)
-            self.repaintModel()
 
         def _enterEvent(e):
             QGraphicsView.enterEvent(self.view, e)
@@ -228,21 +234,21 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionEditHelp.triggered.connect(self.editHelp)
         self.mActionRun.triggered.connect(self.runModel)
 
-        if alg is not None:
-            self.alg = alg
-            self.textGroup.setText(alg._group)
-            self.textName.setText(alg.displayName())
+        if model is not None:
+            self.model = model
+            self.textGroup.setText(model.group())
+            self.textName.setText(model.displayName())
             self.repaintModel()
 
         else:
-            self.alg = ModelerAlgorithm()
-            self.alg.modelerdialog = self
+            self.model = ModelerAlgorithm()
+            self.model.modelerdialog = self
 
         self.fillInputsTree()
         self.fillAlgorithmTree()
 
         self.view.centerOn(0, 0)
-        self.alg.setModelerView(self)
+        self.model.setModelerView(self)
         self.help = None
 
         self.hasChanged = False
@@ -269,19 +275,19 @@ class ModelerDialog(BASE, WIDGET):
             evt.accept()
 
     def editHelp(self):
-        alg = self.alg
+        alg = self.model
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
-            self.alg.helpContent = dlg.descriptions
+            self.model.helpContent = dlg.descriptions
             self.hasChanged = True
 
     def runModel(self):
-        if len(self.alg.algs) == 0:
+        if len(self.model.childAlgorithms()) == 0:
             self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
             return
 
-        dlg = AlgorithmDialog(self.alg)
+        dlg = AlgorithmDialog(self.model)
         dlg.exec_()
 
     def save(self):
@@ -399,7 +405,7 @@ class ModelerDialog(BASE, WIDGET):
         svg.setFileName(filename)
         svg.setSize(QSize(totalRect.width(), totalRect.height()))
         svg.setViewBox(svgRect)
-        svg.setTitle(self.alg.displayName())
+        svg.setTitle(self.model.displayName())
 
         painter = QPainter(svg)
         self.scene.render(painter, svgRect, totalRect)
@@ -418,7 +424,7 @@ class ModelerDialog(BASE, WIDGET):
         if not filename.lower().endswith('.py'):
             filename += '.py'
 
-        text = self.alg.toPython()
+        text = self.model.toPython()
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 
@@ -431,10 +437,10 @@ class ModelerDialog(BASE, WIDGET):
                 self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
             )
             return
-        self.alg._name = str(self.textName.text())
-        self.alg._group = str(self.textGroup.text())
-        if self.alg.descriptionFile is not None and not saveAs:
-            filename = self.alg.descriptionFile
+        self.model._name = str(self.textName.text())
+        self.model._group = str(self.textGroup.text())
+        if self.model.descriptionFile is not None and not saveAs:
+            filename = self.model.descriptionFile
         else:
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
@@ -443,9 +449,9 @@ class ModelerDialog(BASE, WIDGET):
             if filename:
                 if not filename.endswith('.model'):
                     filename += '.model'
-                self.alg.descriptionFile = filename
+                self.model.descriptionFile = filename
         if filename:
-            text = self.alg.toJson()
+            text = self.model.toJson()
             try:
                 with codecs.open(filename, 'w', encoding='utf-8') as fout:
                     fout.write(text)
@@ -473,8 +479,8 @@ class ModelerDialog(BASE, WIDGET):
         if filename:
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
-                self.alg = alg
-                self.alg.setModelerView(self)
+                self.model = alg
+                self.model.setModelerView(self)
                 self.textGroup.setText(alg._group)
                 self.textName.setText(alg._name)
                 self.repaintModel()
@@ -499,7 +505,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene = ModelerScene()
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
                                        ModelerAlgorithm.CANVAS_SIZE))
-        self.scene.paintModel(self.alg, controls)
+        self.scene.paintModel(self.model, controls)
         self.view.setScene(self.scene)
 
     def addInput(self):
@@ -509,14 +515,16 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInputOfType(self, paramType, pos=None):
         if paramType in ModelerParameterDefinitionDialog.paramTypes:
-            dlg = ModelerParameterDefinitionDialog(self.alg, paramType)
+            dlg = ModelerParameterDefinitionDialog(self.model, paramType)
             dlg.exec_()
             if dlg.param is not None:
                 if pos is None:
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
                     pos = QPointF(pos)
-                self.alg.addParameter(ModelerParameter(dlg.param, pos))
+                component = QgsProcessingModelAlgorithm.ModelParameter(dlg.param.name())
+                component.setPosition(pos)
+                self.model.addModelParameter(dlg.param, component)
                 self.repaintModel()
                 # self.view.ensureVisible(self.scene.getLastParameterItem())
                 self.hasChanged = True
@@ -525,8 +533,8 @@ class ModelerDialog(BASE, WIDGET):
         MARGIN = 20
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
-        if self.alg.inputs:
-            maxX = max([i.pos.x() for i in list(self.alg.inputs.values())])
+        if len(self.model.parameterComponents() > 0):
+            maxX = max([i.position().x() for i in list(self.model.parameterComponents().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
         else:
             newX = MARGIN + BOX_WIDTH / 2
@@ -554,24 +562,22 @@ class ModelerDialog(BASE, WIDGET):
     def _addAlgorithm(self, alg, pos=None):
         dlg = None
         try:
-            dlg = alg.getCustomModelerParametersDialog(self.alg)
+            dlg = alg.getCustomModelerParametersDialog(self.model)
         except:
             pass
         if not dlg:
-            dlg = ModelerParametersDialog(alg, self.alg)
+            dlg = ModelerParametersDialog(alg, self.model)
         dlg.exec_()
         if dlg.alg is not None:
             if pos is None:
-                dlg.alg.pos = self.getPositionForAlgorithmItem()
+                dlg.alg.setPosition(self.getPositionForAlgorithmItem())
             else:
-                dlg.alg.pos = pos
-            if isinstance(dlg.alg.pos, QPoint):
-                dlg.alg.pos = QPointF(pos)
+                dlg.alg.setPosition(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-            for i, out in enumerate(dlg.alg.outputs):
-                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
-                                                                 ModelerGraphicItem.BOX_HEIGHT)
-            self.alg.addAlgorithm(dlg.alg)
+            for i, out in enumerate(dlg.alg.modelOutputs()):
+                dlg.alg.modelOutput(out).setPosition(dlg.alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
+                                                                                  ModelerGraphicItem.BOX_HEIGHT))
+            self.model.addChildAlgorithm(dlg.alg)
             self.repaintModel()
             self.hasChanged = True
 
@@ -579,9 +585,9 @@ class ModelerDialog(BASE, WIDGET):
         MARGIN = 20
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
-        if self.alg.algs:
-            maxX = max([alg.pos.x() for alg in list(self.alg.algs.values())])
-            maxY = max([alg.pos.y() for alg in list(self.alg.algs.values())])
+        if self.model.childAlgorithms():
+            maxX = max([alg.position().x() for alg in list(self.model.childAlgorithms().values())])
+            maxY = max([alg.position().y() for alg in list(self.model.childAlgorithms().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
             newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
                        BOX_HEIGHT)
@@ -611,7 +617,7 @@ class ModelerDialog(BASE, WIDGET):
             for alg in provider.algorithms():
                 if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
-                if alg.id() == self.alg.id():
+                if alg.id() == self.model.id():
                     continue
 
                 item_text = [alg.displayName().lower()]
