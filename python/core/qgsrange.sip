@@ -9,7 +9,8 @@
 
 
 
-template <T> class QgsRange
+template <T>
+class QgsRange
 {
 %Docstring
  A template based class for storing ranges (lower to upper values).
@@ -27,6 +28,10 @@ template <T> class QgsRange
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
+%End
+
+%TypeHeaderCode
+#include "qgsrange.h"
 %End
   public:
 
@@ -117,7 +122,8 @@ typedef QgsRange< double > QgsDoubleRange;
 typedef QgsRange< int > QgsIntRange;
 
 
-template <T> class QgsTemporalRange
+template <T>
+class QgsTemporalRange
 {
 %Docstring
  A template based class for storing temporal ranges (beginning to end values).
@@ -134,6 +140,10 @@ template <T> class QgsTemporalRange
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
+%End
+
+%TypeHeaderCode
+#include "qgsrange.h"
 %End
   public:
 
