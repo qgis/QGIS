@@ -34,10 +34,13 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
 from qgis.core import (QgsExpression,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterRasterLayer)
 from qgis.gui import QgsExpressionBuilderDialog
-from processing.core.parameters import ParameterNumber, ParameterVector, ParameterRaster
-from processing.core.outputs import OutputNumber, OutputVector, OutputRaster
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
 from processing.tools.dataobjects import createExpressionContext
 
@@ -76,7 +79,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
         context.popScope()
-        values = self.modelParametersDialog.getAvailableValuesOfType(ParameterNumber, OutputNumber)
+        values = self.modelParametersDialog.getAvailableValuesOfType(QgsProcessingParameterNumber, QgsProcessingOutputNumber)
         variables = {}
         for value in values:
             if isinstance(value, ValueFromInput):
@@ -86,11 +89,11 @@ class ModellerNumberInputPanel(BASE, WIDGET):
             else:
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
-                out = alg.algorithm.getOutputFromName(value.output)
+                out = alg.algorithm.outputDefinition(value.output)
                 desc = self.tr("Output '{0}' from algorithm '{1}'").format(out.description(), alg.description)
             variables[name] = desc
-        values = self.modelParametersDialog.getAvailableValuesOfType(ParameterVector, OutputVector)
-        values.extend(self.modelParametersDialog.getAvailableValuesOfType(ParameterRaster, OutputRaster))
+        values = self.modelParametersDialog.getAvailableValuesOfType([QgsProcessingParameterFeatureSource, QgsProcessingParameterRasterLayer],
+                                                                     [QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer])
         for value in values:
             if isinstance(value, ValueFromInput):
                 name = value.name
@@ -99,13 +102,13 @@ class ModellerNumberInputPanel(BASE, WIDGET):
             else:
                 name = "%s_%s" % (value.alg, value.output)
                 alg = self.modelParametersDialog.model.algs[value.alg]
-                element = alg.algorithm.getOutputFromName(value.output)
+                element = alg.algorithm.outputDefinition(value.output)
                 desc = self.tr("Output '{0}' from algorithm '{1}'").format(element.description(), alg.description)
             variables['%s_minx' % name] = self.tr("Minimum X of {0}").format(desc)
             variables['%s_miny' % name] = self.tr("Minimum Y of {0}").format(desc)
             variables['%s_maxx' % name] = self.tr("Maximum X of {0}").format(desc)
             variables['%s_maxy' % name] = self.tr("Maximum Y of {0}").format(desc)
-            if isinstance(element, (ParameterRaster, OutputRaster)):
+            if isinstance(element, (QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)):
                 variables['%s_min' % name] = self.tr("Minimum value of {0}").format(desc)
                 variables['%s_max' % name] = self.tr("Maximum value of {0}").format(desc)
                 variables['%s_avg' % name] = self.tr("Mean value of {0}").format(desc)
@@ -123,13 +126,13 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         value = self.leText.text()
         values = []
         for param in self.modelParametersDialog.model.parameters:
-            if isinstance(param, ParameterNumber):
+            if isinstance(param, QgsProcessingParameterNumber):
                 if "@" + param.name() in value:
                     values.append(ValueFromInput(param.name()))
         for alg in list(self.modelParametersDialog.model.algs.values()):
-            for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name(), out.name) in value:
-                    values.append(ValueFromOutput(alg.name(), out.name))
+            for out in alg.algorithm.outputDefinitions():
+                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.modeler_name, out.name) in value:
+                    values.append(ValueFromOutput(alg.modeler_name, out.name()))
         if values:
             return CompoundValue(values, value)
         else:

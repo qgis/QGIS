@@ -72,9 +72,9 @@ class ModelerScene(QGraphicsScene):
         elif isinstance(value, ValueFromInput):
             items.append((self.paramItems[value.name], 0))
         elif isinstance(value, ValueFromOutput):
-            outputs = self.model.algs[value.alg].algorithm.outputs
+            outputs = self.model.algs[value.alg].algorithm.outputDefinitions()
             for i, out in enumerate(outputs):
-                if out.name == value.output:
+                if out.name() == value.output:
                     break
             if value.alg in self.algItems:
                 items.append((self.algItems[value.alg], i))
@@ -89,7 +89,7 @@ class ModelerScene(QGraphicsScene):
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
             item.setPos(inp.pos.x(), inp.pos.y())
-            self.paramItems[inp.param.name] = item
+            self.paramItems[inp.param.name()] = item
 
         # We add the algs
         for alg in list(model.algs.values()):
@@ -104,9 +104,9 @@ class ModelerScene(QGraphicsScene):
         for alg in list(model.algs.values()):
             idx = 0
             for parameter in alg.algorithm.parameterDefinitions():
-                if not parameter.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                    if parameter.name in alg.params:
-                        value = alg.params[parameter.name]
+                if not parameter.isDestination() and not parameter.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    if parameter.name() in alg.params:
+                        value = alg.params[parameter.name()]
                     else:
                         value = None
                     sourceItems = self.getItemsFromParamValue(value)
