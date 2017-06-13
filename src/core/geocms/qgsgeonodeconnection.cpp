@@ -92,34 +92,60 @@ QVariantList QgsGeoNodeConnection::getLayers()
   QJsonObject jsonObject = jsonDocument.object();
   QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   QVariantList layerList = jsonVariantMap["objects"].toList();
-  for ( int i = 0; i < layerList.count(); ++i )
+  QString geonodeVersion;
+  if ( jsonVariantMap.contains( QStringLiteral( "geonode_version" ) ) )
   {
-    QVariantMap layer = layerList[i].toMap();
+    geonodeVersion = jsonVariantMap["geonode_version"].toString();
+  }
+  else
+  {
+    geonodeVersion = QStringLiteral( "2.6" );
+  }
 
-    // Trick to get layer's name from distribution_url or detail_url
-    QStringList temp = layer["distribution_url"].toString().split( "/" );
-    QString layerName = temp[temp.count() - 1];
-    if ( layerName.length() == 0 )
+  if ( geonodeVersion == QStringLiteral( "2.6" ) )
+  {
+    for ( int i = 0; i < layerList.count(); i++ )
     {
-      temp = layer["detail_url"].toString().split( "/" );
-      layerName = temp[temp.count() - 1];
+      QVariantMap layer = layerList[i].toMap();
+      // Find WMS and WFS. XYZ is not available
+
     }
-    // Add typeName
-    QString layerTypeName = layerName;
-    layer[QStringLiteral( "typename" )] = layerName;
-    // Clean from geonode%3A
-    QString geonodePrefix = QStringLiteral( "geonode%3A" );
-    if ( layerName.contains( geonodePrefix ) )
+  }
+  // Handling geonode version 2.7.devsomething
+  else if ( geonodeVersion.startsWith( "2.7" ) )
+  {
+    for ( int i = 0; i < layerList.count(); i++ )
     {
-      layerName.remove( 0, geonodePrefix.length() );
+      QVariantMap layer = layerList[i].toMap();
+      // Find WMS, WFS, and XYZ link
+      QVariantList layerLinks = layer["links"].toList();
+      layer["wms"] = QStringLiteral( "" );
+      layer["wfs"] = QStringLiteral( "" );
+      layer["xyz"] = QStringLiteral( "" );
+      for ( int j = 0; j < layerLinks.count(); j++ )
+      {
+        QVariantMap link = layerLinks[j].toMap();
+        if ( link.contains( "link_type" ) )
+        {
+          if ( link["link_type"] == "OGC:WMS" )
+          {
+            layer["wms"] = link["url"].toString();
+          }
+          if ( link["link_type"] == "OGC:WFS" )
+          {
+            layer["wfs"] = link["url"].toString();
+          }
+          if ( link["link_type"] == "image" )
+          {
+            if ( link.contains( "name" ) && link["name"] == "Tiles" )
+            {
+              layer["xyz"] = link["url"].toString();
+            }
+          }
+        }
+      }
+      layerList[i] = layer;
     }
-    QString geonodePrefix2 = QStringLiteral( "geonode:" );
-    if ( layerName.contains( geonodePrefix2 ) )
-    {
-      layerName.remove( 0, geonodePrefix2.length() );
-    }
-    layer[QStringLiteral( "name" )] = layerName;
-    layerList[i] = layer;
   }
   return layerList;
 }
