@@ -36,6 +36,8 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputHtml;
     else if ( sipCpp->type() == "outputNumber" )
       sipType = sipType_QgsProcessingOutputNumber;
+    else if ( sipCpp->type() == "outputString" )
+      sipType = sipType_QgsProcessingOutputString;
 %End
   public:
 
@@ -183,6 +185,27 @@ class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 
     virtual QString type() const;
 };
+
+class QgsProcessingOutputString : QgsProcessingOutputDefinition
+{
+%Docstring
+ A string output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputString( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputString.
+%End
+
+    virtual QString type() const;
+};
+
 
 
 

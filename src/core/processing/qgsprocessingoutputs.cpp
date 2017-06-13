@@ -50,3 +50,7 @@ QgsProcessingOutputHtml::QgsProcessingOutputHtml( const QString &name, const QSt
 QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}
