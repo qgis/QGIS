@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
+                       QgsProcessingOutputString,
                        QgsProject)
 
 from qgis.gui import QgsMessageBar
