@@ -553,7 +553,6 @@ INCLUDE_DIRECTORIES(
   ../core/geometry
   ../core/geocms
   ../core/layout
-  ../core/geonode
   ../core/metadata
   ../core/layertree
   ../core/providers/memory
