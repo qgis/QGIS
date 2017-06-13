@@ -19,6 +19,7 @@ Content-Type: text/xml; charset=utf-8
         </se:Fill>
         <se:Stroke>
          <se:SvgParameter name="stroke">#000000</se:SvgParameter>
+         <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
         </se:Stroke>
        </se:Mark>
        <se:Size>7</se:Size>
