@@ -535,6 +535,31 @@ Copies are protected to avoid slicing
  :rtype: QgsProcessingModelAlgorithm.ChildAlgorithm
 %End
 
+    bool removeChildAlgorithm( const QString &id );
+%Docstring
+ Attempts to remove the child algorithm with matching ``id``.
+ Returns true if the algorithm could be removed, or false
+ if the algorithm could not be removed (e.g. due to other
+ child algorithms depending on it).
+ :rtype: bool
+%End
+
+    QSet< QString > dependentChildAlgorithms( const QString &childId ) const;
+%Docstring
+ Returns a list of the child algorithm IDs depending on the child
+ algorithm with the specified ``childId``.
+.. seealso:: dependsOnChildAlgorithms()
+ :rtype: set of str
+%End
+
+    QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
+%Docstring
+ Returns a list of the child algorithm IDs on which the child
+ algorithm with the specified ``childId`` depends upon.
+.. seealso:: dependentChildAlgorithms()
+ :rtype: set of str
+%End
+
     void addModelParameter( QgsProcessingParameterDefinition *definition /Transfer/, const QgsProcessingModelAlgorithm::ModelParameter &component );
 %Docstring
  Adds a new parameter to the model, with the specified ``definition`` and graphical ``component``.
@@ -551,12 +576,22 @@ Copies are protected to avoid slicing
 .. seealso:: removeModelParameter()
 %End
 
-    void removeModelParameter( const QString &name );
+    bool removeModelParameter( const QString &name );
 %Docstring
  Removes an existing model parameter by ``name``. The definition of the matching parameter
  is deleted.
+ Returns false if the parameter could not be deleted (e.g. if a child algorithm
+ depends on the parameter).
 .. seealso:: addModelParameter()
 .. seealso:: updateModelParameter()
+ :rtype: bool
+%End
+
+    bool childAlgorithmsDependOnParameter( const QString &name ) const;
+%Docstring
+ Returns true if any child algorithms depend on the model parameter
+ with the specified ``name``.
+ :rtype: bool
 %End
 
     QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> parameterComponents() const;
@@ -595,13 +630,6 @@ Copies are protected to avoid slicing
 .. seealso:: setParameterComponents()
 .. seealso:: setParameterComponent()
  :rtype: QgsProcessingModelAlgorithm.ModelParameter
-%End
-
-
-
-    QStringList dependentChildAlgorithms( const QString &childId ) const;
-%Docstring
- :rtype: list of str
 %End
 
 };

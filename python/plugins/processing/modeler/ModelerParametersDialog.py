@@ -200,7 +200,8 @@ class ModelerParametersDialog(QDialog):
         if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self._algName)
+            dependent = list(self.model.dependentChildAlgorithms(self._algName))
+            dependent.append(self._algName)
         opts = []
         for alg in list(self.model.childAlgorithms().values()):
             if alg.childId() not in dependent:
@@ -225,11 +226,11 @@ class ModelerParametersDialog(QDialog):
         # upgrade paramType to list
         if paramType is None:
             paramType = []
-        elif type(paramType) is not list:
+        elif not isinstance(paramType, list):
             paramType = [paramType]
         if outTypes is None:
             outTypes = []
-        elif type(outTypes) is not list:
+        elif not isinstance(outTypes, list):
             outTypes = [outTypes]
 
         values = []
@@ -249,7 +250,8 @@ class ModelerParametersDialog(QDialog):
         if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self._algName)
+            dependent = list(self.model.dependentChildAlgorithms(self._algName))
+            dependent.insert(self._algName)
         for alg in list(self.model.childAlgorithms().values()):
             if alg.childId() not in dependent:
                 for out in alg.algorithm().outputDefinitions():

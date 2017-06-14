@@ -46,10 +46,11 @@ class ModelerGraphicItem(QGraphicsItem):
     BOX_HEIGHT = 30
     BOX_WIDTH = 200
 
-    def __init__(self, element, model, controls):
+    def __init__(self, element, model, controls, scene=None):
         super(ModelerGraphicItem, self).__init__(None)
         self.controls = controls
         self.model = model
+        self.scene = scene
         self.element = element
         if isinstance(element, QgsProcessingModelAlgorithm.ModelParameter):
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
@@ -177,11 +178,11 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def deactivateAlgorithm(self):
         self.model.deactivateAlgorithm(self.element.childId())
-        self.model.updateModelerView()
+        self.scene.dialog.repaintModel()
 
     def activateAlgorithm(self):
         if self.model.activateAlgorithm(self.element.childId()):
-            self.model.updateModelerView()
+            self.scene.dialog.repaintModel()
         else:
             QMessageBox.warning(None, 'Could not activate Algorithm',
                                 'The selected algorithm depends on other currently non-active algorithms.\n'
@@ -211,23 +212,25 @@ class ModelerGraphicItem(QGraphicsItem):
             if dlg.alg is not None:
                 dlg.alg.setChildId(self.element.childId())
                 self.model.updateAlgorithm(dlg.alg)
-                self.model.updateModelerView()
+                self.scene.dialog.repaintModel()
 
     def removeElement(self):
         if isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
-            if not self.model.removeParameter(self.element.parameterName()):
+            if not self.model.removeModelParameter(self.element.parameterName()):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')
             else:
-                self.model.updateModelerView()
+                self.scene.dialog.haschanged = True
+                self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelAlgorithm.ChildAlgorithm):
-            if not self.model.removeAlgorithm(self.element.childId()):
+            if not self.model.removeChildAlgorithm(self.element.childId()):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')
             else:
-                self.model.updateModelerView()
+                self.scene.dialog.haschanged = True
+                self.scene.dialog.repaintModel()
 
     def getAdjustedText(self, text):
         font = QFont('Verdana', 8)

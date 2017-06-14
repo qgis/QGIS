@@ -543,6 +543,28 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QgsProcessingModelAlgorithm::ChildAlgorithm &childAlgorithm( const QString &id );
 
     /**
+     * Attempts to remove the child algorithm with matching \a id.
+     * Returns true if the algorithm could be removed, or false
+     * if the algorithm could not be removed (e.g. due to other
+     * child algorithms depending on it).
+     */
+    bool removeChildAlgorithm( const QString &id );
+
+    /**
+     * Returns a list of the child algorithm IDs depending on the child
+     * algorithm with the specified \a childId.
+     * \see dependsOnChildAlgorithms()
+     */
+    QSet< QString > dependentChildAlgorithms( const QString &childId ) const;
+
+    /**
+     * Returns a list of the child algorithm IDs on which the child
+     * algorithm with the specified \a childId depends upon.
+     * \see dependentChildAlgorithms()
+     */
+    QSet< QString > dependsOnChildAlgorithms( const QString &childId ) const;
+
+    /**
      * Adds a new parameter to the model, with the specified \a definition and graphical \a component.
      * Ownership of \a definition is transferred to the model.
      * \see updateModelParameter()
@@ -561,10 +583,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Removes an existing model parameter by \a name. The definition of the matching parameter
      * is deleted.
+     * Returns false if the parameter could not be deleted (e.g. if a child algorithm
+     * depends on the parameter).
      * \see addModelParameter()
      * \see updateModelParameter()
      */
-    void removeModelParameter( const QString &name );
+    bool removeModelParameter( const QString &name );
+
+    /**
+     * Returns true if any child algorithms depend on the model parameter
+     * with the specified \a name.
+     */
+    bool childAlgorithmsDependOnParameter( const QString &name ) const;
 
     /**
      * Returns the map of parameter components used by the model. The keys
@@ -602,10 +632,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     QgsProcessingModelAlgorithm::ModelParameter &parameterComponent( const QString &name );
 
-
-
-    QStringList dependentChildAlgorithms( const QString &childId ) const;
-
   private:
 
     QString mModelName;
@@ -613,8 +639,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QMap< QString, ChildAlgorithm > mChildAlgorithms;
 
-//! Map of parameter name to model parameter component
+    //! Map of parameter name to model parameter component
     QMap< QString, ModelParameter > mParameterComponents;
+
+    void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
+    void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
 };
 
 #endif // QGSPROCESSINGMODELALGORITHM_H
