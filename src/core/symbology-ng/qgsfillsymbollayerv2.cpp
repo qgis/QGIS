@@ -390,7 +390,13 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &elemen
   QPointF offset;
   QgsSymbolLayerV2Utils::displacementFromSldElement( element, offset );
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  offset.setX( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.x() ) );
+  offset.setY( QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+  borderWidth = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, borderWidth );
+
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, fillStyle, borderColor, borderStyle, borderWidth );
+  sl->setOutputUnit( QgsSymbolV2::Pixel );
   sl->setOffset( offset );
   return sl;
 }
@@ -2159,6 +2165,10 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QgsSymbolLayerV2Utils::lineFromSld( graphicElem, penStyle, borderColor, borderWidth );
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+  borderWidth = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, borderWidth );
+
   double angle = 0.0;
   QString angleFunc;
   if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
@@ -2170,6 +2180,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   }
 
   QgsSVGFillSymbolLayer* sl = new QgsSVGFillSymbolLayer( path, size, angle );
+  sl->setOutputUnit( QgsSymbolV2::Pixel );
   sl->setSvgFillColor( fillColor );
   sl->setSvgOutlineColor( borderColor );
   sl->setSvgOutlineWidth( borderWidth );
@@ -3014,7 +3025,12 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
     offset = sqrt( pow( vectOffset.x(), 2 ) + pow( vectOffset.y(), 2 ) );
   }
 
+  QString uom = element.attribute( QString( "uom" ), "" );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+  lineWidth = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, lineWidth );
+
   QgsLinePatternFillSymbolLayer* sl = new QgsLinePatternFillSymbolLayer();
+  sl->setOutputUnit( QgsSymbolV2::Pixel );
   sl->setColor( lineColor );
   sl->setLineWidth( lineWidth );
   sl->setLineAngle( angle );

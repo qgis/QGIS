@@ -103,6 +103,14 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     static QgsSymbolV2::ScaleMethod decodeScaleMethod( const QString& str );
 
+    /** Returns the size scaled in pixels according to the uom attribute.
+     * @param uom The uom attribute from SLD 1.1 version
+     * @param size The original size
+     * @returns the size in pixels
+     * @note added in QGIS 2.18 and 3.0
+     */
+    static double sizeInPixelsFromSldUom( const QString &uom, double size );
+
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
