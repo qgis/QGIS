@@ -67,6 +67,29 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 };
 
 /**
+ * Native transform algorithm.
+ */
+class QgsTransformAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsTransformAlgorithm();
+
+    QString name() const override { return QStringLiteral( "reprojectlayer" ); }
+    QString displayName() const override { return QObject::tr( "Reproject layer" ); }
+    virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
  * Native buffer algorithm.
  */
 class QgsBufferAlgorithm : public QgsProcessingAlgorithm

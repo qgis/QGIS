@@ -62,6 +62,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsBufferAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
+  addAlgorithm( new QgsTransformAlgorithm() );
 }
 
 
@@ -526,6 +527,65 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       // coarse progress report for multiple clip geometries
       feedback->setProgress( 100.0 * static_cast< double >( i ) / clipGeoms.length() );
     }
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+QgsTransformAlgorithm::QgsTransformAlgorithm()
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Reprojected" ) ) );
+}
+
+QString QgsTransformAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm reprojects a vector layer. It creates a new layer with the same features "
+                      "as the input one, but with geometries reprojected to a new CRS.\n\n"
+                      "Attributes are not modified by this algorithm." );
+}
+
+QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  QgsCoordinateReferenceSystem targetCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(), source->wkbType(), targetCrs, dest ) );
+  if ( !sink )
+    return QVariantMap();
+
+  long count = source->featureCount();
+  if ( count <= 0 )
+    return QVariantMap();
+
+  QgsFeature f;
+  QgsFeatureRequest req;
+  // perform reprojection in the iterators...
+  req.setDestinationCrs( targetCrs );
+
+  QgsFeatureIterator it = source->getFeatures( req );
+
+  double step = 100.0 / count;
+  int current = 0;
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    sink->addFeature( f );
+    feedback->setProgress( current * step );
+    current++;
   }
 
   QVariantMap outputs;
