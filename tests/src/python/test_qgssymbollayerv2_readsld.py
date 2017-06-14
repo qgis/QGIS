@@ -151,7 +151,7 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         # create a layer
         layer = createLayerWithOnePoint()
 
-         # load a sld with marker size without uom attribute (pixels)
+        # load a sld with marker size without uom attribute (pixels)
         sld = 'symbol_layer/QgsSvgMarkerSymbolLayerV2.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
