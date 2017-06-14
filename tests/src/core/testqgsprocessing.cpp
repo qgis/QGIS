@@ -3153,9 +3153,19 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg1a.parameterDefinition( "p1" )->description(), QStringLiteral( "descx" ) );
   alg1a.removeModelParameter( "bad" );
   QCOMPARE( alg1a.parameterDefinitions().count(), 1 );
-  alg1a.removeModelParameter( "p1" );
+
+  // try removing a parameter which an alg depends on
+  QgsProcessingModelAlgorithm::ChildAlgorithm cx1;
+  cx1.setChildId( "cx1" );
+  cx1.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
+  alg1a.addChildAlgorithm( cx1 );
+  QVERIFY( !alg1a.removeModelParameter( "p1" ) );
+  alg1a.removeChildAlgorithm( "cx1" );
+  QVERIFY( alg1a.removeModelParameter( "p1" ) );
   QVERIFY( alg1a.parameterDefinitions().isEmpty() );
   QVERIFY( alg1a.parameterComponents().isEmpty() );
+
+
 
 
   // test canExecute
@@ -3170,6 +3180,82 @@ void TestQgsProcessing::modelerAlgorithm()
   c6.setAlgorithmId( "i'm not an alg" );
   alg2.addChildAlgorithm( c6 );
   QVERIFY( !alg2.canExecute() );
+
+
+
+  // dependencies
+  QgsProcessingModelAlgorithm alg3( "test", "testGroup" );
+  QVERIFY( alg3.dependentChildAlgorithms( "notvalid" ).isEmpty() );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "notvalid" ).isEmpty() );
+
+  // add a child
+  QgsProcessingModelAlgorithm::ChildAlgorithm c7;
+  c7.setChildId( "c7" );
+  alg3.addChildAlgorithm( c7 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).isEmpty() );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+
+  // direct dependency
+  QgsProcessingModelAlgorithm::ChildAlgorithm c8;
+  c8.setChildId( "c8" );
+  c8.setDependencies( QStringList() << "c7" );
+  alg3.addChildAlgorithm( c8 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).isEmpty() );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7" ).count(), 1 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+
+  // dependency via parameter source
+  QgsProcessingModelAlgorithm::ChildAlgorithm c9;
+  c9.setChildId( "c9" );
+  c9.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "c8", "x" ) );
+  alg3.addChildAlgorithm( c9 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c9" ).isEmpty() );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c8" ).count(), 1 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c8" ).contains( "c9" ) );
+  QCOMPARE( alg3.dependentChildAlgorithms( "c7" ).count(), 2 );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c8" ) );
+  QVERIFY( alg3.dependentChildAlgorithms( "c7" ).contains( "c9" ) );
+
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c7" ).isEmpty() );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c8" ).count(), 1 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c8" ).contains( "c7" ) );
+  QCOMPARE( alg3.dependsOnChildAlgorithms( "c9" ).count(), 2 );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
+  QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
+
+  //remove child algorithm
+  QVERIFY( !alg3.removeChildAlgorithm( "c7" ) );
+  QVERIFY( !alg3.removeChildAlgorithm( "c8" ) );
+  QVERIFY( alg3.removeChildAlgorithm( "c9" ) );
+  QCOMPARE( alg3.childAlgorithms().count(), 2 );
+  QVERIFY( alg3.childAlgorithms().contains( "c7" ) );
+  QVERIFY( alg3.childAlgorithms().contains( "c8" ) );
+  QVERIFY( !alg3.removeChildAlgorithm( "c7" ) );
+  QVERIFY( alg3.removeChildAlgorithm( "c8" ) );
+  QCOMPARE( alg3.childAlgorithms().count(), 1 );
+  QVERIFY( alg3.childAlgorithms().contains( "c7" ) );
+  QVERIFY( alg3.removeChildAlgorithm( "c7" ) );
+  QVERIFY( alg3.childAlgorithms().isEmpty() );
+
+  // parameter dependencies
+  QgsProcessingModelAlgorithm alg4( "test", "testGroup" );
+  QVERIFY( !alg4.childAlgorithmsDependOnParameter( "not a param" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm c10;
+  c10.setChildId( "c10" );
+  alg4.addChildAlgorithm( c10 );
+  QVERIFY( !alg4.childAlgorithmsDependOnParameter( "not a param" ) );
+  QgsProcessingModelAlgorithm::ModelParameter bool2;
+  alg4.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool2 );
+  QVERIFY( !alg4.childAlgorithmsDependOnParameter( "p1" ) );
+  c10.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p2" ) );
+  alg4.setChildAlgorithm( c10 );
+  QVERIFY( !alg4.childAlgorithmsDependOnParameter( "p1" ) );
+  c10.addParameterSource( "y", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
+  alg4.setChildAlgorithm( c10 );
+  QVERIFY( alg4.childAlgorithmsDependOnParameter( "p1" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

@@ -251,6 +251,15 @@ QgsProcessingModelAlgorithm::ChildAlgorithm &QgsProcessingModelAlgorithm::childA
   return mChildAlgorithms[ childId ];
 }
 
+bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
+{
+  if ( !dependentChildAlgorithms( id ).isEmpty() )
+    return false;
+
+  mChildAlgorithms.remove( id );
+  return true;
+}
+
 void QgsProcessingModelAlgorithm::addModelParameter( QgsProcessingParameterDefinition *definition, const QgsProcessingModelAlgorithm::ModelParameter &component )
 {
   addParameter( definition );
@@ -263,10 +272,34 @@ void QgsProcessingModelAlgorithm::updateModelParameter( QgsProcessingParameterDe
   addParameter( definition );
 }
 
-void QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
+bool QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
 {
+  if ( childAlgorithmsDependOnParameter( name ) )
+    return false;
+
   removeParameter( name );
   mParameterComponents.remove( name );
+  return true;
+}
+
+bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QString &name ) const
+{
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    // check whether child requires this parameter
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource> childParams = childIt->parameterSources();
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource>::const_iterator paramIt = childParams.constBegin();
+    for ( ; paramIt != childParams.constEnd(); ++paramIt )
+    {
+      if ( paramIt->source() == ChildParameterSource::ModelParameter
+           && paramIt->parameterName() == name )
+      {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> QgsProcessingModelAlgorithm::parameterComponents() const
@@ -274,23 +307,96 @@ QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> QgsProcessingModelAlg
   return mParameterComponents;
 }
 
-QStringList QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId ) const
+void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const
 {
-  QSet< QString > algs;
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->childId() == childId )
+    if ( depends.contains( childIt->childId() ) )
       continue;
 
     // does alg have a direct dependency on this child?
     if ( childIt->dependencies().contains( childId ) )
-      algs << childIt->childId();
+    {
+      depends.insert( childIt->childId() );
+      dependentChildAlgorithmsRecursive( childIt->childId(), depends );
+      continue;
+    }
 
-
-
+    // check whether child requires any outputs from the target alg
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource> childParams = childIt->parameterSources();
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource>::const_iterator paramIt = childParams.constBegin();
+    for ( ; paramIt != childParams.constEnd(); ++paramIt )
+    {
+      if ( paramIt->source() == ChildParameterSource::ChildOutput
+           && paramIt->outputChildId() == childId )
+      {
+        depends.insert( childIt->childId() );
+        dependsOnChildAlgorithmsRecursive( childIt->childId(), depends );
+        break;
+      }
+    }
   }
-  return algs.toList();
+}
+
+QSet<QString> QgsProcessingModelAlgorithm::dependentChildAlgorithms( const QString &childId ) const
+{
+  QSet< QString > algs;
+
+  // temporarily insert the target child algorithm to avoid
+  // unnecessarily recursion though it
+  algs.insert( childId );
+
+  dependentChildAlgorithmsRecursive( childId, algs );
+
+  // remove temporary target alg
+  algs.remove( childId );
+
+  return algs;
+}
+
+
+void QgsProcessingModelAlgorithm::dependsOnChildAlgorithmsRecursive( const QString &childId, QSet< QString > &depends ) const
+{
+  ChildAlgorithm alg = mChildAlgorithms.value( childId );
+
+  // add direct dependencies
+  Q_FOREACH ( const QString &c, alg.dependencies() )
+  {
+    if ( !depends.contains( c ) )
+    {
+      depends.insert( c );
+      dependsOnChildAlgorithmsRecursive( c, depends );
+    }
+  }
+
+  // check through parameter dependencies
+  QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource> childParams = alg.parameterSources();
+  QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource>::const_iterator paramIt = childParams.constBegin();
+  for ( ; paramIt != childParams.constEnd(); ++paramIt )
+  {
+    if ( paramIt->source() == ChildParameterSource::ChildOutput && !depends.contains( paramIt->outputChildId() ) )
+    {
+      depends.insert( paramIt->outputChildId() );
+      dependsOnChildAlgorithmsRecursive( paramIt->outputChildId(), depends );
+    }
+  }
+}
+
+QSet< QString > QgsProcessingModelAlgorithm::dependsOnChildAlgorithms( const QString &childId ) const
+{
+  QSet< QString > algs;
+
+  // temporarily insert the target child algorithm to avoid
+  // unnecessarily recursion though it
+  algs.insert( childId );
+
+  dependsOnChildAlgorithmsRecursive( childId, algs );
+
+  // remove temporary target alg
+  algs.remove( childId );
+
+  return algs;
 }
 
 bool QgsProcessingModelAlgorithm::canExecute( QString *errorMessage ) const

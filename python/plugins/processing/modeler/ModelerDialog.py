@@ -93,7 +93,7 @@ class ModelerDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
 
-        self.scene = ModelerScene(self)
+        self.scene = ModelerScene(self, dialog=self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
 
         self.view.setScene(self.scene)
@@ -242,13 +242,11 @@ class ModelerDialog(BASE, WIDGET):
 
         else:
             self.model = ModelerAlgorithm()
-            self.model.modelerdialog = self
 
         self.fillInputsTree()
         self.fillAlgorithmTree()
 
         self.view.centerOn(0, 0)
-        self.model.setModelerView(self)
         self.help = None
 
         self.hasChanged = False
@@ -480,7 +478,6 @@ class ModelerDialog(BASE, WIDGET):
             try:
                 alg = ModelerAlgorithm.fromFile(filename)
                 self.model = alg
-                self.model.setModelerView(self)
                 self.textGroup.setText(alg._group)
                 self.textName.setText(alg._name)
                 self.repaintModel()
@@ -502,7 +499,7 @@ class ModelerDialog(BASE, WIDGET):
                                              'See the log for more information.'))
 
     def repaintModel(self, controls=True):
-        self.scene = ModelerScene()
+        self.scene = ModelerScene(self, dialog=self)
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
                                        ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.model, controls)

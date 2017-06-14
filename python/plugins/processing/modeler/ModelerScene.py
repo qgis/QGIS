@@ -37,12 +37,13 @@ from processing.modeler.ModelerAlgorithm import CompoundValue
 
 class ModelerScene(QGraphicsScene):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, dialog=None):
         super(ModelerScene, self).__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
+        self.dialog = dialog
 
     def getParameterPositions(self):
         return {key: item.pos() for key, item in list(self.paramItems.items())}
@@ -86,7 +87,7 @@ class ModelerScene(QGraphicsScene):
         self.model = model
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp, model, controls)
+            item = ModelerGraphicItem(inp, model, controls, scene=self)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -95,7 +96,7 @@ class ModelerScene(QGraphicsScene):
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg, model, controls)
+            item = ModelerGraphicItem(alg, model, controls, scene=self)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -134,7 +135,7 @@ class ModelerScene(QGraphicsScene):
             idx = 0
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out, model, controls)
+                    item = ModelerGraphicItem(out, model, controls, scene=self)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)

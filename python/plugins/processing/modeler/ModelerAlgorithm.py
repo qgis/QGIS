@@ -179,8 +179,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
     def __init__(self):
         super().__init__()
 
-        # The dialog where this model is being edited
-        self.modelerdialog = None
         self.descriptionFile = None
         self.helpContent = {}
 
@@ -199,99 +197,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
                                              alg.position() + QPointF(
                 ModelerGraphicItem.BOX_WIDTH,
                 (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
-
-    def removeAlgorithm(self, name):
-        """Returns True if the algorithm could be removed, False if
-        others depend on it and could not be removed.
-        """
-        if self.hasDependencies(name):
-            return False
-        del self.algs[name]
-        self.modelerdialog.hasChanged = True
-        return True
-
-    def removeParameter(self, name):
-        """Returns True if the parameter could be removed, False if
-        others depend on it and could not be removed.
-        """
-        if self.hasDependencies(name):
-            return False
-        self.removeModelParameter(name)
-        self.modelerdialog.hasChanged = True
-        return True
-
-    def hasDependencies(self, name):
-        """This method returns True if some other element depends on
-        the passed one.
-        """
-        for alg in list(self.algs.values()):
-            for value in list(alg.params.values()):
-                if value is None:
-                    continue
-                if isinstance(value, list):
-                    for v in value:
-                        if isinstance(v, ValueFromInput):
-                            if v.name == name:
-                                return True
-                        elif isinstance(v, ValueFromOutput):
-                            if v.alg == name:
-                                return True
-                if isinstance(value, ValueFromInput):
-                    if value.name == name:
-                        return True
-                elif isinstance(value, ValueFromOutput):
-                    if value.alg == name:
-                        return True
-            if alg.childId() != name:
-                for dep in alg.dependencies():
-                    if (dep == name):
-                        return True
-        return False
-
-    def getDependsOnAlgorithms(self, name):
-        """This method returns a list with names of algorithms
-        a given one depends on.
-        """
-        alg = self.algs[name]
-        algs = set()
-        algs.update(set(alg.dependencies()))
-        for value in list(alg.params.values()):
-            if value is None:
-                continue
-            if isinstance(value, CompoundValue):
-                for v in value.values:
-                    if isinstance(v, ValueFromOutput):
-                        algs.add(v.alg)
-                        algs.update(self.getDependsOnAlgorithms(v.alg))
-            if isinstance(value, list):
-                for v in value:
-                    if isinstance(v, ValueFromOutput):
-                        algs.add(v.alg)
-                        algs.update(self.getDependsOnAlgorithms(v.alg))
-            elif isinstance(value, ValueFromOutput):
-                algs.add(value.alg)
-                algs.update(self.getDependsOnAlgorithms(value.alg))
-
-        return algs
-
-    def getDependentAlgorithms(self, name):
-        """This method returns a list with the names of algorithms
-        depending on a given one. It includes the algorithm itself
-        """
-        algs = set()
-        algs.add(name)
-        for alg in list(self.algs.values()):
-            for value in list(alg.params.values()):
-                if value is None:
-                    continue
-                if isinstance(value, list):
-                    for v in value:
-                        if isinstance(v, ValueFromOutput) and v.alg == name:
-                            algs.update(self.getDependentAlgorithms(alg.childId()))
-                elif isinstance(value, ValueFromOutput) and value.alg == name:
-                    algs.update(self.getDependentAlgorithms(alg.childId()))
-
-        return algs
 
     def prepareAlgorithm(self, alg):
         algInstance = alg.algorithm()
@@ -331,12 +236,13 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         return algInstance
 
     def deactivateAlgorithm(self, algName):
-        dependent = self.getDependentAlgorithms(algName)
+        dependent = self.dependentChildAlgorithms(algName)
         for alg in dependent:
             self.algs[alg].setActive(False)
+        self.algs[algName].setActive(False)
 
     def activateAlgorithm(self, algName):
-        parents = self.getDependsOnAlgorithms(algName)
+        parents = self.dependsOnChildAlgorithms(algName)
         for alg in parents:
             if not self.childAlgorithm(alg).isActive():
                 return False
@@ -368,7 +274,7 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             for alg in toExecute:
                 if alg.childId() not in executed:
                     canExecute = True
-                    required = self.getDependsOnAlgorithms(alg.childId())
+                    required = self.dependsOnChildAlgorithms(alg.childId())
                     for requiredAlg in required:
                         if requiredAlg != alg.childId() and requiredAlg not in executed:
                             canExecute = False
@@ -410,13 +316,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
         else:
             return None
-
-    def setModelerView(self, dialog):
-        self.modelerdialog = dialog
-
-    def updateModelerView(self):
-        if self.modelerdialog:
-            self.modelerdialog.repaintModel()
 
     def helpUrl(self):
         try:
@@ -524,7 +423,7 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             for alg in toExecute:
                 if alg.childId() not in executed:
                     canExecute = True
-                    required = self.getDependsOnAlgorithms(alg.childId())
+                    required = self.dependsOnChildAlgorithms(alg.childId())
                     for requiredAlg in required:
                         if requiredAlg != alg.childId() and requiredAlg not in executed:
                             canExecute = False
