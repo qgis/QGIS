@@ -108,7 +108,36 @@ QVariantList QgsGeoNodeConnection::getLayers()
     {
       QVariantMap layer = layerList[i].toMap();
       // Find WMS and WFS. XYZ is not available
+      // Trick to get layer's typename from distribution_url or detail_url
+      QStringList temp = layer["detail_url"].toString().split( "/" );
+      QString layerTypeName = temp[temp.count() - 1];
+      if ( layerTypeName.length() == 0 )
+      {
+        temp = layer["distribution_url"].toString().split( "/" );
+        layerTypeName = temp[temp.count() - 1];
+      }
+      // On this step, layerTypeName is in WORKSPACE%3ALAYERNAME or WORKSPACE:LAYERNAME format
+      if ( layerTypeName.contains( "%3A" ) )
+      {
+        layerTypeName.replace( "%3A", ":" );
+      }
+      // On this step, layerTypeName is in WORKSPACE:LAYERNAME format
+      temp = layerTypeName.split( ":" );
+      QString layerWorkspace = temp[0];
+      QString layerName = temp[1];
 
+      // Set name and typename
+      layer["name"] = layerName;
+      layer["typename"] = layerTypeName;
+
+      // WMS url : BASE_URI/geoserver/WORKSPACE/wms
+      layer["wms"] = uri().param( "url" ) + "/geoserver/" + layerWorkspace + "/wms";
+      // WFS url : BASE_URI/geoserver/WORKSPACE/wfs
+      layer["wfs"] = uri().param( "url" ) + "/geoserver/" + layerWorkspace + "/wfs";
+      // XYZ url : set to empty string
+      layer["xyz"] = "";
+
+      layerList[i] = layer;
     }
   }
   // Handling geonode version 2.7.devsomething

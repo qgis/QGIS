@@ -84,7 +84,7 @@ void TestQgsGeoNodeConnection::initTestCase()
   mKartozaGeoNodeGeoServerURL = QStringLiteral( "staginggs.geonode.kartoza.com" );
 
   // Change it to skip remote testing
-  mSkipRemoteTest = true;
+  mSkipRemoteTest = false;
 
   // Add Demo GeoNode Connection
   QgsSettings settings;
@@ -129,7 +129,7 @@ void TestQgsGeoNodeConnection::testCreation()
 // Test retrieving layers for old GeoNode (v2.6), only GeoServer backend available
 void TestQgsGeoNodeConnection::testGetLayersOldGeoNode()
 {
-  if ( !mSkipRemoteTest )
+  if ( mSkipRemoteTest )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -144,7 +144,12 @@ void TestQgsGeoNodeConnection::testGetLayersOldGeoNode()
   QList<QString> keys = layer1.keys();
   QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
   QVERIFY( keys.indexOf( "name" ) != -1 ); // Check if title is in the keys
-  QVERIFY( !layer1["name"].toString().contains( "geonode%3A" ) ); // Check if there is not geonode prefix
+  QVERIFY( !layer1["typename"].toString().contains( "%3A" ) ); // Check if there is not geonode prefix
+  QVERIFY( keys.contains( "wms" ) );
+  QVERIFY( keys.contains( "wfs" ) );
+  QVERIFY( keys.contains( "xyz" ) );
+  QVERIFY( layer1["wms"].toString().length() > 0 );
+  QVERIFY( layer1["wfs"].toString().length() > 0 );
 }
 
 // Test retrieving layers for QGIS Server Backend
