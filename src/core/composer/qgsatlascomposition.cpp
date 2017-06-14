@@ -436,7 +436,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
 void QgsAtlasComposition::computeExtent( QgsComposerMap *map )
 {
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
-  // We have to transform the grometry to the destination CRS and ask for the bounding box
+  // We have to transform the geometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
   mTransformedFeatureBounds = currentGeometry( map->crs() ).boundingBox();
 }
