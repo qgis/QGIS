@@ -158,6 +158,30 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+
+/**
+ * Native subdivide algorithm.
+ */
+class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsSubdivideAlgorithm();
+
+    QString name() const override { return QStringLiteral( "subdivide" ); }
+    QString displayName() const override { return QObject::tr( "Subdivide" ); }
+    virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
