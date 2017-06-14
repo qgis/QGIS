@@ -331,13 +331,8 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
 
         sld_size_px = 6
 
-        # values for qgis 3.X
-        #sld_displacement_x_px = 3.3
-        #sld_displacement_y_px = 6.6
-
-        # values for qgis 2.x
-        sld_displacement_x_px = 0
-        sld_displacement_y_px = 0
+        sld_displacement_x_px = 3.3
+        sld_displacement_y_px = 6.6
 
         sl = layer.rendererV2().symbol().symbolLayers()[0]
         size = sl.size()
