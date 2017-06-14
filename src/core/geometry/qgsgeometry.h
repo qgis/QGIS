@@ -765,6 +765,15 @@ class CORE_EXPORT QgsGeometry
     //! Returns a geometry representing the points shared by this geometry and other.
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 
+    /**
+     * Clips the geometry using the specified \a rectangle.
+     *
+     * Performs a fast, non-robust intersection between the geometry and
+     * a \a rectangle. The returned geometry may be invalid.
+     * \since QGIS 3.0
+     */
+    QgsGeometry clipped( const QgsRectangle &rectangle );
+
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * \note this operation is not called union since its a reserved word in C++.
@@ -998,13 +1007,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 2.10
      */
     void mapToPixel( const QgsMapToPixel &mtp );
-
-    // not implemented for 2.10
-    /* Clips the geometry using the specified rectangle
-     * \param rect clip rectangle
-     * \since QGIS 2.10
-     */
-    // void clip( const QgsRectangle& rect );
 
     /** Draws the geometry onto a QPainter
      * \param p destination QPainter

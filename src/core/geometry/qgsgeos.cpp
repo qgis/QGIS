@@ -189,6 +189,30 @@ QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry &geom, QStri
   return overlay( geom, DIFFERENCE, errorMsg );
 }
 
+QgsAbstractGeometry *QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
+{
+  if ( !mGeos || rect.isNull() || rect.isEmpty() )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    GEOSGeomScopedPtr opGeom;
+    opGeom.reset( GEOSClipByRect_r( geosinit.ctxt, mGeos, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() ) );
+    QgsAbstractGeometry *opResult = fromGeos( opGeom.get() );
+    return opResult;
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return nullptr;
+  }
+}
+
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, UNION, errorMsg );

@@ -45,6 +45,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+
+    /**
+     * Performs a fast, non-robust intersection between the geometry and
+     * a \a rectangle. The returned geometry may be invalid.
+     */
+    QgsAbstractGeometry *clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
+
     QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
