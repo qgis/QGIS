@@ -127,6 +127,7 @@ class TestQgsGeometry : public QObject
     void isSimple();
 
     void reshapeGeometryLineMerge();
+    void createCollectionOfType();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -5538,6 +5539,39 @@ void TestQgsGeometry::reshapeGeometryLineMerge()
   res = g3D_2.reshapeGeometry( line3D_2 );
   QCOMPARE( res, 0 );
   QCOMPARE( g3D_2.exportToWkt(), QString( "LineStringZ (-10 -10 -1, 10 10 1, 20 20 2)" ) );
+}
+
+void TestQgsGeometry::createCollectionOfType()
+{
+  std::unique_ptr< QgsGeometryCollection > collect( QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Unknown ) );
+  QVERIFY( !collect );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Point );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPoint );
+  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointM );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointM );
+  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointZM );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointZM );
+  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointZ );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointZ );
+  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::MultiPoint );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPoint );
+  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::LineStringZ );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QVERIFY( dynamic_cast< QgsMultiLineString *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PolygonM );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPolygonM );
+  QVERIFY( dynamic_cast< QgsMultiPolygonV2 *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::GeometryCollectionZ );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::GeometryCollectionZ );
+  QVERIFY( dynamic_cast< QgsGeometryCollection *>( collect.get() ) );
+  collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::CurvePolygonM );
+  QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiSurfaceM );
+  QVERIFY( dynamic_cast< QgsMultiSurface *>( collect.get() ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )
