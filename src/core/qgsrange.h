@@ -40,7 +40,7 @@
  * \note not available in Python bindings (but class provided for template-based inheritance)
  */
 template <typename T>
-class CORE_EXPORT QgsRange
+class QgsRange
 {
   public:
 
@@ -215,7 +215,7 @@ typedef QgsRange< int > QgsIntRange;
  * \note not available in Python bindings (but class provided for template-based inheritance)
  */
 template <typename T>
-class CORE_EXPORT QgsTemporalRange
+class QgsTemporalRange
 {
   public:
 
