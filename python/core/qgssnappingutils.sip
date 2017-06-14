@@ -81,13 +81,6 @@ The current layer used if mode is SnapCurrentLayer
 %End
 
 
-    enum SnapToMapMode
-    {
-      SnapCurrentLayer,
-      SnapAllLayers,
-      SnapAdvanced,
-    };
-
     enum IndexingStrategy
     {
       IndexAlwaysFull,
@@ -120,7 +113,6 @@ snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 1
 snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
 
 snapper.setLayers([snapping_layer1, snapping_layer2])
-snapper.setSnapToMapMode(QgsSnappingUtils.SnapAdvanced)
 ```
 
  \param l   The vector layer for which this configuration is
