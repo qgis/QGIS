@@ -238,10 +238,8 @@ void TestQgsGeoNodeConnection::testGetWMSUrl()
 // Test retrieving WMS Url
 void TestQgsGeoNodeConnection::testGetGeoNodeUrl()
 {
-  if ( mSkipRemoteTest )
-  {
-    QSKIP( "Skip remote test for faster testing" );
-  }
+  QSKIP( "The method no longer used." );
+
   QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
   QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) );

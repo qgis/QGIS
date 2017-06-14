@@ -109,12 +109,12 @@ QVariantList QgsGeoNodeConnection::getLayers()
       QVariantMap layer = layerList[i].toMap();
       // Find WMS and WFS. XYZ is not available
       // Trick to get layer's typename from distribution_url or detail_url
-      QStringList temp = layer["detail_url"].toString().split( "/" );
-      QString layerTypeName = temp[temp.count() - 1];
+      QStringList splitURL = layer["detail_url"].toString().split( "/" );
+      QString layerTypeName = splitURL[splitURL.count() - 1];
       if ( layerTypeName.length() == 0 )
       {
-        temp = layer["distribution_url"].toString().split( "/" );
-        layerTypeName = temp[temp.count() - 1];
+        splitURL = layer["distribution_url"].toString().split( "/" );
+        layerTypeName = splitURL[splitURL.count() - 1];
       }
       // On this step, layerTypeName is in WORKSPACE%3ALAYERNAME or WORKSPACE:LAYERNAME format
       if ( layerTypeName.contains( "%3A" ) )
@@ -122,9 +122,9 @@ QVariantList QgsGeoNodeConnection::getLayers()
         layerTypeName.replace( "%3A", ":" );
       }
       // On this step, layerTypeName is in WORKSPACE:LAYERNAME format
-      temp = layerTypeName.split( ":" );
-      QString layerWorkspace = temp[0];
-      QString layerName = temp[1];
+      splitURL = layerTypeName.split( ":" );
+      QString layerWorkspace = splitURL[0];
+      QString layerName = splitURL[1];
 
       // Set name and typename
       layer["name"] = layerName;
@@ -172,6 +172,12 @@ QVariantList QgsGeoNodeConnection::getLayers()
             }
           }
         }
+      }
+      if ( layer["typename"].toString().length() == 0 )
+      {
+        QStringList splitURL = layer["detail_url"].toString().split( "/" );
+
+        layer["typename"] = splitURL[ splitURL.length() - 1];
       }
       layerList[i] = layer;
     }
