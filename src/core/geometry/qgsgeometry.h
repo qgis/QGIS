@@ -734,6 +734,22 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
 
     /**
+     * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+     * from the original geometry, where no part has more then the specified maximum number of nodes (\a maxNodes).
+     *
+     * This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+     * indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+     * not be valid and may contain self-intersections.
+     *
+     * The minimum allowed value for \a maxNodes is 8.
+     *
+     * Curved geometries will be segmentized before subdivision.
+     *
+     * \since QGIS 3.0
+     */
+    QgsGeometry subdivide( int maxNodes = 256 ) const;
+
+    /**
      * Return interpolated point on line at distance
      * \since QGIS 1.9
      * \see lineLocatePoint()
