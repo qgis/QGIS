@@ -66,7 +66,7 @@ from .ExtractByExpression import ExtractByExpression
 # from .Delaunay import Delaunay
 # from .VoronoiPolygons import VoronoiPolygons
 # from .DensifyGeometries import DensifyGeometries
-# from .MultipartToSingleparts import MultipartToSingleparts
+from .MultipartToSingleparts import MultipartToSingleparts
 # from .SimplifyGeometries import SimplifyGeometries
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
@@ -206,7 +206,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ReprojectLayer(), ExportGeometryInfo(), Centroids(),
         #         Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
         #         DensifyGeometries(), DensifyGeometriesInterval(),
-        #         MultipartToSingleparts(), SinglePartsToMultiparts(),
+        #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(), Dissolve(), Difference(),
@@ -271,7 +271,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 ExtractByExpression(),
                 GridPolygon(),
-                Merge()
+                Merge(),
+                MultipartToSingleparts()
                 ]
 
         if hasPlotly:

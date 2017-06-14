@@ -29,7 +29,11 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsProcessingUtils
+from qgis.core import (QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -51,8 +55,11 @@ class MultipartToSingleparts(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Single parts')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Single parts')))
 
     def name(self):
         return 'multiparttosingleparts'
@@ -61,28 +68,32 @@ class MultipartToSingleparts(QgisAlgorithm):
         return self.tr('Multipart to singleparts')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        geomType = QgsWkbTypes.singleType(layer.wkbType())
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        geomType = QgsWkbTypes.singleType(source.wkbType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), geomType, layer.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), geomType, source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
+
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             input_geometry = f.geometry()
             if input_geometry:
                 if input_geometry.isMultipart():
                     for g in input_geometry.asGeometryCollection():
                         output_feature = f
                         output_feature.setGeometry(g)
-                        writer.addFeature(output_feature)
+                        sink.addFeature(output_feature)
                 else:
-                    writer.addFeature(f)
+                    sink.addFeature(f)
             else:
                 #input feature with null geometry
-                writer.addFeature(f)
+                sink.addFeature(f)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

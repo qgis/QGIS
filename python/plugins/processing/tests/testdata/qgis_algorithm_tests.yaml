@@ -389,17 +389,17 @@ tests:
 #        name: expected/merge_lines.gml
 #        type: vector
 #
-#  - algorithm: qgis:multiparttosingleparts
-#    name: Multiparts to singleparts
-#    params:
-#      INPUT:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/multi_to_single.gml
-#        type: vector
-#
+  - algorithm: qgis:multiparttosingleparts
+    name: Multiparts to singleparts
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/multi_to_single.gml
+        type: vector
+
   - algorithm: qgis:boundingboxes
     name: Bounding boxes for lines
     params:
