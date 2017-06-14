@@ -472,7 +472,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
-      QgsDataSourceUri sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) ) );
+      QgsDataSourceUri sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) )[0] );
 
       QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( sourceUri.encodedUri() ) ) );
 

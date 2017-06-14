@@ -84,7 +84,7 @@ void TestQgsGeoNodeConnection::initTestCase()
   mKartozaGeoNodeGeoServerURL = QStringLiteral( "staginggs.geonode.kartoza.com" );
 
   // Change it to skip remote testing
-  mSkipRemoteTest = false;
+  mSkipRemoteTest = true;
 
   // Add Demo GeoNode Connection
   QgsSettings settings;
@@ -227,12 +227,10 @@ void TestQgsGeoNodeConnection::testGetWMSUrl()
   {
     QSKIP( "Skip remote test for faster testing" );
   }
-  QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
+  QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeGeoServerName );
 
-  QString layerID = "1c863918-f9e8-11e6-ab35-0e23392a5c01";
-  QString WMSUrl = geonodeConnection.serviceUrl( layerID, QString( "WMS" ) );
-  std::cout << WMSUrl.toStdString();
-  QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
+  QStringList WMSUrls = geonodeConnection.serviceUrl( QString( "WMS" ) );
+  QVERIFY( WMSUrls.count() > 0 );
 }
 
 // Test retrieving WMS Url
@@ -242,17 +240,17 @@ void TestQgsGeoNodeConnection::testGetGeoNodeUrl()
 
   QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
-  QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) );
+  QString WMSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WMS" ) )[0];
   qDebug() << WMSUrl;
   QVERIFY( WMSUrl == "http://demo.geonode.org/geoserver/geonode/wms" );
 
-  QString WFSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WFS" ) );
+  QString WFSUrl = geonodeConnection.serviceUrl( QStringLiteral( "WFS" ) )[0];
   qDebug() << WFSUrl;
   QVERIFY( WFSUrl == "http://demo.geonode.org/geoserver/geonode/wfs" );
 
   QgsGeoNodeConnection kartozaGeoNodeConnection( mKartozaGeoNodeQGISServerName );
 
-  QString XYZUrl = kartozaGeoNodeConnection.serviceUrl( QStringLiteral( "XYZ" ) );
+  QString XYZUrl = kartozaGeoNodeConnection.serviceUrl( QStringLiteral( "XYZ" ) )[0];
   qDebug() << XYZUrl;
   QVERIFY( XYZUrl == "http://geonode.kartoza.com/qgis-server/tiles/LAYERNAME/{z}/{x}/{y}.png" );
 }

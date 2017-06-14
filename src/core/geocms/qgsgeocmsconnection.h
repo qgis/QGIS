@@ -65,7 +65,7 @@ class CORE_EXPORT QgsGeoCMSConnection : public QObject
     virtual QVariantList getMaps() = 0;
 
     //! Return available service urls
-    virtual QString serviceUrl() = 0;
+    virtual QStringList serviceUrl() = 0;
 
     //! The GeoCMS name
     QString mGeoCMSName;

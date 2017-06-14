@@ -188,7 +188,7 @@ QVariantList QgsGeoNodeConnection::getLayers()
 QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
 {
   QString param = QString( "?version=2.0.0&service=%1&request=GetCapabilities" ).arg( serviceType.toLower() );
-  QString url = serviceUrl( serviceType ) + param;
+  QString url = serviceUrl( serviceType )[0] + param;
 
   if ( !url.contains( QLatin1String( "://" ) ) )
   {
@@ -300,7 +300,7 @@ QVariantList QgsGeoNodeConnection::getMaps()
   return layerList;
 }
 
-QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceType )
+QStringList QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceType )
 {
   // Example CSW url
   // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
@@ -342,7 +342,7 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
         if ( scheme.startsWith( "OGC" ) && scheme.contains( serviceType ) )
         {
           QString serviceUrlResult = referenceNode.firstChild().nodeValue();
-          return serviceUrlResult;
+          return QStringList( serviceUrlResult );
         }
       }
       else if ( serviceType == QStringLiteral( "XYZ" ) )
@@ -366,7 +366,7 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
               serviceUrlResult.prepend( "http://" );
             }
           }
-          return serviceUrlResult;
+          return QStringList( serviceUrlResult );
         }
       }
 
@@ -374,25 +374,22 @@ QString QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceTy
   }
 
   // return empty
-  return QStringLiteral( "" );
+  return QStringList();
 }
 
-QString QgsGeoNodeConnection::serviceUrl( QString serviceType )
+QStringList QgsGeoNodeConnection::serviceUrl( QString serviceType )
 {
-  QString randomUUID = "";
   QVariantList layers = getLayers();
+  QStringList *urls = new QStringList;
 
-  if ( !layers.isEmpty() )
+  for ( int i = 0; i < layers.count(); i++ )
   {
-    Q_FOREACH ( const QVariant &layer, layers )
+    QString url = layers[i].toMap()[serviceType.toLower()].toString();
+    if ( !urls->contains( url ) && url.length() > 0 )
     {
-      randomUUID = layer.toMap()["uuid"].toString();
-      QString url = serviceUrl( randomUUID, serviceType );
-      if ( !url.isEmpty() )
-      {
-        return url;
-      }
+      urls->append( url );
     }
   }
-  return QStringLiteral( "" );
+
+  return *urls;
 }

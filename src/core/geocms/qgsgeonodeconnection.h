@@ -64,11 +64,11 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
     virtual QVariantList getMaps();
 
     //! Return WMS / WFS url for the layer / map / resource ID
-    virtual QString serviceUrl() {}
-    virtual QString serviceUrl( QString &resourceID, QString serviceType );
+    virtual QStringList serviceUrl() {}
+    virtual QStringList serviceUrl( QString &resourceID, QString serviceType );
 
     //! Return WMS / WFS url for the geonode
-    virtual QString serviceUrl( QString serviceType );
+    virtual QStringList serviceUrl( QString serviceType );
 
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 

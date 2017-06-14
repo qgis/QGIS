@@ -21,9 +21,9 @@
 typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 
 QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
-    : QgsDataCollectionItem( parent, name, path )
-    , mUri( uri )
-    , mConnection( name )
+  : QgsDataCollectionItem( parent, name, path )
+  , mUri( uri )
+  , mConnection( name )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
@@ -32,8 +32,8 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> services;
 
-  QString wmsUrl = mConnection.serviceUrl( QStringLiteral( "WMS" ) );
-  QString wfsUrl = mConnection.serviceUrl( QStringLiteral( "WFS" ) );
+  QString wmsUrl = mConnection.serviceUrl( QStringLiteral( "WMS" ) )[0];
+  QString wfsUrl = mConnection.serviceUrl( QStringLiteral( "WFS" ) )[0];
 
   if ( !wmsUrl.isEmpty() )
   {
@@ -74,11 +74,11 @@ void QgsGeoNodeConnectionItem::editConnection()
 }
 
 QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QString connName, QString serviceName, QString path, QString uri )
-    : QgsDataCollectionItem( parent, serviceName, path )
-    , mName( connName )
-    , mServiceName( serviceName )
-    , mUri( uri )
-    , mConnection( connName )
+  : QgsDataCollectionItem( parent, serviceName, path )
+  , mName( connName )
+  , mServiceName( serviceName )
+  , mUri( uri )
+  , mConnection( connName )
 {
   if ( serviceName == "WMS" )
   {
@@ -100,7 +100,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   bool skipProvider = false;
   while ( !skipProvider )
   {
-    const QString &key = mServiceName != QString ( "WFS" ) ? mServiceName.toLower() : mServiceName;
+    const QString &key = mServiceName != QString( "WFS" ) ? mServiceName.toLower() : mServiceName;
     QgsDebugMsg( "Add connection for provider " + key );
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
     if ( !library )
@@ -125,14 +125,14 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     QgsDataItem *item;
     if ( mServiceName == QString( "WMS" ) )
     {
-      Q_FOREACH( QgsDataItemProvider *pr, dataItemProvidersFn() )
+      Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
+      {
+        item = pr->name() == mServiceName ? pr->createDataItem( path, this ) : nullptr;
+        if ( item )
         {
-          item = pr->name() == mServiceName ? pr->createDataItem( path, this ) : nullptr;
-          if ( item )
-          {
-            break;
-          }
+          break;
         }
+      }
     }
     else
     {
@@ -199,8 +199,8 @@ void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QStr
 }
 
 QgsGeoNodeLayerItem::QgsGeoNodeLayerItem( QgsDataItem *parent, QString connName, QString layerName, QString serviceName )
-    : QgsDataCollectionItem( parent, layerName, parent->path() + '/' + layerName )
-    , mConnection( connName )
+  : QgsDataCollectionItem( parent, layerName, parent->path() + '/' + layerName )
+  , mConnection( connName )
 {
   setState( Populated );
   if ( serviceName == "WMS" )

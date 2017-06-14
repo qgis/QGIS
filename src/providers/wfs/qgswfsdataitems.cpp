@@ -231,7 +231,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
-      QgsWFSDataSourceURI sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) ) );
+      QgsWFSDataSourceURI sourceUri( connection.serviceUrl( QStringLiteral( "WFS" ) )[0] );
 
       QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ) );
 
