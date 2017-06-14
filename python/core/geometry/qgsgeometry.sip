@@ -786,6 +786,23 @@ Returns the smallest convex polygon that contains all the points in the geometry
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry subdivide( int maxNodes = 256 ) const;
+%Docstring
+ Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+ from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
+
+ This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+ indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+ not be valid and may contain self-intersections.
+
+ The minimum allowed value for ``maxNodes`` is 8.
+
+ Curved geometries will be segmentized before subdivision.
+
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry interpolate( double distance ) const;
 %Docstring
  Return interpolated point on line at distance

@@ -4165,6 +4165,25 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(point_zm.z(), 3)
         self.assertEqual(point_zm.m(), 4)
 
+    def testSubdivide(self):
+        tests = [["LINESTRING (1 1,1 9,9 9,9 1)", 8, "MULTILINESTRING ((1 1,1 9,9 9,9 1))"],
+                 ["Point (1 1)", 8, "MultiPoint ((1 1))"],
+                 ["GeometryCollection ()", 8, "GeometryCollection ()"],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 8, "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5),(1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 1,
+                  "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5),(1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["LINESTRING (1 1,1 2,1 3,1 4,1 5,1 6,1 7,1 8,1 9)", 16,
+                  "MultiLineString ((1 1, 1 2, 1 3, 1 4, 1 5, 1 6, 1 7, 1 8, 1 9))"],
+                 ["POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180),(180 60, 140 60, 140 20, 180 20, 180 60))", 8, "MultiPolygon (((0 0, 0 100, 100 100, 100 0, 0 0)),((100 0, 100 50, 140 50, 140 20, 150 20, 150 0, 100 0)),((150 0, 150 20, 180 20, 180 50, 200 50, 200 0, 150 0)),((100 50, 100 100, 150 100, 150 60, 140 60, 140 50, 100 50)),((150 60, 150 100, 200 100, 200 50, 180 50, 180 60, 150 60)),((0 100, 0 150, 20 150, 20 140, 50 140, 50 100, 0 100)),((50 100, 50 140, 60 140, 60 150, 100 150, 100 100, 50 100)),((0 150, 0 200, 50 200, 50 180, 20 180, 20 150, 0 150)),((50 180, 50 200, 100 200, 100 150, 60 150, 60 180, 50 180)),((100 100, 100 200, 200 200, 200 100, 100 100)))"]
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            o = input.subdivide(t[1])
+            exp = t[2]
+            result = o.exportToWkt()
+            self.assertTrue(compareWkt(result, exp, 0.00001),
+                            "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
     def testClipped(self):
         tests = [["LINESTRING (1 1,1 9,9 9,9 1)", QgsRectangle(0, 0, 10, 10), "LINESTRING (1 1,1 9,9 9,9 1)"],
                  ["LINESTRING (-1 -9,-1 11,9 11)", QgsRectangle(0, 0, 10, 10), "GEOMETRYCOLLECTION ()"],
