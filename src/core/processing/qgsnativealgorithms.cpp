@@ -63,6 +63,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
+  addAlgorithm( new QgsSubdivideAlgorithm() );
 }
 
 
@@ -594,5 +595,75 @@ QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &paramete
 }
 
 
+QgsSubdivideAlgorithm::QgsSubdivideAlgorithm()
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
+                256, false, 8, 100000 ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Subdivided" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Subdivided" ) ) );
+}
+
+QString QgsSubdivideAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Subdivides the geometry. The returned geometry will be a collection containing subdivided parts "
+                      "from the original geometry, where no part has more then the specified maximum number of nodes.\n\n"
+                      "This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially "
+                      "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
+                      "not be valid and may contain self-intersections.\n\n"
+                      "Curved geometries will be segmentized before subdivision." );
+}
+
+QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  int maxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
+                                          QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), dest ) );
+  if ( !sink )
+    return QVariantMap();
+
+  long count = source->featureCount();
+  if ( count <= 0 )
+    return QVariantMap();
+
+  QgsFeature f;
+  QgsFeatureIterator it = source->getFeatures();
+
+  double step = 100.0 / count;
+  int current = 0;
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    QgsFeature out = f;
+    if ( out.hasGeometry() )
+    {
+      out.setGeometry( f.geometry().subdivide( maxNodes ) );
+      if ( !out.geometry() )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error calculating subdivision for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
+      }
+    }
+    sink->addFeature( out );
+
+    feedback->setProgress( current * step );
+    current++;
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
 ///@endcond
+
 
