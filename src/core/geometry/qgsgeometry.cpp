@@ -2089,17 +2089,17 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
   }
 }
 
-#if 0
-void QgsGeometry::clip( const QgsRectangle &rect )
+QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 {
-  if ( d->geometry )
+  if ( !d->geometry || rectangle.isNull() || rectangle.isEmpty() )
   {
-    detach();
-    d->geometry->clip( rect );
-    removeWkbGeos();
+    return QgsGeometry();
   }
+
+  QgsGeos geos( d->geometry );
+  QgsAbstractGeometry *resultGeom = geos.clip( rectangle );
+  return QgsGeometry( resultGeom );
 }
-#endif
 
 void QgsGeometry::draw( QPainter &p ) const
 {

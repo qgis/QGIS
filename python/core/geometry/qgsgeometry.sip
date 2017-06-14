@@ -828,6 +828,16 @@ Returns a geometry representing the points shared by this geometry and other.
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry clipped( const QgsRectangle &rectangle );
+%Docstring
+ Clips the geometry using the specified ``rectangle``.
+
+ Performs a fast, non-robust intersection between the geometry and
+ a ``rectangle``. The returned geometry may be invalid.
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry combine( const QgsGeometry &geometry ) const;
 %Docstring
  Returns a geometry representing all the points in this geometry and other (a
@@ -1128,7 +1138,6 @@ Ring 0 is outer ring and can't be deleted.
  \param mtp map to pixel transform
 .. versionadded:: 2.10
 %End
-
 
     void draw( QPainter &p ) const;
 %Docstring
