@@ -117,7 +117,7 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
         QgsMessageLog::logMessage( QObject::tr( "Error calculating centroid for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    sink->addFeature( out );
+    sink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
@@ -220,7 +220,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     }
 
     if ( !dissolve )
-      sink->addFeature( out );
+      sink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
@@ -232,7 +232,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsFeature f;
     f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );
-    sink->addFeature( f );
+    sink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 
   QVariantMap outputs;
@@ -322,7 +322,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     }
 
     outputFeature.setGeometry( QgsGeometry::unaryUnion( geomQueue ) );
-    sink->addFeature( outputFeature );
+    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
   }
   else
   {
@@ -373,7 +373,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsFeature outputFeature;
       outputFeature.setGeometry( QgsGeometry::unaryUnion( geomIt.value() ) );
       outputFeature.setAttributes( attributeHash.value( geomIt.key() ) );
-      sink->addFeature( outputFeature );
+      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
       current++;
@@ -516,7 +516,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       QgsFeature outputFeature;
       outputFeature.setGeometry( newGeometry );
       outputFeature.setAttributes( inputFeature.attributes() );
-      sink->addFeature( outputFeature );
+      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
 
       if ( singleClipFeature )
@@ -584,7 +584,7 @@ QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &paramete
       break;
     }
 
-    sink->addFeature( f );
+    sink->addFeature( f, QgsFeatureSink::FastInsert );
     feedback->setProgress( current * step );
     current++;
   }
