@@ -380,8 +380,7 @@ class ProviderTestCase(FeatureSourceTestCase):
             # expect success
             result, added = l.dataProvider().addFeatures([f1, f2], QgsFeatureSink.FastInsert)
             self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
-            self.assertEqual(l.dataProvider().featureCount(),7)
-
+            self.assertEqual(l.dataProvider().featureCount(), 7)
 
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):
