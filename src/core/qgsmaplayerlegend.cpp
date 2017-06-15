@@ -196,8 +196,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 
   Q_FOREACH ( const QgsLegendSymbolItem &i, r->legendSymbolItems() )
   {
-    QgsSymbolLegendNode *n = new QgsSymbolLegendNode( nodeLayer, i );
-    nodes.append( n );
+    if ( i.dataDefinedSizeLegendSettings() )
+      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );
+    else
+      nodes << new QgsSymbolLegendNode( nodeLayer, i );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
