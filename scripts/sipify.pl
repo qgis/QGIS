@@ -591,7 +591,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     pop(@GLOB_BRACKET_NESTING_IDX);
                     pop(@ACCESS);
                     exit_with_error("Class $CLASSNAME[$#CLASSNAME] should be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.")
-                        if $EXPORTED[-1] == 0;
+                        if $EXPORTED[-1] == 0 and not $CLASSNAME[$#CLASSNAME] ~~ $SIP_CONFIG->{no_export_macro};
                     pop @EXPORTED;
                 }
                 pop(@CLASSNAME);
