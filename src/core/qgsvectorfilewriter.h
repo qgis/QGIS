@@ -519,8 +519,11 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
 
-    //! Add feature to the currently opened data source
-    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    /**
+     * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.
+     * \since QGIS 3.0
+     */
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
     //! \note not available in Python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
