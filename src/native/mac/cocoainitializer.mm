@@ -36,7 +36,7 @@
     POSSIBILITY OF SUCH DAMAGE.
  ***************************************************************************/
 
-#include "CocoaInitializer.h"
+#include "cocoainitializer.h"
 
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
