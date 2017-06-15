@@ -2084,15 +2084,18 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     insert += values + ')';
 
-    if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      insert += QLatin1String( " RETURNING " );
-
-      QString delim;
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      if ( mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktInt || mPrimaryKeyType == PktUint64 )
       {
-        insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
-        delim = ',';
+        insert += QLatin1String( " RETURNING " );
+
+        QString delim;
+        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        {
+          insert += delim + quotedIdentifier( mAttributeFields.at( idx ).name() );
+          delim = ',';
+        }
       }
     }
 
@@ -2141,7 +2144,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       QgsPostgresResult result( conn->PQexecPrepared( QStringLiteral( "addfeatures" ), params ) );
 
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && result.PQresultStatus() == PGRES_TUPLES_OK )
       {
         for ( int i = 0; i < mPrimaryKeyAttrs.size(); ++i )
         {
@@ -2153,7 +2156,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       else if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
-      if ( mPrimaryKeyType == PktOid )
+      if ( !( flags & QgsFeatureSink::FastInsert ) && mPrimaryKeyType == PktOid )
       {
         features->setId( result.PQoidValue() );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
