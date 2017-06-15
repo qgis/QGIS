@@ -19,6 +19,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
+#include "qgsgeonodeconnection.h"
 
 class QgsWmsCapabilitiesDownload;
 
@@ -176,6 +177,37 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
       if ( path.isEmpty() )
         return new QgsXyzTileRootItem( parentItem, QStringLiteral( "XYZ Tiles" ), QStringLiteral( "xyz:" ) );
       return nullptr;
+    }
+
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override
+    {
+      QVector<QgsDataItem *> items;
+      if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+      {
+        QString connectionName = path.split( '/' ).last();
+        if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+        {
+          QgsGeoNodeConnection connection( connectionName );
+          QStringList encodedUris( connection.serviceUrl( QStringLiteral( "XYZ" ) ) );
+
+          Q_FOREACH( QString encodedUri, encodedUris )
+          {
+            QgsDataSourceUri uri;
+            uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+            uri.setParam( QStringLiteral( "url" ), encodedUri );
+            QStringList splitUri = encodedUri.split( "/" );
+            QString layerName = splitUri[ splitUri.length() - 4 ];
+
+            QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
+            if ( item )
+            {
+              items.append( item );
+            }
+          }
+        }
+      }
+
+      return items;
     }
 };
 
