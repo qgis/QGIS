@@ -74,6 +74,8 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void vectorLayersAdded( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
     //! Reset current page to previously selected page
     void setPreviousPage();
+    //! Refresh the browser view
+    void refresh( );
 
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp
@@ -102,6 +104,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Update project home directory
     void updateProjectHome();
+    //! Connections changed
+    void connectionsChanged( );
+    // internal signal
+    void dlg_refresh( );
 
   private:
     //! Return the dialog from the provider
@@ -114,6 +120,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     QgsMapCanvas *mMapCanvas = nullptr;
     int mPreviousRow;
     QStringList mPageNames;
+
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H

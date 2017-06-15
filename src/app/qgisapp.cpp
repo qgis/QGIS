@@ -888,6 +888,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget, &QgsBrowserDockWidget::refresh );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -896,6 +898,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget2, &QgsBrowserDockWidget::updateProjectHome );
+  connect( mBrowserWidget2, &QgsBrowserDockWidget::connectionsChanged, this, &QgisApp::connectionsChanged );
+  connect( this, &QgisApp::connectionsChanged, mBrowserWidget2, &QgsBrowserDockWidget::refresh );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
   connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
 
@@ -1594,6 +1598,8 @@ void QgisApp::dataSourceManager( QString pageName )
   {
     mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mapCanvas( ), this );
     // Forward signals to this
+    connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
     connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),

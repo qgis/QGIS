@@ -117,7 +117,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mModel = new QgsBrowserModel( mBrowserView );
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
-    mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
+    mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
@@ -242,7 +242,8 @@ void QgsBrowserDockWidget::removeFavorite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  refreshModel( QModelIndex() );
+  if ( mModel )
+    refreshModel( QModelIndex() );
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )

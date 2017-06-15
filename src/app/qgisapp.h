@@ -1494,6 +1494,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
   signals:
 
+    /**
+     * Emitted when a connection has been added/removed or changed by the provider
+     * selection dialogs
+     */
+    void connectionsChanged( );
+
     /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );

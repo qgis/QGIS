@@ -51,6 +51,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
   // Forward all browser signals
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
 
   // VECTOR Layers (completely different interface: it's not a provider)
@@ -115,6 +116,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas,
     {
       this->vectorLayerAdded( vectorLayerPath, baseName, QStringLiteral( "WFS" ) );
     } );
+    connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
   }
 
   addRasterProviderDialog( QStringLiteral( "arcgismapserver" ), tr( "ArcGIS Map Server" ), QStringLiteral( "/mActionAddAmsLayer.svg" ) );
@@ -166,6 +168,12 @@ void QgsDataSourceManagerDialog::setPreviousPage()
   setCurrentPage( prevPage );
 }
 
+void QgsDataSourceManagerDialog::refresh()
+{
+  mBrowserWidget->refresh( );
+  emit dlg_refresh();
+}
+
 void QgsDataSourceManagerDialog::rasterLayerAdded( const QString &uri, const QString &baseName, const QString &providerKey )
 {
   emit addRasterLayer( uri, baseName, providerKey );
@@ -212,6 +220,8 @@ void QgsDataSourceManagerDialog::addDbProviderDialog( const QString providerKey,
              this, SIGNAL( showProgress( int, int ) ) );
     connect( dlg, SIGNAL( progressMessage( QString ) ),
              this, SIGNAL( showStatusMessage( QString ) ) );
+    connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
+    connect( this,  SIGNAL( dlg_refresh( ) ), dlg, SLOT( refresh( ) ) );
   }
 }
 
@@ -223,5 +233,7 @@ void QgsDataSourceManagerDialog::addRasterProviderDialog( const QString provider
     // Forward
     connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
              this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+    connect( dlg, SIGNAL( connectionsChanged( ) ), this, SIGNAL( connectionsChanged( ) ) );
+    connect( this,  SIGNAL( dlg_refresh( ) ), dlg, SLOT( refresh( ) ) );
   }
 }
