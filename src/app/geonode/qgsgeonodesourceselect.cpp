@@ -20,6 +20,7 @@
 #include "qgsgeonodenewconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -483,12 +484,15 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       // Build url for WFS
       // restrictToRequestBBOX='1' srsname='EPSG:26719' typename='geonode:cab_mun' url='http://demo.geonode.org/geoserver/geonode/wms' table=\"\" sql="
       QString uri;
-      uri += QStringLiteral( " srsname='%1'" ).arg( crs ) ;
-      uri += QStringLiteral( " typename='%1'" ).arg( typeName ) ;
+      uri += QStringLiteral( " restrictToRequestBBOX='1'" );
+      uri += QStringLiteral( " srsname='%1'" ).arg( crs );
+      uri += QStringLiteral( " typename='%1'" ).arg( typeName );
       uri += QStringLiteral( " url='%1'" ).arg( serviceURL );
+      uri += QStringLiteral( " table=\"\"" );
+      uri += QStringLiteral( " sql=" );
 
-      QgsDebugMsg( "Add WFS from GeoNode : " + uri );
-      emit addWfsLayer( uri, typeName );
+      QgsMessageLog::logMessage( "Add WFS from GeoNode : " + uri + " and typename: " + typeName, tr( "GeoNode" ) );
+      emit addWfsLayer( uri, typeName, "WFS" );
     }
     else if ( webServiceType == "XYZ" )
     {

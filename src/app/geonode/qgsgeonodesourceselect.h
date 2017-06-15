@@ -45,7 +45,10 @@ class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelect
     void addRasterLayer( QString const &rasterLayerPath,
                          QString const &baseName,
                          QString const &providerKey );
-    void addWfsLayer( const QString &uri, const QString &layerName );
+    void addWfsLayer(
+      const QString &uri,
+      const QString &layerName,
+      QString const &providerKey );
 
   private:
     QgsGeoNodeSourceSelect(); //default constructor is forbidden

@@ -4584,6 +4584,8 @@ void QgisApp::addGeonodeLayer()
   }
   connect( geonodes, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
            this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  connect( geonodes, SIGNAL( addWfsLayer( QString, QString, QString ) ),
+           this, SLOT( addVectorLayer( QString, QString, QString ) ) );
   geonodes->exec();
   delete geonodes;
 }
