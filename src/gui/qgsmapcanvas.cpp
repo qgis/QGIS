@@ -913,10 +913,17 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->hasGeometryType() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if (rect.isNull())
+  {
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
+  }
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
   zoomToFeatureExtent( rect );
 } // zoomToSelected
 
@@ -1029,20 +1036,20 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->hasGeometryType() || layer->selectedFeatureCount() == 0 )
     return;
 
-  QgsRectangle rect = mapSettings().layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
-  if ( !rect.isNull() )
+  QgsRectangle rect = layer->boundingBoxOfSelected();
+  if (rect.isNull())
   {
-    setCenter( rect.center() );
-    refresh();
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    return;
   }
-  else
-  {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "Geometry is NULL" ), QgsMessageBar::WARNING );
-  }
-} // panToSelected
+
+  rect = mapSettings().layerExtentToOutputExtent( layer, rect );
+  setCenter( rect.center() );
+  refresh();
+}
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 {
