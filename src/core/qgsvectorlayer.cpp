@@ -940,7 +940,7 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest &request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( new QgsVectorLayerFeatureSource( this ), true, request ) );
 }
 
-bool QgsVectorLayer::addFeature( QgsFeature &feature )
+bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return false;
@@ -2587,7 +2587,7 @@ QgsFeatureIterator QgsVectorLayer::getSelectedFeatures( QgsFeatureRequest reques
   return getFeatures( request );
 }
 
-bool QgsVectorLayer::addFeatures( QgsFeatureList &features )
+bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 {
   if ( !mEditBuffer || !mDataProvider )
     return false;

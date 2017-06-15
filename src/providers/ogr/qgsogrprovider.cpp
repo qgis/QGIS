@@ -1228,7 +1228,7 @@ OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
   return OGR_G_ForceTo( hGeom, layerGeomType, nullptr );
 }
 
-bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
+bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
@@ -1357,7 +1357,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
     pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
-  else
+  else if ( !( flags & QgsFeatureSink::FastInsert ) )
   {
     QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
     if ( id >= 0 )
@@ -1376,7 +1376,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f )
 }
 
 
-bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
+bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( !doInitialActionsForEdition() )
     return false;
@@ -1388,7 +1388,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
-    if ( !addFeaturePrivate( *it ) )
+    if ( !addFeaturePrivate( *it, flags ) )
     {
       returnvalue = false;
     }

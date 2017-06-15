@@ -25,6 +25,7 @@ from qgis.core import (
     QgsExpressionContext,
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
+    QgsFeatureSink,
     NULL
 )
 
@@ -360,6 +361,27 @@ class ProviderTestCase(FeatureSourceTestCase):
         else:
             # expect fail
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]), 'Provider reported no AddFeatures capability, but returned true to addFeatures')
+
+    def testAddFeatureFastInsert(self):
+        if not getattr(self, 'getEditableLayer', None):
+            return
+
+        l = self.getEditableLayer()
+        self.assertTrue(l.isValid())
+
+        f1 = QgsFeature()
+        f1.setAttributes([6, -220, NULL, 'String', '15'])
+        f1.setGeometry(QgsGeometry.fromWkt('Point (-72.345 71.987)'))
+
+        f2 = QgsFeature()
+        f2.setAttributes([7, 330, 'Coconut', 'CoCoNut', '13'])
+
+        if l.dataProvider().capabilities() & QgsVectorDataProvider.AddFeatures:
+            # expect success
+            result, added = l.dataProvider().addFeatures([f1, f2], QgsFeatureSink.FastInsert)
+            self.assertTrue(result, 'Provider reported AddFeatures capability, but returned False to addFeatures')
+            self.assertEqual(l.dataProvider().featureCount(),7)
+
 
     def testAddFeaturesUpdateExtent(self):
         if not getattr(self, 'getEditableLayer', None):

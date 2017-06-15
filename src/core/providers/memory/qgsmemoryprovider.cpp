@@ -323,7 +323,7 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 }
 
 
-bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist )
+bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags )
 {
   // whether or not to update the layer extent on the fly as we add features
   bool updateExtent = mFeatures.isEmpty() || !mExtent.isEmpty();
