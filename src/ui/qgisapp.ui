@@ -157,6 +157,8 @@
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
+     <addaction name="mActionAddVirtualLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -361,6 +363,9 @@
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
+   <addaction name="mActionAddDelimitedText"/>
+   <addaction name="mActionAddVirtualLayer"/>
+   <addaction name="mActionOpenMetadataWizardEditor"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -2668,6 +2673,15 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionOpenMetadataWizardEditor">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Metadata Wizard Editor</string>
    </property>
   </action>
  </widget>

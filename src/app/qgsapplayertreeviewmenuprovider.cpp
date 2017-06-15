@@ -267,6 +267,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       addCustomLayerActions( menu, layer );
 
+      menu->addAction( tr( "Metadata Wizard" ), QgisApp::instance(), SLOT( metadataWizard() ) );
+
       if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
         menu->addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 
