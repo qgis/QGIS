@@ -2342,6 +2342,7 @@ QGIS 3.0 defaultValue() only returns literal, constant defaultValues. A new meth
 has been added which returns the SQL clause fragments which must be evaluated by the provider itself.
 - isSaveAndLoadStyleToDBSupported() was renamed to isSaveAndLoadStyleToDatabaseSupported()
 - The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
+- addFeature and addFeatures now take an extra Flags argument dictating feature addition behavior
 
 
 QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}
@@ -2471,6 +2472,7 @@ in code which previously passed a null pointer to QgsVectorFileWriter.
 - writeAsVectorFormat() now takes a QgsCoordinateTransform reference, not a pointer. An invalid QgsCoordinateTransform should be used instead of a null pointer if no transformation is required.
 - setSymbologyScaleDenominator() and symbologyScaleDenominator() were renamed to setSymbologyScale() and symbologyScale()
 for consistency with other parts of the QGIS API.
+- The addFeature which takes a renderer argument was renamed to addFeatureWithStyle.
 
 
 QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}
