@@ -190,7 +190,7 @@ bool QgsVectorLayerExporter::flushBuffer()
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 
-  if ( !mProvider->addFeatures( mFeatureBuffer ) )
+  if ( !mProvider->addFeatures( mFeatureBuffer, QgsFeatureSink::FastInsert ) )
   {
     QStringList errors = mProvider->errors();
     mProvider->clearErrors();
