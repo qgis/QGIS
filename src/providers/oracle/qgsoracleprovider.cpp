@@ -1173,7 +1173,7 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
 }
 
 
-bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
+bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags )
 {
   if ( flist.size() == 0 )
     return true;
@@ -1311,26 +1311,29 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       if ( !ins.exec() )
         throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
 
-      if ( mPrimaryKeyType == PktRowId )
+      if ( !( flags & QgsFeatureSink::FastInsert ) )
       {
-        features->setId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
-      }
-      else if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
-      {
-        getfid.addBindValue( QVariant( ins.lastInsertId() ) );
-        if ( !getfid.exec() || !getfid.next() )
-          throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
-
-        int col = 0;
-        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        if ( mPrimaryKeyType == PktRowId )
         {
-          QgsField fld = field( idx );
+          features->setId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+        }
+        else if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
+        {
+          getfid.addBindValue( QVariant( ins.lastInsertId() ) );
+          if ( !getfid.exec() || !getfid.next() )
+            throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
 
-          QVariant v = getfid.value( col++ );
-          if ( v.type() != fld.type() )
-            v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
-          features->setAttribute( idx, v );
+          int col = 0;
+          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          {
+            QgsField fld = field( idx );
+
+            QVariant v = getfid.value( col++ );
+            if ( v.type() != fld.type() )
+              v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+            features->setAttribute( idx, v );
+          }
         }
       }
     }
@@ -1342,29 +1345,32 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       throw OracleException( tr( "Could not commit transaction" ), db );
     }
 
-    // update feature ids
-    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+      // update feature ids
+      if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
       {
-        QgsAttributes attributevec = features->attributes();
-
-        if ( mPrimaryKeyType == PktInt )
+        for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
         {
-          features->setId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
-        }
-        else
-        {
-          QList<QVariant> primaryKeyVals;
+          QgsAttributes attributevec = features->attributes();
 
-          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          if ( mPrimaryKeyType == PktInt )
           {
-            primaryKeyVals << attributevec[ idx ];
+            features->setId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
           }
+          else
+          {
+            QList<QVariant> primaryKeyVals;
 
-          features->setId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            {
+              primaryKeyVals << attributevec[ idx ];
+            }
+
+            features->setId( mShared->lookupFid( QVariant( primaryKeyVals ) ) );
+          }
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
         }
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 

@@ -133,7 +133,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
     QVariant defaultValue( int fieldId ) const override;
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
