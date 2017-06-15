@@ -917,7 +917,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     return;
 
   QgsRectangle rect = layer->boundingBoxOfSelected();
-  if (rect.isNull())
+  if ( rect.isNull() )
   {
     emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
     return;
@@ -1040,7 +1040,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
     return;
 
   QgsRectangle rect = layer->boundingBoxOfSelected();
-  if (rect.isNull())
+  if ( rect.isNull() )
   {
     emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
     return;
