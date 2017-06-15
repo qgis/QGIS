@@ -760,12 +760,27 @@ Returns list with all diagram settings in the renderer
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
 
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
+%Docstring
+ Configures appearance of legend. Takes ownership of the passed settings objects.
+.. versionadded:: 3.0
+%End
+
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+%Docstring
+ Returns configuration of appearance of legend. Will return null if no configuration has been set.
+.. versionadded:: 3.0
+ :rtype: QgsDataDefinedSizeLegend
+%End
+
   protected:
     virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
 
 
     virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
 
+
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
 
 };
 

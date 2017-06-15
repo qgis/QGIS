@@ -21,6 +21,8 @@
 #include "qgssymbol.h"
 #include "qgsexpression.h"
 
+class QgsDataDefinedSizeLegend;
+
 /** \ingroup core
  * \class QgsSingleSymbolRenderer
  */
@@ -29,6 +31,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
+    ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
@@ -61,8 +64,28 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     //! \returns a new renderer if the conversion was possible, otherwise 0.
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
+    /**
+     * Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+     * This allows to configure for what values (symbol sizes) should be shown in the legend, whether to display
+     * different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+     *
+     * When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+     * Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+     * size legend.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns configuration of appearance of legend when using data-defined size for marker symbols.
+     * Will return null if the functionality is disabled.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+
   protected:
     std::unique_ptr<QgsSymbol> mSymbol;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
   private:
 #ifdef SIP_RUN

@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdiagramrenderer.h"
+
+#include "qgsdatadefinedsizelegend.h"
 #include "qgsvectorlayer.h"
 #include "diagram/qgstextdiagram.h"
 #include "diagram/qgspiediagram.h"
@@ -610,9 +612,18 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
 }
 
 
-QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer(): QgsDiagramRenderer()
+QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
+  : QgsDiagramRenderer()
 {
   mInterpolationSettings.classificationAttributeIsExpression = false;
+}
+
+QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other )
+  : QgsDiagramRenderer( other )
+  , mSettings( other.mSettings )
+  , mInterpolationSettings( other.mInterpolationSettings )
+  , mDataDefinedSizeLegend( other.mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegend ) : nullptr )
+{
 }
 
 QgsLinearlyInterpolatedDiagramRenderer *QgsLinearlyInterpolatedDiagramRenderer::clone() const
@@ -684,6 +695,13 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
   {
     mSettings.readXml( settingsElem );
   }
+
+  QDomElement ddsLegendSizeElem = elem.firstChildElement( "data-defined-size-legend" );
+  if ( !ddsLegendSizeElem.isNull() )
+  {
+    mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readTypeAndAlignmentFromXml( ddsLegendSizeElem ) );
+  }
+
   _readXml( elem, context );
 }
 
@@ -705,6 +723,14 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
     rendererElem.setAttribute( QStringLiteral( "classificationField" ), mInterpolationSettings.classificationField );
   }
   mSettings.writeXml( rendererElem, doc );
+
+  if ( mDataDefinedSizeLegend )
+  {
+    QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
+    QgsDataDefinedSizeLegend::writeTypeAndAlignmentToXml( *mDataDefinedSizeLegend, ddsLegendElem );
+    rendererElem.appendChild( ddsLegendElem );
+  }
+
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }
@@ -745,17 +771,42 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
   if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol )
   {
     // add size legend
+
+    QgsMarkerSymbol *legendSymbol = mSizeLegendSymbol.get()->clone();
+    legendSymbol->setSizeUnit( mSettings.sizeType );
+    legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
+
+    QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
     Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
     {
       double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      QgsLegendSymbolItem si( mSizeLegendSymbol.get(), QString::number( v ), QString() );
-      QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-      s->setSize( size );
-      s->setSizeUnit( mSettings.sizeType );
-      s->setSizeMapUnitScale( mSettings.sizeScale );
-      nodes << new QgsSymbolLegendNode( nodeLayer, si );
+      sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
+    }
+
+    QgsDataDefinedSizeLegend ddSizeLegend;
+    if ( mDataDefinedSizeLegend )  // copy legend configuration if any...
+      ddSizeLegend = *mDataDefinedSizeLegend;
+    ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
+    ddSizeLegend.setClasses( sizeClasses );
+
+    Q_FOREACH ( const QgsLegendSymbolItem &si, ddSizeLegend.legendSymbolList() )
+    {
+      if ( si.dataDefinedSizeLegendSettings() )
+        nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *si.dataDefinedSizeLegendSettings() );
+      else
+        nodes << new QgsSymbolLegendNode( nodeLayer, si );
     }
   }
 
   return nodes;
+}
+
+void QgsLinearlyInterpolatedDiagramRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegend.reset( settings );
+}
+
+QgsDataDefinedSizeLegend *QgsLinearlyInterpolatedDiagramRenderer::dataDefinedSizeLegend() const
+{
+  return mDataDefinedSizeLegend.get();
 }

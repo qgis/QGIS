@@ -131,6 +131,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     //! Construct the node with pointer to its parent layer node
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    //! Returns a temporary context or null if legendMapViewData are not valid
+    QgsRenderContext *createTemporaryRenderContext() const SIP_FACTORY;
+
   protected:
     QgsLayerTreeLayer *mLayerNode = nullptr;
     bool mEmbeddedInParent;
@@ -236,9 +239,6 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
-
-    // return a temporary context or null if legendMapViewData are not valid
-    QgsRenderContext *createTemporaryRenderContext() const;
 
     /** Sets all items belonging to the same layer as this node to the same check state.
      * \param state check state
@@ -378,6 +378,29 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     bool mValid;
 
     mutable std::unique_ptr<QgsImageFetcher> mFetcher;
+};
+
+
+/**
+ * \ingroup core
+ * Produces legend node with a marker symbol
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
+{
+  public:
+    //! Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
+    QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    virtual QVariant data( int role ) const override;
+
+    ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx ) override;
+
+  private:
+    void cacheImage() const;
+
+    std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
+    mutable QImage mImage;
 };
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

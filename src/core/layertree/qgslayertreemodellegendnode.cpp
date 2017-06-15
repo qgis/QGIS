@@ -18,6 +18,7 @@
 
 #include "qgslayertreemodellegendnode.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
@@ -215,22 +216,23 @@ void QgsSymbolLegendNode::uncheckAllItems()
   checkAll( false );
 }
 
-inline
-QgsRenderContext *QgsSymbolLegendNode::createTemporaryRenderContext() const
+QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
   int dpi = 0;
   if ( model() )
     model()->legendMapViewData( &mupp, &dpi, &scale );
-  bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
+
+  if ( qgsDoubleNear( mupp, 0.0 ) || dpi == 0 || qgsDoubleNear( scale, 0.0 ) )
+    return nullptr;
 
   // setup temporary render context
-  std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
+  QgsRenderContext *context = new QgsRenderContext;
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return validData ? context.release() : nullptr;
+  return context;
 }
 
 void QgsSymbolLegendNode::checkAll( bool state )
@@ -717,4 +719,72 @@ void QgsWmsLegendNode::invalidateMapBasedData()
   // TODO: do this only if this extent != prev extent ?
   mValid = false;
   emit dataChanged();
+}
+
+// -------------------------------------------------------------------------
+
+QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mSettings( new QgsDataDefinedSizeLegend( settings ) )
+{
+}
+
+QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
+{
+  if ( role == Qt::DecorationRole )
+  {
+    cacheImage();
+    return QPixmap::fromImage( mImage );
+  }
+  else if ( role == Qt::SizeHintRole )
+  {
+    cacheImage();
+    return mImage.size();
+  }
+  return QVariant();
+}
+
+QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext *ctx )
+{
+  // setup temporary render context
+  QgsRenderContext context;
+  context.setScaleFactor( settings.dpi() / 25.4 );
+  context.setRendererScale( settings.mapScale() );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+  context.setForceVectorOutput( true );
+
+  if ( ctx )
+  {
+    context.setPainter( ctx->painter );
+    ctx->painter->save();
+    ctx->painter->setRenderHint( QPainter::Antialiasing );
+    ctx->painter->translate( ctx->point );
+    ctx->painter->scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
+  }
+
+  QgsDataDefinedSizeLegend ddsLegend( *mSettings );
+  ddsLegend.setFont( settings.style( QgsLegendStyle::SymbolLabel ).font() );
+  ddsLegend.setTextColor( settings.fontColor() );
+
+  QSize contentSize;
+  int labelXOffset;
+  ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
+
+  if ( ctx )
+    ctx->painter->restore();
+
+  ItemMetrics im;
+  im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
+  im.labelSize = QSizeF( labelXOffset / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
+  return im;
+}
+
+
+void QgsDataDefinedSizeLegendNode::cacheImage() const
+{
+  if ( mImage.isNull() )
+  {
+    std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
+    mImage = mSettings->collapsedLegendImage( *context.get() );
+  }
 }

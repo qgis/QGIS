@@ -32,6 +32,7 @@
 #include "qgspropertycollection.h"
 
 
+class QgsDataDefinedSizeLegend;
 class QgsDiagram;
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -722,14 +723,31 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
+    /**
+     * Configures appearance of legend. Takes ownership of the passed settings objects.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns configuration of appearance of legend. Will return null if no configuration has been set.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
+
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
 
     QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
+    QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+
   private:
     QgsDiagramSettings mSettings;
     QgsDiagramInterpolationSettings mInterpolationSettings;
+
+    //! Stores more settings about how legend for varying size of symbols should be rendered
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 };
 
 #endif // QGSDIAGRAMRENDERERV2_H
