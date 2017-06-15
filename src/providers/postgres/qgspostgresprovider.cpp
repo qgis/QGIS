@@ -1935,7 +1935,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
   return geometry;
 }
 
-bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
+bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   if ( flist.isEmpty() )
     return true;
@@ -2160,33 +2160,36 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    // update feature ids
-    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+      // update feature ids
+      if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
       {
-        QgsAttributes attrs = features->attributes();
+        for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
+        {
+          QgsAttributes attrs = features->attributes();
 
-        if ( mPrimaryKeyType == PktUint64 )
-        {
-          features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
-        }
-        else if ( mPrimaryKeyType == PktInt )
-        {
-          features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
-        }
-        else
-        {
-          QVariantList primaryKeyVals;
-
-          Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+          if ( mPrimaryKeyType == PktUint64 )
           {
-            primaryKeyVals << attrs.at( idx );
+            features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
           }
+          else if ( mPrimaryKeyType == PktInt )
+          {
+            features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
+          }
+          else
+          {
+            QVariantList primaryKeyVals;
 
-          features->setId( mShared->lookupFid( primaryKeyVals ) );
+            Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+            {
+              primaryKeyVals << attrs.at( idx );
+            }
+
+            features->setId( mShared->lookupFid( primaryKeyVals ) );
+          }
+          QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
         }
-        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
       }
     }
 

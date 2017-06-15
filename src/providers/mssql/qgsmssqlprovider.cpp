@@ -818,7 +818,7 @@ bool QgsMssqlProvider::isValid() const
   return mValid;
 }
 
-bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
+bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -1012,30 +1012,33 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
     }
 
 
-    statement = QStringLiteral( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
-
-    if ( !query.exec( statement ) )
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
-      {
-        pushError( msg );
-        return false;
-      }
-    }
+      statement = QStringLiteral( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
 
-    if ( !query.next() )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !query.exec( statement ) )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
+
+      if ( !query.next() )
+      {
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
+      }
+      it->setId( query.value( 0 ).toLongLong() );
     }
-    it->setId( query.value( 0 ).toLongLong() );
   }
 
   return true;

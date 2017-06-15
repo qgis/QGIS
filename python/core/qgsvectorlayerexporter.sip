@@ -114,9 +114,9 @@ class QgsVectorLayerExporter : QgsFeatureSink
  :rtype: int
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
     ~QgsVectorLayerExporter();

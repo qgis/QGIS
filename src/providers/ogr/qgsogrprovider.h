@@ -78,7 +78,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual QgsRectangle extent() const override;
     QVariant defaultValue( int fieldId ) const override;
     virtual void updateExtents() override;
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
@@ -225,7 +225,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     mutable QStringList mSubLayerList;
 
-    bool addFeaturePrivate( QgsFeature &f );
+    bool addFeaturePrivate( QgsFeature &f, QgsFeatureSink::Flags flags );
     //! Deletes one feature
     bool deleteFeature( QgsFeatureId id );
 

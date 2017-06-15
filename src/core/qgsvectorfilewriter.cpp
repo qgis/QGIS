@@ -1836,12 +1836,12 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature &feature )
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature, Flags )
 {
   return addFeature( feature, nullptr, QgsUnitTypes::DistanceMeters );
 }
 
-bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features )
+bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, Flags )
 {
   QgsFeatureList::iterator fIt = features.begin();
   bool result = true;

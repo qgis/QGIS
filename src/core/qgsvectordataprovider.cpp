@@ -62,9 +62,10 @@ QString QgsVectorDataProvider::dataComment() const
   return QString();
 }
 
-bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist )
+bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   Q_UNUSED( flist );
+  Q_UNUSED( flags );
   return false;
 }
 

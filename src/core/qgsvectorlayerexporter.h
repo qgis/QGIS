@@ -133,8 +133,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
-    bool addFeatures( QgsFeatureList &features ) override;
-    bool addFeature( QgsFeature &feature ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
 
     /**
      * Finalizes the export and closes the new created layer.

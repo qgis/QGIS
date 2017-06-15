@@ -197,7 +197,7 @@ Bitmask of all provider's editing capabilities
  \param enumList reference to the list to fill
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/ );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring

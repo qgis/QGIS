@@ -102,7 +102,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;

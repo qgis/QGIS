@@ -190,14 +190,14 @@ QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest &request
 }
 
 
-bool QgsGPXProvider::addFeatures( QgsFeatureList &flist )
+bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
 
   // add all the features
   for ( QgsFeatureList::iterator iter = flist.begin();
         iter != flist.end(); ++iter )
   {
-    if ( !addFeature( *iter ) )
+    if ( !addFeature( *iter, flags ) )
       return false;
   }
 
@@ -211,7 +211,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist )
 }
 
 
-bool QgsGPXProvider::addFeature( QgsFeature &f )
+bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 {
   QByteArray wkb( f.geometry().exportToWkb() );
   const char *geo = wkb.constData();
