@@ -29,7 +29,10 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
       {
         if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
-          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
+          QgsAbstractGeometry *g = geom->clone();
+          g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+          QgsPointXY pos = layerFeature.mapToLayerTransform().transform( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsCoordinateTransform::ReverseTransform );
+          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing ) ) );
         }
       }
     }

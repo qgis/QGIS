@@ -33,11 +33,14 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
           continue;
         for ( int iVert = nVerts - 1, jVert = 0; jVert < nVerts; iVert = jVert++ )
         {
-          QgsPointV2 pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          QgsPointV2 pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
+          QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < mContext->tolerance )
           {
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), pj, QgsVertexId( iPart, iRing, jVert ) ) );
+            QgsAbstractGeometry *g = geom->clone();
+            g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( pj, QgsCoordinateTransform::ReverseTransform );
+            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, jVert ) ) );
           }
         }
       }

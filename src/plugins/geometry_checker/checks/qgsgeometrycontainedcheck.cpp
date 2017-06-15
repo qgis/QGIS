@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrycontainedcheck.h"
 #include "../utils/qgsfeaturepool.h"
@@ -32,7 +31,9 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       QString errMsg;
       if ( geomEngineA->within( *layerFeatureB.geometry(), &errMsg ) )
       {
-        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), layerFeatureA.geometry()->clone(), layerFeatureA.geometry()->centroid(), qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
+        QgsAbstractGeometry *g = layerFeatureA.geometry()->clone();
+        QgsPoint pos = g->centroid();
+        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), g, pos, qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
       }
       else if ( !errMsg.isEmpty() )
       {
@@ -56,16 +57,14 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
     error->setObsolete();
     return;
   }
-  QgsCoordinateTransform crstA = QgsCoordinateTransformCache::instance()->transform( featurePoolA->getLayer()->crs().authid(), mContext->mapCrs );
-  QgsCoordinateTransform crstB = QgsCoordinateTransformCache::instance()->transform( featurePoolB->getLayer()->crs().authid(), mContext->mapCrs );
 
   // Check if error still applies
   QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
-  featureGeomA->transform( crstA );
+  featureGeomA->transform( featurePoolA->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->tolerance );
 
   QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
-  featureGeomB->transform( crstB );
+  featureGeomB->transform( featurePoolB->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
 
   bool within = geomEngineA->within( *featureGeomB );
   delete featureGeomA;

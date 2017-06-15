@@ -25,7 +25,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
                                     const QString &layerId,
                                     QgsFeatureId featureId,
                                     QgsAbstractGeometry *geometry,
-                                    const QgsPoint &errorLocation,
+                                    const QgsPointXY &errorLocation,
                                     const QMap<QString, QList<QgsFeatureId>> &duplicates )
       : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
       , mDuplicates( duplicates )

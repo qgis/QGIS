@@ -99,7 +99,7 @@ class QgsGeometryCheckError
                            const QString &layerId,
                            QgsFeatureId featureId,
                            QgsAbstractGeometry *geometry,
-                           const QgsPoint &errorLocation,
+                           const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
@@ -113,11 +113,13 @@ class QgsGeometryCheckError
     const QgsGeometryCheck *check() const { return mCheck; }
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
-    QgsAbstractGeometry *geometry() const { return mGeometry; }
+    // In map units
+    const QgsAbstractGeometry *geometry() const { return mGeometry; }
     // In map units
     virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->errorDescription(); }
-    const QgsPoint &location() const { return mErrorLocation; }
+    // In map units
+    const QgsPointXY &location() const { return mErrorLocation; }
     // Lengths, areas in map units
     QVariant value() const { return mValue; }
     ValueType valueType() const { return mValueType; }
@@ -165,7 +167,7 @@ class QgsGeometryCheckError
     QString mLayerId;
     QgsFeatureId mFeatureId;
     QgsAbstractGeometry *mGeometry;
-    QgsPoint mErrorLocation;
+    QgsPointXY mErrorLocation;
     QgsVertexId mVidx;
     QVariant mValue;
     ValueType mValueType;

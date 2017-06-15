@@ -24,6 +24,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
+#include "qgscrscache.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
@@ -64,7 +65,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QW
   }
 
   connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
-  connect( ui.listWidgetInputLayers, &QListWidgetItem::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput() );
+  connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
   connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.frameOutput, &QWidget::setEnabled );
@@ -397,7 +398,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
   for ( QgsVectorLayer *layer : processLayers )
   {
     double mapToLayerUnits = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    featurePools.insert( layer->id(), new QgsFeaturePool( layer, mapToLayerUnits, selectedOnly ) );
+    QgsCoordinateTransform mapToLayerTransform = QgsCoordinateTransformCache::instance()->transform( mIface->mapCanvas()->mapSettings().destinationCrs().authid(), layer->crs().authid() );
+    featurePools.insert( layer->id(), new QgsFeaturePool( layer, mapToLayerUnits, mapToLayerTransform, selectedOnly ) );
   }
 
   QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), mIface->mapCanvas()->mapSettings().destinationCrs().authid(), featurePools );

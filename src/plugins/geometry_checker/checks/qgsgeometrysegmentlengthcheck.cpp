@@ -43,7 +43,10 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
           double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
           if ( dist < minLength )
           {
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), layerFeature.geometry()->clone(), QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist / mapToLayerUnits, QgsGeometryCheckError::ValueLength ) );
+            QgsAbstractGeometry *g = layerFeature.geometry()->clone();
+            g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsCoordinateTransform::ReverseTransform );
+            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, iVert ), dist / mapToLayerUnits, QgsGeometryCheckError::ValueLength ) );
           }
         }
       }

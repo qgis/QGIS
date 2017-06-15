@@ -26,7 +26,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
 
         // Geometry ring without duplicate nodes
         QVector<int> vtxMap;
-        QVector<QgsPointV2> ring;
+        QVector<QgsPoint> ring;
         vtxMap.append( 0 );
         ring.append( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) );
         for ( int i = 1; i < n; ++i )
@@ -53,7 +53,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
         // For each vertex, check whether it lies on a segment
         for ( int iVert = 0, nVerts = n - isClosed; iVert < nVerts; ++iVert )
         {
-          const QgsPointV2 &p = ring[iVert];
+          const QgsPoint &p = ring[iVert];
           for ( int i = 0, j = 1; j < n; i = j++ )
           {
             if ( iVert == i || iVert == j || ( isClosed && iVert == 0 && j == n - 1 ) )
@@ -65,7 +65,10 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
             QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
             if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
             {
-              errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
+              QgsAbstractGeometry *g = geom->clone();
+              g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+              QgsPointXY pos = layerFeature.mapToLayerTransform().transform( p, QgsCoordinateTransform::ReverseTransform );
+              errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
               break; // No need to report same contact on different segments multiple times
             }
           }

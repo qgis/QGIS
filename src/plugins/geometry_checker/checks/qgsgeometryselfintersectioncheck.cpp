@@ -73,7 +73,10 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       {
         for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
         {
-          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), inter.point, QgsVertexId( iPart, iRing ), inter ) );
+          QgsAbstractGeometry *g = geom->clone();
+          g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+          QgsPointXY pos = layerFeature.mapToLayerTransform().transform( inter.point, QgsCoordinateTransform::ReverseTransform );
+          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), pos, QgsVertexId( iPart, iRing ), inter ) );
         }
       }
     }

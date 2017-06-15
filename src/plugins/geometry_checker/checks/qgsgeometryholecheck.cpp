@@ -28,7 +28,10 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
       // Rings after the first one are interiors
       for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
+        QgsAbstractGeometry *g = geom->clone();
+        g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+        QgsPointXY pos = layerFeature.mapToLayerTransform().transform( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsCoordinateTransform::ReverseTransform );
+        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing ) ) );
       }
     }
   }

@@ -25,7 +25,7 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
                                     const QString &layerId,
                                     QgsFeatureId featureId,
                                     QgsAbstractGeometry *geometry,
-                                    const QgsPoint &errorLocation,
+                                    const QgsPointXY &errorLocation,
                                     const QPair<QString, QgsFeatureId> &containingFeature
                                   )
       : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )

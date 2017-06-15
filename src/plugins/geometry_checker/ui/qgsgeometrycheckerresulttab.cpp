@@ -268,8 +268,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     f.setAttribute( fieldLayer, srcLayer->name() );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
-    QgsGeometry geom( error->location().clone() );
-    geom.transform( QgsCoordinateTransformCache::instance()->transform( srcLayer->crs().authid(), layer->crs().authid() ) );
+    QgsGeometry geom( new QgsPoint( error->location() ) );
     f.setGeometry( geom );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
@@ -324,14 +323,13 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   for ( QTableWidgetItem *item : items )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QgsVectorLayer *layer = !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->getLayer() : nullptr;
 
-    QgsAbstractGeometry *geometry = error->geometry();
+    const QgsAbstractGeometry *geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
     {
       QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
-      featureRubberBand->addGeometry( geom, layer );
+      featureRubberBand->addGeometry( geom, 0 );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );
@@ -340,12 +338,11 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
       QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
-      QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( layer, QgsPointXY( error->location().x(), error->location().y() ) );
-      pointRubberBand->addPoint( pos );
+      pointRubberBand->addPoint( error->location() );
       pointRubberBand->setWidth( 20 );
       pointRubberBand->setColor( Qt::red );
       mCurrentRubberBands.append( pointRubberBand );
-      errorPositions.append( pos );
+      errorPositions.append( error->location() );
     }
     else if ( ui.radioButtonFeature->isChecked() )
     {

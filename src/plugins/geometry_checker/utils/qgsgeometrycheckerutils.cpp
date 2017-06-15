@@ -25,19 +25,19 @@
 
 namespace QgsGeometryCheckerUtils
 {
-  LayerFeature::LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QString &targetCrs )
+  LayerFeature::LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform )
     : mLayer( layer )
     , mFeature( feature )
     , mMapToLayerUnits( mapToLayerUnits )
+    , mMapToLayerTransform( mapToLayerTransform )
     , mClonedGeometry( false )
   {
     mGeometry = feature.geometry().geometry();
-    if ( !targetCrs.isEmpty() && targetCrs != layer->crs().authid() )
+    if ( !mapToLayerTransform.isShortCircuited() )
     {
       mClonedGeometry = true;
       mGeometry = mGeometry->clone();
-      QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), targetCrs );
-      mGeometry->transform( crst );
+      mGeometry->transform( mapToLayerTransform, QgsCoordinateTransform::ReverseTransform );
     }
   }
   LayerFeature::~LayerFeature()
@@ -55,7 +55,7 @@ namespace QgsGeometryCheckerUtils
     , mFeatureIt( featureIt )
     , mFeature( feature )
     , mParent( parent )
-    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt]->getLayer(), feature, parent->mFeaturePools[ * layerIt]->getMapToLayerUnits(), parent->mTargetCrs ) )
+    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt]->getLayer(), feature, parent->mFeaturePools[ * layerIt]->getMapToLayerUnits(), parent->mFeaturePools[ * layerIt]->getMapToLayerTransform() ) )
   {
   }
 
@@ -89,7 +89,7 @@ namespace QgsGeometryCheckerUtils
         mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
       if ( featurePool->get( *mFeatureIt, mFeature ) )
       {
-        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt]->getLayer(), mFeature, mParent->mFeaturePools[*mLayerIt]->getMapToLayerUnits(), mParent->mTargetCrs );
+        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt]->getLayer(), mFeature, mParent->mFeaturePools[*mLayerIt]->getMapToLayerUnits(), mParent->mFeaturePools[*mLayerIt]->getMapToLayerTransform() );
         return true;
       }
     }
@@ -125,8 +125,7 @@ namespace QgsGeometryCheckerUtils
       const QgsFeaturePool *featurePool = featurePools[layerId];
       if ( geometryTypes.contains( featurePool->getLayer()->geometryType() ) )
       {
-        QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( targetCrs, featurePool->getLayer()->crs().authid() );
-        mFeatureIds.insert( layerId, featurePool->getIntersects( crst.transform( extent ) ) );
+        mFeatureIds.insert( layerId, featurePool->getIntersects( featurePool->getMapToLayerTransform().transform( extent ) ) );
       }
       else
       {

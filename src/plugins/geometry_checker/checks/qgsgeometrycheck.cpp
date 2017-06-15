@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
@@ -30,7 +29,7 @@ QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QStr
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
     QgsFeatureId featureId, QgsAbstractGeometry *geometry,
-    const QgsPoint &errorLocation,
+    const QgsPointXY &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
@@ -47,9 +46,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
 
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
-  QString srcCrs = mCheck->getContext()->featurePools[ layerId() ]->getLayer()->crs().authid();
-  QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( srcCrs, mCheck->getContext()->mapCrs );
-  return t.transformBoundingBox( mGeometry->boundingBox() );
+  return mGeometry->boundingBox();
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )

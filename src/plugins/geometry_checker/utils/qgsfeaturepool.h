@@ -30,7 +30,7 @@ class QgsVectorLayer;
 class QgsFeaturePool
 {
   public:
-    QgsFeaturePool( QgsVectorLayer *layer, double mapToLayerUnits, bool selectedOnly = false );
+    QgsFeaturePool( QgsVectorLayer *layer, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform, bool selectedOnly = false );
     bool get( QgsFeatureId id, QgsFeature &feature );
     void addFeature( QgsFeature &feature );
     void updateFeature( QgsFeature &feature );
@@ -38,7 +38,8 @@ class QgsFeaturePool
     QgsFeatureIds getIntersects( const QgsRectangle &rect ) const;
     QgsVectorLayer *getLayer() const { return mLayer; }
     const QgsFeatureIds &getFeatureIds() const { return mFeatureIds; }
-    double getMapToLayerUnits() const { return mMapToLayerUnits;}
+    double getMapToLayerUnits() const { return mMapToLayerUnits; }
+    const QgsCoordinateTransform &getMapToLayerTransform() const { return mMapToLayerTransform; }
     bool getSelectedOnly() const { return mSelectedOnly; }
     void clearLayer() { mLayer = nullptr; }
 
@@ -62,6 +63,7 @@ class QgsFeaturePool
     mutable QMutex mIndexMutex;
     QgsSpatialIndex mIndex;
     double mMapToLayerUnits;
+    QgsCoordinateTransform mMapToLayerTransform;
     bool mSelectedOnly;
 
     bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double & ( *comparator )( const double &, const double & ), double init );

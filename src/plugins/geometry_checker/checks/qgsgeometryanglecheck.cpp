@@ -51,11 +51,13 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
             continue;
           }
 
-          double angle = std::acos( v21 * v23 ) / M_PI * 180.0;
+          double angle = qAcos( v21 * v23 ) / M_PI * 180.0;
           if ( angle < mMinAngle )
           {
             QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone();
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), part, p2, QgsVertexId( iPart, iRing, iVert ), angle ) );
+            part->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( p2, QgsCoordinateTransform::ReverseTransform );
+            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), part, pos, QgsVertexId( iPart, iRing, iVert ), angle ) );
           }
         }
       }

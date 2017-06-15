@@ -17,7 +17,6 @@
 #ifndef QGS_GEOMETRYCHECKERUTILS_H
 #define QGS_GEOMETRYCHECKERUTILS_H
 
-#include "qgscrscache.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "geometry/qgsabstractgeometry.h"
@@ -31,11 +30,12 @@ namespace QgsGeometryCheckerUtils
   class LayerFeature
   {
     public:
-      LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QString &targetCrs );
+      LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform );
       ~LayerFeature();
       const QgsVectorLayer &layer() const { return *mLayer; }
       const QgsFeature &feature() const { return mFeature; }
       double mapToLayerUnits() const { return mMapToLayerUnits; }
+      const QgsCoordinateTransform &mapToLayerTransform() const { return mMapToLayerTransform; }
       const QgsAbstractGeometry *geometry() const { return mGeometry; }
       QString id() const { return QString( "%1:%2" ).arg( mLayer->id() ).arg( mFeature.id() ); }
 
@@ -43,6 +43,7 @@ namespace QgsGeometryCheckerUtils
       const QgsVectorLayer *mLayer = nullptr;
       QgsFeature mFeature;
       double mMapToLayerUnits;
+      QgsCoordinateTransform mMapToLayerTransform;
       QgsAbstractGeometry *mGeometry = nullptr;
       bool mClonedGeometry = false;
   };
@@ -132,7 +133,7 @@ namespace QgsGeometryCheckerUtils
      * \param tol The tolerance
      * \returns Whether the points are equal
      */
-  inline bool pointsFuzzyEqual( const QgsPoint &p1, const QgsPoint &p2, double tol )
+  inline bool pointsFuzzyEqual( const QgsPointXY &p1, const QgsPointXY &p2, double tol )
   {
     double dx = p1.x() - p2.x(), dy = p1.y() - p2.y();
     return ( dx * dx + dy * dy ) < tol * tol;

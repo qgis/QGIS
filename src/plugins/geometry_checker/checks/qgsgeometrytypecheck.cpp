@@ -33,7 +33,10 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
     QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
     if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
     {
-      errors.append( new QgsGeometryTypeCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->centroid(), type ) );
+      QgsAbstractGeometry *g = geom->clone();
+      g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+      QgsPoint pos = g->centroid();
+      errors.append( new QgsGeometryTypeCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, type ) );
     }
   }
 }

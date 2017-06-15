@@ -26,7 +26,7 @@ class QgsGeometrySelfIntersectionCheckError : public QgsGeometryCheckError
                                            const QString &layerId,
                                            QgsFeatureId featureId,
                                            QgsAbstractGeometry *geometry,
-                                           const QgsPoint &errorLocation,
+                                           const QgsPointXY &errorLocation,
                                            QgsVertexId vidx,
                                            const QgsGeometryUtils::SelfIntersection &inter )
       : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, vidx )

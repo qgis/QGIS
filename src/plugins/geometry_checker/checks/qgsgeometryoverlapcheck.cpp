@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryoverlapcheck.h"
 #include "../utils/qgsfeaturepool.h"
@@ -81,16 +80,14 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     error->setObsolete();
     return;
   }
-  QgsCoordinateTransform crstA = QgsCoordinateTransformCache::instance()->transform( featurePoolA->getLayer()->crs().authid(), mContext->mapCrs );
-  QgsCoordinateTransform crstB = QgsCoordinateTransformCache::instance()->transform( featurePoolB->getLayer()->crs().authid(), mContext->mapCrs );
 
   // Check if error still applies
   QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
-  featureGeomA->transform( crstA );
+  featureGeomA->transform( featurePoolA->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->reducedTolerance );
 
   QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
-  featureGeomB->transform( crstB );
+  featureGeomB->transform( featurePoolB->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
 
   if ( !geomEngineA->overlaps( *featureGeomB ) )
   {

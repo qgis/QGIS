@@ -44,7 +44,10 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
       double value;
       if ( checkThreshold( mapToLayerUnits, geom, value ) )
       {
-        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->centroid(), QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
+        QgsAbstractGeometry *g = geom->clone();
+        g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+        QgsPoint pos = g->centroid();
+        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
       }
     }
   }

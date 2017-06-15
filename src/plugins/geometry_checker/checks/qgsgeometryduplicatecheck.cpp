@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometryduplicatecheck.h"
 #include "qgsspatialindex.h"
@@ -56,7 +55,9 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     }
     if ( !duplicates.isEmpty() )
     {
-      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), layerFeatureA.geometry()->clone(), layerFeatureA.geometry()->centroid(), duplicates ) );
+      QgsAbstractGeometry *g = layerFeatureA.geometry()->clone();
+      QgsPoint pos = g->centroid();
+      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), g, pos, duplicates ) );
     }
   }
 }
@@ -77,16 +78,14 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == RemoveDuplicates )
   {
-    QgsCoordinateTransform crstA = QgsCoordinateTransformCache::instance()->transform( featurePoolA->getLayer()->crs().authid(), mContext->mapCrs );
     QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
-    featureGeomA->transform( crstA );
+    featureGeomA->transform( featurePoolA->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
     QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->tolerance );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     for ( const QString &layerIdB : duplicateError->duplicates().keys() )
     {
       QgsFeaturePool *featurePoolB = mContext->featurePools[ layerIdB ];
-      QgsCoordinateTransform crstB = QgsCoordinateTransformCache::instance()->transform( featurePoolB->getLayer()->crs().authid(), mContext->mapCrs );
       for ( QgsFeatureId idB : duplicateError->duplicates()[layerIdB] )
       {
         QgsFeature featureB;
@@ -95,7 +94,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
           continue;
         }
         QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
-        featureGeomB->transform( crstB );
+        featureGeomB->transform( featurePoolB->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
         QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *featureGeomB );
         if ( diffGeom && diffGeom->area() < mContext->tolerance )
         {

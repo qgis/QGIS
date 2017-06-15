@@ -26,7 +26,10 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     QgsWkbTypes::Type type = geom->wkbType();
     if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
     {
-      errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), geom->centroid() ) );
+      QgsAbstractGeometry *g = geom->clone();
+      g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+      QgsPoint pos = g->centroid();
+      errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos ) );
     }
   }
 }
