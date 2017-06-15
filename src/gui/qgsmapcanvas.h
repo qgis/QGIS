@@ -716,9 +716,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
 
-    //! called on resize or changed extent to notify canvas items to change their rectangle
-    void updateCanvasItemPositions();
-
     /// implementation struct
     class CanvasProperties;
 
@@ -734,6 +731,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
+
+  protected slots:
+    //! called on resize or changed extent to notify canvas items to change their rectangle
+    void updateCanvasItemPositions();
 
   private slots:
 

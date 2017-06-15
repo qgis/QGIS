@@ -867,8 +867,6 @@ void QgsMapCanvas::zoomToPreviousExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 
 } // zoomToPreviousExtent
@@ -1336,9 +1334,6 @@ void QgsMapCanvas::resizeEvent( QResizeEvent *e )
   mScene->setSceneRect( QRectF( 0, 0, lastSize.width(), lastSize.height() ) );
 
   moveCanvasContents( true );
-
-  // notify canvas items of change
-  updateCanvasItemPositions();
 
   updateScale();
 

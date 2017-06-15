@@ -851,16 +851,17 @@ Overridden drag enter event
 called when panning is in action, reset indicates end of panning
 %End
 
-    void updateCanvasItemPositions();
-%Docstring
-called on resize or changed extent to notify canvas items to change their rectangle
-%End
-
 
 
     void updateDatumTransformEntries();
 %Docstring
 Make sure the datum transform store is properly populated
+%End
+
+  protected slots:
+    void updateCanvasItemPositions();
+%Docstring
+called on resize or changed extent to notify canvas items to change their rectangle
 %End
 
 }; // class QgsMapCanvas
