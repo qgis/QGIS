@@ -183,6 +183,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
 
+  connect( this, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvas::updateCanvasItemPositions );
+
   setInteractive( false );
 
   refresh();
@@ -790,9 +792,6 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
   emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-  // notify canvas items of change
-  updateCanvasItemPositions();
-
 } // setExtent
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
@@ -831,10 +830,6 @@ void QgsMapCanvas::setRotation( double degrees )
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
   emit extentsChanged(); // visible extent changes with rotation
-
-  // notify canvas items of change (needed?)
-  updateCanvasItemPositions();
-
 } // setRotation
 
 
@@ -890,8 +885,6 @@ void QgsMapCanvas::zoomToNextExtent()
     // update controls' enabled state
     emit zoomLastStatusChanged( mLastExtentIndex > 0 );
     emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
-    // notify canvas items of change
-    updateCanvasItemPositions();
   }
 }// zoomToNextExtent
 
