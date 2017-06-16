@@ -421,7 +421,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( !vlayer || !vlayer->isEditable() )
+      if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
         continue;
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
