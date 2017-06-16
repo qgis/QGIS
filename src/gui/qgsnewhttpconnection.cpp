@@ -171,6 +171,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
   if ( mBaseKey != QLatin1String( "qgis/connections-wfs/" ) )
   {
+    lblVersion->setVisible( false );
     cmbVersion->setVisible( false );
     mGroupBox->layout()->removeWidget( cmbVersion );
     lblMaxNumFeatures->setVisible( false );
