@@ -29,6 +29,19 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
   mAuthConfigSelect = new QgsAuthConfigSelect( this );
   tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
 
+  cmbDpiMode->clear();
+  cmbDpiMode->addItem( tr( "all" ) );
+  cmbDpiMode->addItem( tr( "off" ) );
+  cmbDpiMode->addItem( tr( "QGIS" ) );
+  cmbDpiMode->addItem( tr( "UMN" ) );
+  cmbDpiMode->addItem( tr( "GeoServer" ) );
+
+  cmbVersion->clear();
+  cmbVersion->addItem( tr( "Auto-detect" ) );
+  cmbVersion->addItem( tr( "1.0" ) );
+  cmbVersion->addItem( tr( "1.1" ) );
+  cmbVersion->addItem( tr( "2.0" ) );
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -39,6 +52,48 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
     QString credentialsKey = mCredentialsBaseKey + '/' + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
+
+    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/wms/ignoreGetMapURI", false ).toBool() );
+    cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/wfs/ignoreAxisOrientation", false ).toBool() );
+    cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/wms/ignoreAxisOrientation", false ).toBool() );
+    cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/wfs/invertAxisOrientation", false ).toBool() );
+    cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/wms/invertAxisOrientation", false ).toBool() );
+    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/wms/ignoreGetFeatureInfoURI", false ).toBool() );
+    cbxSmoothPixmapTransform->setChecked( settings.value( key + "/wms/smoothPixmapTransform", false ).toBool() );
+
+    int dpiIdx;
+    switch ( settings.value( key + "/dpiMode", 7 ).toInt() )
+    {
+      case 0: // off
+        dpiIdx = 1;
+        break;
+      case 1: // QGIS
+        dpiIdx = 2;
+        break;
+      case 2: // UMN
+        dpiIdx = 3;
+        break;
+      case 4: // GeoServer
+        dpiIdx = 4;
+        break;
+      default: // other => all
+        dpiIdx = 0;
+        break;
+    }
+    cmbDpiMode->setCurrentIndex( dpiIdx );
+
+    QString version = settings.value( key + "/version" ).toString();
+    int versionIdx = 0; // AUTO
+    if ( version == QLatin1String( "1.0.0" ) )
+      versionIdx = 1;
+    else if ( version == QLatin1String( "1.1.0" ) )
+      versionIdx = 2;
+    else if ( version == QLatin1String( "2.0.0" ) )
+      versionIdx = 3;
+    cmbVersion->setCurrentIndex( versionIdx );
+
+    txtReferer->setText( settings.value( key + "/referer" ).toString() );
+    txtMaxNumFeatures->setText( settings.value( key + "/maxnumfeatures" ).toString() );
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
@@ -107,6 +162,58 @@ void QgsGeoNodeNewConnection::accept()
   QUrl url( txtUrl->text() );
 
   settings.setValue( key + "/url", url.toString() );
+
+  settings.setValue( key + "/wfs/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
+  settings.setValue( key + "/wms/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
+  settings.setValue( key + "/wfs/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+  settings.setValue( key + "/wms/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+
+  settings.setValue( key + "/wms/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
+  settings.setValue( key + "/wms/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
+  settings.setValue( key + "/wms/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+
+  int dpiMode = 0;
+  switch ( cmbDpiMode->currentIndex() )
+  {
+    case 0: // all => QGIS|UMN|GeoServer
+      dpiMode = 7;
+      break;
+    case 1: // off
+      dpiMode = 0;
+      break;
+    case 2: // QGIS
+      dpiMode = 1;
+      break;
+    case 3: // UMN
+      dpiMode = 2;
+      break;
+    case 4: // GeoServer
+      dpiMode = 4;
+      break;
+  }
+
+  settings.setValue( key + "/wms/dpiMode", dpiMode );
+  settings.setValue( key + "/wms/referer", txtReferer->text() );
+
+  QString version = QStringLiteral( "auto" );
+  switch ( cmbVersion->currentIndex() )
+  {
+    case 0:
+      version = QStringLiteral( "auto" );
+      break;
+    case 1:
+      version = QStringLiteral( "1.0.0" );
+      break;
+    case 2:
+      version = QStringLiteral( "1.1.0" );
+      break;
+    case 3:
+      version = QStringLiteral( "2.0.0" );
+      break;
+  }
+
+  settings.setValue( key + "/wfs/version", version );
+  settings.setValue( key + "/wfs/maxnumfeatures", txtMaxNumFeatures->text() );
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
