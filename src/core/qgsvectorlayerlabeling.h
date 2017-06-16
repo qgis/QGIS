@@ -77,9 +77,9 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
-     * Writes the SE 1.1 TextSymbolizer element based on the current layer labelling settings
+     * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
      */
-    virtual void toSld( QDomNode& parent, const QgsStringMap& props ) const
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const
     {
       Q_UNUSED( parent )
       Q_UNUSED( props )
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
     bool requiresAdvancedEffects() const override;
-    virtual void toSld( QDomNode& parent, const QgsStringMap& props ) const override;
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );

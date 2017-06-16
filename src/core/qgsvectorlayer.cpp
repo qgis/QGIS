@@ -2211,7 +2211,8 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
 
-  if ( isSpatial() ) {
+  if ( isSpatial() )
+  {
     // store the Name element
     QDomElement nameNode = doc.createElement( "se:Name" );
     nameNode.appendChild( doc.createTextNode( name() ) );
@@ -2229,7 +2230,7 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     userStyleElem.appendChild( featureTypeStyleElem );
 
     mRenderer->toSld( doc, featureTypeStyleElem, localProps );
-    if ( mLabeling != nullptr )
+    if ( labelsEnabled() )
     {
       mLabeling->toSld( featureTypeStyleElem, localProps );
     }

@@ -2313,13 +2313,30 @@ void QgsSymbolLayerUtils::createDisplacementElement( QDomDocument &doc, QDomElem
   element.appendChild( displacementElem );
 
   QDomElement dispXElem = doc.createElement( QStringLiteral( "se:DisplacementX" ) );
-  dispXElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.x() ) ) );
+  dispXElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.x(), 2 ) ) );
 
   QDomElement dispYElem = doc.createElement( QStringLiteral( "se:DisplacementY" ) );
-  dispYElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.y() ) ) );
+  dispYElem.appendChild( doc.createTextNode( qgsDoubleToString( offset.y(), 2 ) ) );
 
   displacementElem.appendChild( dispXElem );
   displacementElem.appendChild( dispYElem );
+}
+
+void QgsSymbolLayerUtils::createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor )
+{
+  // anchor is not tested for null, (0,0) is _not_ the default value (0.5, 0) is.
+
+  QDomElement anchorElem = doc.createElement( QStringLiteral( "se:AnchorPoint" ) );
+  element.appendChild( anchorElem );
+
+  QDomElement anchorXElem = doc.createElement( QStringLiteral( "se:AnchorPointX" ) );
+  anchorXElem.appendChild( doc.createTextNode( qgsDoubleToString( anchor.x() ) ) );
+
+  QDomElement anchorYElem = doc.createElement( QStringLiteral( "se:AnchorPointY" ) );
+  anchorYElem.appendChild( doc.createTextNode( qgsDoubleToString( anchor.y() ) ) );
+
+  anchorElem.appendChild( anchorXElem );
+  anchorElem.appendChild( anchorYElem );
 }
 
 bool QgsSymbolLayerUtils::displacementFromSldElement( QDomElement &element, QPointF &offset )
@@ -2656,7 +2673,7 @@ QgsStringMap QgsSymbolLayerUtils::getSvgParameterList( QDomElement &element )
 
 QDomElement QgsSymbolLayerUtils::createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value )
 {
-  QDomElement nodeElem = doc.createElement( QStringLiteral( "VendorOption" ) );
+  QDomElement nodeElem = doc.createElement( QStringLiteral( "se:VendorOption" ) );
   nodeElem.setAttribute( QStringLiteral( "name" ), name );
   nodeElem.appendChild( doc.createTextNode( value ) );
   return nodeElem;
@@ -4028,8 +4045,26 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
           scale = 1 / 0.28;
           roundToUnit = true;
           break;
-        // we don't have a good case for map units, as pixel values won't change based on zoom
-        default:
+        case QgsUnitTypes::RenderInches:
+          scale = 1 / 0.28 * 25.4;
+          roundToUnit = true;
+          break;
+        case QgsUnitTypes::RenderPoints:
+          scale = 90. /* dots per inch according to OGC SLD */ / 72. /* points per inch */;
+          roundToUnit = true;
+          break;
+        case QgsUnitTypes::RenderPixels:
+          // pixel is pixel
+          scale = 1;
+          break;
+        case QgsUnitTypes::RenderMapUnits:
+        case QgsUnitTypes::RenderMetersInMapUnits:
+          // already handed via uom
+          scale = 1;
+          break;
+        case QgsUnitTypes::RenderPercentage:
+        case QgsUnitTypes::RenderUnknownUnit:
+          // these do not make sense and should not really reach here
           scale = 1;
       }
     }
