@@ -477,7 +477,7 @@ QString QgsDb2LayerItem::createUri()
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
   QgsDebugMsg( "connInfo: '" + connItem->connInfo() + "'" );
   QgsDataSourceUri uri = QgsDataSourceUri( connItem->connInfo() );

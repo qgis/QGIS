@@ -321,7 +321,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Get a unique title from user for new and duplicate composers
      * \param acceptEmpty whether to accept empty titles (one will be generated)
      * \param currentTitle base name for initial title choice
-     * \returns QString::null if user cancels input dialog
+     * \returns QString() if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it

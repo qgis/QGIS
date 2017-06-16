@@ -30,7 +30,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     ~QgsPgNewConnection();
 

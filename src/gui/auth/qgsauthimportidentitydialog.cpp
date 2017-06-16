@@ -367,7 +367,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
 
   // load the bundle
   QCA::SecureArray passarray;
-  QString keypass = QString::null;
+  QString keypass = QString();
   if ( !lePkiPkcs12KeyPass->text().isEmpty() )
   {
     passarray = QCA::SecureArray( lePkiPkcs12KeyPass->text().toUtf8() );

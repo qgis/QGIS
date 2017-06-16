@@ -1075,7 +1075,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   sMapsetLock = lock;
 
   emit QgsGrass::instance()->mapsetChanged();
-  return QString::null;
+  return QString();
 }
 
 QString QgsGrass::closeMapset()
@@ -1137,7 +1137,7 @@ QString QgsGrass::closeMapset()
 
   QgsGrass::instance()->setMapsetSearchPathWatcher(); // unset watcher
   emit QgsGrass::instance()->mapsetChanged();
-  return QString::null;
+  return QString();
 }
 
 bool QgsGrass::closeMapsetWarn()

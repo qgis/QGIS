@@ -57,7 +57,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     void on_chkbxEraseAuthDb_toggled( bool checked );
 
   protected:
-    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
 
     virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 

@@ -680,7 +680,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
 
   // Project macros
-  QString pythonMacros = QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString::null );
+  QString pythonMacros = QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
   grpPythonMacros->setChecked( !pythonMacros.isEmpty() );
   if ( !pythonMacros.isEmpty() )
   {
@@ -1144,7 +1144,7 @@ void QgsProjectProperties::apply()
   QString pythonMacros = ptePythonMacros->text();
   if ( !grpPythonMacros->isChecked() || pythonMacros.isEmpty() )
   {
-    pythonMacros = QString::null;
+    pythonMacros = QString();
     resetPythonMacros();
   }
   QgsProject::instance()->writeEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), pythonMacros );

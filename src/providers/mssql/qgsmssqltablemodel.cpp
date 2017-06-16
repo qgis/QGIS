@@ -350,12 +350,12 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
-    return QString::null;
+    return QString();
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
-    return QString::null;
+    return QString();
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
@@ -363,7 +363,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !pkItem->data( Qt::UserRole + 1 ).toStringList().isEmpty() &&
        !pkItem->data( Qt::UserRole + 1 ).toStringList().contains( pkColumnName ) )
     // no valid primary candidate selected
-    return QString::null;
+    return QString();
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
@@ -378,7 +378,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
-      return QString::null;
+      return QString();
   }
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;

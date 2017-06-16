@@ -132,7 +132,7 @@ namespace QgsGuiUtils
 
     if ( !outputFileName.isNull() )
     {
-      ext = filterMap.value( selectedFilter, QString::null );
+      ext = filterMap.value( selectedFilter, QString() );
       if ( !ext.isNull() )
         settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), selectedFilter );
       settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
@@ -160,7 +160,7 @@ namespace QgsGuiUtils
 
     selectedFilter = fileDialog->selectedFilter();
     QgsDebugMsg( "Selected filter: " + selectedFilter );
-    ext = filterMap.value( selectedFilter, QString::null );
+    ext = filterMap.value( selectedFilter, QString() );
 
     if ( !ext.isNull() )
       settings.setValue( "/UI/lastSaveAsImageFilter", selectedFilter );

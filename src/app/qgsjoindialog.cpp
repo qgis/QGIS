@@ -114,7 +114,7 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
   if ( mUseCustomPrefix->isChecked() )
     info.setPrefix( mCustomPrefix->text() );
   else
-    info.setPrefix( QString::null );
+    info.setPrefix( QString() );
 
   if ( mUseJoinFieldsSubset->isChecked() )
   {

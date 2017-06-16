@@ -22,7 +22,7 @@ class QgsNewNameDialog : QgsDialog
 %End
   public:
 
-    QgsNewNameDialog( const QString &source = QString::null, const QString &initial = QString::null,
+    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
                       const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
                       const QRegExp &regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );

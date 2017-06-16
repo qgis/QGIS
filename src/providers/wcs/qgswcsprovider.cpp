@@ -63,7 +63,7 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 QgsWcsProvider::QgsWcsProvider( const QString &uri )
   : QgsRasterDataProvider( uri )
   , QgsGdalProviderBase()
-  , mHttpUri( QString::null )
+  , mHttpUri( QString() )
   , mCoverageSummary()
   , mWidth( 0 )
   , mHeight( 0 )
