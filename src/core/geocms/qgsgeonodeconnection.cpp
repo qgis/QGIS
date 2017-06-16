@@ -369,6 +369,10 @@ QStringList QgsGeoNodeConnection::serviceUrl( QString serviceType )
   for ( int i = 0; i < layers.count(); i++ )
   {
     QString url = layers[i].toMap()[serviceType.toLower()].toString();
+    if ( !url.contains( QLatin1String( "://" ) ) )
+    {
+      url.prepend( "http://" );
+    }
     if ( !urls->contains( url ) && url.length() > 0 )
     {
       urls->append( url );
