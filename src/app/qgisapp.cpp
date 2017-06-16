@@ -4584,8 +4584,9 @@ void QgisApp::addGeonodeLayer()
   }
   connect( geonodes, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
            this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-  connect( geonodes, SIGNAL( addWfsLayer( QString, QString, QString ) ),
-           this, SLOT( addVectorLayer( QString, QString, QString ) ) );
+  // I don't know why this new style doesn't work properly
+//  connect( geonodes, &QgsGeoNodeSourceSelect::addRasterLayer, this, &QgisApp::addRasterLayer );
+  connect( geonodes, &QgsGeoNodeSourceSelect::addWfsLayer, this, &QgisApp::addVectorLayer );
   geonodes->exec();
   delete geonodes;
 }
