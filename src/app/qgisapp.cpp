@@ -4582,10 +4582,7 @@ void QgisApp::addGeonodeLayer()
     QMessageBox::warning( this, tr( "Geonode" ), tr( "Cannot get Geonode select dialog." ) );
     return;
   }
-  connect( geonodes, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-  // I don't know why this new style doesn't work properly
-//  connect( geonodes, &QgsGeoNodeSourceSelect::addRasterLayer, this, &QgisApp::addRasterLayer );
+  connect( geonodes, &QgsGeoNodeSourceSelect::addRasterLayer, this, QOverload<QString const &, QString const &, QString const &>::of( &QgisApp::addRasterLayer ) );
   connect( geonodes, &QgsGeoNodeSourceSelect::addWfsLayer, this, &QgisApp::addVectorLayer );
   geonodes->exec();
   delete geonodes;
