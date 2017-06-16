@@ -41,7 +41,7 @@ class QgsFilterLineEdit : QLineEdit
       ClearToDefault,
     };
 
-    QgsFilterLineEdit( QWidget *parent /TransferThis/ = 0, const QString &nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent /TransferThis/ = 0, const QString &nullValue = QString() );
 %Docstring
  Constructor for QgsFilterLineEdit.
  \param parent parent widget

@@ -1569,7 +1569,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       mWidgets.append( rww );
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }
@@ -1674,7 +1674,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       gbLayout->addWidget( spacer, ++row, 0 );
       gbLayout->setRowStretch( row, 1 );
 
-      newWidgetInfo.labelText = QString::null;
+      newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
     }

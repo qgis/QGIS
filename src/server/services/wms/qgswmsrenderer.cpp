@@ -1420,7 +1420,7 @@ namespace QgsWms
           attributeElement.setAttribute( QStringLiteral( "value" ),
                                          replaceValueMapAndRelation(
                                            layer, i,
-                                           featureAttributes[i].isNull() ?  QString::null : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &renderContext.expressionContext() )
+                                           featureAttributes[i].isNull() ?  QString() : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &renderContext.expressionContext() )
                                          )
                                        );
           featureElement.appendChild( attributeElement );

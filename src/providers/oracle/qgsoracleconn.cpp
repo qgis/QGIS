@@ -56,7 +56,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
 
 QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   : mRef( 1 )
-  , mCurrentUser( QString::null )
+  , mCurrentUser( QString() )
   , mHasSpatial( -1 )
 {
   QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
@@ -67,7 +67,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
   QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
-  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString::null;
+  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString();
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
@@ -170,7 +170,7 @@ QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 
 QString QgsOracleConn::connInfo()
 {
-  return sConnections.key( this, QString::null );
+  return sConnections.key( this, QString() );
 }
 
 void QgsOracleConn::disconnect()
@@ -178,7 +178,7 @@ void QgsOracleConn::disconnect()
   if ( --mRef > 0 )
     return;
 
-  QString key = sConnections.key( this, QString::null );
+  QString key = sConnections.key( this, QString() );
 
   if ( !key.isNull() )
   {
@@ -557,13 +557,13 @@ QString QgsOracleConn::databaseTypeFilter( QString alias, QString geomCol, QgsWk
       return QString( "%1 IS NULL" ).arg( geomCol );
     case QgsWkbTypes::Unknown:
       Q_ASSERT( !"unknown geometry unexpected" );
-      return QString::null;
+      return QString();
     default:
       break;
   }
 
   Q_ASSERT( !"unexpected geomType" );
-  return QString::null;
+  return QString();
 }
 
 QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
@@ -669,7 +669,7 @@ QString QgsOracleConn::displayStringForWkbType( QgsWkbTypes::Type type )
   }
 
   Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
+  return QString();
 }
 
 QgsWkbTypes::Type QgsOracleConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )

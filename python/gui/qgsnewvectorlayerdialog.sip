@@ -20,7 +20,7 @@ class QgsNewVectorLayerDialog: QDialog
     static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
  Runs the dialog and creates a layer matching the dialog parameters.
- :return: fileName on success, empty string use aborted, QString.null if creation failed
+ :return: fileName on success, empty string use aborted, QString() if creation failed
  :rtype: str
 %End
 

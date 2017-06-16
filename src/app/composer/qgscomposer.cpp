@@ -1975,7 +1975,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
-    QString outputFileName = QString::null;
+    QString outputFileName = QString();
 
     if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
     {

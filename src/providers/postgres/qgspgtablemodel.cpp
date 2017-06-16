@@ -316,7 +316,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   if ( !index.isValid() )
   {
     QgsDebugMsg( "invalid index" );
-    return QString::null;
+    return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
@@ -324,7 +324,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   {
     QgsDebugMsg( "unknown geometry type" );
     // no geometry type selected
-    return QString::null;
+    return QString();
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
@@ -334,7 +334,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   {
     // no valid primary candidate selected
     QgsDebugMsg( "no pk candidate selected" );
-    return QString::null;
+    return QString();
   }
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
@@ -352,7 +352,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     if ( !ok )
     {
       QgsDebugMsg( "srid not numeric" );
-      return QString::null;
+      return QString();
     }
   }
 

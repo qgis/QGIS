@@ -339,7 +339,7 @@ void QgsOpenVectorLayerDialog::accept()
         pass = QInputDialog::getText( this,
                                       tr( "Password for " ) + user,
                                       tr( "Please enter your password:" ),
-                                      QLineEdit::Password, QString::null,
+                                      QLineEdit::Password, QString(),
                                       &makeConnection );
     }
 

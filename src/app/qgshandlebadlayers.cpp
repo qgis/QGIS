@@ -203,7 +203,7 @@ QString QgsHandleBadLayers::filename( int row )
     return datasource;
   }
 
-  return QString::null;
+  return QString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )

@@ -68,7 +68,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString() );
 
     /** Returns true if the widget's clear button is visible.
      * \see setShowClearButton()
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \returns Current text (or null string if it matches the nullValue() property )
      * \see setValue()
      */
-    QString value() const { return isNull() ? QString::null : text(); }
+    QString value() const { return isNull() ? QString() : text(); }
 
     /**
      * Determine if the current text represents null.

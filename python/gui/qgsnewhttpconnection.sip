@@ -19,7 +19,7 @@ class QgsNewHttpConnection : QDialog
 #include "qgsnewhttpconnection.h"
 %End
   public:
-    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, const QString &baseKey = "qgis/connections-wms/", const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, const QString &baseKey = "qgis/connections-wms/", const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
 %End

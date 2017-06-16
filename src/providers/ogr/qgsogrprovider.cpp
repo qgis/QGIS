@@ -354,8 +354,8 @@ static QString AnalyzeURI( QString const &uri,
 {
   isSubLayer = false;
   layerIndex = 0;
-  layerName = QString::null;
-  subsetString = QString::null;
+  layerName = QString();
+  subsetString = QString();
   ogrGeometryTypeFilter = wkbUnknown;
 
   QgsDebugMsg( "Data source uri is [" + uri + ']' );

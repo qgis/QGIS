@@ -198,7 +198,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
   private:
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     //! parse the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText );

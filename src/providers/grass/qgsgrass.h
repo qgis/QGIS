@@ -87,8 +87,8 @@ class GRASS_LIB_EXPORT QgsGrassObject
               };
 
     QgsGrassObject() : mType( None ) {}
-    QgsGrassObject( const QString &gisdbase, const QString &location = QString::null,
-                    const QString &mapset = QString::null, const QString &name = QString::null,
+    QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
+                    const QString &mapset = QString(), const QString &name = QString(),
                     Type type = None );
     QString gisdbase() const { return mGisdbase; }
     void setGisdbase( const QString &gisdbase ) { mGisdbase = gisdbase; }
@@ -444,7 +444,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      */
     static QString getInfo( const QString  &info, const QString  &gisdbase,
                             const QString &location, const QString  &mapset = "PERMANENT",
-                            const QString &map = QString::null, const QgsGrassObject::Type type = QgsGrassObject::None,
+                            const QString &map = QString(), const QgsGrassObject::Type type = QgsGrassObject::None,
                             double x = 0.0, double y = 0.0,
                             const QgsRectangle &extent = QgsRectangle(), int sampleRows = 0,
                             int sampleCols = 0, int timeOut = 30000 );
