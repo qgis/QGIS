@@ -1548,7 +1548,7 @@ QVariant QgsPostgresProvider::minimumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
@@ -1771,7 +1771,7 @@ QVariant QgsPostgresProvider::maximumValue( int index ) const
   }
   catch ( PGFieldNotFound )
   {
-    return QVariant( QString::null );
+    return QVariant( QString() );
   }
 }
 
@@ -1832,7 +1832,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
 QString QgsPostgresProvider::paramValue( const QString &fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )
-    return QString::null;
+    return QString();
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
@@ -2627,7 +2627,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
 {
   if ( geom.isNull() )
   {
-    params << QString::null;
+    params << QString();
     return;
   }
 
@@ -4014,14 +4014,14 @@ static QString getNextString( const QString &txt, int &i, const QString &sep )
     if ( !stringRe.exactMatch( cur ) )
     {
       QgsLogger::warning( "Cannot find end of double quoted string: " + txt );
-      return QString::null;
+      return QString();
     }
     i += stringRe.cap( 1 ).length() + 2;
     jumpSpace( txt, i );
     if ( !txt.midRef( i ).startsWith( sep ) && i < txt.length() )
     {
       QgsLogger::warning( "Cannot find separator: " + txt.mid( i ) );
-      return QString::null;
+      return QString();
     }
     i += sep.length();
     return stringRe.cap( 1 ).replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) ).replace( QLatin1String( "\\\\" ), QLatin1String( "\\" ) );

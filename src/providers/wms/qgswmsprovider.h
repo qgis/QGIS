@@ -276,7 +276,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool extentForNonTiledLayer( const QString &layerName, const QString &crs, QgsRectangle &extent ) const;
 
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * Add the list of WMS layer names to be rendered by this server

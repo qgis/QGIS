@@ -131,7 +131,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
+    QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
     bool addFeatures( QgsFeatureList &flist ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;

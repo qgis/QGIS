@@ -50,7 +50,7 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri )
   , mDetectedGeomType( QgsWkbTypes::Unknown )
   , mRequestedGeomType( QgsWkbTypes::Unknown )
   , mHasSpatialIndex( false )
-  , mSpatialIndexName( QString::null )
+  , mSpatialIndexName( QString() )
   , mShared( new QgsOracleSharedData )
 {
   static int geomMetaType = -1;
@@ -1008,7 +1008,7 @@ bool QgsOracleProvider::uniqueData( QString query, QString colName )
 QVariant QgsOracleProvider::minimumValue( int index ) const
 {
   if ( !mConnection )
-    return QVariant( QString::null );
+    return QVariant( QString() );
 
   try
   {
@@ -1030,7 +1030,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
                                  .arg( qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString::null );
+      return QVariant( QString() );
     }
 
     if ( qry.next() )
@@ -1042,7 +1042,7 @@ QVariant QgsOracleProvider::minimumValue( int index ) const
   {
     ;
   }
-  return QVariant( QString::null );
+  return QVariant( QString() );
 }
 
 // Returns the list of unique values of an attribute
@@ -1123,7 +1123,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
       QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
                                  .arg( qry.lastError().text() )
                                  .arg( qry.lastQuery() ), tr( "Oracle" ) );
-      return QVariant( QString::null );
+      return QVariant( QString() );
     }
 
     if ( qry.next() )
@@ -1136,7 +1136,7 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
     ;
   }
 
-  return QVariant( QString::null );
+  return QVariant( QString() );
 }
 
 
@@ -1154,7 +1154,7 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
 {
   if ( fieldValue.isNull() )
   {
-    return QString::null;
+    return QString();
   }
   else if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
@@ -3408,7 +3408,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   if ( !conn )
   {
     errCause = QObject::tr( "Could not connect to database" );
-    return QString::null;
+    return QString();
   }
 
   QSqlQuery qry( *conn );
@@ -3418,7 +3418,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   {
     errCause = QObject::tr( "Unable to find layer style table [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
-    return QString::null;
+    return QString();
   }
   else if ( !qry.prepare( QStringLiteral( "SELECT styleQML FROM ("
                                           "SELECT styleQML"

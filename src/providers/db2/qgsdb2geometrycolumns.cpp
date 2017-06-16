@@ -159,6 +159,6 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   {
     QgsDebugMsg( "Warning: table primary key count is " + QString::number( pk.count() ) );
   }
-  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString::null;
+  layer.pkColumnName = layer.pkCols.size() > 0 ? layer.pkCols.at( 0 ) : QString();
   return true;
 }

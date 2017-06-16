@@ -319,7 +319,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     QgsFeatureId fid = file->recordId();
 
     while ( tokens.size() < mSource->mFieldCount )
-      tokens.append( QString::null );
+      tokens.append( QString() );
 
     QgsGeometry geom;
 

@@ -31,7 +31,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsDb2NewConnection();

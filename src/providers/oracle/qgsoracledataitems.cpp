@@ -358,11 +358,11 @@ QString QgsOracleLayerItem::createUri()
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri = QgsOracleConn::connUri( connItem->name() );
-  uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString::null );
+  uri.setDataSource( mLayerProperty.ownerName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, QString() );
   uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( mLayerProperty.isView && mLayerProperty.pkCols.size() > 0 )

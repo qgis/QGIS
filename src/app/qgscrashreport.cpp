@@ -116,7 +116,7 @@ const QString QgsCrashReport::crashID() const
   if ( mStackTrace.isEmpty() )
     return "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included.";
 
-  QString data = QString::null;
+  QString data = QString();
 
   // Hashes the full stack.
   Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )

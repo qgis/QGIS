@@ -183,7 +183,7 @@ void QgsPGConnectionItem::createSchema()
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
-  return handleDrop( data, QString::null );
+  return handleDrop( data, QString() );
 }
 
 bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSchema )
@@ -418,13 +418,13 @@ void QgsPGLayerItem::truncateTable()
 
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString::null;
+  QString pkColName = !mLayerProperty.pkCols.isEmpty() ? mLayerProperty.pkCols.at( 0 ) : QString();
   QgsPGConnectionItem *connItem = qobject_cast<QgsPGConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
-    return QString::null;
+    return QString();
   }
 
   QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
