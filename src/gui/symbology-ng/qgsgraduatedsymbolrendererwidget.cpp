@@ -15,6 +15,7 @@
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -511,6 +512,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
+    advMenu->addAction( tr( "Data-defined size legend..." ), this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
 
   btnAdvanced->setMenu( advMenu );
 
@@ -1163,6 +1166,18 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
     {
       mModel->addClass( *rIt );
     }
+    emit widgetChanged();
+  }
+}
+
+void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
+{
+  bool ok;
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol ); // this should be only enabled for marker symbols
+  std::unique_ptr<QgsDataDefinedSizeLegend> ddsLegend( showDataDefinedSizeLegendDialog( s, mRenderer->dataDefinedSizeLegend(), &ok ) );
+  if ( ok )
+  {
+    mRenderer->setDataDefinedSizeLegend( ddsLegend.release() );  // ownership is passed from dlg to renderer
     emit widgetChanged();
   }
 }

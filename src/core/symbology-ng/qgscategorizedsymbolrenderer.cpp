@@ -471,6 +471,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::clone() const
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
 
   copyRendererData( r );
   return r;

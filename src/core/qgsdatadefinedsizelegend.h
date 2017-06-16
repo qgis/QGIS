@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdatadefinedsizelegend.cpp
+  qgsdatadefinedsizelegend.h
   --------------------------------------
   Date                 : June 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -71,9 +71,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     LegendType legendType() const { return mType; }
 
     //! Sets marker symbol that will be used to draw markers in legend
-    void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER ) { mSymbol.reset( symbol ); }
+    void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
     //! Returns marker symbol that will be used to draw markers in legend
-    QgsMarkerSymbol *symbol() const { return mSymbol.get(); }
+    QgsMarkerSymbol *symbol() const;
 
     //! Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
     void setClasses( const QList<QgsDataDefinedSizeLegend::SizeClass> &classes ) { mSizeClasses = classes; }

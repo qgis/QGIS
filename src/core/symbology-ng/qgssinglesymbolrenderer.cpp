@@ -100,6 +100,7 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   copyRendererData( r );
   return r;
 }
@@ -298,7 +299,6 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
 
 QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolList lst;
   if ( mDataDefinedSizeLegend && mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
@@ -307,10 +307,11 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
     {
       QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
       ddSizeLegend.updateFromSymbolAndProperty( static_cast<const QgsMarkerSymbol *>( mSymbol.get() ), sizeDD );
-      lst += ddSizeLegend.legendSymbolList();
+      return ddSizeLegend.legendSymbolList();
     }
   }
 
+  QgsLegendSymbolList lst;
   lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QString() );
   return lst;
 }

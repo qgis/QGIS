@@ -504,6 +504,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyRendererData( r );

@@ -785,6 +785,11 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
   if ( mImage.isNull() )
   {
     std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
+    if ( !context )
+    {
+      context.reset( new QgsRenderContext );
+      context->setScaleFactor( 96 / 25.4 );
+    }
     mImage = mSettings->collapsedLegendImage( *context.get() );
   }
 }
