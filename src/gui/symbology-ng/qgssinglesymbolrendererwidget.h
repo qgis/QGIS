@@ -48,12 +48,14 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
      */
     virtual void setDockMode( bool dockMode ) override;
 
-  public slots:
+  private slots:
     void changeSingleSymbol();
 
     void showSymbolLevels();
 
-  protected:
+    void dataDefinedSizeLegend();
+
+  private:
 
     QgsSingleSymbolRenderer *mRenderer = nullptr;
     QgsSymbolSelectorWidget *mSelector = nullptr;

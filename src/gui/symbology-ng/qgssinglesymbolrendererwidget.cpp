@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgssinglesymbolrendererwidget.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 
@@ -23,6 +24,7 @@
 #include "qgssymbolselectordialog.h"
 
 #include <QMenu>
+
 
 QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -62,7 +64,9 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Symbol levels..." ), this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  if ( mSingleSymbol->type() == QgsSymbol::Marker )
+    advMenu->addAction( tr( "Data-defined size legend..." ), this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
@@ -104,4 +108,16 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
+}
+
+void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
+{
+  bool ok;
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
+  std::unique_ptr<QgsDataDefinedSizeLegend> ddsLegend( showDataDefinedSizeLegendDialog( s, mRenderer->dataDefinedSizeLegend(), &ok ) );
+  if ( ok )
+  {
+    mRenderer->setDataDefinedSizeLegend( ddsLegend.release() );  // ownership is passed from dlg to renderer
+    emit widgetChanged();
+  }
 }

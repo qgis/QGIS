@@ -35,13 +35,6 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
  \param dockMode True to enable dock mode.
 %End
 
-  public slots:
-    void changeSingleSymbol();
-
-    void showSymbolLevels();
-
-  protected:
-
 };
 
 

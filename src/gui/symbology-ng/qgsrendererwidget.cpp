@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererwidget.h"
+
+#include "qgsdatadefinedsizelegenddialog.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
@@ -272,6 +274,37 @@ void QgsRendererWidget::applyChanges()
 {
   apply();
 }
+
+QgsDataDefinedSizeLegend *QgsRendererWidget::showDataDefinedSizeLegendDialog( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend, bool *ok )
+{
+  *ok = false;
+
+  QgsProperty ddSize = symbol->dataDefinedSize();
+  if ( !ddSize || !ddSize.isActive() )
+  {
+    QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is not enabled!" ) );
+    return nullptr;
+  }
+  if ( !ddSize.transformer() )
+  {
+    QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is enabled, but without size scale transformer. Use assistant to define it." ) );
+    return nullptr;
+  }
+
+  QgsDataDefinedSizeLegendDialog dlg( ddsLegend );
+  dlg.setSourceSymbol( symbol->clone() );
+  if ( QgsMapCanvas *canvas = mContext.mapCanvas() )
+  {
+    dlg.setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
+  }
+
+  if ( !dlg.exec() )
+    return nullptr;
+
+  *ok = true;
+  return dlg.dataDefinedSizeLegend();
+}
+
 
 //
 // QgsDataDefinedValueDialog

@@ -28,6 +28,10 @@ QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLege
   , mTitleLabel( other.mTitleLabel )
   , mSizeClasses( other.mSizeClasses )
   , mSymbol( other.mSymbol.get() ? other.mSymbol->clone() : nullptr )
+  , mVAlign( other.mVAlign )
+  , mFont( other.mFont )
+  , mTextColor( other.mTextColor )
+  , mTextAlignment( other.mTextAlignment )
 {
 }
 
@@ -39,8 +43,22 @@ QgsDataDefinedSizeLegend &QgsDataDefinedSizeLegend::operator=( const QgsDataDefi
     mTitleLabel = other.mTitleLabel;
     mSizeClasses = other.mSizeClasses;
     mSymbol.reset( other.mSymbol.get() ? other.mSymbol->clone() : nullptr );
+    mVAlign = other.mVAlign;
+    mFont = other.mFont;
+    mTextColor = other.mTextColor;
+    mTextAlignment = other.mTextAlignment;
   }
   return *this;
+}
+
+void QgsDataDefinedSizeLegend::setSymbol( QgsMarkerSymbol *symbol )
+{
+  mSymbol.reset( symbol );
+}
+
+QgsMarkerSymbol *QgsDataDefinedSizeLegend::symbol() const
+{
+  return mSymbol.get();
 }
 
 
