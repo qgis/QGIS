@@ -486,7 +486,16 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QString uri;
       uri += QStringLiteral( " restrictToRequestBBOX='1'" );
       uri += QStringLiteral( " srsname='%1'" ).arg( crs );
-      uri += QStringLiteral( " typename='%1'" ).arg( typeName );
+      if ( serviceURL.contains( "qgis-server" ) )
+      {
+        // I need to do this since the typename used in qgis-server is without the workspace.
+        QString qgisServerTypeName = QString( typeName ).split( ":" ).last();
+        uri += QStringLiteral( " typename='%1'" ).arg( qgisServerTypeName );
+      }
+      else
+      {
+        uri += QStringLiteral( " typename='%1'" ).arg( typeName );
+      }
       uri += QStringLiteral( " url='%1'" ).arg( serviceURL );
       uri += QStringLiteral( " table=\"\"" );
       uri += QStringLiteral( " sql=" );
