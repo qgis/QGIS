@@ -190,19 +190,23 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
           QgsGeoNodeConnection connection( connectionName );
           QStringList encodedUris( connection.serviceUrl( QStringLiteral( "XYZ" ) ) );
 
-          Q_FOREACH( QString encodedUri, encodedUris )
+          if ( !encodedUris.isEmpty() )
           {
-            QgsDataSourceUri uri;
-            uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-            uri.setParam( QStringLiteral( "url" ), encodedUri );
-            QStringList splitUri = encodedUri.split( "/" );
-            QString layerName = splitUri[ splitUri.length() - 4 ];
+            Q_FOREACH( QString encodedUri, encodedUris )
+              {
+                QgsDebugMsg( encodedUri );
+                QgsDataSourceUri uri;
+                uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+                uri.setParam( QStringLiteral( "url" ), encodedUri );
+                QStringList splitUri = encodedUri.split( "/" );
+                QString layerName = splitUri[ splitUri.length() - 4 ];
 
-            QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
-            if ( item )
-            {
-              items.append( item );
-            }
+                QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
+                if ( item )
+                {
+                  items.append( item );
+                }
+              }
           }
         }
       }

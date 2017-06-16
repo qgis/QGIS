@@ -29,6 +29,7 @@
 #include "qgsxyzconnectiondialog.h"
 #endif
 #include "qgsgeonodeconnection.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 
@@ -474,7 +475,15 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
       QgsGeoNodeConnection connection( connectionName );
       QString uri( connection.serviceUrl( QStringLiteral( "WMS" ) )[0] );
       QgsDataSourceUri sourceUri( uri );
+      QgsSettings settings;
+      QString key( connection.pathGeoNodeConnection + "/" + connectionName );
+
+      QString dpiMode = settings.value( key + "/wms/dpiMode", "all" ).toString();
       sourceUri.setParam( QStringLiteral( "url" ), uri );
+      if ( !dpiMode.isEmpty() )
+      {
+        sourceUri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+      }
 
       QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( sourceUri.encodedUri() ) ) );
 
