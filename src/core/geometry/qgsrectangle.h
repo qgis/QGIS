@@ -202,6 +202,30 @@ class CORE_EXPORT QgsRectangle
     void combineExtentWith( double x, double y );
 
     /**
+     * Returns a rectangle offset from this one in the direction of the reversed vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle operator-( const QgsVector v ) const;
+
+    /**
+     * Returns a rectangle offset from this one in the direction of the vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle operator+( const QgsVector v ) const;
+
+    /**
+     * Moves this rectangle in the direction of the reversed vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle &operator-=( const QgsVector v );
+
+    /**
+     * Moves this rectangle in the direction of the vector.
+     * \since QGIS 3.0
+     */
+    QgsRectangle &operator+=( const QgsVector v );
+
+    /**
      * Returns true if the rectangle is empty.
      * An empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point).
      */
