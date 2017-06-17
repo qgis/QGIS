@@ -102,6 +102,11 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   QDialog *geonodeDialog = new QgsGeoNodeSourceSelect( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
   dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
 
+  if ( dlg )
+  {
+    connect( dlg, SIGNAL( addRasterLayer( QString, QString, QString ) ), this, SLOT( rasterLayerAdded( QString, QString, QString ) ) );
+    connect( dlg, SIGNAL( addWfsLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
+  }
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
@@ -152,7 +157,7 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
   emit addVectorLayers( layerQStringList, enc, dataSourceType );
 }
 
-QDialog *QgsDataSourceManagerDialog::addDialog(QDialog *dialog, QString const key, QString const name, QString const icon, QString title)
+QDialog *QgsDataSourceManagerDialog::addDialog( QDialog *dialog, QString const key, QString const name, QString const icon, QString title )
 {
   mPageNames.append( key );
   ui->mOptionsStackedWidget->addWidget( dialog );
