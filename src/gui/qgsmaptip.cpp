@@ -66,7 +66,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 #if WITH_QTWEBKIT
   mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
   mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
-  connect( mWebView, SIGNAL( linkClicked( QUrl ) ), this, SLOT( onLinkClicked( QUrl ) ) );
+  connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
 #endif
 
   mWebView->page()->settings()->setAttribute(
