@@ -249,8 +249,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
     QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mTreeView->model() );
     Q_FOREACH ( QgsLayerTreeLayer *layer, model->rootGroup()->findLayers() )
     {
-      Q_ASSERT( layer->layer() );
-      if ( layer->layer()->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer->layer() )->providerType() == QLatin1String( "virtual" ) )
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
+      if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
       {
         // store layer's id as user data
         mLayerNameCombo->addItem( layer->layer()->name(), layer->layer()->id() );
