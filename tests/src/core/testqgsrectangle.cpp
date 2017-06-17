@@ -26,6 +26,7 @@ class TestQgsRectangle: public QObject
   private slots:
     void manipulate();
     void regression6194();
+    void operators();
 };
 
 void TestQgsRectangle::manipulate()
@@ -85,9 +86,30 @@ void TestQgsRectangle::regression6194()
   QVERIFY( rect1 == rect2 );
 }
 
+void TestQgsRectangle::operators()
+{
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  QgsVector v = QgsVector( 1.0, 2.0 );
+  QgsRectangle rect2 = rect1 + v;
+  QVERIFY( rect1 != rect2 );
+  QCOMPARE( rect2.height(), rect1.height() );
+  QCOMPARE( rect2.width(), rect1.width() );
+  QCOMPARE( rect2.xMinimum(), 11.0 );
+  QCOMPARE( rect2.yMinimum(), 22.0 );
+
+  rect2 -= rect2.center() - rect1.center();
+  QVERIFY( rect1 == rect2 );
+
+  rect2 += v * 2.5;
+  QCOMPARE( rect2.xMinimum(), 12.5 );
+  QCOMPARE( rect2.yMinimum(), 25.0 );
+
+  rect2 = rect1 - v;
+  QCOMPARE( rect2.xMinimum(), 9.0 );
+  QCOMPARE( rect2.yMinimum(), 18.0 );
+  QCOMPARE( rect2.height(), rect1.height() );
+  QCOMPARE( rect2.width(), rect1.width() );
+}
+
 QGSTEST_MAIN( TestQgsRectangle )
 #include "testqgsrectangle.moc"
-
-
-
-
