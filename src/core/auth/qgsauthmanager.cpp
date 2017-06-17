@@ -2911,7 +2911,7 @@ bool QgsAuthManager::passwordHelperDelete()
   job.setAutoDelete( false );
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   QEventLoop loop;
-  job.connect( &job, SIGNAL( finished( QKeychain::Job * ) ), &loop, SLOT( quit() ) );
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
   job.start();
   loop.exec();
   if ( job.error() )
@@ -2943,7 +2943,7 @@ QString QgsAuthManager::passwordHelperRead()
   job.setAutoDelete( false );
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   QEventLoop loop;
-  job.connect( &job, SIGNAL( finished( QKeychain::Job * ) ), &loop, SLOT( quit() ) );
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
   job.start();
   loop.exec();
   if ( job.error() )
@@ -2986,7 +2986,7 @@ bool QgsAuthManager::passwordHelperWrite( const QString &password )
   job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
   job.setTextData( password );
   QEventLoop loop;
-  job.connect( &job, SIGNAL( finished( QKeychain::Job * ) ), &loop, SLOT( quit() ) );
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
   job.start();
   loop.exec();
   if ( job.error() )
