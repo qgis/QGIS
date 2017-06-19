@@ -1288,6 +1288,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
 QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider *p )
   : mShared( p->mShared )
   , mCrs( p->crs() )
+  , mIsSpatial( QgsWkbTypes::geometryType( p->wkbType() ) != QgsWkbTypes::NullGeometry )
 {
 }
 

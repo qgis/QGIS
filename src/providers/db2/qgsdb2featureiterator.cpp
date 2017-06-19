@@ -48,6 +48,11 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
     mClosed = true;
     return;
   }
+  if ( !mFilterRect.isNull() && !source->isSpatial() )
+  {
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 

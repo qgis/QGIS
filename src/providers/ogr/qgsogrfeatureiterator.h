@@ -44,6 +44,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
     QgsCoordinateReferenceSystem mCrs;
+    bool mIsSpatial;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;

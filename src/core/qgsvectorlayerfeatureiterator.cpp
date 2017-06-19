@@ -131,6 +131,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     if ( !mSource->mIsSpatial )
     {
       mClosed = true;
+      return;
     }
     // update request to be the unprojected filter rect
     mRequest.setFilterRect( mFilterRect );

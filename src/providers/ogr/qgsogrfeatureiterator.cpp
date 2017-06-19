@@ -90,6 +90,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     mClosed = true;
     return;
   }
+  if ( !mFilterRect.isNull() && !mSource->mIsSpatial )
+  {
+    mClosed = true;
+    return;
+  }
 
   mFetchGeometry = ( !mFilterRect.isNull() ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
@@ -390,6 +395,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mOgrGeometryTypeFilter( QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter ) )
   , mDriverName( p->ogrDriverName )
   , mCrs( p->crs() )
+  , mIsSpatial( QgsWkbTypes::geometryType( p->wkbType() ) != QgsWkbTypes::NullGeometry )
 {
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );

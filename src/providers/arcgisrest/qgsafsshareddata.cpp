@@ -117,3 +117,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   Q_ASSERT( f.isValid() );
   return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
 }
+
+bool QgsAfsSharedData::isSpatial()
+{
+  return QgsWkbTypes::geometryType( mGeometryType ) != QgsWkbTypes::NullGeometry;
+}

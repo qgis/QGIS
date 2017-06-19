@@ -48,6 +48,11 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
     mClosed = true;
     return;
   }
+  if ( !mFilterRect.isNull() && !mSource->isSpatial() )
+  {
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 

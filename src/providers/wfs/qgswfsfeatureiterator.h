@@ -262,6 +262,7 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 
     std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
     QgsCoordinateReferenceSystem mCrs;
+    bool mIsSpatial;
 
     friend class QgsWFSFeatureIterator;
 };

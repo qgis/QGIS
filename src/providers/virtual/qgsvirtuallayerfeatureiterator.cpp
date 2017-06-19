@@ -72,8 +72,13 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     if ( !mSource->mDefinition.uid().isNull() )
     {
       // filters are only available when a column with unique id exists
-      if ( mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
+      if ( !mFilterRect.isNull() )
       {
+        if ( !mSource->mDefinition.hasDefinedGeometry() )
+        {
+          mClosed = true;
+          return;
+        }
         bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
         QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( mFilterRect.xMinimum() ).arg( mFilterRect.yMinimum() ).arg( mFilterRect.xMaximum() ).arg( mFilterRect.yMaximum() );
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";

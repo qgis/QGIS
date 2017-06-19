@@ -54,8 +54,14 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     return;
   }
 
-  if ( !mFilterRect.isNull() && hasGeometry )
+  if ( !mFilterRect.isNull() )
   {
+
+    if ( !hasGeometry )
+    {
+      mClosed = true;
+      return;
+    }
     QgsDebugMsg( "Configuring for rectangle select" );
     mTestGeometry = true;
     // Exact intersection test only applies for WKT geometries
@@ -63,7 +69,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
                          && mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt;
 
     // If request doesn't overlap extents, then nothing to return
-    if ( ! mFilterRect.intersects( mSource->mExtent ) && !mTestSubset )
+    if ( !mFilterRect.intersects( mSource->mExtent ) && !mTestSubset )
     {
       QgsDebugMsg( "Rectangle outside layer extents - no features to return" );
       mMode = FeatureIds;

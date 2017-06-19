@@ -43,6 +43,7 @@ QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool 
     mClosed = true;
     return;
   }
+  // no reason to check if filter rect and no geometry as GPX source always has geometry
 
   rewind();
 }

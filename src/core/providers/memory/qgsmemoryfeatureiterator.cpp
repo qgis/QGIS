@@ -56,6 +56,12 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
     mSelectRectEngine->prepareGeometry();
   }
 
+  if ( !mFilterRect.isNull() && !mSource->mIsSpatial )
+  {
+    mClosed = true;
+    return;
+  }
+
   // if there's spatial index, use it!
   // (but don't use it when selection rect is not specified)
   if ( !mFilterRect.isNull() && mSource->mSpatialIndex )
@@ -237,6 +243,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
   , mSubsetString( p->mSubsetString )
   , mCrs( p->mCrs )
+  , mIsSpatial( QgsWkbTypes::geometryType( p->wkbType() ) != QgsWkbTypes::NullGeometry )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
