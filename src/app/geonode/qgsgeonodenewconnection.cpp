@@ -96,6 +96,14 @@ void QgsGeoNodeNewConnection::accept()
     settings.sync();
   }
 
+  if ( !txtUrl->text().contains( "://" ) &&
+       QMessageBox::information(
+         this,
+         tr( "Invalid URL" ),
+         tr( "Your URL doesn't contains protocol (e.g. http or https). Please add the protocol." ) ) == QMessageBox::Ok )
+  {
+    return;
+  }
   QUrl url( txtUrl->text() );
 
   settings.setValue( key + "/url", url.toString() );

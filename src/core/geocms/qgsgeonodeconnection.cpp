@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsgeocmsconnection.h"
+#include "qgsexception.h"
 
 #include <QMultiMap>
 #include <QNetworkRequest>
@@ -66,15 +67,10 @@ void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 
 QVariantList QgsGeoNodeConnection::getLayers()
 {
-  // Construct URL. I need to prepend http in the beginning to make it work.
-  // setScheme doesn't really help.
   QString url = uri().param( "url" ) + QStringLiteral( "/api/layers/" );
-  if ( !url.contains( QLatin1String( "://" ) ) )
-  {
-    url.prepend( "http://" );
-  }
+  QString protocol = url.split( "://" )[0];
   QUrl layerUrl( url );
-  layerUrl.setScheme( "http" );
+  layerUrl.setScheme( protocol );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( layerUrl );
@@ -187,13 +183,10 @@ QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
 {
   QString param = QString( "?version=2.0.0&service=%1&request=GetCapabilities" ).arg( serviceType.toLower() );
   QString url = serviceUrl( serviceType )[0] + param;
-
-  if ( !url.contains( QLatin1String( "://" ) ) )
-  {
-    url.prepend( "http://" );
-  }
   QUrl layerUrl( url );
-  layerUrl.setScheme( "http" );
+
+  QString protocol = url.split( "://" )[0];
+  layerUrl.setScheme( protocol );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( layerUrl );
@@ -268,15 +261,11 @@ QVariantList QgsGeoNodeConnection::getLayers( QString serviceType )
 // Currently copy and paste from getLayers. It can be refactored easily, difference in url only.
 QVariantList QgsGeoNodeConnection::getMaps()
 {
-  // Construct URL. I need to prepend http in the beginning to make it work.
-  // setScheme doesn't really help.
   QString url = uri().param( "url" ) + QStringLiteral( "/api/maps/" );
-  if ( !url.contains( QLatin1String( "://" ) ) )
-  {
-    url.prepend( "http://" );
-  }
+  QString protocol = url.split( "://" )[0];
   QUrl layerUrl( url );
-  layerUrl.setScheme( "http" );
+  layerUrl.setScheme( protocol );
+
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( layerUrl );
@@ -304,12 +293,9 @@ QStringList QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString servi
   // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
 
   QString url = uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID );
-  if ( !url.contains( QLatin1String( "://" ) ) )
-  {
-    url.prepend( "http://" );
-  }
   QUrl layerUrl( url );
-  layerUrl.setScheme( "http" );
+  QString protocol = url.split( "://" )[0];
+  layerUrl.setScheme( protocol );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( layerUrl );
@@ -359,10 +345,6 @@ QStringList QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString servi
           if ( serviceUrlResult.contains( QStringLiteral( "qgis-server" ) ) )
           {
             serviceUrlResult = uri().param( "url" ) + QStringLiteral( "/qgis-server/tiles/LAYERNAME/{z}/{x}/{y}.png" );
-            if ( !serviceUrlResult.contains( QLatin1String( "://" ) ) )
-            {
-              serviceUrlResult.prepend( "http://" );
-            }
           }
           return QStringList( serviceUrlResult );
         }
