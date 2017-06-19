@@ -49,6 +49,8 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
     void pageNameExpressionChanged( const QString &expression, bool valid );
 
+    void changeFileFormat();
+
   private slots:
     void updateGuiElements();
 
