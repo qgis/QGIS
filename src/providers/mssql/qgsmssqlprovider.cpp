@@ -995,7 +995,13 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         QString wkt;
         if ( !geom.isNull() )
+        {
+          // Z and M on the end of a WKT string isn't valid for
+          // SQL Server so we have to remove it first.
           wkt = geom.exportToWkt();
+          wkt = wkt.replace( "Z", "" );
+          wkt = wkt.replace( "M", "" );
+        }
         query.addBindValue( wkt );
       }
     }
@@ -1328,6 +1334,11 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     else
     {
       QString wkt = it->exportToWkt();
+      // Z and M on the end of a WKT string isn't valid for
+      // SQL Server so we have to remove it first.
+      wkt = wkt.replace( "Z", "" );
+      wkt = wkt.replace( "M", "" );
+      QgsDebugMsg( wkt );
       query.addBindValue( wkt );
     }
 
