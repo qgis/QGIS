@@ -54,6 +54,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mPlacementComboBox_currentIndexChanged( int index );
     void on_mButtonSizeLegendSymbol_clicked();
     void scalingTypeChanged();
+    void showSizeLegendDialog();
 
   protected:
     QFont mDiagramFont;
@@ -81,6 +82,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
     std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
+    std::unique_ptr< QgsDataDefinedSizeLegend > mSizeLegend;
 
     QString guessLegendText( const QString &expression );
     QgsMapCanvas *mMapCanvas = nullptr;

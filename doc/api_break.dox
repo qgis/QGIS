@@ -987,7 +987,8 @@ QgsDiagramRenderer        {#qgis_api_break_3_0_QgsDiagramRenderer}
 - renderDiagram() now takes an optional data defined overrides collection argument.
 - readXml(), _readXml(), writeXml(), _writeXml() do not take QgsVectorLayer as an argument anymore.
 - readXml(), _readXml(), writeXml(), _writeXml() require a new argument: a reference to QgsReadWriteContext
-
+- sizeLegend() and setSizeLegend() have been replaced by dataDefinedSizeLegend() and setDataDefinedSizeLegend() methods.
+- sizeLegendSymbol() and setSizeLegendSymbol() have been moved to QgsLinearlyInterpolatedDiagramRenderer subclass.
 
 
 QgsDiagramLayerSettings        {#qgis_api_break_3_0_QgsDiagramLayerSettings}

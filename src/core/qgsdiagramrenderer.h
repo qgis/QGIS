@@ -554,38 +554,6 @@ class CORE_EXPORT QgsDiagramRenderer
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 
-    /** Returns true if renderer will show legend items for diagram sizes.
-     * \since QGIS 2.16
-     * \see setSizeLegend()
-     * \see attributeLegend()
-     * \see sizeLegendSymbol()
-     */
-    bool sizeLegend() const { return mShowSizeLegend; }
-
-    /** Sets whether the renderer will show legend items for diagram sizes.
-     * \param enabled set to true to show diagram size legend
-     * \since QGIS 2.16
-     * \see sizeLegend()
-     * \see setAttributeLegend()
-     * \see setSizeLegendSymbol()
-     */
-    void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
-
-    /** Returns the marker symbol used for rendering the diagram size legend.
-     * \since QGIS 2.16
-     * \see setSizeLegendSymbol()
-     * \see sizeLegend()
-     */
-    QgsMarkerSymbol *sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
-
-    /** Sets the marker symbol used for rendering the diagram size legend.
-     * \param symbol marker symbol, ownership is transferred to the renderer.
-     * \since QGIS 2.16
-     * \see sizeLegendSymbol()
-     * \see setSizeLegend()
-     */
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER ) { mSizeLegendSymbol.reset( symbol ); }
-
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
     QgsDiagramRenderer &operator=( const QgsDiagramRenderer &other );
@@ -625,12 +593,6 @@ class CORE_EXPORT QgsDiagramRenderer
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend;
-
-    //! Whether to show a size legend for the diagrams
-    bool mShowSizeLegend;
-
-    //! Marker symbol to use in size legends
-    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 };
 
 /** \ingroup core
@@ -723,6 +685,21 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
+    /** Returns the marker symbol used for rendering the diagram size legend.
+     * \since QGIS 2.16
+     * \see setSizeLegendSymbol()
+     * \see sizeLegend()
+     */
+    QgsMarkerSymbol *sizeLegendSymbol() const { return mSizeLegendSymbol.get(); }
+
+    /** Sets the marker symbol used for rendering the diagram size legend.
+     * \param symbol marker symbol, ownership is transferred to the renderer.
+     * \since QGIS 2.16
+     * \see sizeLegendSymbol()
+     * \see setSizeLegend()
+     */
+    void setSizeLegendSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER ) { mSizeLegendSymbol.reset( symbol ); }
+
     /**
      * Configures appearance of legend. Takes ownership of the passed settings objects.
      * \since QGIS 3.0
@@ -745,6 +722,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
   private:
     QgsDiagramSettings mSettings;
     QgsDiagramInterpolationSettings mInterpolationSettings;
+
+    //! Marker symbol to use in size legends
+    std::unique_ptr< QgsMarkerSymbol > mSizeLegendSymbol;
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;

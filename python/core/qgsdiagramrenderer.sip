@@ -547,44 +547,6 @@ Returns list with all diagram settings in the renderer
 .. seealso:: setSizeLegend()
 %End
 
-    bool sizeLegend() const;
-%Docstring
- Returns true if renderer will show legend items for diagram sizes.
-.. versionadded:: 2.16
-.. seealso:: setSizeLegend()
-.. seealso:: attributeLegend()
-.. seealso:: sizeLegendSymbol()
- :rtype: bool
-%End
-
-    void setSizeLegend( bool enabled );
-%Docstring
- Sets whether the renderer will show legend items for diagram sizes.
- \param enabled set to true to show diagram size legend
-.. versionadded:: 2.16
-.. seealso:: sizeLegend()
-.. seealso:: setAttributeLegend()
-.. seealso:: setSizeLegendSymbol()
-%End
-
-    QgsMarkerSymbol *sizeLegendSymbol() const;
-%Docstring
- Returns the marker symbol used for rendering the diagram size legend.
-.. versionadded:: 2.16
-.. seealso:: setSizeLegendSymbol()
-.. seealso:: sizeLegend()
- :rtype: QgsMarkerSymbol
-%End
-
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol /Transfer/ );
-%Docstring
- Sets the marker symbol used for rendering the diagram size legend.
- \param symbol marker symbol, ownership is transferred to the renderer.
-.. versionadded:: 2.16
-.. seealso:: sizeLegendSymbol()
-.. seealso:: setSizeLegend()
-%End
-
   protected:
     QgsDiagramRenderer( const QgsDiagramRenderer &other );
 
@@ -626,8 +588,6 @@ Returns the paint device dpi (or -1 in case of error
  Writes internal QgsDiagramRenderer diagram state to a DOM element.
 .. seealso:: _readXml()
 %End
-
-
 
 
 };
@@ -759,6 +719,24 @@ Returns list with all diagram settings in the renderer
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
+
+    QgsMarkerSymbol *sizeLegendSymbol() const;
+%Docstring
+ Returns the marker symbol used for rendering the diagram size legend.
+.. versionadded:: 2.16
+.. seealso:: setSizeLegendSymbol()
+.. seealso:: sizeLegend()
+ :rtype: QgsMarkerSymbol
+%End
+
+    void setSizeLegendSymbol( QgsMarkerSymbol *symbol /Transfer/ );
+%Docstring
+ Sets the marker symbol used for rendering the diagram size legend.
+ \param symbol marker symbol, ownership is transferred to the renderer.
+.. versionadded:: 2.16
+.. seealso:: sizeLegendSymbol()
+.. seealso:: setSizeLegend()
+%End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring

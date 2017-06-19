@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsdatadefinedsizelegend.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
@@ -664,7 +665,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dr->setClassificationField( QString() );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( false );
+  dr->setDataDefinedSizeLegend( nullptr );
   dr->setAttributeLegend( true );
   vl4->setDiagramRenderer( dr );
 
@@ -704,7 +705,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setClassificationField( QString( "a" ) );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( true );
+  dr->setDataDefinedSizeLegend( new QgsDataDefinedSizeLegend() );
   dr->setAttributeLegend( false );
   vl4->setDiagramRenderer( dr );
 

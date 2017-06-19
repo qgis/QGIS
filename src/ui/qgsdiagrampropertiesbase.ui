@@ -303,8 +303,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>644</width>
-                   <height>417</height>
+                   <width>640</width>
+                   <height>371</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -539,8 +539,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>473</height>
+                   <width>616</width>
+                   <height>814</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
@@ -1089,8 +1089,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>511</width>
-                   <height>294</height>
+                   <width>917</width>
+                   <height>539</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1405,8 +1405,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>280</width>
-                   <height>288</height>
+                   <width>612</width>
+                   <height>493</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1831,8 +1831,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>100</width>
-                   <height>180</height>
+                   <width>640</width>
+                   <height>371</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2050,8 +2050,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>324</width>
-                   <height>131</height>
+                   <width>640</width>
+                   <height>371</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2066,14 +2066,18 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QgsCollapsibleGroupBox" name="mCheckBoxSizeLegend">
+                   <widget class="QgsCollapsibleGroupBox" name="mSizeLegendGroupBox">
                     <property name="title">
-                     <string>Show legend entries for diagram size</string>
-                    </property>
-                    <property name="checkable">
-                     <bool>true</bool>
+                     <string>Legend entries for diagram size</string>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_71">
+                     <item>
+                      <widget class="QPushButton" name="mButtonSizeLegendSettings">
+                       <property name="text">
+                        <string>Legend settings...</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item>
                       <widget class="QPushButton" name="mButtonSizeLegendSymbol">
                        <property name="text">
@@ -2232,7 +2236,7 @@
   <tabstop>mOrientationLeftButton</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mCheckBoxAttributeLegend</tabstop>
-  <tabstop>mCheckBoxSizeLegend</tabstop>
+  <tabstop>mSizeLegendGroupBox</tabstop>
   <tabstop>mButtonSizeLegendSymbol</tabstop>
   <tabstop>mBackgroundColorDDBtn</tabstop>
   <tabstop>mLineColorDDBtn</tabstop>
