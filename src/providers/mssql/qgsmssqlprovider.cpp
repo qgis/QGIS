@@ -377,7 +377,7 @@ void QgsMssqlProvider::loadFields()
   // Get computed columns which need to be ignored on insert or update.
   if ( !query.exec( QStringLiteral( "SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')" ).arg( mSchemaName, mTableName ) ) )
   {
-    QgsDebugMsg( query.lastError().text( ) );
+    pushError( query.lastError().text( ) );
     return;
   }
 
@@ -391,7 +391,7 @@ void QgsMssqlProvider::loadFields()
 
   if ( !query.exec( QStringLiteral( "exec sp_columns @table_name = N'%1', @table_owner = '%2'" ).arg( mTableName, mSchemaName ) ) )
   {
-    QgsDebugMsg( query.lastError().text( ) );
+    pushError( query.lastError().text( ) );
     return;
   }
   if ( query.isActive() )
@@ -1312,7 +1312,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.prepare( statement ) )
     {
-      QgsDebugMsg( query.lastError().text() );
+      pushError( query.lastError().text() );
       return false;
     }
 
@@ -1330,7 +1330,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
 
     if ( !query.exec() )
     {
-      QgsDebugMsg( query.lastError().text() );
+      pushError( query.lastError().text() );
       return false;
     }
   }
@@ -1364,7 +1364,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
@@ -1421,7 +1421,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
@@ -1440,7 +1440,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( field < 0 || field >= mAttributeFields.size() )
   {
-    QgsDebugMsg( "createAttributeIndex invalid index" );
+    pushError( "createAttributeIndex invalid index" );
     return false;
   }
 
@@ -1449,7 +1449,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( !query.exec( statement ) )
   {
-    QgsDebugMsg( query.lastError().text() );
+    pushError( query.lastError().text() );
     return false;
   }
 
