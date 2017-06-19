@@ -85,6 +85,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFields;
 
     bool mHasEditBuffer;
+    bool mIsSpatial;
 
     // A deep-copy is only performed, if the original maps change
     // see here https://github.com/qgis/Quantum-GIS/pull/673
