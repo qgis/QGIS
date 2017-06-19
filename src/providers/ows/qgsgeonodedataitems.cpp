@@ -130,46 +130,43 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     QString path = "geonode:/" + mName;
     QgsDebugMsg( "path = " + path );
 
-    QgsDataItem *item;
-    if ( mServiceName == QString( "WMS" ) || mServiceName == QString( "XYZ" ) )
+    QVector<QgsDataItem *> items;
+    Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
     {
-      Q_FOREACH ( QgsDataItemProvider *pr, dataItemProvidersFn() )
+      items = pr->name().startsWith( mServiceName ) ? pr->createDataItems( path, this ) : items;
+      if ( !items.isEmpty() )
       {
-        item = pr->name() == mServiceName ? pr->createDataItem( path, this ) : nullptr;
-        children = pr->name().startsWith( mServiceName ) ? pr->createDataItems( path, this ) : children;
-        if ( !children.isEmpty() )
-        {
-          return children;
-        }
-        if ( item )
-        {
-          break;
-        }
+        break;
       }
     }
-    else
-    {
-      item = dItem( path, this );  // empty path -> top level
-    }
 
-    if ( !item )
+    if ( items.isEmpty() )
     {
       QgsDebugMsg( "Connection not found by provider" );
       skipProvider = true;
       continue;
     }
 
-    item->populate( true ); // populate in foreground - this is already run in a thread
-
-    layerCount += item->rowCount();
-    if ( item->rowCount() > 0 )
+    if ( mServiceName == QString( "XYZ" ) )
     {
-      QgsDebugMsg( "Add new item : " + item->name() );
-      serviceItems.insert( item, key );
+      QgsDebugMsg( "Add new item : " + mServiceName );
+      return items;
     }
-    else
+
+    Q_FOREACH ( QgsDataItem *item, items )
     {
-      //delete item;
+      item->populate( true ); // populate in foreground - this is already run in a thread
+
+      layerCount += item->rowCount();
+      if ( item->rowCount() > 0 )
+      {
+        QgsDebugMsg( "Add new item : " + item->name() );
+        serviceItems.insert( item, key );
+      }
+      else
+      {
+        //delete item;
+      }
     }
 
     skipProvider = true;
@@ -179,23 +176,21 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   {
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     QString providerKey = serviceItems.value( item );
-    if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
+
+    // Add layers directly to service item
+    Q_FOREACH ( QgsDataItem *subItem, item->children() )
     {
-      // Add layers directly to OWS connection
-      Q_FOREACH ( QgsDataItem *subItem, item->children() )
+      if ( subItem->path().endsWith( QString( "error" ) ) )
       {
-        item->removeChildItem( subItem );
-        subItem->setParent( this );
-        replacePath( subItem, providerKey.toLower() + ":/", QStringLiteral( "geonode:/" ) );
-        children.append( subItem );
+        continue;
       }
-      delete item;
+      item->removeChildItem( subItem );
+      subItem->setParent( this );
+      replacePath( subItem, providerKey.toLower() + ":/", QStringLiteral( "geonode:/" ) );
+      children.append( subItem );
     }
-    else // Add service
-    {
-      replacePath( item, item->path(), path() + '/' + providerKey.toLower() );
-      children.append( item );
-    }
+
+    delete item;
   }
 
   return children;

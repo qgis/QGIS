@@ -123,6 +123,8 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
     virtual int capabilities() override { return QgsDataProvider::Net; }
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
@@ -179,40 +181,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
       return nullptr;
     }
 
-    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override
-    {
-      QVector<QgsDataItem *> items;
-      if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
-      {
-        QString connectionName = path.split( '/' ).last();
-        if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
-        {
-          QgsGeoNodeConnection connection( connectionName );
-          QStringList encodedUris( connection.serviceUrl( QStringLiteral( "XYZ" ) ) );
-
-          if ( !encodedUris.isEmpty() )
-          {
-            Q_FOREACH( QString encodedUri, encodedUris )
-              {
-                QgsDebugMsg( encodedUri );
-                QgsDataSourceUri uri;
-                uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-                uri.setParam( QStringLiteral( "url" ), encodedUri );
-                QStringList splitUri = encodedUri.split( "/" );
-                QString layerName = splitUri[ splitUri.length() - 4 ];
-
-                QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
-                if ( item )
-                {
-                  items.append( item );
-                }
-              }
-          }
-        }
-      }
-
-      return items;
-    }
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

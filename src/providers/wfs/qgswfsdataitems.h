@@ -16,6 +16,8 @@
 #define QGSWFSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswfscapabilities.h"
 
@@ -77,6 +79,20 @@ class QgsWfsLayerItem : public QgsLayerItem
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
+};
+
+
+//! Provider for WFS root data item
+class QgsWfsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "WFS" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
