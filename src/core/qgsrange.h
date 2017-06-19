@@ -222,7 +222,7 @@ class QgsTemporalRange
     /**
      * Constructor for QgsTemporalRange. The \a begin and \a end are specified,
      * and optionally whether or not these bounds are included in the range.
-     * \note in Python \a begin and \a end must be provided.
+     * \note in Python (SIP < 4.19.3) \a begin and \a end must be provided.
      */
 #ifndef SIP_RUN
     QgsTemporalRange( const T &begin = T(), const T &end = T(), bool includeBeginning = true, bool includeEnd = true )
@@ -232,8 +232,18 @@ class QgsTemporalRange
       , mIncludeUpper( includeEnd )
     {}
 #else
+#if SIP_VERSION >= 0x041303
+    QgsTemporalRange( const T &begin = T(), const T &end = T(), bool includeBeginning = true, bool includeEnd = true );
+#else
+
+    /**
+     * Constructor for QgsTemporalRange. The \a begin and \a end are specified,
+     * and optionally whether or not these bounds are included in the range.
+     * \note in Python (SIP < 4.19.3) \a begin and \a end must be provided.
+     */
     QgsTemporalRange( const T &begin, const T &end, bool includeBeginning = true, bool includeEnd = true );
-    // default constructor as default value for templates is not handled in SIP
+    // default constructor as default value for templates is not handled in SIP < 4.19.3
+#endif
 #endif
 
     /**
