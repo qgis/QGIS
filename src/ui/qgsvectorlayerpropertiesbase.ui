@@ -117,7 +117,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/console/iconShowEditorConsole.png</normaloff>:/images/themes/default/console/iconShowEditorConsole.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
          <item>
