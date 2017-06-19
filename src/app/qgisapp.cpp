@@ -4581,7 +4581,7 @@ void QgisApp::addGeonodeLayer()
     QMessageBox::warning( this, tr( "Geonode" ), tr( "Cannot get Geonode select dialog." ) );
     return;
   }
-  connect( geonodes, &QgsGeoNodeSourceSelect::addRasterLayer, this, QOverload<QString const &, QString const &, QString const &>::of( &QgisApp::addRasterLayer ) );
+  connect( geonodes, static_cast<void ( QgsGeoNodeSourceSelect::* )()>( &QgsGeoNodeSourceSelect::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
   connect( geonodes, &QgsGeoNodeSourceSelect::addWfsLayer, this, &QgisApp::addVectorLayer );
   geonodes->exec();
   delete geonodes;
