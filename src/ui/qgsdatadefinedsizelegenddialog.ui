@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>674</width>
-    <height>393</height>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,13 @@
       <widget class="QRadioButton" name="radCollapsed">
        <property name="text">
         <string>Collapsed legend</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnChangeSymbol">
+       <property name="text">
+        <string>Legend symbol...</string>
        </property>
       </widget>
      </item>

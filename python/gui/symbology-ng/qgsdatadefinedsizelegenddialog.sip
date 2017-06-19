@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDataDefinedSizeLegendDialog : QDialog
 {
 %Docstring
@@ -22,21 +23,11 @@ class QgsDataDefinedSizeLegendDialog : QDialog
 #include "qgsdatadefinedsizelegenddialog.h"
 %End
   public:
-    explicit QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, QWidget *parent /TransferThis/ = 0 );
+    explicit QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol /Transfer/, QgsMapCanvas *canvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Creates the dialog and initializes the content to what is passed in the legend configuration (may be null)
+when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
 %End
     ~QgsDataDefinedSizeLegendDialog();
-
-    void setSourceSymbol( QgsMarkerSymbol *symbol /Transfer/ );
-%Docstring
-Use given symbol for preview. Takes ownership of the symbol. It should have data-defined size enabled + size scale transformer attached.
-%End
-
-    void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
-%Docstring
-Setup map view details to make preview match the expected output
-%End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const /Factory/;
 %Docstring
