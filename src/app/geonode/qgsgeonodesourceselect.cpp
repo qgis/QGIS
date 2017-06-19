@@ -21,6 +21,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsproviderregistry.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -41,9 +42,11 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
 {
   setupUi( this );
 
-  if ( embeddedMode )
+  if ( embeddedMode != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    // For some osbscure reason hiding does not work!
+    // buttonBox->button( QDialogButtonBox::Close )->hide();
+    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
