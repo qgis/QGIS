@@ -88,17 +88,21 @@ QVariantList QgsGeoNodeConnection::getLayers()
   QJsonObject jsonObject = jsonDocument.object();
   QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   QVariantList layerList = jsonVariantMap["objects"].toList();
-  QString geonodeVersion;
+  qint16 majorVersion;
+  qint16 minorVersion;
   if ( jsonVariantMap.contains( QStringLiteral( "geonode_version" ) ) )
   {
-    geonodeVersion = jsonVariantMap["geonode_version"].toString();
+    QStringList geonodeVersionSplit = jsonVariantMap["geonode_version"].toString().split( "." );
+    majorVersion = geonodeVersionSplit[0].toInt();
+    minorVersion = geonodeVersionSplit[1].toInt();
   }
   else
   {
-    geonodeVersion = QStringLiteral( "2.6" );
+    majorVersion = 2;
+    minorVersion = 6;
   }
 
-  if ( geonodeVersion == QStringLiteral( "2.6" ) )
+  if ( majorVersion == 2 && minorVersion == 6 )
   {
     for ( int i = 0; i < layerList.count(); i++ )
     {
@@ -134,8 +138,8 @@ QVariantList QgsGeoNodeConnection::getLayers()
       layerList[i] = layer;
     }
   }
-  // Handling geonode version 2.7.devsomething
-  else if ( geonodeVersion.startsWith( "2.7" ) )
+  // Geonode version 2.7 or newer
+  else if ( ( majorVersion == 2 && minorVersion >= 7 ) || ( majorVersion >= 3 ) )
   {
     for ( int i = 0; i < layerList.count(); i++ )
     {
