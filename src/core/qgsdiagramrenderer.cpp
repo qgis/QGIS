@@ -398,8 +398,6 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
 QgsDiagramRenderer::QgsDiagramRenderer()
   : mDiagram( nullptr )
   , mShowAttributeLegend( true )
-  , mShowSizeLegend( false )
-  , mSizeLegendSymbol( QgsMarkerSymbol::createSimple( QgsStringMap() ) )
 {
 }
 
@@ -417,8 +415,6 @@ void QgsDiagramRenderer::setDiagram( QgsDiagram *d )
 QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
   : mDiagram( other.mDiagram ? other.mDiagram->clone() : nullptr )
   , mShowAttributeLegend( other.mShowAttributeLegend )
-  , mShowSizeLegend( other.mShowSizeLegend )
-  , mSizeLegendSymbol( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr )
 {
 }
 
@@ -426,8 +422,6 @@ QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer &oth
 {
   mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
   mShowAttributeLegend = other.mShowAttributeLegend;
-  mShowSizeLegend = other.mShowSizeLegend;
-  mSizeLegendSymbol.reset( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr );
   return *this;
 }
 
@@ -522,6 +516,7 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
 
 void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context );
   delete mDiagram;
   QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QLatin1String( "Pie" ) )
@@ -541,26 +536,18 @@ void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteCo
     mDiagram = nullptr;
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
-  mShowSizeLegend = ( elem.attribute( QStringLiteral( "sizeLegend" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-  QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
-  {
-    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, context ) );
-  }
 }
 
 void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( doc );
+  Q_UNUSED( context );
 
   if ( mDiagram )
   {
     rendererElem.setAttribute( QStringLiteral( "diagramType" ), mDiagram->diagramName() );
   }
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
-  rendererElem.setAttribute( QStringLiteral( "sizeLegend" ), mShowSizeLegend );
-  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc, context );
-  rendererElem.appendChild( sizeLegendSymbolElem );
 }
 
 QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagramRenderer()
@@ -614,6 +601,7 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
   : QgsDiagramRenderer()
+  , mSizeLegendSymbol( QgsMarkerSymbol::createSimple( QgsStringMap() ) )
 {
   mInterpolationSettings.classificationAttributeIsExpression = false;
 }
@@ -622,6 +610,7 @@ QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer( 
   : QgsDiagramRenderer( other )
   , mSettings( other.mSettings )
   , mInterpolationSettings( other.mInterpolationSettings )
+  , mSizeLegendSymbol( other.mSizeLegendSymbol ? other.mSizeLegendSymbol->clone() : nullptr )
   , mDataDefinedSizeLegend( other.mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegend ) : nullptr )
 {
 }
@@ -696,10 +685,22 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
     mSettings.readXml( settingsElem );
   }
 
+  QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
+  {
+    mSizeLegendSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( sizeLegendSymbolElem, context ) );
+  }
+
   QDomElement ddsLegendSizeElem = elem.firstChildElement( "data-defined-size-legend" );
   if ( !ddsLegendSizeElem.isNull() )
   {
     mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readTypeAndAlignmentFromXml( ddsLegendSizeElem ) );
+  }
+  else
+  {
+    // pre-3.0 projects
+    bool enabled = elem.attribute( QStringLiteral( "sizeLegend" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+    mDataDefinedSizeLegend.reset( enabled ? new QgsDataDefinedSizeLegend() : nullptr );
   }
 
   _readXml( elem, context );
@@ -723,6 +724,9 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
     rendererElem.setAttribute( QStringLiteral( "classificationField" ), mInterpolationSettings.classificationField );
   }
   mSettings.writeXml( rendererElem, doc );
+
+  QDomElement sizeLegendSymbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "sizeSymbol" ), mSizeLegendSymbol.get(), doc, context );
+  rendererElem.appendChild( sizeLegendSymbolElem );
 
   if ( mDataDefinedSizeLegend )
   {
@@ -768,7 +772,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
   if ( mShowAttributeLegend )
     nodes = mSettings.legendItems( nodeLayer );
 
-  if ( mShowSizeLegend && mDiagram && mSizeLegendSymbol )
+  if ( mDataDefinedSizeLegend && mDiagram && mSizeLegendSymbol )
   {
     // add size legend
 
@@ -783,9 +787,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
       sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
     }
 
-    QgsDataDefinedSizeLegend ddSizeLegend;
-    if ( mDataDefinedSizeLegend )  // copy legend configuration if any...
-      ddSizeLegend = *mDataDefinedSizeLegend;
+    QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
     ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
     ddSizeLegend.setClasses( sizeClasses );
 
