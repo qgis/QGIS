@@ -10,3 +10,4 @@ usr/lib/python*/*-packages/qgis/testing/*
 #wheezy precise#usr/lib/python*/*-packages/pyspatialite/*.py
 #wheezy precise#usr/lib/python*/*-packages/pyspatialite/*.so
 #sid stretch#usr/lib/python*/*-packages/PyQt4/*.so
+#sid stretch#usr/lib/python*/*-packages/PyQt4/uic/widget-plugins/qtwebkit.py
