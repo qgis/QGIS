@@ -1912,8 +1912,6 @@ void QgisApp::createActions()
 
   // Web Menu Items
 
-  connect( mActionAddGeonodeLayer, &QAction::triggered, this, &QgisApp::addGeonodeLayer );
-
   // Layer Menu Items
 
   connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
@@ -1939,6 +1937,7 @@ void QgisApp::createActions()
   connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgismapserver" ) ); } );
   connect( mActionAddDelimitedText, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "delimitedtext" ) ); } );
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "virtual" ) ); } );
+  connect( mActionAddGeonodeLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "geonode" ) ); } );
   connect( mActionOpenTable, &QAction::triggered, this, &QgisApp::attributeTable );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );

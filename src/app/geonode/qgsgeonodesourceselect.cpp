@@ -517,9 +517,4 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
   }
 
   QApplication::restoreOverrideCursor();
-
-  if ( !mHoldDialogOpen->isChecked() )
-  {
-    accept();
-  }
 }
