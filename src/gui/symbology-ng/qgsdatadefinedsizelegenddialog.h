@@ -23,11 +23,15 @@
 #include <QDialog>
 #include <ui_qgsdatadefinedsizelegenddialog.h>
 
+#include "qgsproperty.h"
+
 class QgsDataDefinedSizeLegend;
 class QgsLayerTree;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
+class QgsMapCanvas;
 class QgsMarkerSymbol;
+class QgsProperty;
 class QgsVectorLayer;
 
 /** \ingroup gui
@@ -39,15 +43,12 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
 {
     Q_OBJECT
   public:
-    //! Creates the dialog and initializes the content to what is passed in the legend configuration (may be null)
-    explicit QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    //! Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
+    //! The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
+    //! to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
+    //! when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+    explicit QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsDataDefinedSizeLegendDialog();
-
-    //! Use given symbol for preview. Takes ownership of the symbol. It should have data-defined size enabled + size scale transformer attached.
-    void setSourceSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
-
-    //! Setup map view details to make preview match the expected output
-    void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 
     //! Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const SIP_FACTORY;
@@ -56,13 +57,17 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
 
   private slots:
     void updatePreview();
+    void changeSymbol();
 
   private:
-    std::unique_ptr<QgsMarkerSymbol> mSourceSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mSourceSymbol;   //!< Source symbol (without data-defined size set)
+    bool mOverrideSymbol = false;  //!< If true, symbol should not be editable because it will be overridden
+    QgsProperty mSizeProperty;    //!< Definition of data-defined size of symbol (should have a size scale transformer associated)
     QgsLayerTreeModel *mPreviewModel;
     QgsLayerTree *mPreviewTree;
     QgsLayerTreeLayer *mPreviewLayerNode;
     QgsVectorLayer *mPreviewLayer;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif // QGSDATADEFINEDSIZELEGENDDIALOG_H

@@ -152,19 +152,15 @@ Returns output image that would be shown in the legend. Returns invalid image if
  :rtype: QImage
 %End
 
-    static QgsDataDefinedSizeLegend *readTypeAndAlignmentFromXml( const QDomElement &elem ) /Factory/;
+    static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-.. note::
-
-   This is a temporary method and may be removed in the future
+Creates instance from given element and returns it (caller takes ownership). Returns null on error.
  :rtype: QgsDataDefinedSizeLegend
 %End
 
-    static void writeTypeAndAlignmentToXml( const QgsDataDefinedSizeLegend &ddsLegend, QDomElement &elem );
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 %Docstring
-.. note::
-
-   This is a temporary method and may be removed in the future
+Writes configuration to the given XML element.
 %End
 
 };

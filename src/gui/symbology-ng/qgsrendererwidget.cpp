@@ -291,13 +291,7 @@ QgsDataDefinedSizeLegend *QgsRendererWidget::showDataDefinedSizeLegendDialog( co
     return nullptr;
   }
 
-  QgsDataDefinedSizeLegendDialog dlg( ddsLegend );
-  dlg.setSourceSymbol( symbol->clone() );
-  if ( QgsMapCanvas *canvas = mContext.mapCanvas() )
-  {
-    dlg.setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
-  }
-
+  QgsDataDefinedSizeLegendDialog dlg( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
   if ( !dlg.exec() )
     return nullptr;
 

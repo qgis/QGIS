@@ -163,7 +163,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
   QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readTypeAndAlignmentFromXml( ddsLegendSizeElem ) );
+    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
 
   // TODO: symbol levels
@@ -290,7 +290,7 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
   if ( mDataDefinedSizeLegend )
   {
     QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
-    QgsDataDefinedSizeLegend::writeTypeAndAlignmentToXml( *mDataDefinedSizeLegend, ddsLegendElem );
+    mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
     rendererElem.appendChild( ddsLegendElem );
   }
 

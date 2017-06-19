@@ -24,6 +24,7 @@
 class QDomElement;
 class QgsMarkerSymbol;
 class QgsProperty;
+class QgsReadWriteContext;
 class QgsRenderContext;
 
 
@@ -122,14 +123,10 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     QImage collapsedLegendImage( QgsRenderContext &context, double paddingMM = 1 ) const;
 
     //! Creates instance from given element and returns it (caller takes ownership). Returns null on error.
-    //! \note only reads legend type and vertical alignment of symbols
-    //! \note This is a temporary method and may be removed in the future
-    static QgsDataDefinedSizeLegend *readTypeAndAlignmentFromXml( const QDomElement &elem ) SIP_FACTORY;
+    static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     //! Writes configuration to the given XML element.
-    //! \note only writes legend type and vertical alignment of symbols
-    //! \note This is a temporary method and may be removed in the future
-    static void writeTypeAndAlignmentToXml( const QgsDataDefinedSizeLegend &ddsLegend, QDomElement &elem );
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
   private:
     LegendType mType = LegendSeparated;

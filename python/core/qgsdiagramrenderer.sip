@@ -720,24 +720,6 @@ Returns list with all diagram settings in the renderer
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
 
 
-    QgsMarkerSymbol *sizeLegendSymbol() const;
-%Docstring
- Returns the marker symbol used for rendering the diagram size legend.
-.. versionadded:: 2.16
-.. seealso:: setSizeLegendSymbol()
-.. seealso:: sizeLegend()
- :rtype: QgsMarkerSymbol
-%End
-
-    void setSizeLegendSymbol( QgsMarkerSymbol *symbol /Transfer/ );
-%Docstring
- Sets the marker symbol used for rendering the diagram size legend.
- \param symbol marker symbol, ownership is transferred to the renderer.
-.. versionadded:: 2.16
-.. seealso:: sizeLegendSymbol()
-.. seealso:: setSizeLegend()
-%End
-
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
  Configures appearance of legend. Takes ownership of the passed settings objects.

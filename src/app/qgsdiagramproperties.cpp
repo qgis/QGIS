@@ -190,8 +190,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
   }
 
-  mSizeLegendSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-
   const QgsDiagramRenderer *dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
@@ -360,7 +358,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
           mSizeFieldExpressionWidget->setField( lidr->classificationField() );
         }
 
-        mSizeLegendSymbol.reset( lidr->sizeLegendSymbol() ? lidr->sizeLegendSymbol()->clone() : QgsMarkerSymbol::createSimple( QgsStringMap() ) );
         mSizeLegend.reset( lidr->dataDefinedSizeLegend() ? new QgsDataDefinedSizeLegend( *lidr->dataDefinedSizeLegend() ) : nullptr );
       }
     }
@@ -401,9 +398,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
     }
   }
-
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
-  mButtonSizeLegendSymbol->setIcon( icon );
 
   connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
   registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
@@ -818,7 +812,6 @@ void QgsDiagramProperties::apply()
     }
     dr->setDiagramSettings( ds );
 
-    dr->setSizeLegendSymbol( mSizeLegendSymbol->clone() );
     dr->setDataDefinedSizeLegend( mSizeLegend ? new QgsDataDefinedSizeLegend( *mSizeLegend ) : nullptr );
 
     renderer = dr;
@@ -941,52 +934,20 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
   chkLineOrientationDependent->setEnabled( linePlacementEnabled );
 }
 
-void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
-{
-  QgsMarkerSymbol *newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolWidgetContext context;
-  context.setMapCanvas( mMapCanvas );
-  QgsExpressionContext ec = createExpressionContext();
-  context.setExpressionContext( &ec );
-
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  d.setContext( context );
-
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mSizeLegendSymbol.reset( newSymbol );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
-    mButtonSizeLegendSymbol->setIcon( icon );
-  }
-  else
-  {
-    delete newSymbol;
-  }
-}
-
 void QgsDiagramProperties::scalingTypeChanged()
 {
-  mSizeLegendGroupBox->setEnabled( mAttributeBasedScalingRadio->isChecked() );
+  mButtonSizeLegendSettings->setEnabled( mAttributeBasedScalingRadio->isChecked() );
 }
 
 void QgsDiagramProperties::showSizeLegendDialog()
 {
-  QgsDataDefinedSizeLegendDialog dlg( mSizeLegend.get() );
-  QgsMarkerSymbol *symbol = mSizeLegendSymbol->clone();
-
   // prepare size transformer
   bool isExpression;
   QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
   QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
   ddSize.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
-  symbol->setDataDefinedSize( ddSize );
-  dlg.setSourceSymbol( symbol );
 
-  if ( mMapCanvas )
-  {
-    dlg.setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(), mMapCanvas->mapSettings().outputDpi(), mMapCanvas->scale() );
-  }
-
+  QgsDataDefinedSizeLegendDialog dlg( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
   if ( !dlg.exec() )
     return;
 
