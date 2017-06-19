@@ -91,6 +91,8 @@ class CORE_EXPORT QgsAbstractGeometry
       // Maximum angle between generating radii (lines from arc center
       // to output vertices)
       MaximumAngle = 0,
+      // Maximum distance between an arbitrary point on the original
+      // curve and closest point on its approximation.
       MaximumDifference
     };
 

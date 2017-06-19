@@ -62,6 +62,8 @@ class QgsAbstractGeometry
       // Maximum
       // to
       MaximumAngle,
+      // Maximum
+      // curve
       MaximumDifference
     };
 
