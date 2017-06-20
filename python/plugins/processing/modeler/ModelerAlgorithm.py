@@ -185,19 +185,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
 
-    def updateAlgorithm(self, alg):
-        alg.setPosition(self.childAlgorithm(alg.childId()).position())
-        alg.setParametersCollapsed(self.childAlgorithm(alg.childId()).parametersCollapsed())
-        alg.setOutputsCollapsed(self.childAlgorithm(alg.childId()).outputsCollapsed())
-        self.setChildAlgorithm(alg)
-
-        from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-        for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
-                                             alg.position() + QPointF(
-                ModelerGraphicItem.BOX_WIDTH,
-                (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
-
     def prepareAlgorithm(self, alg):
         algInstance = alg.algorithm()
         for param in algInstance.parameterDefinitions():
@@ -234,20 +221,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
                     out.value = None
 
         return algInstance
-
-    def deactivateAlgorithm(self, algName):
-        dependent = self.dependentChildAlgorithms(algName)
-        for alg in dependent:
-            self.algs[alg].setActive(False)
-        self.algs[algName].setActive(False)
-
-    def activateAlgorithm(self, algName):
-        parents = self.dependsOnChildAlgorithms(algName)
-        for alg in parents:
-            if not self.childAlgorithm(alg).isActive():
-                return False
-        self.childAlgorithm(algName).setActive(True)
-        return True
 
     def getSafeNameForOutput(self, algName, outName):
         return outName + '_ALG' + algName
@@ -327,14 +300,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         if 'ALG_DESC' in self.helpContent:
             return str(self.helpContent['ALG_DESC'])
         return None
-
-    def getParameterDescriptions(self):
-        descs = {}
-        descriptions = self.helpContent
-        for param in self.parameters:
-            if param.name in descriptions:
-                descs[param.name] = str(descriptions[param.name])
-        return descs
 
     def todict(self):
         keys = ["inputs", "_group", "_name", "algs", "helpContent"]

@@ -260,6 +260,26 @@ bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
   return true;
 }
 
+void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
+{
+  Q_FOREACH ( const QString &child, dependentChildAlgorithms( id ) )
+  {
+    childAlgorithm( child ).setActive( false );
+  }
+  childAlgorithm( id ).setActive( false );
+}
+
+bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
+{
+  Q_FOREACH ( const QString &child, dependsOnChildAlgorithms( id ) )
+  {
+    if ( !childAlgorithm( child ).isActive() )
+      return false;
+  }
+  childAlgorithm( id ).setActive( true );
+  return true;
+}
+
 void QgsProcessingModelAlgorithm::addModelParameter( QgsProcessingParameterDefinition *definition, const QgsProcessingModelAlgorithm::ModelParameter &component )
 {
   addParameter( definition );

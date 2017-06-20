@@ -547,8 +547,26 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * Returns true if the algorithm could be removed, or false
      * if the algorithm could not be removed (e.g. due to other
      * child algorithms depending on it).
+     * \see deactivateChildAlgorithm()
      */
     bool removeChildAlgorithm( const QString &id );
+
+    /**
+     * Deactivates the child algorithm with matching \a id.
+     * All other child algorithms which depend on the child
+     * algorithm will also be deactivated.
+     * \see removeChildAlgorithm()
+     * \see activateChildAlgorithm()
+     */
+    void deactivateChildAlgorithm( const QString &id );
+
+    /**
+     * Attempts to activate the child algorithm with matching \a id.
+     * If any child algorithms on which the child depends are not active,
+     * then the child will not be activated and false will be returned.
+     * \see deactivateChildAlgorithm()
+     */
+    bool activateChildAlgorithm( const QString &id );
 
     /**
      * Returns a list of the child algorithm IDs depending on the child
