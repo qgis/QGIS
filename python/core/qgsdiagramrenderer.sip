@@ -741,6 +741,9 @@ Returns list with all diagram settings in the renderer
 
 
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
+%Docstring
+Copy constructor
+%End
 
 };
 

@@ -28,6 +28,9 @@ class QgsDataDefinedSizeLegend
     QgsDataDefinedSizeLegend();
 
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
+%Docstring
+Copy constructor
+%End
 
     enum LegendType
     {

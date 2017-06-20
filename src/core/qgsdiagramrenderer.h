@@ -702,6 +702,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const override;
 
+    //! Copy constructor
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
 
   private:
