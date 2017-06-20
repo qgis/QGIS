@@ -50,7 +50,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
     QString mQuery;
     QgsCoordinateReferenceSystem mCrs;
 
-    QSharedPointer<QgsOracleSharedData> mShared;
+    std::shared_ptr<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleExpressionCompiler;

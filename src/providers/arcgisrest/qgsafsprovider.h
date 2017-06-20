@@ -18,7 +18,7 @@
 #ifndef QGSAFSPROVIDER_H
 #define QGSAFSPROVIDER_H
 
-#include <QSharedPointer>
+#include <memory>
 #include "qgsvectordataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsafsshareddata.h"
@@ -70,7 +70,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   private:
     bool mValid;
-    QSharedPointer<QgsAfsSharedData> mSharedData;
+    std::shared_ptr<QgsAfsSharedData> mSharedData;
     int mObjectIdFieldIdx;
     QString mLayerName;
     QString mLayerDescription;

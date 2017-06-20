@@ -34,7 +34,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   , mValid( false )
   , mObjectIdFieldIdx( -1 )
 {
-  mSharedData = QSharedPointer<QgsAfsSharedData>( new QgsAfsSharedData() );
+  mSharedData.reset( new QgsAfsSharedData() );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
   mSharedData->mDataSource = QgsDataSourceUri( uri );
 

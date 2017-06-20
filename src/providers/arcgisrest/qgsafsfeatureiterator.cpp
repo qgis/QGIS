@@ -19,7 +19,7 @@
 #include "geometry/qgsgeometry.h"
 #include "qgscsexception.h"
 
-QgsAfsFeatureSource::QgsAfsFeatureSource( const QSharedPointer<QgsAfsSharedData> &sharedData )
+QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )
 {
 }
@@ -31,7 +31,7 @@ QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest &re
 
 QgsAfsSharedData *QgsAfsFeatureSource::sharedData() const
 {
-  return mSharedData.data();
+  return mSharedData.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

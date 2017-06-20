@@ -301,7 +301,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
 
-    QSharedPointer<QgsOracleSharedData> mShared;
+    std::shared_ptr<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -316,14 +316,14 @@ class QgsOracleUtils
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString whereClause( QgsFeatureIds featureIds,
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
