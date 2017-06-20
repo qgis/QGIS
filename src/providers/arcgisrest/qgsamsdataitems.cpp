@@ -80,6 +80,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem* parent, QString name, Q
     , mUrl( url )
 {
   mIconName = "mIconConnect.png";
+  mCapabilities |= Collapse;
 }
 
 QVector<QgsDataItem*> QgsAmsConnectionItem::createChildren()

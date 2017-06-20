@@ -344,6 +344,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
+    mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );

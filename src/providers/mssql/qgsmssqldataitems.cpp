@@ -41,7 +41,7 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
     , mAllowGeometrylessTables( true )
     , mColumnTypeThread( nullptr )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = "mIconConnect.png";
 }
 

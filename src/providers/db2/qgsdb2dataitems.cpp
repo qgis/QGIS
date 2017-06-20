@@ -36,6 +36,7 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconConnect.png";
+  mCapabilities |= Collapse;
   populate();
 }
 

@@ -15,6 +15,10 @@ class QgsBrowserTreeView: QTreeView
     ~QgsBrowserTreeView();
 
     virtual void setModel( QAbstractItemModel* model );
+    //! Set the browser model
+    void setBrowserModel( QgsBrowserModel *model );
+    //! Return the browser model
+    QgsBrowserModel *browserModel( );
     virtual void showEvent( QShowEvent * e );
     virtual void hideEvent( QHideEvent * e );
 
