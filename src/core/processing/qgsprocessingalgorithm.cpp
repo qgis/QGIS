@@ -214,6 +214,12 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
     return false;
 
+  if ( definition->isDestination() )
+  {
+    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
+    destParam->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+  }
+
   mParameters << definition;
   return true;
 }

@@ -1284,12 +1284,32 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
                                        bool optional = false );
 
     bool isDestination() const override { return true; }
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
     /**
      * Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
      * parameter.
      */
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns true if the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see setSupportsNonFileBasedOutputs()
+     */
+    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+
+    /**
+     * Sets whether the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see supportsNonFileBasedOutputs()
+     */
+    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+
+  private:
+
+    bool mSupportsNonFileBasedOutputs = true;
 
 };
 
