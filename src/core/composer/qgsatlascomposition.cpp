@@ -37,6 +37,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition *composition )
   , mHideCoverage( false )
   , mFilenamePattern( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
   , mSingleFile( false )
+  , mFileFormat( QStringLiteral( "png" ) )
   , mSortFeatures( false )
   , mSortAscending( true )
   , mCurrentFeatureNo( 0 )
@@ -612,6 +613,8 @@ void QgsAtlasComposition::writeXml( QDomElement &elem, QDomDocument &doc ) const
     atlasElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   }
 
+  atlasElem.setAttribute( QStringLiteral( "fileFormat" ), mFileFormat );
+
   elem.appendChild( atlasElem );
 }
 
@@ -664,6 +667,8 @@ void QgsAtlasComposition::readXml( const QDomElement &atlasElem, const QDomDocum
   }
 
   mHideCoverage = atlasElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
+
+  mFileFormat = atlasElem.attribute( QStringLiteral( "fileFormat" ), QStringLiteral( "png" ) );
 
   emit parameterChanged();
 }
