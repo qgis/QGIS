@@ -532,6 +532,13 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
+    /**
+     * Creates a new QgsProcessingParameterDefinition using the configuration from a
+     * supplied variant \a map.
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) SIP_FACTORY;
+
 };
 
 

@@ -207,7 +207,7 @@ class ModelerParametersDialog(QDialog):
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.description for alg in self.getAvailableDependencies()])  # spellok
+        return MultipleInputPanel([alg.description() for alg in self.getAvailableDependencies()])  # spellok
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -250,7 +250,7 @@ class ModelerParametersDialog(QDialog):
             dependent = []
         else:
             dependent = list(self.model.dependentChildAlgorithms(self._algName))
-            dependent.insert(self._algName)
+            dependent.append(self._algName)
         for alg in list(self.model.childAlgorithms().values()):
             if alg.childId() not in dependent:
                 for out in alg.algorithm().outputDefinitions():
@@ -291,6 +291,10 @@ class ModelerParametersDialog(QDialog):
                     value = alg.parameterSources()[param.name()]
                 else:
                     value = param.defaultValue()
+
+                if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource) and value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:
+                    value = value.staticValue()
+
                 self.wrappers[param.name()].setValue(value)
             for name, out in list(alg.modelOutputs().items()):
                 self.valueItems[name].setText(out.description())
@@ -316,11 +320,17 @@ class ModelerParametersDialog(QDialog):
                     val.staticValue())) \
                     or (not isinstance(val,
                                        QgsProcessingModelAlgorithm.ChildParameterSource) and not param.checkValueIsAcceptable(
-                        val)):
+                        val))\
+                    or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
                                      level=QgsMessageBar.WARNING)
                 return None
-            alg.addParameterSource(param.name(), val)
+            if val is None:
+                continue
+            elif isinstance(val, QgsProcessingModelAlgorithm.ChildParameterSource):
+                alg.addParameterSource(param.name(), val)
+            else:
+                alg.addParameterSource(param.name(), QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val))
 
             # outputs = self._alg.outputDefinitions()
             # for output in outputs:

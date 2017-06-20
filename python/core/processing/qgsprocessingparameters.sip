@@ -520,6 +520,14 @@ class QgsProcessingParameters
  :rtype: list of str
 %End
 
+    static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
+%Docstring
+ Creates a new QgsProcessingParameterDefinition using the configuration from a
+ supplied variant ``map``.
+ The caller takes responsibility for deleting the returned object.
+ :rtype: QgsProcessingParameterDefinition
+%End
+
 };
 
 
