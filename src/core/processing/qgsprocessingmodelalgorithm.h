@@ -763,6 +763,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
 
+    QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap<QString, QVariantMap> &results ) const;
+
     /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.

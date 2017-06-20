@@ -284,20 +284,81 @@ QString QgsProcessingModelAlgorithm::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingModel.svg" ) );
 }
 
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap< QString, QVariantMap > &results ) const
+{
+  QVariantMap childParams;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
+  {
+    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
+      continue;
+
+    if ( !def->isDestination() )
+    {
+      if ( !child.parameterSources().contains( def->name() ) )
+        continue; // use default value
+
+      ChildParameterSource paramSource = child.parameterSources().value( def->name() );
+      switch ( paramSource.source() )
+      {
+        case ChildParameterSource::StaticValue:
+          childParams.insert( def->name(), paramSource.staticValue() );
+          break;
+
+        case ChildParameterSource::ModelParameter:
+          childParams.insert( def->name(), modelParameters.value( paramSource.parameterName() ) );
+          break;
+
+        case ChildParameterSource::ChildOutput:
+        {
+          QVariantMap linkedChildResults = results.value( paramSource.outputChildId() );
+          childParams.insert( def->name(), linkedChildResults.value( paramSource.outputName() ) );
+          break;
+        }
+      }
+    }
+    else
+    {
+      // is destination linked to one of the final outputs from this model?
+      if ( child.modelOutputs().contains( def->name() ) )
+      {
+        QString outputName = child.modelOutputs().value( def->name() ).outputName();
+        QString paramName = child.childId() + ':' + outputName;
+        if ( modelParameters.contains( paramName ) )
+          childParams.insert( def->name(), modelParameters.value( paramName ) );
+      }
+      else
+      {
+        // output is temporary
+        // TODO - skip if this output is optional and not used elsewhere in the model
+        childParams.insert( def->name(), "memory:" );
+
+
+      }
+    }
+  }
+  return childParams;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   QSet< QString > toExecute;
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->isActive() )
+    if ( childIt->isActive() && childIt->algorithm() )
       toExecute.insert( childIt->childId() );
   }
 
-  QMap< QString, QVariantMap > resultsMap;
+  QTime totalTime;
+  totalTime.start();
+
+  QMap< QString, QVariantMap > childResults;
+  QVariantMap finalResults;
   QSet< QString > executed;
-  while ( executed.count() < toExecute.count() )
+  bool executedAlg = true;
+  while ( executedAlg && executed.count() < toExecute.count() )
   {
+    executedAlg = false;
     Q_FOREACH ( const QString &childId, toExecute )
     {
       if ( executed.contains( childId ) )
@@ -316,47 +377,47 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !canExecute )
         continue;
 
+      executedAlg = true;
       feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       const ChildAlgorithm &child = mChildAlgorithms[ childId ];
 
-      // self.prepareAlgorithm( alg )
-
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults );
       feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
       //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
       //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
-      //t0 = time.time()
-      QVariantMap results = child.algorithm()->run( parameters, context, feedback );
-      resultsMap.insert( childId, results );
 
-      //dt = time.time() - t0
-#if 0
+      QTime childTime;
+      childTime.start();
 
-# copy algorithm output value(s) back to model in case the algorithm modified those
-    for out in alg.algorithm().outputs :
-      if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-          if out.name() in alg.modelOutputs():
-              modelOut = self.getOutputFromName( self.getSafeNameForOutput( alg.childId(), out.name() ) )
-                       if modelOut:
-                         modelOut.value = out.value
-#endif
+      QVariantMap results = child.algorithm()->run( childParams, context, feedback );
+      childResults.insert( childId, results );
 
-                                          executed.insert( childId );
-        //feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 ms (%2 outputs)." ).arg( dt, len( alg.algorithm.modelOutputs() ) ) )
-#if 0
-      except GeoAlgorithmExecutionException as e:
-        feedback.pushDebugInfo( self.tr( 'Failed', 'ModelerAlgorithm' ) )
-        raise GeoAlgorithmExecutionException(
-          self.tr( 'Error executing algorithm {0}\n{1}', 'ModelerAlgorithm' ).format( alg.description, e.msg ) )
-#endif
+      // look through child alg's outputs to determine whether any of these should be copied
+      // to the final model outputs
+      QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs = child.modelOutputs();
+      QMap<QString, QgsProcessingModelAlgorithm::ModelOutput>::const_iterator outputIt = outputs.constBegin();
+      for ( ; outputIt != outputs.constEnd(); ++outputIt )
+      {
+        finalResults.insert( childId + ':' + outputIt->outputName(), results.value( outputIt->outputName() ) );
       }
+
+      executed.insert( childId );
+      feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+#if 0
+    except GeoAlgorithmExecutionException as e:
+      feedback.pushDebugInfo( self.tr( 'Failed', 'ModelerAlgorithm' ) )
+      raise GeoAlgorithmExecutionException(
+        self.tr( 'Error executing algorithm {0}\n{1}', 'ModelerAlgorithm' ).format( alg.description, e.msg ) )
+#endif
     }
-    feedback->pushDebugInfo( QObject::tr( "Model processed ok. Executed %1 algorithms total" ).arg( executed.count() ) );
-
-    return QVariantMap();
   }
+  feedback->pushDebugInfo( QObject::tr( "Model processed ok. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
-  void QgsProcessingModelAlgorithm::setName( const QString &name )
+  return finalResults;
+}
+
+void QgsProcessingModelAlgorithm::setName( const QString &name )
 {
   mModelName = name;
 }
@@ -434,7 +495,9 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       {
         QgsProcessingOutputDefinition *output = destParam->toOutputDefinition();
         if ( output )
+        {
           addOutput( output );
+        }
       }
     }
   }
