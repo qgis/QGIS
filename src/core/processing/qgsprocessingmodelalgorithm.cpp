@@ -327,6 +327,43 @@ QgsProcessingModelAlgorithm::ModelParameter &QgsProcessingModelAlgorithm::parame
   return mParameterComponents[ name ];
 }
 
+void QgsProcessingModelAlgorithm::updateDestinationParameters()
+{
+  //delete existing destination parameters
+  QMutableListIterator<const QgsProcessingParameterDefinition *> it( mParameters );
+  while ( it.hasNext() )
+  {
+    const QgsProcessingParameterDefinition *def = it.next();
+    if ( def->isDestination() )
+    {
+      delete def;
+      it.remove();
+    }
+  }
+
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs = childIt->modelOutputs();
+    QMap<QString, QgsProcessingModelAlgorithm::ModelOutput>::const_iterator outputIt = outputs.constBegin();
+    for ( ; outputIt != outputs.constEnd(); ++outputIt )
+    {
+      if ( !childIt->isActive() || !childIt->algorithm() )
+        continue;
+
+      // child algorithm has a destination parameter set, copy it to the model
+      const QgsProcessingParameterDefinition *source = childIt->algorithm()->parameterDefinition( outputIt->outputName() );
+      if ( !source )
+        continue;
+
+      QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( source->toVariantMap() );
+      param->setName( outputIt->childId() + ':' + outputIt->outputName() );
+      param->setDescription( outputIt->description() );
+      addParameter( param );
+    }
+  }
+}
+
 QVariant QgsProcessingModelAlgorithm::toVariant() const
 {
   QVariantMap map;
@@ -403,6 +440,8 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
     addParameter( param );
   }
 
+  updateDestinationParameters();
+
   return true;
 }
 
@@ -443,11 +482,13 @@ bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
 void QgsProcessingModelAlgorithm::setChildAlgorithms( const QMap<QString, ChildAlgorithm> &childAlgorithms )
 {
   mChildAlgorithms = childAlgorithms;
+  updateDestinationParameters();
 }
 
 void QgsProcessingModelAlgorithm::setChildAlgorithm( const QgsProcessingModelAlgorithm::ChildAlgorithm &algorithm )
 {
   mChildAlgorithms.insert( algorithm.childId(), algorithm );
+  updateDestinationParameters();
 }
 
 QString QgsProcessingModelAlgorithm::addChildAlgorithm( ChildAlgorithm &algorithm )
@@ -456,6 +497,7 @@ QString QgsProcessingModelAlgorithm::addChildAlgorithm( ChildAlgorithm &algorith
     algorithm.generateChildId( *this );
 
   mChildAlgorithms.insert( algorithm.childId(), algorithm );
+  updateDestinationParameters();
   return algorithm.childId();
 }
 
@@ -470,6 +512,7 @@ bool QgsProcessingModelAlgorithm::removeChildAlgorithm( const QString &id )
     return false;
 
   mChildAlgorithms.remove( id );
+  updateDestinationParameters();
   return true;
 }
 
@@ -480,6 +523,7 @@ void QgsProcessingModelAlgorithm::deactivateChildAlgorithm( const QString &id )
     childAlgorithm( child ).setActive( false );
   }
   childAlgorithm( id ).setActive( false );
+  updateDestinationParameters();
 }
 
 bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
@@ -490,6 +534,7 @@ bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
       return false;
   }
   childAlgorithm( id ).setActive( true );
+  updateDestinationParameters();
   return true;
 }
 
