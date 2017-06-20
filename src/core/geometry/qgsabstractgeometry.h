@@ -88,11 +88,13 @@ class CORE_EXPORT QgsAbstractGeometry
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
     enum SegmentationToleranceType
     {
-      // Maximum angle between generating radii (lines from arc center
-      // to output vertices)
+
+      /** Maximum angle between generating radii (lines from arc center
+       * to output vertices) */
       MaximumAngle = 0,
-      // Maximum distance between an arbitrary point on the original
-      // curve and closest point on its approximation.
+
+      /** Maximum distance between an arbitrary point on the original
+       * curve and closest point on its approximation. */
       MaximumDifference
     };
 

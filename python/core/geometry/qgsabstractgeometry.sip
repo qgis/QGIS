@@ -59,11 +59,9 @@ class QgsAbstractGeometry
 
     enum SegmentationToleranceType
     {
-      // Maximum
-      // to
+
       MaximumAngle,
-      // Maximum
-      // curve
+
       MaximumDifference
     };
 
