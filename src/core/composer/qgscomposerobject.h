@@ -142,7 +142,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.

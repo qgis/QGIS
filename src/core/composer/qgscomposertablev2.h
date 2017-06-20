@@ -40,7 +40,12 @@ typedef QList< QVariant > QgsComposerTableRow;
  * for a QgsComposerTable
  * \since QGIS 2.5
 */
+#ifndef SIP_RUN
 typedef QList< QgsComposerTableRow > QgsComposerTableContents;
+#else
+typedef QList< QList< QVariant > > QgsComposerTableContents;
+#endif
+
 
 /** \ingroup core
  * List of column definitions for a QgsComposerTable
@@ -449,9 +454,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Fetches the contents used for the cells in the table.
      * \returns true if table contents were successfully retrieved.
      * \param contents QgsComposerTableContents to store retrieved row data in
-     * \note not available in Python bindings
      */
-    virtual bool getTableContents( QgsComposerTableContents &contents ) = 0 SIP_SKIP;
+    virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
 
     /** Returns the current contents of the table. Excludes header cells.
      * \returns table contents

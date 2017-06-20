@@ -41,7 +41,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     };
 
     QgsComposerShape( QgsComposition *composition SIP_TRANSFERTHIS );
-    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
+    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerShape();
 
     //! Return correct graphics item type.
