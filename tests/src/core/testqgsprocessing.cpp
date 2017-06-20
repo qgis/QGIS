@@ -3752,6 +3752,47 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.parameterDefinitions().count(), 1 );
   QCOMPARE( alg6.parameterDefinitions().at( 0 )->type(), QStringLiteral( "boolean" ) );
 
+  // destination parameters
+  QgsProcessingModelAlgorithm alg7( "test", "testGroup" );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg7c1;
+  alg7c1.setChildId( "cx1" );
+  alg7c1.setAlgorithmId( "native:centroids" );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c1outputs;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c1out1;
+  alg7c1out1.setChildId( "cx1" );
+  alg7c1out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c1out1.setDescription( QStringLiteral( "my output" ) );
+  alg7c1outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c1out1 );
+  alg7c1.setModelOutputs( alg7c1outputs );
+  alg7.addChildAlgorithm( alg7c1 );
+  // verify that model has destination parameter created
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg7c2;
+  alg7c2.setChildId( "cx2" );
+  alg7c2.setAlgorithmId( "native:centroids" );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c2outputs;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c2out1;
+  alg7c2out1.setChildId( "cx2" );
+  alg7c2out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
+  alg7c2outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c2out1 );
+  alg7c2.setModelOutputs( alg7c2outputs );
+  alg7.addChildAlgorithm( alg7c2 );
+
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
+
+  alg7.removeChildAlgorithm( "cx1" );
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
