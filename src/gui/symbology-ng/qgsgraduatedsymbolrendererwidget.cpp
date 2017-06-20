@@ -513,7 +513,11 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
   if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
-    advMenu->addAction( tr( "Data-defined size legend..." ), this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 
   btnAdvanced->setMenu( advMenu );
 

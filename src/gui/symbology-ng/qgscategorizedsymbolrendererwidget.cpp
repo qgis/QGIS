@@ -466,7 +466,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
   if ( mCategorizedSymbol->type() == QgsSymbol::Marker )
-    advMenu->addAction( tr( "Data-defined size legend..." ), this, &QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend );
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 
   btnAdvanced->setMenu( advMenu );
 

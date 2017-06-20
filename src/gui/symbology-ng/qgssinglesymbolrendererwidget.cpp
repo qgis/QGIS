@@ -66,7 +66,11 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
 
   advMenu->addAction( tr( "Symbol levels..." ), this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
   if ( mSingleSymbol->type() == QgsSymbol::Marker )
-    advMenu->addAction( tr( "Data-defined size legend..." ), this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
