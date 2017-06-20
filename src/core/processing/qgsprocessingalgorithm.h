@@ -273,6 +273,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER );
 
     /**
+     * Removes the parameter with matching \a name from the algorithm, and deletes any existing
+     * definition.
+     */
+    void removeParameter( const QString &name );
+
+    /**
      * Adds an output \a definition to the algorithm. Ownership of the definition is transferred to the algorithm.
      * Returns true if the output could be successfully added, or false if the output could not be added (e.g.
      * as a result of a duplicate name).
@@ -452,6 +458,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
+    friend class QgsProcessingModelAlgorithm;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

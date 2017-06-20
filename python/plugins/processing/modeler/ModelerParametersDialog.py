@@ -18,7 +18,6 @@
 """
 from builtins import str
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -34,7 +33,10 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QWidget)
 
-from qgis.core import (QgsProcessingParameterDefinition)
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingModelAlgorithm)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
@@ -50,14 +52,8 @@ from processing.core.outputs import (OutputRaster,
                                      OutputDirectory)
 from processing.core.parameters import ParameterPoint, ParameterExtent
 
-from processing.modeler.ModelerAlgorithm import (ValueFromInput,
-                                                 ValueFromOutput,
-                                                 Algorithm,
-                                                 ModelerOutput)
-
 
 class ModelerParametersDialog(QDialog):
-
     ENTER_NAME = '[Enter name if this is a final result]'
     NOT_SELECTED = '[Not selected]'
     USE_MIN_COVERING_EXTENT = '[Use min covering extent]'
@@ -87,9 +83,7 @@ class ModelerParametersDialog(QDialog):
         self.resize(650, 450)
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
-                                          +                                          QDialogButtonBox.Ok |
-                                          +                                          QDialogButtonBox.Help)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
         self.setSizePolicy(QSizePolicy.Expanding,
                            QSizePolicy.Expanding)
         self.verticalLayout = QVBoxLayout()
@@ -114,7 +108,7 @@ class ModelerParametersDialog(QDialog):
         line.setFrameShadow(QFrame.Sunken)
         self.verticalLayout.addWidget(line)
 
-        for param in self._alg.parameters:
+        for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.advancedButton = QPushButton()
                 self.advancedButton.setText(self.tr('Show advanced parameters'))
@@ -126,12 +120,12 @@ class ModelerParametersDialog(QDialog):
                 self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameterDefinitions():
-            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             desc = param.description()
-            if isinstance(param, ParameterExtent):
+            if isinstance(param, QgsProcessingParameterExtent):
                 desc += self.tr('(xmin, xmax, ymin, ymax)')
-            if isinstance(param, ParameterPoint):
+            if isinstance(param, QgsProcessingParameterPoint):
                 desc += self.tr('(x, y)')
             if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 desc += self.tr(' [optional]')
@@ -155,19 +149,19 @@ class ModelerParametersDialog(QDialog):
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
-        for output in self._alg.outputs:
-            if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                continue
-            if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-                                   OutputHTML, OutputFile, OutputDirectory)):
-                label = QLabel(output.description() + '<' +
-                               output.__class__.__name__ + '>')
-                item = QLineEdit()
-                if hasattr(item, 'setPlaceholderText'):
-                    item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
-                self.verticalLayout.addWidget(label)
-                self.verticalLayout.addWidget(item)
-                self.valueItems[output.name] = item
+        # for output in self._alg.outputs:
+        #    if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+        #        continue
+        #    if isinstance(output, (OutputRaster, OutputVector, OutputTable,
+        #                           OutputHTML, OutputFile, OutputDirectory)):
+        #        label = QLabel(output.description() + '<' +
+        #                       output.__class__.__name__ + '>')
+        #        item = QLineEdit()
+        #        if hasattr(item, 'setPlaceholderText'):
+        #            item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+        #        self.verticalLayout.addWidget(label)
+        #        self.verticalLayout.addWidget(item)
+        #        self.valueItems[output.name] = item
 
         label = QLabel(' ')
         self.verticalLayout.addWidget(label)
@@ -204,15 +198,16 @@ class ModelerParametersDialog(QDialog):
         if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self._algName)
+            dependent = list(self.model.dependentChildAlgorithms(self._algName))
+            dependent.append(self._algName)
         opts = []
-        for alg in list(self.model.algs.values()):
-            if alg.modeler_name not in dependent:
+        for alg in list(self.model.childAlgorithms().values()):
+            if alg.childId() not in dependent:
                 opts.append(alg)
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.description for alg in self.getAvailableDependencies()])  # spellok
+        return MultipleInputPanel([alg.description() for alg in self.getAvailableDependencies()])  # spellok
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -220,100 +215,142 @@ class ModelerParametersDialog(QDialog):
             self.advancedButton.setText(self.tr('Hide advanced parameters'))
         else:
             self.advancedButton.setText(self.tr('Show advanced parameters'))
-        for param in self._alg.parameters:
+        for param in self._alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                self.labels[param.name].setVisible(self.showAdvanced)
-                self.widgets[param.name].setVisible(self.showAdvanced)
+                self.labels[param.name()].setVisible(self.showAdvanced)
+                self.widgets[param.name()].setVisible(self.showAdvanced)
 
-    def getAvailableValuesOfType(self, paramType, outType=None, dataType=None):
+    def getAvailableValuesOfType(self, paramType, outTypes=[], dataType=None):
         # upgrade paramType to list
-        if type(paramType) is not list:
+        if paramType is None:
+            paramType = []
+        elif not isinstance(paramType, list):
             paramType = [paramType]
+        if outTypes is None:
+            outTypes = []
+        elif not isinstance(outTypes, list):
+            outTypes = [outTypes]
 
         values = []
-        inputs = self.model.inputs
+        inputs = self.model.parameterComponents()
         for i in list(inputs.values()):
-            param = i.param
+            param = self.model.parameterDefinition(i.parameterName())
             for t in paramType:
                 if isinstance(param, t):
                     if dataType is not None:
                         if param.datatype in dataType:
-                            values.append(ValueFromInput(param.name))
+                            values.append(
+                                QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name()))
                     else:
-                        values.append(ValueFromInput(param.name))
+                        values.append(QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name()))
                     break
-        if outType is None:
+        if not outTypes:
             return values
         if self._algName is None:
             dependent = []
         else:
-            dependent = self.model.getDependentAlgorithms(self._algName)
-        for alg in list(self.model.algs.values()):
-            if alg.modeler_name not in dependent:
-                for out in alg.algorithm.outputs:
-                    if isinstance(out, outType):
-                        if dataType is not None and out.datatype in dataType:
-                            values.append(ValueFromOutput(alg.modeler_name, out.name))
-                        else:
-                            values.append(ValueFromOutput(alg.modeler_name, out.name))
+            dependent = list(self.model.dependentChildAlgorithms(self._algName))
+            dependent.append(self._algName)
+        for alg in list(self.model.childAlgorithms().values()):
+            if alg.childId() not in dependent:
+                for out in alg.algorithm().outputDefinitions():
+                    for t in outTypes:
+                        if isinstance(out, t):
+                            if dataType is not None and out.datatype in dataType:
+                                values.append(
+                                    QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(),
+                                                                                                     out.name()))
+                            else:
+                                values.append(
+                                    QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(),
+                                                                                                     out.name()))
 
         return values
 
     def resolveValueDescription(self, value):
-        if isinstance(value, ValueFromInput):
-            return self.model.inputs[value.name].param.description()
-        else:
-            alg = self.model.algs[value.alg]
-            return self.tr("'{0}' from algorithm '{1}'").format(alg.algorithm.getOutputFromName(value.output).description(), alg.description)
+        if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
+            if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:
+                return value.staticValue()
+            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
+                return self.model.parameterDefinition(value.parameterName()).description()
+            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
+                alg = self.model.childAlgorithm(value.outputChildId())
+                return self.tr("'{0}' from algorithm '{1}'").format(
+                    alg.algorithm().outputDefinition(value.outputName()).description(), alg.description())
+
+        return value
 
     def setPreviousValues(self):
         if self._algName is not None:
-            alg = self.model.algs[self._algName]
-            self.descriptionBox.setText(alg.description)
-            for param in alg.algorithm.parameterDefinitions():
-                if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            alg = self.model.childAlgorithm(self._algName)
+            self.descriptionBox.setText(alg.description())
+            for param in alg.algorithm().parameterDefinitions():
+                if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
-                if param.name() in alg.params:
-                    value = alg.params[param.name()]
+                if param.name() in alg.parameterSources():
+                    value = alg.parameterSources()[param.name()]
                 else:
                     value = param.defaultValue()
+
+                if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource) and value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue:
+                    value = value.staticValue()
+
                 self.wrappers[param.name()].setValue(value)
-            for name, out in list(alg.outputs.items()):
+            for name, out in list(alg.modelOutputs().items()):
                 self.valueItems[name].setText(out.description())
 
             selected = []
             dependencies = self.getAvailableDependencies()  # spellok
             for idx, dependency in enumerate(dependencies):
-                if dependency.name in alg.dependencies:
+                if dependency.childId() in alg.dependencies():
                     selected.append(idx)
 
             self.dependenciesPanel.setSelectedItems(selected)
 
     def createAlgorithm(self):
-        alg = Algorithm(self._alg.id())
-        alg.setName(self.model)
-        alg.description = self.descriptionBox.text()
-        params = self._alg.parameterDefinitions()
-        outputs = self._alg.outputs
-        for param in params:
-            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+        alg = QgsProcessingModelAlgorithm.ChildAlgorithm(self._alg.id())
+        alg.generateChildId(self.model)
+        alg.setDescription(self.descriptionBox.text())
+        for param in self._alg.parameterDefinitions():
+            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if not param.checkValueIsAcceptable(self.wrappers[param.name()].value):
+            val = self.wrappers[param.name()].value()
+            if (isinstance(val,
+                           QgsProcessingModelAlgorithm.ChildParameterSource) and val.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
+                    val.staticValue())) \
+                    or (not isinstance(val,
+                                       QgsProcessingModelAlgorithm.ChildParameterSource) and not param.checkValueIsAcceptable(
+                        val))\
+                    or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
                                      level=QgsMessageBar.WARNING)
                 return None
-        for output in outputs:
-            if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                name = str(self.valueItems[output.name()].text())
-                if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-                    alg.outputs[output.name()] = ModelerOutput(name)
+            if val is None:
+                continue
+            elif isinstance(val, QgsProcessingModelAlgorithm.ChildParameterSource):
+                alg.addParameterSource(param.name(), val)
+            else:
+                alg.addParameterSource(param.name(), QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val))
+
+            # outputs = self._alg.outputDefinitions()
+            # for output in outputs:
+            #    if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            #        name = str(self.valueItems[output.name()].text())
+            #        if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
+            #           alg.outputs[output.name()] = QgsProcessingModelAlgorithm.ModelOutput(name)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
         availableDependencies = self.getAvailableDependencies()  # spellok
+        dep_ids = []
         for selected in selectedOptions:
-            alg.dependencies.append(availableDependencies[selected].name)  # spellok
+            dep_ids.append(availableDependencies[selected].childId())  # spellok
+        alg.setDependencies(dep_ids)
 
-        self._alg.processBeforeAddingToModeler(alg, self.model)
+        try:
+            self._alg.processBeforeAddingToModeler(alg, self.model)
+        except:
+            pass
+
         return alg
 
     def okPressed(self):

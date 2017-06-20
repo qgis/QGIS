@@ -328,6 +328,20 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    /**
+     * Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+     * method and then extend the result with additional properties.
+     * \see fromVariantMap()
+     */
+    virtual QVariantMap toVariantMap() const;
+
+    /**
+     * Restores this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+     * method.
+     * \see toVariantMap()
+     */
+    virtual bool fromVariantMap( const QVariantMap &map );
+
   protected:
 
     //! Parameter name
@@ -518,6 +532,13 @@ class CORE_EXPORT QgsProcessingParameters
      */
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
+    /**
+     * Creates a new QgsProcessingParameterDefinition using the configuration from a
+     * supplied variant \a map.
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) SIP_FACTORY;
+
 };
 
 
@@ -678,6 +699,9 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      */
     void setExtension( const QString &extension ) { mExtension = extension; }
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     Behavior mBehavior = File;
@@ -748,6 +772,9 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      */
     void setHasFixedNumberRows( bool hasFixedNumberRows );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     QStringList mHeaders;
@@ -802,6 +829,9 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * \see minimumNumberInputs()
      */
     void setMinimumNumberInputs( int minimum );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
@@ -878,6 +908,9 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      */
     void setDataType( const Type &type );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     double mMin = -DBL_MAX;
@@ -918,6 +951,9 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * \see dataType()
      */
     void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
@@ -992,6 +1028,9 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      */
     void setAllowMultiple( bool allowMultiple );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     QStringList mOptions;
@@ -1031,6 +1070,9 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
      */
     void setMultiLine( bool multiLine );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     bool mMultiLine = false;
@@ -1068,6 +1110,9 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      * \see parentLayerParameter()
      */
     void setParentLayerParameter( const QString &parentLayerParameter );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
@@ -1163,6 +1208,9 @@ class CORE_EXPORT QgsProcessingParameterTableField : public QgsProcessingParamet
      */
     void setAllowMultiple( bool allowMultiple );
 
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
   private:
 
     QString mParentLayerParameter;
@@ -1203,6 +1251,9 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
      * \see dataTypes()
      */
     void setDataTypes( const QList< int > &types );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
@@ -1251,6 +1302,9 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
      * \see dataType()
      */
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 
@@ -1314,6 +1368,9 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
      * \see fileFilter()
      */
     void setFileFilter( const QString &filter );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
 
   private:
 

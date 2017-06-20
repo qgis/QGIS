@@ -33,20 +33,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
+                       QgsMapLayer,
+                       QgsWkbTypes,
                        QgsMessageLog)
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingResults import resultsList
-
-#from processing.gui.ResultsDock import ResultsDock
 from processing.gui.RenderingStyles import RenderingStyles
-
-from processing.core.outputs import OutputRaster
-from processing.core.outputs import OutputVector
-from processing.core.outputs import OutputTable
-from processing.core.outputs import OutputHTML
-
-from processing.tools import dataobjects
 
 
 def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
@@ -67,44 +59,24 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             layer = QgsProcessingUtils.mapLayerFromString(l, context)
             if layer is not None:
                 layer.setName(details.name)
+
+                style = RenderingStyles.getStyle(alg.id(), layer.name())
+                if style is None:
+                    if layer.type() == QgsMapLayer.RasterLayer:
+                        style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
+                    else:
+                        if layer.geometryType() == QgsWkbTypes.PointGeometry:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                        else:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+                if style:
+                    layer.loadNamedStyle(style)
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
-            else:
-                name = details.name
-                if ProcessingConfig.getSetting(
-                        ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-                    name = os.path.basename(l)
-                dataobjects.load(l, name, alg.crs,
-                                 RenderingStyles.getStyle(alg.id(), l))
         except Exception:
             QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
-            #wrongLayers.append(out.description())
-            wrongLayers.append(l)
-    # for out in alg.outputs:
-    #     feedback.setProgress(100 * i / float(len(alg.outputs)))
-    #     if out.flags() & QgsProcessingParameterDefinition.FlagHidden or not out.open:
-    #         continue
-    #     if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
-    #         try:
-    #             layer = QgsProcessingUtils.mapLayerFromString(out.value, context)
-    #             if layer:
-    #                 layer.setName(out.description)
-    #                 QgsProject.instance().addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
-    #             else:
-    #                 if ProcessingConfig.getSetting(
-    #                         ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-    #                     name = os.path.basename(out.value)
-    #                 else:
-    #                     name = out.description
-    #
-    #                 isRaster = True if isinstance(out, OutputRaster) else False
-    #                 dataobjects.load(out.value, name, alg.crs,
-    #                                  RenderingStyles.getStyle(alg.id(), out.name),
-    #                                  isRaster)
-    #         except Exception:
-    #             QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
-    #             wrongLayers.append(out.description)
-    #     elif isinstance(out, OutputHTML):
-    #         resultsList.addResult(alg.icon(), out.description, out.value)
+            wrongLayers.append(str(l))
         i += 1
 
     QApplication.restoreOverrideCursor()
