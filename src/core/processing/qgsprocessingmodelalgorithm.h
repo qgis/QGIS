@@ -559,8 +559,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString svgIconPath() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
 
     /**
      * Sets the model \a name.
@@ -746,6 +744,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see toFile()
      */
     bool fromFile( const QString &path );
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
 
   private:
 

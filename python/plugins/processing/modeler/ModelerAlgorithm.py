@@ -242,14 +242,14 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         executed = []
-        toExecute = [alg for alg in list(self.algs.values()) if alg.isActive()]
+        toExecute = [alg for alg in list(self.childAlgorithms().values()) if alg.isActive()]
         while len(executed) < len(toExecute):
             for alg in toExecute:
                 if alg.childId() not in executed:
                     canExecute = True
                     required = self.dependsOnChildAlgorithms(alg.childId())
                     for requiredAlg in required:
-                        if requiredAlg != alg.childId() and requiredAlg not in executed:
+                        if requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:

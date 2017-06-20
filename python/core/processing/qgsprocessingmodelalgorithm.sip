@@ -557,8 +557,6 @@ Copies are protected to avoid slicing
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
-     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 
     void setName( const QString &name );
 %Docstring
@@ -756,6 +754,11 @@ Copies are protected to avoid slicing
 .. seealso:: toFile()
  :rtype: bool
 %End
+
+  protected:
+
+     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
 
 };
 
