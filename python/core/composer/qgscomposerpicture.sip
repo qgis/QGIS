@@ -43,7 +43,7 @@ class QgsComposerPicture: QgsComposerItem
       TrueNorth,
     };
 
-    QgsComposerPicture( QgsComposition *composition );
+    QgsComposerPicture( QgsComposition *composition /TransferThis/ );
 
     virtual int type() const;
 %Docstring

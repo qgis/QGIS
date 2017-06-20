@@ -539,6 +539,16 @@ Reads settings from xml file
  :rtype: bool
 %End
 
+    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
+                          bool addUndoCommands = false, QPointF *pos = 0, bool pasteInPlace = false );
+%Docstring
+ Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
+ \param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
+ \param doc xml document
+ \param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
+ \param pos item position. Optional, take position from xml if 0
+ \param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
+%End
 
     void addItemToZList( QgsComposerItem *item );
 %Docstring
@@ -680,6 +690,10 @@ Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is
 Removes multi frame (but does not delete it)
 %End
 
+    void addComposerArrow( QgsComposerArrow *arrow );
+%Docstring
+Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
+%End
     void addComposerLabel( QgsComposerLabel *label );
 %Docstring
 Adds label to the graphics scene and advises composer to create a widget for it (through signal)
@@ -712,11 +726,11 @@ Adds a composer polygon and advises composer to create a widget for it (through 
 %Docstring
 Adds a composer polyline and advises composer to create a widget for it (through signal)
 %End
-    void addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame );
+    void addComposerHtmlFrame( QgsComposerHtml *html /Transfer/, QgsComposerFrame *frame /Transfer/ );
 %Docstring
 Adds composer html frame and advises composer to create a widget for it (through signal)
 %End
-    void addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
+    void addComposerTableFrame( QgsComposerAttributeTableV2 *table /Transfer/, QgsComposerFrame *frame /Transfer/ );
 %Docstring
 Adds composer tablev2 frame and advises composer to create a widget for it (through signal)
 %End

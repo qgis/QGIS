@@ -507,7 +507,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  :rtype: QgsLineSymbol
 %End
 
-    void setMarkerSymbol( QgsMarkerSymbol *symbol );
+    void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
  Sets the marker symbol used for drawing grid points. This is only used for grids with a
  QgsComposerMapGrid.Markers style.
