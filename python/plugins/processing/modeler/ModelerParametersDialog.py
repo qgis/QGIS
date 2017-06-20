@@ -36,7 +36,11 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingParameterFileOutput,
+                       QgsProcessingParameterFolderOutput)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
@@ -44,13 +48,6 @@ from qgis.gui import (QgsMessageBar,
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
-from processing.core.outputs import (OutputRaster,
-                                     OutputVector,
-                                     OutputTable,
-                                     OutputHTML,
-                                     OutputFile,
-                                     OutputDirectory)
-from processing.core.parameters import ParameterPoint, ParameterExtent
 
 
 class ModelerParametersDialog(QDialog):
@@ -149,19 +146,18 @@ class ModelerParametersDialog(QDialog):
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
-        # for output in self._alg.outputs:
-        #    if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
-        #        continue
-        #    if isinstance(output, (OutputRaster, OutputVector, OutputTable,
-        #                           OutputHTML, OutputFile, OutputDirectory)):
-        #        label = QLabel(output.description() + '<' +
-        #                       output.__class__.__name__ + '>')
-        #        item = QLineEdit()
-        #        if hasattr(item, 'setPlaceholderText'):
-        #            item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
-        #        self.verticalLayout.addWidget(label)
-        #        self.verticalLayout.addWidget(item)
-        #        self.valueItems[output.name] = item
+        for dest in self._alg.destinationParameterDefinitions():
+            if dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+            if isinstance(dest, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink,
+                                 QgsProcessingParameterFileOutput, QgsProcessingParameterFolderOutput)):
+                label = QLabel(dest.description())
+                item = QLineEdit()
+                if hasattr(item, 'setPlaceholderText'):
+                    item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+                self.verticalLayout.addWidget(label)
+                self.verticalLayout.addWidget(item)
+                self.valueItems[dest.name()] = item
 
         label = QLabel(' ')
         self.verticalLayout.addWidget(label)
@@ -309,7 +305,10 @@ class ModelerParametersDialog(QDialog):
 
     def createAlgorithm(self):
         alg = QgsProcessingModelAlgorithm.ChildAlgorithm(self._alg.id())
-        alg.generateChildId(self.model)
+        if not self._algName:
+            alg.generateChildId(self.model)
+        else:
+            alg.setChildId(self._algName)
         alg.setDescription(self.descriptionBox.text())
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -332,12 +331,16 @@ class ModelerParametersDialog(QDialog):
             else:
                 alg.addParameterSource(param.name(), QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val))
 
-            # outputs = self._alg.outputDefinitions()
-            # for output in outputs:
-            #    if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
-            #        name = str(self.valueItems[output.name()].text())
-            #        if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-            #           alg.outputs[output.name()] = QgsProcessingModelAlgorithm.ModelOutput(name)
+        outputs = {}
+        for dest in self._alg.destinationParameterDefinitions():
+            if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                name = str(self.valueItems[dest.name()].text())
+                if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
+                    output = QgsProcessingModelAlgorithm.ModelOutput(name)
+                    output.setChildId(alg.childId())
+                    output.setOutputName(dest.name())
+                    outputs[dest.name()] = output
+        alg.setModelOutputs(outputs)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
         availableDependencies = self.getAvailableDependencies()  # spellok
