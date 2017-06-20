@@ -374,7 +374,7 @@ class ModelerGraphicItem(QGraphicsItem):
             elif isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
                 self.model.parameterComponent(self.element.parameterName()).setPosition(self.pos())
             elif isinstance(self.element, QgsProcessingModelAlgorithm.ModelOutput):
-                self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.name()).setPosition(self.pos())
+                self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.outputName()).setPosition(self.pos())
 
         return value
 

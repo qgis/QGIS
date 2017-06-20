@@ -143,7 +143,7 @@ class ModelerScene(QGraphicsScene):
                     if pos is None:
                         pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
                                self.algItems[alg.childId()].getLinkPointForOutput(idx))
-                    item.setPosition(pos)
+                    item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
                                              -1)
