@@ -47,7 +47,7 @@ class QgsComposerLegend : QgsComposerItem
 #include "qgscomposerlegend.h"
 %End
   public:
-    QgsComposerLegend( QgsComposition *composition );
+    QgsComposerLegend( QgsComposition *composition /TransferThis/ );
 
     virtual int type() const;
 %Docstring

@@ -183,7 +183,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * \see removeItem
      */
-    void addItem( QgsComposerMapItem *item );
+    void addItem( QgsComposerMapItem *item SIP_TRANSFER );
 
     /** Removes an item from the stack and deletes the corresponding QgsComposerMapItem
      * \param itemId id for the QgsComposerMapItem to remove
