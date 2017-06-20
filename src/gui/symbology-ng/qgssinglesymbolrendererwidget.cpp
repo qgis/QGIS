@@ -64,7 +64,8 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  QAction *actionLevels = advMenu->addAction( tr( "Symbol levels..." ) );
+  connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
   if ( mSingleSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );

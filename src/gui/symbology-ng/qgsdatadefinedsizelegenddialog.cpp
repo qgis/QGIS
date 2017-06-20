@@ -172,7 +172,8 @@ void QgsDataDefinedSizeLegendDialog::changeSymbol()
     ec << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
   context.setExpressionContext( &ec );
 
-  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( "Point", "tmp", "memory" ) );
+  QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
+  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( "Point?crs=" + crsAuthId, "tmp", "memory" ) );
 
   QgsSymbolSelectorDialog d( newSymbol.get(), QgsStyle::defaultStyle(), layer.get(), this );
   d.setContext( context );
