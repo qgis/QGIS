@@ -106,6 +106,13 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p6 ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
 
+      // check that supportsNonFileBasedOutputs flags is set automatically to match provider
+      // when adding a destination parameter
+      QgsProcessingParameterFeatureSink *p7 = new QgsProcessingParameterFeatureSink( "p7" );
+      p7->setSupportsNonFileBasedOutputs( false );
+      QVERIFY( addParameter( p7 ) );
+      QVERIFY( destinationParameterDefinitions().at( 2 )->supportsNonFileBasedOutputs() );
+
       // remove parameter
       removeParameter( "non existent" );
       removeParameter( "p6" );
@@ -2813,6 +2820,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFeatureSink *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFeatureSink *>( def.get() ) );
 
@@ -2942,6 +2950,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterRasterOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterRasterOutput *>( def.get() ) );
 
@@ -3007,6 +3016,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFileOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFileOutput *>( def.get() ) );
 
@@ -3060,6 +3070,7 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFolderOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFolderOutput *>( def.get() ) );
 

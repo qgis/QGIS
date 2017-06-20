@@ -2088,14 +2088,14 @@ void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefin
 
 QVariantMap QgsProcessingParameterFeatureSink::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
   return map;
 }
 
 bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessingParameterDefinition::LayerType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   return true;
 }
@@ -2230,14 +2230,14 @@ void QgsProcessingParameterFileOutput::setFileFilter( const QString &fileFilter 
 
 QVariantMap QgsProcessingParameterFileOutput::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "file_filter" ), mFileFilter );
   return map;
 }
 
 bool QgsProcessingParameterFileOutput::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mFileFilter = map.value( QStringLiteral( "file_filter" ) ).toString();
   return true;
 
@@ -2276,6 +2276,20 @@ QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QStr
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
 
+}
+
+QVariantMap QgsProcessingDestinationParameter::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "support_non_file_outputs" ), mSupportsNonFileBasedOutputs );
+  return map;
+}
+
+bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mSupportsNonFileBasedOutputs = map.value( QStringLiteral( "supports_non_file_outputs" ) ).toBool();
+  return true;
 }
 
 QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
@@ -2363,14 +2377,14 @@ void QgsProcessingParameterVectorOutput::setDataType( QgsProcessingParameterDefi
 
 QVariantMap QgsProcessingParameterVectorOutput::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
   return map;
 }
 
 bool QgsProcessingParameterVectorOutput::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessingParameterDefinition::LayerType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   return true;
 }
