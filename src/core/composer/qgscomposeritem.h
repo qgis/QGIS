@@ -38,6 +38,7 @@ class QgsComposerEffect;
  * A item that forms part of a map composition.
  */
 class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRectItem
+{
 #ifdef SIP_RUN
 #include <qgscomposerarrow.h>
 #include <qgscomposerframe.h>
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 #include <qgscomposerpolyline.h>
 #include <qgscomposertexttable.h>
 #endif
-{
+
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
