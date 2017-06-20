@@ -1,16 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-core/composer/qgscomposermultiframecommand.sip
-core/composer/qgscomposerobject.sip
-core/composer/qgscomposerpicture.sip
-core/composer/qgscomposerscalebar.sip
-core/composer/qgscomposershape.sip
-core/composer/qgscomposernodesitem.sip
-core/composer/qgscomposerpolygon.sip
-core/composer/qgscomposerpolyline.sip
-core/composer/qgscomposertablecolumn.sip
-core/composer/qgscomposertablev2.sip
-core/composer/qgscomposertexttable.sip
 core/composer/qgscomposerutils.sip
 core/composer/qgscomposition.sip
 core/composer/qgsdoubleboxscalebarstyle.sip
