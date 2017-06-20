@@ -298,6 +298,22 @@ class QgsProcessingParameterDefinition
  :rtype: str
 %End
 
+    virtual QVariantMap toVariantMap() const;
+%Docstring
+ Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+ method and then extend the result with additional properties.
+.. seealso:: fromVariantMap()
+ :rtype: QVariantMap
+%End
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+%Docstring
+ Restores this parameter to a QVariantMap. Subclasses should ensure that they call the base class
+ method.
+.. seealso:: toVariantMap()
+ :rtype: bool
+%End
+
   protected:
 
 
@@ -686,6 +702,11 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
 .. seealso:: extension()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
@@ -759,6 +780,11 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
 .. seealso:: hasFixedNumberRows()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
@@ -813,6 +839,11 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
  if the parameter is not optional.
 .. seealso:: minimumNumberInputs()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
@@ -890,6 +921,11 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
 .. seealso:: dataType()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterRange : QgsProcessingParameterDefinition
@@ -930,6 +966,11 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
  Sets the acceptable data ``type`` for the range.
 .. seealso:: dataType()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
@@ -1011,6 +1052,11 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
 .. seealso:: allowMultiple()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterString : QgsProcessingParameterDefinition
@@ -1049,6 +1095,11 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
 .. seealso:: multiLine()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
@@ -1086,6 +1137,11 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
  Sets the name of the parent layer parameter. Use an empty string if this is not required.
 .. seealso:: parentLayerParameter()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
@@ -1185,6 +1241,11 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
 .. seealso:: allowMultiple()
 %End
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
 };
 
 class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
@@ -1224,6 +1285,11 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
  Sets the geometry ``types`` for sources acceptable by the parameter.
 .. seealso:: dataTypes()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
@@ -1274,6 +1340,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 
@@ -1343,6 +1414,11 @@ class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
  Sets the file ``filter`` string for files compatible with this output.
 .. seealso:: fileFilter()
 %End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
 };
 

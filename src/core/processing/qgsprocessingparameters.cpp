@@ -741,6 +741,25 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QVariantMap QgsProcessingParameterDefinition::toVariantMap() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "name" ), mName );
+  map.insert( QStringLiteral( "description" ), mDescription );
+  map.insert( QStringLiteral( "default" ), mDefault );
+  map.insert( QStringLiteral( "flags" ), static_cast< int >( mFlags ) );
+  return map;
+}
+
+bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
+{
+  mName = map.value( QStringLiteral( "name" ) ).toString();
+  mDescription = map.value( QStringLiteral( "description" ) ).toString();
+  mDefault = map.value( QStringLiteral( "default" ) );
+  mFlags = static_cast< Flags >( map.value( QStringLiteral( "flags" ) ).toInt() );
+  return true;
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
@@ -970,6 +989,22 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
   return true;
 }
 
+QVariantMap QgsProcessingParameterFile::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "behavior" ), mBehavior );
+  map.insert( QStringLiteral( "extension" ), mExtension );
+  return map;
+}
+
+bool QgsProcessingParameterFile::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mBehavior = static_cast< Behavior >( map.value( QStringLiteral( "behavior" ) ).toInt() );
+  mExtension = map.value( QStringLiteral( "extension" ) ).toString();
+  return true;
+}
+
 QgsProcessingParameterMatrix::QgsProcessingParameterMatrix( const QString &name, const QString &description, int numberRows, bool fixedNumberRows, const QStringList &headers, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mHeaders( headers )
@@ -1062,6 +1097,24 @@ bool QgsProcessingParameterMatrix::hasFixedNumberRows() const
 void QgsProcessingParameterMatrix::setHasFixedNumberRows( bool fixedNumberRows )
 {
   mFixedNumberRows = fixedNumberRows;
+}
+
+QVariantMap QgsProcessingParameterMatrix::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "headers" ), mHeaders );
+  map.insert( QStringLiteral( "rows" ), mNumberRows );
+  map.insert( QStringLiteral( "fixed_number_rows" ), mFixedNumberRows );
+  return map;
+}
+
+bool QgsProcessingParameterMatrix::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mHeaders = map.value( QStringLiteral( "headers" ) ).toStringList();
+  mNumberRows = map.value( QStringLiteral( "rows" ) ).toInt();
+  mFixedNumberRows = map.value( QStringLiteral( "fixed_number_rows" ) ).toBool();
+  return true;
 }
 
 QgsProcessingParameterMultipleLayers::QgsProcessingParameterMultipleLayers( const QString &name, const QString &description, LayerType layerType, const QVariant &defaultValue, bool optional )
@@ -1178,6 +1231,22 @@ void QgsProcessingParameterMultipleLayers::setMinimumNumberInputs( int minimumNu
     mMinimumNumberInputs = minimumNumberInputs;
 }
 
+QVariantMap QgsProcessingParameterMultipleLayers::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "layer_type" ), mLayerType );
+  map.insert( QStringLiteral( "min_inputs" ), mMinimumNumberInputs );
+  return map;
+}
+
+bool QgsProcessingParameterMultipleLayers::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mLayerType = static_cast< LayerType >( map.value( QStringLiteral( "layer_type" ) ).toInt() );
+  mMinimumNumberInputs = map.value( QStringLiteral( "min_inputs" ) ).toInt();
+  return true;
+}
+
 QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name, const QString &description, Type type, const QVariant &defaultValue, bool optional, double minValue, double maxValue )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mMin( minValue )
@@ -1244,6 +1313,24 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterNumber::dataType() cons
 void QgsProcessingParameterNumber::setDataType( const Type &dataType )
 {
   mDataType = dataType;
+}
+
+QVariantMap QgsProcessingParameterNumber::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "min" ), mMin );
+  map.insert( QStringLiteral( "max" ), mMax );
+  map.insert( QStringLiteral( "data_type" ), mDataType );
+  return map;
+}
+
+bool QgsProcessingParameterNumber::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mMin = map.value( QStringLiteral( "min" ) ).toDouble();
+  mMax = map.value( QStringLiteral( "max" ) ).toDouble();
+  mDataType = static_cast< Type >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  return true;
 }
 
 QgsProcessingParameterRange::QgsProcessingParameterRange( const QString &name, const QString &description, QgsProcessingParameterNumber::Type type, const QVariant &defaultValue, bool optional )
@@ -1318,6 +1405,20 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
 void QgsProcessingParameterRange::setDataType( const QgsProcessingParameterNumber::Type &dataType )
 {
   mDataType = dataType;
+}
+
+QVariantMap QgsProcessingParameterRange::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "data_type" ), mDataType );
+  return map;
+}
+
+bool QgsProcessingParameterRange::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataType = static_cast< QgsProcessingParameterNumber::Type >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  return true;
 }
 
 QgsProcessingParameterRasterLayer::QgsProcessingParameterRasterLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -1476,6 +1577,22 @@ void QgsProcessingParameterEnum::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
+QVariantMap QgsProcessingParameterEnum::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "options" ), mOptions );
+  map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
+  return map;
+}
+
+bool QgsProcessingParameterEnum::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mOptions = map.value( QStringLiteral( "options" ) ).toStringList();
+  mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
+  return true;
+}
+
 QgsProcessingParameterString::QgsProcessingParameterString( const QString &name, const QString &description, const QVariant &defaultValue, bool multiLine, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mMultiLine( multiLine )
@@ -1503,6 +1620,20 @@ void QgsProcessingParameterString::setMultiLine( bool multiLine )
   mMultiLine = multiLine;
 }
 
+QVariantMap QgsProcessingParameterString::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "multiline" ), mMultiLine );
+  return map;
+}
+
+bool QgsProcessingParameterString::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mMultiLine = map.value( QStringLiteral( "multiline" ) ).toBool();
+  return true;
+}
+
 QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameter( parentLayerParameterName )
@@ -1528,6 +1659,20 @@ QString QgsProcessingParameterExpression::parentLayerParameter() const
 void QgsProcessingParameterExpression::setParentLayerParameter( const QString &parentLayerParameter )
 {
   mParentLayerParameter = parentLayerParameter;
+}
+
+QVariantMap QgsProcessingParameterExpression::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  return map;
+}
+
+bool QgsProcessingParameterExpression::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  return true;
 }
 
 QgsProcessingParameterTable::QgsProcessingParameterTable( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -1634,6 +1779,24 @@ void QgsProcessingParameterTableField::setAllowMultiple( bool allowMultiple )
   mAllowMultiple = allowMultiple;
 }
 
+QVariantMap QgsProcessingParameterTableField::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameter );
+  map.insert( QStringLiteral( "data_type" ), mDataType );
+  map.insert( QStringLiteral( "allow_multiple" ), mAllowMultiple );
+  return map;
+}
+
+bool QgsProcessingParameterTableField::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentLayerParameter = map.value( QStringLiteral( "parent_layer" ) ).toString();
+  mDataType = static_cast< DataType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  mAllowMultiple = map.value( QStringLiteral( "allow_multiple" ) ).toBool();
+  return true;
+}
+
 QgsProcessingParameterFeatureSource::QgsProcessingParameterFeatureSource( const QString &name, const QString &description, const QList<int> &types, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mDataTypes( types )
@@ -1709,6 +1872,30 @@ QList< int > QgsProcessingParameterFeatureSource::dataTypes() const
 void QgsProcessingParameterFeatureSource::setDataTypes( const QList<int> &types )
 {
   mDataTypes = types;
+}
+
+QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantList types;
+  Q_FOREACH ( int type, mDataTypes )
+  {
+    types << type;
+  }
+  map.insert( QStringLiteral( "data_types" ), types );
+  return map;
+}
+
+bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataTypes.clear();
+  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  Q_FOREACH ( const QVariant &val, values )
+  {
+    mDataTypes << val.toInt();
+  }
+  return true;
 }
 
 
@@ -1793,6 +1980,20 @@ bool QgsProcessingParameterFeatureSink::hasGeometry() const
 void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefinition::LayerType type )
 {
   mDataType = type;
+}
+
+QVariantMap QgsProcessingParameterFeatureSink::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "data_type" ), mDataType );
+  return map;
+}
+
+bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataType = static_cast< QgsProcessingParameterDefinition::LayerType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  return true;
 }
 
 QgsProcessingParameterRasterOutput::QgsProcessingParameterRasterOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -1911,6 +2112,21 @@ QString QgsProcessingParameterFileOutput::fileFilter() const
 void QgsProcessingParameterFileOutput::setFileFilter( const QString &fileFilter )
 {
   mFileFilter = fileFilter;
+}
+
+QVariantMap QgsProcessingParameterFileOutput::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "file_filter" ), mFileFilter );
+  return map;
+}
+
+bool QgsProcessingParameterFileOutput::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mFileFilter = map.value( QStringLiteral( "file_filter" ) ).toString();
+  return true;
+
 }
 
 QgsProcessingParameterFolderOutput::QgsProcessingParameterFolderOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
