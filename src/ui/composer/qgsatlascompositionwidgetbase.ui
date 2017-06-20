@@ -289,6 +289,16 @@
                </property>
               </widget>
              </item>
+             <item row="3" column="1" colspan="2">
+              <widget class="QComboBox" name="mAtlasFileFormat"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="mFileFormatLabel">
+               <property name="text">
+                <string>Image export format</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>

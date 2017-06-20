@@ -148,6 +148,22 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     void setSingleFile( bool single ) { mSingleFile = single; }
 
+    /** Returns the  atlas file format used for image exports.
+     * \returns true if atlas will be exported to a single file
+     * \see setFileFormat
+     * \note This property is only used for image exports.
+     * \since QGIS 3.0
+     */
+    QString fileFormat() const { return mFileFormat; }
+
+    /** Sets the  atlas file format used for image exports.
+     * \param format set the file format extension
+     * \see fileFormat
+     * \note This property is only used for image exports.
+     * \since QGIS 3.0
+     */
+    void setFileFormat( QString format ) { mFileFormat = format; }
+
     bool sortFeatures() const { return mSortFeatures; }
     void setSortFeatures( bool doSort ) { mSortFeatures = doSort; }
 
@@ -306,6 +322,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString mFilenamePattern;
     QgsVectorLayerRef mCoverageLayer;
     bool mSingleFile;
+    QString mFileFormat;
 
     QString mCurrentFilename;
     // feature ordering
