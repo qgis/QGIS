@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       TrueNorth, //!< Align to true north
     };
 
-    QgsComposerPicture( QgsComposition *composition );
+    QgsComposerPicture( QgsComposition *composition SIP_TRANSFERTHIS );
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerPicture; }

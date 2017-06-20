@@ -186,7 +186,7 @@ class QgsComposerMapItemStack
 
   protected:
 
-    void addItem( QgsComposerMapItem *item );
+    void addItem( QgsComposerMapItem *item /Transfer/ );
 %Docstring
  Adds a new map item to the stack and takes ownership of the item.
  The item will be added to the end of the stack, and rendered
