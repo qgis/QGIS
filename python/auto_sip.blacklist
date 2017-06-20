@@ -1,11 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-core/composer/qgsaddremoveitemcommand.sip
-core/composer/qgsgroupungroupitemscommand.sip
-core/composer/qgsaddremovemultiframecommand.sip
-core/composer/qgscomposerarrow.sip
-core/composer/qgscomposerattributetablemodelv2.sip
-core/composer/qgscomposerattributetablev2.sip
 core/composer/qgscomposereffect.sip
 core/composer/qgscomposerframe.sip
 core/composer/qgscomposerhtml.sip

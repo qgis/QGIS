@@ -1,7 +1,23 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposerarrow.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsComposerArrow: QgsComposerItem
 {
+%Docstring
+ An item that draws an arrow between two points.
+%End
+
 %TypeHeaderCode
-#include <qgscomposerarrow.h>
+#include "qgscomposerarrow.h"
 %End
   public:
 
@@ -12,153 +28,204 @@ class QgsComposerArrow: QgsComposerItem
       SVGMarker
     };
 
-    /** Constructor
-     * @param c parent composition
-     */
     QgsComposerArrow( QgsComposition *c /TransferThis/ );
+%Docstring
+ Constructor
+ \param c parent composition
+%End
 
-    /** Constructor
-     * @param startPoint start point for line
-     * @param stopPoint end point for line
-     * @param c parent composition
-     */
     QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c /TransferThis/ );
+%Docstring
+ Constructor
+ \param startPoint start point for line
+ \param stopPoint end point for line
+ \param c parent composition
+%End
 
     ~QgsComposerArrow();
 
-    /** Return composer item type. */
     virtual int type() const;
+%Docstring
+Return composer item type.
+ :rtype: int
+%End
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
-    /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
-     */
-    void setSceneRect( const QRectF &rectangle );
+%Docstring
+ Reimplementation of QCanvasItem.paint - draw on canvas
+%End
 
-    /** Sets the width of the arrow head in mm
-     * @param width width of arrow head
-     * @see arrowHeadWidth
-     */
+    virtual void setSceneRect( const QRectF &rectangle );
+
+%Docstring
+ Modifies position of start and endpoint and calls QgsComposerItem.setSceneRect
+%End
+
     void setArrowHeadWidth( double width );
+%Docstring
+ Sets the width of the arrow head in mm
+ \param width width of arrow head
+.. seealso:: arrowHeadWidth
+%End
 
-    /** Returns the width of the arrow head in mm
-     * @returns width of arrow head
-     * @see setArrowHeadWidth
-     */
     double arrowHeadWidth() const;
+%Docstring
+ Returns the width of the arrow head in mm
+ :return: width of arrow head
+.. seealso:: setArrowHeadWidth
+ :rtype: float
+%End
 
-    /** Sets the marker to draw at the start of the line
-     * @param svgPath file path for svg marker graphic to draw
-     * @see startMarker
-     * @see setEndMarker
-     */
     void setStartMarker( const QString &svgPath );
+%Docstring
+ Sets the marker to draw at the start of the line
+ \param svgPath file path for svg marker graphic to draw
+.. seealso:: startMarker
+.. seealso:: setEndMarker
+%End
 
-    /** Returns the marker drawn at the start of the line
-     * @returns file path for svg marker graphic
-     * @see setStartMarker
-     * @see endMarker
-     */
     QString startMarker() const;
+%Docstring
+ Returns the marker drawn at the start of the line
+ :return: file path for svg marker graphic
+.. seealso:: setStartMarker
+.. seealso:: endMarker
+ :rtype: str
+%End
 
-    /** Sets the marker to draw at the end of the line
-     * @param svgPath file path for svg marker graphic to draw
-     * @see endMarker
-     * @see setStartMarker
-     */
     void setEndMarker( const QString &svgPath );
+%Docstring
+ Sets the marker to draw at the end of the line
+ \param svgPath file path for svg marker graphic to draw
+.. seealso:: endMarker
+.. seealso:: setStartMarker
+%End
 
-    /** Returns the marker drawn at the end of the line
-     * @returns file path for svg marker graphic
-     * @see setEndMarker
-     * @see startMarker
-     */
     QString endMarker() const;
+%Docstring
+ Returns the marker drawn at the end of the line
+ :return: file path for svg marker graphic
+.. seealso:: setEndMarker
+.. seealso:: startMarker
+ :rtype: str
+%End
 
-    /** Returns the color used to draw stroke around the the arrow head.
-     * @returns arrow head stroke color
-     * @see arrowHeadFillColor
-     * @see setArrowHeadStrokeColor
-     * @note added in 2.5
-     */
     QColor arrowHeadStrokeColor() const;
+%Docstring
+ Returns the color used to draw stroke around the the arrow head.
+ :return: arrow head stroke color
+.. seealso:: arrowHeadFillColor
+.. seealso:: setArrowHeadStrokeColor
+.. versionadded:: 2.5
+ :rtype: QColor
+%End
 
-    /** Sets the color used to draw the stroke around the arrow head.
-     * @param color arrow head stroke color
-     * @see setArrowHeadFillColor
-     * @see arrowHeadStrokeColor
-     * @note added in 2.5
-     */
     void setArrowHeadStrokeColor( const QColor &color );
+%Docstring
+ Sets the color used to draw the stroke around the arrow head.
+ \param color arrow head stroke color
+.. seealso:: setArrowHeadFillColor
+.. seealso:: arrowHeadStrokeColor
+.. versionadded:: 2.5
+%End
 
-    /** Returns the color used to fill the arrow head.
-     * @returns arrow head fill color
-     * @see arrowHeadStrokeColor
-     * @see setArrowHeadFillColor
-     * @note added in 2.5
-     */
     QColor arrowHeadFillColor() const;
+%Docstring
+ Returns the color used to fill the arrow head.
+ :return: arrow head fill color
+.. seealso:: arrowHeadStrokeColor
+.. seealso:: setArrowHeadFillColor
+.. versionadded:: 2.5
+ :rtype: QColor
+%End
 
-    /** Sets the color used to fill the arrow head.
-     * @param color arrow head fill color
-     * @see arrowHeadFillColor
-     * @see setArrowHeadStrokeColor
-     * @note added in 2.5
-     */
     void setArrowHeadFillColor( const QColor &color );
+%Docstring
+ Sets the color used to fill the arrow head.
+ \param color arrow head fill color
+.. seealso:: arrowHeadFillColor
+.. seealso:: setArrowHeadStrokeColor
+.. versionadded:: 2.5
+%End
 
-    /** Sets the pen width for the stroke of the arrow head
-     * @param width pen width for arrow head stroke
-     * @see arrowHeadStrokeWidth
-     * @see setArrowHeadStrokeColor
-     * @note added in 2.5
-     */
     void setArrowHeadStrokeWidth( const double width );
+%Docstring
+ Sets the pen width for the stroke of the arrow head
+ \param width pen width for arrow head stroke
+.. seealso:: arrowHeadStrokeWidth
+.. seealso:: setArrowHeadStrokeColor
+.. versionadded:: 2.5
+%End
 
-    /** Returns the pen width for the stroke of the arrow head
-     * @returns pen width for arrow head stroke
-     * @see setArrowHeadStrokeWidth
-     * @see arrowHeadStrokeColor
-     * @note added in 2.5
-     */
     double arrowHeadStrokeWidth() const;
+%Docstring
+ Returns the pen width for the stroke of the arrow head
+ :return: pen width for arrow head stroke
+.. seealso:: setArrowHeadStrokeWidth
+.. seealso:: arrowHeadStrokeColor
+.. versionadded:: 2.5
+ :rtype: float
+%End
 
-    /** Sets the line symbol used for drawing the line portion of the arrow
-     * @param symbol line symbol
-     * @see lineSymbol
-     * @note added in 2.5
-     */
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+ Sets the line symbol used for drawing the line portion of the arrow
+ \param symbol line symbol
+.. seealso:: lineSymbol
+.. versionadded:: 2.5
+%End
 
-    /** Returns the line symbol used for drawing the line portion of the arrow
-     * @returns line symbol
-     * @see setLineSymbol
-     * @note added in 2.5
-     */
     QgsLineSymbol *lineSymbol();
+%Docstring
+ Returns the line symbol used for drawing the line portion of the arrow
+ :return: line symbol
+.. seealso:: setLineSymbol
+.. versionadded:: 2.5
+ :rtype: QgsLineSymbol
+%End
 
-    /** Returns marker mode, which controls how the arrow endpoints are drawn
-     * @returns marker mode
-     * @see setMarkerMode
-     */
     MarkerMode markerMode() const;
+%Docstring
+ Returns marker mode, which controls how the arrow endpoints are drawn
+ :return: marker mode
+.. seealso:: setMarkerMode
+ :rtype: MarkerMode
+%End
 
-    /** Sets the marker mode, which controls how the arrow endpoints are drawn
-     * @param mode marker mode
-     * @see setMarkerMode
-     */
     void setMarkerMode( MarkerMode mode );
+%Docstring
+ Sets the marker mode, which controls how the arrow endpoints are drawn
+ \param mode marker mode
+.. seealso:: setMarkerMode
+%End
 
-    /** Stores state in DOM element
-     * @param elem is DOM element corresponding to 'Composer' tag
-     * @param doc document
-     */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
-    /** Sets state from DOM document
-     * @param itemElem is DOM node corresponding to item tag
-     * @param doc is the document to read
-     */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+%Docstring
+ Stores state in DOM element
+ \param elem is DOM element corresponding to 'Composer' tag
+ \param doc document
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+
+%Docstring
+ Sets state from DOM document
+ \param itemElem is DOM node corresponding to item tag
+ \param doc is the document to read
+ :rtype: bool
+%End
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposerarrow.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

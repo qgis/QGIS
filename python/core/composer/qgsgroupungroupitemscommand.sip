@@ -1,43 +1,67 @@
-/** A composer command class for grouping / ungrouping composer items.
- *
- * If mState == Ungrouped, the command owns the group item
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgsgroupungroupitemscommand.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
 {
+%Docstring
+ A composer command class for grouping / ungrouping composer items.
+
+ If mState == Ungrouped, the command owns the group item
+%End
+
 %TypeHeaderCode
 #include "qgsgroupungroupitemscommand.h"
 %End
-
   public:
 
-    /** Command kind, and state */
     enum State
     {
-      Grouped = 0,
+      Grouped,
       Ungrouped
     };
 
-    /** Create a group or ungroup command
-     *
-     * @param s command kind (@see State)
-     * @param item the group item being created or ungrouped
-     * @param c the composition including this group
-     * @param text command label
-     * @param parent parent command, if any
-     *
-     */
     QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = 0 );
+%Docstring
+ Create a group or ungroup command
+
+.. seealso:: State)
+ \param item the group item being created or ungrouped
+ \param c the composition including this group
+ \param text command label
+ \param parent parent command, if any
+%End
     ~QgsGroupUngroupItemsCommand();
 
-    void redo();
-    void undo();
+    virtual void redo();
+
+    virtual void undo();
+
 
   signals:
-    /** Signals addition of an item (the group) */
     void itemAdded( QgsComposerItem *item );
-    /** Signals removal of an item (the group) */
+%Docstring
+Signals addition of an item (the group)
+%End
     void itemRemoved( QgsComposerItem *item );
+%Docstring
+Signals removal of an item (the group)
+%End
 
 };
 
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgsgroupungroupitemscommand.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
