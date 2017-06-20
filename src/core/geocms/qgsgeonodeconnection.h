@@ -70,6 +70,8 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
     //! Return WMS / WFS url for the geonode
     virtual QStringList serviceUrl( QString serviceType );
 
+    QVariantMap serviceUrlData( QString serviceType );
+
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 
 //    //! Get all layer IDs from the geonode instances

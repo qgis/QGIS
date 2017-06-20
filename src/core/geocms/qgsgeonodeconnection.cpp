@@ -381,3 +381,25 @@ QStringList QgsGeoNodeConnection::serviceUrl( QString serviceType )
 
   return *urls;
 }
+
+QVariantMap QgsGeoNodeConnection::serviceUrlData( QString serviceType )
+{
+  QVariantList layers = getLayers();
+  QVariantMap *urls = new QVariantMap;
+
+  for ( int i = 0; i < layers.count(); i++ )
+  {
+    QString url = layers[i].toMap()[serviceType.toLower()].toString();
+    QString layerName = layers[i].toMap()["name"].toString();
+    if ( !url.contains( QLatin1String( "://" ) ) && url.length() > 0 )
+    {
+      url.prepend( "http://" );
+    }
+    if ( !urls->contains( url ) && url.length() > 0 )
+    {
+      urls->insert( layerName, url );
+    }
+  }
+
+  return *urls;
+}
