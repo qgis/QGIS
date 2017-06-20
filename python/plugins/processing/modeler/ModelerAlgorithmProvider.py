@@ -27,10 +27,13 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtXml import QDomDocument
+
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsXmlUtils)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -98,13 +101,15 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
             return
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
-                if descriptionFile.endswith('model'):
+                if descriptionFile.endswith('model3'):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
-                        alg = ModelerAlgorithm.fromFile(fullpath)
-                        if alg.name():
-                            alg.descriptionFile = fullpath
-                            self.algs.append(alg)
+
+                        alg = ModelerAlgorithm()
+                        if alg.fromFile(fullpath):
+                            if alg.name():
+                                alg.descriptionFile = fullpath
+                                self.algs.append(alg)
                         else:
                             QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
                                                      self.tr('Processing'), QgsMessageLog.CRITICAL)

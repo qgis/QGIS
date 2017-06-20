@@ -140,6 +140,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          */
         void setOutputName( const QString &name ) { mOutputName = name; mSource = ChildOutput; }
 
+        /**
+         * Saves this source to a QVariant.
+         * \see loadVariant()
+         */
+        QVariant toVariant() const;
+
+        /**
+         * Loads this source from a QVariantMap.
+         * \see toVariant()
+         */
+        bool loadVariant( const QVariantMap &map );
+
       private:
 
         Source mSource = StaticValue;
@@ -194,6 +206,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
         //! Copies are protected to avoid slicing
         Component &operator=( const QgsProcessingModelAlgorithm::Component &other ) = default;
 
+        /**
+         * Saves the component properties to a QVariantMap.
+         * \see restoreCommonProperties()
+         */
+        void saveCommonProperties( QVariantMap &map ) const;
+
+        /**
+         * Restores the component properties from a QVariantMap.
+         * \see saveCommonProperties()
+         */
+        void restoreCommonProperties( const QVariantMap &map );
+
       private:
 
         //! Position of component within model
@@ -231,6 +255,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          * \see parameterName()
          */
         void setParameterName( const QString &name ) { mParameterName = name; }
+
+        /**
+         * Saves this parameter to a QVariant.
+         * \see loadVariant()
+         */
+        QVariant toVariant() const;
+
+        /**
+         * Loads this parameter from a QVariantMap.
+         * \see toVariant()
+         */
+        bool loadVariant( const QVariantMap &map );
 
       private:
 
@@ -276,6 +312,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          * \see outputName()
          */
         void setOutputName( const QString &name ) { mOutputName = name; }
+
+        /**
+         * Saves this output to a QVariant.
+         * \see loadVariant()
+         */
+        QVariant toVariant() const;
+
+        /**
+         * Loads this output from a QVariantMap.
+         * \see toVariant()
+         */
+        bool loadVariant( const QVariantMap &map );
 
       private:
 
@@ -456,6 +504,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          */
         void setModelOutputs( const QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> &outputs );
 
+        /**
+         * Saves this child to a QVariant.
+         * \see loadVariant()
+         */
+        QVariant toVariant() const;
+
+        /**
+         * Loads this child from a QVariant.
+         * \see toVariant()
+         */
+        bool loadVariant( const QVariant &child );
+
       private:
 
         QString mId;
@@ -493,6 +553,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+    /**
+     * Sets the model \a name.
+     * \see name()
+     */
+    void setName( const QString &name );
+
+    /**
+     * Sets the model \a group.
+     * \see group()
+     */
+    void setGroup( const QString &group );
 
     /**
      * Returns the map of child algorithms contained in the model. The keys
@@ -650,6 +722,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     QgsProcessingModelAlgorithm::ModelParameter &parameterComponent( const QString &name );
 
+    /**
+     * Writes the model to a file, at the specified \a path.
+     * \see fromFile()
+     */
+    bool toFile( const QString &path ) const;
+
+    /**
+     * Reads the model from a file, at the specified \a path.
+     * \see toFile()
+     */
+    bool fromFile( const QString &path );
+
   private:
 
     QString mModelName;
@@ -662,6 +746,24 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
+
+    /**
+     * Saves this model to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * \see loadVariant()
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this model from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * \see toVariant()
+     */
+    bool loadVariant( const QVariant &model );
+
+    friend class TestQgsProcessing;
 };
 
 #endif // QGSPROCESSINGMODELALGORITHM_H

@@ -365,15 +365,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             model._name = model.modeler_name
         return model
 
-    @staticmethod
-    def fromFile(filename):
-        with open(filename) as f:
-            s = f.read()
-        alg = ModelerAlgorithm.fromJson(s)
-        if alg:
-            alg.descriptionFile = filename
-        return alg
-
     def toPython(self):
         s = ['##%s=name' % self.name()]
         for param in list(self.parameterComponents().values()):

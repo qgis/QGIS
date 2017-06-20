@@ -139,6 +139,20 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 .. seealso:: setOutputChildId()
 %End
 
+        QVariant toVariant() const;
+%Docstring
+ Saves this source to a QVariant.
+.. seealso:: loadVariant()
+ :rtype: QVariant
+%End
+
+        bool loadVariant( const QVariantMap &map );
+%Docstring
+ Loads this source from a QVariantMap.
+.. seealso:: toVariant()
+ :rtype: bool
+%End
+
     };
 
     class Component
@@ -192,6 +206,18 @@ Copies are protected to avoid slicing
 %End
 
 
+        void saveCommonProperties( QVariantMap &map ) const;
+%Docstring
+ Saves the component properties to a QVariantMap.
+.. seealso:: restoreCommonProperties()
+%End
+
+        void restoreCommonProperties( const QVariantMap &map );
+%Docstring
+ Restores the component properties from a QVariantMap.
+.. seealso:: saveCommonProperties()
+%End
+
     };
 
     class ModelParameter : QgsProcessingModelAlgorithm::Component
@@ -225,6 +251,20 @@ Copies are protected to avoid slicing
  Sets the associated parameter name. The parameter name should match one of the
  parameters from the parent model.
 .. seealso:: parameterName()
+%End
+
+        QVariant toVariant() const;
+%Docstring
+ Saves this parameter to a QVariant.
+.. seealso:: loadVariant()
+ :rtype: QVariant
+%End
+
+        bool loadVariant( const QVariantMap &map );
+%Docstring
+ Loads this parameter from a QVariantMap.
+.. seealso:: toVariant()
+ :rtype: bool
 %End
 
     };
@@ -271,6 +311,20 @@ Copies are protected to avoid slicing
 %Docstring
  Sets the child algorithm output ``name`` from which this output is generated.
 .. seealso:: outputName()
+%End
+
+        QVariant toVariant() const;
+%Docstring
+ Saves this output to a QVariant.
+.. seealso:: loadVariant()
+ :rtype: QVariant
+%End
+
+        bool loadVariant( const QVariantMap &map );
+%Docstring
+ Loads this output from a QVariantMap.
+.. seealso:: toVariant()
+ :rtype: bool
 %End
 
     };
@@ -461,6 +515,20 @@ Copies are protected to avoid slicing
 .. seealso:: modelOutputs()
 %End
 
+        QVariant toVariant() const;
+%Docstring
+ Saves this child to a QVariant.
+.. seealso:: loadVariant()
+ :rtype: QVariant
+%End
+
+        bool loadVariant( const QVariant &child );
+%Docstring
+ Loads this child from a QVariant.
+.. seealso:: toVariant()
+ :rtype: bool
+%End
+
     };
 
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString() );
@@ -483,6 +551,18 @@ Copies are protected to avoid slicing
 
      virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+
+    void setName( const QString &name );
+%Docstring
+ Sets the model ``name``.
+.. seealso:: name()
+%End
+
+    void setGroup( const QString &group );
+%Docstring
+ Sets the model ``group``.
+.. seealso:: group()
+%End
 
     QMap<QString, QgsProcessingModelAlgorithm::ChildAlgorithm> childAlgorithms() const;
 %Docstring
@@ -649,6 +729,20 @@ Copies are protected to avoid slicing
 .. seealso:: setParameterComponents()
 .. seealso:: setParameterComponent()
  :rtype: QgsProcessingModelAlgorithm.ModelParameter
+%End
+
+    bool toFile( const QString &path ) const;
+%Docstring
+ Writes the model to a file, at the specified ``path``.
+.. seealso:: fromFile()
+ :rtype: bool
+%End
+
+    bool fromFile( const QString &path );
+%Docstring
+ Reads the model from a file, at the specified ``path``.
+.. seealso:: toFile()
+ :rtype: bool
 %End
 
 };
