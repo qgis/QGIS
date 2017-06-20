@@ -75,6 +75,7 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QSt
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
+  mCapabilities |= Collapse;
 }
 
 static QgsLayerItem::LayerType _layerTypeFromDb( const QString &dbType )
