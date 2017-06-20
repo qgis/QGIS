@@ -17,7 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsafsshareddata.h"
-#include <QSharedPointer>
+#include <memory>
 
 class QgsSpatialIndex;
 
@@ -26,12 +26,12 @@ class QgsAfsFeatureSource : public QgsAbstractFeatureSource
 {
 
   public:
-    QgsAfsFeatureSource( const QSharedPointer<QgsAfsSharedData> &sharedData );
+    QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
     QgsAfsSharedData *sharedData() const;
 
   protected:
-    QSharedPointer<QgsAfsSharedData> mSharedData;
+    std::shared_ptr<QgsAfsSharedData> mSharedData;
 
     friend class QgsAfsFeatureIterator;
 };
