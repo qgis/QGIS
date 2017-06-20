@@ -30,7 +30,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsFeatureSource;
-
+class QgsProcessingOutputDefinition;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -1266,6 +1266,33 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
 
 };
 
+/**
+ * \class QgsProcessingDestinationParameter
+ * \ingroup core
+ * Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
+ * which are used for the destination for layers output by an algorithm.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingDestinationParameter.
+     */
+    QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
+
+    bool isDestination() const override { return true; }
+
+    /**
+     * Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
+     * parameter.
+     */
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 SIP_FACTORY;
+
+};
+
 
 /**
  * \class QgsProcessingParameterFeatureSink
@@ -1275,7 +1302,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
  * A parameter which represents the destination feature sink for features created by an algorithm.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1286,9 +1313,9 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "sink" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1371,7 +1398,7 @@ class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParam
  * A raster layer output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1383,9 +1410,9 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "rasterOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
 };
 
 /**
@@ -1394,7 +1421,7 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
  * A generic file based output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1407,9 +1434,9 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "fileOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
 
     /**
      * Returns the file filter string for files compatible with this output.
@@ -1437,7 +1464,7 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
  * A folder output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1449,8 +1476,8 @@ class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "folderOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
 
 };
 

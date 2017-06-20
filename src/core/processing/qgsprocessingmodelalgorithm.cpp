@@ -340,7 +340,11 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       it.remove();
     }
   }
+  // also delete outputs
+  qDeleteAll( mOutputs );
+  mOutputs.clear();
 
+  // rebuild
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
@@ -360,6 +364,13 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setName( outputIt->childId() + ':' + outputIt->outputName() );
       param->setDescription( outputIt->description() );
       addParameter( param );
+
+      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param ) )
+      {
+        QgsProcessingOutputDefinition *output = destParam->toOutputDefinition();
+        if ( output )
+          addOutput( output );
+      }
     }
   }
 }
