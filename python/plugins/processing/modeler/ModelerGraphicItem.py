@@ -177,11 +177,11 @@ class ModelerGraphicItem(QGraphicsItem):
         popupmenu.exec_(event.screenPos())
 
     def deactivateAlgorithm(self):
-        self.model.deactivateAlgorithm(self.element.childId())
+        self.model.deactivateChildAlgorithm(self.element.childId())
         self.scene.dialog.repaintModel()
 
     def activateAlgorithm(self):
-        if self.model.activateAlgorithm(self.element.childId()):
+        if self.model.activateChildAlgorithm(self.element.childId()):
             self.scene.dialog.repaintModel()
         else:
             QMessageBox.warning(None, 'Could not activate Algorithm',
@@ -211,8 +211,20 @@ class ModelerGraphicItem(QGraphicsItem):
             dlg.exec_()
             if dlg.alg is not None:
                 dlg.alg.setChildId(self.element.childId())
-                self.model.updateAlgorithm(dlg.alg)
+                self.updateAlgorithm(dlg.alg)
                 self.scene.dialog.repaintModel()
+
+    def updateAlgorithm(self, alg):
+        existing_child = self.model.childAlgorithm(alg.childId())
+        alg.setPosition(existing_child.position())
+        alg.setParametersCollapsed(existing_child.parametersCollapsed())
+        alg.setOutputsCollapsed(existing_child.outputsCollapsed())
+        for i, out in enumerate(alg.modelOutputs().keys()):
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
+                                             alg.position() + QPointF(
+                ModelerGraphicItem.BOX_WIDTH,
+                (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
+        self.model.setChildAlgorithm(alg)
 
     def removeElement(self):
         if isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):

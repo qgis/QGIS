@@ -3226,6 +3226,49 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c7" ) );
   QVERIFY( alg3.dependsOnChildAlgorithms( "c9" ).contains( "c8" ) );
 
+  // (de)activate child algorithm
+  alg3.deactivateChildAlgorithm( "c9" );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( alg3.childAlgorithm( "c9" ).isActive() );
+  alg3.deactivateChildAlgorithm( "c8" );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( !alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( alg3.activateChildAlgorithm( "c8" ) );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c8" ).isActive() );
+  alg3.deactivateChildAlgorithm( "c7" );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c7" ).isActive() );
+  QVERIFY( !alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( !alg3.activateChildAlgorithm( "c8" ) );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c7" ).isActive() );
+  QVERIFY( !alg3.activateChildAlgorithm( "c8" ) );
+  QVERIFY( alg3.activateChildAlgorithm( "c7" ) );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( !alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c7" ).isActive() );
+  QVERIFY( !alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( alg3.activateChildAlgorithm( "c8" ) );
+  QVERIFY( !alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c7" ).isActive() );
+  QVERIFY( alg3.activateChildAlgorithm( "c9" ) );
+  QVERIFY( alg3.childAlgorithm( "c9" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c8" ).isActive() );
+  QVERIFY( alg3.childAlgorithm( "c7" ).isActive() );
+
+
+
   //remove child algorithm
   QVERIFY( !alg3.removeChildAlgorithm( "c7" ) );
   QVERIFY( !alg3.removeChildAlgorithm( "c8" ) );

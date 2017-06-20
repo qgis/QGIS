@@ -541,6 +541,25 @@ Copies are protected to avoid slicing
  Returns true if the algorithm could be removed, or false
  if the algorithm could not be removed (e.g. due to other
  child algorithms depending on it).
+.. seealso:: deactivateChildAlgorithm()
+ :rtype: bool
+%End
+
+    void deactivateChildAlgorithm( const QString &id );
+%Docstring
+ Deactivates the child algorithm with matching ``id``.
+ All other child algorithms which depend on the child
+ algorithm will also be deactivated.
+.. seealso:: removeChildAlgorithm()
+.. seealso:: activateChildAlgorithm()
+%End
+
+    bool activateChildAlgorithm( const QString &id );
+%Docstring
+ Attempts to activate the child algorithm with matching ``id``.
+ If any child algorithms on which the child depends are not active,
+ then the child will not be activated and false will be returned.
+.. seealso:: deactivateChildAlgorithm()
  :rtype: bool
 %End
 
