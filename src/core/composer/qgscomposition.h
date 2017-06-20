@@ -863,7 +863,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /** Sets the composition's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
@@ -1057,7 +1057,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     friend class TestQgsComposition;
 };
 
-template<class T> void QgsComposition::composerItems( QList<T *> &itemList )
+template<class T> void QgsComposition::composerItems( QList<T *> &itemList ) SIP_SKIP
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();
@@ -1072,7 +1072,7 @@ template<class T> void QgsComposition::composerItems( QList<T *> &itemList )
   }
 }
 
-template<class T> void QgsComposition::composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const
+template<class T> void QgsComposition::composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const SIP_SKIP
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();
