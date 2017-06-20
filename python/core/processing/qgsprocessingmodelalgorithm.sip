@@ -675,15 +675,12 @@ Copies are protected to avoid slicing
 .. seealso:: removeModelParameter()
 %End
 
-    bool removeModelParameter( const QString &name );
+    void removeModelParameter( const QString &name );
 %Docstring
  Removes an existing model parameter by ``name``. The definition of the matching parameter
  is deleted.
- Returns false if the parameter could not be deleted (e.g. if a child algorithm
- depends on the parameter).
 .. seealso:: addModelParameter()
 .. seealso:: updateModelParameter()
- :rtype: bool
 %End
 
     bool childAlgorithmsDependOnParameter( const QString &name ) const;

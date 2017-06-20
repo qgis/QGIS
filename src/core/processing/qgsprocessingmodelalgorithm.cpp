@@ -396,11 +396,11 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
   for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
   {
-    //QgsProcessingParameterDefinition *param;
-    //if ( !param.loadVariant( paramDefIt.value().toMap() ) )
-    //  return false;
+    QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() );
+    if ( !param )
+      return false;
 
-    //mParameterComponents.insert( param.parameterName(), param );
+    addParameter( param );
   }
 
   return true;
@@ -505,14 +505,10 @@ void QgsProcessingModelAlgorithm::updateModelParameter( QgsProcessingParameterDe
   addParameter( definition );
 }
 
-bool QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
+void QgsProcessingModelAlgorithm::removeModelParameter( const QString &name )
 {
-  if ( childAlgorithmsDependOnParameter( name ) )
-    return false;
-
   removeParameter( name );
   mParameterComponents.remove( name );
-  return true;
 }
 
 bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QString &name ) const
@@ -772,9 +768,6 @@ QVariant QgsProcessingModelAlgorithm::ModelParameter::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), mParameterName );
-
-  //TODO - parameter definition
-
   saveCommonProperties( map );
   return map;
 }

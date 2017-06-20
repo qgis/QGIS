@@ -711,6 +711,61 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
   return resultStringList;
 }
 
+QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
+{
+  QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
+  QString name = map.value( QStringLiteral( "name" ) ).toString();
+  std::unique_ptr< QgsProcessingParameterDefinition > def;
+  if ( type == QStringLiteral( "boolean" ) )
+    def.reset( new QgsProcessingParameterBoolean( name ) );
+  else if ( type == QStringLiteral( "crs" ) )
+    def.reset( new QgsProcessingParameterCrs( name ) );
+  else if ( type == QStringLiteral( "layer" ) )
+    def.reset( new QgsProcessingParameterMapLayer( name ) );
+  else if ( type == QStringLiteral( "extent" ) )
+    def.reset( new QgsProcessingParameterExtent( name ) );
+  else if ( type == QStringLiteral( "point" ) )
+    def.reset( new QgsProcessingParameterPoint( name ) );
+  else if ( type == QStringLiteral( "file" ) )
+    def.reset( new QgsProcessingParameterFile( name ) );
+  else if ( type == QStringLiteral( "matrix" ) )
+    def.reset( new QgsProcessingParameterMatrix( name ) );
+  else if ( type == QStringLiteral( "multilayer" ) )
+    def.reset( new QgsProcessingParameterMultipleLayers( name ) );
+  else if ( type == QStringLiteral( "number" ) )
+    def.reset( new QgsProcessingParameterNumber( name ) );
+  else if ( type == QStringLiteral( "range" ) )
+    def.reset( new QgsProcessingParameterRange( name ) );
+  else if ( type == QStringLiteral( "raster" ) )
+    def.reset( new QgsProcessingParameterRasterLayer( name ) );
+  else if ( type == QStringLiteral( "enum" ) )
+    def.reset( new QgsProcessingParameterEnum( name ) );
+  else if ( type == QStringLiteral( "string" ) )
+    def.reset( new QgsProcessingParameterString( name ) );
+  else if ( type == QStringLiteral( "expression" ) )
+    def.reset( new QgsProcessingParameterExpression( name ) );
+  else if ( type == QStringLiteral( "table" ) )
+    def.reset( new QgsProcessingParameterTable( name ) );
+  else if ( type == QStringLiteral( "field" ) )
+    def.reset( new QgsProcessingParameterTableField( name ) );
+  else if ( type == QStringLiteral( "source" ) )
+    def.reset( new QgsProcessingParameterFeatureSource( name ) );
+  else if ( type == QStringLiteral( "sink" ) )
+    def.reset( new QgsProcessingParameterFeatureSink( name ) );
+  else if ( type == QStringLiteral( "rasterOut" ) )
+    def.reset( new QgsProcessingParameterRasterOutput( name ) );
+  else if ( type == QStringLiteral( "fileOut" ) )
+    def.reset( new QgsProcessingParameterFileOutput( name ) );
+  else if ( type == QStringLiteral( "folderOut" ) )
+    def.reset( new QgsProcessingParameterFolderOutput( name ) );
+
+  if ( !def )
+    return nullptr;
+
+  def->fromVariantMap( map );
+  return def.release();
+}
+
 //
 // QgsProcessingParameterDefinition
 //
@@ -744,6 +799,7 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
 QVariantMap QgsProcessingParameterDefinition::toVariantMap() const
 {
   QVariantMap map;
+  map.insert( QStringLiteral( "parameter_type" ), type() );
   map.insert( QStringLiteral( "name" ), mName );
   map.insert( QStringLiteral( "description" ), mDescription );
   map.insert( QStringLiteral( "default" ), mDefault );

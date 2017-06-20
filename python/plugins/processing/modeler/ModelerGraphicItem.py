@@ -194,10 +194,9 @@ class ModelerGraphicItem(QGraphicsItem):
                                                    param=self.model.parameterDefinition(self.element.parameterName()))
             dlg.exec_()
             if dlg.param is not None:
-                self.model.updateModelParameter(dlg.param)
+                self.model.removeModelParameter(self.element.parameterName())
                 self.element.setParameterName(dlg.param.name())
-                # also need to update the model's stored component
-                self.model.childAlgorithm(self.element.childId()).setParameterName(dlg.param.name())
+                self.model.addModelParameter(dlg.param, self.element)
                 self.text = dlg.param.description()
                 self.update()
         elif isinstance(self.element, QgsProcessingModelAlgorithm.ChildAlgorithm):
@@ -228,11 +227,12 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def removeElement(self):
         if isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
-            if not self.model.removeModelParameter(self.element.parameterName()):
+            if self.model.childAlgorithmsDependOnParameter(self.element.parameterName()):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')
             else:
+                self.model.removeModelParameter(self.element.parameterName())
                 self.scene.dialog.haschanged = True
                 self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelAlgorithm.ChildAlgorithm):

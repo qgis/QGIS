@@ -673,12 +673,10 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Removes an existing model parameter by \a name. The definition of the matching parameter
      * is deleted.
-     * Returns false if the parameter could not be deleted (e.g. if a child algorithm
-     * depends on the parameter).
      * \see addModelParameter()
      * \see updateModelParameter()
      */
-    bool removeModelParameter( const QString &name );
+    void removeModelParameter( const QString &name );
 
     /**
      * Returns true if any child algorithms depend on the model parameter
