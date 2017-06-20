@@ -448,6 +448,10 @@ while ($LINE_IDX < $LINE_COUNT){
             next;
         }
     }
+    # skip friends
+    if ( $LINE =~ m/^\s*friend class \w+/ ){
+        next;
+    }
     # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
     if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED).*?$/){
         next;

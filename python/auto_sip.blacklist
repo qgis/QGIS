@@ -1,14 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-core/composer/qgscomposerutils.sip
-core/composer/qgscomposition.sip
-core/composer/qgsdoubleboxscalebarstyle.sip
-core/composer/qgslayoutmanager.sip
-core/composer/qgsnumericscalebarstyle.sip
-core/composer/qgspaperitem.sip
-core/composer/qgsscalebarstyle.sip
-core/composer/qgssingleboxscalebarstyle.sip
-core/composer/qgsticksscalebarstyle.sip
 analysis/vector/qgsgeometryanalyzer.sip
 analysis/vector/qgsgeometrysnapper.sip
 analysis/vector/qgspointsample.sip
