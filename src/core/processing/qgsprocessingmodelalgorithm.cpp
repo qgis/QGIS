@@ -17,6 +17,7 @@
 
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingfeedback.h"
 #include "qgsxmlutils.h"
 #include <QFile>
 #include <QTextStream>
@@ -285,13 +286,77 @@ QString QgsProcessingModelAlgorithm::svgIconPath() const
 
 QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
-  Q_UNUSED( parameters );
-  Q_UNUSED( context );
-  Q_UNUSED( feedback );
-  return QVariantMap();
-}
+  QSet< QString > toExecute;
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->isActive() )
+      toExecute.insert( childIt->childId() );
+  }
 
-void QgsProcessingModelAlgorithm::setName( const QString &name )
+  QMap< QString, QVariantMap > resultsMap;
+  QSet< QString > executed;
+  while ( executed.count() < toExecute.count() )
+  {
+    Q_FOREACH ( const QString &childId, toExecute )
+    {
+      if ( executed.contains( childId ) )
+        continue;
+
+      bool canExecute = true;
+      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      {
+        if ( !executed.contains( dependency ) )
+        {
+          canExecute = false;
+          break;
+        }
+      }
+
+      if ( !canExecute )
+        continue;
+
+      feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
+
+      const ChildAlgorithm &child = mChildAlgorithms[ childId ];
+
+      // self.prepareAlgorithm( alg )
+
+      feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
+      //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
+      //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
+      //t0 = time.time()
+      QVariantMap results = child.algorithm()->run( parameters, context, feedback );
+      resultsMap.insert( childId, results );
+
+      //dt = time.time() - t0
+#if 0
+
+# copy algorithm output value(s) back to model in case the algorithm modified those
+    for out in alg.algorithm().outputs :
+      if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+          if out.name() in alg.modelOutputs():
+              modelOut = self.getOutputFromName( self.getSafeNameForOutput( alg.childId(), out.name() ) )
+                       if modelOut:
+                         modelOut.value = out.value
+#endif
+
+                                          executed.insert( childId );
+        //feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 ms (%2 outputs)." ).arg( dt, len( alg.algorithm.modelOutputs() ) ) )
+#if 0
+      except GeoAlgorithmExecutionException as e:
+        feedback.pushDebugInfo( self.tr( 'Failed', 'ModelerAlgorithm' ) )
+        raise GeoAlgorithmExecutionException(
+          self.tr( 'Error executing algorithm {0}\n{1}', 'ModelerAlgorithm' ).format( alg.description, e.msg ) )
+#endif
+      }
+    }
+    feedback->pushDebugInfo( QObject::tr( "Model processed ok. Executed %1 algorithms total" ).arg( executed.count() ) );
+
+    return QVariantMap();
+  }
+
+  void QgsProcessingModelAlgorithm::setName( const QString &name )
 {
   mModelName = name;
 }
