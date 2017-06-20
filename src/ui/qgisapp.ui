@@ -144,19 +144,19 @@
      </property>
      <addaction name="mActionAddOgrLayer"/>
      <addaction name="mActionAddRasterLayer"/>
+     <addaction name="mActionAddDelimitedText"/>
      <addaction name="mActionAddPgLayer"/>
      <addaction name="mActionAddSpatiaLiteLayer"/>
      <addaction name="mActionAddMssqlLayer"/>
      <addaction name="mActionAddDb2Layer"/>
      <addaction name="mActionAddOracleLayer"/>
+     <addaction name="mActionAddVirtualLayer"/>
      <addaction name="mActionAddWmsLayer"/>
      <addaction name="mActionAddAmsLayer"/>
      <addaction name="mActionAddLayerSeparator"/>
      <addaction name="mActionAddWcsLayer"/>
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
-     <addaction name="mActionAddDelimitedText"/>
-     <addaction name="mActionAddVirtualLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -355,12 +355,12 @@
    </attribute>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
+   <addaction name="mActionAddDelimitedText"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
+   <addaction name="mActionAddVirtualLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
-   <addaction name="mActionAddDelimitedText"/>
-   <addaction name="mActionAddVirtualLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
