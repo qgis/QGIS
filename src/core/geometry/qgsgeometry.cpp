@@ -1655,6 +1655,30 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
   return geos.delaunayTriangulation( tolerance, edgesOnly );
 }
 
+QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  const QgsAbstractGeometry *geom = d->geometry;
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( d->geometry->wkbType() ) )
+  {
+    segmentizedCopy.reset( d->geometry->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  QgsGeos geos( geom );
+  QgsAbstractGeometry *result = geos.subdivide( maxNodes );
+  if ( !result )
+  {
+    return QgsGeometry();
+  }
+  return QgsGeometry( result );
+}
+
 QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
@@ -2089,17 +2113,17 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
   }
 }
 
-#if 0
-void QgsGeometry::clip( const QgsRectangle &rect )
+QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 {
-  if ( d->geometry )
+  if ( !d->geometry || rectangle.isNull() || rectangle.isEmpty() )
   {
-    detach();
-    d->geometry->clip( rect );
-    removeWkbGeos();
+    return QgsGeometry();
   }
+
+  QgsGeos geos( d->geometry );
+  QgsAbstractGeometry *resultGeom = geos.clip( rectangle );
+  return QgsGeometry( resultGeom );
 }
-#endif
 
 void QgsGeometry::draw( QPainter &p ) const
 {

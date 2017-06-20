@@ -189,6 +189,146 @@ QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry &geom, QStri
   return overlay( geom, DIFFERENCE, errorMsg );
 }
 
+QgsAbstractGeometry *QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
+{
+  if ( !mGeos || rect.isNull() || rect.isEmpty() )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    GEOSGeomScopedPtr opGeom;
+    opGeom.reset( GEOSClipByRect_r( geosinit.ctxt, mGeos, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() ) );
+    QgsAbstractGeometry *opResult = fromGeos( opGeom.get() );
+    return opResult;
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    return nullptr;
+  }
+}
+
+
+
+
+void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes, int depth, QgsGeometryCollection *parts, const QgsRectangle &clipRect ) const
+{
+  int partType = GEOSGeomTypeId_r( geosinit.ctxt, currentPart );
+  if ( qgsDoubleNear( clipRect.width(), 0.0 ) && qgsDoubleNear( clipRect.height(), 0.0 ) )
+  {
+    if ( partType == GEOS_POINT )
+    {
+      parts->addGeometry( fromGeos( currentPart ) );
+      return;
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  if ( partType == GEOS_MULTILINESTRING || partType == GEOS_MULTIPOLYGON || partType == GEOS_GEOMETRYCOLLECTION )
+  {
+    int partCount = GEOSGetNumGeometries_r( geosinit.ctxt, currentPart );
+    for ( int i = 0; i < partCount; ++i )
+    {
+      subdivideRecursive( GEOSGetGeometryN_r( geosinit.ctxt, currentPart, i ), maxNodes, depth, parts, clipRect );
+    }
+    return;
+  }
+
+  if ( depth > 50 )
+  {
+    parts->addGeometry( fromGeos( currentPart ) );
+    return;
+  }
+
+  int vertexCount = GEOSGetNumCoordinates_r( geosinit.ctxt, currentPart );
+  if ( vertexCount == 0 )
+  {
+    return;
+  }
+  else if ( vertexCount < maxNodes )
+  {
+    parts->addGeometry( fromGeos( currentPart ) );
+    return;
+  }
+
+  // chop clipping rect in half by longest side
+  double width = clipRect.width();
+  double height = clipRect.height();
+  QgsRectangle halfClipRect1 = clipRect;
+  QgsRectangle halfClipRect2 = clipRect;
+  if ( width > height )
+  {
+    halfClipRect1.setXMaximum( clipRect.xMinimum() + width / 2.0 );
+    halfClipRect2.setXMinimum( halfClipRect1.xMaximum() );
+  }
+  else
+  {
+    halfClipRect1.setYMaximum( clipRect.yMinimum() + height / 2.0 );
+    halfClipRect2.setYMinimum( halfClipRect1.yMaximum() );
+  }
+
+  if ( height <= 0 )
+  {
+    halfClipRect1.setYMinimum( halfClipRect1.yMinimum() - DBL_EPSILON );
+    halfClipRect2.setYMinimum( halfClipRect2.yMinimum() - DBL_EPSILON );
+    halfClipRect1.setYMaximum( halfClipRect1.yMaximum() + DBL_EPSILON );
+    halfClipRect2.setYMaximum( halfClipRect2.yMaximum() + DBL_EPSILON );
+  }
+  if ( width <= 0 )
+  {
+    halfClipRect1.setXMinimum( halfClipRect1.xMinimum() - DBL_EPSILON );
+    halfClipRect2.setXMinimum( halfClipRect2.xMinimum() - DBL_EPSILON );
+    halfClipRect1.setXMaximum( halfClipRect1.xMaximum() + DBL_EPSILON );
+    halfClipRect2.setXMaximum( halfClipRect2.xMaximum() + DBL_EPSILON );
+  }
+
+  GEOSGeomScopedPtr clipPart1;
+  clipPart1.reset( GEOSClipByRect_r( geosinit.ctxt, currentPart, halfClipRect1.xMinimum(), halfClipRect1.yMinimum(), halfClipRect1.xMaximum(), halfClipRect1.yMaximum() ) );
+  GEOSGeomScopedPtr clipPart2;
+  clipPart2.reset( GEOSClipByRect_r( geosinit.ctxt, currentPart, halfClipRect2.xMinimum(), halfClipRect2.yMinimum(), halfClipRect2.xMaximum(), halfClipRect2.yMaximum() ) );
+
+  ++depth;
+
+  if ( clipPart1 )
+  {
+    subdivideRecursive( clipPart1.get(), maxNodes, depth, parts, halfClipRect1 );
+  }
+  if ( clipPart2 )
+  {
+    subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2 );
+  }
+
+  return;
+}
+
+QgsAbstractGeometry *QgsGeos::subdivide( int maxNodes, QString *errorMsg ) const
+{
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  // minimum allowed max is 8
+  maxNodes = qMax( maxNodes, 8 );
+
+  std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
+  try
+  {
+    subdivideRecursive( mGeos, maxNodes, 0, parts.get(), mGeometry->boundingBox() );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+
+  return parts.release();
+}
+
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, UNION, errorMsg );

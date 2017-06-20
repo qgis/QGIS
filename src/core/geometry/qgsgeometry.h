@@ -734,6 +734,22 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
 
     /**
+     * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+     * from the original geometry, where no part has more then the specified maximum number of nodes (\a maxNodes).
+     *
+     * This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+     * indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+     * not be valid and may contain self-intersections.
+     *
+     * The minimum allowed value for \a maxNodes is 8.
+     *
+     * Curved geometries will be segmentized before subdivision.
+     *
+     * \since QGIS 3.0
+     */
+    QgsGeometry subdivide( int maxNodes = 256 ) const;
+
+    /**
      * Return interpolated point on line at distance
      * \since QGIS 1.9
      * \see lineLocatePoint()
@@ -764,6 +780,15 @@ class CORE_EXPORT QgsGeometry
 
     //! Returns a geometry representing the points shared by this geometry and other.
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
+
+    /**
+     * Clips the geometry using the specified \a rectangle.
+     *
+     * Performs a fast, non-robust intersection between the geometry and
+     * a \a rectangle. The returned geometry may be invalid.
+     * \since QGIS 3.0
+     */
+    QgsGeometry clipped( const QgsRectangle &rectangle );
 
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
@@ -998,13 +1023,6 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 2.10
      */
     void mapToPixel( const QgsMapToPixel &mtp );
-
-    // not implemented for 2.10
-    /* Clips the geometry using the specified rectangle
-     * \param rect clip rectangle
-     * \since QGIS 2.10
-     */
-    // void clip( const QgsRectangle& rect );
 
     /** Draws the geometry onto a QPainter
      * \param p destination QPainter

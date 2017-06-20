@@ -786,6 +786,23 @@ Returns the smallest convex polygon that contains all the points in the geometry
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry subdivide( int maxNodes = 256 ) const;
+%Docstring
+ Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+ from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
+
+ This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+ indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+ not be valid and may contain self-intersections.
+
+ The minimum allowed value for ``maxNodes`` is 8.
+
+ Curved geometries will be segmentized before subdivision.
+
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry interpolate( double distance ) const;
 %Docstring
  Return interpolated point on line at distance
@@ -825,6 +842,16 @@ Returns the smallest convex polygon that contains all the points in the geometry
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
 %Docstring
 Returns a geometry representing the points shared by this geometry and other.
+ :rtype: QgsGeometry
+%End
+
+    QgsGeometry clipped( const QgsRectangle &rectangle );
+%Docstring
+ Clips the geometry using the specified ``rectangle``.
+
+ Performs a fast, non-robust intersection between the geometry and
+ a ``rectangle``. The returned geometry may be invalid.
+.. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
 
@@ -1128,7 +1155,6 @@ Ring 0 is outer ring and can't be deleted.
  \param mtp map to pixel transform
 .. versionadded:: 2.10
 %End
-
 
     void draw( QPainter &p ) const;
 %Docstring
