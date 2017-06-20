@@ -38,6 +38,7 @@ QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QSt
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconConnect.png";
+  mCapabilities |= Collapse;
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()

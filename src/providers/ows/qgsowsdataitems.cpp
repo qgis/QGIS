@@ -29,6 +29,7 @@ QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, Q
     : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = "mIconConnect.png";
+  mCapabilities |= Collapse;
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()

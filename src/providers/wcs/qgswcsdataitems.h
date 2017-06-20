@@ -31,7 +31,7 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
 
     virtual QList<QAction*> actions() override;
 
-    QgsWcsCapabilities mCapabilities;
+    QgsWcsCapabilities mWcsCapabilities;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
 
   public slots:

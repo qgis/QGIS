@@ -75,6 +75,7 @@ QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QSt
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
+  mCapabilities |= Collapse;
 }
 
 QgsSLConnectionItem::~QgsSLConnectionItem()

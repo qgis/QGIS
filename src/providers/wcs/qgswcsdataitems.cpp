@@ -30,6 +30,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, Q
     , mUri( uri )
 {
   mIconName = "mIconWcs.svg";
+  mCapabilities |= Collapse;
 }
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
@@ -44,23 +45,23 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
   uri.setEncodedUri( mUri );
   QgsDebugMsg( "mUri = " + mUri );
 
-  mCapabilities.setUri( uri );
+  mWcsCapabilities.setUri( uri );
 
   // Attention: supportedLayers() gives tree leafes, not top level
-  if ( !mCapabilities.lastError().isEmpty() )
+  if ( !mWcsCapabilities.lastError().isEmpty() )
   {
     //children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     // TODO: show the error without adding child
     return children;
   }
 
-  Q_FOREACH ( const QgsWcsCoverageSummary& coverageSummary, mCapabilities.capabilities().contents.coverageSummary )
+  Q_FOREACH ( const QgsWcsCoverageSummary& coverageSummary, mWcsCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( coverageSummary.orderId ) + ' ' + coverageSummary.identifier + ' ' + coverageSummary.title );
     QString pathName = coverageSummary.identifier.isEmpty() ? QString::number( coverageSummary.orderId ) : coverageSummary.identifier;
 
-    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mCapabilities.capabilities(), uri, coverageSummary );
+    QgsWCSLayerItem * layer = new QgsWCSLayerItem( this, coverageSummary.title, mPath + '/' + pathName, mWcsCapabilities.capabilities(), uri, coverageSummary );
 
     children.append( layer );
   }
