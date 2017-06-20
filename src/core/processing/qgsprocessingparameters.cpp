@@ -19,6 +19,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsprocessingoutputs.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -1998,7 +1999,7 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
 
 
 QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
@@ -2051,6 +2052,11 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
 {
   return mDataType;
@@ -2095,7 +2101,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 }
 
 QgsProcessingParameterRasterOutput::QgsProcessingParameterRasterOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
 bool QgsProcessingParameterRasterOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2145,9 +2151,14 @@ QString QgsProcessingParameterRasterOutput::valueAsPythonString( const QVariant 
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterRasterOutput::toOutputDefinition() const
+{
+  return new QgsProcessingOutputRasterLayer( name(), description() );
+}
+
 
 QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
@@ -2202,6 +2213,11 @@ QString QgsProcessingParameterFileOutput::valueAsPythonString( const QVariant &v
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterFileOutput::toOutputDefinition() const
+{
+  return nullptr;
+}
+
 QString QgsProcessingParameterFileOutput::fileFilter() const
 {
   return mFileFilter;
@@ -2228,7 +2244,7 @@ bool QgsProcessingParameterFileOutput::fromVariantMap( const QVariantMap &map )
 }
 
 QgsProcessingParameterFolderOutput::QgsProcessingParameterFolderOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
 bool QgsProcessingParameterFolderOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2249,6 +2265,17 @@ bool QgsProcessingParameterFolderOutput::checkValueIsAcceptable( const QVariant 
     return mFlags & FlagOptional;
 
   return true;
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterFolderOutput::toOutputDefinition() const
+{
+  return nullptr;
+}
+
+QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
 }
 
 QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )

@@ -3769,6 +3769,10 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.outputDefinitions().count(), 1 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
 
   QgsProcessingModelAlgorithm::ChildAlgorithm alg7c2;
   alg7c2.setChildId( "cx2" );
@@ -3787,12 +3791,22 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
+  QCOMPARE( alg7.outputDefinitions().count(), 2 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
 
   alg7.removeChildAlgorithm( "cx1" );
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
-
+  QCOMPARE( alg7.outputDefinitions().count(), 1 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
