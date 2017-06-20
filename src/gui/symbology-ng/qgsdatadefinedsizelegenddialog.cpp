@@ -15,6 +15,8 @@
 
 #include "qgsdatadefinedsizelegenddialog.h"
 
+#include <QInputDialog>
+
 #include "qgsdatadefinedsizelegend.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -51,7 +53,7 @@ QgsDataDefinedSizeLegendDialog::QgsDataDefinedSizeLegendDialog( const QgsDataDef
     else
       cboAlignSymbols->setCurrentIndex( 1 );
 
-    symbol = ddsLegend->symbol();  // may be null (undefined)
+    symbol = ddsLegend->symbol() ? ddsLegend->symbol()->clone() : nullptr;  // may be null (undefined)
   }
 
   if ( overrideSymbol )
@@ -70,6 +72,28 @@ QgsDataDefinedSizeLegendDialog::QgsDataDefinedSizeLegendDialog( const QgsDataDef
 
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
+
+  mSizeClassesModel = new QStandardItemModel( viewSizeClasses );
+  mSizeClassesModel->setHorizontalHeaderLabels( QStringList() << tr( "Value" ) );
+  mSizeClassesModel->setSortRole( Qt::UserRole + 1 );
+  if ( ddsLegend )
+  {
+    groupManualSizeClasses->setChecked( !ddsLegend->classes().isEmpty() );
+    Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddsLegend->classes() )
+    {
+      QStandardItem *item = new QStandardItem( sc.label );
+      item->setEditable( false );
+      item->setData( sc.label.toInt() );
+      mSizeClassesModel->appendRow( item );
+    }
+    mSizeClassesModel->sort( 0 );
+  }
+
+  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsDataDefinedSizeLegendDialog::updatePreview );
+  connect( btnAddClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendDialog::addSizeClass );
+  connect( btnRemoveClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendDialog::removeSizeClass );
+
+  viewSizeClasses->setModel( mSizeClassesModel );
 
   // prepare layer and model to preview legend
   mPreviewLayer = new QgsVectorLayer( "Point?crs=EPSG:4326", "Preview", "memory" );
@@ -106,6 +130,18 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendDialog::dataDefinedSizeLegend(
   if ( !mOverrideSymbol )
   {
     ddsLegend->setSymbol( mSourceSymbol->clone() );
+  }
+  if ( groupManualSizeClasses->isChecked() )
+  {
+    const QgsSizeScaleTransformer *transformer = dynamic_cast<const QgsSizeScaleTransformer *>( mSizeProperty.transformer() );
+    QList<QgsDataDefinedSizeLegend::SizeClass> classes;
+    for ( int i = 0; i < mSizeClassesModel->rowCount(); ++i )
+    {
+      double value = mSizeClassesModel->data( mSizeClassesModel->index( i, 0 ), Qt::UserRole + 1 ).toDouble();
+      double size = transformer ? transformer->size( value ) : value;
+      classes << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( value ) );
+    }
+    ddsLegend->setClasses( classes );
   }
   return ddsLegend;
 }
@@ -148,5 +184,31 @@ void QgsDataDefinedSizeLegendDialog::changeSymbol()
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
 
+  updatePreview();
+}
+
+void QgsDataDefinedSizeLegendDialog::addSizeClass()
+{
+  bool ok;
+  double v = QInputDialog::getDouble( this, tr( "Add Size Class" ), tr( "Enter value for a new class" ),
+                                      0, -2147483647, 2147483647, 6, &ok );
+  if ( !ok )
+    return;
+
+  QStandardItem *item = new QStandardItem( QString::number( v ) );
+  item->setEditable( false );
+  item->setData( v );
+  mSizeClassesModel->appendRow( item );
+  mSizeClassesModel->sort( 0 );
+  updatePreview();
+}
+
+void QgsDataDefinedSizeLegendDialog::removeSizeClass()
+{
+  QModelIndex idx = viewSizeClasses->currentIndex();
+  if ( !idx.isValid() )
+    return;
+
+  mSizeClassesModel->removeRow( idx.row() );
   updatePreview();
 }

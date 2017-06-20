@@ -779,16 +779,20 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     legendSymbol->setSizeUnit( mSettings.sizeType );
     legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
 
-    QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
-    Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
-    {
-      double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
-      sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
-    }
-
     QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
     ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
-    ddSizeLegend.setClasses( sizeClasses );
+
+    if ( ddSizeLegend.classes().isEmpty() )
+    {
+      // automatic class creation if the classes are not defined manually
+      QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
+      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
+      {
+        double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
+        sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
+      }
+      ddSizeLegend.setClasses( sizeClasses );
+    }
 
     Q_FOREACH ( const QgsLegendSymbolItem &si, ddSizeLegend.legendSymbolList() )
     {

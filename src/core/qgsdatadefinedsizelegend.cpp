@@ -69,6 +69,9 @@ void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbo
 
   mTitleLabel = ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString() : ddSize.field();
 
+  if ( !mSizeClasses.isEmpty() )
+    return;   // manually generated classes
+
   // automatically generated classes
   if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
   {

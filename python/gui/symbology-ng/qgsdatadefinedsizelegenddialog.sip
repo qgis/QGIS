@@ -11,6 +11,7 @@
 
 
 
+
 class QgsDataDefinedSizeLegendDialog : QDialog
 {
 %Docstring
