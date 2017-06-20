@@ -458,6 +458,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
+    friend class QgsProcessingModelAlgorithm;
 
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );

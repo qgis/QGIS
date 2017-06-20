@@ -349,6 +349,13 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   }
   map.insert( "parameters", paramMap );
 
+  QVariantMap paramDefMap;
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    paramDefMap.insert( def->name(), def->toVariantMap() );
+  }
+  map.insert( "parameterDefinitions", paramDefMap );
+
   return map;
 }
 
@@ -381,6 +388,19 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
       return false;
 
     mParameterComponents.insert( param.parameterName(), param );
+  }
+
+  qDeleteAll( mParameters );
+  mParameters.clear();
+  QVariantMap paramDefMap = map.value( QStringLiteral( "parameterDefinitions" ) ).toMap();
+  QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
+  for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
+  {
+    //QgsProcessingParameterDefinition *param;
+    //if ( !param.loadVariant( paramDefIt.value().toMap() ) )
+    //  return false;
+
+    //mParameterComponents.insert( param.parameterName(), param );
   }
 
   return true;
