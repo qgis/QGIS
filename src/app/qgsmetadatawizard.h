@@ -29,6 +29,9 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer = nullptr );
     ~QgsMetadataWizard();
 
+    void addLink();
+    void removeLink();
+
   private:
     void cancelClicked();
     void backClicked();

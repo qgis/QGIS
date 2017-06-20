@@ -18,6 +18,7 @@
 #include <QtWidgets>
 #include <QIcon>
 #include <QPushButton>
+#include <QString>
 
 #include "qgsmetadatawizard.h"
 
@@ -26,19 +27,20 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
 {
   setupUi( this );
 
-  basicMetadataButton->setChecked( true );
-  backButton->setVisible( false );
-  nextButton->setVisible( true );
+  tabWidget->setCurrentIndex( 0 );
+  backButton->setEnabled( false );
+  nextButton->setEnabled( true );
 
-  connect( basicMetadataButton, &QPushButton::clicked, this, &QgsMetadataWizard::updatePanel );
-  connect( locationButton, &QPushButton::clicked, this, &QgsMetadataWizard::updatePanel );
-  connect( optionalButton, &QPushButton::clicked, this, &QgsMetadataWizard::updatePanel );
-
+  connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWizard::updatePanel );
   connect( cancelButton, &QPushButton::clicked, this, &QgsMetadataWizard::cancelClicked );
   connect( backButton, &QPushButton::clicked, this, &QgsMetadataWizard::backClicked );
   connect( nextButton, &QPushButton::clicked, this, &QgsMetadataWizard::nextClicked );
   connect( finishButton, &QPushButton::clicked, this, &QgsMetadataWizard::finishedClicked );
+  connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWizard::addLink );
+  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWizard::removeLink );
 
+
+  // Set all properties
   layerLabel->setText( mLayer->name() );
   lineEditTitle->setText( mLayer->name() );
   textEditAbstract->setText( mLayer->abstract() );
@@ -56,29 +58,17 @@ void QgsMetadataWizard::cancelClicked()
 
 void QgsMetadataWizard::backClicked()
 {
-  int index = stackedWidget->currentIndex();
-  if ( index == 1 )
-  {
-    basicMetadataButton->setChecked( true );
-  }
-  else if ( index == 2 )
-  {
-    locationButton->setChecked( true );
-  }
+  int index = tabWidget->currentIndex();
+  if ( index > 0 )
+    tabWidget->setCurrentIndex( index - 1 );
   updatePanel();
 }
 
 void QgsMetadataWizard::nextClicked()
 {
-  int index = stackedWidget->currentIndex();
-  if ( index == 0 )
-  {
-    locationButton->setChecked( true );
-  }
-  else if ( index == 1 )
-  {
-    optionalButton->setChecked( true );
-  }
+  int index = tabWidget->currentIndex();
+  if ( index < tabWidget->count() )
+    tabWidget->setCurrentIndex( index + 1 );
   updatePanel();
 }
 
@@ -92,22 +82,34 @@ void QgsMetadataWizard::finishedClicked()
 
 void QgsMetadataWizard::updatePanel()
 {
-  if ( basicMetadataButton->isChecked() )
+  int index = tabWidget->currentIndex();
+  if ( index == 0 )
   {
-    backButton->setVisible( false );
-    nextButton->setVisible( true );
-    stackedWidget->setCurrentIndex( 0 );
+    backButton->setEnabled( false );
+    nextButton->setEnabled( true );
   }
-  else if ( locationButton->isChecked() )
+  else if ( index == tabWidget->count() - 1 )
   {
-    backButton->setVisible( true );
-    backButton->setVisible( true );
-    stackedWidget->setCurrentIndex( 1 );
+    backButton->setEnabled( true );
+    nextButton->setEnabled( false );
   }
   else
   {
-    backButton->setVisible( true );
-    nextButton->setVisible( false );
-    stackedWidget->setCurrentIndex( 2 );
+    backButton->setEnabled( true );
+    nextButton->setEnabled( true );
   }
+}
+
+void QgsMetadataWizard::addLink()
+{
+//  int index = tabLinks->topLevelItemCount();
+//  QTreeWidgetItem *link = new QTreeWidgetItem( tabLinks );
+//  link->setText( 0, tr( "Link" ) + QString::number( index ) );
+//  tabLinks->addTopLevelItem( link );
+}
+
+void QgsMetadataWizard::removeLink()
+{
+//  if ( tabLinks->currentItem() )
+//    tabLinks->takeTopLevelItem( tabLinks->currentIndex() );
 }
