@@ -25,6 +25,8 @@
 
 #include "qgsproperty.h"
 
+class QStandardItemModel;
+
 class QgsDataDefinedSizeLegend;
 class QgsLayerTree;
 class QgsLayerTreeLayer;
@@ -58,6 +60,8 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
   private slots:
     void updatePreview();
     void changeSymbol();
+    void addSizeClass();
+    void removeSizeClass();
 
   private:
     std::unique_ptr<QgsMarkerSymbol> mSourceSymbol;   //!< Source symbol (without data-defined size set)
@@ -68,6 +72,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
     QgsLayerTreeLayer *mPreviewLayerNode;
     QgsVectorLayer *mPreviewLayer;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QStandardItemModel *mSizeClassesModel;
 };
 
 #endif // QGSDATADEFINEDSIZELEGENDDIALOG_H
