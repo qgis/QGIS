@@ -5293,7 +5293,7 @@ void TestQgsGeometry::wkbInOut()
 void TestQgsGeometry::segmentizeCircularString()
 {
   QString wkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" ) );
-  QgsCircularString *circularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( wkt ) );
+  QgsCircularString *circularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( wkt ).release() );
   QVERIFY( circularString );
   QgsLineString *lineString = circularString->curveToLine();
   QVERIFY( lineString );
@@ -5311,11 +5311,11 @@ void TestQgsGeometry::directionNeutralSegmentation()
 {
   //Tests, if segmentation of a circularstring is the same in both directions
   QString CWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 0.83 7.33 )" ) );
-  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
+  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ).release() );
   QgsLineString *CWLineString = CWCircularString->curveToLine();
 
   QString CCWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0.83 7.33, 0.5 0.5, 0 0 )" ) );
-  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
+  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ).release() );
   QgsLineString *CCWLineString = CCWCircularString->curveToLine();
   QgsLineString *reversedCCWLineString = CCWLineString->reversed();
 

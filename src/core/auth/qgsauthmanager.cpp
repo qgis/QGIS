@@ -782,7 +782,7 @@ bool QgsAuthManager::registerCoreAuthMethods()
   mAuthMethods.clear();
   Q_FOREACH ( const QString &authMethodKey, QgsAuthMethodRegistry::instance()->authMethodList() )
   {
-    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ) );
+    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ).release() );
   }
 
   return !mAuthMethods.isEmpty();

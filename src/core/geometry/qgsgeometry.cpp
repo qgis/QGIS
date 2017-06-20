@@ -134,70 +134,70 @@ bool QgsGeometry::isNull() const
 
 QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::geomFromWkt( wkt );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::geomFromWkt( wkt );
   if ( !geom )
   {
     return QgsGeometry();
   }
-  return QgsGeometry( geom );
+  return QgsGeometry( geom.release() );
 }
 
 QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromPoint( point );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPoint( point ) );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromPolyline( polyline );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolyline( polyline );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromPolygon( polygon );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolygon( polygon );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromMultiPoint( multipoint );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromMultiPolyline( multiline );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPolyline( multiline );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
 
 QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
   if ( geom )
   {
-    return QgsGeometry( geom );
+    return QgsGeometry( geom.release() );
   }
   return QgsGeometry();
 }
@@ -246,7 +246,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
     delete d->geometry;
   }
   QgsConstWkbPtr ptr( wkb, length );
-  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr ).release();
   delete [] wkb;
 }
 
@@ -259,7 +259,7 @@ void QgsGeometry::fromWkb( const QByteArray &wkb )
     delete d->geometry;
   }
   QgsConstWkbPtr ptr( wkb );
-  d->geometry = QgsGeometryFactory::geomFromWkb( ptr );
+  d->geometry = QgsGeometryFactory::geomFromWkb( ptr ).release();
 }
 
 GEOSGeometry *QgsGeometry::exportToGeos( double precision ) const
@@ -1155,8 +1155,8 @@ bool QgsGeometry::convertToMultiType()
     return true;
   }
 
-  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>
-                                     ( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
+  std::unique_ptr< QgsAbstractGeometry >geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !multiGeom )
   {
     return false;
@@ -1164,7 +1164,7 @@ bool QgsGeometry::convertToMultiType()
 
   detach( true );
   multiGeom->addGeometry( d->geometry );
-  d->geometry = multiGeom;
+  d->geometry = geom.release();
   return true;
 }
 
@@ -2026,11 +2026,11 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
     return 1;
   }
 
-  QgsAbstractGeometry *diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
   if ( diffGeom )
   {
     detach( false );
-    d->geometry = diffGeom;
+    d->geometry = diffGeom.release();
   }
   return 0;
 }

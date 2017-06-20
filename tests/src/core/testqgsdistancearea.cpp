@@ -218,7 +218,7 @@ void TestQgsDistanceArea::regression13601()
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "NONE" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 1108L ) );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ) );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((252000 1389000, 265000 1389000, 265000 1385000, 252000 1385000, 252000 1389000))" ) ).release() );
   QGSCOMPARENEAR( calc.measureArea( geom ), 52000000, 0.0001 );
 }
 
@@ -230,21 +230,21 @@ void TestQgsDistanceArea::collections()
   myDa.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //collection of lines, should be sum of line length
-  QgsGeometry lines( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) ) );
+  QgsGeometry lines( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70) )" ) ).release() );
   double result = myDa.measureLength( lines );
   QGSCOMPARENEAR( result, 12006159, 1 );
   result = myDa.measureArea( lines );
   QVERIFY( qgsDoubleNear( result, 0 ) );
 
   //collection of polygons
-  QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ) );
+  QgsGeometry polys( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   result = myDa.measureArea( polys );
   QGSCOMPARENEAR( result, 670434859475LL, 1 );
   result = myDa.measureLength( polys );
   QVERIFY( qgsDoubleNear( result, 0 ) );
 
   //mixed collection
-  QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ) );
+  QgsGeometry mixed( QgsGeometryFactory::geomFromWkt( QStringLiteral( "GeometryCollection( LineString(0 36.53, 5.76 -48.16), LineString(0 25.54, 24.20 36.70), Polygon((0 36.53, 5.76 -48.16, 0 25.54, 0 36.53)), Polygon((10 20, 15 20, 15 10, 10 20)) )" ) ).release() );
   //measure area specifically
   result = myDa.measureArea( mixed );
   QGSCOMPARENEAR( result, 670434859475LL, 1 );
@@ -375,7 +375,7 @@ void TestQgsDistanceArea::regression14675()
   QgsDistanceArea calc;
   calc.setEllipsoid( QStringLiteral( "GRS80" ) );
   calc.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 145L ) );
-  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ) );
+  QgsGeometry geom( QgsGeometryFactory::geomFromWkt( QStringLiteral( "Polygon ((917593.5791854317067191 6833700.00807378999888897, 917596.43389983859378844 6833700.67099479306489229, 917599.53056440979707986 6833700.78673478215932846, 917593.5791854317067191 6833700.00807378999888897))" ) ).release() );
   //lots of tolerance here - the formulas get quite unstable with small areas due to division by very small floats
   QGSCOMPARENEAR( calc.measureArea( geom ), 0.833010, 0.03 );
 }
