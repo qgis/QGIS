@@ -17,6 +17,9 @@
 
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
+#include "qgsxmlutils.h"
+#include <QFile>
+#include <QTextStream>
 
 QgsProcessingModelAlgorithm::ChildAlgorithm::ChildAlgorithm( const QString &algorithmId )
   : mAlgorithmId( algorithmId )
@@ -78,6 +81,22 @@ QgsProcessingModelAlgorithm::Component::Component( const QString &description )
   : mDescription( description )
 {}
 
+void QgsProcessingModelAlgorithm::Component::saveCommonProperties( QVariantMap &map ) const
+{
+  map.insert( QStringLiteral( "component_pos_x" ), mPosition.x() );
+  map.insert( QStringLiteral( "component_pos_y" ), mPosition.y() );
+  map.insert( QStringLiteral( "component_description" ), mDescription );
+}
+
+void QgsProcessingModelAlgorithm::Component::restoreCommonProperties( const QVariantMap &map )
+{
+  QPointF pos;
+  pos.setX( map.value( QStringLiteral( "component_pos_x" ) ).toDouble() );
+  pos.setY( map.value( QStringLiteral( "component_pos_y" ) ).toDouble() );
+  mPosition = pos;
+  mDescription = map.value( QStringLiteral( "component_description" ) ).toString();
+}
+
 QStringList QgsProcessingModelAlgorithm::ChildAlgorithm::dependencies() const
 {
   return mDependencies;
@@ -111,6 +130,77 @@ QgsProcessingModelAlgorithm::ModelOutput &QgsProcessingModelAlgorithm::ChildAlgo
 void QgsProcessingModelAlgorithm::ChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> &modelOutputs )
 {
   mModelOutputs = modelOutputs;
+}
+
+QVariant QgsProcessingModelAlgorithm::ChildAlgorithm::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "id" ), mId );
+  map.insert( QStringLiteral( "alg_id" ), mAlgorithmId );
+  map.insert( QStringLiteral( "active" ), mActive );
+  map.insert( QStringLiteral( "dependencies" ), mDependencies );
+  map.insert( QStringLiteral( "parameters_collapsed" ), mParametersCollapsed );
+  map.insert( QStringLiteral( "outputs_collapsed" ), mOutputsCollapsed );
+
+  saveCommonProperties( map );
+
+  QVariantMap paramMap;
+  QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource >::const_iterator paramIt = mParams.constBegin();
+  for ( ; paramIt != mParams.constEnd(); ++paramIt )
+  {
+    paramMap.insert( paramIt.key(), paramIt.value().toVariant() );
+  }
+  map.insert( "params", paramMap );
+
+  QVariantMap outputMap;
+  QMap< QString, QgsProcessingModelAlgorithm::ModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
+  for ( ; outputIt != mModelOutputs.constEnd(); ++outputIt )
+  {
+    outputMap.insert( outputIt.key(), outputIt.value().toVariant() );
+  }
+  map.insert( "outputs", outputMap );
+
+  return map;
+}
+
+bool QgsProcessingModelAlgorithm::ChildAlgorithm::loadVariant( const QVariant &child )
+{
+  QVariantMap map = child.toMap();
+
+  mId = map.value( QStringLiteral( "id" ) ).toString();
+  mAlgorithmId = map.value( QStringLiteral( "alg_id" ) ).toString();
+  mActive = map.value( QStringLiteral( "active" ) ).toBool();
+  mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
+  mParametersCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
+  mOutputsCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
+
+  restoreCommonProperties( map );
+
+  mParams.clear();
+  QVariantMap paramMap = map.value( QStringLiteral( "params" ) ).toMap();
+  QVariantMap::const_iterator paramIt = paramMap.constBegin();
+  for ( ; paramIt != paramMap.constEnd(); ++paramIt )
+  {
+    ChildParameterSource param;
+    if ( !param.loadVariant( paramIt.value().toMap() ) )
+      return false;
+
+    mParams.insert( paramIt.key(), param );
+  }
+
+  mModelOutputs.clear();
+  QVariantMap outputMap = map.value( QStringLiteral( "outputs" ) ).toMap();
+  QVariantMap::const_iterator outputIt = outputMap.constBegin();
+  for ( ; outputIt != outputMap.constEnd(); ++outputIt )
+  {
+    ModelOutput output;
+    if ( !output.loadVariant( outputIt.value().toMap() ) )
+      return false;
+
+    mModelOutputs.insert( outputIt.key(), output );
+  }
+
+  return true;
 }
 
 bool QgsProcessingModelAlgorithm::ChildAlgorithm::parametersCollapsed() const
@@ -201,6 +291,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   return QVariantMap();
 }
 
+void QgsProcessingModelAlgorithm::setName( const QString &name )
+{
+  mModelName = name;
+}
+
+void QgsProcessingModelAlgorithm::setGroup( const QString &group )
+{
+  mModelGroup = group;
+}
+
 QMap<QString, QgsProcessingModelAlgorithm::ChildAlgorithm> QgsProcessingModelAlgorithm::childAlgorithms() const
 {
   return mChildAlgorithms;
@@ -225,6 +325,99 @@ QgsProcessingModelAlgorithm::ModelParameter &QgsProcessingModelAlgorithm::parame
     return component;
   }
   return mParameterComponents[ name ];
+}
+
+QVariant QgsProcessingModelAlgorithm::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "model_name" ), mModelName );
+  map.insert( QStringLiteral( "model_group" ), mModelGroup );
+
+  QVariantMap childMap;
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    childMap.insert( childIt.key(), childIt.value().toVariant() );
+  }
+  map.insert( "children", childMap );
+
+  QVariantMap paramMap;
+  QMap< QString, ModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
+  for ( ; paramIt != mParameterComponents.constEnd(); ++paramIt )
+  {
+    paramMap.insert( paramIt.key(), paramIt.value().toVariant() );
+  }
+  map.insert( "parameters", paramMap );
+
+  return map;
+}
+
+bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
+{
+  QVariantMap map = model.toMap();
+
+  mModelName = map.value( QStringLiteral( "model_name" ) ).toString();
+  mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
+
+  mChildAlgorithms.clear();
+  QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
+  QVariantMap::const_iterator childIt = childMap.constBegin();
+  for ( ; childIt != childMap.constEnd(); ++childIt )
+  {
+    ChildAlgorithm child;
+    if ( !child.loadVariant( childIt.value() ) )
+      return false;
+
+    mChildAlgorithms.insert( child.childId(), child );
+  }
+
+  mParameterComponents.clear();
+  QVariantMap paramMap = map.value( QStringLiteral( "parameters" ) ).toMap();
+  QVariantMap::const_iterator paramIt = paramMap.constBegin();
+  for ( ; paramIt != paramMap.constEnd(); ++paramIt )
+  {
+    ModelParameter param;
+    if ( !param.loadVariant( paramIt.value().toMap() ) )
+      return false;
+
+    mParameterComponents.insert( param.parameterName(), param );
+  }
+
+  return true;
+}
+
+bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
+{
+  QDomDocument doc = QDomDocument( "model" );
+  QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
+  doc.appendChild( elem );
+
+  QFile file( path );
+  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
+  {
+    QTextStream stream( &file );
+    doc.save( stream, 2 );
+    file.close();
+    return true;
+  }
+  return false;
+}
+
+bool QgsProcessingModelAlgorithm::fromFile( const QString &path )
+{
+  QDomDocument doc;
+
+  QFile file( path );
+  if ( file.open( QFile::ReadOnly ) )
+  {
+    if ( !doc.setContent( &file ) )
+      return false;
+
+    file.close();
+  }
+
+  QVariant props = QgsXmlUtils::readVariant( doc.firstChildElement() );
+  return loadVariant( props );
 }
 
 void QgsProcessingModelAlgorithm::setChildAlgorithms( const QMap<QString, ChildAlgorithm> &childAlgorithms )
@@ -484,13 +677,91 @@ QgsProcessingModelAlgorithm::ChildParameterSource::Source QgsProcessingModelAlgo
   return mSource;
 }
 
+QVariant QgsProcessingModelAlgorithm::ChildParameterSource::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "source" ), mSource );
+  switch ( mSource )
+  {
+    case ModelParameter:
+      map.insert( QStringLiteral( "parameter_name" ), mParameterName );
+      break;
+
+    case ChildOutput:
+      map.insert( QStringLiteral( "child_id" ), mChildId );
+      map.insert( QStringLiteral( "output_name" ), mOutputName );
+      break;
+
+    case StaticValue:
+      map.insert( QStringLiteral( "static_value" ), mStaticValue );
+      break;
+  }
+  return map;
+}
+
+bool QgsProcessingModelAlgorithm::ChildParameterSource::loadVariant( const QVariantMap &map )
+{
+  mSource = static_cast< Source >( map.value( QStringLiteral( "source" ) ).toInt() );
+  switch ( mSource )
+  {
+    case ModelParameter:
+      mParameterName = map.value( QStringLiteral( "parameter_name" ) ).toString();
+      break;
+
+    case ChildOutput:
+      mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
+      mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
+      break;
+
+    case StaticValue:
+      mStaticValue = map.value( QStringLiteral( "static_value" ) );
+      break;
+  }
+  return true;
+}
+
 QgsProcessingModelAlgorithm::ModelOutput::ModelOutput( const QString &description )
   : QgsProcessingModelAlgorithm::Component( description )
 {}
+
+QVariant QgsProcessingModelAlgorithm::ModelOutput::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "child_id" ), mChildId );
+  map.insert( QStringLiteral( "output_name" ), mOutputName );
+  saveCommonProperties( map );
+  return map;
+}
+
+bool QgsProcessingModelAlgorithm::ModelOutput::loadVariant( const QVariantMap &map )
+{
+  mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
+  mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
+  restoreCommonProperties( map );
+  return true;
+}
 
 QgsProcessingModelAlgorithm::ModelParameter::ModelParameter( const QString &parameterName )
   : QgsProcessingModelAlgorithm::Component()
   , mParameterName( parameterName )
 {
 
+}
+
+QVariant QgsProcessingModelAlgorithm::ModelParameter::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "name" ), mParameterName );
+
+  //TODO - parameter definition
+
+  saveCommonProperties( map );
+  return map;
+}
+
+bool QgsProcessingModelAlgorithm::ModelParameter::loadVariant( const QVariantMap &map )
+{
+  mParameterName = map.value( QStringLiteral( "name" ) ).toString();
+  restoreCommonProperties( map );
+  return true;
 }

@@ -42,7 +42,8 @@ from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsMessageLog,
                        QgsProcessingUtils,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsXmlUtils)
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -52,6 +53,7 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
+from qgis.PyQt.QtXml import QDomDocument
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -435,25 +437,21 @@ class ModelerDialog(BASE, WIDGET):
                 self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
             )
             return
-        self.model._name = str(self.textName.text())
-        self.model._group = str(self.textGroup.text())
+        self.model.setName(str(self.textName.text()))
+        self.model.setGroup(str(self.textGroup.text()))
         if self.model.descriptionFile is not None and not saveAs:
             filename = self.model.descriptionFile
         else:
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
                                                            ModelerUtils.modelsFolders()[0],
-                                                           self.tr('Processing models (*.model)'))
+                                                           self.tr('Processing models (*.model3)'))
             if filename:
-                if not filename.endswith('.model'):
-                    filename += '.model'
+                if not filename.endswith('.model3'):
+                    filename += '.model3'
                 self.model.descriptionFile = filename
         if filename:
-            text = self.model.toJson()
-            try:
-                with codecs.open(filename, 'w', encoding='utf-8') as fout:
-                    fout.write(text)
-            except:
+            if not self.model.toFile(filename):
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
                                         self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
@@ -475,25 +473,19 @@ class ModelerDialog(BASE, WIDGET):
                                                                 ModelerUtils.modelsFolders()[0],
                                                                 self.tr('Processing models (*.model *.MODEL)'))
         if filename:
-            try:
-                alg = ModelerAlgorithm.fromFile(filename)
+            alg = ModelerAlgorithm()
+            if alg.fromFile(filename):
                 self.model = alg
-                self.textGroup.setText(alg._group)
-                self.textName.setText(alg._name)
+                self.textGroup.setText(alg.group())
+                self.textName.setText(alg.name())
                 self.repaintModel()
 
                 self.view.centerOn(0, 0)
                 self.hasChanged = False
-            except WrongModelException as e:
-                QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}').format(filename, e.msg),
+            else:
+                QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
                                          self.tr('Processing'),
                                          QgsMessageLog.CRITICAL)
-                QMessageBox.critical(self, self.tr('Could not open model'),
-                                     self.tr('The selected model could not be loaded.\n'
-                                             'See the log for more information.'))
-            except Exception as e:
-                QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}').format(filename, e.args[0]),
-                                         self.tr('Processing'), QgsMessageLog.CRITICAL)
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))

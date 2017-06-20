@@ -32,6 +32,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsexpressioncontext.h"
+#include "qgsxmlutils.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -3065,6 +3066,11 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg.name(), QStringLiteral( "test" ) );
   QCOMPARE( alg.displayName(), QStringLiteral( "test" ) );
   QCOMPARE( alg.group(), QStringLiteral( "testGroup" ) );
+  alg.setName( QStringLiteral( "test2" ) );
+  QCOMPARE( alg.name(), QStringLiteral( "test2" ) );
+  QCOMPARE( alg.displayName(), QStringLiteral( "test2" ) );
+  alg.setGroup( QStringLiteral( "group2" ) );
+  QCOMPARE( alg.group(), QStringLiteral( "group2" ) );
 
   // child algorithms
   QMap<QString, QgsProcessingModelAlgorithm::ChildAlgorithm> algs;
@@ -3299,6 +3305,90 @@ void TestQgsProcessing::modelerAlgorithm()
   c10.addParameterSource( "y", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
   alg4.setChildAlgorithm( c10 );
   QVERIFY( alg4.childAlgorithmsDependOnParameter( "p1" ) );
+
+
+
+  // to/from XML
+  QgsProcessingModelAlgorithm alg5( "test", "testGroup" );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg5c1;
+  alg5c1.setChildId( "cx1" );
+  alg5c1.setAlgorithmId( "buffer" );
+  alg5c1.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
+  alg5c1.addParameterSource( "y", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out3" ) );
+  alg5c1.addParameterSource( "z", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  alg5c1.setActive( true );
+  alg5c1.setOutputsCollapsed( true );
+  alg5c1.setParametersCollapsed( true );
+  alg5c1.setDescription( "child 1" );
+  alg5c1.setPosition( QPointF( 1, 2 ) );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg5c1outputs;
+  QgsProcessingModelAlgorithm::ModelOutput alg5c1out1;
+  alg5c1out1.setDescription( QStringLiteral( "my output" ) );
+  alg5c1out1.setPosition( QPointF( 3, 4 ) );
+  alg5c1outputs.insert( QStringLiteral( "a" ), alg5c1out1 );
+  alg5c1.setModelOutputs( alg5c1outputs );
+  alg5.addChildAlgorithm( alg5c1 );
+
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg5c2;
+  alg5c2.setChildId( "cx2" );
+  alg5c2.setActive( false );
+  alg5c2.setOutputsCollapsed( false );
+  alg5c2.setParametersCollapsed( false );
+  alg5c2.setDependencies( QStringList() << "a" << "b" );
+  alg5.addChildAlgorithm( alg5c2 );
+
+  QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> alg5pComponents;
+  QgsProcessingModelAlgorithm::ModelParameter alg5pc1;
+  alg5pc1.setParameterName( QStringLiteral( "my_param" ) );
+  alg5pc1.setPosition( QPointF( 11, 12 ) );
+  alg5pComponents.insert( QStringLiteral( "my_param" ), alg5pc1 );
+  alg5.setParameterComponents( alg5pComponents );
+
+  QDomDocument doc = QDomDocument( "model" );
+  QDomElement elem = QgsXmlUtils::writeVariant( alg5.toVariant(), doc );
+  doc.appendChild( elem );
+
+  QgsProcessingModelAlgorithm alg6;
+  QVERIFY( alg6.loadVariant( QgsXmlUtils::readVariant( doc.firstChildElement() ) ) );
+  QCOMPARE( alg6.name(), QStringLiteral( "test" ) );
+  QCOMPARE( alg6.group(), QStringLiteral( "testGroup" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
+  QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
+  QVERIFY( alg6c1.isActive() );
+  QVERIFY( alg6c1.outputsCollapsed() );
+  QVERIFY( alg6c1.parametersCollapsed() );
+  QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
+  QCOMPARE( alg6c1.position().x(), 1.0 );
+  QCOMPARE( alg6c1.position().y(), 2.0 );
+  QCOMPARE( alg6c1.parameterSources().count(), 3 );
+  QCOMPARE( alg6c1.parameterSources().value( "x" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( alg6c1.parameterSources().value( "x" ).parameterName(), QStringLiteral( "p1" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).outputName(), QStringLiteral( "out3" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "z" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( "z" ).staticValue().toInt(), 5 );
+  QCOMPARE( alg6c1.modelOutputs().count(), 1 );
+  QCOMPARE( alg6c1.modelOutputs().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg6c1.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg6c1.modelOutput( "a" ).position().x(), 3.0 );
+  QCOMPARE( alg6c1.modelOutput( "a" ).position().y(), 4.0 );
+
+
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg6c2 = alg6.childAlgorithm( "cx2" );
+  QCOMPARE( alg6c2.childId(), QStringLiteral( "cx2" ) );
+  QVERIFY( !alg6c2.isActive() );
+  QVERIFY( !alg6c2.outputsCollapsed() );
+  QVERIFY( !alg6c2.parametersCollapsed() );
+  QCOMPARE( alg6c2.dependencies(), QStringList() << "a" << "b" );
+
+  QCOMPARE( alg6.parameterComponents().count(), 1 );
+  QCOMPARE( alg6.parameterComponents().value( QStringLiteral( "my_param" ) ).parameterName(), QStringLiteral( "my_param" ) );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).parameterName(), QStringLiteral( "my_param" ) );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).position().x(), 11.0 );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).position().y(), 12.0 );
+
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
