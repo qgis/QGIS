@@ -30,15 +30,12 @@ import os
 
 from qgis.core import (QgsWkbTypes,
                        QgsApplication,
-                       QgsProcessingUtils)
-
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterDefinition)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
-
-pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class DensifyGeometries(QgisAlgorithm):
@@ -61,14 +58,15 @@ class DensifyGeometries(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.VERTICES,
-                                          self.tr('Vertices to add'), 1, 10000000, 1))
 
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Densified')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon, QgsProcessingParameterDefinition.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterNumber(self.VERTICES,
+                                                       self.tr('Vertices to add'), QgsProcessingParameterNumber.Integer,
+                                                       1, False, 1, 10000000))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
     def name(self):
         return 'densifygeometries'
@@ -77,22 +75,24 @@ class DensifyGeometries(QgisAlgorithm):
         return self.tr('Densify geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        vertices = self.getParameterValue(self.VERTICES)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        vertices = self.parameterAsInt(parameters, self.VERTICES, context)
 
-        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feature = f
             if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(int(vertices))
+                new_geometry = feature.geometry().densifyByCount(vertices)
                 feature.setGeometry(new_geometry)
-            writer.addFeature(feature)
+            sink.addFeature(feature)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

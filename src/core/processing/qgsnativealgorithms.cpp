@@ -58,12 +58,13 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
-  addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
-  addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
-  addAlgorithm( new QgsTransformAlgorithm() );
+  addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
+  addAlgorithm( new QgsTransformAlgorithm() );
 }
 
 
@@ -664,6 +665,84 @@ QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &paramete
   return outputs;
 }
 
+
+
+QgsMultipartToSinglepartAlgorithm::QgsMultipartToSinglepartAlgorithm()
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Single parts" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Single parts" ) ) );
+}
+
+QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
+                      "a single part. Features with multipart geometries are divided in as many different features as parts the geometry "
+                      "contain, and the same attributes are used for each of them." );
+}
+
+QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  QgsWkbTypes::Type sinkType = QgsWkbTypes::singleType( source->wkbType() );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
+                                          sinkType, source->sourceCrs(), dest ) );
+  if ( !sink )
+    return QVariantMap();
+
+  long count = source->featureCount();
+  if ( count <= 0 )
+    return QVariantMap();
+
+  QgsFeature f;
+  QgsFeatureIterator it = source->getFeatures();
+
+  double step = 100.0 / count;
+  int current = 0;
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    QgsFeature out = f;
+    if ( out.hasGeometry() )
+    {
+      QgsGeometry inputGeometry = f.geometry();
+      if ( inputGeometry.isMultipart() )
+      {
+        Q_FOREACH ( const QgsGeometry &g, inputGeometry.asGeometryCollection() )
+        {
+          out.setGeometry( g );
+          sink->addFeature( out );
+        }
+      }
+      else
+      {
+        sink->addFeature( out );
+      }
+    }
+    else
+    {
+      // feature with null geometry
+      sink->addFeature( out );
+    }
+
+    feedback->setProgress( current * step );
+    current++;
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
 ///@endcond
-
-

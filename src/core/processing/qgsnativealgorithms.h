@@ -182,6 +182,29 @@ class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native multipart to singlepart algorithm.
+ */
+class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsMultipartToSinglepartAlgorithm();
+
+    QString name() const override { return QStringLiteral( "multiparttosingleparts" ); }
+    QString displayName() const override { return QObject::tr( "Multipart to singleparts" ); }
+    virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,split,dump" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
