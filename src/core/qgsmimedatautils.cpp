@@ -27,7 +27,6 @@
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
-
 QgsMimeDataUtils::Uri::Uri()
 {
 }
@@ -64,6 +63,41 @@ QgsMimeDataUtils::Uri::Uri( QString &encData )
 QString QgsMimeDataUtils::Uri::data() const
 {
   return encode( QStringList() << layerType << providerKey << name << uri << encode( supportedCrs ) << encode( supportedFormats ) );
+}
+
+QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "vector" ) )
+  {
+    error = QObject::tr( "%1: Not a vector layer." ).arg( name );
+    return nullptr;
+  }
+  if ( providerKey == QLatin1String( "memory" ) )
+  {
+    QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+    if ( !url.hasQueryItem( QStringLiteral( "pid" ) ) || !url.hasQueryItem( QStringLiteral( "layerid" ) ) )
+    {
+      error = QObject::tr( "Memory layer uri does not contain process or layer id." );
+      return nullptr;
+    }
+    qint64 pid = url.queryItemValue( QStringLiteral( "pid" ) ).toLongLong();
+    if ( pid != QCoreApplication::applicationPid() )
+    {
+      error = QObject::tr( "Memory layer from another QGIS instance." );
+      return nullptr;
+    }
+    QString layerId = url.queryItemValue( QStringLiteral( "layerid" ) );
+    QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    if ( !vectorLayer )
+    {
+      error = QObject::tr( "Cannot get memory layer." );
+      return nullptr;
+    }
+    return vectorLayer;
+  }
+  owner = true;
+  return new QgsVectorLayer( uri, name, providerKey );
 }
 
 // -----
@@ -119,6 +153,13 @@ static void _addLayerTreeNodeToUriList( QgsLayerTreeNode *node, QgsMimeDataUtils
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       uri.layerType = QStringLiteral( "vector" );
+      if ( uri.providerKey == QStringLiteral( "memory" ) )
+      {
+        QUrl url = QUrl::fromEncoded( uri.uri.toUtf8() );
+        url.addQueryItem( QStringLiteral( "pid" ), QString::number( QCoreApplication::applicationPid() ) );
+        url.addQueryItem( QStringLiteral( "layerid" ), layer->id() );
+        uri.uri = QString( url.toEncoded() );
+      }
     }
     else if ( layer->type() == QgsMapLayer::RasterLayer )
     {

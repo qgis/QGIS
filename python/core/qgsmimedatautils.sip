@@ -40,6 +40,14 @@ Returns encoded representation of the object
  :rtype: str
 %End
 
+      QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
+%Docstring
+ Get vector layer from uri if possible, otherwise returns 0 and error is set
+ \param owner set to true if caller becomes owner
+ \param error set to error message if cannot get vector
+ :rtype: QgsVectorLayer
+%End
+
       QString layerType;
 %Docstring
 Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
