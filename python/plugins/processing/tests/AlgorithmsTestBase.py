@@ -56,6 +56,7 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsFeatureRequest,
                        QgsMapLayer,
                        QgsProject,
                        QgsApplication,
@@ -123,6 +124,10 @@ class AlgorithmsTest(object):
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+
+        if 'skipInvalid' in defs and defs['skipInvalid']:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+
         feedback = QgsProcessingFeedback()
 
         if expectFailure:
