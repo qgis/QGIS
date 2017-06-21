@@ -1,9 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-analysis/interpolation/ParametricLine.sip
-analysis/interpolation/TriangleInterpolator.sip
-analysis/interpolation/Triangulation.sip
-analysis/interpolation/TriDecorator.sip
 analysis/interpolation/Vector3D.sip
 analysis/interpolation/qgsgridfilewriter.sip
 analysis/interpolation/qgsinterpolator.sip
