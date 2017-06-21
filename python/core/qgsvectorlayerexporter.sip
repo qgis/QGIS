@@ -154,8 +154,8 @@ class QgsVectorLayerExporterTask : QgsTask
 %Docstring
  Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
  and ``providerKey``, and various export related parameters such as destination CRS
- and export ``options``.
- \param ownsLayer take ownership of layer and deletes it after export
+ and export ``options``. ``ownsLayer`` has to be set to true if the task should take ownership
+ of the layer and delete it after export.
 %End
 
     static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,
