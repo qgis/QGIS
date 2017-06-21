@@ -282,9 +282,9 @@ Copies are protected to avoid slicing
 %End
       public:
 
-        ModelOutput( const QString &description = QString() );
+        ModelOutput( const QString &name = QString(), const QString &description = QString() );
 %Docstring
- Constructor for ModelOutput with the specified ``description``.
+ Constructor for ModelOutput with the specified ``name`` and ``description``.
 %End
 
         QString childId() const;
