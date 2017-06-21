@@ -1313,6 +1313,13 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
      */
     virtual QString defaultFileExtension() const = 0;
 
+    /**
+     * Generates a temporary destination value for this parameter. The returned
+     * value will be a file path or QGIS data provider URI suitable for
+     * temporary storage of created layers and files.
+     */
+    virtual QString generateTemporaryDestination() const;
+
   private:
 
     bool mSupportsNonFileBasedOutputs = true;
@@ -1364,6 +1371,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString generateTemporaryDestination() const override;
 
   private:
 

@@ -2114,6 +2114,14 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
+QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
+{
+  if ( supportsNonFileBasedOutputs() )
+    return QStringLiteral( "memory:" );
+  else
+    return QgsProcessingDestinationParameter::generateTemporaryDestination();
+}
+
 QgsProcessingParameterRasterOutput::QgsProcessingParameterRasterOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
@@ -2329,6 +2337,11 @@ bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mSupportsNonFileBasedOutputs = map.value( QStringLiteral( "supports_non_file_outputs" ) ).toBool();
   return true;
+}
+
+QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
+{
+  return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
 }
 
 QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )

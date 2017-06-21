@@ -2812,6 +2812,10 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
+  QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
+  def->setSupportsNonFileBasedOutputs( false );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".shp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSink fromMap( "x" );
@@ -2933,6 +2937,8 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "tif" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".tif" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
@@ -2985,6 +2991,8 @@ void TestQgsProcessing::parameterFileOut()
   std::unique_ptr< QgsProcessingParameterFileOutput > def( new QgsProcessingParameterFileOutput( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QString(), false ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "BMP files (*.bmp)" ) );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "bmp" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".bmp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   def->setFileFilter( QStringLiteral( "PCX files (*.pcx)" ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "PCX files (*.pcx)" ) );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
@@ -2994,6 +3002,8 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
   def->setFileFilter( QString() );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "file" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".file" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
