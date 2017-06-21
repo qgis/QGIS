@@ -37,7 +37,7 @@ from qgis.core import (QgsStatisticalSummary,
                        QgsFeatureRequest,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterField,
                        QgsProcessingParameterFileOutput,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber)
@@ -90,9 +90,9 @@ class BasicStatisticsForField(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
 
-        self.addParameter(QgsProcessingParameterTableField(self.FIELD_NAME,
-                                                           self.tr('Field to calculate statistics on'),
-                                                           None, self.INPUT_LAYER, QgsProcessingParameterTableField.Any))
+        self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
+                                                      self.tr('Field to calculate statistics on'),
+                                                      None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
         self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))

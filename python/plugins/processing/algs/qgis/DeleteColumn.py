@@ -29,7 +29,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterField,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -56,9 +56,9 @@ class DeleteColumn(QgisAlgorithm):
         super().__init__()
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterTableField(self.COLUMNS,
-                                                           self.tr('Fields to delete'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Any, True))
+        self.addParameter(QgsProcessingParameterField(self.COLUMNS,
+                                                      self.tr('Fields to delete'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any, True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Output layer")))

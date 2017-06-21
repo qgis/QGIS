@@ -52,8 +52,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterExpression,
-                       QgsProcessingParameterTable,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingModelAlgorithm)
 from qgis.gui import QgsMessageBar

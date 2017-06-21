@@ -163,10 +163,10 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterString;
     else if ( sipCpp->type() == "expression" )
       sipType = sipType_QgsProcessingParameterExpression;
-    else if ( sipCpp->type() == "table" )
-      sipType = sipType_QgsProcessingParameterTable;
+    else if ( sipCpp->type() == "vector" )
+      sipType = sipType_QgsProcessingParameterVectorLayer;
     else if ( sipCpp->type() == "field" )
-      sipType = sipType_QgsProcessingParameterTableField;
+      sipType = sipType_QgsProcessingParameterField;
     else if ( sipCpp->type() == "source" )
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
@@ -1153,10 +1153,11 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterTable : QgsProcessingParameterDefinition
+class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 {
 %Docstring
- A table (i.e. vector layers with or without geometry) parameter for processing algorithms.
+ A vector layer (with or without geometry) parameter for processing algorithms. Consider using
+ the more versatile QgsProcessingParameterFeatureSource wherever possible.
 .. versionadded:: 3.0
 %End
 
@@ -1165,20 +1166,20 @@ class QgsProcessingParameterTable : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterTable( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                 bool optional = false );
+    QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterTable.
+ Constructor for QgsProcessingParameterVectorLayer.
 %End
 
     virtual QString type() const;
 
 };
 
-class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
+class QgsProcessingParameterField : QgsProcessingParameterDefinition
 {
 %Docstring
- A table field parameter for processing algorithms.
+ A vector layer or feature source field parameter for processing algorithms.
 .. versionadded:: 3.0
 %End
 
@@ -1195,13 +1196,13 @@ class QgsProcessingParameterTableField : QgsProcessingParameterDefinition
       DateTime
     };
 
-    QgsProcessingParameterTableField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      const QString &parentLayerParameterName = QString(),
-                                      DataType type = Any,
-                                      bool allowMultiple = false,
-                                      bool optional = false );
+    QgsProcessingParameterField( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                 const QString &parentLayerParameterName = QString(),
+                                 DataType type = Any,
+                                 bool allowMultiple = false,
+                                 bool optional = false );
 %Docstring
- Constructor for QgsProcessingParameterTableField.
+ Constructor for QgsProcessingParameterField.
 %End
 
     virtual QString type() const;

@@ -45,8 +45,8 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
                        QgsProcessingParameterExpression,
-                       QgsProcessingParameterTable,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource)
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog,
@@ -123,13 +123,13 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.state.setChecked(bool(self.param.defaultValue()))
             self.verticalLayout.addWidget(self.state)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or \
-                isinstance(self.param, QgsProcessingParameterTableField):
+                isinstance(self.param, QgsProcessingParameterField):
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
             idx = 0
             for param in list(self.alg.parameterComponents().values()):
                 definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
+                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
                         if self.param.parentLayerParameter() == definition.name():
@@ -218,7 +218,7 @@ class ModelerParameterDefinitionDialog(QDialog):
             idx = 1
             for param in list(self.alg.parameterComponents().values()):
                 definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterTable)):
+                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
                         if self.param.parentLayerParameter() == definition.name():
@@ -301,21 +301,21 @@ class ModelerParameterDefinitionDialog(QDialog):
                 isinstance(self.param, QgsProcessingParameterBoolean)):
             self.param = QgsProcessingParameterBoolean(name, description, self.state.isChecked())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or
-              isinstance(self.param, QgsProcessingParameterTableField)):
+              isinstance(self.param, QgsProcessingParameterField)):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
             parent = self.parentCombo.currentData()
             datatype = self.datatypeCombo.currentData()
-            self.param = QgsProcessingParameterTableField(name, description, None, parent, datatype, self.multipleCheck.isChecked())
+            self.param = QgsProcessingParameterField(name, description, None, parent, datatype, self.multipleCheck.isChecked())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, QgsProcessingParameterRasterLayer)):
             self.param = QgsProcessingParameterRasterLayer(
                 name, description)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or
-                isinstance(self.param, QgsProcessingParameterTable)):
-            self.param = QgsProcessingParameterTable(
+                isinstance(self.param, QgsProcessingParameterVectorLayer)):
+            self.param = QgsProcessingParameterVectorLayer(
                 name, description)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or
                 isinstance(self.param, QgsProcessingParameterFeatureSource)):

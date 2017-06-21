@@ -32,7 +32,7 @@ import plotly.graph_objs as go
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterTableField,
+                       QgsProcessingParameterField,
                        QgsProcessingParameterFileOutput,
                        QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -60,12 +60,12 @@ class BarPlot(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterTableField(self.NAME_FIELD,
-                                                           self.tr('Category name field'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Any))
-        self.addParameter(QgsProcessingParameterTableField(self.VALUE_FIELD,
-                                                           self.tr('Value field'),
-                                                           None, self.INPUT, QgsProcessingParameterTableField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Numeric))
 
         self.addParameter(QgsProcessingParameterFileOutput(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
 
