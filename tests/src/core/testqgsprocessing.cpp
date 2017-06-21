@@ -3920,6 +3920,19 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 2 );
+
+  // a child with an optional output
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
+  alg2c3.setChildId( "cx3" );
+  alg2c3.setAlgorithmId( "native:extractbyexpression" );
+  alg2c3.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c3.addParameterSource( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
+  model2.addChildAlgorithm( alg2c3 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 }
 
 void TestQgsProcessing::tempUtils()
