@@ -299,6 +299,7 @@ class GPKGDBConnector(DBConnector):
                 geomtype_flatten = ogr.GT_Flatten(geomtype)
             else:
                 geomtype_flatten = geomtype
+            geomname = 'GEOMETRY'
             if geomtype_flatten == ogr.wkbPoint:
                 geomname = 'POINT'
             elif geomtype_flatten == ogr.wkbLineString:
