@@ -206,6 +206,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "vectorOut" )
+      sipType = sipType_QgsProcessingParameterVectorOutput;
     else if ( sipCpp->type() == "rasterOut" )
       sipType = sipType_QgsProcessingParameterRasterOutput;
     else if ( sipCpp->type() == "fileOut" )
@@ -1138,6 +1140,8 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "vector" ); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
 };
 
@@ -1300,6 +1304,55 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
 
     /**
      * Sets the layer \a type for the sinks associated with the parameter.
+     * \see dataType()
+     */
+    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QgsProcessingParameterDefinition::LayerType mDataType = QgsProcessingParameterDefinition::TypeVectorAny;
+};
+
+
+/**
+ * \class QgsProcessingParameterVectorOutput
+ * \ingroup core
+ * A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+ * possible.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterVectorOutput.
+     */
+    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+
+    QString type() const override { return QStringLiteral( "vectorOut" ); }
+    bool isDestination() const override { return true; }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+
+    /**
+     * Returns the layer type for layers associated with the parameter.
+     * \see setDataType()
+     */
+    QgsProcessingParameterDefinition::LayerType dataType() const;
+
+    /**
+     * Returns true if the layer is likely to include geometries. In cases were presence of geometry
+     * cannot be reliably determined in advance, this method will default to returning true.
+     */
+    bool hasGeometry() const;
+
+    /**
+     * Sets the layer \a type for the layers associated with the parameter.
      * \see dataType()
      */
     void setDataType( QgsProcessingParameterDefinition::LayerType type );

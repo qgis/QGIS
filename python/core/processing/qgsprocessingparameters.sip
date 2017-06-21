@@ -171,6 +171,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFeatureSource;
     else if ( sipCpp->type() == "sink" )
       sipType = sipType_QgsProcessingParameterFeatureSink;
+    else if ( sipCpp->type() == "vectorOut" )
+      sipType = sipType_QgsProcessingParameterVectorOutput;
     else if ( sipCpp->type() == "rasterOut" )
       sipType = sipType_QgsProcessingParameterRasterOutput;
     else if ( sipCpp->type() == "fileOut" )
@@ -1173,6 +1175,10 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
 
 };
 
@@ -1347,6 +1353,60 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
     void setDataType( QgsProcessingParameterDefinition::LayerType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.
+.. seealso:: dataType()
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+};
+
+
+class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
+{
+%Docstring
+ A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
+ possible.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+                                        bool optional = false );
+%Docstring
+ Constructor for QgsProcessingParameterVectorOutput.
+%End
+
+    virtual QString type() const;
+    virtual bool isDestination() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    QgsProcessingParameterDefinition::LayerType dataType() const;
+%Docstring
+ Returns the layer type for layers associated with the parameter.
+.. seealso:: setDataType()
+ :rtype: QgsProcessingParameterDefinition.LayerType
+%End
+
+    bool hasGeometry() const;
+%Docstring
+ Returns true if the layer is likely to include geometries. In cases were presence of geometry
+ cannot be reliably determined in advance, this method will default to returning true.
+ :rtype: bool
+%End
+
+    void setDataType( QgsProcessingParameterDefinition::LayerType type );
+%Docstring
+ Sets the layer ``type`` for the layers associated with the parameter.
 .. seealso:: dataType()
 %End
 
