@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsRectangle, QgsPointXY
+from qgis.core import QgsRectangle, QgsPointXY, QgsVector
 
 from qgis.testing import start_app, unittest
 from utilities import compareWkt
@@ -251,6 +251,15 @@ class TestQgsRectangle(unittest.TestCase):
         self.assertEqual(box.xMaximum(), 0.2)
         self.assertEqual(box.yMaximum(), 0.3)
         self.assertEqual(box.zMaximum(), 0.5)
+
+    def testOperators(self):
+        rect1 = QgsRectangle(10, 20, 40, 40)
+        rect2 = rect1 + QgsVector(3, 5.5)
+        assert rect2 == QgsRectangle(13, 25.5, 43, 45.5), "QgsRectangle + operator does no work"
+
+        # Subtracting the center point, so it becomes zero.
+        rect1 -= rect1.center() - QgsPointXY(0, 0)
+        assert rect1.center() == QgsPointXY(0, 0)
 
 
 if __name__ == '__main__':

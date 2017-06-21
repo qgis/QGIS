@@ -210,6 +210,34 @@ Copy constructor
  Expand the rectangle so that covers both the original rectangle and the given point.
 %End
 
+    QgsRectangle operator-( const QgsVector v ) const;
+%Docstring
+ Returns a rectangle offset from this one in the direction of the reversed vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle operator+( const QgsVector v ) const;
+%Docstring
+ Returns a rectangle offset from this one in the direction of the vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle &operator-=( const QgsVector v );
+%Docstring
+ Moves this rectangle in the direction of the reversed vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    QgsRectangle &operator+=( const QgsVector v );
+%Docstring
+ Moves this rectangle in the direction of the vector.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
     bool isEmpty() const;
 %Docstring
  Returns true if the rectangle is empty.
