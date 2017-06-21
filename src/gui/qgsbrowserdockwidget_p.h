@@ -195,6 +195,9 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
     void dragMoveEvent( QDragMoveEvent *e ) override;
     //! Overrides drag stop event
     void dropEvent( QDropEvent *e ) override;
+
+  private:
+    void setAction( QDropEvent *e );
 };
 
 /**
