@@ -1361,6 +1361,14 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
     virtual bool fromVariantMap( const QVariantMap &map );
 
 
+    virtual QString generateTemporaryDestination() const;
+%Docstring
+ Generates a temporary destination value for this parameter. The returned
+ value will be a file path or QGIS data provider URI suitable for
+ temporary storage of created layers and files.
+ :rtype: str
+%End
+
 };
 
 
@@ -1413,6 +1421,8 @@ class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
     virtual QVariantMap toVariantMap() const;
 
     virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QString generateTemporaryDestination() const;
 
 
 };
