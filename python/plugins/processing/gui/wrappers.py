@@ -1303,7 +1303,7 @@ class WidgetWrapperFactory:
             wrapper = StringWidgetWrapper
         elif param.type() == 'expression':
             wrapper = ExpressionWidgetWrapper
-        elif param.type() == 'table':
+        elif param.type() == 'vector':
             wrapper = TableWidgetWrapper
         elif param.type() == 'field':
             wrapper = TableFieldWidgetWrapper
