@@ -766,6 +766,12 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap<QString, QVariantMap> &results ) const;
 
     /**
+     * Returns true if an output from a child algorithm is required elsewhere in
+     * the model.
+     */
+    bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
+
+    /**
      * Saves this model to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
