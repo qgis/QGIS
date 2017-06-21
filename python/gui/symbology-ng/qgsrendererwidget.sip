@@ -86,10 +86,10 @@ and by connecting the slot contextMenuViewCategories(const QPoint&)*
 %End
     virtual void refreshSymbolView();
 
-    QgsDataDefinedSizeLegend *showDataDefinedSizeLegendDialog( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend, bool *ok /Out/ ) /Factory/;
+    QgsDataDefinedSizeLegendWidget *openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend );
 %Docstring
 .. versionadded:: 3.0
- :rtype: QgsDataDefinedSizeLegend
+ :rtype: QgsDataDefinedSizeLegendWidget
 %End
 
   protected slots:

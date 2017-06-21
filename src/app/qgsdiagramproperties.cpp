@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsdatadefinedsizelegend.h"
-#include "qgsdatadefinedsizelegenddialog.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
@@ -947,9 +947,15 @@ void QgsDiagramProperties::showSizeLegendDialog()
   QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
   ddSize.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
 
-  QgsDataDefinedSizeLegendDialog dlg( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
-  if ( !dlg.exec() )
-    return;
+  QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
 
-  mSizeLegend.reset( dlg.dataDefinedSizeLegend() );
+  QDialog dlg;
+  dlg.setLayout( new QVBoxLayout() );
+  dlg.setWindowTitle( panel->panelTitle() );
+  dlg.layout()->addWidget( panel );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  dlg.layout()->addWidget( buttonBox );
+  if ( dlg.exec() )
+    mSizeLegend.reset( panel->dataDefinedSizeLegend() );
 }

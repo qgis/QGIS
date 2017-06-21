@@ -24,6 +24,7 @@
 #include "qgssymbollayer.h"
 
 class QgsDataDefinedSizeLegend;
+class QgsDataDefinedSizeLegendWidget;
 class QgsVectorLayer;
 class QgsStyle;
 class QgsFeatureRenderer;
@@ -99,10 +100,10 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual QList<QgsSymbol *> selectedSymbols() { return QList<QgsSymbol *>(); }
     virtual void refreshSymbolView() {}
 
-    //! Shows GUI to setup data-defined size legend. If accepted, ok argument will be true and a new legend configuration is returned.
-    //! Caller takes ownership of the returned object.
+    //! Shows GUI to setup data-defined size legend.
+    //! Returns newly open panel - may be null if it coult not be opened. Ownership is not transferred.
     //! \since QGIS 3.0
-    QgsDataDefinedSizeLegend *showDataDefinedSizeLegendDialog( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend, bool *ok SIP_OUT ) SIP_FACTORY;
+    QgsDataDefinedSizeLegendWidget *openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend );
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );

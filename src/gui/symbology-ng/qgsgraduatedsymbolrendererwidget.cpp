@@ -16,6 +16,7 @@
 #include "qgspanelwidget.h"
 
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -1176,12 +1177,14 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  bool ok;
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol ); // this should be only enabled for marker symbols
-  std::unique_ptr<QgsDataDefinedSizeLegend> ddsLegend( showDataDefinedSizeLegendDialog( s, mRenderer->dataDefinedSizeLegend(), &ok ) );
-  if ( ok )
+  QgsDataDefinedSizeLegendWidget *panel = openDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  if ( panel )
   {
-    mRenderer->setDataDefinedSizeLegend( ddsLegend.release() );  // ownership is passed from dlg to renderer
-    emit widgetChanged();
+    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    {
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      emit widgetChanged();
+    } );
   }
 }

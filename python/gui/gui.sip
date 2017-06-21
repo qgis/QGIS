@@ -239,7 +239,7 @@
 %Include symbology-ng/qgscategorizedsymbolrendererwidget.sip
 %Include symbology-ng/qgscptcitycolorrampdialog.sip
 %Include symbology-ng/qgsdashspacedialog.sip
-%Include symbology-ng/qgsdatadefinedsizelegenddialog.sip
+%Include symbology-ng/qgsdatadefinedsizelegendwidget.sip
 %Include symbology-ng/qgsellipsesymbollayerwidget.sip
 %Include symbology-ng/qgsgraduatedhistogramwidget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererwidget.sip
