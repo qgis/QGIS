@@ -1,10 +1,12 @@
 SET(OWS_SRCS
   qgsowsprovider.cpp
   qgsowsdataitems.cpp
+  qgsgeocmsdataitems.cpp
   qgsgeonodedataitems.cpp)
 SET(OWS_MOC_HDRS
   qgsowsprovider.h
   qgsowsdataitems.h
+  qgsgeocmsdataitems.h
   qgsgeonodedataitems.h
 )
 
