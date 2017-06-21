@@ -149,11 +149,13 @@ class QgsVectorLayerExporterTask : QgsTask
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = 0 );
+                                QMap<QString, QVariant> *options = 0,
+                                bool ownsLayer = false );
 %Docstring
  Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
  and ``providerKey``, and various export related parameters such as destination CRS
  and export ``options``.
+ \param ownsLayer take ownership of layer and deletes it after export
 %End
 
     static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer /Transfer/,

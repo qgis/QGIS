@@ -189,12 +189,14 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
      * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
      * and \a providerKey, and various export related parameters such as destination CRS
      * and export \a options.
+     * \param ownsLayer take ownership of layer and deletes it after export
     */
     QgsVectorLayerExporterTask( QgsVectorLayer *layer,
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = nullptr );
+                                QMap<QString, QVariant> *options = nullptr,
+                                bool ownsLayer = false );
 
     /**
      * Creates a new QgsVectorLayerExporterTask which has ownership over a source \a layer.
