@@ -1,9 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-analysis/vector/qgsgeometryanalyzer.sip
-analysis/vector/qgsgeometrysnapper.sip
-analysis/vector/qgspointsample.sip
-analysis/vector/qgstransectsample.sip
 analysis/interpolation/Bezier3D.sip
 analysis/interpolation/CloughTocherInterpolator.sip
 analysis/interpolation/DualEdgeTriangulation.sip
