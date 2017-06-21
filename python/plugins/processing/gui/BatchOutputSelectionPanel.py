@@ -36,7 +36,7 @@ from qgis.core import (QgsMapLayer,
                        QgsProcessingParameterFolderOutput,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterTable,
+                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
@@ -114,7 +114,7 @@ class BatchOutputSelectionPanel(QWidget):
                             param = self.alg.parameterDefinitions()[dlg.param_index]
                             if isinstance(param, (QgsProcessingParameterRasterLayer,
                                                   QgsProcessingParameterFeatureSource,
-                                                  QgsProcessingParameterTable,
+                                                  QgsProcessingParameterVectorLayer,
                                                   QgsProcessingParameterMultipleLayers)):
                                 v = widget.value()
                                 if isinstance(v, QgsMapLayer):

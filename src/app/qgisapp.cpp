@@ -3620,7 +3620,7 @@ void QgisApp::updateRecentProjectPaths()
   {
     QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(),
                       QDir::toNativeSeparators( recentProject.path ) ) );
-    action->setEnabled( QFile::exists( ( recentProject.path ) ) );
+    //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
 
