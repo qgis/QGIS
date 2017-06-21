@@ -34,7 +34,7 @@ import sys
 from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
+from processing.tools.system import isWindows, getTempDirInTempFolder
 from processing.tools.vector import TableWriter, NOGEOMETRY_EXTENSIONS
 from processing.tools import dataobjects
 
@@ -93,7 +93,7 @@ class Output(object):
 
     def _resolveTemporary(self, alg):
         ext = self.getDefaultFileExtension()
-        return getTempFilenameInTempFolder(self.name + '.' + ext)
+        return QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
 
     def _supportedExtensions(self):
         return []
@@ -225,7 +225,7 @@ class OutputRaster(Output):
                 supported = alg.provider().supportedOutputRasterLayerExtensions()
                 default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
                 ext = default if default in supported else supported[0]
-                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
+                self.compatible = QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
             return self.compatible
 
 
@@ -264,7 +264,7 @@ class OutputTable(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(
+                self.compatible = QgsProcessingUtils.generateTempFilename(
                     self.name + '.' + alg.provider().supportedOutputTableExtensions()[0])
             return self.compatible
 
@@ -342,7 +342,7 @@ class OutputVector(Output):
                 default = self.getDefaultFileExtension()
                 supported = alg.provider().supportedOutputVectorLayerExtensions()
                 ext = default if default in supported else supported[0]
-                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
+                self.compatible = QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
             return self.compatible
 
     def getVectorWriter(self, fields, geomType, crs, context):
@@ -381,7 +381,7 @@ class OutputVector(Output):
             return "memory:"
         else:
             ext = self.getDefaultFileExtension()
-            return getTempFilenameInTempFolder(self.name + '.' + ext)
+            return QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
 
 
 def getOutputFromString(s):

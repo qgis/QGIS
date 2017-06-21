@@ -50,10 +50,8 @@ from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilenameInTempFolder,
-                                     getTempFilename,
-                                     removeInvalidChars,
-                                     isWindows)
+from processing.tools.system import (getTempFilename,
+                                     removeInvalidChars)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 ALL_TYPES = [-1]
@@ -198,7 +196,7 @@ def exportVectorLayer(layer, supported=None):
     if basename:
         if not basename.endswith("shp"):
             basename = os.path.splitext(basename)[0] + ".shp"
-        output = getTempFilenameInTempFolder(basename)
+        output = QgsProcessingUtils.generateTempFilename(basename)
     else:
         output = getTempFilename("shp")
     useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
