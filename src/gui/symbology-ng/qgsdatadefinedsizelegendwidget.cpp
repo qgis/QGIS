@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdatadefinedsizelegenddialog.cpp
+  qgsdatadefinedsizelegendwidget.cpp
   --------------------------------------
   Date                 : June 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdatadefinedsizelegenddialog.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 
 #include <QInputDialog>
 
@@ -28,12 +28,13 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 
-QgsDataDefinedSizeLegendDialog::QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
-  : QDialog( parent )
+QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsPanelWidget( parent )
   , mSizeProperty( ddSize )
   , mMapCanvas( canvas )
 {
   setupUi( this );
+  setPanelTitle( tr( "Data-defined size legend" ) );
 
   QgsMarkerSymbol *symbol = nullptr;
 
@@ -89,9 +90,9 @@ QgsDataDefinedSizeLegendDialog::QgsDataDefinedSizeLegendDialog( const QgsDataDef
     mSizeClassesModel->sort( 0 );
   }
 
-  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsDataDefinedSizeLegendDialog::updatePreview );
-  connect( btnAddClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendDialog::addSizeClass );
-  connect( btnRemoveClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendDialog::removeSizeClass );
+  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
+  connect( btnAddClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::addSizeClass );
+  connect( btnRemoveClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::removeSizeClass );
 
   viewSizeClasses->setModel( mSizeClassesModel );
 
@@ -104,22 +105,23 @@ QgsDataDefinedSizeLegendDialog::QgsDataDefinedSizeLegendDialog( const QgsDataDef
     mPreviewModel->setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
   viewLayerTree->setModel( mPreviewModel );
 
-  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ] { updatePreview(); } );
-  connect( radDisabled, &QRadioButton::clicked, this, &QgsDataDefinedSizeLegendDialog::updatePreview );
-  connect( radSeparated, &QRadioButton::clicked, this, &QgsDataDefinedSizeLegendDialog::updatePreview );
-  connect( radCollapsed, &QRadioButton::clicked, this, &QgsDataDefinedSizeLegendDialog::updatePreview );
-  connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendDialog::changeSymbol );
+  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ] { emit widgetChanged(); } );
+  connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
+  connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
+  connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
+  connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
+  connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   updatePreview();
 }
 
-QgsDataDefinedSizeLegendDialog::~QgsDataDefinedSizeLegendDialog()
+QgsDataDefinedSizeLegendWidget::~QgsDataDefinedSizeLegendWidget()
 {
   delete mPreviewModel;
   delete mPreviewTree;
   delete mPreviewLayer;
 }
 
-QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendDialog::dataDefinedSizeLegend() const
+QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend() const
 {
   if ( radDisabled->isChecked() )
     return nullptr;
@@ -146,7 +148,7 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendDialog::dataDefinedSizeLegend(
   return ddsLegend;
 }
 
-void QgsDataDefinedSizeLegendDialog::updatePreview()
+void QgsDataDefinedSizeLegendWidget::updatePreview()
 {
   QgsMarkerSymbol *symbol = mSourceSymbol->clone();
   symbol->setDataDefinedSize( mSizeProperty );
@@ -157,7 +159,7 @@ void QgsDataDefinedSizeLegendDialog::updatePreview()
   viewLayerTree->expandAll();
 }
 
-void QgsDataDefinedSizeLegendDialog::changeSymbol()
+void QgsDataDefinedSizeLegendWidget::changeSymbol()
 {
   std::unique_ptr<QgsMarkerSymbol> newSymbol( mSourceSymbol->clone() );
   QgsSymbolWidgetContext context;
@@ -188,7 +190,7 @@ void QgsDataDefinedSizeLegendDialog::changeSymbol()
   updatePreview();
 }
 
-void QgsDataDefinedSizeLegendDialog::addSizeClass()
+void QgsDataDefinedSizeLegendWidget::addSizeClass()
 {
   bool ok;
   double v = QInputDialog::getDouble( this, tr( "Add Size Class" ), tr( "Enter value for a new class" ),
@@ -204,7 +206,7 @@ void QgsDataDefinedSizeLegendDialog::addSizeClass()
   updatePreview();
 }
 
-void QgsDataDefinedSizeLegendDialog::removeSizeClass()
+void QgsDataDefinedSizeLegendWidget::removeSizeClass()
 {
   QModelIndex idx = viewSizeClasses->currentIndex();
   if ( !idx.isValid() )

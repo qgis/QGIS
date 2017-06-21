@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdatadefinedsizelegenddialog.h
+  qgsdatadefinedsizelegendwidget.h
   --------------------------------------
   Date                 : June 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDATADEFINEDSIZELEGENDDIALOG_H
-#define QGSDATADEFINEDSIZELEGENDDIALOG_H
+#ifndef QGSDATADEFINEDSIZELEGENDWIDGET_H
+#define QGSDATADEFINEDSIZELEGENDWIDGET_H
 
 #include "qgis.h"
 #include "qgis_gui.h"
 
 #include <memory>
-#include <QDialog>
-#include <ui_qgsdatadefinedsizelegenddialog.h>
+#include <ui_qgsdatadefinedsizelegendwidget.h>
 
+#include "qgspanelwidget.h"
 #include "qgsproperty.h"
 
 class QStandardItemModel;
@@ -37,11 +37,11 @@ class QgsProperty;
 class QgsVectorLayer;
 
 /** \ingroup gui
- * Dialog for configuration of appearance of legend for marker symbols with data-defined size.
+ * Widget for configuration of appearance of legend for marker symbols with data-defined size.
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::QgsDataDefinedSizeLegendDialog
+class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private Ui::QgsDataDefinedSizeLegendWidget
 {
     Q_OBJECT
   public:
@@ -49,8 +49,8 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
     //! The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
     //! to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
     //! when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
-    explicit QgsDataDefinedSizeLegendDialog( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsDataDefinedSizeLegendDialog();
+    explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsDataDefinedSizeLegendWidget();
 
     //! Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const SIP_FACTORY;
@@ -75,4 +75,4 @@ class GUI_EXPORT QgsDataDefinedSizeLegendDialog : public QDialog, private Ui::Qg
     QStandardItemModel *mSizeClassesModel;
 };
 
-#endif // QGSDATADEFINEDSIZELEGENDDIALOG_H
+#endif // QGSDATADEFINEDSIZELEGENDWIDGET_H

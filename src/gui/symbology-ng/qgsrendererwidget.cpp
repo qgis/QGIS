@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsrendererwidget.h"
 
-#include "qgsdatadefinedsizelegenddialog.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
@@ -275,10 +275,8 @@ void QgsRendererWidget::applyChanges()
   apply();
 }
 
-QgsDataDefinedSizeLegend *QgsRendererWidget::showDataDefinedSizeLegendDialog( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend, bool *ok )
+QgsDataDefinedSizeLegendWidget *QgsRendererWidget::openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
-  *ok = false;
-
   QgsProperty ddSize = symbol->dataDefinedSize();
   if ( !ddSize || !ddSize.isActive() )
   {
@@ -291,12 +289,10 @@ QgsDataDefinedSizeLegend *QgsRendererWidget::showDataDefinedSizeLegendDialog( co
     return nullptr;
   }
 
-  QgsDataDefinedSizeLegendDialog dlg( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
-  if ( !dlg.exec() )
-    return nullptr;
-
-  *ok = true;
-  return dlg.dataDefinedSizeLegend();
+  QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
+  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+  openPanel( panel );
+  return panel;
 }
 
 

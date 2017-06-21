@@ -15,6 +15,7 @@
 #include "qgssinglesymbolrendererwidget.h"
 
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 
@@ -117,12 +118,14 @@ void QgsSingleSymbolRendererWidget::showSymbolLevels()
 
 void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
 {
-  bool ok;
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
-  std::unique_ptr<QgsDataDefinedSizeLegend> ddsLegend( showDataDefinedSizeLegendDialog( s, mRenderer->dataDefinedSizeLegend(), &ok ) );
-  if ( ok )
+  QgsDataDefinedSizeLegendWidget *panel = openDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  if ( panel )
   {
-    mRenderer->setDataDefinedSizeLegend( ddsLegend.release() );  // ownership is passed from dlg to renderer
-    emit widgetChanged();
+    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    {
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      emit widgetChanged();
+    } );
   }
 }
