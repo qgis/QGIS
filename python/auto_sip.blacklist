@@ -1,8 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-analysis/interpolation/Vector3D.sip
-analysis/interpolation/qgsgridfilewriter.sip
-analysis/interpolation/qgsinterpolator.sip
 analysis/interpolation/qgsidwinterpolator.sip
 analysis/interpolation/qgstininterpolator.sip
 server/qgsserverfilter.sip
