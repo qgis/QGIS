@@ -1258,7 +1258,7 @@ tests:
 #        name: expected/remove_null_polys.gml
 #        type: vector
 #
-  - algorithm: qgis:extractbyexpression
+  - algorithm: native:extractbyexpression
     name: Extract by Expression
     params:
       EXPRESSION: left( "Name",1)='A'
@@ -1484,88 +1484,88 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '8'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is not null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '9'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_not_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (starts with)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '6'
-#      VALUE: A
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_startswith.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (contains)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '7'
-#      VALUE: aaa
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_contains.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (does not contain)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '10'
-#      VALUE: a
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_does_not_contain.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (greater)
-#    params:
-#      FIELD: floatval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '2'
-#      VALUE: '1'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_greater.gml
-#        type: vector
-#
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '8'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is not null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '9'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_not_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (starts with)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '6'
+      VALUE: A
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_startswith.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (contains)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '7'
+      VALUE: aaa
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_contains.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (does not contain)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '10'
+      VALUE: a
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_does_not_contain.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (greater)
+    params:
+      FIELD: floatval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '2'
+      VALUE: '1'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_greater.gml
+        type: vector
+
 #  - algorithm: qgis:createattributeindex
 #    name: Create Attribute Index (only tests for python errors, does not check result)
 #    params:

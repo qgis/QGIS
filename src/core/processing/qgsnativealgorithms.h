@@ -136,6 +136,67 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
 };
 
 /**
+ * Native extract by attribute algorithm.
+ */
+class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    enum Operation
+    {
+      Equals,
+      NotEquals,
+      GreaterThan,
+      GreaterThanEqualTo,
+      LessThan,
+      LessThanEqualTo,
+      BeginsWith,
+      Contains,
+      IsNull,
+      IsNotNull,
+      DoesNotContain,
+    };
+
+    QgsExtractByAttributeAlgorithm();
+
+    QString name() const override { return QStringLiteral( "extractbyattribute" ); }
+    QString displayName() const override { return QObject::tr( "Extract by attribute" ); }
+    virtual QStringList tags() const override { return QObject::tr( "extract,filter,attribute,value,contains,null,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
+ * Native extract by expression algorithm.
+ */
+class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsExtractByExpressionAlgorithm();
+
+    QString name() const override { return QStringLiteral( "extractbyexpression" ); }
+    QString displayName() const override { return QObject::tr( "Extract by expression" ); }
+    virtual QStringList tags() const override { return QObject::tr( "extract,filter,expression,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString shortHelpString() const override;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+
+};
+
+/**
  * Native clip algorithm.
  */
 class QgsClipAlgorithm : public QgsProcessingAlgorithm
