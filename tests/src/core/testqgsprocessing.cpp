@@ -106,13 +106,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p6 ) );
       QCOMPARE( destinationParameterDefinitions(), QgsProcessingParameterDefinitions() << p5 << p6 );
 
-      // check that supportsNonFileBasedOutputs flags is set automatically to match provider
-      // when adding a destination parameter
-      QgsProcessingParameterFeatureSink *p7 = new QgsProcessingParameterFeatureSink( "p7" );
-      p7->setSupportsNonFileBasedOutputs( false );
-      QVERIFY( addParameter( p7 ) );
-      QVERIFY( destinationParameterDefinitions().at( 2 )->supportsNonFileBasedOutputs() );
-
       // remove parameter
       removeParameter( "non existent" );
       removeParameter( "p6" );
@@ -346,6 +339,11 @@ void TestQgsProcessing::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 void TestQgsProcessing::cleanupTestCase()
@@ -2812,6 +2810,8 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ) ) ), context ), QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'))" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
+
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSink fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -2931,6 +2931,8 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
 
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "tif" ) );
+
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
   QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
@@ -2981,8 +2983,16 @@ void TestQgsProcessing::parameterFileOut()
   // not optional!
   std::unique_ptr< QgsProcessingParameterFileOutput > def( new QgsProcessingParameterFileOutput( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QString(), false ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "BMP files (*.bmp)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "bmp" ) );
   def->setFileFilter( QStringLiteral( "PCX files (*.pcx)" ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "PCX files (*.pcx)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QStringLiteral( "PCX files (*.pcx *.picx)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QStringLiteral( "PCX files (*.pcx *.picx);;BMP files (*.bmp)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QString() );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "file" ) );
 
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );

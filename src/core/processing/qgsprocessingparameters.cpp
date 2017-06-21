@@ -20,6 +20,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsprocessingoutputs.h"
+#include "qgssettings.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -2057,6 +2058,19 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefini
   return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
 }
 
+QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
+{
+  QgsSettings settings;
+  if ( hasGeometry() )
+  {
+    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+  }
+  else
+  {
+    return QStringLiteral( "dbf" );
+  }
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
 {
   return mDataType;
@@ -2156,6 +2170,12 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterOutput::toOutputDefin
   return new QgsProcessingOutputRasterLayer( name(), description() );
 }
 
+QString QgsProcessingParameterRasterOutput::defaultFileExtension() const
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+}
+
 
 QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
@@ -2218,6 +2238,20 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFileOutput::toOutputDefinit
   return nullptr;
 }
 
+QString QgsProcessingParameterFileOutput::defaultFileExtension() const
+{
+  if ( mFileFilter.isEmpty() || mFileFilter == QObject::tr( "All files (*.*)" ) )
+    return QStringLiteral( "file" );
+
+  // get first extension from filter
+  QRegularExpression rx( ".*?\\(\\*\\.([a-zA-Z0-9._]+).*" );
+  QRegularExpressionMatch match = rx.match( mFileFilter );
+  if ( !match.hasMatch() )
+    return QStringLiteral( "file" );
+
+  return match.captured( 1 );
+}
+
 QString QgsProcessingParameterFileOutput::fileFilter() const
 {
   return mFileFilter;
@@ -2272,6 +2306,11 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFolderOutput::toOutputDefin
   return nullptr;
 }
 
+QString QgsProcessingParameterFolderOutput::defaultFileExtension() const
+{
+  return QString();
+}
+
 QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {
@@ -2281,7 +2320,7 @@ QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QStr
 QVariantMap QgsProcessingDestinationParameter::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
-  map.insert( QStringLiteral( "support_non_file_outputs" ), mSupportsNonFileBasedOutputs );
+  map.insert( QStringLiteral( "supports_non_file_outputs" ), mSupportsNonFileBasedOutputs );
   return map;
 }
 
