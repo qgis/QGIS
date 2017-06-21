@@ -103,6 +103,10 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh );
+#endif
+
     Type mType;
     QgsRasterCalcNode *mLeft = nullptr;
     QgsRasterCalcNode *mRight = nullptr;

@@ -86,13 +86,13 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
       double pixelSize;
 
       //! Kernel shape
-      KernelShape shape;
+      QgsKernelDensityEstimation::KernelShape shape;
 
       //! Decay ratio (Triangular kernels only)
       double decayRatio;
 
       //! Type of output value
-      OutputValues outputValues;
+      QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     /**

@@ -31,6 +31,12 @@ class QProgressDialog;
 
 struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
+#ifdef SIP_RUN
+  % TypeHeaderCode
+#include <qgsrastercalculator.h>
+  % End
+#endif
+
   QString ref; //name
   QgsRasterLayer *raster; //pointer to rasterlayer
   int bandNumber; //raster band number
