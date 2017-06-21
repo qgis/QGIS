@@ -318,25 +318,58 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
     }
     else
     {
+      const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter * >( def );
       // is destination linked to one of the final outputs from this model?
-      if ( child.modelOutputs().contains( def->name() ) )
+      if ( child.modelOutputs().contains( destParam->name() ) )
       {
-        QString outputName = child.modelOutputs().value( def->name() ).outputName();
+        QString outputName = child.modelOutputs().value( destParam->name() ).outputName();
         QString paramName = child.childId() + ':' + outputName;
         if ( modelParameters.contains( paramName ) )
-          childParams.insert( def->name(), modelParameters.value( paramName ) );
+          childParams.insert( destParam->name(), modelParameters.value( paramName ) );
       }
       else
       {
         // output is temporary
-        // TODO - skip if this output is optional and not used elsewhere in the model
-        childParams.insert( def->name(), "memory:" );
 
+        // check whether it's optional, and if so - is it required?
+        bool required = true;
+        if ( destParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        {
+          required = childOutputIsRequired( child.childId(), destParam->name() );
+        }
 
+        // not optional, or required elsewhere in model
+        if ( required )
+          childParams.insert( destParam->name(), destParam->generateTemporaryDestination() );
       }
     }
   }
   return childParams;
+}
+
+bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId, const QString &outputName ) const
+{
+  // look through all child algs
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->childId() == childId || !childIt->isActive() )
+      continue;
+
+    // look through all sources for child
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource> candidateChildParams = childIt->parameterSources();
+    QMap<QString, QgsProcessingModelAlgorithm::ChildParameterSource>::const_iterator childParamIt = candidateChildParams.constBegin();
+    for ( ; childParamIt != candidateChildParams.constEnd(); ++childParamIt )
+    {
+      if ( childParamIt->source() == ChildParameterSource::ChildOutput
+           && childParamIt->outputChildId() == childId
+           && childParamIt->outputName() == outputName )
+      {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
