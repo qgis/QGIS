@@ -97,7 +97,7 @@ void TestQgsDataDefinedSizeLegend::testBasic()
 {
   QgsDataDefinedSizeLegend settings;
   settings.setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
-  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Roman" ) ) );
+  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
   classes << QgsDataDefinedSizeLegend::SizeClass( 3.,  QString( "3" ) );
@@ -129,7 +129,7 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
 {
   QgsDataDefinedSizeLegend settings;
   settings.setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
-  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Roman" ) ) );
+  settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
   classes << QgsDataDefinedSizeLegend::SizeClass( 2.,  QString( "2" ) );

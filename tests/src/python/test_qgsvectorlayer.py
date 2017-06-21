@@ -2249,7 +2249,6 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         diag_renderer = QgsSingleCategoryDiagramRenderer()
         diag_renderer.setAttributeLegend(False)  # true by default
-        diag_renderer.setSizeLegend(True)  # false by default
         layer.setDiagramRenderer(diag_renderer)
 
         diag_settings = QgsDiagramLayerSettings()

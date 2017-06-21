@@ -770,6 +770,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
 
   QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend();
   ddsLegend->setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
+  ddsLegend->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
 
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( symbol );   // takes ownership
   r->setDataDefinedSizeLegend( ddsLegend );
