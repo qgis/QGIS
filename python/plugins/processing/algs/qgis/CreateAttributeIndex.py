@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
                        QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
 
 
 class CreateAttributeIndex(QgisAlgorithm):
@@ -53,12 +53,11 @@ class CreateAttributeIndex(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute to index'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Indexed layer'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Attribute to index'), None, self.INPUT))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
 
     def name(self):
         return 'createattributeindex'
@@ -67,9 +66,8 @@ class CreateAttributeIndex(QgisAlgorithm):
         return self.tr('Create attribute index')
 
     def processAlgorithm(self, parameters, context, feedback):
-        file_name = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(file_name, context)
-        field = self.getParameterValue(self.FIELD)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        field = self.parameterAsString(parameters, self.FIELD, context)
         provider = layer.dataProvider()
 
         field_index = layer.fields().lookupField(field)
@@ -84,4 +82,4 @@ class CreateAttributeIndex(QgisAlgorithm):
                 feedback.pushInfo(self.tr("Layer's data provider does not support "
                                           "creating attribute indexes"))
 
-        self.setOutputValue(self.OUTPUT, file_name)
+        return {self.OUTPUT: layer.id()}

@@ -168,7 +168,7 @@ from .Aspect import Aspect
 # from .SnapGeometries import SnapGeometriesToLayer
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-# from .CreateAttributeIndex import CreateAttributeIndex
+from .CreateAttributeIndex import CreateAttributeIndex
 from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
 # from .Heatmap import Heatmap
@@ -249,7 +249,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(), SnapGeometriesToLayer(),
-        #         PoleOfInaccessibility(), CreateAttributeIndex(),
+        #         PoleOfInaccessibility(),
         #
         #         RasterCalculator(), Heatmap(), Orthogonalize(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
@@ -266,6 +266,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 BoundingBox(),
                 CheckValidity(),
                 Clip(),
+                CreateAttributeIndex(),
                 DeleteColumn(),
                 DeleteHoles(),
                 DensifyGeometries(),
