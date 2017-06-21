@@ -25,12 +25,13 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterDefinition)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterNumber)
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 
 class DeleteHoles(QgisAlgorithm):
@@ -53,12 +54,14 @@ class DeleteHoles(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterNumber(self.MIN_AREA,
-                                          self.tr('Remove holes with area less than'), 0, 10000000.0, default=0.0, optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
+                                                       self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
+                                                       0, True, 0.0, 10000000.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Cleaned'), QgsProcessingParameterDefinition.TypeVectorPolygon))
 
     def name(self):
         return 'deleteholes'
@@ -67,29 +70,24 @@ class DeleteHoles(QgisAlgorithm):
         return self.tr('Delete holes')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        min_area = self.getParameterValue(self.MIN_AREA)
-        if min_area is not None:
-            try:
-                min_area = float(min_area)
-            except:
-                pass
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
         if min_area == 0.0:
             min_area = -1.0
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount()
 
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             if f.hasGeometry():
-                if min_area is not None:
-                    f.setGeometry(f.geometry().removeInteriorRings(min_area))
-                else:
-                    f.setGeometry(f.geometry().removeInteriorRings())
-            writer.addFeature(f)
+                f.setGeometry(f.geometry().removeInteriorRings(min_area))
+            sink.addFeature(f)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

@@ -65,7 +65,8 @@ from .ExtractByExpression import ExtractByExpression
 # from .Centroids import Centroids
 # from .Delaunay import Delaunay
 # from .VoronoiPolygons import VoronoiPolygons
-# from .DensifyGeometries import DensifyGeometries
+from .DensifyGeometries import DensifyGeometries
+from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .MultipartToSingleparts import MultipartToSingleparts
 # from .SimplifyGeometries import SimplifyGeometries
 # from .LinesToPolygons import LinesToPolygons
@@ -84,10 +85,9 @@ from .ExtentFromLayer import ExtentFromLayer
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
 # from .Union import Union
-# from .DensifyGeometriesInterval import DensifyGeometriesInterval
 # from .SpatialJoin import SpatialJoin
 from .DeleteColumn import DeleteColumn
-# from .DeleteHoles import DeleteHoles
+from .DeleteHoles import DeleteHoles
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
 # from .ExtractByAttribute import ExtractByAttribute
@@ -169,7 +169,7 @@ from .Aspect import Aspect
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
 # from .CreateAttributeIndex import CreateAttributeIndex
-# from .DropGeometry import DropGeometry
+from .DropGeometry import DropGeometry
 from .BasicStatistics import BasicStatisticsForField
 # from .Heatmap import Heatmap
 # from .Orthogonalize import Orthogonalize
@@ -205,14 +205,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ReprojectLayer(), ExportGeometryInfo(), Centroids(),
         #         Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
-        #         DensifyGeometries(), DensifyGeometriesInterval(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
         #         VariableDistanceBuffer(), Dissolve(), Difference(),
         #         Intersection(), Union(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
-        #         SelectByLocation(), RandomExtract(), DeleteHoles(),
+        #         SelectByLocation(), RandomExtract(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
@@ -251,7 +250,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtendLines(), ExtractSpecificNodes(),
         #         GeometryByExpression(), SnapGeometriesToLayer(),
         #         PoleOfInaccessibility(), CreateAttributeIndex(),
-        #         DropGeometry(),
+        #
         #         RasterCalculator(), Heatmap(), Orthogonalize(),
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
@@ -268,6 +267,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Clip(),
                 DeleteColumn(),
+                DeleteHoles(),
+                DensifyGeometries(),
+                DensifyGeometriesInterval(),
+                DropGeometry(),
                 ExtentFromLayer(),
                 ExtractByExpression(),
                 GridPolygon(),
