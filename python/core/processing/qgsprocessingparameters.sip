@@ -1432,7 +1432,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 };
 
 
-class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
+class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
 {
 %Docstring
  A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
@@ -1452,10 +1452,13 @@ class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
 
 
     QgsProcessingParameterDefinition::LayerType dataType() const;

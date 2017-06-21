@@ -2345,7 +2345,7 @@ QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 }
 
 QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
@@ -2396,6 +2396,24 @@ QString QgsProcessingParameterVectorOutput::valueAsPythonString( const QVariant 
   }
 
   return value.toString().prepend( '\'' ).append( '\'' );
+}
+
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorOutput::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
+}
+
+QString QgsProcessingParameterVectorOutput::defaultFileExtension() const
+{
+  QgsSettings settings;
+  if ( hasGeometry() )
+  {
+    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+  }
+  else
+  {
+    return QStringLiteral( "dbf" );
+  }
 }
 
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVectorOutput::dataType() const

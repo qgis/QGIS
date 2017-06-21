@@ -1386,7 +1386,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
  * possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1397,9 +1397,10 @@ class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "vectorOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the layer type for layers associated with the parameter.
