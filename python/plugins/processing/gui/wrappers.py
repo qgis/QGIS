@@ -58,8 +58,8 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     QgsProcessingParameterString,
     QgsProcessingParameterExpression,
-    QgsProcessingParameterTable,
-    QgsProcessingParameterTableField,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterField,
     QgsProcessingParameterFeatureSource,
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
@@ -531,7 +531,7 @@ class MultipleInputWidgetWrapper(WidgetWrapper):
         elif self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
         elif self.param.layerType() == QgsProcessingParameterDefinition.TypeTable:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterTable, OutputTable)
+            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
@@ -907,7 +907,7 @@ class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType([QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
-                                                            QgsProcessingParameterTableField, QgsProcessingParameterExpression], QgsProcessingOutputString)
+                                                            QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiLine():
                 widget = MultilineTextPanel(options)
@@ -1079,7 +1079,7 @@ class TableWidgetWrapper(WidgetWrapper):
             self.combo = QComboBox()
             layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
             self.combo.setEditable(True)
-            tables = self.dialog.getAvailableValuesOfType(QgsProcessingParameterTable, OutputTable)
+            tables = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
             layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 self.combo.addItem(self.NOT_SELECTED, None)
@@ -1154,17 +1154,17 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 widget = QgsFieldComboBox()
                 widget.setAllowEmptyFieldName(self.param.flags() & QgsProcessingParameterDefinition.FlagOptional)
                 widget.fieldChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-                if self.param.dataType() == QgsProcessingParameterTableField.Numeric:
+                if self.param.dataType() == QgsProcessingParameterField.Numeric:
                     widget.setFilters(QgsFieldProxyModel.Numeric)
-                elif self.param.dataType() == QgsProcessingParameterTableField.String:
+                elif self.param.dataType() == QgsProcessingParameterField.String:
                     widget.setFilters(QgsFieldProxyModel.String)
-                elif self.param.dataType() == QgsProcessingParameterTableField.DateTime:
+                elif self.param.dataType() == QgsProcessingParameterField.DateTime:
                     widget.setFilters(QgsFieldProxyModel.Date | QgsFieldProxyModel.Time)
                 return widget
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            fields = self.dialog.getAvailableValuesOfType([QgsProcessingParameterTableField, QgsProcessingParameterString], [QgsProcessingOutputString])
+            fields = self.dialog.getAvailableValuesOfType([QgsProcessingParameterField, QgsProcessingParameterString], [QgsProcessingOutputString])
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 widget.addItem(self.NOT_SET, None)
             for f in fields:
@@ -1202,12 +1202,12 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         if self._layer is None:
             return []
         fieldTypes = []
-        if self.param.dataType() == QgsProcessingParameterTableField.String:
+        if self.param.dataType() == QgsProcessingParameterField.String:
             fieldTypes = [QVariant.String]
-        elif self.param.dataType() == QgsProcessingParameterTableField.Numeric:
+        elif self.param.dataType() == QgsProcessingParameterField.Numeric:
             fieldTypes = [QVariant.Int, QVariant.Double, QVariant.LongLong,
                           QVariant.UInt, QVariant.ULongLong]
-        elif self.param.dataType() == QgsProcessingParameterTableField.DateTime:
+        elif self.param.dataType() == QgsProcessingParameterField.DateTime:
             fieldTypes = [QVariant.Date, QVariant.Time, QVariant.DateTime]
 
         fieldNames = set()
@@ -1303,7 +1303,7 @@ class WidgetWrapperFactory:
             wrapper = StringWidgetWrapper
         elif param.type() == 'expression':
             wrapper = ExpressionWidgetWrapper
-        elif param.type() == 'table':
+        elif param.type() == 'vector':
             wrapper = TableWidgetWrapper
         elif param.type() == 'field':
             wrapper = TableFieldWidgetWrapper

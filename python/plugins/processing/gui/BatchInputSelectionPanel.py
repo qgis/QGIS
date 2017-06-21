@@ -40,7 +40,7 @@ from qgis.core import (QgsMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterTable,
+                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource)
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
@@ -105,7 +105,7 @@ class BatchInputSelectionPanel(QWidget):
                 (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                  self.param.layerType() == QgsProcessingParameterDefinition.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
-        elif isinstance(self.param, QgsProcessingParameterTable):
+        elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         else:
             datatypes = [QgsProcessingParameterDefinition.TypeVectorAny]

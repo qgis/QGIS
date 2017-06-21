@@ -15,16 +15,16 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - name: Delete Holes
-#    algorithm: qgis:deleteholes
-#    params:
-#    - name: polys.gml
-#      type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/polys_deleteholes.gml
-#        type: vector
-#
+  - name: Delete Holes
+    algorithm: qgis:deleteholes
+    params:
+    - name: polys.gml
+      type: vector
+    results:
+      OUTPUT:
+        name: expected/polys_deleteholes.gml
+        type: vector
+
   - algorithm: qgis:clip
     name: Clip lines by polygons
     params:
@@ -128,18 +128,18 @@ tests:
 #        name: expected/intersection_collection_fallback.shp
 #        type: vector
 #
-#  - name: Densify geometries
-#    algorithm: qgis:densifygeometries
-#    params:
-#      INPUT:
-#        name: multipolys.gml
-#        type: vector
-#      VERTICES: 4
-#    results:
-#      OUTPUT:
-#        name: expected/multipolys_densify.gml
-#        type: vector
-#
+  - name: Densify geometries
+    algorithm: qgis:densifygeometries
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      VERTICES: 4
+    results:
+      OUTPUT:
+        name: expected/multipolys_densify.gml
+        type: vector
+
 #  - name: Polygons to Lines
 #    algorithm: qgis:polygonstolines
 #    params:
@@ -1258,7 +1258,7 @@ tests:
 #        name: expected/remove_null_polys.gml
 #        type: vector
 #
-  - algorithm: qgis:extractbyexpression
+  - algorithm: native:extractbyexpression
     name: Extract by Expression
     params:
       EXPRESSION: left( "Name",1)='A'
@@ -1484,88 +1484,88 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '8'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (is not null)
-#    params:
-#      FIELD: intval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '9'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_not_null.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (starts with)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '6'
-#      VALUE: A
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_startswith.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (contains)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '7'
-#      VALUE: aaa
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_contains.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (does not contain)
-#    params:
-#      FIELD: name
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '10'
-#      VALUE: a
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_does_not_contain.gml
-#        type: vector
-#
-#  - algorithm: qgis:extractbyattribute
-#    name: Extract by attribute (greater)
-#    params:
-#      FIELD: floatval
-#      INPUT:
-#        name: polys.gml
-#        type: vector
-#      OPERATOR: '2'
-#      VALUE: '1'
-#    results:
-#      OUTPUT:
-#        name: expected/extract_by_attribute_greater.gml
-#        type: vector
-#
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '8'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (is not null)
+    params:
+      FIELD: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '9'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_not_null.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (starts with)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '6'
+      VALUE: A
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_startswith.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (contains)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '7'
+      VALUE: aaa
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_contains.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (does not contain)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '10'
+      VALUE: a
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_does_not_contain.gml
+        type: vector
+
+  - algorithm: native:extractbyattribute
+    name: Extract by attribute (greater)
+    params:
+      FIELD: floatval
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '2'
+      VALUE: '1'
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_greater.gml
+        type: vector
+
 #  - algorithm: qgis:createattributeindex
 #    name: Create Attribute Index (only tests for python errors, does not check result)
 #    params:
@@ -1665,18 +1665,18 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#  - algorithm: qgis:dropgeometries
-#    name: Drop geometries
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_TABLE:
-#        name: expected/dropped_geometry.csv
-#        type: vector
-#
+
+  - algorithm: qgis:dropgeometries
+    name: Drop geometries
+    params:
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_TABLE:
+        name: expected/dropped_geometry.csv
+        type: vector
+
 #  - algorithm: qgis:creategridlines
 #    name: Create grid (lines)
 #    params:
@@ -1808,30 +1808,30 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: qgis:deleteholes
-#    name: Delete holes (no min)
-#    params:
-#      INPUT:
-#        name: custom/remove_holes.gml
-#        type: vector
-#      MIN_AREA: 0.0
-#    results:
-#      OUTPUT:
-#        name: expected/removed_holes.gml
-#        type: vector
-#
-#  - algorithm: qgis:deleteholes
-#    name: Delete holes (with min)
-#    params:
-#      INPUT:
-#        name: custom/remove_holes.gml
-#        type: vector
-#      MIN_AREA: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/removed_holes_min_area.gml
-#        type: vector
-#
+  - algorithm: qgis:deleteholes
+    name: Delete holes (no min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 0.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes.gml
+        type: vector
+
+  - algorithm: qgis:deleteholes
+    name: Delete holes (with min)
+    params:
+      INPUT:
+        name: custom/remove_holes.gml
+        type: vector
+      MIN_AREA: 5.0
+    results:
+      OUTPUT:
+        name: expected/removed_holes_min_area.gml
+        type: vector
+
   - algorithm: qgis:basicstatisticsforfields
     name: Basic stats datetime
     params:
