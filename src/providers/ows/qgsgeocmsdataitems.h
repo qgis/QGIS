@@ -19,6 +19,8 @@ public:
   QVector<QgsDataItem *> createChildren() override;
   virtual QList<QAction *> actions() override;
 
+  QString mGeoCMSName;
+
 private:
   void editConnection();
   void deleteConnection()
@@ -29,9 +31,6 @@ private:
 
   QString mUri;
   QgsGeoCMSConnection *mConnection = nullptr;
-
-public:
-  QString mGeoCMSName;
 };
 
 class QgsGeoCMSServiceItem : public QgsDataCollectionItem

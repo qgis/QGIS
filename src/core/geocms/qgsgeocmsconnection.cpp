@@ -29,8 +29,8 @@
 
 
 QgsGeoCMSConnection::QgsGeoCMSConnection( const QString &geoCMSName, const QString &connName )
-    : mConnName( connName )
-    , mGeoCMSName( geoCMSName )
+    : mGeoCMSName( geoCMSName )
+    , mConnName( connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
 

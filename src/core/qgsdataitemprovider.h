@@ -50,7 +50,12 @@ class CORE_EXPORT QgsDataItemProvider
     //! Create a new instance of QgsDataItem (or null) for given path and parent item.
     //! Caller takes responsibility of deleting created items.
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 SIP_FACTORY;
-    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { return QVector<QgsDataItem *>() ; }
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem )
+    {
+      Q_UNUSED( path );
+      Q_UNUSED( parentItem );
+      return QVector<QgsDataItem *>() ;
+    }
 };
 
 #endif // QGSDATAITEMPROVIDER_H

@@ -18,8 +18,8 @@ typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 
 QgsGeoCMSConnectionItem::QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn )
     : QgsDataCollectionItem( parent, name, path )
-    , mUri( conn->uri().uri() )
     , mGeoCMSName( parent->name() )
+    , mUri( conn->uri().uri() )
     , mConnection( conn )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
