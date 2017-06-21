@@ -1307,6 +1307,12 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
      */
     void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
 
+    /**
+     * Returns the default file extension for destination file paths
+     * associated with this parameter.
+     */
+    virtual QString defaultFileExtension() const = 0;
+
   private:
 
     bool mSupportsNonFileBasedOutputs = true;
@@ -1336,6 +1342,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1433,6 +1440,7 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingDesti
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 };
 
 /**
@@ -1457,6 +1465,7 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingDestina
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the file filter string for files compatible with this output.
@@ -1498,6 +1507,7 @@ class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingDesti
     QString type() const override { return QStringLiteral( "folderOut" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
 };
 

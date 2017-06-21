@@ -74,14 +74,6 @@ def tempFolder():
     return str(os.path.abspath(tempDir))
 
 
-def setTempOutput(out, alg):
-    if hasattr(out, 'directory'):
-        out.value = getTempDirInTempFolder()
-    else:
-        ext = out.getDefaultFileExtension(alg)
-        out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
-
-
 def getTempFilename(ext=None):
     tmpPath = tempFolder()
     t = time.time()
