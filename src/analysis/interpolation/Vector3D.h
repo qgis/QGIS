@@ -62,6 +62,8 @@ class ANALYSIS_EXPORT Vector3D
     void standardise();
 };
 
+#ifndef SIP_RUN
+
 //------------------------------------------constructors------------------------------------
 
 inline Vector3D::Vector3D( double x, double y, double z )
@@ -112,4 +114,5 @@ inline void Vector3D::setZ( double z )
   mZ = z;
 }
 
+#endif
 #endif

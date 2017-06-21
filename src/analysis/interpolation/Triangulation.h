@@ -55,7 +55,7 @@ class ANALYSIS_EXPORT Triangulation
      * Calculates the normal at a point on the surface and assigns it to 'result'.
      * \returns true in case of success and false in case of failure
      */
-    virtual bool calcNormal( double x, double y, Vector3D *result ) = 0;
+    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) = 0;
 
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() = 0;
@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT Triangulation
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
      * Returns true in case of success and flase in case of failure
      */
-    virtual bool calcPoint( double x, double y, QgsPoint *result ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) = 0;
 
     //! Returns a pointer to the point with number i. Any virtual points must have the number -1
     virtual QgsPoint *getPoint( unsigned int i ) const = 0;
@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT Triangulation
     /** Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
-    virtual bool getTriangle( double x, double y, QgsPoint *p1, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) = 0 SIP_PYNAME( getTriangleVertices );
 
     //! Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3
     virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) = 0;
@@ -154,9 +154,10 @@ class ANALYSIS_EXPORT Triangulation
     virtual bool saveAsShapefile( const QString &fileName ) const = 0;
 };
 
+#ifndef SIP_RUN
 inline Triangulation::~Triangulation()
 {
-
 }
+#endif
 
 #endif

@@ -1,9 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-analysis/interpolation/Bezier3D.sip
-analysis/interpolation/CloughTocherInterpolator.sip
-analysis/interpolation/DualEdgeTriangulation.sip
-analysis/interpolation/HalfEdge.sip
 analysis/interpolation/LinTriangleInterpolator.sip
 analysis/interpolation/Line3D.sip
 analysis/interpolation/Node.sip

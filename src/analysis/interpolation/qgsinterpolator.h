@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsInterpolator
       InputType mInputType;
     };
 
-    QgsInterpolator( const QList<LayerData> &layerData );
+    QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
     virtual ~QgsInterpolator() = default;
 

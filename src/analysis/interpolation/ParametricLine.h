@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include <QVector>
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 
 class Vector3D;
 
@@ -41,13 +42,13 @@ class ANALYSIS_EXPORT ParametricLine
 
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
-    ParametricLine( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
+    ParametricLine( ParametricLine *par SIP_TRANSFER, QVector<QgsPoint *> *controlpoly );
     virtual ~ParametricLine();
-    virtual void add( ParametricLine *pl ) = 0;
-    virtual void calcFirstDer( float t, Vector3D *v ) = 0;
-    virtual void calcSecDer( float t, Vector3D *v ) = 0;
+    virtual void add( ParametricLine *pl SIP_TRANSFER ) = 0;
+    virtual void calcFirstDer( float t, Vector3D *v SIP_OUT ) = 0;
+    virtual void calcSecDer( float t, Vector3D *v SIP_OUT ) = 0;
     //virtual QgsPoint calcPoint(float t);
-    virtual void calcPoint( float t, QgsPoint * ) = 0;
+    virtual void calcPoint( float t, QgsPoint *p SIP_OUT ) = 0;
     virtual void changeDirection() = 0;
     //virtual void draw(QPainter* p);
     virtual const QgsPoint *getControlPoint( int number ) const = 0;
@@ -59,6 +60,8 @@ class ANALYSIS_EXPORT ParametricLine
     virtual void setControlPoly( QVector<QgsPoint *> *cp ) = 0;
     virtual void setParent( ParametricLine *paral ) = 0;
 };
+
+#ifndef SIP_RUN
 
 //-----------------------------------------constructors and destructor----------------------
 
@@ -82,6 +85,8 @@ inline ParametricLine::~ParametricLine()
 {
   //delete mParent;
 }
+
+#endif
 
 #endif
 

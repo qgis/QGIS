@@ -19,16 +19,17 @@
 
 #include "Node.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 
 /** \ingroup analysis
  * This class represents a line. It is implemented as a single directed linked list of nodes (with related QgsPoint objects). Attention: the points inserted in a line are not deleted from Line3D*/
-class ANALYSIS_EXPORT Line3D
+class ANALYSIS_EXPORT Line3D SIP_NODEFAULTCTORS
 {
   private:
     //! Copy constructor, declared private to not use it
-    Line3D( const Line3D & );
+    Line3D( const Line3D & ) SIP_FORCE;
     //! Assignment operator, declared private to not use it
-    Line3D &operator=( const Line3D & );
+    Line3D &operator=( const Line3D & ) SIP_FORCE;
   protected:
     Node *head = nullptr;
     Node *z = nullptr;
@@ -57,6 +58,8 @@ class ANALYSIS_EXPORT Line3D
     void goToNext();
 };
 
+#ifndef SIP_RUN
+
 inline Line3D::Line3D( const Line3D & )
 {
 
@@ -82,4 +85,5 @@ inline unsigned int Line3D::getSize() const
   return size;
 }
 
+#endif
 #endif
