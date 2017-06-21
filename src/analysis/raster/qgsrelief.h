@@ -60,18 +60,21 @@ class ANALYSIS_EXPORT QgsRelief
     void setZFactor( double factor ) { mZFactor = factor; }
 
     void clearReliefColors();
-    void addReliefColorClass( const ReliefColor &color );
-    QList< ReliefColor > reliefColors() const { return mReliefColors; }
-    void setReliefColors( const QList< ReliefColor > &c ) { mReliefColors = c; }
+    void addReliefColorClass( const QgsRelief::ReliefColor &color );
+    QList< QgsRelief::ReliefColor > reliefColors() const { return mReliefColors; }
+    void setReliefColors( const QList< QgsRelief::ReliefColor > &c ) { mReliefColors = c; }
 
     /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
       \returns true in case of success*/
-    QList< ReliefColor > calculateOptimizedReliefClasses();
+    QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 
     //! Write frequency of elevation values to file for manual inspection
     bool exportFrequencyDistributionToCsv( const QString &file );
 
   private:
+#ifdef SIP_RUN
+    QgsRelief( const QgsRelief &rh );
+#endif
 
     QString mInputFile;
     QString mOutputFile;
