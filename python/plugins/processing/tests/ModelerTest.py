@@ -27,11 +27,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
 
-from processing.modeler.ModelerAlgorithm import (Algorithm,
-                                                 ModelerAlgorithm,
-                                                 ModelerParameter,
-                                                 ModelerOutput,
-                                                 ValueFromOutput)
+from qgis.core import (QgsProcessingModelAlgorithm,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFile)
 from processing.modeler.ModelerParametersDialog import (ModelerParametersDialog)
 from processing.core.parameters import (ParameterFile,
                                         ParameterNumber,
@@ -45,29 +45,34 @@ class ModelerTest(unittest.TestCase):
     def testModelerParametersDialogAvailableValuesOfType(self):
         # test getAvailableValuesOfType from ModelerParametersDialog
 
-        m = ModelerAlgorithm()
-        string_param_1 = ModelerParameter(ParameterString('string', 'string desc'))
-        m.addParameter(string_param_1)
-        string_param_2 = ModelerParameter(ParameterString('string2', 'string desc'))
-        m.addParameter(string_param_2)
-        num_param = ModelerParameter(ParameterNumber('number', 'number desc'))
-        m.addParameter(num_param)
-        table_field_param = ModelerParameter(ParameterTableField('field', 'field desc'))
-        m.addParameter(table_field_param)
-        file_param = ModelerParameter(ParameterFile('file', 'file desc'))
-        m.addParameter(file_param)
+        m = QgsProcessingModelAlgorithm()
+
+        string_param_1 = QgsProcessingModelAlgorithm.ModelParameter('string')
+        m.addModelParameter(QgsProcessingParameterString('string'), string_param_1)
+
+        string_param_2 = QgsProcessingModelAlgorithm.ModelParameter('string2')
+        m.addModelParameter(QgsProcessingParameterString('string2'), string_param_2)
+
+        num_param = QgsProcessingModelAlgorithm.ModelParameter('number')
+        m.addModelParameter(QgsProcessingParameterNumber('number'), num_param)
+
+        table_field_param = QgsProcessingModelAlgorithm.ModelParameter('field')
+        m.addModelParameter(QgsProcessingParameterField('field'), table_field_param)
+
+        file_param = QgsProcessingModelAlgorithm.ModelParameter('file')
+        m.addModelParameter(QgsProcessingParameterFile('file'), file_param)
 
         dlg = ModelerParametersDialog(m, m)
         # test single types
-        self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType(ParameterNumber)),
+        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterNumber)),
                          set(['number']))
-        self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType(ParameterTableField)),
+        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterField)),
                          set(['field']))
-        self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType(ParameterFile)),
+        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType(QgsProcessingParameterFile)),
                          set(['file']))
 
         # test multiple types
-        self.assertEqual(set(p.name for p in dlg.getAvailableValuesOfType([ParameterString, ParameterNumber, ParameterFile])),
+        self.assertEqual(set(p.parameterName() for p in dlg.getAvailableValuesOfType([QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile])),
                          set(['string', 'string2', 'number', 'file']))
 
 
