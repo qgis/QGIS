@@ -330,6 +330,7 @@ class TestQgsProcessing: public QObject
     void generateIteratingDestination();
     void asPythonCommand();
     void modelerAlgorithm();
+    void modelExecution();
     void tempUtils();
 
   private:
@@ -3839,6 +3840,82 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+}
+
+void TestQgsProcessing::modelExecution()
+{
+  // test childOutputIsRequired
+  QgsProcessingModelAlgorithm model1;
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc1;
+  algc1.setChildId( "cx1" );
+  algc1.setAlgorithmId( "native:centroids" );
+  model1.addChildAlgorithm( algc1 );
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc2;
+  algc2.setChildId( "cx2" );
+  algc2.setAlgorithmId( "native:centroids" );
+  algc2.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p1" ) );
+  model1.addChildAlgorithm( algc2 );
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc3;
+  algc3.setChildId( "cx3" );
+  algc3.setAlgorithmId( "native:centroids" );
+  algc3.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p2" ) );
+  algc3.setActive( false );
+  model1.addChildAlgorithm( algc3 );
+
+  QVERIFY( model1.childOutputIsRequired( "cx1", "p1" ) ); // cx2 depends on p1
+  QVERIFY( !model1.childOutputIsRequired( "cx1", "p2" ) ); // cx3 depends on p2, but cx3 is not active
+  QVERIFY( !model1.childOutputIsRequired( "cx1", "p3" ) ); // nothing requires p3
+  QVERIFY( !model1.childOutputIsRequired( "cx2", "p1" ) );
+  QVERIFY( !model1.childOutputIsRequired( "cx3", "p1" ) );
+
+  // test parametersForChildAlgorithm
+  QgsProcessingModelAlgorithm model2;
+  model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), QgsProcessingModelAlgorithm::ModelParameter( "SOURCE_LAYER" ) );
+  model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelAlgorithm::ModelParameter( "DIST" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c1;
+  alg2c1.setChildId( "cx1" );
+  alg2c1.setAlgorithmId( "native:buffer" );
+  alg2c1.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
+  alg2c1.addParameterSource( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
+  alg2c1.addParameterSource( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 16 ) );
+  alg2c1.addParameterSource( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
+  alg2c1.addParameterSource( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
+  alg2c1.addParameterSource( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
+  QgsProcessingModelAlgorithm::ModelOutput out1( "OUTPUT_LAYER" );
+  outputs1.insert( QStringLiteral( "MODEL_OUT_LAYER" ), out1 );
+  alg2c1.setModelOutputs( outputs1 );
+  model2.addChildAlgorithm( alg2c1 );
+
+  QVariantMap modelInputs;
+  modelInputs.insert( "SOURCE_LAYER", "my_layer_id" );
+  modelInputs.insert( "DIST", 271 );
+  modelInputs.insert( "cx1:MODEL_OUT_LAYER", "dest.shp" );
+  QMap<QString, QVariantMap> childResults;
+  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults );
+  QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
+  QCOMPARE( params.value( "DISTANCE" ).toInt(), 271 );
+  QCOMPARE( params.value( "SEGMENTS" ).toInt(), 16 );
+  QCOMPARE( params.value( "END_CAP_STYLE" ).toInt(), 1 );
+  QCOMPARE( params.value( "JOIN_STYLE" ).toInt(), 2 );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "my_layer_id" ) );
+  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.count(), 7 );
+
+  QVariantMap results;
+  results.insert( "OUTPUT_LAYER", QStringLiteral( "dest.shp" ) );
+  childResults.insert( "cx1", results );
+
+  // a child who uses an output from another alg as a parameter value
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
+  alg2c2.setChildId( "cx2" );
+  alg2c2.setAlgorithmId( "native:centroids" );
+  alg2c2.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  model2.addChildAlgorithm( alg2c2 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.count(), 2 );
 }
 
 void TestQgsProcessing::tempUtils()

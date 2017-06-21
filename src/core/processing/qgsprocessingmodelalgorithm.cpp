@@ -131,6 +131,11 @@ QgsProcessingModelAlgorithm::ModelOutput &QgsProcessingModelAlgorithm::ChildAlgo
 void QgsProcessingModelAlgorithm::ChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> &modelOutputs )
 {
   mModelOutputs = modelOutputs;
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput>::iterator outputIt = mModelOutputs.begin();
+  for ( ; outputIt != mModelOutputs.end(); ++outputIt )
+  {
+    outputIt->setChildId( mId );
+  }
 }
 
 QVariant QgsProcessingModelAlgorithm::ChildAlgorithm::toVariant() const
@@ -319,15 +324,24 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
     else
     {
       const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter * >( def );
+
       // is destination linked to one of the final outputs from this model?
-      if ( child.modelOutputs().contains( destParam->name() ) )
+      bool isFinalOutput = false;
+      QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs = child.modelOutputs();
+      QMap<QString, QgsProcessingModelAlgorithm::ModelOutput>::const_iterator outputIt = outputs.constBegin();
+      for ( ; outputIt != outputs.constEnd(); ++outputIt )
       {
-        QString outputName = child.modelOutputs().value( destParam->name() ).outputName();
-        QString paramName = child.childId() + ':' + outputName;
-        if ( modelParameters.contains( paramName ) )
-          childParams.insert( destParam->name(), modelParameters.value( paramName ) );
+        if ( outputIt->outputName() == destParam->name() )
+        {
+          QString paramName = child.childId() + ':' + outputIt.key();
+          if ( modelParameters.contains( paramName ) )
+            childParams.insert( destParam->name(), modelParameters.value( paramName ) );
+          isFinalOutput = true;
+          break;
+        }
       }
-      else
+
+      if ( !isFinalOutput )
       {
         // output is temporary
 
@@ -953,8 +967,9 @@ bool QgsProcessingModelAlgorithm::ChildParameterSource::loadVariant( const QVari
   return true;
 }
 
-QgsProcessingModelAlgorithm::ModelOutput::ModelOutput( const QString &description )
+QgsProcessingModelAlgorithm::ModelOutput::ModelOutput( const QString &name, const QString &description )
   : QgsProcessingModelAlgorithm::Component( description )
+  , mOutputName( name )
 {}
 
 QVariant QgsProcessingModelAlgorithm::ModelOutput::toVariant() const

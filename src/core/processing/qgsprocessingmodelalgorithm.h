@@ -285,9 +285,9 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
       public:
 
         /**
-         * Constructor for ModelOutput with the specified \a description.
+         * Constructor for ModelOutput with the specified \a name and \a description.
          */
-        ModelOutput( const QString &description = QString() );
+        ModelOutput( const QString &name = QString(), const QString &description = QString() );
 
         /**
          * Returns the child algorithm ID from which this output is generated.
