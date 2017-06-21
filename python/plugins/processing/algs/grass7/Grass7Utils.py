@@ -37,7 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
+from processing.tools.system import userFolder, isWindows, isMac, mkdir
 from processing.tests.TestData import points
 
 
@@ -205,7 +205,7 @@ class Grass7Utils(object):
 
     @staticmethod
     def grassDataFolder():
-        tempfolder = os.path.join(tempFolder(), 'grassdata')
+        tempfolder = os.path.join(QgsProcessingUtils.tempFolder(), 'grassdata')
         mkdir(tempfolder)
         return tempfolder
 

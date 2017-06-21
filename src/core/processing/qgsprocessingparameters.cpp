@@ -19,6 +19,8 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsprocessingoutputs.h"
+#include "qgssettings.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -1998,7 +2000,7 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
 
 
 QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
@@ -2051,6 +2053,24 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
+}
+
+QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
+{
+  QgsSettings settings;
+  if ( hasGeometry() )
+  {
+    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+  }
+  else
+  {
+    return QStringLiteral( "dbf" );
+  }
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterFeatureSink::dataType() const
 {
   return mDataType;
@@ -2082,20 +2102,28 @@ void QgsProcessingParameterFeatureSink::setDataType( QgsProcessingParameterDefin
 
 QVariantMap QgsProcessingParameterFeatureSink::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
   return map;
 }
 
 bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessingParameterDefinition::LayerType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   return true;
 }
 
+QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
+{
+  if ( supportsNonFileBasedOutputs() )
+    return QStringLiteral( "memory:" );
+  else
+    return QgsProcessingDestinationParameter::generateTemporaryDestination();
+}
+
 QgsProcessingParameterRasterOutput::QgsProcessingParameterRasterOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
 bool QgsProcessingParameterRasterOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2145,9 +2173,20 @@ QString QgsProcessingParameterRasterOutput::valueAsPythonString( const QVariant 
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterRasterOutput::toOutputDefinition() const
+{
+  return new QgsProcessingOutputRasterLayer( name(), description() );
+}
+
+QString QgsProcessingParameterRasterOutput::defaultFileExtension() const
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+}
+
 
 QgsProcessingParameterFileOutput::QgsProcessingParameterFileOutput( const QString &name, const QString &description, const QString &fileFilter, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mFileFilter( fileFilter.isEmpty() ? QObject::tr( "All files (*.*)" ) : fileFilter )
 {
 
@@ -2202,6 +2241,25 @@ QString QgsProcessingParameterFileOutput::valueAsPythonString( const QVariant &v
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterFileOutput::toOutputDefinition() const
+{
+  return nullptr;
+}
+
+QString QgsProcessingParameterFileOutput::defaultFileExtension() const
+{
+  if ( mFileFilter.isEmpty() || mFileFilter == QObject::tr( "All files (*.*)" ) )
+    return QStringLiteral( "file" );
+
+  // get first extension from filter
+  QRegularExpression rx( ".*?\\(\\*\\.([a-zA-Z0-9._]+).*" );
+  QRegularExpressionMatch match = rx.match( mFileFilter );
+  if ( !match.hasMatch() )
+    return QStringLiteral( "file" );
+
+  return match.captured( 1 );
+}
+
 QString QgsProcessingParameterFileOutput::fileFilter() const
 {
   return mFileFilter;
@@ -2214,21 +2272,21 @@ void QgsProcessingParameterFileOutput::setFileFilter( const QString &fileFilter 
 
 QVariantMap QgsProcessingParameterFileOutput::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "file_filter" ), mFileFilter );
   return map;
 }
 
 bool QgsProcessingParameterFileOutput::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mFileFilter = map.value( QStringLiteral( "file_filter" ) ).toString();
   return true;
 
 }
 
 QgsProcessingParameterFolderOutput::QgsProcessingParameterFolderOutput( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
 {}
 
 bool QgsProcessingParameterFolderOutput::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
@@ -2251,8 +2309,43 @@ bool QgsProcessingParameterFolderOutput::checkValueIsAcceptable( const QVariant 
   return true;
 }
 
-QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
+QgsProcessingOutputDefinition *QgsProcessingParameterFolderOutput::toOutputDefinition() const
+{
+  return nullptr;
+}
+
+QString QgsProcessingParameterFolderOutput::defaultFileExtension() const
+{
+  return QString();
+}
+
+QgsProcessingDestinationParameter::QgsProcessingDestinationParameter( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
+}
+
+QVariantMap QgsProcessingDestinationParameter::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "supports_non_file_outputs" ), mSupportsNonFileBasedOutputs );
+  return map;
+}
+
+bool QgsProcessingDestinationParameter::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mSupportsNonFileBasedOutputs = map.value( QStringLiteral( "supports_non_file_outputs" ) ).toBool();
+  return true;
+}
+
+QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
+{
+  return QgsProcessingUtils::generateTempFilename( name() + '.' + defaultFileExtension() );
+}
+
+QgsProcessingParameterVectorOutput::QgsProcessingParameterVectorOutput( const QString &name, const QString &description, QgsProcessingParameterDefinition::LayerType type, const QVariant &defaultValue, bool optional )
+  : QgsProcessingDestinationParameter( name, description, defaultValue, optional )
   , mDataType( type )
 {
 
@@ -2305,6 +2398,24 @@ QString QgsProcessingParameterVectorOutput::valueAsPythonString( const QVariant 
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorOutput::toOutputDefinition() const
+{
+  return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
+}
+
+QString QgsProcessingParameterVectorOutput::defaultFileExtension() const
+{
+  QgsSettings settings;
+  if ( hasGeometry() )
+  {
+    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+  }
+  else
+  {
+    return QStringLiteral( "dbf" );
+  }
+}
+
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterVectorOutput::dataType() const
 {
   return mDataType;
@@ -2336,14 +2447,14 @@ void QgsProcessingParameterVectorOutput::setDataType( QgsProcessingParameterDefi
 
 QVariantMap QgsProcessingParameterVectorOutput::toVariantMap() const
 {
-  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
   return map;
 }
 
 bool QgsProcessingParameterVectorOutput::fromVariantMap( const QVariantMap &map )
 {
-  QgsProcessingParameterDefinition::fromVariantMap( map );
+  QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessingParameterDefinition::LayerType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
   return true;
 }

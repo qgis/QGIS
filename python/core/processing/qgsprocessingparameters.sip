@@ -11,7 +11,6 @@
 
 
 
-
 class QgsProcessingFeatureSourceDefinition
 {
 %Docstring
@@ -1308,8 +1307,72 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
 
 };
 
+class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition
+{
+%Docstring
+ Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
+ which are used for the destination for layers output by an algorithm.
+.. versionadded:: 3.0
+%End
 
-class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
+%Docstring
+ Constructor for QgsProcessingDestinationParameter.
+%End
+
+    virtual bool isDestination() const;
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 /Factory/;
+%Docstring
+ Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
+ parameter.
+ :rtype: QgsProcessingOutputDefinition
+%End
+
+    bool supportsNonFileBasedOutputs() const;
+%Docstring
+ Returns true if the destination parameter supports non filed-based outputs,
+ such as memory layers or direct database outputs.
+.. seealso:: setSupportsNonFileBasedOutputs()
+ :rtype: bool
+%End
+
+    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs );
+%Docstring
+ Sets whether the destination parameter supports non filed-based outputs,
+ such as memory layers or direct database outputs.
+.. seealso:: supportsNonFileBasedOutputs()
+%End
+
+    virtual QString defaultFileExtension() const = 0;
+%Docstring
+ Returns the default file extension for destination file paths
+ associated with this parameter.
+ :rtype: str
+%End
+
+    virtual QString generateTemporaryDestination() const;
+%Docstring
+ Generates a temporary destination value for this parameter. The returned
+ value will be a file path or QGIS data provider URI suitable for
+ temporary storage of created layers and files.
+ :rtype: str
+%End
+
+};
+
+
+class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 {
 %Docstring
  A feature sink output for processing algorithms.
@@ -1330,10 +1393,13 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
 
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
@@ -1360,11 +1426,13 @@ class QgsProcessingParameterFeatureSink : QgsProcessingParameterDefinition
 
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    virtual QString generateTemporaryDestination() const;
+
 
 };
 
 
-class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
+class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
 {
 %Docstring
  A vector layer output parameter. Consider using the more flexible QgsProcessingParameterFeatureSink wherever
@@ -1384,10 +1452,13 @@ class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
 
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
@@ -1417,7 +1488,7 @@ class QgsProcessingParameterVectorOutput : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterRasterOutput : QgsProcessingParameterDefinition
+class QgsProcessingParameterRasterOutput : QgsProcessingDestinationParameter
 {
 %Docstring
  A raster layer output parameter.
@@ -1437,14 +1508,17 @@ class QgsProcessingParameterRasterOutput : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
+
 };
 
-class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
+class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
 {
 %Docstring
  A generic file based output parameter.
@@ -1465,10 +1539,13 @@ class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
 
 
     QString fileFilter() const;
@@ -1491,7 +1568,7 @@ class QgsProcessingParameterFileOutput : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterFolderOutput : QgsProcessingParameterDefinition
+class QgsProcessingParameterFolderOutput : QgsProcessingDestinationParameter
 {
 %Docstring
  A folder output parameter.
@@ -1511,8 +1588,11 @@ class QgsProcessingParameterFolderOutput : QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const;
-    virtual bool isDestination() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const /Factory/;
+
+    virtual QString defaultFileExtension() const;
 
 
 };

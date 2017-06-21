@@ -125,7 +125,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
     def getValue(self):
         value = self.leText.text()
         values = []
-        for param in self.modelParametersDialog.model.parameters:
+        for param in self.modelParametersDialog.model.parameterDefinitions():
             if isinstance(param, QgsProcessingParameterNumber):
                 if "@" + param.name() in value:
                     values.append(ValueFromInput(param.name()))

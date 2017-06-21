@@ -30,7 +30,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsFeatureSource;
-
+class QgsProcessingOutputDefinition;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -1266,6 +1266,66 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
 
 };
 
+/**
+ * \class QgsProcessingDestinationParameter
+ * \ingroup core
+ * Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
+ * which are used for the destination for layers output by an algorithm.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingDestinationParameter.
+     */
+    QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                       bool optional = false );
+
+    bool isDestination() const override { return true; }
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
+     * parameter.
+     */
+    virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns true if the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see setSupportsNonFileBasedOutputs()
+     */
+    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+
+    /**
+     * Sets whether the destination parameter supports non filed-based outputs,
+     * such as memory layers or direct database outputs.
+     * \see supportsNonFileBasedOutputs()
+     */
+    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+
+    /**
+     * Returns the default file extension for destination file paths
+     * associated with this parameter.
+     */
+    virtual QString defaultFileExtension() const = 0;
+
+    /**
+     * Generates a temporary destination value for this parameter. The returned
+     * value will be a file path or QGIS data provider URI suitable for
+     * temporary storage of created layers and files.
+     */
+    virtual QString generateTemporaryDestination() const;
+
+  private:
+
+    bool mSupportsNonFileBasedOutputs = true;
+
+};
+
 
 /**
  * \class QgsProcessingParameterFeatureSink
@@ -1275,7 +1335,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
  * A parameter which represents the destination feature sink for features created by an algorithm.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1286,9 +1346,10 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
                                        bool optional = false );
 
     QString type() const override { return QStringLiteral( "sink" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1310,6 +1371,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
+    QString generateTemporaryDestination() const override;
 
   private:
 
@@ -1324,7 +1386,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingParame
  * possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1335,9 +1397,10 @@ class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "vectorOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the layer type for layers associated with the parameter.
@@ -1371,7 +1434,7 @@ class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingParam
  * A raster layer output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1383,9 +1446,10 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "rasterOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 };
 
 /**
@@ -1394,7 +1458,7 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingParam
  * A generic file based output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1407,9 +1471,10 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
                                       bool optional = false );
 
     QString type() const override { return QStringLiteral( "fileOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
     /**
      * Returns the file filter string for files compatible with this output.
@@ -1437,7 +1502,7 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingParamet
  * A folder output parameter.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingDestinationParameter
 {
   public:
 
@@ -1449,8 +1514,9 @@ class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingParam
                                         bool optional = false );
 
     QString type() const override { return QStringLiteral( "folderOut" ); }
-    bool isDestination() const override { return true; }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
+    QString defaultFileExtension() const override;
 
 };
 

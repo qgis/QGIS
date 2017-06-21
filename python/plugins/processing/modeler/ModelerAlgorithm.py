@@ -197,17 +197,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
                                                        self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name(), alg.displayName()),
                                                        QgsMessageBar.WARNING, 4)
                     value = param.defaultValue()
-                # We allow unexistent filepaths, since that allows
-                # algorithms to skip some conversion routines
-
-                # TODO
-                #if not param.checkValueIsAcceptable(value) and not isinstance(param,
-                #                                                              ParameterDataObject):
-                #    raise GeoAlgorithmExecutionException(
-                #        self.tr('Wrong value {0} for {1} {2}', 'ModelerAlgorithm').format(
-                #            value, param.__class__.__name__, param.name()
-                #        )
-                #    )
 
         # note to self - these are parameters, not outputs
         for out in algInstance.outputDefinitions():
@@ -239,50 +228,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         else:
             v = value
         return param.evaluateForModeler(v, self)
-
-    def processAlgorithm(self, parameters, context, feedback):
-        executed = []
-        toExecute = [alg for alg in list(self.algs.values()) if alg.isActive()]
-        while len(executed) < len(toExecute):
-            for alg in toExecute:
-                if alg.childId() not in executed:
-                    canExecute = True
-                    required = self.dependsOnChildAlgorithms(alg.childId())
-                    for requiredAlg in required:
-                        if requiredAlg != alg.childId() and requiredAlg not in executed:
-                            canExecute = False
-                            break
-                    if canExecute:
-                        try:
-                            feedback.pushDebugInfo(
-                                self.tr('Prepare algorithm: {0}', 'ModelerAlgorithm').format(alg.childId()))
-                            self.prepareAlgorithm(alg)
-                            feedback.setProgressText(
-                                self.tr('Running {0} [{1}/{2}]', 'ModelerAlgorithm').format(alg.description, len(executed) + 1, len(toExecute)))
-                            feedback.pushDebugInfo('Parameters: ' + ', '.join([str(p).strip() +
-                                                                               '=' + str(p.value) for p in alg.algorithm.parameters]))
-                            t0 = time.time()
-                            alg.algorithm().execute(parameters, context, feedback)
-                            dt = time.time() - t0
-
-                            # copy algorithm output value(s) back to model in case the algorithm modified those
-                            for out in alg.algorithm().outputs:
-                                if not out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                                    if out.name() in alg.modelOutputs():
-                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.childId(), out.name()))
-                                        if modelOut:
-                                            modelOut.value = out.value
-
-                            executed.append(alg.childId())
-                            feedback.pushDebugInfo(
-                                self.tr('OK. Execution took %{0:.3f} ms ({1} outputs).', 'ModelerAlgorithm').format(dt, len(alg.algorithm.modelOutputs())))
-                        except GeoAlgorithmExecutionException as e:
-                            feedback.pushDebugInfo(self.tr('Failed', 'ModelerAlgorithm'))
-                            raise GeoAlgorithmExecutionException(
-                                self.tr('Error executing algorithm {0}\n{1}', 'ModelerAlgorithm').format(alg.description, e.msg))
-
-        feedback.pushDebugInfo(
-            self.tr('Model processed ok. Executed {0} algorithms total', 'ModelerAlgorithm').format(len(executed)))
 
     def asPythonCommand(self, parameters, context):
         if self.descriptionFile:

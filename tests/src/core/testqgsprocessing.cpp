@@ -330,6 +330,8 @@ class TestQgsProcessing: public QObject
     void generateIteratingDestination();
     void asPythonCommand();
     void modelerAlgorithm();
+    void modelExecution();
+    void tempUtils();
 
   private:
 
@@ -339,6 +341,11 @@ void TestQgsProcessing::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 }
 
 void TestQgsProcessing::cleanupTestCase()
@@ -2805,6 +2812,12 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ) ) ), context ), QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'))" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
 
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
+  QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
+  def->setSupportsNonFileBasedOutputs( false );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".shp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSink fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -2813,6 +2826,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFeatureSink *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFeatureSink *>( def.get() ) );
 
@@ -2866,6 +2880,10 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( "abc" ) ) ), context ), QStringLiteral( "QgsProcessingOutputLayerDefinition('abc')" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ) ) ), context ), QStringLiteral( "QgsProcessingOutputLayerDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'))" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".shp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterVectorOutput fromMap( "x" );
@@ -2923,6 +2941,10 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif", &context ) );
 
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "tif" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".tif" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
   QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
@@ -2942,6 +2964,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterRasterOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterRasterOutput *>( def.get() ) );
 
@@ -2972,8 +2995,20 @@ void TestQgsProcessing::parameterFileOut()
   // not optional!
   std::unique_ptr< QgsProcessingParameterFileOutput > def( new QgsProcessingParameterFileOutput( "non_optional", QString(), QStringLiteral( "BMP files (*.bmp)" ), QString(), false ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "BMP files (*.bmp)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "bmp" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".bmp" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   def->setFileFilter( QStringLiteral( "PCX files (*.pcx)" ) );
   QCOMPARE( def->fileFilter(), QStringLiteral( "PCX files (*.pcx)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QStringLiteral( "PCX files (*.pcx *.picx)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QStringLiteral( "PCX files (*.pcx *.picx);;BMP files (*.bmp)" ) );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  def->setFileFilter( QString() );
+  QCOMPARE( def->defaultFileExtension(), QStringLiteral( "file" ) );
+  QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".file" ) ) );
+  QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVERIFY( !def->checkValueIsAcceptable( false ) );
   QVERIFY( !def->checkValueIsAcceptable( true ) );
@@ -3007,6 +3042,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFileOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFileOutput *>( def.get() ) );
 
@@ -3060,6 +3096,7 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
   def.reset( dynamic_cast< QgsProcessingParameterFolderOutput *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFolderOutput *>( def.get() ) );
 
@@ -3752,6 +3789,167 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.parameterDefinitions().count(), 1 );
   QCOMPARE( alg6.parameterDefinitions().at( 0 )->type(), QStringLiteral( "boolean" ) );
 
+  // destination parameters
+  QgsProcessingModelAlgorithm alg7( "test", "testGroup" );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg7c1;
+  alg7c1.setChildId( "cx1" );
+  alg7c1.setAlgorithmId( "native:centroids" );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c1outputs;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c1out1;
+  alg7c1out1.setChildId( "cx1" );
+  alg7c1out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c1out1.setDescription( QStringLiteral( "my output" ) );
+  alg7c1outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c1out1 );
+  alg7c1.setModelOutputs( alg7c1outputs );
+  alg7.addChildAlgorithm( alg7c1 );
+  // verify that model has destination parameter created
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.outputDefinitions().count(), 1 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg7c2;
+  alg7c2.setChildId( "cx2" );
+  alg7c2.setAlgorithmId( "native:centroids" );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c2outputs;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c2out1;
+  alg7c2out1.setChildId( "cx2" );
+  alg7c2out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
+  alg7c2outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c2out1 );
+  alg7c2.setModelOutputs( alg7c2outputs );
+  alg7.addChildAlgorithm( alg7c2 );
+
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
+  QCOMPARE( alg7.outputDefinitions().count(), 2 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
+
+  alg7.removeChildAlgorithm( "cx1" );
+  QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+  QCOMPARE( alg7.outputDefinitions().count(), 1 );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+}
+
+void TestQgsProcessing::modelExecution()
+{
+  // test childOutputIsRequired
+  QgsProcessingModelAlgorithm model1;
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc1;
+  algc1.setChildId( "cx1" );
+  algc1.setAlgorithmId( "native:centroids" );
+  model1.addChildAlgorithm( algc1 );
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc2;
+  algc2.setChildId( "cx2" );
+  algc2.setAlgorithmId( "native:centroids" );
+  algc2.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p1" ) );
+  model1.addChildAlgorithm( algc2 );
+  QgsProcessingModelAlgorithm::ChildAlgorithm algc3;
+  algc3.setChildId( "cx3" );
+  algc3.setAlgorithmId( "native:centroids" );
+  algc3.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p2" ) );
+  algc3.setActive( false );
+  model1.addChildAlgorithm( algc3 );
+
+  QVERIFY( model1.childOutputIsRequired( "cx1", "p1" ) ); // cx2 depends on p1
+  QVERIFY( !model1.childOutputIsRequired( "cx1", "p2" ) ); // cx3 depends on p2, but cx3 is not active
+  QVERIFY( !model1.childOutputIsRequired( "cx1", "p3" ) ); // nothing requires p3
+  QVERIFY( !model1.childOutputIsRequired( "cx2", "p1" ) );
+  QVERIFY( !model1.childOutputIsRequired( "cx3", "p1" ) );
+
+  // test parametersForChildAlgorithm
+  QgsProcessingModelAlgorithm model2;
+  model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), QgsProcessingModelAlgorithm::ModelParameter( "SOURCE_LAYER" ) );
+  model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelAlgorithm::ModelParameter( "DIST" ) );
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c1;
+  alg2c1.setChildId( "cx1" );
+  alg2c1.setAlgorithmId( "native:buffer" );
+  alg2c1.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
+  alg2c1.addParameterSource( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
+  alg2c1.addParameterSource( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 16 ) );
+  alg2c1.addParameterSource( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
+  alg2c1.addParameterSource( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
+  alg2c1.addParameterSource( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
+  QgsProcessingModelAlgorithm::ModelOutput out1( "OUTPUT_LAYER" );
+  outputs1.insert( QStringLiteral( "MODEL_OUT_LAYER" ), out1 );
+  alg2c1.setModelOutputs( outputs1 );
+  model2.addChildAlgorithm( alg2c1 );
+
+  QVariantMap modelInputs;
+  modelInputs.insert( "SOURCE_LAYER", "my_layer_id" );
+  modelInputs.insert( "DIST", 271 );
+  modelInputs.insert( "cx1:MODEL_OUT_LAYER", "dest.shp" );
+  QMap<QString, QVariantMap> childResults;
+  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults );
+  QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
+  QCOMPARE( params.value( "DISTANCE" ).toInt(), 271 );
+  QCOMPARE( params.value( "SEGMENTS" ).toInt(), 16 );
+  QCOMPARE( params.value( "END_CAP_STYLE" ).toInt(), 1 );
+  QCOMPARE( params.value( "JOIN_STYLE" ).toInt(), 2 );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "my_layer_id" ) );
+  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.count(), 7 );
+
+  QVariantMap results;
+  results.insert( "OUTPUT_LAYER", QStringLiteral( "dest.shp" ) );
+  childResults.insert( "cx1", results );
+
+  // a child who uses an output from another alg as a parameter value
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
+  alg2c2.setChildId( "cx2" );
+  alg2c2.setAlgorithmId( "native:centroids" );
+  alg2c2.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  model2.addChildAlgorithm( alg2c2 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.count(), 2 );
+
+  // a child with an optional output
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
+  alg2c3.setChildId( "cx3" );
+  alg2c3.setAlgorithmId( "native:extractbyexpression" );
+  alg2c3.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c3.addParameterSource( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
+  model2.addChildAlgorithm( alg2c3 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
+  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
+}
+
+void TestQgsProcessing::tempUtils()
+{
+  QString tempFolder = QgsProcessingUtils::tempFolder();
+  // tempFolder should remain constant for session
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+
+  QString tempFile1 = QgsProcessingUtils::generateTempFilename( "test.txt" );
+  QVERIFY( tempFile1.endsWith( "test.txt" ) );
+  QVERIFY( tempFile1.startsWith( tempFolder ) );
+
+  // expect a different file
+  QString tempFile2 = QgsProcessingUtils::generateTempFilename( "test.txt" );
+  QVERIFY( tempFile1 != tempFile2 );
+  QVERIFY( tempFile2.endsWith( "test.txt" ) );
+  QVERIFY( tempFile2.startsWith( tempFolder ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

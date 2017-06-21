@@ -95,6 +95,16 @@ QgsProcessingProvider *QgsProcessingAlgorithm::provider() const
 void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
   mProvider = provider;
+
+  // need to update all destination parameters to set whether the provider supports non file based outputs
+  Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
+  {
+    if ( definition->isDestination() && mProvider )
+    {
+      const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
+      const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+    }
+  }
 }
 
 QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
@@ -213,6 +223,12 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   // check for duplicate named parameters
   if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
     return false;
+
+  if ( definition->isDestination() && mProvider )
+  {
+    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
+    destParam->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+  }
 
   mParameters << definition;
   return true;

@@ -135,6 +135,22 @@ class QgsProcessingUtils
  :rtype: QVariant
 %End
 
+    static QString tempFolder();
+%Docstring
+ Returns a session specific processing temporary folder for use in processing algorithms.
+.. seealso:: generateTempFileName()
+ :rtype: str
+%End
+
+    static QString generateTempFilename( const QString &basename );
+%Docstring
+ Returns a temporary filename for a given file, putting it into
+ a temporary folder (creating that folder in the process),
+ but not changing the ``basename``.
+.. seealso:: tempFolder()
+ :rtype: str
+%End
+
 };
 
 
