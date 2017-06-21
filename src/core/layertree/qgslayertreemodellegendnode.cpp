@@ -228,11 +228,11 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
     return nullptr;
 
   // setup temporary render context
-  QgsRenderContext *context = new QgsRenderContext;
+  std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return context;
+  return context.release();
 }
 
 void QgsSymbolLegendNode::checkAll( bool state )
