@@ -400,6 +400,34 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   }
 }
 
+QString QgsProcessingUtils::tempFolder()
+{
+  static QString sFolder;
+  static QMutex sMutex;
+  sMutex.lock();
+  if ( sFolder.isEmpty() )
+  {
+    QString subPath = QUuid::createUuid().toString();
+    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
+    if ( !QDir( sFolder ).exists() )
+      QDir().mkpath( sFolder );
+  }
+  sMutex.unlock();
+  return sFolder;
+}
+
+QString QgsProcessingUtils::generateTempFilename( const QString &basename )
+{
+  QString subPath = QUuid::createUuid().toString();
+  QString path = tempFolder() + '/' + subPath;
+  if ( !QDir( path ).exists() ) //make sure the directory exists - it shouldn't, but lets be safe...
+  {
+    QDir tmpDir( QDir::tempPath() );
+    tmpDir.mkdir( subPath );
+  }
+  return path + '/' + basename;
+}
+
 
 //
 // QgsProcessingFeatureSource

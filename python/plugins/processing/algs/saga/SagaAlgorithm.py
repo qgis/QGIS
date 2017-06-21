@@ -54,7 +54,7 @@ from processing.core.outputs import (getOutputFromString,
                                      OutputRaster)
 from processing.tools import dataobjects
 from processing.algs.help import shortHelp
-from processing.tools.system import getTempFilename, getTempFilenameInTempFolder
+from processing.tools.system import getTempFilename
 from processing.algs.saga.SagaNameDecorator import decoratedAlgorithmName, decoratedGroupName
 from . import SagaUtils
 
@@ -342,7 +342,7 @@ class SagaAlgorithm(GeoAlgorithm):
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
             filename = 'layer'
-        destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
+        destFilename = QgsProcessingUtils.generateTempFilename(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
         return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "' + destFilename + '" -FILES "' + source + '"'

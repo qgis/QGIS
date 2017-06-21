@@ -169,6 +169,20 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
 
+    /**
+     * Returns a session specific processing temporary folder for use in processing algorithms.
+     * \see generateTempFileName()
+     */
+    static QString tempFolder();
+
+    /**
+     * Returns a temporary filename for a given file, putting it into
+     * a temporary folder (creating that folder in the process),
+     * but not changing the \a basename.
+     * \see tempFolder()
+     */
+    static QString generateTempFilename( const QString &basename );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );

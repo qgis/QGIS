@@ -330,6 +330,7 @@ class TestQgsProcessing: public QObject
     void generateIteratingDestination();
     void asPythonCommand();
     void modelerAlgorithm();
+    void tempUtils();
 
   private:
 
@@ -3828,6 +3829,23 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
+}
+
+void TestQgsProcessing::tempUtils()
+{
+  QString tempFolder = QgsProcessingUtils::tempFolder();
+  // tempFolder should remain constant for session
+  QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
+
+  QString tempFile1 = QgsProcessingUtils::generateTempFilename( "test.txt" );
+  QVERIFY( tempFile1.endsWith( "test.txt" ) );
+  QVERIFY( tempFile1.startsWith( tempFolder ) );
+
+  // expect a different file
+  QString tempFile2 = QgsProcessingUtils::generateTempFilename( "test.txt" );
+  QVERIFY( tempFile1 != tempFile2 );
+  QVERIFY( tempFile2.endsWith( "test.txt" ) );
+  QVERIFY( tempFile2.startsWith( tempFolder ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
