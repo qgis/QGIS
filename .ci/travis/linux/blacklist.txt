@@ -10,7 +10,6 @@ PyQgsDBManagerGpkg
 
 # temporary during processing refactoring
 ProcessingParametersTest
-ProcessingModelerTest
 ProcessingGdalAlgorithmsTest
 
 # layout tests are run on separate build
