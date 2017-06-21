@@ -16,7 +16,7 @@ tests:
 #            precision: 7
 #
   - name: Delete Holes
-    algorithm: native:deleteholes
+    algorithm: qgis:deleteholes
     params:
     - name: polys.gml
       type: vector
