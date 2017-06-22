@@ -1,26 +1,45 @@
-/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/TriDecorator.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class TriDecorator : Triangulation
 {
-%TypeHeaderCode
-#include <TriDecorator.h>
+%Docstring
+ Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*
 %End
 
+%TypeHeaderCode
+#include "TriDecorator.h"
+%End
   public:
     TriDecorator();
     explicit TriDecorator( Triangulation *t );
     virtual ~TriDecorator();
     virtual void addLine( Line3D *line, bool breakline );
     virtual int addPoint( QgsPoint *p );
-    /** Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation *t );
-    /** Performs a consistency check, remove this later*/
+%Docstring
+Adds an association to a triangulation
+%End
     virtual void performConsistencyTest();
-    virtual bool calcNormal( double x, double y, Vector3D *result );
-    virtual bool calcPoint( double x, double y, QgsPoint *result );
+%Docstring
+Performs a consistency check, remove this later
+%End
+    virtual bool calcNormal( double x, double y, Vector3D *result /Out/ );
+    virtual bool calcPoint( double x, double y, QgsPoint *result /Out/ );
     virtual QgsPoint *getPoint( unsigned int i ) const;
     virtual int getNumberOfPoints() const;
-    bool getTriangle( double x, double y, QgsPoint *p1, int *n1 /Out/, QgsPoint *p2 /Out/, int *n2 /Out/, QgsPoint *p3 /Out/, int *n3 /Out/ );
-    bool getTriangle( double x, double y, QgsPoint *p1 /Out/, QgsPoint *p2 /Out/, QgsPoint *p3 /Out/ );
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 /Out/, int *n1 /Out/, QgsPoint *p2 /Out/, int *n2 /Out/, QgsPoint *p3 /Out/, int *n3 /Out/ )  /PyName=getTriangleVertices/;
+
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 /Out/, QgsPoint *p2 /Out/, QgsPoint *p3 /Out/ );
+
     virtual int getOppositePoint( int p1, int p2 );
     virtual QList<int> *getSurroundingTriangles( int pointno );
     virtual double getXMax() const;
@@ -37,5 +56,14 @@ class TriDecorator : Triangulation
     virtual bool pointInside( double x, double y );
     virtual bool swapEdge( double x, double y );
     virtual QList<int> *getPointsAroundEdge( double x, double y );
+  protected:
 };
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/TriDecorator.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

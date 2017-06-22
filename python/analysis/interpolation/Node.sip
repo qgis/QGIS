@@ -1,20 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Node.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class Node
 {
-%TypeHeaderCode
-#include <Node.h>
+%Docstring
+ Node is a class used by Line3D. It represents a node in the single directed linked list. Associated QgsPoint objects are deleted when the node is deleted.*
 %End
 
+%TypeHeaderCode
+#include "Node.h"
+%End
+  protected:
   public:
     Node();
     Node( const Node &n );
     ~Node();
-    // Node &operator=( const Node &n );
-    /** Returns a pointer to the next element in the linked list*/
     Node *getNext() const;
-    /** Returns a pointer to the QgsPoint object associated with the node*/
+%Docstring
+Returns a pointer to the next element in the linked list
+ :rtype: Node
+%End
     QgsPoint *getPoint() const;
-    /** Sets the pointer to the next node*/
+%Docstring
+Returns a pointer to the QgsPoint object associated with the node
+ :rtype: QgsPoint
+%End
     void setNext( Node *n );
-    /** Sets a new pointer to an associated QgsPoint object*/
+%Docstring
+Sets the pointer to the next node
+%End
     void setPoint( QgsPoint *p );
+%Docstring
+Sets a new pointer to an associated QgsPoint object
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Node.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

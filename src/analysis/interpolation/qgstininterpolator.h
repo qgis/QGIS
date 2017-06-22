@@ -37,7 +37,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y

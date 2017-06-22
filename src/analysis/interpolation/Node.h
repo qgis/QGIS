@@ -44,6 +44,9 @@ class ANALYSIS_EXPORT Node
     void setPoint( QgsPoint *p );
 };
 
+#ifndef SIP_RUN
+
+
 inline Node::Node()
   : mPoint( nullptr )
   , mNext( nullptr )
@@ -76,4 +79,5 @@ inline void Node::setPoint( QgsPoint *p )
   mPoint = p;
 }
 
+#endif
 #endif

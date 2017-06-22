@@ -27,7 +27,7 @@
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {
   public:
-    QgsIDWInterpolator( const QList<LayerData> &layerData );
+    QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
     /** Calculates interpolation value for map coordinates x, y
        \param x x-coordinate (in map units)
