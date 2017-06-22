@@ -485,6 +485,18 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
 
 class CORE_EXPORT QgsDiagramRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+      sipType = sipType_QgsSingleCategoryDiagramRenderer;
+    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+      sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     QgsDiagramRenderer();

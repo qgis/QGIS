@@ -451,6 +451,15 @@ class QgsDiagramRenderer
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"
 %End
+
+%ConvertToSubClassCode
+    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+      sipType = sipType_QgsSingleCategoryDiagramRenderer;
+    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+      sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else
+      sipType = NULL;
+%End
   public:
 
     QgsDiagramRenderer();
