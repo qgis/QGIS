@@ -257,7 +257,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
 void QgsHighlight::updatePosition()
 {
-  // nothing to do here...
+  QgsMapCanvasItem::updatePosition();
 }
 
 void QgsHighlight::paint( QPainter *p )
