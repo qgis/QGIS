@@ -229,7 +229,7 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
-  QRegularExpression splitRx( "^(.*?):(.*)$" );
+  QRegularExpression splitRx( "^(.{3,}):(.*)$" );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
   {

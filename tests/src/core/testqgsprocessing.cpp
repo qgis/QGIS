@@ -1135,6 +1135,11 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->featureCount(), 1L );
   delete layer;
   layer = nullptr;
+
+  //windows style path
+  destination = "d:\\temp\\create_feature_sink.tab";
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  QVERIFY( sink.get() );
 }
 
 void TestQgsProcessing::parameters()
