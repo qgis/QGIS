@@ -28,6 +28,7 @@ QgsMetadataWizard::QgsMetadataWizard( QWidget *parent, QgsMapLayer *layer )
   : QDialog( parent ), mLayer( layer )
 {
   setupUi( this );
+  mMetadata = layer->metadata();
 
   tabWidget->setCurrentIndex( 0 );
   backButton->setEnabled( false );
@@ -77,8 +78,15 @@ void QgsMetadataWizard::nextClicked()
 void QgsMetadataWizard::finishedClicked()
 {
   mLayer->setName( lineEditTitle->text() );
+  mMetadata.setTitle( lineEditTitle->text() );
+
   mLayer->setAbstract( textEditAbstract->toPlainText() );
+  mMetadata.setAbstract( lineEditTitle->text() );
+
   mLayer->setKeywordList( textEditKeywords->toPlainText() );
+
+  // Layer metadata properties
+  mLayer->setMetadata( mMetadata );
   hide();
 }
 

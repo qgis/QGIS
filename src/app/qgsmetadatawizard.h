@@ -19,6 +19,7 @@
 
 #include "qgis_app.h"
 #include "qgsmaplayer.h"
+#include "qgslayermetadata.h"
 #include "ui_qgsmetadatawizard.h"
 
 class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWizard
@@ -39,6 +40,7 @@ class APP_EXPORT QgsMetadataWizard : public QDialog, private Ui::QgsMetadataWiza
     void finishedClicked();
     void updatePanel();
     QgsMapLayer *mLayer = nullptr;
+    QgsLayerMetadata mMetadata;
 };
 
 #endif
