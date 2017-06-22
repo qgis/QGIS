@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
+                       QgsField,
                        QgsFeatureRequest,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
@@ -104,6 +105,15 @@ class Merge(QgisAlgorithm):
                 if not found:
                     fields.append(sfield)
 
+        add_layer_field = False
+        if fields.lookupField('layer') < 0:
+            fields.append(QgsField('layer', QVariant.String, '', 100))
+            add_layer_field = True
+        add_path_field = False
+        if fields.lookupField('path') < 0:
+            fields.append(QgsField('path', QVariant.String, '', 200))
+            add_path_field = True
+
         total = 100.0 / totalFeatureCount
         dest_crs = layers[0].crs()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
@@ -118,6 +128,13 @@ class Merge(QgisAlgorithm):
                 sattributes = feature.attributes()
                 dattributes = []
                 for dindex, dfield in enumerate(fields):
+                    if add_layer_field and dfield.name() == 'layer':
+                        dattributes.append(layer.name())
+                        continue
+                    if add_path_field and dfield.name() == 'path':
+                        dattributes.append(layer.publicSource())
+                        continue
+
                     if (dfield.type() == QVariant.Int, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong):
                         dattribute = 0
                     elif (dfield.type() == QVariant.Double):
