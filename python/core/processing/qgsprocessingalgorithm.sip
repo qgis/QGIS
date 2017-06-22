@@ -292,7 +292,7 @@ class QgsProcessingAlgorithm
 %End
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
  Runs the algorithm using the specified ``parameters``. Algorithms should implement
  their custom processing logic here.

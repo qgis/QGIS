@@ -300,7 +300,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * values such as statistical calculations.
      */
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.
