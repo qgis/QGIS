@@ -59,8 +59,8 @@ def execute(alg, parameters, context=None, feedback=None):
         context = dataobjects.createContext()
 
     try:
-        results = alg.run(parameters, context, feedback)
-        return True, results
+        results, ok = alg.run(parameters, context, feedback)
+        return ok, results
     except GeoAlgorithmExecutionException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
         if feedback is not None:
