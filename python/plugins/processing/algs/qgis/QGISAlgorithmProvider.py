@@ -48,7 +48,6 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RandomExtract import RandomExtract
 # from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 # from .ExtractByLocation import ExtractByLocation
-from .ExtractByExpression import ExtractByExpression
 # from .PointsInPolygon import PointsInPolygon
 # from .PointsInPolygonUnique import PointsInPolygonUnique
 # from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -60,14 +59,11 @@ from .ExtractByExpression import ExtractByExpression
 # from .MeanCoords import MeanCoords
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
-# from .ReprojectLayer import ReprojectLayer
 # from .ExportGeometryInfo import ExportGeometryInfo
-# from .Centroids import Centroids
 # from .Delaunay import Delaunay
 # from .VoronoiPolygons import VoronoiPolygons
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .MultipartToSingleparts import MultipartToSingleparts
 # from .SimplifyGeometries import SimplifyGeometries
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
@@ -76,9 +72,7 @@ from .MultipartToSingleparts import MultipartToSingleparts
 # from .ConvexHull import ConvexHull
 # from .FixedDistanceBuffer import FixedDistanceBuffer
 # from .VariableDistanceBuffer import VariableDistanceBuffer
-from .Clip import Clip
 # from .Difference import Difference
-# from .Dissolve import Dissolve
 # from .Intersection import Intersection
 from .ExtentFromLayer import ExtentFromLayer
 # from .RandomSelection import RandomSelection
@@ -90,7 +84,6 @@ from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
-# from .ExtractByAttribute import ExtractByAttribute
 # from .SelectByAttribute import SelectByAttribute
 from .GridPolygon import GridPolygon
 # from .GridLine import GridLine
@@ -149,7 +142,6 @@ from .BoundingBox import BoundingBox
 from .Boundary import Boundary
 # from .PointOnSurface import PointOnSurface
 # from .OffsetLine import OffsetLine
-# from .PolygonCentroids import PolygonCentroids
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
@@ -203,12 +195,12 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         BasicStatisticsStrings(), BasicStatisticsNumbers(),
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
-        #         ReprojectLayer(), ExportGeometryInfo(), Centroids(),
+        #         ExportGeometryInfo(),
         #         Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
-        #         VariableDistanceBuffer(), Dissolve(), Difference(),
+        #         VariableDistanceBuffer(), Difference(),
         #         Intersection(), Union(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(), RandomExtract(),
@@ -216,7 +208,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
         #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
-        #         ExtractByAttribute(), SelectByAttribute(),
+        #         SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
@@ -241,7 +233,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
         #         PointOnSurface(),
-        #         OffsetLine(), PolygonCentroids(), Translate(),
+        #         OffsetLine(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
         #          Slope(), Ruggedness(), Hillshade(),
         #         Relief(), ZonalStatisticsQgis(),
@@ -265,7 +257,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Boundary(),
                 BoundingBox(),
                 CheckValidity(),
-                Clip(),
                 CreateAttributeIndex(),
                 DeleteColumn(),
                 DeleteHoles(),
@@ -273,10 +264,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 DropGeometry(),
                 ExtentFromLayer(),
-                ExtractByExpression(),
                 GridPolygon(),
-                Merge(),
-                MultipartToSingleparts()
+                Merge()
                 ]
 
         if hasPlotly:
