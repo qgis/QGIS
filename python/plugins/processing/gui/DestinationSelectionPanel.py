@@ -30,7 +30,7 @@ import re
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
@@ -40,10 +40,9 @@ from qgis.core import (QgsDataSourceUri,
                        QgsSettings,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputLayerDefinition,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFolderOutput)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.outputs import OutputVector
-from processing.core.outputs import OutputDirectory
 from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
@@ -80,7 +79,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
                     and alg.provider().supportsNonFileBasedOutput():
                 # use memory layers for temporary files if supported
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
-            else:
+            elif not isinstance(self.parameter, QgsProcessingParameterFolderOutput):
                 self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
         self.btnSelect.clicked.connect(self.selectOutput)
@@ -95,7 +94,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.use_temporary = False
 
     def selectOutput(self):
-        if isinstance(self.parameter, OutputDirectory):
+        if isinstance(self.parameter, QgsProcessingParameterFolderOutput):
             self.selectDirectory()
         else:
             popupMenu = QMenu()
@@ -253,10 +252,16 @@ class DestinationSelectionPanel(BASE, WIDGET):
             settings.setValue('/Processing/encoding', self.encoding)
 
     def selectDirectory(self):
-        lastDir = ''
+        lastDir = self.leText.text()
+        settings = QgsSettings()
+        if not lastDir:
+            lastDir = settings.value("/Processing/LastOutputPath", QDir.homePath())
+
         dirName = QFileDialog.getExistingDirectory(self, self.tr('Select directory'),
                                                    lastDir, QFileDialog.ShowDirsOnly)
-        self.leText.setText(dirName)
+        if dirName:
+            self.leText.setText(QDir.toNativeSeparators(dirName))
+            settings.setValue('/Processing/LastOutputPath', dirName)
 
     def getValue(self):
         key = None
@@ -267,6 +272,9 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
         if not key and self.parameter.flags() & QgsProcessingParameterDefinition.FlagOptional:
             return None
+
+        if isinstance(self.parameter, QgsProcessingParameterFolderOutput):
+            return key
 
         value = QgsProcessingOutputLayerDefinition(key)
         value.createOptions = {'fileEncoding': self.encoding}
