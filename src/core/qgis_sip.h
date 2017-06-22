@@ -153,6 +153,11 @@
 #define SIP_CONVERT_TO_SUBCLASS_CODE(code)
 
 /*
+ * Virtual error handler (/VirtualErrorHandler/)
+ */
+#define SIP_VIRTUALERRORHANDLER(name)
+
+/*
  * Will insert a `%End` directive in sip files
  */
 #define SIP_END
