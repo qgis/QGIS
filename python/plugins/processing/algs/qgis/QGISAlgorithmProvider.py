@@ -58,8 +58,8 @@ from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .Merge import Merge
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .RegularPoints import RegularPoints
 
-# from .RegularPoints import RegularPoints
 # from .SymmetricalDifference import SymmetricalDifference
 # from .VectorSplit import VectorSplit
 # from .RandomExtract import RandomExtract
@@ -200,7 +200,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomSelection(), RandomSelectionWithinSubsets(),
         #         SelectByLocation(), RandomExtract(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
-        #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
+        #         SpatialJoin(),  SymmetricalDifference(),
         #         VectorSplit(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
         #         SelectByAttribute(),
@@ -261,7 +261,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 GridPolygon(),
                 ImportIntoPostGIS(),
                 Merge(),
-                PostGISExecuteSQL()
+                PostGISExecuteSQL(),
+                RegularPoints()
                 ]
 
         if hasPlotly:
