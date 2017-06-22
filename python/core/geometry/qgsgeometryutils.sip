@@ -37,6 +37,12 @@ class QgsGeometryUtils
  :rtype: QgsPoint
 %End
 
+    static double closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt );
+%Docstring
+ Returns measure of nearest point on a geometry for a specified point or NaN if geometry does not have measures
+ :rtype: float
+%End
+
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
 %Docstring
  Returns the distance along a geometry from its first vertex to the specified vertex.

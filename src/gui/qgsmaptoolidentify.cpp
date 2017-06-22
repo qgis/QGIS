@@ -326,6 +326,18 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   }
 }
 
+void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geometry, QgsMapLayer *layer, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes )
+{
+  Q_UNUSED( layer );
+  // measure
+  if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
+  {
+    double measure = QgsGeometryUtils::closestPointMeasure( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
+    QString str = QLocale::system().toString( measure, 'g', 10 );
+    derivedAttributes.insert( QStringLiteral( "Closest point M" ), str );
+  }
+}
+
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
   return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
@@ -392,6 +404,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
       //add details of closest vertex to identify point
       closestVertexAttributes( *curve, vId, layer, derivedAttributes );
+      closestPointAttributes( *curve, layer, layerPoint, derivedAttributes );
 
       // Add the start and end points in as derived attributes
       QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
