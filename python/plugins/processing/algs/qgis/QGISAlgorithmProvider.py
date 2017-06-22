@@ -57,6 +57,7 @@ from .ExtentFromLayer import ExtentFromLayer
 from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .Merge import Merge
+from .PostGISExecuteSQL import PostGISExecuteSQL
 
 # from .RegularPoints import RegularPoints
 # from .SymmetricalDifference import SymmetricalDifference
@@ -122,7 +123,6 @@ from .Merge import Merge
 # from .RandomPointsAlongLines import RandomPointsAlongLines
 # from .PointsToPaths import PointsToPaths
 # from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-# from .PostGISExecuteSQL import PostGISExecuteSQL
 # from .ImportIntoSpatialite import ImportIntoSpatialite
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
@@ -218,7 +218,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomPointsPolygonsVariable(),
         #         RandomPointsAlongLines(), PointsToPaths(),
         #         SpatialiteExecuteSQL(), ImportIntoSpatialite(),
-        #         PostGISExecuteSQL(),
         #         SetVectorStyle(), SetRasterStyle(),
         #         SelectByExpression(), HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
@@ -261,7 +260,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 GridPolygon(),
                 ImportIntoPostGIS(),
-                Merge()
+                Merge(),
+                PostGISExecuteSQL()
                 ]
 
         if hasPlotly:
