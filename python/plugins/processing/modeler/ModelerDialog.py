@@ -522,7 +522,7 @@ class ModelerDialog(BASE, WIDGET):
         MARGIN = 20
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
-        if len(self.model.parameterComponents() > 0):
+        if len(self.model.parameterComponents()) > 0:
             maxX = max([i.position().x() for i in list(self.model.parameterComponents().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
         else:
