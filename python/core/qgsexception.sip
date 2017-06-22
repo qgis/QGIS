@@ -10,6 +10,18 @@
 %End
 };
 
+%Exception QgsProcessingException(SIP_Exception) /PyName=QgsProcessingException/
+{
+%TypeHeaderCode
+#include <qgsprocessingexception.h>
+%End
+%RaiseCode
+  SIP_BLOCK_THREADS
+  PyErr_SetString(sipException_QgsProcessingException, sipExceptionRef.what().toUtf8().constData() );
+  SIP_UNBLOCK_THREADS
+%End
+};
+
 %Exception QgsException(SIP_Exception) /PyName=QgsException/
 {
 %TypeHeaderCode
