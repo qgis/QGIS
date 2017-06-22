@@ -1321,6 +1321,23 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.defaultValue(), QVariant( true ) );
   param.setDefaultValue( QVariant() );
   QCOMPARE( param.defaultValue(), QVariant() );
+
+  QVariantMap metadata;
+  metadata.insert( "p1", 5 );
+  metadata.insert( "p2", 7 );
+  param.setMetadata( metadata );
+  QCOMPARE( param.metadata(), metadata );
+  param.metadata().insert( "p3", 9 );
+  QCOMPARE( param.metadata().value( "p3" ).toInt(), 9 );
+
+  QVariantMap map = param.toVariantMap();
+  QgsProcessingParameterBoolean fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), param.name() );
+  QCOMPARE( fromMap.description(), param.description() );
+  QCOMPARE( fromMap.flags(), param.flags() );
+  QCOMPARE( fromMap.defaultValue(), param.defaultValue() );
+  QCOMPARE( fromMap.metadata(), param.metadata() );
 }
 
 void TestQgsProcessing::parameterBoolean()

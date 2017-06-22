@@ -808,6 +808,7 @@ QVariantMap QgsProcessingParameterDefinition::toVariantMap() const
   map.insert( QStringLiteral( "description" ), mDescription );
   map.insert( QStringLiteral( "default" ), mDefault );
   map.insert( QStringLiteral( "flags" ), static_cast< int >( mFlags ) );
+  map.insert( QStringLiteral( "metadata" ), mMetadata );
   return map;
 }
 
@@ -817,6 +818,7 @@ bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
   mDescription = map.value( QStringLiteral( "description" ) ).toString();
   mDefault = map.value( QStringLiteral( "default" ) );
   mFlags = static_cast< Flags >( map.value( QStringLiteral( "flags" ) ).toInt() );
+  mMetadata = map.value( QStringLiteral( "metadata" ) ).toMap();
   return true;
 }
 

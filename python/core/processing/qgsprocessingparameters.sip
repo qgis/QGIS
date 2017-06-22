@@ -315,7 +315,24 @@ class QgsProcessingParameterDefinition
  :rtype: bool
 %End
 
+
+    QVariantMap &metadata();
+%Docstring
+ Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
+ in order to customise their appearance and behavior.
+.. seealso:: setMetadata()
+ :rtype: QVariantMap
+%End
+
+    void setMetadata( const QVariantMap &metadata );
+%Docstring
+ Sets the parameter's freeform ``metadata``. This is mostly used by parameter widget wrappers
+ in order to customise their appearance and behavior.
+.. seealso:: metadata()
+%End
+
   protected:
+
 
 
 
