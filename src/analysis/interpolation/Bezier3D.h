@@ -35,14 +35,14 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 
     virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
-    virtual void add( ParametricLine *pl ) override;
+    virtual void add( ParametricLine *pl SIP_TRANSFER ) override;
     //! Calculates the first derivative and assigns it to v
-    virtual void calcFirstDer( float t, Vector3D *v ) override;
+    virtual void calcFirstDer( float t, Vector3D *v SIP_OUT ) override;
     //! Calculates the second derivative and assigns it to v
-    virtual void calcSecDer( float t, Vector3D *v ) override;
+    virtual void calcSecDer( float t, Vector3D *v SIP_OUT ) override;
     //virtual QgsPoint calcPoint(float t);
     //! Calculates the point on the curve and assigns it to p
-    virtual void calcPoint( float t, QgsPoint *p ) override;
+    virtual void calcPoint( float t, QgsPoint *p SIP_OUT ) override;
     //! Changes the order of control points
     virtual void changeDirection() override;
     //virtual void draw(QPainter* p);
@@ -63,6 +63,8 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     virtual void setControlPoly( QVector<QgsPoint *> *cp ) override;
 
 };
+
+#ifndef SIP_RUN
 
 //-----------------------------------------------constructors, destructor and assignment operator------------------------------
 
@@ -127,6 +129,8 @@ inline void Bezier3D::setControlPoly( QVector<QgsPoint *> *cp )
   mControlPoly = cp;
   mDegree = mControlPoly->count() - 1;
 }
+
+#endif
 
 #endif
 

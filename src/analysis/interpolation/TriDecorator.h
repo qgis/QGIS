@@ -35,11 +35,11 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     virtual void addTriangulation( Triangulation *t );
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;
-    virtual bool calcNormal( double x, double y, Vector3D *result ) override;
-    virtual bool calcPoint( double x, double y, QgsPoint *result ) override;
+    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
     virtual QgsPoint *getPoint( unsigned int i ) const override;
     virtual int getNumberOfPoints() const override;
-    bool getTriangle( double x, double y, QgsPoint *p1, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) override;
+    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT )  SIP_PYNAME( getTriangleVertices ) override;
     bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
     virtual int getOppositePoint( int p1, int p2 ) override;
     virtual QList<int> *getSurroundingTriangles( int pointno ) override;
@@ -62,6 +62,8 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     Triangulation *mTIN = nullptr;
 };
 
+#ifndef SIP_RUN
+
 inline TriDecorator::TriDecorator(): mTIN( nullptr )
 {
 
@@ -82,5 +84,6 @@ inline void TriDecorator::addTriangulation( Triangulation *t )
   mTIN = t;
 }
 
+#endif
 #endif
 

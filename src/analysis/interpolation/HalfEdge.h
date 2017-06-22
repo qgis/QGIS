@@ -63,6 +63,9 @@ class ANALYSIS_EXPORT HalfEdge
     void setForced( bool f );
 };
 
+#ifndef SIP_RUN
+
+
 inline HalfEdge::HalfEdge(): mDual( -10 ), mNext( -10 ), mPoint( -10 ), mBreak( false ), mForced( false )
 {
 
@@ -122,5 +125,7 @@ inline void HalfEdge::setForced( bool f )
 {
   mForced = f;
 }
+
+#endif
 
 #endif
