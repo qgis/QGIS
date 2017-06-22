@@ -100,10 +100,10 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual QList<QgsSymbol *> selectedSymbols() { return QList<QgsSymbol *>(); }
     virtual void refreshSymbolView() {}
 
-    //! Shows GUI to setup data-defined size legend.
-    //! Returns newly open panel - may be null if it could not be opened. Ownership is not transferred.
+    //! Creates widget to setup data-defined size legend.
+    //! Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
     //! \since QGIS 3.0
-    QgsDataDefinedSizeLegendWidget *openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend );
+    QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) SIP_FACTORY;
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
