@@ -18,6 +18,7 @@
 
 #include "qgsattributes.h"
 #include "qgscolorramp.h"
+#include "qgsdatadefinedsizelegend.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsinvertedpolygonrenderer.h"
@@ -503,6 +504,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyRendererData( r );
@@ -1037,6 +1039,13 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     labelFormat.setFromDomElement( labelFormatElem );
     r->setLabelFormat( labelFormat );
   }
+
+  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  if ( !ddsLegendSizeElem.isNull() )
+  {
+    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+  }
+
   // TODO: symbol levels
   return r;
 }
@@ -1133,6 +1142,13 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
   }
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
 
+  if ( mDataDefinedSizeLegend )
+  {
+    QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
+    mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
+    rendererElem.appendChild( ddsLegendElem );
+  }
+
   return rendererElem;
 }
 
@@ -1149,8 +1165,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::baseLegendSymbolItems() const
 
 QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolList list;
-  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -1172,29 +1187,16 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
       }
     }
 
-    if ( !ddSize || !ddSize.isActive() )
+    if ( ddSize && ddSize.isActive() )
     {
-      return baseLegendSymbolItems();
-    }
+      QgsLegendSymbolList lst;
 
-    if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
-    {
-      QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
-                                 : ddSize.field(), QString() );
-      list << title;
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
-      {
-        QgsLegendSymbolItem si( mSourceSymbol.get(), QString::number( v ), QString() );
-        QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-        s->setDataDefinedSize( QgsProperty() );
-        s->setSize( sizeTransformer->size( v ) );
-        list << si;
-      }
-      // now list the graduated symbols
-      const QgsLegendSymbolList list2 = baseLegendSymbolItems();
-      Q_FOREACH ( const QgsLegendSymbolItem &item, list2 )
-        list << item;
-      return list;
+      QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
+      ddSizeLegend.updateFromSymbolAndProperty( static_cast<const QgsMarkerSymbol *>( mSourceSymbol.get() ), ddSize );
+      lst += ddSizeLegend.legendSymbolList();
+
+      lst += baseLegendSymbolItems();
+      return lst;
     }
   }
 
@@ -1621,6 +1623,16 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
   r->setOrderByEnabled( renderer->orderByEnabled() );
 
   return r;
+}
+
+void QgsGraduatedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegend.reset( settings );
+}
+
+QgsDataDefinedSizeLegend *QgsGraduatedSymbolRenderer::dataDefinedSizeLegend() const
+{
+  return mDataDefinedSizeLegend.get();
 }
 
 const char *QgsGraduatedSymbolRenderer::graduatedMethodStr( GraduatedMethod method )

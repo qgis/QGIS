@@ -21,6 +21,8 @@
 
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
 #include "qgslabelengineconfigdialog.h"
@@ -208,8 +210,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mScaleRangeWidget->setScaleRange( layer->minimumScale(), layer->maximumScale() );
     mShowAllCheckBox->setChecked( true );
     mCheckBoxAttributeLegend->setChecked( true );
-    mCheckBoxSizeLegend->setChecked( false );
-    mSizeLegendSymbol.reset( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
 
     switch ( layerType )
     {
@@ -248,10 +248,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
     mLinearScaleFrame->setEnabled( mAttributeBasedScalingRadio->isChecked() );
     mCheckBoxAttributeLegend->setChecked( dr->attributeLegend() );
-    mCheckBoxSizeLegend->setChecked( dr->sizeLegend() );
-    mSizeLegendSymbol.reset( dr->sizeLegendSymbol() ? dr->sizeLegendSymbol()->clone() : QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
-    mButtonSizeLegendSymbol->setIcon( icon );
 
     //assume single category or linearly interpolated diagram renderer for now
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
@@ -361,6 +357,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         {
           mSizeFieldExpressionWidget->setField( lidr->classificationField() );
         }
+
+        mSizeLegend.reset( lidr->dataDefinedSizeLegend() ? new QgsDataDefinedSizeLegend( *lidr->dataDefinedSizeLegend() ) : nullptr );
       }
     }
 
@@ -414,6 +412,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
   registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
   registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
+
+  connect( mButtonSizeLegendSettings, &QPushButton::clicked, this, &QgsDiagramProperties::showSizeLegendDialog );
 }
 
 QgsDiagramProperties::~QgsDiagramProperties()
@@ -811,12 +811,13 @@ void QgsDiagramProperties::apply()
       dr->setClassificationField( sizeFieldNameOrExp );
     }
     dr->setDiagramSettings( ds );
+
+    dr->setDataDefinedSizeLegend( mSizeLegend ? new QgsDataDefinedSizeLegend( *mSizeLegend ) : nullptr );
+
     renderer = dr;
   }
   renderer->setDiagram( diagram );
   renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
-  renderer->setSizeLegend( mCheckBoxSizeLegend->isChecked() );
-  renderer->setSizeLegendSymbol( mSizeLegendSymbol->clone() );
   mLayer->setDiagramRenderer( renderer );
 
   QgsDiagramLayerSettings dls;
@@ -933,38 +934,28 @@ void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index 
   chkLineOrientationDependent->setEnabled( linePlacementEnabled );
 }
 
-void QgsDiagramProperties::on_mButtonSizeLegendSymbol_clicked()
-{
-  QgsMarkerSymbol *newSymbol = mSizeLegendSymbol->clone();
-  QgsSymbolWidgetContext context;
-  context.setMapCanvas( mMapCanvas );
-  QgsExpressionContext ec = createExpressionContext();
-  context.setExpressionContext( &ec );
-
-  QgsSymbolSelectorDialog d( newSymbol, QgsStyle::defaultStyle(), mLayer, this );
-  d.setContext( context );
-
-  if ( d.exec() == QDialog::Accepted )
-  {
-    mSizeLegendSymbol.reset( newSymbol );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSizeLegendSymbol.get(), mButtonSizeLegendSymbol->iconSize() );
-    mButtonSizeLegendSymbol->setIcon( icon );
-  }
-  else
-  {
-    delete newSymbol;
-  }
-}
-
 void QgsDiagramProperties::scalingTypeChanged()
 {
-  if ( !mAttributeBasedScalingRadio->isChecked() )
-  {
-    mCheckBoxSizeLegend->setChecked( false );
-    mCheckBoxSizeLegend->setEnabled( false );
-  }
-  else
-  {
-    mCheckBoxSizeLegend->setEnabled( true );
-  }
+  mButtonSizeLegendSettings->setEnabled( mAttributeBasedScalingRadio->isChecked() );
+}
+
+void QgsDiagramProperties::showSizeLegendDialog()
+{
+  // prepare size transformer
+  bool isExpression;
+  QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
+  QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
+  ddSize.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
+
+  QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
+
+  QDialog dlg;
+  dlg.setLayout( new QVBoxLayout() );
+  dlg.setWindowTitle( panel->panelTitle() );
+  dlg.layout()->addWidget( panel );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  dlg.layout()->addWidget( buttonBox );
+  if ( dlg.exec() )
+    mSizeLegend.reset( panel->dataDefinedSizeLegend() );
 }

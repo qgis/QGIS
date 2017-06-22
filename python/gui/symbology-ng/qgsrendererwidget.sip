@@ -86,6 +86,12 @@ and by connecting the slot contextMenuViewCategories(const QPoint&)*
 %End
     virtual void refreshSymbolView();
 
+    QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) /Factory/;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QgsDataDefinedSizeLegendWidget
+%End
+
   protected slots:
     void  contextMenuViewCategories( QPoint p );
     void changeSymbolColor();

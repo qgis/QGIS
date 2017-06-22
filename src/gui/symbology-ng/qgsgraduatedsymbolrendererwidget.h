@@ -127,6 +127,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
     void toggleMethodWidgets( int idx );
+    void dataDefinedSizeLegend();
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );

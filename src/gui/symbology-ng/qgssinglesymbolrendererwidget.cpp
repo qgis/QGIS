@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgssinglesymbolrendererwidget.h"
 
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssymbol.h"
 
@@ -23,6 +25,7 @@
 #include "qgssymbolselectordialog.h"
 
 #include <QMenu>
+
 
 QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -62,7 +65,14 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *la
   // advanced actions - data defined rendering
   QMenu *advMenu = mSelector->advancedMenu();
 
-  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  QAction *actionLevels = advMenu->addAction( tr( "Symbol levels..." ) );
+  connect( actionLevels, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::showSymbolLevels );
+  if ( mSingleSymbol->type() == QgsSymbol::Marker )
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsSingleSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 }
 
 QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
@@ -104,4 +114,19 @@ void QgsSingleSymbolRendererWidget::changeSingleSymbol()
 void QgsSingleSymbolRendererWidget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
+}
+
+void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
+{
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  if ( panel )
+  {
+    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    {
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      emit widgetChanged();
+    } );
+    openPanel( panel );  // takes ownership of the panel
+  }
 }

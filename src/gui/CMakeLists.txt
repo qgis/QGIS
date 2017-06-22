@@ -18,6 +18,7 @@ SET(QGIS_GUI_SRCS
   symbology-ng/qgscategorizedsymbolrendererwidget.cpp
   symbology-ng/qgscptcitycolorrampdialog.cpp
   symbology-ng/qgsdashspacedialog.cpp
+  symbology-ng/qgsdatadefinedsizelegendwidget.cpp
   symbology-ng/qgsellipsesymbollayerwidget.cpp
   symbology-ng/qgsgraduatedhistogramwidget.cpp
   symbology-ng/qgsgraduatedsymbolrendererwidget.cpp
@@ -493,6 +494,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgscategorizedsymbolrendererwidget.h
   symbology-ng/qgscptcitycolorrampdialog.h
   symbology-ng/qgsdashspacedialog.h
+  symbology-ng/qgsdatadefinedsizelegendwidget.h
   symbology-ng/qgsellipsesymbollayerwidget.h
   symbology-ng/qgsgraduatedhistogramwidget.h
   symbology-ng/qgsgraduatedsymbolrendererwidget.h

@@ -16,11 +16,13 @@
 #ifndef QGSLEGENDSYMBOLITEMV2_H
 #define QGSLEGENDSYMBOLITEMV2_H
 
+#include <memory>
 #include <QString>
 #include "qgis.h"
 
 #include "qgis_core.h"
 
+class QgsDataDefinedSizeLegend;
 class QgsSymbol;
 
 /** \ingroup core
@@ -72,6 +74,21 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! Set symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
+    /**
+     * Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
+     * rather than QgsSymbolLegendNode instance as usual. Passing null removes any data-defined size legend settings.
+     *
+     * Takes ownership of the settings object.
+     * \since QGIS 3.0
+     */
+    void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings SIP_TRANSFER );
+
+    /**
+     * Returns extra information for data-defined size legend rendering. Normally it returns null.
+     * \since QGIS 3.0
+     */
+    QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
+
   private:
     //! symbol. owned by the struct. can be null.
     QgsSymbol *mSymbol = nullptr;
@@ -83,6 +100,10 @@ class CORE_EXPORT QgsLegendSymbolItem
     bool mCheckable;
 
     QgsSymbol *mOriginalSymbolPointer = nullptr;
+
+    //! optional pointer to data-defined legend size settings - if set, the output legend
+    //! node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegendSettings;
 
     // additional data that may be used for filtering
 

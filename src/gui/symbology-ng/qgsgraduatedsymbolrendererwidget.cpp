@@ -15,6 +15,8 @@
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgspanelwidget.h"
 
+#include "qgsdatadefinedsizelegend.h"
+#include "qgsdatadefinedsizelegendwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -511,6 +513,12 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
+  {
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend..." ) );
+    // only from Qt 5.6 there is convenience addAction() with new style connection
+    connect( actionDdsLegend, &QAction::triggered, this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
+  }
 
   btnAdvanced->setMenu( advMenu );
 
@@ -1164,5 +1172,20 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
       mModel->addClass( *rIt );
     }
     emit widgetChanged();
+  }
+}
+
+void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
+{
+  QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol ); // this should be only enabled for marker symbols
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  if ( panel )
+  {
+    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    {
+      mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
+      emit widgetChanged();
+    } );
+    openPanel( panel );  // takes ownership of the panel
   }
 }

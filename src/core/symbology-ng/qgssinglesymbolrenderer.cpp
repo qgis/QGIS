@@ -18,6 +18,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -37,6 +38,10 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   , mSymbol( symbol )
 {
   Q_ASSERT( symbol );
+}
+
+QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
+{
 }
 
 QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
@@ -95,6 +100,7 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::clone() const
 {
   QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
   copyRendererData( r );
   return r;
 }
@@ -152,6 +158,12 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
     convertSymbolSizeScale( r->mSymbol.get(),
                             QgsSymbolLayerUtils::decodeScaleMethod( sizeScaleElem.attribute( QStringLiteral( "scalemethod" ) ) ),
                             sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
+  }
+
+  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  if ( !ddsLegendSizeElem.isNull() )
+  {
+    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
 
   // TODO: symbol levels
@@ -275,36 +287,31 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
   }
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
 
+  if ( mDataDefinedSizeLegend )
+  {
+    QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
+    mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
+    rendererElem.appendChild( ddsLegendElem );
+  }
+
   return rendererElem;
 }
 
 QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolList lst;
-  if ( mSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSymbol->type() == QgsSymbol::Marker )
   {
     const QgsMarkerSymbol *symbol = static_cast<const QgsMarkerSymbol *>( mSymbol.get() );
     QgsProperty sizeDD( symbol->dataDefinedSize() );
     if ( sizeDD && sizeDD.isActive() )
     {
-      if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( sizeDD.transformer() ) )
-      {
-        QgsLegendSymbolItem title( nullptr, sizeDD.propertyType() == QgsProperty::ExpressionBasedProperty ? sizeDD.expressionString()
-                                   : sizeDD.field(), QString() );
-        lst << title;
-        Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
-        {
-          QgsLegendSymbolItem si( mSymbol.get(), QString::number( v ), QString() );
-          QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-          s->setDataDefinedSize( QgsProperty() );
-          s->setSize( sizeTransformer->size( v ) );
-          lst << si;
-        }
-        return lst;
-      }
+      QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
+      ddSizeLegend.updateFromSymbolAndProperty( static_cast<const QgsMarkerSymbol *>( mSymbol.get() ), sizeDD );
+      return ddSizeLegend.legendSymbolList();
     }
   }
 
+  QgsLegendSymbolList lst;
   lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QString() );
   return lst;
 }
@@ -359,4 +366,14 @@ QgsSingleSymbolRenderer *QgsSingleSymbolRenderer::convertFromRenderer( const Qgs
   }
 
   return r;
+}
+
+void QgsSingleSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegend.reset( settings );
+}
+
+QgsDataDefinedSizeLegend *QgsSingleSymbolRenderer::dataDefinedSizeLegend() const
+{
+  return mDataDefinedSizeLegend.get();
 }

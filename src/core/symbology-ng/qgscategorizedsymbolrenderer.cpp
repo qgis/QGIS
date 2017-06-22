@@ -16,6 +16,7 @@
 
 #include "qgscategorizedsymbolrenderer.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
@@ -165,6 +166,10 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
     }
     mCategories << cat;
   }
+}
+
+QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer()
+{
 }
 
 void QgsCategorizedSymbolRenderer::rebuildHash()
@@ -466,6 +471,7 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::clone() const
     r->setSourceColorRamp( mSourceColorRamp->clone() );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setDataDefinedSizeLegend( mDataDefinedSizeLegend ? new QgsDataDefinedSizeLegend( *mDataDefinedSizeLegend ) : nullptr );
 
   copyRendererData( r );
   return r;
@@ -653,6 +659,12 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
     }
   }
 
+  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  if ( !ddsLegendSizeElem.isNull() )
+  {
+    r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+  }
+
   // TODO: symbol levels
   return r;
 }
@@ -727,6 +739,13 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
   }
   rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
 
+  if ( mDataDefinedSizeLegend )
+  {
+    QDomElement ddsLegendElem = doc.createElement( QStringLiteral( "data-defined-size-legend" ) );
+    mDataDefinedSizeLegend->writeXml( ddsLegendElem, context );
+    rendererElem.appendChild( ddsLegendElem );
+  }
+
   return rendererElem;
 }
 
@@ -744,8 +763,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::baseLegendSymbolItems() const
 
 QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
 {
-  QgsLegendSymbolList lst;
-  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
+  if ( mDataDefinedSizeLegend && mSourceSymbol && mSourceSymbol->type() == QgsSymbol::Marker )
   {
     // check that all symbols that have the same size expression
     QgsProperty ddSize;
@@ -767,28 +785,15 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
       }
     }
 
-    if ( !ddSize || !ddSize.isActive() )
+    if ( ddSize && ddSize.isActive() )
     {
-      return baseLegendSymbolItems();
-    }
+      QgsLegendSymbolList lst;
 
-    if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
-    {
-      QgsLegendSymbolItem title( nullptr, ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString()
-                                 : ddSize.field(), QString() );
-      lst << title;
-      Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
-      {
-        QgsLegendSymbolItem si( mSourceSymbol.get(), QString::number( v ), QString() );
-        QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( si.symbol() );
-        s->setDataDefinedSize( QgsProperty() );
-        s->setSize( sizeTransformer->size( v ) );
-        lst << si;
-      }
-      // now list the categorized symbols
-      const QgsLegendSymbolList list2 = baseLegendSymbolItems();
-      Q_FOREACH ( const QgsLegendSymbolItem &item, list2 )
-        lst << item;
+      QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
+      ddSizeLegend.updateFromSymbolAndProperty( static_cast<const QgsMarkerSymbol *>( mSourceSymbol.get() ), ddSize );
+      lst += ddSizeLegend.legendSymbolList();
+
+      lst += baseLegendSymbolItems();
       return lst;
     }
   }
@@ -941,4 +946,14 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
   r->setOrderByEnabled( renderer->orderByEnabled() );
 
   return r;
+}
+
+void QgsCategorizedSymbolRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
+{
+  mDataDefinedSizeLegend.reset( settings );
+}
+
+QgsDataDefinedSizeLegend *QgsCategorizedSymbolRenderer::dataDefinedSizeLegend() const
+{
+  return mDataDefinedSizeLegend.get();
 }

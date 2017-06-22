@@ -142,6 +142,7 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgscrscache.cpp
   qgsdartmeasurement.cpp
+  qgsdatadefinedsizelegend.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
@@ -739,6 +740,7 @@ SET(QGIS_CORE_HDRS
   qgscrscache.h
   qgscsexception.h
   qgsdartmeasurement.h
+  qgsdatadefinedsizelegend.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
