@@ -114,13 +114,13 @@ void TestQgsDataDefinedSizeLegend::testBasic()
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
-  QImage imgBottom = settings.collapsedLegendImage( context, 1 );
+  QImage imgBottom = settings.collapsedLegendImage( context, Qt::white, 1 );
   imgBottom.save( _fileNameForTest( "basic_bottom" ) );
   QVERIFY( _verifyImage( "basic_bottom", mReport ) );
 
   settings.setVerticalAlignment( QgsDataDefinedSizeLegend::AlignCenter );
 
-  QImage imgCenter = settings.collapsedLegendImage( context, 1 );
+  QImage imgCenter = settings.collapsedLegendImage( context, Qt::white, 1 );
   imgCenter.save( _fileNameForTest( "basic_center" ) );
   QVERIFY( _verifyImage( "basic_center", mReport ) );
 }
@@ -149,7 +149,7 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
-  QImage img = settings.collapsedLegendImage( context, 1 );
+  QImage img = settings.collapsedLegendImage( context, Qt::white, 1 );
   img.save( _fileNameForTest( "crowded" ) );
 
   QVERIFY( _verifyImage( "crowded", mReport ) );

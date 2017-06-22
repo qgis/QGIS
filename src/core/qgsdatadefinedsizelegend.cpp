@@ -261,7 +261,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 }
 
 
-QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context, double paddingMM ) const
+QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor, double paddingMM ) const
 {
   if ( mType != LegendCollapsed || mSizeClasses.isEmpty() || !mSymbol )
     return QImage();
@@ -276,7 +276,7 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );
   img.setDotsPerMeterX( dpm );
   img.setDotsPerMeterY( dpm );
-  img.fill( Qt::transparent );
+  img.fill( backgroundColor );
 
   QPainter painter( &img );
   painter.setRenderHint( QPainter::Antialiasing, true );

@@ -121,7 +121,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
 
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
-    QImage collapsedLegendImage( QgsRenderContext &context, double paddingMM = 1 ) const;
+    QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
 
     //! Creates instance from given element and returns it (caller takes ownership). Returns null on error.
     static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) SIP_FACTORY;

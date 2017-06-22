@@ -149,7 +149,7 @@ Generates legend symbol items according to the configuration
 Does nothing if legend is not configured as collapsed.
 %End
 
-    QImage collapsedLegendImage( QgsRenderContext &context, double paddingMM = 1 ) const;
+    QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
 %Docstring
 Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
  :rtype: QImage
