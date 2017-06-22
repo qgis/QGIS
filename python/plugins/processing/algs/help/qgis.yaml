@@ -312,7 +312,7 @@ qgis:mergelines: >
 qgis:mergevectorlayers: >
   This algorithm combines multiple vector layers of the same geometry type into a single one.
 
-  If attributes tables are different, the attribute table of the resulting layer will contain the attributes from both input layers.
+  If attributes tables are different, the attribute table of the resulting layer will contain the attributes from all input layers. New attributes will be added for the original layer name and source.
 
   The layers will all be reprojected to match the coordinate reference system of the first input layer.
 
