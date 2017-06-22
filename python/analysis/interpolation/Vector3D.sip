@@ -74,6 +74,9 @@ Sets the z-component of the vector
 %Docstring
 Standardises the vector
 %End
+
+  private:
+    Vector3D( const Vector3D &v );
 };
 
 /************************************************************************

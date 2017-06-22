@@ -41,7 +41,7 @@ can be an attribute or the z-coordinates in case of 25D types*
       QgsVectorLayer *vectorLayer;
       bool zCoordInterpolation;
       int interpolationAttribute;
-      InputType mInputType;
+      QgsInterpolator::InputType mInputType;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );

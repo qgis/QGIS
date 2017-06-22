@@ -60,6 +60,11 @@ class ANALYSIS_EXPORT Vector3D
     void setZ( double z );
     //! Standardises the vector
     void standardise();
+
+  private:
+#ifdef SIP_RUN
+    Vector3D( const Vector3D &v );
+#endif
 };
 
 #ifndef SIP_RUN
