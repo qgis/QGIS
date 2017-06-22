@@ -44,6 +44,10 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id SIP_OUT );
 
+    /** Returns measure of nearest point on a geometry for a specified point or NaN if geometry does not have measures
+     */
+    static double closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt );
+
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
      * \param id vertex id to find distance to

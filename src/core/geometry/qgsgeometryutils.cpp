@@ -93,6 +93,35 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   return minDistPoint;
 }
 
+double QgsGeometryUtils::closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt )
+{
+  if ( QgsWkbTypes::hasM( geom.wkbType() ) )
+  {
+    QgsPoint closestPoint;
+    QgsVertexId vertexAfter;
+    bool leftOf;
+    geom.closestSegment( pt, closestPoint, vertexAfter, &leftOf, DEFAULT_SEGMENT_EPSILON );
+    if ( vertexAfter.isValid() )
+    {
+      QgsPoint pointAfter = geom.vertexAt( vertexAfter );
+      if ( vertexAfter.vertex > 0 )
+      {
+        QgsVertexId vertexBefore = vertexAfter;
+        vertexBefore.vertex--;
+        QgsPoint pointBefore = geom.vertexAt( vertexBefore );
+        double length = pointBefore.distance( pointAfter );
+        double distance = pointBefore.distance( closestPoint );
+        return pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length;
+      }
+      else
+      {
+        return pointAfter.m();
+      }
+    }
+  }
+  return std::numeric_limits<double>::quiet_NaN();
+}
+
 double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
 {
   double currentDist = 0;
