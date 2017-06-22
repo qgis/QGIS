@@ -58,12 +58,13 @@ from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .Merge import Merge
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .RandomExtract import RandomExtract
+from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
 
-# from .RandomExtract import RandomExtract
-# from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
+
 # from .ExtractByLocation import ExtractByLocation
 # from .PointsInPolygon import PointsInPolygon
 # from .PointsInPolygonUnique import PointsInPolygonUnique
@@ -198,8 +199,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         VariableDistanceBuffer(), Difference(),
         #         Intersection(), Union(),
         #         RandomSelection(), RandomSelectionWithinSubsets(),
-        #         SelectByLocation(), RandomExtract(),
-        #         RandomExtractWithinSubsets(), ExtractByLocation(),
+        #         SelectByLocation(),
+        #         ExtractByLocation(),
         #         SpatialJoin(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
         #         SelectByAttribute(),
@@ -261,6 +262,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 Merge(),
                 PostGISExecuteSQL(),
+                RandomExtract(),
+                RandomExtractWithinSubsets(),
                 RegularPoints(),
                 SymmetricalDifference(),
                 VectorSplit()
