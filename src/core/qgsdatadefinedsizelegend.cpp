@@ -347,7 +347,8 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
 
   if ( mSymbol )
   {
-    QgsSymbolLayerUtils::saveSymbol( "source", mSymbol.get(), doc, context );
+    QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( "source", mSymbol.get(), doc, context );
+    elem.appendChild( elemSymbol );
   }
 
   QDomElement elemFont = doc.createElement( "font" );
