@@ -60,8 +60,8 @@ from .Merge import Merge
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RegularPoints import RegularPoints
 from .SymmetricalDifference import SymmetricalDifference
+from .VectorSplit import VectorSplit
 
-# from .VectorSplit import VectorSplit
 # from .RandomExtract import RandomExtract
 # from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 # from .ExtractByLocation import ExtractByLocation
@@ -201,7 +201,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(), RandomExtract(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
         #         SpatialJoin(),
-        #         VectorSplit(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
         #         SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
@@ -263,7 +262,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Merge(),
                 PostGISExecuteSQL(),
                 RegularPoints(),
-                SymmetricalDifference()
+                SymmetricalDifference(),
+                VectorSplit()
                 ]
 
         if hasPlotly:
