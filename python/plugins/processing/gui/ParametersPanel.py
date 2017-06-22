@@ -38,7 +38,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterOutput,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorOutput)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -47,8 +48,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
-from processing.core.parameters import ParameterVector, ParameterExtent, ParameterPoint
-from processing.core.outputs import OutputTable
+
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -157,7 +157,7 @@ class ParametersPanel(BASE, WIDGET):
             widget = DestinationSelectionPanel(output, self.alg)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
-            if isinstance(output, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, OutputTable)):
+            if isinstance(output, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
                 check = QCheckBox()
                 check.setText(self.tr('Open output file after running algorithm'))
                 check.setChecked(True)

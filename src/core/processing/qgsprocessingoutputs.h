@@ -53,6 +53,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputNumber;
     else if ( sipCpp->type() == "outputString" )
       sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == "outputFolder" )
+      sipType = sipType_QgsProcessingOutputFolder;
     SIP_END
 #endif
 
@@ -217,6 +219,23 @@ class CORE_EXPORT QgsProcessingOutputString : public QgsProcessingOutputDefiniti
     QString type() const override { return QStringLiteral( "outputString" ); }
 };
 
+/**
+ * \class QgsProcessingOutputFolder
+ * \ingroup core
+ * A folder output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputFolder.
+     */
+    QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
+
+    QString type() const override { return QStringLiteral( "outputFolder" ); }
+};
 
 #endif // QGSPROCESSINGOUTPUTS_H
 

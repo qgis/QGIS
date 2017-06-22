@@ -2313,7 +2313,7 @@ bool QgsProcessingParameterFolderOutput::checkValueIsAcceptable( const QVariant 
 
 QgsProcessingOutputDefinition *QgsProcessingParameterFolderOutput::toOutputDefinition() const
 {
-  return nullptr;
+  return new QgsProcessingOutputFolder( name(), description() );
 }
 
 QString QgsProcessingParameterFolderOutput::defaultFileExtension() const
