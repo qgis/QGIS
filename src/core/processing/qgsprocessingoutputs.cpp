@@ -54,3 +54,8 @@ QgsProcessingOutputNumber::QgsProcessingOutputNumber( const QString &name, const
 QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{
+}

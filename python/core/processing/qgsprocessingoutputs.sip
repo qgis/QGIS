@@ -38,6 +38,8 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputNumber;
     else if ( sipCpp->type() == "outputString" )
       sipType = sipType_QgsProcessingOutputString;
+    else if ( sipCpp->type() == "outputFolder" )
+      sipType = sipType_QgsProcessingOutputFolder;
 %End
   public:
 
@@ -206,6 +208,25 @@ class QgsProcessingOutputString : QgsProcessingOutputDefinition
     virtual QString type() const;
 };
 
+class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
+{
+%Docstring
+ A folder output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputFolder.
+%End
+
+    virtual QString type() const;
+};
 
 
 
