@@ -25,10 +25,15 @@
  * \class QgsProcessingException
  * \ingroup core
  * Custom exception class for processing related exceptions.
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingException : public QgsException
 {
   public:
+
+    /**
+     * Constructor for QgsProcessingException.
+     */
     QgsProcessingException( const QString &what ) : QgsException( what ) {}
 
 };

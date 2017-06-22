@@ -23,6 +23,9 @@
 #include "qgsrectangle.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsprocessingexception.h"
+#include "qgsmessagelog.h"
+#include "qgsprocessingfeedback.h"
 
 QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 {
@@ -311,9 +314,24 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
   return false;
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
 {
-  return processAlgorithm( parameters, context, feedback );
+  if ( ok )
+    *ok = false;
+
+  QVariantMap results;
+  try
+  {
+    results = processAlgorithm( parameters, context, feedback );
+    if ( ok )
+      *ok = true;
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
+  }
+  return results;
 }
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const

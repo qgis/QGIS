@@ -215,13 +215,15 @@ class QgsProcessingAlgorithm
 %End
 
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0 ) const;
 %Docstring
  Executes the algorithm using the specified ``parameters``.
 
  The ``context`` argument specifies the context in which the algorithm is being run.
 
  Algorithm progress should be reported using the supplied ``feedback`` object.
+
+ If specified, ``ok`` will be set to true if algorithm was successfully run.
 
  :return: A map of algorithm outputs. These may be output layer references, or calculated
  values such as statistical calculations.

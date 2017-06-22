@@ -128,14 +128,15 @@ class AlgorithmsTest(object):
 
         if expectFailure:
             try:
-                results = alg.run(parameters, context, feedback)
+                results, ok = alg.run(parameters, context, feedback)
                 self.check_results(results, context, defs['params'], defs['results'])
+                if ok:
+                    raise _UnexpectedSuccess
             except Exception:
                 pass
-            else:
-                raise _UnexpectedSuccess
         else:
-            results = alg.run(parameters, context, feedback)
+            results, ok = alg.run(parameters, context, feedback)
+            self.assertTrue(ok)
             self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):

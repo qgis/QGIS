@@ -39,8 +39,9 @@ void QgsProcessingAlgRunnerTask::cancel()
 bool QgsProcessingAlgRunnerTask::run()
 {
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
-  mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get() );
-  return !mFeedback->isCanceled();
+  bool ok = false;
+  mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get(), &ok );
+  return ok && !mFeedback->isCanceled();
 }
 
 void QgsProcessingAlgRunnerTask::finished( bool result )
