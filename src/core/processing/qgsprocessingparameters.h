@@ -344,6 +344,28 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual bool fromVariantMap( const QVariantMap &map );
 
+    /**
+     * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see setMetadata()
+     * \note not available in Python bindings.
+     */
+    SIP_SKIP QVariantMap metadata() const { return mMetadata; }
+
+    /**
+     * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see setMetadata()
+     */
+    QVariantMap &metadata() { return mMetadata; }
+
+    /**
+     * Sets the parameter's freeform \a metadata. This is mostly used by parameter widget wrappers
+     * in order to customise their appearance and behavior.
+     * \see metadata()
+     */
+    void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
+
   protected:
 
     //! Parameter name
@@ -357,6 +379,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Parameter flags
     Flags mFlags;
+
+    //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
+    QVariantMap mMetadata;
 
 };
 
