@@ -121,8 +121,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
                         dest_project = QgsProject.instance()
 
                 value = self.mainWidget.outputWidgets[param.name()].getValue()
-                if value:
+                if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
+                if value:
                     parameters[param.name()] = value
 
         return parameters
