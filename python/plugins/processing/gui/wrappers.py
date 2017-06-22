@@ -1254,14 +1254,14 @@ class WidgetWrapperFactory:
     @staticmethod
     def create_wrapper(param, dialog, row=0, col=0):
 
-        if hasattr(param, 'metadata'):
+        if param.metadata().get('widget_wrapper', None) is not None:
             return WidgetWrapperFactory.create_wrapper_from_metadata(param, dialog, row, col)
         else:
             return WidgetWrapperFactory.create_wrapper_from_class(param, dialog, row, col)
 
     @staticmethod
     def create_wrapper_from_metadata(param, dialog, row=0, col=0):
-        wrapper = param.metadata.get('widget_wrapper', None)
+        wrapper = param.metadata().get('widget_wrapper', None)
         params = {}
         # wrapper metadata should be a dict with class key
         if isinstance(wrapper, dict):
