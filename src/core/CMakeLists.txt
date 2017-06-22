@@ -899,6 +899,7 @@ SET(QGIS_CORE_HDRS
   processing/qgsnativealgorithms.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
+  processing/qgsprocessingexception.h
   processing/qgsprocessingmodelalgorithm.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
