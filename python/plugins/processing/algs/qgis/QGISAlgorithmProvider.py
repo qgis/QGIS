@@ -55,6 +55,7 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
 from .GridPolygon import GridPolygon
+from .ImportIntoPostGIS import ImportIntoPostGIS
 from .Merge import Merge
 
 # from .RegularPoints import RegularPoints
@@ -123,7 +124,6 @@ from .Merge import Merge
 # from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 # from .PostGISExecuteSQL import PostGISExecuteSQL
 # from .ImportIntoSpatialite import ImportIntoSpatialite
-# from .ImportIntoPostGIS import ImportIntoPostGIS
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByExpression import SelectByExpression
@@ -218,7 +218,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomPointsPolygonsVariable(),
         #         RandomPointsAlongLines(), PointsToPaths(),
         #         SpatialiteExecuteSQL(), ImportIntoSpatialite(),
-        #         PostGISExecuteSQL(), ImportIntoPostGIS(),
+        #         PostGISExecuteSQL(),
         #         SetVectorStyle(), SetRasterStyle(),
         #         SelectByExpression(), HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
@@ -260,6 +260,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DropGeometry(),
                 ExtentFromLayer(),
                 GridPolygon(),
+                ImportIntoPostGIS(),
                 Merge()
                 ]
 
