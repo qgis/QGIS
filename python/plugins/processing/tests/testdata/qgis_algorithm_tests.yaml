@@ -25,7 +25,7 @@ tests:
         name: expected/polys_deleteholes.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip lines by polygons
     params:
       INPUT:
@@ -39,7 +39,7 @@ tests:
         name: expected/clip_lines_by_polygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip lines by multipolygon
     params:
       INPUT:
@@ -53,7 +53,7 @@ tests:
         name: expected/clip_lines_by_multipolygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip polygons by multipolygons
     params:
       INPUT:
@@ -67,7 +67,7 @@ tests:
         name: expected/clip_polys_by_multipolygon.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip multipolygons by polygons
     params:
       INPUT:
@@ -81,7 +81,7 @@ tests:
         name: expected/clip_multipolygons_by_polygons.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip points by polygons
     params:
       INPUT:
@@ -95,7 +95,7 @@ tests:
         name: expected/clip_points_by_polygons.gml
         type: vector
 
-  - algorithm: qgis:clip
+  - algorithm: native:clip
     name: Clip points by multipolygons
     params:
       INPUT:
@@ -389,7 +389,7 @@ tests:
 #        name: expected/merge_lines.gml
 #        type: vector
 #
-  - algorithm: qgis:multiparttosingleparts
+  - algorithm: native:multiparttosingleparts
     name: Multiparts to singleparts
     params:
       INPUT:
@@ -2565,22 +2565,22 @@ tests:
 #        name: expected/select_by_expression.gml
 #        type: vector
 #
-#  - algorithm: qgis:randomextract
-#    name: Random extract by number
-#    params:
-#      INPUT:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      METHOD: '0'
-#      NUMBER: 4
-#    results: {}
-#
-#  - algorithm: qgis:randomextract
-#    name: Random extract by percentage
-#    params:
-#      INPUT:
-#        name: custom/points_weighted.gml
-#        type: vector
-#      METHOD: '1'
-#      NUMBER: 50
-#    results: {}
+  - algorithm: qgis:randomextract
+    name: Random extract by number
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: 0
+      NUMBER: 4
+    results: {}
+
+  - algorithm: qgis:randomextract
+    name: Random extract by percentage
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: 1
+      NUMBER: 50
+    results: {}
