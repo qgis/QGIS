@@ -43,8 +43,6 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .RegularPoints import RegularPoints
 # from .SymmetricalDifference import SymmetricalDifference
 # from .VectorSplit import VectorSplit
-# from .VectorGridLines import VectorGridLines
-# from .VectorGridPolygons import VectorGridPolygons
 # from .RandomExtract import RandomExtract
 # from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 # from .ExtractByLocation import ExtractByLocation
@@ -52,8 +50,6 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .PointsInPolygonUnique import PointsInPolygonUnique
 # from .PointsInPolygonWeighted import PointsInPolygonWeighted
 # from .SumLines import SumLines
-# from .BasicStatisticsNumbers import BasicStatisticsNumbers
-# from .BasicStatisticsStrings import BasicStatisticsStrings
 # from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 # from .LinesIntersection import LinesIntersection
 # from .MeanCoords import MeanCoords
@@ -126,7 +122,6 @@ from .AutoincrementalField import AutoincrementalField
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
 # from .SplitWithLines import SplitWithLines
-# from .SplitLinesWithLines import SplitLinesWithLines
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 from .CheckValidity import CheckValidity
@@ -192,7 +187,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
     def getAlgs(self):
         # algs = [SumLines(), PointsInPolygon(),
         #         PointsInPolygonWeighted(), PointsInPolygonUnique(),
-        #         BasicStatisticsStrings(), BasicStatisticsNumbers(),
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
@@ -206,7 +200,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(), RandomExtract(),
         #         RandomExtractWithinSubsets(), ExtractByLocation(),
         #         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
-        #         VectorSplit(), VectorGridLines(), VectorGridPolygons(),
+        #         VectorSplit(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
         #         SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
@@ -226,7 +220,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         PostGISExecuteSQL(), ImportIntoPostGIS(),
         #         SetVectorStyle(), SetRasterStyle(),
         #         SelectByExpression(), HypsometricCurves(),
-        #         SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
+        #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(), Smooth(),
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
