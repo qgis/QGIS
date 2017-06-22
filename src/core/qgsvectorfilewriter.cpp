@@ -1836,23 +1836,23 @@ QString QgsVectorFileWriter::errorMessage()
   return mErrorMessage;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature &feature )
+bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureSink::Flags )
 {
-  return addFeature( feature, nullptr, QgsUnitTypes::DistanceMeters );
+  return addFeatureWithStyle( feature, nullptr, QgsUnitTypes::DistanceMeters );
 }
 
-bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features )
+bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags )
 {
   QgsFeatureList::iterator fIt = features.begin();
   bool result = true;
   for ( ; fIt != features.end(); ++fIt )
   {
-    result = result && addFeature( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
+    result = result && addFeatureWithStyle( *fIt, nullptr, QgsUnitTypes::DistanceMeters );
   }
   return result;
 }
 
-bool QgsVectorFileWriter::addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
+bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature
   OGRFeatureH poFeature = createFeature( feature );
@@ -2561,7 +2561,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       fet.initAttributes( 0 );
     }
 
-    if ( !writer->addFeature( fet, layer->renderer(), mapUnits ) )
+    if ( !writer->addFeatureWithStyle( fet, layer->renderer(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )

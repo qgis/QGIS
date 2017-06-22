@@ -142,18 +142,18 @@ QString QgsVectorLayerExporter::errorMessage() const
   return mErrorMessage;
 }
 
-bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features )
+bool QgsVectorLayerExporter::addFeatures( QgsFeatureList &features, Flags flags )
 {
   QgsFeatureList::iterator fIt = features.begin();
   bool result = true;
   for ( ; fIt != features.end(); ++fIt )
   {
-    result = result && addFeature( *fIt );
+    result = result && addFeature( *fIt, flags );
   }
   return result;
 }
 
-bool QgsVectorLayerExporter::addFeature( QgsFeature &feat )
+bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
 {
   QgsAttributes attrs = feat.attributes();
 
@@ -190,7 +190,7 @@ bool QgsVectorLayerExporter::flushBuffer()
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 
-  if ( !mProvider->addFeatures( mFeatureBuffer ) )
+  if ( !mProvider->addFeatures( mFeatureBuffer, QgsFeatureSink::FastInsert ) )
   {
     QStringList errors = mProvider->errors();
     mProvider->clearErrors();

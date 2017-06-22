@@ -100,7 +100,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing
-    virtual bool addFeatures( QgsFeatureList &flist ) override { Q_UNUSED( flist ); return true; }
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override { Q_UNUSED( flist ); Q_UNUSED( flags ); return true; }
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override { Q_UNUSED( id ); return true; }
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
     virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;

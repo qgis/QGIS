@@ -928,7 +928,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
     bool updateFeature( QgsFeature &f );
@@ -1281,7 +1281,7 @@ Delete an attribute field (but does not commit it)
  :rtype: bool
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
 
     bool deleteFeature( QgsFeatureId fid );

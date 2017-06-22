@@ -522,14 +522,15 @@ Retrieves error message
  :rtype: str
 %End
 
-    virtual bool addFeature( QgsFeature &feature );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
-    virtual bool addFeatures( QgsFeatureList &features );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
+    bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 %Docstring
-Add feature to the currently opened data source
+ Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
