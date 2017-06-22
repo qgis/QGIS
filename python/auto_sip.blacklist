@@ -1,7 +1,5 @@
 core/conversions.sip
 core/qgsexception.sip
-analysis/interpolation/qgsidwinterpolator.sip
-analysis/interpolation/qgstininterpolator.sip
 server/qgsserverfilter.sip
 server/qgsserverinterface.sip
 server/qgsaccesscontrolfilter.sip
