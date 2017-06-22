@@ -101,7 +101,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     virtual void refreshSymbolView() {}
 
     //! Shows GUI to setup data-defined size legend.
-    //! Returns newly open panel - may be null if it coult not be opened. Ownership is not transferred.
+    //! Returns newly open panel - may be null if it could not be opened. Ownership is not transferred.
     //! \since QGIS 3.0
     QgsDataDefinedSizeLegendWidget *openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend );
 
