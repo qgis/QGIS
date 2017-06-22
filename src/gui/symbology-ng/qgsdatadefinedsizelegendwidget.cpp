@@ -90,7 +90,6 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     mSizeClassesModel->sort( 0 );
   }
 
-  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   connect( btnAddClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::addSizeClass );
   connect( btnRemoveClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::removeSizeClass );
 
@@ -109,6 +108,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
+  connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   updatePreview();
@@ -187,7 +187,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
 
-  updatePreview();
+  emit widgetChanged();
 }
 
 void QgsDataDefinedSizeLegendWidget::addSizeClass()
@@ -203,7 +203,7 @@ void QgsDataDefinedSizeLegendWidget::addSizeClass()
   item->setData( v );
   mSizeClassesModel->appendRow( item );
   mSizeClassesModel->sort( 0 );
-  updatePreview();
+  emit widgetChanged();
 }
 
 void QgsDataDefinedSizeLegendWidget::removeSizeClass()
@@ -213,5 +213,5 @@ void QgsDataDefinedSizeLegendWidget::removeSizeClass()
     return;
 
   mSizeClassesModel->removeRow( idx.row() );
-  updatePreview();
+  emit widgetChanged();
 }

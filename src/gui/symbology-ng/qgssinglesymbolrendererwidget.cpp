@@ -119,7 +119,7 @@ void QgsSingleSymbolRendererWidget::showSymbolLevels()
 void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
 {
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mSingleSymbol ); // this should be only enabled for marker symbols
-  QgsDataDefinedSizeLegendWidget *panel = openDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
@@ -127,5 +127,6 @@ void QgsSingleSymbolRendererWidget::dataDefinedSizeLegend()
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );
+    openPanel( panel );  // takes ownership of the panel
   }
 }

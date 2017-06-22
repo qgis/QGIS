@@ -1046,7 +1046,7 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
 void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
 {
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mCategorizedSymbol ); // this should be only enabled for marker symbols
-  QgsDataDefinedSizeLegendWidget *panel = openDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
@@ -1054,5 +1054,6 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );
+    openPanel( panel );  // takes ownership of the panel
   }
 }

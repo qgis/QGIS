@@ -1178,7 +1178,7 @@ void QgsGraduatedSymbolRendererWidget::keyPressEvent( QKeyEvent *event )
 void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
 {
   QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( mGraduatedSymbol ); // this should be only enabled for marker symbols
-  QgsDataDefinedSizeLegendWidget *panel = openDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
+  QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
     connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
@@ -1186,5 +1186,6 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();
     } );
+    openPanel( panel );  // takes ownership of the panel
   }
 }

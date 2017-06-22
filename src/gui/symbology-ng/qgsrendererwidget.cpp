@@ -275,7 +275,7 @@ void QgsRendererWidget::applyChanges()
   apply();
 }
 
-QgsDataDefinedSizeLegendWidget *QgsRendererWidget::openDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
+QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
   QgsProperty ddSize = symbol->dataDefinedSize();
   if ( !ddSize || !ddSize.isActive() )
@@ -283,15 +283,9 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::openDataDefinedSizeLegendWidg
     QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is not enabled!" ) );
     return nullptr;
   }
-  if ( !ddSize.transformer() )
-  {
-    QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is enabled, but without size scale transformer. Use assistant to define it." ) );
-    return nullptr;
-  }
 
   QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( ddsLegend, ddSize, symbol->clone(), mContext.mapCanvas() );
   connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
-  openPanel( panel );
   return panel;
 }
 
