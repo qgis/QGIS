@@ -7952,8 +7952,8 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   QgsExpressionContext context = pasteVectorLayer->createExpressionContext();
 
-  QgsFeatureIds newIds;
 
+  QgsFeatureList newFeatures;
   QgsFeatureList::const_iterator featureIt = features.constBegin();
   while ( featureIt != features.constEnd() )
   {
@@ -7997,12 +7997,17 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
     // now create new feature using pasted feature as a template. This automatically handles default
     // values and field constraints
-    QgsFeature newFeature = QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, dstAttr, &context );
-    pasteVectorLayer->addFeature( newFeature );
-    newIds << newFeature.id();
-
+    newFeatures << QgsVectorLayerUtils::createFeature( pasteVectorLayer, geom, dstAttr, &context );
     ++featureIt;
   }
+
+  pasteVectorLayer->addFeatures( newFeatures );
+  QgsFeatureIds newIds;
+  for ( const QgsFeature &f : qgsAsConst( newFeatures ) )
+  {
+    newIds << f.id();
+  }
+
 
   pasteVectorLayer->selectByIds( newIds );
   pasteVectorLayer->endEditCommand();

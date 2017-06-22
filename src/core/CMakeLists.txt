@@ -296,6 +296,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerrenderer.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorlayerundopassthroughcommand.cpp
   qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
@@ -887,6 +888,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerlabeling.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
+  qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h

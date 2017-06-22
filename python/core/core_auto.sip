@@ -120,6 +120,7 @@
 %Include qgsvectorlayerjoininfo.sip
 %Include qgsvectorlayerlabeling.sip
 %Include qgsvectorlayerundocommand.sip
+%Include qgsvectorlayerundopassthroughcommand.sip
 %Include qgsvectorlayerutils.sip
 %Include qgsvectorsimplifymethod.sip
 %Include qgsvirtuallayerdefinition.sip

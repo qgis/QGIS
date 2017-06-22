@@ -86,6 +86,7 @@
 #include "qgsxmlutils.h"
 #include "qgsunittypes.h"
 #include "qgstaskmanager.h"
+#include "qgstransaction.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -2828,12 +2829,14 @@ void QgsVectorLayer::beginEditCommand( const QString &text )
   {
     return;
   }
-  if ( !mDataProvider->transaction() )
+  if ( mDataProvider->transaction() )
   {
-    undoStack()->beginMacro( text );
-    mEditCommandActive = true;
-    emit editCommandStarted( text );
+    QString ingnoredError;
+    mDataProvider->transaction()->createSavepoint( ingnoredError );
   }
+  undoStack()->beginMacro( text );
+  mEditCommandActive = true;
+  emit editCommandStarted( text );
 }
 
 void QgsVectorLayer::endEditCommand()
@@ -2842,17 +2845,14 @@ void QgsVectorLayer::endEditCommand()
   {
     return;
   }
-  if ( !mDataProvider->transaction() )
+  undoStack()->endMacro();
+  mEditCommandActive = false;
+  if ( !mDeletedFids.isEmpty() )
   {
-    undoStack()->endMacro();
-    mEditCommandActive = false;
-    if ( !mDeletedFids.isEmpty() )
-    {
-      emit featuresDeleted( mDeletedFids );
-      mDeletedFids.clear();
-    }
-    emit editCommandEnded();
+    emit featuresDeleted( mDeletedFids );
+    mDeletedFids.clear();
   }
+  emit editCommandEnded();
 }
 
 void QgsVectorLayer::destroyEditCommand()
@@ -2861,14 +2861,11 @@ void QgsVectorLayer::destroyEditCommand()
   {
     return;
   }
-  if ( !mDataProvider->transaction() )
-  {
-    undoStack()->endMacro();
-    undoStack()->undo();
-    mEditCommandActive = false;
-    mDeletedFids.clear();
-    emit editCommandDestroyed();
-  }
+  undoStack()->endMacro();
+  undoStack()->undo();
+  mEditCommandActive = false;
+  mDeletedFids.clear();
+  emit editCommandDestroyed();
 }
 
 bool QgsVectorLayer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )

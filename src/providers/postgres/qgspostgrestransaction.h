@@ -22,6 +22,7 @@
 
 class QgsPostgresConn;
 
+
 class QgsPostgresTransaction : public QgsTransaction
 {
     Q_OBJECT
@@ -30,6 +31,7 @@ class QgsPostgresTransaction : public QgsTransaction
     explicit QgsPostgresTransaction( const QString &connString );
     bool executeSql( const QString &sql, QString &error ) override;
     QgsPostgresConn *connection() const { return mConn; }
+
 
   private:
     QgsPostgresConn *mConn = nullptr;

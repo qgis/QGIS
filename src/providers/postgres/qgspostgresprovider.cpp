@@ -2222,6 +2222,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     conn->PQexecNR( QStringLiteral( "DEALLOCATE addfeatures" ) );
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
 
     mShared->addFeaturesCounted( flist.size() );
   }
@@ -2273,6 +2275,8 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds &id )
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
 
     if ( mSpatialColType == SctTopoGeometry )
     {
@@ -2328,6 +2332,8 @@ bool QgsPostgresProvider::truncate()
       throw PGException( result );
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
 
     if ( returnvalue )
     {
@@ -2415,6 +2421,8 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {
@@ -2470,6 +2478,8 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds &ids )
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {
@@ -2530,6 +2540,8 @@ bool QgsPostgresProvider::renameAttributes( const QgsFieldNameMap &renamedAttrib
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( result );
     returnvalue = conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {
@@ -2640,6 +2652,8 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {
@@ -2841,6 +2855,8 @@ bool QgsPostgresProvider::changeGeometryValues( const QgsGeometryMap &geometry_m
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {
@@ -2989,6 +3005,8 @@ bool QgsPostgresProvider::changeFeatures( const QgsChangedAttributesMap &attr_ma
     }
 
     returnvalue &= conn->commit();
+    if ( mTransaction )
+      mTransaction->dirtyLastSavePoint();
   }
   catch ( PGException &e )
   {

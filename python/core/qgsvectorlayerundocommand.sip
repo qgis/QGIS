@@ -221,7 +221,6 @@ class QgsVectorLayerUndoCommandRenameAttribute : QgsVectorLayerUndoCommand
 
 };
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

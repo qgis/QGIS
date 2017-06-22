@@ -19,6 +19,7 @@
 #include "qgsvectorlayereditbuffer.h"
 
 class QgsVectorLayer;
+class QgsVectorLayerUndoPassthroughCommand;
 
 /** \ingroup core
  * \class QgsVectorLayerEditPassthrough
@@ -43,6 +44,10 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
 
   private:
     bool mModified;
+
+    // utility function to avoid cpy/paste
+    bool modify( QgsVectorLayerUndoPassthroughCommand *cmd );
+
 };
 
 #endif // QGSVECTORLAYEREDITPASSTHROUGH_H

@@ -1810,6 +1810,14 @@ Returns the current blending mode for features
  :rtype: bool
 %End
 
+    bool isEditCommandActive() const;
+%Docstring
+ Test if an edit command is active
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
