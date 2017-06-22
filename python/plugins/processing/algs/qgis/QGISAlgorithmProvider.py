@@ -40,6 +40,23 @@ from processing.script.ScriptUtils import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
 
+from .AddTableField import AddTableField
+from .Aspect import Aspect
+from .AutoincrementalField import AutoincrementalField
+from .BasicStatistics import BasicStatisticsForField
+from .Boundary import Boundary
+from .BoundingBox import BoundingBox
+from .CheckValidity import CheckValidity
+from .CreateAttributeIndex import CreateAttributeIndex
+from .DeleteColumn import DeleteColumn
+from .DeleteHoles import DeleteHoles
+from .DensifyGeometries import DensifyGeometries
+from .DensifyGeometriesInterval import DensifyGeometriesInterval
+from .DropGeometry import DropGeometry
+from .ExtentFromLayer import ExtentFromLayer
+from .GridPolygon import GridPolygon
+from .Merge import Merge
+
 # from .RegularPoints import RegularPoints
 # from .SymmetricalDifference import SymmetricalDifference
 # from .VectorSplit import VectorSplit
@@ -58,8 +75,6 @@ from .QgisAlgorithm import QgisAlgorithm
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .Delaunay import Delaunay
 # from .VoronoiPolygons import VoronoiPolygons
-from .DensifyGeometries import DensifyGeometries
-from .DensifyGeometriesInterval import DensifyGeometriesInterval
 # from .SimplifyGeometries import SimplifyGeometries
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
@@ -70,34 +85,27 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 # from .VariableDistanceBuffer import VariableDistanceBuffer
 # from .Difference import Difference
 # from .Intersection import Intersection
-from .ExtentFromLayer import ExtentFromLayer
 # from .RandomSelection import RandomSelection
 # from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 # from .SelectByLocation import SelectByLocation
 # from .Union import Union
 # from .SpatialJoin import SpatialJoin
-from .DeleteColumn import DeleteColumn
-from .DeleteHoles import DeleteHoles
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
 # from .SelectByAttribute import SelectByAttribute
-from .GridPolygon import GridPolygon
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
-from .Merge import Merge
 # from .GeometryConvert import GeometryConvert
 # from .ConcaveHull import ConcaveHull
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
-from .AddTableField import AddTableField
 # from .FieldsCalculator import FieldsCalculator
 # from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
-from .AutoincrementalField import AutoincrementalField
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
 # from .CreateConstantRaster import CreateConstantRaster
@@ -124,7 +132,6 @@ from .AutoincrementalField import AutoincrementalField
 # from .SplitWithLines import SplitWithLines
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
-from .CheckValidity import CheckValidity
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 # from .Smooth import Smooth
 # from .ReverseLineDirection import ReverseLineDirection
@@ -133,14 +140,11 @@ from .CheckValidity import CheckValidity
 # from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 # from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 # from .MergeLines import MergeLines
-from .BoundingBox import BoundingBox
-from .Boundary import Boundary
 # from .PointOnSurface import PointOnSurface
 # from .OffsetLine import OffsetLine
 # from .Translate import Translate
 # from .SingleSidedBuffer import SingleSidedBuffer
 # from .PointsAlongGeometry import PointsAlongGeometry
-from .Aspect import Aspect
 # from .Slope import Slope
 # from .Ruggedness import Ruggedness
 # from .Hillshade import Hillshade
@@ -155,9 +159,6 @@ from .Aspect import Aspect
 # from .SnapGeometries import SnapGeometriesToLayer
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
-from .CreateAttributeIndex import CreateAttributeIndex
-from .DropGeometry import DropGeometry
-from .BasicStatistics import BasicStatisticsForField
 # from .Heatmap import Heatmap
 # from .Orthogonalize import Orthogonalize
 # from .ShortestPathPointToPoint import ShortestPathPointToPoint
