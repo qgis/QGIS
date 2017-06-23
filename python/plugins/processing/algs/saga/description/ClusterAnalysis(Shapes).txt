@@ -1,0 +1,10 @@
+Cluster Analysis (Shapes)
+table_calculus
+ParameterVector|INPUT|Shapes|-1|False
+OutputVector|RESULT|Result
+ParameterTable|FIELDS|Attributes|False
+ParameterTable|CLUSTER|Cluster|False
+ParameterTable|STATISTICS|Statistics|False
+ParameterSelection|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing| 1
+ParameterNumber|NCLUSTER|Clusters| 2|None| 10
+ParameterBoolean|NORMALISE|Normalise|False
