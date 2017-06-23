@@ -244,10 +244,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
-                result = executeAlgorithm(self.alg, parameters, context, feedback)
-                feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
-                feedback.pushInfo(self.tr('Results:'))
-                feedback.pushCommandInfo(pformat(result))
+                result, ok = executeAlgorithm(self.alg, parameters, context, feedback)
+                if ok:
+                    feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                    feedback.pushInfo(self.tr('Results:'))
+                    feedback.pushCommandInfo(pformat(result))
+                else:
+                    feedback.reportError(
+                        self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
                 feedback.pushInfo('')
 
                 self.buttonCancel.setEnabled(False)

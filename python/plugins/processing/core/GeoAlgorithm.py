@@ -330,32 +330,17 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
         context = dataobjects.createContext()
 
     #self.model = model
-    try:
-        #self.setOutputCRS()
-        #self.resolveOutputs()
-        #self.evaluateParameterValues()
-        #self.runPreExecutionScript(feedback)
-        result, ok = alg.run(parameters, context, feedback)
-        #self.processAlgorithm(parameters, context, feedback)
-        feedback.setProgress(100)
-        return result
-        #self.convertUnsupportedFormats(context, feedback)
-        #self.runPostExecutionScript(feedback)
-    except GeoAlgorithmExecutionException as gaee:
-        lines = [self.tr('Error while executing algorithm')]
-        lines = []
-        lines.append(traceback.format_exc())
-        feedback.reportError(gaee.msg)
-        QgsMessageLog.logMessage(gaee.msg, self.tr('Processing'), QgsMessageLog.CRITICAL)
-        raise GeoAlgorithmExecutionException(gaee.msg, lines, gaee)
-    #except Exception as e:
-        # If something goes wrong and is not caught in the
-        # algorithm, we catch it here and wrap it
-        #lines = [self.tr('Uncaught error while executing algorithm')]
-     #   lines = []
-      #  lines.append(traceback.format_exc())
-        #QgsMessageLog.logMessage('\n'.join(lines), self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #raise GeoAlgorithmExecutionException(str(e) + self.tr('\nSee log for more details'), lines, e)
+
+    #self.setOutputCRS()
+    #self.resolveOutputs()
+    #self.evaluateParameterValues()
+    #self.runPreExecutionScript(feedback)
+    result, ok = alg.run(parameters, context, feedback)
+    #self.processAlgorithm(parameters, context, feedback)
+    feedback.setProgress(100)
+    return result, ok
+    #self.convertUnsupportedFormats(context, feedback)
+    #self.runPostExecutionScript(feedback)
 
     def helpUrl(self):
         return QgsHelp.helpUrl("processing_algs/{}/{}".format(
