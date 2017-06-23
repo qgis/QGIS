@@ -3471,8 +3471,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm::ModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( testModelOut.childId(), QStringLiteral( "my_id" ) );
-  testModelOut.setOutputName( QStringLiteral( "my_output" ) );
-  QCOMPARE( testModelOut.outputName(), QStringLiteral( "my_output" ) );
+  testModelOut.setChildOutputName( QStringLiteral( "my_output" ) );
+  QCOMPARE( testModelOut.childOutputName(), QStringLiteral( "my_output" ) );
 
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs;
   QgsProcessingModelAlgorithm::ModelOutput out1;
@@ -3817,19 +3817,19 @@ void TestQgsProcessing::modelerAlgorithm()
   alg7c1.setChildId( "cx1" );
   alg7c1.setAlgorithmId( "native:centroids" );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c1outputs;
-  QgsProcessingModelAlgorithm::ModelOutput alg7c1out1;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c1out1( QStringLiteral( "my_output" ) );
   alg7c1out1.setChildId( "cx1" );
-  alg7c1out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c1out1.setChildOutputName( "OUTPUT_LAYER" );
   alg7c1out1.setDescription( QStringLiteral( "my output" ) );
-  alg7c1outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c1out1 );
+  alg7c1outputs.insert( QStringLiteral( "my_output" ), alg7c1out1 );
   alg7c1.setModelOutputs( alg7c1outputs );
   alg7.addChildAlgorithm( alg7c1 );
   // verify that model has destination parameter created
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
 
@@ -3837,33 +3837,33 @@ void TestQgsProcessing::modelerAlgorithm()
   alg7c2.setChildId( "cx2" );
   alg7c2.setAlgorithmId( "native:centroids" );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c2outputs;
-  QgsProcessingModelAlgorithm::ModelOutput alg7c2out1;
+  QgsProcessingModelAlgorithm::ModelOutput alg7c2out1( QStringLiteral( "my_output2" ) );
   alg7c2out1.setChildId( "cx2" );
-  alg7c2out1.setOutputName( "OUTPUT_LAYER" );
+  alg7c2out1.setChildOutputName( "OUTPUT_LAYER" );
   alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
-  alg7c2outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), alg7c2out1 );
+  alg7c2outputs.insert( QStringLiteral( "my_output2" ), alg7c2out1 );
   alg7c2.setModelOutputs( alg7c2outputs );
   alg7.addChildAlgorithm( alg7c2 );
 
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 2 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 2 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
-  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 1 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 1 )->description(), QStringLiteral( "my output2" ) );
 
   alg7.removeChildAlgorithm( "cx1" );
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
-  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
-  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:OUTPUT_LAYER" ) );
+  QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx2:my_output2" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->description(), QStringLiteral( "my output2" ) );
 }
@@ -3908,7 +3908,8 @@ void TestQgsProcessing::modelExecution()
   alg2c1.addParameterSource( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
   alg2c1.addParameterSource( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
-  QgsProcessingModelAlgorithm::ModelOutput out1( "OUTPUT_LAYER" );
+  QgsProcessingModelAlgorithm::ModelOutput out1( "MODEL_OUT_LAYER" );
+  out1.setChildOutputName( "OUTPUT_LAYER" );
   outputs1.insert( QStringLiteral( "MODEL_OUT_LAYER" ), out1 );
   alg2c1.setModelOutputs( outputs1 );
   model2.addChildAlgorithm( alg2c1 );

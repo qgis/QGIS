@@ -66,7 +66,7 @@ class ModelerGraphicItem(QGraphicsItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             self.pixmap = None
-            self.text = element.description()
+            self.text = element.name()
         else:
             self.text = element.description()
             self.pixmap = element.algorithm().icon().pixmap(15, 15)
@@ -374,7 +374,7 @@ class ModelerGraphicItem(QGraphicsItem):
             elif isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
                 self.model.parameterComponent(self.element.parameterName()).setPosition(self.pos())
             elif isinstance(self.element, QgsProcessingModelAlgorithm.ModelOutput):
-                self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.outputName()).setPosition(self.pos())
+                self.model.childAlgorithm(self.element.childId()).modelOutput(self.element.name()).setPosition(self.pos())
 
         return value
 
