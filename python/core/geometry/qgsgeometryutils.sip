@@ -37,10 +37,12 @@ class QgsGeometryUtils
  :rtype: QgsPoint
 %End
 
-    static double closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt );
+    static QgsPoint closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point );
 %Docstring
- Returns measure of nearest point on a geometry for a specified point or NaN if geometry does not have measures
- :rtype: float
+ Returns the nearest point on a segment of a ``geometry``
+ for the specified ``point``. The z and m values will be linearly interpolated between
+ the two neighbouring vertices.
+ :rtype: QgsPoint
 %End
 
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );

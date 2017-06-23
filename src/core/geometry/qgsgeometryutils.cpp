@@ -93,33 +93,31 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   return minDistPoint;
 }
 
-double QgsGeometryUtils::closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt )
+QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point )
 {
-  if ( QgsWkbTypes::hasM( geom.wkbType() ) )
+  QgsPoint closestPoint;
+  QgsVertexId vertexAfter;
+  bool leftOf;
+  geometry.closestSegment( point, closestPoint, vertexAfter, &leftOf, DEFAULT_SEGMENT_EPSILON );
+  if ( vertexAfter.isValid() )
   {
-    QgsPoint closestPoint;
-    QgsVertexId vertexAfter;
-    bool leftOf;
-    geom.closestSegment( pt, closestPoint, vertexAfter, &leftOf, DEFAULT_SEGMENT_EPSILON );
-    if ( vertexAfter.isValid() )
+    QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
+    if ( vertexAfter.vertex > 0 )
     {
-      QgsPoint pointAfter = geom.vertexAt( vertexAfter );
-      if ( vertexAfter.vertex > 0 )
-      {
-        QgsVertexId vertexBefore = vertexAfter;
-        vertexBefore.vertex--;
-        QgsPoint pointBefore = geom.vertexAt( vertexBefore );
-        double length = pointBefore.distance( pointAfter );
-        double distance = pointBefore.distance( closestPoint );
-        return pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length;
-      }
-      else
-      {
-        return pointAfter.m();
-      }
+      QgsVertexId vertexBefore = vertexAfter;
+      vertexBefore.vertex--;
+      QgsPoint pointBefore = geometry.vertexAt( vertexBefore );
+      double length = pointBefore.distance( pointAfter );
+      double distance = pointBefore.distance( closestPoint );
+
+      if ( QgsWkbTypes::hasZ( geometry.wkbType() ) )
+        closestPoint.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distance / length );
+      if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
+        closestPoint.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length );
     }
   }
-  return std::numeric_limits<double>::quiet_NaN();
+
+  return closestPoint;
 }
 
 double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
