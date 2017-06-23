@@ -34,6 +34,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsField,
                        QgsFields,
@@ -255,12 +256,12 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             feat.setGeometry(geomUpper)
             feat['type'] = 'upper'
             feat['start'] = origPoint
-            writerPoints.addFeature(feat)
+            writerPoints.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feat.setGeometry(geomLower)
             feat['type'] = 'lower'
             feat['start'] = origPoint
-            writerPoints.addFeature(feat)
+            writerPoints.addFeature(feat, QgsFeatureSink.FastInsert)
 
             upperBoundary.append(origPoint)
             lowerBoundary.append(origPoint)
@@ -271,13 +272,13 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             feat.setGeometry(geom)
             feat['type'] = 'upper'
             feat['start'] = origPoint
-            writerPolygons.addFeature(feat)
+            writerPolygons.addFeature(feat, QgsFeatureSink.FastInsert)
 
             geom = geomLower.convexHull()
             feat.setGeometry(geom)
             feat['type'] = 'lower'
             feat['start'] = origPoint
-            writerPolygons.addFeature(feat)
+            writerPolygons.addFeature(feat, QgsFeatureSink.FastInsert)
 
             vertices[:] = []
             upperBoundary[:] = []

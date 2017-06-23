@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField, QgsProcessingUtils
+from qgis.core import QgsGeometry, QgsFeatureSink, QgsFeatureRequest, QgsFeature, QgsField, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -117,7 +117,7 @@ class PointsInPolygon(QgisAlgorithm):
             else:
                 attrs[idxCount] = count
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

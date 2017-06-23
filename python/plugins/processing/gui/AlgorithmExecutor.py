@@ -89,7 +89,7 @@ def executeIterating(alg, parameters, paramToIter, context, feedback):
 
         sink, sink_id = QgsProcessingUtils.createFeatureSink('memory:', context, iter_source.fields(), iter_source.wkbType(), iter_source.sourceCrs())
         sink_list.append(sink_id)
-        sink.addFeature(feat)
+        sink.addFeature(feat, QgsFeatureSink.FastInsert)
         del sink
 
         feedback.setProgress(int(current * total))

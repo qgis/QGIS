@@ -32,7 +32,7 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
+from qgis.core import (QgsRectangle, QgsFields, QgsFeatureSink, QgsField, QgsFeature, QgsWkbTypes,
                        QgsGeometry, QgsPointXY, QgsCoordinateReferenceSystem,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterNumber,
@@ -139,7 +139,7 @@ class RegularPoints(QgisAlgorithm):
                 if extent_engine.intersects(geom.geometry()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
-                    sink.addFeature(f)
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
                     count += 1
                     feedback.setProgress(int(count * total))

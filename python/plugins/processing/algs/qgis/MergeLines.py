@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsFeature, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsFeatureSink, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -89,7 +89,7 @@ class MergeLines(QgisAlgorithm):
 
                 outFeat.setGeometry(outGeom)
 
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -26,6 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -101,7 +102,7 @@ class DeleteColumn(QgisAlgorithm):
             for index in field_indices:
                 del attributes[index]
             f.setAttributes(attributes)
-            sink.addFeature(f)
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

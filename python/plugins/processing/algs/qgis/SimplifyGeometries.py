@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsMapToPixelSimplifier,
                        QgsMessageLog,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -109,7 +110,7 @@ class SimplifyGeometries(QgisAlgorithm):
 
                 pointsAfter += output_geometry.geometry().nCoordinates()
                 out_feature.setGeometry(output_geometry)
-            writer.addFeature(out_feature)
+            writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

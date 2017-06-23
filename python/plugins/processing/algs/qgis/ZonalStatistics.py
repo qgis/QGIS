@@ -36,6 +36,7 @@ except:
 
 from osgeo import gdal, ogr, osr
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsRectangle,
                        QgsGeometry,
                        QgsFeature,
@@ -270,7 +271,7 @@ class ZonalStatistics(QgisAlgorithm):
                 attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
 
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             memVDS = None
             rasterizedDS = None

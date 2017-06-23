@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsPoint,
+                       QgsFeatureSink,
                        QgsCoordinateReferenceSystem,
                        QgsGeometry,
                        QgsProcessingUtils)
@@ -139,6 +140,6 @@ class PointsLayerFromTable(QgisAlgorithm):
             except:
                 pass  # no geometry
 
-            writer.addFeature(feature)
+            writer.addFeature(feature, QgsFeatureSink.FastInsert)
 
         del writer

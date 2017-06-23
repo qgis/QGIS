@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -90,6 +91,6 @@ class EquivalentNumField(QgisAlgorithm):
 
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
         del writer

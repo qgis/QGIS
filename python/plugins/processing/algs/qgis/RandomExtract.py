@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -110,6 +111,6 @@ class RandomExtract(QgisAlgorithm):
             if feedback.isCanceled():
                 break
             if i in selran:
-                sink.addFeature(feat)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(i * total))
         return {self.OUTPUT: dest_id}

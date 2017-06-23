@@ -32,6 +32,7 @@ import numpy
 from osgeo import gdal, ogr, osr
 
 from qgis.core import (QgsRectangle,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsApplication,
                        QgsProcessingUtils)

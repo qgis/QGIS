@@ -25,6 +25,7 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
@@ -87,7 +88,7 @@ class DeleteHoles(QgisAlgorithm):
 
             if f.hasGeometry():
                 f.setGeometry(f.geometry().removeInteriorRings(min_area))
-            sink.addFeature(f)
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

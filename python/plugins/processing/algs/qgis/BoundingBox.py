@@ -29,6 +29,7 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -93,7 +94,7 @@ class BoundingBox(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            sink.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT_LAYER: dest_id}

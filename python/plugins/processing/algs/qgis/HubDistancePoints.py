@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsDistanceArea,
                        QgsFeature,
                        QgsFeatureRequest,
@@ -151,7 +152,7 @@ class HubDistancePoints(QgisAlgorithm):
 
             feat.setGeometry(QgsGeometry.fromPoint(src))
 
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

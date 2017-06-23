@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -131,6 +132,6 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
         for (i, feat) in enumerate(selran):
             if feedback.isCanceled():
                 break
-            sink.addFeature(feat)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(i * total))
         return {self.OUTPUT: dest_id}

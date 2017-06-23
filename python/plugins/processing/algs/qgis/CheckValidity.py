@@ -34,6 +34,7 @@ from qgis.core import (QgsSettings,
                        QgsGeometry,
                        QgsFeature,
                        QgsField,
+                       QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields,
@@ -151,7 +152,7 @@ class CheckValidity(QgisAlgorithm):
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
                         if error_output_sink:
-                            error_output_sink.addFeature(errFeat)
+                            error_output_sink.addFeature(errFeat, QgsFeatureSink.FastInsert)
                         error_count += 1
 
                         reasons.append(error.what())
@@ -167,12 +168,12 @@ class CheckValidity(QgisAlgorithm):
 
             if valid:
                 if valid_output_sink:
-                    valid_output_sink.addFeature(outFeat)
+                    valid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 valid_count += 1
 
             else:
                 if invalid_output_sink:
-                    invalid_output_sink.addFeature(outFeat)
+                    invalid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 invalid_count += 1
 
             feedback.setProgress(int(current * total))

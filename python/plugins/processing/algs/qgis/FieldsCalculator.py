@@ -30,6 +30,7 @@ from qgis.core import (QgsExpression,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsField,
                        QgsDistanceArea,
                        QgsProject,
@@ -154,7 +155,7 @@ class FieldsCalculator(QgisAlgorithm):
                 for fld in f.fields():
                     outFeature[fld.name()] = f[fld.name()]
                 outFeature[fieldName] = value
-                writer.addFeature(outFeature)
+                writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
         del writer

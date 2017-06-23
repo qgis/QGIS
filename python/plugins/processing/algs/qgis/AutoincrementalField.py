@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
@@ -84,7 +85,7 @@ class AutoincrementalField(QgisAlgorithm):
             attributes.append(current)
             output_feature.setAttributes(attributes)
 
-            sink.addFeature(output_feature)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

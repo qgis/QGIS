@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -139,6 +140,6 @@ class ExtractByLocation(QgisAlgorithm):
         total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if f.id() in selectedSet:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

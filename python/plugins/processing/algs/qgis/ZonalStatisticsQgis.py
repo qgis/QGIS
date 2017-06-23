@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
-from qgis.core import QgsProcessingUtils
+from qgis.core import QgsProcessingUtils, QgsFeatureSink
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector

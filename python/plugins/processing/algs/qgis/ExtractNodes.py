@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField, QgsFeatureSink, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -82,7 +82,7 @@ class ExtractNodes(QgisAlgorithm):
         for current, f in enumerate(features):
             input_geometry = f.geometry()
             if not input_geometry:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 points = vector.extractPoints(input_geometry)
 
@@ -96,7 +96,7 @@ class ExtractNodes(QgisAlgorithm):
                     output_feature = QgsFeature()
                     output_feature.setAttributes(attrs)
                     output_feature.setGeometry(QgsGeometry.fromPoint(point))
-                    writer.addFeature(output_feature)
+                    writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

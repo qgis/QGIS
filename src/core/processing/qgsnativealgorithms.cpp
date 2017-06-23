@@ -656,7 +656,7 @@ QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &paramete
         QgsMessageLog::logMessage( QObject::tr( "Error calculating subdivision for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    sink->addFeature( out );
+    sink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
@@ -723,18 +723,18 @@ QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantM
         Q_FOREACH ( const QgsGeometry &g, inputGeometry.asGeometryCollection() )
         {
           out.setGeometry( g );
-          sink->addFeature( out );
+          sink->addFeature( out, QgsFeatureSink::FastInsert );
         }
       }
       else
       {
-        sink->addFeature( out );
+        sink->addFeature( out, QgsFeatureSink::FastInsert );
       }
     }
     else
     {
       // feature with null geometry
-      sink->addFeature( out );
+      sink->addFeature( out, QgsFeatureSink::FastInsert );
     }
 
     feedback->setProgress( current * step );
@@ -816,7 +816,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      matchingSink->addFeature( f );
+      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * step );
       current++;
@@ -840,11 +840,11 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
       expressionContext.setFeature( f );
       if ( expression.evaluate( &expressionContext ).toBool() )
       {
-        matchingSink->addFeature( f );
+        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
       else
       {
-        nonMatchingSink->addFeature( f );
+        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
 
       feedback->setProgress( current * step );
@@ -999,7 +999,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
         break;
       }
 
-      matchingSink->addFeature( f );
+      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * step );
       current++;
@@ -1023,11 +1023,11 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       expressionContext.setFeature( f );
       if ( expression.evaluate( &expressionContext ).toBool() )
       {
-        matchingSink->addFeature( f );
+        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
       else
       {
-        nonMatchingSink->addFeature( f );
+        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
 
       feedback->setProgress( current * step );

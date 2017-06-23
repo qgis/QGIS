@@ -33,7 +33,7 @@ import math
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsProcessingUtils
+from qgis.core import QgsFeatureRequest, QgsDistanceArea, QgsFeatureSink, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterNumber

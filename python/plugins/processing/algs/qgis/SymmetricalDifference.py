@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsFeatureRequest,
                        NULL,
@@ -114,7 +115,7 @@ class SymmetricalDifference(QgisAlgorithm):
             try:
                 outFeat.setGeometry(diffGeom)
                 outFeat.setAttributes(attrs)
-                sink.addFeature(outFeat)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             except:
                 QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                          self.tr('Processing'), QgsMessageLog.WARNING)
@@ -146,7 +147,7 @@ class SymmetricalDifference(QgisAlgorithm):
             try:
                 outFeat.setGeometry(diffGeom)
                 outFeat.setAttributes(attrs)
-                sink.addFeature(outFeat)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             except:
                 QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                          self.tr('Processing'), QgsMessageLog.WARNING)

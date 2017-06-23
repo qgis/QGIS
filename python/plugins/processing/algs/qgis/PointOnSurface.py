@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -83,7 +83,7 @@ class PointOnSurface(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

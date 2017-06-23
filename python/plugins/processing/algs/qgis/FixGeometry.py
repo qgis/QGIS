@@ -26,6 +26,7 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsApplication,
                        QgsMessageLog,
@@ -94,7 +95,7 @@ class FixGeometry(QgisAlgorithm):
                             try:
                                 g.convertToMultiType()
                                 outputFeature.setGeometry(QgsGeometry(g))
-                                writer.addFeature(outputFeature)
+                                writer.addFeature(outputFeature, QgsFeatureSink.FastInsert)
                             except:
                                 pass
                     feedback.setProgress(int(current * total))
@@ -103,7 +104,7 @@ class FixGeometry(QgisAlgorithm):
                 outputGeometry.convertToMultiType()
                 outputFeature.setGeometry(outputGeometry)
 
-            writer.addFeature(outputFeature)
+            writer.addFeature(outputFeature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

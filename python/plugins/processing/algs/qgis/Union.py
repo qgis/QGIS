@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsMessageLog,
@@ -107,7 +108,7 @@ class Union(QgisAlgorithm):
                 try:
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMapA)
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
                     # This really shouldn't happen, as we haven't
                     # edited the input geom at all
@@ -146,7 +147,7 @@ class Union(QgisAlgorithm):
                                     try:
                                         outFeat.setGeometry(int_geom)
                                         outFeat.setAttributes(atMapA + atMapB)
-                                        writer.addFeature(outFeat)
+                                        writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                                     except:
                                         QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                                                  self.tr('Processing'), QgsMessageLog.INFO)
@@ -159,7 +160,7 @@ class Union(QgisAlgorithm):
                                 try:
                                     outFeat.setGeometry(int_geom)
                                     outFeat.setAttributes(atMapA + atMapB)
-                                    writer.addFeature(outFeat)
+                                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                                 except:
                                     QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                                              self.tr('Processing'), QgsMessageLog.INFO)
@@ -179,7 +180,7 @@ class Union(QgisAlgorithm):
                 try:
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMapA)
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
                     QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                              self.tr('Processing'), QgsMessageLog.INFO)
@@ -202,7 +203,7 @@ class Union(QgisAlgorithm):
                 try:
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMap)
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
                     QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                              self.tr('Processing'), QgsMessageLog.INFO)
@@ -226,7 +227,7 @@ class Union(QgisAlgorithm):
                             # intersects, but the geometry doesn't
                             outFeat.setGeometry(diff_geom)
                             outFeat.setAttributes(atMap)
-                            writer.addFeature(outFeat)
+                            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                         except:
                             QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                                      self.tr('Processing'), QgsMessageLog.INFO)
@@ -235,7 +236,7 @@ class Union(QgisAlgorithm):
                 try:
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMap)
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
                     QgsMessageLog.logMessage(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'),
                                              self.tr('Processing'), QgsMessageLog.INFO)

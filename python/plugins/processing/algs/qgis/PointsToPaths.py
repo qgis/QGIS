@@ -32,6 +32,7 @@ from datetime import datetime
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
@@ -159,7 +160,7 @@ class PointsToPaths(QgisAlgorithm):
                     i += 1
 
             f.setGeometry(QgsGeometry.fromPolyline(line))
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
 

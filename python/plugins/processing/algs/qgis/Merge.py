@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsField,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDefinition,
@@ -153,7 +154,7 @@ class Merge(QgisAlgorithm):
                     dattributes.append(dattribute)
 
                 feature.setAttributes(dattributes)
-                sink.addFeature(feature)
+                sink.addFeature(feature, QgsFeatureSink.FastInsert)
                 featureCount += 1
                 feedback.setProgress(int(featureCount * total))
 

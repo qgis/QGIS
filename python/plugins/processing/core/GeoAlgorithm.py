@@ -180,7 +180,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
                     writer = out.getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(), context)
                     features = QgsProcessingUtils.getFeatures(layer, context)
                     for feature in features:
-                        writer.addFeature(feature)
+                        writer.addFeature(feature, QgsFeatureSink.FastInsert)
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = QgsProcessingUtils.mapLayerFromString(out.compatible, context)

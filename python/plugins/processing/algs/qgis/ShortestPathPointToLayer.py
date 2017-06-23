@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
+from qgis.core import (QgsWkbTypes, QgsUnitTypes, QgsFeatureSink, QgsFeature, QgsGeometry, QgsPointXY, QgsFields, QgsField, QgsFeatureRequest,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingUtils)
@@ -254,7 +254,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             feat['start'] = startPoint.toString()
             feat['end'] = points[i].toString()
             feat['cost'] = cost / multiplier
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
             route[:] = []
 

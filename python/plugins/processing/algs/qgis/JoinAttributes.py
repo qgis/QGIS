@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingUtils)
 
@@ -115,6 +116,6 @@ class JoinAttributes(QgisAlgorithm):
             joinValue1 = str(attrs[joinField1Index])
             attrs.extend(cache.get(joinValue1, []))
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer
