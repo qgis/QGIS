@@ -1,0 +1,9 @@
+Point Distances
+shapes_points
+ParameterVector|POINTS|Points|0|False
+ParameterTable|ID_POINTS|Identifier|False
+ParameterVector|NEAR|Near Points|-1|True
+ParameterTable|ID_NEAR|Identifier|False
+ParameterTable|DISTANCES|Distances|False
+ParameterSelection|FORMAT|Output Format|[0] complete input times near points matrix;[1] each pair with a single record| 1
+ParameterNumber|MAX_DIST|Maximum Distance| 0.000000|None| 0.000000

@@ -1,0 +1,6 @@
+Add Indicator Fields for Categories
+table_tools
+ParameterTable|TABLE|Table|False
+ParameterTable|FIELD|Categories|False
+ParameterTable|OUT_TABLE|Output table with field(s) deleted|True
+OutputVector|OUT_SHAPES|Output shapes with field(s) deleted

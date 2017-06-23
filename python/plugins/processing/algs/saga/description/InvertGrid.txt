@@ -1,0 +1,4 @@
+Invert Grid
+grid_tools
+ParameterRaster|GRID|Grid|False
+OutputRaster|INVERSE|Inverse Grid

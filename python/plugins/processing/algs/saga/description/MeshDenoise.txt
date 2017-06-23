@@ -1,0 +1,9 @@
+Mesh Denoise
+grid_filter
+ParameterRaster|INPUT|Grid|False
+OutputRaster|OUTPUT|Denoised Grid
+ParameterNumber|SIGMA|Threshold| 0.000000| 1.000000| 0.900000
+ParameterNumber|ITER|Number of Iterations for Normal Updating| 1|None| 5
+ParameterNumber|VITER|Number of Iterations for Vertex Updating| 1|None| 50
+ParameterSelection|NB_CV|Common Edge Type of Face Neighbourhood|[0] Common Vertex;[1] Common Edge| 0
+ParameterBoolean|ZONLY|Only Z-Direction Position is Updated|False
