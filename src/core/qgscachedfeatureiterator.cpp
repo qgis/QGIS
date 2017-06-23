@@ -15,7 +15,7 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest )
   : QgsAbstractFeatureIterator( featureRequest )

@@ -16,7 +16,7 @@
 #include "qgsmaptoolcapture.h"
 
 #include "qgscursors.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
 #include "qgslayertreeview.h"

@@ -19,7 +19,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsxmlutils.h"
-#include "qgsprocessingexception.h"
+#include "qgsexception.h"
 #include <QFile>
 #include <QTextStream>
 

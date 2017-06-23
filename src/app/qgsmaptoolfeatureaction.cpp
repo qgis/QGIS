@@ -25,7 +25,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsactionmanager.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"

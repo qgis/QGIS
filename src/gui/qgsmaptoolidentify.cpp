@@ -40,7 +40,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgscurve.h"
 #include "qgscoordinateutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include <QMouseEvent>

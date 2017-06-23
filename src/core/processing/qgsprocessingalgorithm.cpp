@@ -23,7 +23,7 @@
 #include "qgsrectangle.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
-#include "qgsprocessingexception.h"
+#include "qgsexception.h"
 #include "qgsmessagelog.h"
 #include "qgsprocessingfeedback.h"
 

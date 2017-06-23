@@ -32,7 +32,7 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 

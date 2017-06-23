@@ -18,7 +18,7 @@
 #include "qgsprocessingutils.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsprocessingcontext.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsvectorfilewriter.h"

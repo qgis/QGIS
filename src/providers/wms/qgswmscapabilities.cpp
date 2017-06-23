@@ -27,7 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp

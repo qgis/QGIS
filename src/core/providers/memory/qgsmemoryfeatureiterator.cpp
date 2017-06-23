@@ -21,7 +21,7 @@
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 ///@cond PRIVATE
 

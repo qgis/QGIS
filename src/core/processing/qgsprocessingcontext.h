@@ -24,7 +24,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayerlistutils.h"
-#include "qgsprocessingexception.h"
+#include "qgsexception.h"
 
 /**
  * \class QgsProcessingContext

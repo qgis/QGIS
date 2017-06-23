@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 
 QgsRasterProjector::QgsRasterProjector()

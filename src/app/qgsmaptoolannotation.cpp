@@ -28,7 +28,7 @@
 #include "qgssvgannotationdialog.h"
 #include "qgssvgannotation.h"
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsannotationmanager.h"
 #include <QDialog>
 #include <QMouseEvent>

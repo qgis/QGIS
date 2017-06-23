@@ -3,7 +3,7 @@
 
 %ModuleCode
 
-#include "qgsprocessingexception.h"
+#include "qgsexception.h"
 
 QString getTraceback()
 {
