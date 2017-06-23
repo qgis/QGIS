@@ -108,7 +108,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                         alg = ModelerAlgorithm()
                         if alg.fromFile(fullpath):
                             if alg.name():
-                                alg.descriptionFile = fullpath
+                                alg.setSourceFilePath(fullpath)
                                 self.algs.append(alg)
                         else:
                             QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),

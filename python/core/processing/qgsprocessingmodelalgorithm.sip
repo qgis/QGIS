@@ -787,6 +787,19 @@ Copies are protected to avoid slicing
 .. seealso:: helpContent()
 %End
 
+    QString sourceFilePath() const;
+%Docstring
+ Returns the source file path for the model, if available.
+.. seealso:: setSourceFilePath()
+ :rtype: str
+%End
+
+    void setSourceFilePath( const QString &path );
+%Docstring
+ Sets the source file ``path`` for the model, if available.
+.. seealso:: sourceFilePath()
+%End
+
   protected:
 
      virtual QVariantMap processAlgorithm( const QVariantMap &parameters,

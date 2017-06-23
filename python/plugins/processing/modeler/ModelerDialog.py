@@ -439,8 +439,8 @@ class ModelerDialog(BASE, WIDGET):
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
-        if self.model.descriptionFile is not None and not saveAs:
-            filename = self.model.descriptionFile
+        if self.model.sourceFilePath() is not None and not saveAs:
+            filename = self.model.sourceFilePath()
         else:
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
@@ -449,7 +449,7 @@ class ModelerDialog(BASE, WIDGET):
             if filename:
                 if not filename.endswith('.model3'):
                     filename += '.model3'
-                self.model.descriptionFile = filename
+                self.model.setSourceFilePath(filename)
         if filename:
             if not self.model.toFile(filename):
                 if saveAs:
