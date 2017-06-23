@@ -2073,6 +2073,7 @@ EXPAND_AS_DEFINED      = "SIP_ABSTRACT" \
                          "SIP_TRANSFER" \
                          "SIP_TRANSFERBACK" \
                          "SIP_TRANSFERTHIS" \
+                         "SIP_VIRTUALERRORHANDLER" \
                          "SIP_WHEN_FEATURE"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES then doxygen's preprocessor will
