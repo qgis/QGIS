@@ -180,7 +180,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         super().__init__()
 
         self.descriptionFile = None
-        self.helpContent = {}
 
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
@@ -234,17 +233,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
         else:
             return None
-
-    def helpUrl(self):
-        try:
-            return getHtmlFromDescriptionsDict(self, self.helpContent)
-        except:
-            return None
-
-    def shortHelpString(self):
-        if 'ALG_DESC' in self.helpContent:
-            return str(self.helpContent['ALG_DESC'])
-        return None
 
     def toPython(self):
         s = ['##%s=name' % self.name()]

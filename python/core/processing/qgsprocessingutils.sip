@@ -151,6 +151,13 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+%Docstring
+ Returns a HTML formatted version of the help text encoded in a variant ``map`` for
+ a specified ``algorithm``.
+ :rtype: str
+%End
+
 };
 
 

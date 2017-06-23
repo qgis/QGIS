@@ -566,6 +566,10 @@ Copies are protected to avoid slicing
 
     virtual QString svgIconPath() const;
 
+    virtual QString shortHelpString() const;
+
+    virtual QString helpUrl() const;
+
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
@@ -765,6 +769,22 @@ Copies are protected to avoid slicing
  Reads the model from a file, at the specified ``path``.
 .. seealso:: toFile()
  :rtype: bool
+%End
+
+    QVariantMap &helpContent();
+%Docstring
+ Returns the model's help contents (a free-form map of values describing the algorithm's
+ use and metadata).
+.. seealso:: setHelpContent()
+ :rtype: QVariantMap
+%End
+
+
+    void setHelpContent( const QVariantMap &contents );
+%Docstring
+ Sets the model's help ``contents`` (a free-form map of values describing the algorithm's
+ use and metadata).
+.. seealso:: helpContent()
 %End
 
   protected:

@@ -279,7 +279,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
-            self.model.helpContent = dlg.descriptions
+            self.model.setHelpContent(dlg.descriptions)
             self.hasChanged = True
 
     def runModel(self):
