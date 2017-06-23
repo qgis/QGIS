@@ -921,91 +921,91 @@ tests:
 #      OUTPUT:
 #        name: expected/extract_nodes_lines.gml
 #        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (lines)
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_lines.gml
-#        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (multilines)
-#    params:
-#      INPUT:
-#        name: multilines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_multilines.gml
-#        type: vector
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (visval)
-#    params:
-#      INPUT:
-#        name: simplify_lines.gml
-#        type: vector
-#      METHOD: '2'
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_vis_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:simplifygeometries
-#    name: Simplify (grid)
-#    params:
-#      INPUT:
-#        name: simplify_lines.gml
-#        type: vector
-#      METHOD: '1'
-#      TOLERANCE: 5.0
-#    results:
-#      OUTPUT:
-#        name: expected/simplify_grid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:smoothgeometry
-#    name: Smooth (lines)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      ITERATIONS: 1
-#      MAX_ANGLE: 180.0
-#      OFFSET: 0.25
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/smoothed_lines.gml
-#        type: vector
-#
-#  - algorithm: qgis:smoothgeometry
-#    name: Smooth (lines, with max angle)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      ITERATIONS: 1
-#      MAX_ANGLE: 60.0
-#      OFFSET: 0.25
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/smoothed_lines_max_angle.gml
-#        type: vector
-#
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_lines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_multilines.gml
+        type: vector
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (visval)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '2'
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/simplify_vis_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:simplifygeometries
+    name: Simplify (grid)
+    params:
+      INPUT:
+        name: simplify_lines.gml
+        type: vector
+      METHOD: '1'
+      TOLERANCE: 5.0
+    results:
+      OUTPUT:
+        name: expected/simplify_grid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 180.0
+      OFFSET: 0.25
+    results:
+      OUTPUT:
+        name: expected/smoothed_lines.gml
+        type: vector
+
+  - algorithm: qgis:smoothgeometry
+    name: Smooth (lines, with max angle)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      ITERATIONS: 1
+      MAX_ANGLE: 60.0
+      OFFSET: 0.25
+    results:
+      OUTPUT:
+        name: expected/smoothed_lines_max_angle.gml
+        type: vector
+
 #  - algorithm: qgis:exportaddgeometrycolumns
 #    name: Add Geometry PointZ
 #    params:
