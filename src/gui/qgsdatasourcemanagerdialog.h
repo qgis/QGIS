@@ -39,6 +39,8 @@ namespace Ui
  * the provider dialogs.
  * The dialog does not handle layer addition directly but emits signals that
  * need to be forwarded to the QGIS application to be handled.
+ * \since QGIS 3.0
+ * @note not available in Python bindings
  */
 class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase
 {
