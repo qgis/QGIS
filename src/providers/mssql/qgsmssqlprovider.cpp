@@ -879,10 +879,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( mGeometryColType == "geometry" )
       {
         if ( mUseWkb )
-          values += QString( "geometry::STGeomFromWKB(%1,%2).MakeValid()" ).arg(
+          values += QString( "geometry::STGeomFromWKB(%1,%2)" ).arg(
                       QString( "?" ), QString::number( mSRId ) );
         else
-          values += QString( "geometry::STGeomFromText(%1,%2).MakeValid()" ).arg(
+          values += QString( "geometry::STGeomFromText(%1,%2)" ).arg(
                       QString( "?" ), QString::number( mSRId ) );
       }
       else
