@@ -512,6 +512,7 @@ class ModelerDialog(BASE, WIDGET):
                 if isinstance(pos, QPoint):
                     pos = QPointF(pos)
                 component = QgsProcessingModelAlgorithm.ModelParameter(dlg.param.name())
+                component.setDescription(dlg.param.name())
                 component.setPosition(pos)
                 self.model.addModelParameter(dlg.param, component)
                 self.repaintModel()
