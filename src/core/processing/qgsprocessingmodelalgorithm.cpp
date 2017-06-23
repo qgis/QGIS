@@ -481,6 +481,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   return finalResults;
 }
 
+QString QgsProcessingModelAlgorithm::sourceFilePath() const
+{
+  return mSourceFile;
+}
+
+void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
+{
+  mSourceFile = sourceFile;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::helpContent() const
 {
   return mHelpContent;

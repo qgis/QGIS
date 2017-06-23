@@ -780,6 +780,18 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setHelpContent( const QVariantMap &contents );
 
+    /**
+     * Returns the source file path for the model, if available.
+     * \see setSourceFilePath()
+     */
+    QString sourceFilePath() const;
+
+    /**
+     * Sets the source file \a path for the model, if available.
+     * \see sourceFilePath()
+     */
+    void setSourceFilePath( const QString &path );
+
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
@@ -796,6 +808,9 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QMap< QString, ModelParameter > mParameterComponents;
 
     QVariantMap mHelpContent;
+
+    //! Model source file
+    QString mSourceFile;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

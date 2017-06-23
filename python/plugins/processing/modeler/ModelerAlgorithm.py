@@ -179,8 +179,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.descriptionFile = None
-
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
 
@@ -229,7 +227,7 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         return param.evaluateForModeler(v, self)
 
     def asPythonCommand(self, parameters, context):
-        if self.descriptionFile:
+        if self.sourceFilePath():
             return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
         else:
             return None
