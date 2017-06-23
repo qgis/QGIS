@@ -84,7 +84,7 @@ class Union(QgisAlgorithm):
         vlayerB = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(Union.INPUT2), context)
 
         geomType = vlayerA.wkbType()
-        fields = vector.combineVectorFields(vlayerA, vlayerB)
+        fields = vector.combineFields(vlayerA.fields(), vlayerB.fields())
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields, geomType, vlayerA.crs(), context)
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
