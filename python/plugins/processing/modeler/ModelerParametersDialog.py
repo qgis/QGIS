@@ -293,7 +293,8 @@ class ModelerParametersDialog(QDialog):
 
                 self.wrappers[param.name()].setValue(value)
             for name, out in list(alg.modelOutputs().items()):
-                self.valueItems[name].setText(out.description())
+                if out.childOutputName() in self.valueItems:
+                    self.valueItems[out.childOutputName()].setText(out.name())
 
             selected = []
             dependencies = self.getAvailableDependencies()  # spellok
@@ -336,10 +337,10 @@ class ModelerParametersDialog(QDialog):
             if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 name = str(self.valueItems[dest.name()].text())
                 if name.strip() != '' and name != ModelerParametersDialog.ENTER_NAME:
-                    output = QgsProcessingModelAlgorithm.ModelOutput(name)
+                    output = QgsProcessingModelAlgorithm.ModelOutput(name, name)
                     output.setChildId(alg.childId())
-                    output.setOutputName(dest.name())
-                    outputs[dest.name()] = output
+                    output.setChildOutputName(dest.name())
+                    outputs[name] = output
         alg.setModelOutputs(outputs)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
