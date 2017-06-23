@@ -40,7 +40,7 @@ email                : sherman at mrcc.com
 #include "qgssettings.h"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

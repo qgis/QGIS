@@ -27,7 +27,7 @@ email                : tim@linfiniti.com
 #include "qgisapp.h"
 #include "qgsbearingutils.h"
 #include "qgscoordinatetransform.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"

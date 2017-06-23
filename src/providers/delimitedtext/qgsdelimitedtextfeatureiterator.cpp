@@ -22,7 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QtAlgorithms>
 #include <QTextStream>

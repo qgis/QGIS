@@ -738,7 +738,6 @@ SET(QGIS_CORE_HDRS
   qgscoordinatetransform.h
   qgscoordinateutils.h
   qgscrscache.h
-  qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
   qgsdataitem.h
@@ -899,7 +898,6 @@ SET(QGIS_CORE_HDRS
   processing/qgsnativealgorithms.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
-  processing/qgsprocessingexception.h
   processing/qgsprocessingmodelalgorithm.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h

@@ -17,7 +17,7 @@
 #include "qgsafsshareddata.h"
 #include "qgsmessagelog.h"
 #include "geometry/qgsgeometry.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
   : mSharedData( sharedData )

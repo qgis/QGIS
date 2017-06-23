@@ -16,7 +16,7 @@
 #include "qgslogger.h"
 
 #include "qgssimplifymethod.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsexpressionsorter.h"
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvas.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
 #include "qgsdoublespinbox.h"

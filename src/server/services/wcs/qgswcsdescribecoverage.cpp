@@ -21,7 +21,7 @@
 #include "qgswcsdescribecoverage.h"
 
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmapserviceexception.h"

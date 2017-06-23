@@ -22,7 +22,7 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QObject>
 #include <QTextStream>

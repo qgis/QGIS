@@ -22,7 +22,7 @@
 #include "qgswmsrenderer.h"
 #include "qgsfilterrestorer.h"
 #include "qgscapabilitiescache.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsfields.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"

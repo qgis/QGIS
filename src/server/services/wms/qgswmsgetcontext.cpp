@@ -29,7 +29,7 @@
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 namespace QgsWms
 {

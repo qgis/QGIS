@@ -21,7 +21,7 @@
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssymbollayerutils.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"

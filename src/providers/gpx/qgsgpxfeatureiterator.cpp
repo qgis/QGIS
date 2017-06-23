@@ -20,7 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <limits>
 #include <cstring>

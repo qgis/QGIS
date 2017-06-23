@@ -23,7 +23,7 @@
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
 #include "qgsgeometry.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslinesymbollayer.h"
 #include "qgscomposer.h"
 #include "qgisapp.h"

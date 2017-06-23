@@ -20,7 +20,7 @@
 #include "qgsproject.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmslayercache.h"
 #include "qgspathresolver.h"

@@ -21,7 +21,7 @@
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"

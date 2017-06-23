@@ -17,7 +17,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsrasterblock.h"
 #include "qgsmaplayermodel.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsproject.h"
 #include <QMenu>
 #include <QAction>

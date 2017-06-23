@@ -26,7 +26,7 @@
 #include "qgswfsutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QDir>
 #include <QProgressDialog>

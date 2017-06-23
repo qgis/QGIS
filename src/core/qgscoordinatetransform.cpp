@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 //qt includes
 #include <QDomNode>

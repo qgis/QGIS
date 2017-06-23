@@ -37,7 +37,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsmapthemes.h"
 #include "qgsguiutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QMessageBox>
 

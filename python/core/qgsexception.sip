@@ -1,7 +1,7 @@
 %Exception QgsCsException(SIP_Exception) /PyName=QgsCsException/
 {
 %TypeHeaderCode
-#include <qgscsexception.h>
+#include <qgsexception.h>
 %End
 %RaiseCode
   SIP_BLOCK_THREADS
@@ -13,7 +13,7 @@
 %Exception QgsProcessingException(SIP_Exception) /PyName=QgsProcessingException/
 {
 %TypeHeaderCode
-#include <qgsprocessingexception.h>
+#include <qgsexception.h>
 %End
 %RaiseCode
   SIP_BLOCK_THREADS

@@ -24,7 +24,7 @@
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )

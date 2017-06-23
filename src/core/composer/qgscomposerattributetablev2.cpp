@@ -26,7 +26,7 @@
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsgeometry.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsmapsettings.h"
 
 //QgsComposerAttributeTableCompareV2

@@ -24,7 +24,7 @@
 #include "qgswfsdescribefeaturetype.h"
 
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmapserviceexception.h"

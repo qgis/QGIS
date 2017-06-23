@@ -32,7 +32,7 @@
 #include "qgspolygon.h"
 #include "qgssurface.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI

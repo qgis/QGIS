@@ -30,7 +30,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgsmessagelog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>

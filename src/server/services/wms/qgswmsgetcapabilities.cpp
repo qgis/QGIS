@@ -36,7 +36,7 @@
 #include "qgslayertree.h"
 #include "qgsmaplayerstylemanager.h"
 
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
 
 

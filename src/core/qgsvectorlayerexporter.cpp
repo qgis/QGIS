@@ -25,7 +25,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsproviderregistry.h"
 #include "qgsdatasourceuri.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 

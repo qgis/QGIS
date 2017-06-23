@@ -20,7 +20,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsproject.h"
 #include "qgis.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 ///@cond NOT_STABLE_API
 

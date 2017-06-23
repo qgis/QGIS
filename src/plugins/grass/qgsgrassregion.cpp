@@ -23,7 +23,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QButtonGroup>
 #include <QColorDialog>

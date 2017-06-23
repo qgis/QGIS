@@ -22,7 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QObject>
 
