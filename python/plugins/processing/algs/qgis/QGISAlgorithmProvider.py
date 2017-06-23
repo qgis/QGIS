@@ -61,9 +61,10 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .SimplifyGeometries import SimplifyGeometries
+from .Smooth import Smooth
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
-
 
 # from .ExtractByLocation import ExtractByLocation
 # from .PointsInPolygon import PointsInPolygon
@@ -78,7 +79,6 @@ from .VectorSplit import VectorSplit
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .Delaunay import Delaunay
 # from .VoronoiPolygons import VoronoiPolygons
-# from .SimplifyGeometries import SimplifyGeometries
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
@@ -134,7 +134,6 @@ from .VectorSplit import VectorSplit
 # from .FieldsMapper import FieldsMapper
 # from .Datasources2Vrt import Datasources2Vrt
 # from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
-# from .Smooth import Smooth
 # from .ReverseLineDirection import ReverseLineDirection
 # from .SpatialIndex import SpatialIndex
 # from .DefineProjection import DefineProjection
@@ -192,7 +191,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
-        #         Delaunay(), VoronoiPolygons(), SimplifyGeometries(),
+        #         Delaunay(), VoronoiPolygons(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
@@ -222,7 +221,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByExpression(), HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-        #         OrientedMinimumBoundingBox(), Smooth(),
+        #         OrientedMinimumBoundingBox(),
         #         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
         #         RectanglesOvalsDiamondsVariable(),
         #         RectanglesOvalsDiamondsFixed(), MergeLines(),
@@ -265,6 +264,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                SimplifyGeometries(),
+                Smooth(),
                 SymmetricalDifference(),
                 VectorSplit()
                 ]
