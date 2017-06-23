@@ -174,8 +174,6 @@ class CompoundValue(object):
 
 class ModelerAlgorithm(QgsProcessingModelAlgorithm):
 
-    CANVAS_SIZE = 4000
-
     def __init__(self):
         super().__init__()
 

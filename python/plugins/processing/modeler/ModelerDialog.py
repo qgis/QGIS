@@ -492,8 +492,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def repaintModel(self, controls=True):
         self.scene = ModelerScene(self, dialog=self)
-        self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
-                                       ModelerAlgorithm.CANVAS_SIZE))
+        self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
+                                       self.CANVAS_SIZE))
         self.scene.paintModel(self.model, controls)
         self.view.setScene(self.scene)
 
