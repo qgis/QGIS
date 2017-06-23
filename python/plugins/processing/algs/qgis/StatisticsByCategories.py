@@ -80,7 +80,7 @@ class StatisticsByCategories(QgisAlgorithm):
         categoriesField = layer.fields().lookupField(categoriesFieldName)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         values = {}
         for current, feat in enumerate(features):
             feedback.setProgress(int(current * total))

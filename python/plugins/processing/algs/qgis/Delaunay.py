@@ -92,7 +92,7 @@ class Delaunay(QgisAlgorithm):
         ptNdx = -1
         c = voronoi.Context()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             if geom.isNull():
@@ -122,7 +122,7 @@ class Delaunay(QgisAlgorithm):
         triangles = c.triangles
         feat = QgsFeature()
 
-        total = 100.0 / len(triangles)
+        total = 100.0 / len(triangles) if triangles else 1
         for current, triangle in enumerate(triangles):
             indices = list(triangle)
             indices.append(indices[0])

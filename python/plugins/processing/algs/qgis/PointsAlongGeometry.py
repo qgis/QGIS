@@ -90,7 +90,7 @@ class PointsAlongGeometry(QgisAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, input_feature in enumerate(features):
             input_geometry = input_feature.geometry()
             if not input_geometry:

@@ -110,7 +110,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
-        total = 100.0 / (featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique)) if featureCount else 1
 
         if not len(unique) == featureCount:
             for i in unique:

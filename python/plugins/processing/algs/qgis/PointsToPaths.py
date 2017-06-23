@@ -106,7 +106,7 @@ class PointsToPaths(QgisAlgorithm):
 
         points = dict()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             point = f.geometry().asPoint()
             group = f[groupField]
@@ -125,7 +125,7 @@ class PointsToPaths(QgisAlgorithm):
         da = QgsDistanceArea()
 
         current = 0
-        total = 100.0 / len(points)
+        total = 100.0 / len(points) if points else 1
         for group, vertices in list(points.items()):
             vertices.sort()
             f = QgsFeature()

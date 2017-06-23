@@ -122,7 +122,7 @@ class HubDistancePoints(QgisAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = QgsProcessingUtils.getFeatures(layerPoints, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerPoints, context)
+        total = 100.0 / layerPoints.featureCount() if layerPoints.featureCount() else 0
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

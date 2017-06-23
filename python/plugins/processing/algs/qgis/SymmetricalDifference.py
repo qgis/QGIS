@@ -91,7 +91,7 @@ class SymmetricalDifference(QgisAlgorithm):
         indexA = QgsSpatialIndex(sourceA)
         indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())))
 
-        total = 100.0 / (sourceA.featureCount() * sourceB.featureCount())
+        total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
 
         for featA in sourceA.getFeatures():

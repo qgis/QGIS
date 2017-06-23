@@ -94,7 +94,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         nIterations = 0
         maxIterations = pointCount * 200
         featureCount = layer.featureCount()
-        total = 100.0 / pointCount
+        total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
         points = dict()

@@ -85,7 +85,7 @@ class PointsDisplacement(QgisAlgorithm):
 
         features = QgsProcessingUtils.getFeatures(layer, context)
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         duplicates = dict()
         for current, f in enumerate(features):
@@ -98,7 +98,7 @@ class PointsDisplacement(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         current = 0
-        total = 100.0 / len(duplicates)
+        total = 100.0 / len(duplicates) if duplicates else 1
         feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi

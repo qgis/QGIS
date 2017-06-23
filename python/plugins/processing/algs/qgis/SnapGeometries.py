@@ -89,7 +89,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
         self.processed = 0
         self.feedback = feedback
-        self.total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        self.total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
             snapper = QgsGeometrySnapper(reference_layer)

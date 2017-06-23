@@ -151,7 +151,7 @@ class ExecuteSQL(QgisAlgorithm):
                                                                            vLayer.crs(), context)
 
         features = QgsProcessingUtils.getFeatures(vLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vLayer, context)
+        total = 100.0 / vLayer.featureCount() if vLayer.featureCount() else 0
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

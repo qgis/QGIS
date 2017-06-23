@@ -90,7 +90,7 @@ class Intersection(QgisAlgorithm):
         outFeat = QgsFeature()
         index = QgsProcessingUtils.createSpatialIndex(vlayerB, context)
         selectionA = QgsProcessingUtils.getFeatures(vlayerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayerA, context)
+        total = 100.0 / vlayerA.featureCount() if vlayerA.featureCount() else 0
         for current, inFeatA in enumerate(selectionA):
             feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()

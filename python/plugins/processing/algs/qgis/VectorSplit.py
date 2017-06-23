@@ -94,7 +94,7 @@ class VectorSplit(QgisAlgorithm):
         crs = source.sourceCrs()
         geomType = source.wkbType()
 
-        total = 100.0 / len(uniqueValues)
+        total = 100.0 / len(uniqueValues) if uniqueValues else 1
 
         for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():

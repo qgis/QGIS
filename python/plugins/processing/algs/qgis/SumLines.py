@@ -97,7 +97,7 @@ class SumLines(QgisAlgorithm):
         distArea = QgsDistanceArea()
 
         features = QgsProcessingUtils.getFeatures(polyLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
+        total = 100.0 / polyLayer.featureCount() if polyLayer.featureCount() else 0
         hasIntersections = False
         for current, ftPoly in enumerate(features):
             inGeom = ftPoly.geometry()

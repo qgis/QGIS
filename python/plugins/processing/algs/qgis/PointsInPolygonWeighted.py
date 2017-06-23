@@ -104,7 +104,7 @@ class PointsInPolygonWeighted(QgisAlgorithm):
         geom = QgsGeometry()
 
         features = QgsProcessingUtils.getFeatures(polyLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(polyLayer, context)
+        total = 100.0 / polyLayer.featureCount() if polyLayer.featureCount() else 0
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())
