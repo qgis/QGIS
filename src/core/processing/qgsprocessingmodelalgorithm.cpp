@@ -19,6 +19,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsxmlutils.h"
+#include "qgsexception.h"
 #include <QFile>
 #include <QTextStream>
 
@@ -437,7 +438,14 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       QTime childTime;
       childTime.start();
 
-      QVariantMap results = child.algorithm()->run( childParams, context, feedback );
+      bool ok = false;
+      QVariantMap results = child.algorithm()->run( childParams, context, feedback, &ok );
+      if ( !ok )
+      {
+        QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+        feedback->reportError( error );
+        throw QgsProcessingException( error );
+      }
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
@@ -451,12 +459,6 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
       feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
-#if 0
-    except GeoAlgorithmExecutionException as e:
-      feedback.pushDebugInfo( self.tr( 'Failed', 'ModelerAlgorithm' ) )
-      raise GeoAlgorithmExecutionException(
-        self.tr( 'Error executing algorithm {0}\n{1}', 'ModelerAlgorithm' ).format( alg.description, e.msg ) )
-#endif
     }
   }
   feedback->pushDebugInfo( QObject::tr( "Model processed ok. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );

@@ -35,7 +35,7 @@
 #include "qgsexpressionsorter.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsmessagelog.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"

@@ -18,7 +18,7 @@
 #include "qgsmaptoolshowhidelabels.h"
 
 #include "qgsapplication.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"

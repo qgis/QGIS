@@ -20,7 +20,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QObject>
 #include <QTextStream>

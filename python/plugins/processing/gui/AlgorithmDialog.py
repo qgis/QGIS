@@ -164,12 +164,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def accept(self):
         super(AlgorithmDialog, self)._saveGeometry()
 
-        context = dataobjects.createContext()
+        feedback = self.createFeedback()
+        context = dataobjects.createContext(feedback)
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            feedback = self.createFeedback()
-
             parameters = self.getParamValues()
 
             if checkCRS and not self.alg.validateInputCrs(parameters, context):
@@ -244,10 +243,14 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
-                result = executeAlgorithm(self.alg, parameters, context, feedback)
-                feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
-                feedback.pushInfo(self.tr('Results:'))
-                feedback.pushCommandInfo(pformat(result))
+                result, ok = executeAlgorithm(self.alg, parameters, context, feedback)
+                if ok:
+                    feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                    feedback.pushInfo(self.tr('Results:'))
+                    feedback.pushCommandInfo(pformat(result))
+                else:
+                    feedback.reportError(
+                        self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
                 feedback.pushInfo('')
 
                 self.buttonCancel.setEnabled(False)

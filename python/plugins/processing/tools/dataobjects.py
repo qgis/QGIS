@@ -65,7 +65,7 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
-def createContext():
+def createContext(feedback=None):
     """
     Creates a default processing context
     """
@@ -77,15 +77,19 @@ def createContext():
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
-    def raise_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
+    def raise_invalid_geometry_error(f, feedback=feedback):
+        if feedback:
+            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
+                                                         'Feature with id {} has invalid geometry, skipping feature.'.format(f.id())))
 
-    context.setInvalidGeometryCallback(raise_error)
+    if context.invalidGeometryCheck() == QgsFeatureRequest.GeometrySkipInvalid:
+        context.setInvalidGeometryCallback(raise_invalid_geometry_error)
 
-    def raise_transform_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
+    def raise_transform_error(f, feedback=feedback):
+        if feedback:
+            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
+                                                         'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
+
     context.setTransformErrorCallback(raise_transform_error)
 
     settings = QgsSettings()

@@ -25,7 +25,7 @@
 #include "qgspathresolver.h"
 #include "qgsreadwritecontext.h"
 #include "qgscomposerutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <QPainter>
 

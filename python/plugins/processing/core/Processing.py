@@ -193,11 +193,17 @@ class Processing(object):
                         return
                     i = i + 1
 
+        feedback = None
+        if kwargs is not None and "feedback" in list(kwargs.keys()):
+            feedback = kwargs["feedback"]
+        elif iface is not None:
+            feedback = MessageBarProgress(alg.displayName())
+
         context = None
         if kwargs is not None and 'context' in list(kwargs.keys()):
             context = kwargs["context"]
         else:
-            context = dataobjects.createContext()
+            context = dataobjects.createContext(feedback)
 
         ok, msg = alg.checkParameterValues(parameters, context)
         if not ok:
@@ -225,12 +231,6 @@ class Processing(object):
             elif cursor.shape() != Qt.WaitCursor:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 overrideCursor = True
-
-        feedback = None
-        if kwargs is not None and "feedback" in list(kwargs.keys()):
-            feedback = kwargs["feedback"]
-        elif iface is not None:
-            feedback = MessageBarProgress(alg.displayName())
 
         ret, results = execute(alg, parameters, context, feedback)
         if ret:

@@ -24,6 +24,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsexception.h"
 
 /**
  * \class QgsProcessingContext
@@ -167,9 +168,23 @@ class CORE_EXPORT QgsProcessingContext
 
     /**
      * Sets the behavior used for checking invalid geometries in input layers.
+     * Settings this to anything but QgsFeatureRequest::GeometryNoCheck will also
+     * reset the invalidGeometryCallback() to a default implementation.
      * \see invalidGeometryCheck()
      */
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check ) { mInvalidGeometryCheck = check; }
+    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check )
+    {
+      mInvalidGeometryCheck = check;
+
+      if ( mInvalidGeometryCheck == QgsFeatureRequest::GeometryAbortOnInvalid )
+      {
+        auto callback = []( const QgsFeature & feature )
+        {
+          throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
+        };
+        mInvalidGeometryCallback = callback;
+      }
+    }
 
 
     /**

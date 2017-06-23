@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsmessagelog.h"
 #include "qgsgeometry.h"
 #include "qgsvirtuallayerblob.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 #include <stdexcept>
 

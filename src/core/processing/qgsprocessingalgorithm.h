@@ -223,11 +223,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * Algorithm progress should be reported using the supplied \a feedback object.
      *
+     * If specified, \a ok will be set to true if algorithm was successfully run.
+     *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
      */
     QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const;
+                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * If an algorithm subclass implements a custom parameters widget, a copy of this widget
@@ -300,7 +302,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * values such as statistical calculations.
      */
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0;
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.

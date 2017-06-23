@@ -25,7 +25,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsproject.h"
 #include "qgsxmlutils.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsgeometry.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();

@@ -27,7 +27,7 @@
 #include "qgsproject.h"
 #include "qgsprojectionselectiontreewidget.h"
 #include "qgslocalec.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssettings.h"
 
 #include "cpl_conv.h"
