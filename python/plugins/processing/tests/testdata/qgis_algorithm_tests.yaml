@@ -2573,7 +2573,11 @@ tests:
         type: vector
       METHOD: 0
       NUMBER: 4
-    results: {}
+    results:
+      OUTPUT:
+        type: vector
+        name: points_weighted.gml
+        compare: false
 
   - algorithm: qgis:randomextract
     name: Random extract by percentage
@@ -2583,4 +2587,8 @@ tests:
         type: vector
       METHOD: 1
       NUMBER: 50
-    results: {}
+    results:
+      OUTPUT:
+        type: vector
+        name: points_weighted.gml
+        compare: false

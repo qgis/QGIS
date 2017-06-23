@@ -114,7 +114,8 @@ class AlgorithmsTest(object):
                 parameters[k] = p
 
         for r, p in list(defs['results'].items()):
-            parameters[r] = self.load_result_param(p)
+            if not 'in_place_result' in p or not p['in_place_result']:
+                parameters[r] = self.load_result_param(p)
 
         expectFailure = False
         if 'expectedFailure' in defs:
@@ -136,7 +137,7 @@ class AlgorithmsTest(object):
                 pass
         else:
             results, ok = alg.run(parameters, context, feedback)
-            self.assertTrue(ok)
+            self.assertTrue(ok, parameters)
             self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):
@@ -202,26 +203,23 @@ class AlgorithmsTest(object):
         """
         filepath = self.filepath_from_param(param)
 
-        try:
+        if 'in_place' in param and param['in_place']:
             # check if alg modifies layer in place
-            if param['in_place']:
-                tmpdir = tempfile.mkdtemp()
-                self.cleanup_paths.append(tmpdir)
-                path, file_name = os.path.split(filepath)
-                base, ext = os.path.splitext(file_name)
-                for file in glob.glob(os.path.join(path, '{}.*'.format(base))):
-                    shutil.copy(os.path.join(path, file), tmpdir)
-                filepath = os.path.join(tmpdir, file_name)
-                self.in_place_layers[id] = filepath
-        except:
-            pass
+            tmpdir = tempfile.mkdtemp()
+            self.cleanup_paths.append(tmpdir)
+            path, file_name = os.path.split(filepath)
+            base, ext = os.path.splitext(file_name)
+            for file in glob.glob(os.path.join(path, '{}.*'.format(base))):
+                shutil.copy(os.path.join(path, file), tmpdir)
+            filepath = os.path.join(tmpdir, file_name)
+            self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
         elif param['type'] == 'raster':
             lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
 
-        self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
+        self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
         QgsProject.instance().addMapLayer(lyr)
         return lyr
 
@@ -241,6 +239,12 @@ class AlgorithmsTest(object):
         """
         for id, expected_result in list(expected.items()):
             if expected_result['type'] in ('vector', 'table'):
+                if 'compare' in expected_result and not expected_result['compare']:
+                    # skipping the comparison, so just make sure output is valid
+                    result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    self.assertTrue(result_lyr.isValid())
+                    continue
+
                 expected_lyr = self.load_layer(id, expected_result)
                 if 'in_place_result' in expected_result:
                     result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
