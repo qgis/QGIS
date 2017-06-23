@@ -988,7 +988,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
         {
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
-          wkt = geom.exportToWkt();
+          wkt = geom->exportToWkt();
           wkt.replace(QRegExp("[mzMZ]+\\s*\\("), "(");
         }
         query.addBindValue( wkt );
