@@ -137,6 +137,8 @@ Destination project
     void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
 %Docstring
  Sets the behavior used for checking invalid geometries in input layers.
+ Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
+ reset the invalidGeometryCallback() to a default implementation.
 .. seealso:: invalidGeometryCheck()
 %End
 
