@@ -65,7 +65,7 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
-def createContext(feedback):
+def createContext(feedback=None):
     """
     Creates a default processing context
     """
