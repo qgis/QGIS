@@ -573,6 +573,8 @@ Copies are protected to avoid slicing
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
 
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
+
 
     void setName( const QString &name );
 %Docstring

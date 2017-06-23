@@ -224,12 +224,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
             v = value
         return param.evaluateForModeler(v, self)
 
-    def asPythonCommand(self, parameters, context):
-        if self.sourceFilePath():
-            return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
-        else:
-            return None
-
     def toPython(self):
         s = ['##%s=name' % self.name()]
         for param in list(self.parameterComponents().values()):

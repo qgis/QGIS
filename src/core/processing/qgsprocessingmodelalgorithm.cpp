@@ -915,6 +915,14 @@ bool QgsProcessingModelAlgorithm::canExecute( QString *errorMessage ) const
   return true;
 }
 
+QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  if ( mSourceFile.isEmpty() )
+    return QString(); // temporary model - can't run as python command
+
+  return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
+}
+
 
 bool QgsProcessingModelAlgorithm::ChildParameterSource::operator==( const QgsProcessingModelAlgorithm::ChildParameterSource &other ) const
 {
