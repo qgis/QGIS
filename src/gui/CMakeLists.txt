@@ -484,10 +484,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdatasourcemanagerdialog.h
 
   ogr/qgsopenvectorlayerdialog.h
-  ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
