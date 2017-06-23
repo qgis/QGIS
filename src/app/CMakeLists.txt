@@ -61,7 +61,6 @@ SET(QGIS_APP_SRCS
   qgsversioninfo.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
-  qgsdatasourcemanagerdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -159,11 +158,6 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
-  ogr/qgsogrhelperfunctions.cpp
-  ogr/qgsopenvectorlayerdialog.cpp
-  ogr/qgsnewogrconnection.cpp
-  ogr/qgsvectorlayersaveasdialog.cpp
-
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 
@@ -248,7 +242,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsversioninfo.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
-  qgsdatasourcemanagerdialog.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolannotation.h
@@ -339,10 +332,6 @@ SET (QGIS_APP_MOC_HDRS
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
-
-  ogr/qgsopenvectorlayerdialog.h
-  ogr/qgsnewogrconnection.h
-  ogr/qgsvectorlayersaveasdialog.h
 
   gps/qgsgpsinformationwidget.h
 
@@ -510,6 +499,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -554,6 +544,7 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology-ng
   ../gui/attributetable
   ../gui/auth
+  ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
@@ -561,7 +552,6 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
-  ogr
   openstreetmap
   dwg
   dwg/libdxfrw
