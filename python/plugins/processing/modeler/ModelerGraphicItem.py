@@ -196,6 +196,7 @@ class ModelerGraphicItem(QGraphicsItem):
             if dlg.param is not None:
                 self.model.removeModelParameter(self.element.parameterName())
                 self.element.setParameterName(dlg.param.name())
+                self.element.setDescription(dlg.param.name())
                 self.model.addModelParameter(dlg.param, self.element)
                 self.text = dlg.param.description()
                 self.update()

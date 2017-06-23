@@ -341,7 +341,3 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
     return result, ok
     #self.convertUnsupportedFormats(context, feedback)
     #self.runPostExecutionScript(feedback)
-
-    def helpUrl(self):
-        return QgsHelp.helpUrl("processing_algs/{}/{}".format(
-            self.provider().id(), self.id())).toString()
