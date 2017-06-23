@@ -489,5 +489,3 @@ void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QStr
   setSelectedConnection();
 }
 //********************end auto connected slots *****************/
-
-

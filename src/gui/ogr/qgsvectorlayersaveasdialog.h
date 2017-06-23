@@ -23,14 +23,14 @@
 #include "qgshelp.h"
 #include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
 /**
  *  Class to select destination file, type and CRS for ogr layers
  */
-class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
+class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSaveAsDialogBase
 {
     Q_OBJECT
 

@@ -23,6 +23,7 @@
 #include "qgsguiutils.h"
 #include "qgsmimedatautils.h"
 #include "qgshelp.h"
+#include "qgis_gui.h"
 
 class QgsBrowserDockWidget;
 class QgsRasterLayer;
@@ -33,7 +34,7 @@ namespace Ui
   class QgsDataSourceManagerDialog;
 }
 
-class QgsDataSourceManagerDialog : public QgsOptionsDialogBase
+class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase
 {
     Q_OBJECT
 
