@@ -91,7 +91,7 @@ class VoronoiPolygons(QgisAlgorithm):
         ptNdx = -1
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, inFeat in enumerate(features):
             geom = inFeat.geometry()
             point = geom.asPoint()

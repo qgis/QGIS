@@ -114,7 +114,7 @@ class LinesIntersection(QgisAlgorithm):
 
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
+        total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
         hasIntersections = False
 
         for current, inFeatA in enumerate(features):

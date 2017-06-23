@@ -79,7 +79,7 @@ class FixGeometry(QgisAlgorithm):
         if QgsProcessingUtils.featureCount(layer, context) == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
 
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, inputFeature in enumerate(features):
             outputFeature = inputFeature
             if inputFeature.geometry():

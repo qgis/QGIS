@@ -143,7 +143,7 @@ class ExtentFromLayer(QgisAlgorithm):
 
     def featureExtent(self, source, context, sink, feedback):
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         feat = QgsFeature()
         for current, f in enumerate(features):
             if feedback.isCanceled():

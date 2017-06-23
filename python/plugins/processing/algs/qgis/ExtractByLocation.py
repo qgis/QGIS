@@ -107,7 +107,7 @@ class ExtractByLocation(QgisAlgorithm):
 
         selectedSet = []
         features = QgsProcessingUtils.getFeatures(selectLayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(selectLayer, context)
+        total = 100.0 / selectLayer.featureCount() if selectLayer.featureCount() else 0
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = geom.boundingBox()
@@ -136,7 +136,7 @@ class ExtractByLocation(QgisAlgorithm):
             selectedSet = selectedSet + disjoinSet
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if f.id() in selectedSet:
                 writer.addFeature(f)

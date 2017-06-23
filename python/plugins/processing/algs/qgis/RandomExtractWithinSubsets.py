@@ -113,7 +113,7 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
                                                source.fields(), source.wkbType(), source.sourceCrs())
 
         selran = []
-        total = 100.0 / (featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique)) if featureCount else 1
 
         classes = defaultdict(list)
         for i, feature in enumerate(features):
@@ -127,7 +127,7 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             selran.extend(random.sample(subset, selValue))
 
-        total = 100.0 / featureCount
+        total = 100.0 / featureCount if featureCount else 1
         for (i, feat) in enumerate(selran):
             if feedback.isCanceled():
                 break

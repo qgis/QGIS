@@ -96,7 +96,7 @@ class OffsetLine(QgisAlgorithm):
         miter_limit = self.getParameterValue(self.MITRE_LIMIT)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

@@ -88,7 +88,7 @@ class RandomPointsLayer(QgisAlgorithm):
         nPoints = 0
         nIterations = 0
         maxIterations = pointCount * 200
-        total = 100.0 / pointCount
+        total = 100.0 / pointCount if pointCount else 1
 
         index = QgsSpatialIndex()
         points = dict()

@@ -233,7 +233,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         vertices = []
         upperBoundary = []
         lowerBoundary = []
-        total = 100.0 / len(snappedPoints)
+        total = 100.0 / len(snappedPoints) if snappedPoints else 1
         for i, p in enumerate(snappedPoints):
             idxStart = graph.findVertex(snappedPoints[i])
             origPoint = points[i].toString()

@@ -77,7 +77,7 @@ class ExtendLines(QgisAlgorithm):
         end_distance = self.getParameterValue(self.END_DISTANCE)
 
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             output_feature = input_feature

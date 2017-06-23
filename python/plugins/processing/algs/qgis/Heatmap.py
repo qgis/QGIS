@@ -174,7 +174,7 @@ class Heatmap(QgisAlgorithm):
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes(attrs)
         features = QgsProcessingUtils.getFeatures(layer, context, request)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, f in enumerate(features):
             if kde.addFeature(f) != QgsKernelDensityEstimation.Success:
                 QgsMessageLog.logMessage(self.tr('Error adding feature with ID {} to heatmap').format(f.id()), self.tr('Processing'), QgsMessageLog.CRITICAL)

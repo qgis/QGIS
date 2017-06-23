@@ -77,7 +77,7 @@ class EquivalentNumField(QgisAlgorithm):
         classes = {}
 
         features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(vlayer, context)
+        total = 100.0 / vlayer.featureCount() if vlayer.featureCount() else 0
         for current, feature in enumerate(features):
             feedback.setProgress(int(current * total))
             inGeom = feature.geometry()

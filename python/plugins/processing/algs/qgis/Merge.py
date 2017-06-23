@@ -114,7 +114,7 @@ class Merge(QgisAlgorithm):
             fields.append(QgsField('path', QVariant.String, '', 200))
             add_path_field = True
 
-        total = 100.0 / totalFeatureCount
+        total = 100.0 / totalFeatureCount if totalFeatureCount else 1
         dest_crs = layers[0].crs()
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, layers[0].wkbType(), dest_crs)

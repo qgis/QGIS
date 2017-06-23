@@ -229,7 +229,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         route = []
 
-        total = 100.0 / count
+        total = 100.0 / count if count else 1
         for i in range(1, count + 1):
             idxEnd = graph.findVertex(snappedPoints[i])
 

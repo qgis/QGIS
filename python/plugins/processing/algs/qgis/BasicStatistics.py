@@ -156,7 +156,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return results
 
     def calcNumericStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 0
         stat = QgsStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():
@@ -205,7 +205,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return data, results
 
     def calcStringStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsStringStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():
@@ -237,7 +237,7 @@ class BasicStatisticsForField(QgisAlgorithm):
         return data, results
 
     def calcDateTimeStats(self, features, feedback, field, count):
-        total = 100.0 / float(count)
+        total = 100.0 / count if count else 1
         stat = QgsDateTimeStatisticalSummary()
         for current, ft in enumerate(features):
             if feedback.isCanceled():

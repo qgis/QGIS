@@ -80,7 +80,7 @@ class DensifyGeometriesInterval(QgisAlgorithm):
                                                source.fields(), source.wkbType(), source.sourceCrs())
 
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break

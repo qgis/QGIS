@@ -120,7 +120,7 @@ class ConvexHull(QgisAlgorithm):
         if useField:
             unique = layer.uniqueValues(index)
             current = 0
-            total = 100.0 / (QgsProcessingUtils.featureCount(layer, context) * len(unique))
+            total = 100.0 / (layer.featureCount() * len(unique)) if layer.featureCount() else 1
             for i in unique:
                 first = True
                 hull = []
@@ -152,7 +152,7 @@ class ConvexHull(QgisAlgorithm):
                 fid += 1
         else:
             hull = []
-            total = 100.0 / layer.featureCount()
+            total = 100.0 / layer.featureCount() if layer.featureCount() else 1
             features = QgsProcessingUtils.getFeatures(layer, context)
             for current, f in enumerate(features):
                 inGeom = f.geometry()

@@ -97,7 +97,7 @@ class JoinAttributes(QgisAlgorithm):
         # Cache attributes of Layer 2
         cache = {}
         features = QgsProcessingUtils.getFeatures(layer2, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer2, context)
+        total = 100.0 / layer2.featureCount() if layer2.featureCount() else 0
         for current, feat in enumerate(features):
             attrs = feat.attributes()
             joinValue2 = str(attrs[joinField2Index])
@@ -108,7 +108,7 @@ class JoinAttributes(QgisAlgorithm):
         # Create output vector layer with additional attribute
         outFeat = QgsFeature()
         features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layer, context)
+        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
         for current, feat in enumerate(features):
             outFeat.setGeometry(feat.geometry())
             attrs = feat.attributes()

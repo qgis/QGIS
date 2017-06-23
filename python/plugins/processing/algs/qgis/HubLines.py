@@ -92,7 +92,7 @@ class HubLines(QgisAlgorithm):
 
         spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
         hubs = QgsProcessingUtils.getFeatures(layerHub, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerSpoke, context)
+        total = 100.0 / layerSpoke.featureCount() if layerSpoke.featureCount() else 0
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

@@ -110,7 +110,7 @@ class Datasources2Vrt(QgisAlgorithm):
         if union:
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
-        total = 100.0 / len(dataSources)
+        total = 100.0 / len(dataSources) if dataSources else 1
         for current, inFile in enumerate(dataSources):
             feedback.setProgress(int(current * total))
 

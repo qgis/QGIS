@@ -74,7 +74,7 @@ class SaveSelectedFeatures(QgisAlgorithm):
         if count == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
 
-        total = 100.0 / count
+        total = 100.0 / count if count else 1
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             feedback.setProgress(int(current * total))

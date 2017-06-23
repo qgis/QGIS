@@ -98,7 +98,7 @@ class SplitWithLines(QgisAlgorithm):
         if QgsProcessingUtils.featureCount(layerA, context) == 0:
             total = 100
         else:
-            total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
+            total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
 
         for current, inFeatA in enumerate(features):
             inGeom = inFeatA.geometry()

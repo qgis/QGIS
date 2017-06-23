@@ -86,7 +86,7 @@ class Boundary(QgisAlgorithm):
                                                source.fields(), output_wkb, source.sourceCrs())
 
         features = source.getFeatures()
-        total = 100.0 / source.featureCount()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():

@@ -80,7 +80,7 @@ class Difference(QgisAlgorithm):
         outFeat = QgsFeature()
         index = QgsProcessingUtils.createSpatialIndex(layerB, context)
         selectionA = QgsProcessingUtils.getFeatures(layerA, context)
-        total = 100.0 / QgsProcessingUtils.featureCount(layerA, context)
+        total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
         for current, inFeatA in enumerate(selectionA):
             geom = inFeatA.geometry()
             diff_geom = QgsGeometry(geom)
