@@ -142,7 +142,6 @@ Destination project
 .. seealso:: invalidGeometryCheck()
 %End
 
-
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
  Sets a callback function to use when encountering an invalid geometry and
@@ -200,13 +199,26 @@ Destination project
 .. seealso:: defaultEncoding()
 %End
 
+    QgsProcessingFeedback *feedback();
+%Docstring
+ Returns the associated feedback object.
+.. seealso:: setFeedback()
+ :rtype: QgsProcessingFeedback
+%End
+
+    void setFeedback( QgsProcessingFeedback *feedback );
+%Docstring
+ Sets an associated ``feedback`` object. This allows context related functions
+ to report feedback and errors to users and processing logs. While ideally this feedback
+ object should outlive the context, only a weak pointer to ``feedback`` is stored
+ and no errors will occur if feedback is deleted before the context.
+ Ownership of ``feedback`` is not transferred.
+.. seealso:: setFeedback()
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
-
-
-
-
 
 QFlags<QgsProcessingContext::Flag> operator|(QgsProcessingContext::Flag f1, QFlags<QgsProcessingContext::Flag> f2);
 

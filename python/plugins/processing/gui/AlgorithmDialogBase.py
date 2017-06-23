@@ -189,7 +189,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def setInfo(self, msg, error=False, escape_html=True):
         if error:
-            self.txtLog.append('<span style="color:red"><br>{}<br></span>'.format(msg, quote=False))
+            self.txtLog.append('<span style="color:red">{}</span><br />'.format(msg, quote=False))
         elif escape_html:
             self.txtLog.append(html.escape(msg))
         else:
