@@ -56,7 +56,7 @@ def execute(alg, parameters, context=None, feedback=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(feedback)
 
     try:
         results, ok = alg.run(parameters, context, feedback)

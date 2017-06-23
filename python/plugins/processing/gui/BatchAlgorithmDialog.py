@@ -78,8 +78,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         alg_parameters = []
         load = []
 
-        context = dataobjects.createContext()
         feedback = self.createFeedback()
+        context = dataobjects.createContext(feedback)
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
             col = 0

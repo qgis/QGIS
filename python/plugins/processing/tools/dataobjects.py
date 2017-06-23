@@ -65,7 +65,7 @@ TYPE_FILE = 4
 TYPE_TABLE = 5
 
 
-def createContext():
+def createContext(feedback):
     """
     Creates a default processing context
     """
@@ -77,9 +77,11 @@ def createContext():
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
-    def raise_transform_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
+    def raise_transform_error(f, feedback=feedback):
+        if feedback:
+            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
+                                                         'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
+
     context.setTransformErrorCallback(raise_transform_error)
 
     settings = QgsSettings()

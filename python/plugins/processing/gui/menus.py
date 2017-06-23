@@ -203,7 +203,6 @@ def _executeAlgorithm(alg):
         dlg.exec_()
         return
 
-    context = dataobjects.createContext()
     if (alg.countVisibleParameters()) > 0:
         dlg = alg.createCustomParametersWidget(None)
         if not dlg:
@@ -220,6 +219,7 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
+        context = dataobjects.createContext(feedback)
         parameters = {}
         ret, results = execute(alg, parameters, context, feedback)
         handleAlgorithmResults(alg, context, feedback)
