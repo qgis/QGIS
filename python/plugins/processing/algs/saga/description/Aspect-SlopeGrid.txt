@@ -1,0 +1,6 @@
+Aspect-Slope Grid
+grid_visualisation
+ParameterRaster|ASPECT|Aspect|False
+ParameterRaster|SLOPE|Slope|False
+OutputRaster|ASPECT_SLOPE|Aspect-Slope
+ParameterTable|LUT|Lookup Table|True

@@ -1,0 +1,8 @@
+Sieving Classes
+grid_filter
+ParameterRaster|INPUT|Classes|False
+OutputRaster|OUTPUT|Sieved Classes
+ParameterSelection|MODE|Neighbourhood|[0] Neumann;[1] Moore| 1
+ParameterNumber|THRESHOLD|Minimum Threshold| 2|None| 4
+ParameterSelection|ALL|Class Selection|[0] single class;[1] all classes| 1
+ParameterNumber|CLASS|Class Identifier|None|None| 1.000000
