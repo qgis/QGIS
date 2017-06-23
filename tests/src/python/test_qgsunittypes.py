@@ -630,6 +630,33 @@ class TestQgsUnitTypes(unittest.TestCase):
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleTurn), '1.00 tr')
         self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnknownUnit), '1.00')
 
+    def testEncodeDecodeLayoutUnits(self):
+        """Test encoding and decoding layout units"""
+        units = [QgsUnitTypes.LayoutMillimeters,
+                 QgsUnitTypes.LayoutCentimeters,
+                 QgsUnitTypes.LayoutMeters,
+                 QgsUnitTypes.LayoutInches,
+                 QgsUnitTypes.LayoutFeet,
+                 QgsUnitTypes.LayoutPoints,
+                 QgsUnitTypes.LayoutPicas,
+                 QgsUnitTypes.LayoutPixels]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeLayoutUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeLayoutUnit('bad')
+        self.assertFalse(ok)
+        # default units should be MM
+        self.assertEqual(res, QgsUnitTypes.LayoutMillimeters)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeLayoutUnit(' px  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.LayoutPixels)
+
 
 if __name__ == "__main__":
     unittest.main()

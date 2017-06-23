@@ -343,6 +343,11 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
 
+  layout/qgslayoutmeasurement.cpp
+  layout/qgslayoutmeasurementconverter.cpp
+  layout/qgslayoutpoint.cpp
+  layout/qgslayoutsize.cpp
+
   pal/costcalculator.cpp
   pal/feature.cpp
   pal/geomfunction.cpp
@@ -892,6 +897,11 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgslayoutmeasurement.h
+  layout/qgslayoutmeasurementconverter.h
+  layout/qgslayoutpoint.h
+  layout/qgslayoutsize.h
+
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
@@ -1042,6 +1052,7 @@ INCLUDE_DIRECTORIES(
   fieldformatter
   geometry
   layertree
+  layout
   metadata
   pal
   processing
