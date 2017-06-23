@@ -346,7 +346,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
-     * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
      * \since QGIS 3.0
      * \see invalidGeometryCallback()
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Returns the callback function to use when encountering an invalid geometry and
-     * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
+     * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
      * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()

@@ -746,6 +746,10 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
       if ( !feature.geometry().isGeosValid() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        if ( mRequest.invalidGeometryCallback() )
+        {
+          mRequest.invalidGeometryCallback()( feature );
+        }
         return false;
       }
       break;

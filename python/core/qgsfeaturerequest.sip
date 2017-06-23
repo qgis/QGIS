@@ -364,7 +364,7 @@ Get feature IDs that should be fetched.
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
  Sets a callback function to use when encountering an invalid geometry and
- invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
+ invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
  called using the feature with invalid geometry as a parameter.
 .. versionadded:: 3.0
 .. seealso:: invalidGeometryCallback()

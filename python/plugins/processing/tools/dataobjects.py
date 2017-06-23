@@ -77,6 +77,14 @@ def createContext(feedback=None):
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
+    def raise_invalid_geometry_error(f, feedback=feedback):
+        if feedback:
+            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
+                                                         'Feature with id {} has invalid geometry, skipping feature.'.format(f.id())))
+
+    if context.invalidGeometryCheck() == QgsFeatureRequest.GeometrySkipInvalid:
+        context.setInvalidGeometryCallback(raise_invalid_geometry_error)
+
     def raise_transform_error(f, feedback=feedback):
         if feedback:
             feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
