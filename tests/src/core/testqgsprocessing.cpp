@@ -3732,6 +3732,8 @@ void TestQgsProcessing::modelerAlgorithm()
 
   // to/from XML
   QgsProcessingModelAlgorithm alg5( "test", "testGroup" );
+  alg5.helpContent().insert( "author", "me" );
+  alg5.helpContent().insert( "usage", "run" );
   QgsProcessingModelAlgorithm::ChildAlgorithm alg5c1;
   alg5c1.setChildId( "cx1" );
   alg5c1.setAlgorithmId( "buffer" );
@@ -3772,6 +3774,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( alg6.loadVariant( QgsXmlUtils::readVariant( doc.firstChildElement() ) ) );
   QCOMPARE( alg6.name(), QStringLiteral( "test" ) );
   QCOMPARE( alg6.group(), QStringLiteral( "testGroup" ) );
+  QCOMPARE( alg6.helpContent(), alg5.helpContent() );
   QgsProcessingModelAlgorithm::ChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );

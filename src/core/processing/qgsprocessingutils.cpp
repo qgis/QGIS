@@ -24,6 +24,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingalgorithm.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -426,6 +427,38 @@ QString QgsProcessingUtils::generateTempFilename( const QString &basename )
     tmpDir.mkdir( subPath );
   }
   return path + '/' + basename;
+}
+
+QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm )
+{
+  auto getText = [map]( const QString & key )->QString
+  {
+    if ( map.contains( key ) )
+      return map.value( key ).toString();
+    return QString();
+  };
+
+  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
+  s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
+  s +=  QObject::tr( "<h2>Input parameters</h2>\n" );
+
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
+  {
+    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+  }
+  s += QObject::tr( "<h2>Outputs</h2>\n" );
+  Q_FOREACH ( const QgsProcessingOutputDefinition *def, algorithm->outputDefinitions() )
+  {
+    s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
+    s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
+  }
+  s += "<br>";
+  s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
+  s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
+  s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
+  s += QStringLiteral( "</body></html>" );
+  return s;
 }
 
 

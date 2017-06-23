@@ -56,7 +56,7 @@ class HelpEditionDialog(BASE, WIDGET):
         self.alg = alg
         self.descriptions = {}
         if isinstance(self.alg, ModelerAlgorithm):
-            self.descriptions = self.alg.helpContent
+            self.descriptions = self.alg.helpContent()
         else:
             if self.alg.descriptionFile is not None:
                 helpfile = alg.descriptionFile + '.help'

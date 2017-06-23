@@ -183,6 +183,12 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QString generateTempFilename( const QString &basename );
 
+    /**
+     * Returns a HTML formatted version of the help text encoded in a variant \a map for
+     * a specified \a algorithm.
+     */
+    static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+
   private:
 
     static bool canUseLayer( const QgsRasterLayer *layer );
