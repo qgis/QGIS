@@ -103,6 +103,26 @@ class CORE_EXPORT QgsUnitTypes
       RenderUnknownUnit, //!< Mixed or unknown units
     };
 
+    //! Layout measurement units
+    enum LayoutUnit
+    {
+      LayoutMillimeters = 0, //!< Millimeters
+      LayoutCentimeters, //!< Centimeters
+      LayoutMeters, //!< Meters
+      LayoutInches, //!< Inches
+      LayoutFeet, //!< Feet
+      LayoutPoints, //!< Typographic points
+      LayoutPicas, //!< Typographic picas
+      LayoutPixels //!< Pixels
+    };
+
+    //! Types of layout units
+    enum LayoutUnitType
+    {
+      LayoutPaperUnits = 0, //!< Unit is a paper based measurement unit
+      LayoutScreenUnits //!< Unit is a screen based measurement unit
+    };
+
     /**
      * A combination of distance value and unit.
      *
@@ -354,6 +374,31 @@ class CORE_EXPORT QgsUnitTypes
      * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toString( RenderUnit unit );
+
+
+    // LAYOUT UNITS
+
+    /**
+     * Encodes a layout unit to a string.
+     * \param unit unit to encode
+     * \returns encoded string
+     * \see decodeLayoutUnit()
+     */
+    Q_INVOKABLE static QString encodeUnit( LayoutUnit unit );
+
+    /** Decodes a layout unit from a string.
+     * \param string string to decode
+     * \param ok optional boolean, will be set to true if string was converted successfully
+     * \returns decoded units
+     * \see encodeUnit()
+     */
+    Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = 0 );
+
+    /**
+     * Returns the type for a unit of measurement.
+    */
+    Q_INVOKABLE static LayoutUnitType unitType( const LayoutUnit units );
+
 };
 
 #endif // QGSUNITTYPES_H

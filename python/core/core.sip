@@ -369,6 +369,11 @@ done:
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
 
+%Include layout/qgslayoutmeasurement.sip
+%Include layout/qgslayoutmeasurementconverter.sip
+%Include layout/qgslayoutpoint.sip
+%Include layout/qgslayoutsize.sip
+
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 
