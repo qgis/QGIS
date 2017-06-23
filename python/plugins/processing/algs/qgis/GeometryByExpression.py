@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
                        QgsExpression,
+                       QgsFeatureSink,
                        QgsExpressionContext,
                        QgsExpressionContextUtils,
                        QgsGeometry,
@@ -133,7 +134,7 @@ class GeometryByExpression(QgisAlgorithm):
                         self.tr('{} is not a geometry').format(value))
                 output_feature.setGeometry(value)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

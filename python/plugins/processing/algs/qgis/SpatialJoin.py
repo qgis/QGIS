@@ -33,7 +33,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsFields, QgsField, QgsFeatureSink, QgsFeature, QgsGeometry, NULL, QgsWkbTypes, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -236,10 +236,10 @@ class SpatialJoin(QgisAlgorithm):
                 outFeat.setAttributes(list(atMap.values()))
 
             if keep:
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
                 if not none:
-                    writer.addFeature(outFeat)
+                    writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(c * total))
         del writer

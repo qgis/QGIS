@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
                        QgsFields,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
@@ -124,7 +125,7 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
                                    angle,
                                    width,
                                    height])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
     def featureOmbb(self, layer, context, writer, feedback):
         features = QgsProcessingUtils.getFeatures(layer, context)
@@ -141,7 +142,7 @@ class OrientedMinimumBoundingBox(QgisAlgorithm):
                               width,
                               height])
                 outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             else:
                 feedback.pushInfo(self.tr("Can't calculate an OMBB for feature {0}.").format(inFeat.id()))
             feedback.setProgress(int(current * total))

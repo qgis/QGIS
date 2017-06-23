@@ -34,6 +34,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsField,
@@ -244,12 +245,12 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         feat.setGeometry(geomUpper)
         feat['type'] = 'upper'
         feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+        writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
         feat.setGeometry(geomLower)
         feat['type'] = 'lower'
         feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+        writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
         del writer
 
@@ -265,11 +266,11 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         feat.setGeometry(geom)
         feat['type'] = 'upper'
         feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+        writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
         geom = geomLower.convexHull()
         feat.setGeometry(geom)
         feat['type'] = 'lower'
         feat['start'] = startPoint.toString()
-        writer.addFeature(feat)
+        writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer

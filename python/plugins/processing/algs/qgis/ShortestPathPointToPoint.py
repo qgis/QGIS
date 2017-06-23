@@ -34,6 +34,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsFields,
@@ -251,5 +252,5 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         feat['end'] = endPoint.toString()
         feat['cost'] = cost / multiplier
         feat.setGeometry(geom)
-        writer.addFeature(feat)
+        writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer

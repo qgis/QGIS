@@ -31,6 +31,7 @@ from osgeo import gdal
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFields,
                        QgsField,
                        QgsGeometry,
@@ -199,4 +200,4 @@ class PointsFromLines(QgisAlgorithm):
         self.fid += 1
         self.pointId += 1
 
-        writer.addFeature(feature)
+        writer.addFeature(feature, QgsFeatureSink.FastInsert)

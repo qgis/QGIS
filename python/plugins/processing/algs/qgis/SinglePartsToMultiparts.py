@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsProcessingUtils, NULL
+from qgis.core import QgsFeature, QgsFeatureSink, QgsGeometry, QgsWkbTypes, QgsProcessingUtils, NULL
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -91,7 +91,7 @@ class SinglePartsToMultiparts(QgisAlgorithm):
             if idVar in [None, NULL]:
                 outFeat.setAttributes(atMap)
                 outFeat.setGeometry(feature.geometry())
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))
                 continue
 
@@ -108,6 +108,6 @@ class SinglePartsToMultiparts(QgisAlgorithm):
         for key, geoms in collection_geom.items():
             outFeat.setAttributes(collection_attrs[key])
             outFeat.setGeometry(QgsGeometry.collectGeometry(geoms))
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
         del writer

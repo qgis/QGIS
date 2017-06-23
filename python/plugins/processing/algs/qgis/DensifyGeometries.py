@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsApplication,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
@@ -92,7 +93,7 @@ class DensifyGeometries(QgisAlgorithm):
             if feature.hasGeometry():
                 new_geometry = feature.geometry().densifyByCount(vertices)
                 feature.setGeometry(new_geometry)
-            sink.addFeature(feature)
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}

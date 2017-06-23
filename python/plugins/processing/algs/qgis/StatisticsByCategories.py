@@ -27,6 +27,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsStatisticalSummary,
                        QgsProcessingUtils)
 from processing.core.outputs import OutputTable

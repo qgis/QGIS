@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsFeatureSink, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -79,9 +79,9 @@ class PolygonsToLines(QgisAlgorithm):
                 lines = QgsGeometry(f.geometry().geometry().boundary()).asGeometryCollection()
                 for line in lines:
                     f.setGeometry(line)
-                    writer.addFeature(f)
+                    writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

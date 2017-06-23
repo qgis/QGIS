@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -72,7 +73,7 @@ class RemoveNullGeometry(QgisAlgorithm):
 
         for current, input_feature in enumerate(features):
             if input_feature.hasGeometry():
-                writer.addFeature(input_feature)
+                writer.addFeature(input_feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

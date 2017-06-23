@@ -30,6 +30,7 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,

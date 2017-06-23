@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsGeometry,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
@@ -148,7 +149,7 @@ class Gridify(QgisAlgorithm):
                 feat = QgsFeature()
                 feat.setGeometry(newGeom)
                 feat.setAttributes(f.attributes())
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

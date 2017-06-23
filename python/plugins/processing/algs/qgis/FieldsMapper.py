@@ -32,6 +32,7 @@ from qgis.core import (QgsField,
                        QgsFields,
                        QgsExpression,
                        QgsDistanceArea,
+                       QgsFeatureSink,
                        QgsProject,
                        QgsFeature,
                        QgsApplication,
@@ -174,7 +175,7 @@ class FieldsMapper(QgisAlgorithm):
                     attrs.append(value)
                 outFeat.setAttributes(attrs)
 
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
                 feedback.setProgress(int(current * total))
         else:

@@ -31,6 +31,7 @@ from qgis.core import (QgsField,
                        QgsGeometry,
                        QgsDistanceArea,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsApplication,
@@ -151,7 +152,7 @@ class HubDistanceLines(QgisAlgorithm):
 
             feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
 
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

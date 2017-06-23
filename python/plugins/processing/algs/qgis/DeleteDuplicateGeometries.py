@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
                        QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -86,7 +87,7 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
         total = 100.0 / len(cleaned) if cleaned else 1
         request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
         for current, f in enumerate(layer.getFeatures(request)):
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -31,7 +31,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsFeatureSink, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException

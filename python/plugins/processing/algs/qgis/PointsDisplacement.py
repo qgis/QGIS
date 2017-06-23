@@ -30,6 +30,7 @@ import math
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProcessingUtils)
@@ -107,7 +108,7 @@ class PointsDisplacement(QgisAlgorithm):
             count = len(fids)
             if count == 1:
                 f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
-                writer.addFeature(f)
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 angleStep = fullPerimeter / count
                 if count == 2 and horizontal:
@@ -129,7 +130,7 @@ class PointsDisplacement(QgisAlgorithm):
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())
 
-                    writer.addFeature(out_feature)
+                    writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
                     currentAngle += angleStep
 
             current += 1

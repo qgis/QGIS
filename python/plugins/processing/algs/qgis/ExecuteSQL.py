@@ -157,6 +157,6 @@ class ExecuteSQL(QgisAlgorithm):
             outFeat.setAttributes(inFeat.attributes())
             if geometry_type != 1:
                 outFeat.setGeometry(inFeat.geometry())
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
         del writer

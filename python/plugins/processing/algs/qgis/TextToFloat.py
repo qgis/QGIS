@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector
@@ -87,7 +88,7 @@ class TextToFloat(QgisAlgorithm):
             except:
                 f[idx] = None
 
-            writer.addFeature(f)
+            writer.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

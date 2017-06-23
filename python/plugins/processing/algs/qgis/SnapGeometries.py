@@ -29,6 +29,7 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -96,7 +97,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
             snapper.featureSnapped.connect(self.featureSnapped)
             snapped_features = snapper.snapFeatures(features, tolerance, mode)
             for f in snapped_features:
-                writer.addFeature(QgsFeature(f))
+                writer.addFeature(f, QgsFeatureSink.FastInsert)
         else:
             # snapping internally
             snapper = QgsInternalGeometrySnapper(tolerance, mode)
@@ -104,7 +105,7 @@ class SnapGeometriesToLayer(QgisAlgorithm):
             for f in features:
                 out_feature = f
                 out_feature.setGeometry(snapper.snapFeature(f))
-                writer.addFeature(out_feature)
+                writer.addFeature(out_feature, QgsFeatureSink.FastInsert)
                 processed += 1
                 feedback.setProgress(processed * self.total)
 

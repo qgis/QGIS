@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
                        QgsWkbTypes,
+                       QgsFeatureSink,
                        QgsCoordinateReferenceSystem,
                        QgsApplication,
                        QgsProcessingParameterDefinition,
@@ -80,7 +81,7 @@ class DropGeometry(QgisAlgorithm):
                 break
 
             input_feature.clearGeometry()
-            sink.addFeature(input_feature)
+            sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT_TABLE: dest_id}

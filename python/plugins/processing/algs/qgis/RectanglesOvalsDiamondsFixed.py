@@ -30,6 +30,7 @@ import math
 
 from qgis.core import (QgsApplication,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
@@ -133,7 +134,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 point = feat.geometry().asPoint()
@@ -144,7 +145,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
 
     def diamonds(self, writer, features, width, height, rotation):
         ft = QgsFeature()
@@ -164,7 +165,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 point = feat.geometry().asPoint()
@@ -175,7 +176,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
 
     def ovals(self, writer, features, width, height, rotation, segments):
         ft = QgsFeature()
@@ -197,7 +198,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)
         else:
             for current, feat in enumerate(features):
                 point = feat.geometry().asPoint()
@@ -210,4 +211,4 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon(polygon))
                 ft.setAttributes(feat.attributes())
-                writer.addFeature(ft)
+                writer.addFeature(ft, QgsFeatureSink.FastInsert)

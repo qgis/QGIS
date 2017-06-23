@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsWkbTypes,
@@ -199,7 +200,7 @@ class SplitWithLines(QgisAlgorithm):
 
             if len(parts) > 0:
                 outFeat.setGeometry(QgsGeometry.collectGeometry(parts))
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
         del writer

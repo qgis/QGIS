@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsWkbTypes, QgsField, QgsProcessingUtils
+from qgis.core import QgsFeature, QgsFeatureSink, QgsWkbTypes, QgsField, QgsProcessingUtils
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -94,7 +94,7 @@ class PointsAlongGeometry(QgisAlgorithm):
         for current, input_feature in enumerate(features):
             input_geometry = input_feature.geometry()
             if not input_geometry:
-                writer.addFeature(input_feature)
+                writer.addFeature(input_feature, QgsFeatureSink.FastInsert)
             else:
                 if input_geometry.type == QgsWkbTypes.PolygonGeometry:
                     length = input_geometry.geometry().perimeter()
@@ -112,7 +112,7 @@ class PointsAlongGeometry(QgisAlgorithm):
                     attrs.append(current_distance)
                     attrs.append(angle)
                     output_feature.setAttributes(attrs)
-                    writer.addFeature(output_feature)
+                    writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
                     current_distance += distance
 

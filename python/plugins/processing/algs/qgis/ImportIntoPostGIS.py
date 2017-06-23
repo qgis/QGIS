@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
                        QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -185,7 +186,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            if not exporter.addFeature(f):
+            if not exporter.addFeature(f, QgsFeatureSink.FastInsert):
                 feedback.reportError(exporter.errorMessage())
 
             feedback.setProgress(int(current * total))

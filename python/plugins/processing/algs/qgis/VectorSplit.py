@@ -30,6 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingUtils,
+                       QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFolderOutput,
@@ -111,7 +112,7 @@ class VectorSplit(QgisAlgorithm):
             for f in source.getFeatures(req):
                 if feedback.isCanceled():
                     break
-                sink.addFeature(f)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
                 count += 1
             feedback.pushInfo(self.tr('Added {} features to layer').format(count))
             del sink

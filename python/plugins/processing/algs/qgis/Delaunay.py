@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsField,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
@@ -145,7 +146,7 @@ class Delaunay(QgisAlgorithm):
             feat.setAttributes(attrs)
             geometry = QgsGeometry().fromPolygon([polygon])
             feat.setGeometry(geometry)
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

@@ -27,6 +27,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
@@ -111,7 +112,7 @@ class HubLines(QgisAlgorithm):
                     f.setAttributes(spokepoint.attributes())
                     f.setGeometry(QgsGeometry.fromPolyline(
                         [QgsPointXY(spokeX, spokeY), QgsPointXY(hubX, hubY)]))
-                    writer.addFeature(f)
+                    writer.addFeature(f, QgsFeatureSink.FastInsert)
 
                     break
 

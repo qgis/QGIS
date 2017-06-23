@@ -30,6 +30,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsApplication,
                        QgsField,
                        QgsFeatureRequest,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsProcessingUtils)
@@ -135,7 +136,7 @@ class PointsInPolygonWeighted(QgisAlgorithm):
             else:
                 attrs[idxCount] = count
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsProcessingUtils)
@@ -80,7 +81,7 @@ class Explode(QgisAlgorithm):
             outFeat.setAttributes(atMap)
             for segment in segments:
                 outFeat.setGeometry(segment)
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
         del writer
 
     def extractAsSingleSegments(self, geom):

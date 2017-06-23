@@ -29,6 +29,7 @@ import os
 
 from qgis.core import (QgsApplication,
                        QgsGeometry,
+                       QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingUtils)
 
@@ -124,7 +125,7 @@ class SingleSidedBuffer(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         del writer

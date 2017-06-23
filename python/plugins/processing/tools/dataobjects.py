@@ -210,7 +210,7 @@ def exportVectorLayer(layer, supported=None):
                                      layer.wkbType(), layer.crs())
         selection = layer.selectedFeatures()
         for feat in selection:
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output
     else:
@@ -221,7 +221,7 @@ def exportVectorLayer(layer, supported=None):
                 layer.crs()
             )
             for feat in layer.getFeatures():
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
             del writer
             return output
         else:
@@ -273,7 +273,7 @@ def exportTable(table):
                                      table.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output + '.dbf'
     else:

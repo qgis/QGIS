@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsField,
+                       QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
@@ -194,7 +195,7 @@ class GridPolygon(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x2, y2, id])
-                sink.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
 
                 id += 1
                 count += 1
@@ -249,7 +250,7 @@ class GridPolygon(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x3, y3, id])
-                sink.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
@@ -316,7 +317,7 @@ class GridPolygon(QgisAlgorithm):
 
                 ft.setGeometry(QgsGeometry.fromPolygon([polyline]))
                 ft.setAttributes([x1, y1, x4, y3, id])
-                sink.addFeature(ft)
+                sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

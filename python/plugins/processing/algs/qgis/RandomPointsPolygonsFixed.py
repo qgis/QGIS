@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsWkbTypes,
+from qgis.core import (QgsFields, QgsFeatureSink, QgsField, QgsDistanceArea, QgsGeometry, QgsWkbTypes,
                        QgsSpatialIndex, QgsPointXY, QgsFeature,
                        QgsMessageLog,
                        QgsProcessingUtils)
@@ -129,7 +129,7 @@ class RandomPointsPolygonsFixed(QgisAlgorithm):
                     f.setFields(fields)
                     f.setAttribute('id', nPoints)
                     f.setGeometry(geom)
-                    writer.addFeature(f)
+                    writer.addFeature(f, QgsFeatureSink.FastInsert)
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1

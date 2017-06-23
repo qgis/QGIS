@@ -31,6 +31,7 @@ from math import sqrt
 
 from qgis.core import (QgsWkbTypes,
                        QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink,
@@ -89,7 +90,7 @@ class DensifyGeometriesInterval(QgisAlgorithm):
             if feature.hasGeometry():
                 new_geometry = feature.geometry().densifyByDistance(float(interval))
                 feature.setGeometry(new_geometry)
-            sink.addFeature(feature)
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 

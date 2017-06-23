@@ -33,6 +33,7 @@ from collections import defaultdict
 
 from qgis.core import (QgsApplication,
                        QgsField,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointXY,
@@ -129,7 +130,7 @@ class TopoColor(QgisAlgorithm):
                 attributes.append(NULL)
             output_feature.setAttributes(attributes)
 
-            writer.addFeature(output_feature)
+            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(80 + int(current * total))
 

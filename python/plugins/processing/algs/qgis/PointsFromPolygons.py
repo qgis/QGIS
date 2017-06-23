@@ -32,6 +32,7 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsPointXY,
@@ -132,7 +133,7 @@ class PointsFromPolygons(QgisAlgorithm):
                         fid += 1
                         pointId += 1
 
-                        writer.addFeature(outFeature)
+                        writer.addFeature(outFeature, QgsFeatureSink.FastInsert)
 
             pointId = 0
             polyId += 1

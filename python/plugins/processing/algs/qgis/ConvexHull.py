@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsProcessingUtils,
@@ -145,7 +146,7 @@ class ConvexHull(QgisAlgorithm):
                         (area, perim) = vector.simpleMeasure(outGeom)
                         outFeat.setGeometry(outGeom)
                         outFeat.setAttributes([fid, val, area, perim])
-                        writer.addFeature(outFeat)
+                        writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
                     except:
                         raise GeoAlgorithmExecutionException(
                             self.tr('Exception while computing convex hull'))
@@ -166,7 +167,7 @@ class ConvexHull(QgisAlgorithm):
                 (area, perim) = vector.simpleMeasure(outGeom)
                 outFeat.setGeometry(outGeom)
                 outFeat.setAttributes([0, 'all', area, perim])
-                writer.addFeature(outFeat)
+                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             except:
                 raise GeoAlgorithmExecutionException(
                     self.tr('Exception while computing convex hull'))

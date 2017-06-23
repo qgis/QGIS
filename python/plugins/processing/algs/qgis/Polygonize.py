@@ -30,6 +30,7 @@ from qgis.core import (QgsApplication,
                        QgsFields,
                        QgsField,
                        QgsFeature,
+                       QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
                        QgsFeatureRequest,
@@ -120,6 +121,6 @@ class Polygonize(QgisAlgorithm):
             if self.getParameterValue(self.GEOMETRY):
                 outFeat.setAttributes([None] * fieldsCount + [geom.geometry().area(),
                                                               geom.geometry().perimeter()])
-            writer.addFeature(outFeat)
+            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
             feedback.setProgress(50 + int(current * total))
         del writer
