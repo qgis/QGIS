@@ -102,13 +102,6 @@ class ParameterBoolean(Parameter):
     def __init__(self, name='', description='', default=None, optional=False, metadata={}):
         Parameter.__init__(self, name, description, parseBool(default), optional, metadata)
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'boolean '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -137,13 +130,6 @@ class ParameterCrs(Parameter):
         if self.value == 'ProjectCrs':
             self.value = QgsProject.instance().crs().authid()
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'crs '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -167,13 +153,6 @@ class ParameterExtent(Parameter):
         # The value is a string in the form "xmin, xmax, ymin, ymax"
         self.skip_crs_check = False
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'extent'
-        return '##' + self.name() + '=' + param_type
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -188,13 +167,6 @@ class ParameterPoint(Parameter):
     def __init__(self, name='', description='', default=None, optional=False):
         Parameter.__init__(self, name, description, default, optional)
         # The value is a string in the form "x, y"
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'point'
-        return '##' + self.name() + '=' + param_type
 
     @classmethod
     def fromScriptCode(self, line):
@@ -211,16 +183,6 @@ class ParameterFile(Parameter):
         Parameter.__init__(self, name, description, None, parseBool(optional))
         self.ext = ext
         self.isFolder = parseBool(isFolder)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        if self.isFolder:
-            param_type += 'folder'
-        else:
-            param_type += 'file'
-        return '##' + self.name() + '=' + param_type
 
     @classmethod
     def fromScriptCode(self, line):
@@ -249,13 +211,6 @@ class ParameterFixedTable(Parameter):
                 tablestring = tablestring + table[i][j] + ','
         tablestring = tablestring[:-1]
         return tablestring
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'fixedtable'
-        return '##' + self.name() + '=' + param_type
 
     @classmethod
     def fromScriptCode(self, line):
@@ -405,18 +360,6 @@ class ParameterMultipleInput(Parameter):
         else:
             return 'any vectors'
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        if self.datatype == dataobjects.TYPE_RASTER:
-            param_type += 'multiple raster'
-        if self.datatype == dataobjects.TYPE_FILE:
-            param_type += 'multiple file'
-        else:
-            param_type += 'multiple vector'
-        return '##' + self.name() + '=' + param_type
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -454,16 +397,6 @@ class ParameterNumber(Parameter):
         else:
             self.max = None
         self.value = self.default
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'number'
-        code = '##' + self.name() + '=' + param_type
-        if self.default:
-            code += str(self.default)
-        return code
 
     @classmethod
     def fromScriptCode(self, line):
@@ -538,13 +471,6 @@ class ParameterRaster(Parameter):
     def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
         Parameter.__init__(self, name, description, None, optional)
         self.showSublayersDialog = parseBool(showSublayersDialog)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'raster'
-        return '##' + self.name() + '=' + param_type
 
     @classmethod
     def fromScriptCode(self, line):
@@ -621,13 +547,6 @@ class ParameterString(Parameter):
         Parameter.__init__(self, name, description, default, optional, metadata)
         self.multiline = parseBool(multiline)
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'string '
-        return '##' + self.name() + '=' + param_type + repr(self.defaultValue())
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -655,13 +574,6 @@ class ParameterExpression(Parameter):
     def __init__(self, name='', description='', default=None, optional=False, parent_layer=None):
         Parameter.__init__(self, name, description, default, optional)
         self.parent_layer = parent_layer
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'expression '
-        return '##' + self.name() + '=' + param_type + str(self.defaultValue())
 
     @classmethod
     def fromScriptCode(self, line):
@@ -711,13 +623,6 @@ class ParameterTable(Parameter):
             self.exported = self.value
         return self.exported
 
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'table'
-        return '##' + self.name() + '=' + param_type
-
     @classmethod
     def fromScriptCode(self, line):
         isOptional, name, definition = _splitParameterOptions(line)
@@ -757,13 +662,6 @@ class ParameterTableField(Parameter):
             return 'datetime'
         else:
             return 'any'
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'field'
-        return '##' + self.name() + '=' + param_type + str(self.parent)
 
     @classmethod
     def fromScriptCode(self, line):
@@ -834,13 +732,6 @@ class ParameterVector(Parameter):
 
     def dataType(self):
         return dataobjects.vectorDataType(self)
-
-    def getAsScriptCode(self):
-        param_type = ''
-        if self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            param_type += 'optional '
-        param_type += 'vector'
-        return '##' + self.name() + '=' + param_type
 
     @classmethod
     def fromScriptCode(self, line):

@@ -800,6 +800,16 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
   return value.toString().prepend( '\'' ).append( '\'' );
 }
 
+QString QgsProcessingParameterDefinition::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags && FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += type() + ' ';
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
 QVariantMap QgsProcessingParameterDefinition::toVariantMap() const
 {
   QVariantMap map;
@@ -831,6 +841,16 @@ QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val,
   if ( val.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( val.value< QgsProperty >().asExpression() );
   return val.toBool() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
+}
+
+QString QgsProcessingParameterBoolean::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags && FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += type() + ' ';
+  code += mDefault.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" );
+  return code.trimmed();
 }
 
 QgsProcessingParameterCrs::QgsProcessingParameterCrs( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -1049,6 +1069,16 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
       return true;
   }
   return true;
+}
+
+QString QgsProcessingParameterFile::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags && FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += ( mBehavior == File ? QStringLiteral( "file" ) : QStringLiteral( "folder" ) ) + ' ';
+  code += mDefault.toString();
+  return code.trimmed();
 }
 
 QVariantMap QgsProcessingParameterFile::toVariantMap() const
@@ -1270,6 +1300,46 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
   }
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
+}
+
+QString QgsProcessingParameterMultipleLayers::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags && FlagOptional )
+    code += QStringLiteral( "optional " );
+  switch ( mLayerType )
+  {
+    case TypeRaster:
+      code += QStringLiteral( "multiple raster" );
+      break;
+
+    case TypeFile:
+      code += QStringLiteral( "multiple file" );
+      break;
+
+    default:
+      code += QStringLiteral( "multiple vector" );
+      break;
+  }
+  code += ' ';
+  if ( mDefault.type() == QVariant::List )
+  {
+    QStringList parts;
+    Q_FOREACH ( const QVariant &var, mDefault.toList() )
+    {
+      parts << var.toString();
+    }
+    code += parts.join( ',' );
+  }
+  else if ( mDefault.type() == QVariant::StringList )
+  {
+    code += mDefault.toStringList().join( ',' );
+  }
+  else
+  {
+    code += mDefault.toString();
+  }
+  return code.trimmed();
 }
 
 QgsProcessingParameterDefinition::LayerType QgsProcessingParameterMultipleLayers::layerType() const
