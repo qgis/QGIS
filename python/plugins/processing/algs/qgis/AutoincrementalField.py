@@ -75,7 +75,7 @@ class AutoincrementalField(QgisAlgorithm):
                                                fields, source.wkbType(), source.sourceCrs())
 
         features = source.getFeatures()
-        total = total = 100.0 / source.featureCount() if source.featureCount() else 0
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
