@@ -883,10 +883,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       if ( mGeometryColType == QLatin1String( "geometry" ) )
       {
         if ( mUseWkb )
-          values += QStringLiteral( "geometry::STGeomFromWKB(%1,%2).MakeValid()" ).arg(
+          values += QStringLiteral( "geometry::STGeomFromWKB(%1,%2)" ).arg(
                       QStringLiteral( "?" ), QString::number( mSRId ) );
         else
-          values += QStringLiteral( "geometry::STGeomFromText(%1,%2).MakeValid()" ).arg(
+          values += QStringLiteral( "geometry::STGeomFromText(%1,%2)" ).arg(
                       QStringLiteral( "?" ), QString::number( mSRId ) );
       }
       else
