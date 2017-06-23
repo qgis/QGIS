@@ -36,8 +36,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterRaster,
                                         ParameterNumber,
                                         ParameterBoolean,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName)
+                                        _splitParameterOptions)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.outputs import OutputRaster, OutputTable
 from processing.tools import raster
@@ -100,7 +99,7 @@ class Relief(QgisAlgorithm):
             @classmethod
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
+                descName = QgsProcessingParameters.descriptionFromName(name)
                 parent = definition.lower().strip()[len('relief colors') + 1:]
                 return ParameterReliefColors(name, descName, parent)
 
