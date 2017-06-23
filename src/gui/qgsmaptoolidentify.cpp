@@ -332,8 +332,8 @@ void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geom
   // measure
   if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
   {
-    double measure = QgsGeometryUtils::closestPointMeasure( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
-    QString str = QLocale::system().toString( measure, 'g', 10 );
+    QgsPoint closestPoint = QgsGeometryUtils::closestPoint( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
+    QString str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
     derivedAttributes.insert( QStringLiteral( "Closest point M" ), str );
   }
 }
