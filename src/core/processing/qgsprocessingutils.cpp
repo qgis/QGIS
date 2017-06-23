@@ -475,12 +475,3 @@ long QgsProcessingFeatureSource::featureCount() const
 {
   return mSource->featureCount();
 }
-
-
-
-
-
-
-
-
-

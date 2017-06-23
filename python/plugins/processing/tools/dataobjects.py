@@ -77,12 +77,6 @@ def createContext():
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
 
-    def raise_error(f):
-        raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
-                                                                        'Features with invalid geometries found. Please fix these geometries or specify the "Ignore invalid input features" flag'))
-
-    context.setInvalidGeometryCallback(raise_error)
-
     def raise_transform_error(f):
         raise GeoAlgorithmExecutionException(QCoreApplication.translate("FeatureIterator",
                                                                         'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
