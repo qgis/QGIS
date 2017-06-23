@@ -43,8 +43,7 @@ from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
                                         ParameterSelection,
-                                        _splitParameterOptions,
-                                        _createDescriptiveName
+                                        _splitParameterOptions
                                         )
 from processing.core.outputs import (OutputRaster,
                                      OutputVector
@@ -113,7 +112,7 @@ class TinInterpolation(QgisAlgorithm):
             @classmethod
             def fromScriptCode(self, line):
                 isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
+                descName = QgsProcessingParameters.descriptionFromName(name)
                 parent = definition.lower().strip()[len('interpolation data') + 1:]
                 return ParameterInterpolationData(name, descName, parent)
 
