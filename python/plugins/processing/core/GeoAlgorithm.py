@@ -113,7 +113,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         if feedback is None:
             feedback = QgsProcessingFeedback()
         if context is None:
-            context = dataobjects.createContext()
+            context = dataobjects.createContext(feedback)
 
         self.model = model
         try:
@@ -327,7 +327,7 @@ def executeAlgorithm(alg, parameters, context=None, feedback=None, model=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
     if context is None:
-        context = dataobjects.createContext()
+        context = dataobjects.createContext(feedback)
 
     #self.model = model
 

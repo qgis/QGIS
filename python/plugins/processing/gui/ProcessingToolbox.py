@@ -253,7 +253,6 @@ class ProcessingToolbox(BASE, WIDGET):
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            context = dataobjects.createContext()
             alg = QgsApplication.processingRegistry().algorithmById(item.alg.id())
             ok, message = alg.canExecute()
             if not ok:
@@ -287,6 +286,7 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
+                context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
                 handleAlgorithmResults(alg, parameters, context, feedback)

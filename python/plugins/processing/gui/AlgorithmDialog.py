@@ -164,12 +164,11 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def accept(self):
         super(AlgorithmDialog, self)._saveGeometry()
 
-        context = dataobjects.createContext()
+        feedback = self.createFeedback()
+        context = dataobjects.createContext(feedback)
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            feedback = self.createFeedback()
-
             parameters = self.getParamValues()
 
             if checkCRS and not self.alg.validateInputCrs(parameters, context):
