@@ -29,6 +29,8 @@ class QgsLineString: QgsCurve
     QgsLineString( const QVector<QgsPoint> &points );
 %Docstring
  Construct a linestring from a vector of points.
+ Z and M type will be set based on the type of the first point
+ in the vector.
 .. versionadded:: 3.0
 %End
 
