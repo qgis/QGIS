@@ -45,6 +45,12 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase
     Q_OBJECT
 
   public:
+
+    /** QgsDataSourceManagerDialog constructor
+      * @param mapCanvas the map canvas
+      * @param parent the object
+      * @param fl window flags
+      */
     explicit QgsDataSourceManagerDialog( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
