@@ -227,7 +227,7 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
     def toPython(self):
         s = ['##%s=name' % self.name()]
         for param in list(self.parameterComponents().values()):
-            s.append(param.param.getAsScriptCode())
+            s.append(param.param.asScriptCode())
         for alg in list(self.algs.values()):
             for name, out in list(alg.modelOutputs().items()):
                 s.append('##%s=%s' % (safeName(out.description()).lower(), alg.getOutputType(name)))

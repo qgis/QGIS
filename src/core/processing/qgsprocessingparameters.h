@@ -332,6 +332,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     /**
+     * Returns the parameter definition encoded in a string which can be used within a
+     * Python processing script.
+     */
+    virtual QString asScriptCode() const;
+
+    /**
      * Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
      * method and then extend the result with additional properties.
      * \see fromVariantMap()
@@ -589,6 +595,7 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
 
     QString type() const override { return QStringLiteral( "boolean" ); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 };
 
 /**
@@ -702,6 +709,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 
     QString type() const override { return QStringLiteral( "file" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the parameter behavior (e.g. File or Folder).
@@ -831,6 +839,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     QString type() const override { return QStringLiteral( "multilayer" ); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.

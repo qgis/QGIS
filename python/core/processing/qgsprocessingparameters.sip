@@ -299,6 +299,13 @@ class QgsProcessingParameterDefinition
  :rtype: str
 %End
 
+    virtual QString asScriptCode() const;
+%Docstring
+ Returns the parameter definition encoded in a string which can be used within a
+ Python processing script.
+ :rtype: str
+%End
+
     virtual QVariantMap toVariantMap() const;
 %Docstring
  Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
@@ -571,6 +578,8 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asScriptCode() const;
+
 };
 
 class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
@@ -700,6 +709,8 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString asScriptCode() const;
 
 
     Behavior behavior() const;
@@ -836,6 +847,8 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
 
 
     QgsProcessingParameterDefinition::LayerType layerType() const;
