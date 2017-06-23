@@ -573,6 +573,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString helpUrl() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
+    QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
 
     /**
      * Sets the model \a name.
