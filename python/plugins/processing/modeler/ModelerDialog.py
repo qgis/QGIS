@@ -279,7 +279,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
-            self.model.helpContent = dlg.descriptions
+            self.model.setHelpContent(dlg.descriptions)
             self.hasChanged = True
 
     def runModel(self):
@@ -439,8 +439,8 @@ class ModelerDialog(BASE, WIDGET):
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
-        if self.model.descriptionFile is not None and not saveAs:
-            filename = self.model.descriptionFile
+        if self.model.sourceFilePath() is not None and not saveAs:
+            filename = self.model.sourceFilePath()
         else:
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
@@ -449,7 +449,7 @@ class ModelerDialog(BASE, WIDGET):
             if filename:
                 if not filename.endswith('.model3'):
                     filename += '.model3'
-                self.model.descriptionFile = filename
+                self.model.setSourceFilePath(filename)
         if filename:
             if not self.model.toFile(filename):
                 if saveAs:
@@ -492,8 +492,8 @@ class ModelerDialog(BASE, WIDGET):
 
     def repaintModel(self, controls=True):
         self.scene = ModelerScene(self, dialog=self)
-        self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE,
-                                       ModelerAlgorithm.CANVAS_SIZE))
+        self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
+                                       self.CANVAS_SIZE))
         self.scene.paintModel(self.model, controls)
         self.view.setScene(self.scene)
 
@@ -512,6 +512,7 @@ class ModelerDialog(BASE, WIDGET):
                 if isinstance(pos, QPoint):
                     pos = QPointF(pos)
                 component = QgsProcessingModelAlgorithm.ModelParameter(dlg.param.name())
+                component.setDescription(dlg.param.name())
                 component.setPosition(pos)
                 self.model.addModelParameter(dlg.param, component)
                 self.repaintModel()

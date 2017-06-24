@@ -71,26 +71,12 @@ def createContext(feedback=None):
     """
     context = QgsProcessingContext()
     context.setProject(QgsProject.instance())
+    context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
     if invalid_features_method is None:
         invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
     context.setInvalidGeometryCheck(invalid_features_method)
-
-    def raise_invalid_geometry_error(f, feedback=feedback):
-        if feedback:
-            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
-                                                         'Feature with id {} has invalid geometry, skipping feature.'.format(f.id())))
-
-    if context.invalidGeometryCheck() == QgsFeatureRequest.GeometrySkipInvalid:
-        context.setInvalidGeometryCallback(raise_invalid_geometry_error)
-
-    def raise_transform_error(f, feedback=feedback):
-        if feedback:
-            feedback.pushInfo(QCoreApplication.translate("FeatureIterator",
-                                                         'Encountered a transform error when reprojecting feature with id {}.'.format(f.id())))
-
-    context.setTransformErrorCallback(raise_transform_error)
 
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))

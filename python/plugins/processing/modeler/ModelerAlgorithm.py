@@ -174,13 +174,8 @@ class CompoundValue(object):
 
 class ModelerAlgorithm(QgsProcessingModelAlgorithm):
 
-    CANVAS_SIZE = 4000
-
     def __init__(self):
         super().__init__()
-
-        self.descriptionFile = None
-        self.helpContent = {}
 
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
@@ -228,23 +223,6 @@ class ModelerAlgorithm(QgsProcessingModelAlgorithm):
         else:
             v = value
         return param.evaluateForModeler(v, self)
-
-    def asPythonCommand(self, parameters, context):
-        if self.descriptionFile:
-            return QgsProcessingAlgorithm.asPythonCommand(self, parameters, context)
-        else:
-            return None
-
-    def helpUrl(self):
-        try:
-            return getHtmlFromDescriptionsDict(self, self.helpContent)
-        except:
-            return None
-
-    def shortHelpString(self):
-        if 'ALG_DESC' in self.helpContent:
-            return str(self.helpContent['ALG_DESC'])
-        return None
 
     def toPython(self):
         s = ['##%s=name' % self.name()]

@@ -25,6 +25,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsmaplayerlistutils.h"
 #include "qgsexception.h"
+#include "qgsprocessingfeedback.h"
 
 /**
  * \class QgsProcessingContext
@@ -50,7 +51,15 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Constructor for QgsProcessingContext.
      */
-    QgsProcessingContext() = default;
+    QgsProcessingContext()
+    {
+      auto callback = [ = ]( const QgsFeature & feature )
+      {
+        if ( mFeedback )
+          mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
+      };
+      mTransformErrorCallback = callback;
+    }
 
     //! QgsProcessingContext cannot be copied
     QgsProcessingContext( const QgsProcessingContext &other ) = delete;
@@ -176,16 +185,33 @@ class CORE_EXPORT QgsProcessingContext
     {
       mInvalidGeometryCheck = check;
 
-      if ( mInvalidGeometryCheck == QgsFeatureRequest::GeometryAbortOnInvalid )
+      switch ( mInvalidGeometryCheck )
       {
-        auto callback = []( const QgsFeature & feature )
+        case  QgsFeatureRequest::GeometryAbortOnInvalid:
         {
-          throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
-        };
-        mInvalidGeometryCallback = callback;
+          auto callback = []( const QgsFeature & feature )
+          {
+            throw QgsProcessingException( QObject::tr( "Feature (%1) has invalid geometry. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
+          };
+          mInvalidGeometryCallback = callback;
+          break;
+        }
+
+        case QgsFeatureRequest::GeometrySkipInvalid:
+        {
+          auto callback = [ = ]( const QgsFeature & feature )
+          {
+            if ( mFeedback )
+              mFeedback->reportError( QObject::tr( "Feature (%1) has invalid geometry and has been skipped. Please fix the geometry or change the Processing setting to the \"Ignore invalid input features\" option." ).arg( feature.id() ) );
+          };
+          mInvalidGeometryCallback = callback;
+          break;
+        }
+
+        default:
+          break;
       }
     }
-
 
     /**
      * Sets a callback function to use when encountering an invalid geometry and
@@ -268,6 +294,22 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setDefaultEncoding( const QString &encoding ) { mDefaultEncoding = encoding; }
 
+    /**
+     * Returns the associated feedback object.
+     * \see setFeedback()
+     */
+    QgsProcessingFeedback *feedback() { return mFeedback; }
+
+    /**
+     * Sets an associated \a feedback object. This allows context related functions
+     * to report feedback and errors to users and processing logs. While ideally this feedback
+     * object should outlive the context, only a weak pointer to \a feedback is stored
+     * and no errors will occur if feedback is deleted before the context.
+     * Ownership of \a feedback is not transferred.
+     * \see setFeedback()
+     */
+    void setFeedback( QgsProcessingFeedback *feedback ) { mFeedback = feedback; }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
@@ -282,14 +324,12 @@ class CORE_EXPORT QgsProcessingContext
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
 
+    QPointer< QgsProcessingFeedback > mFeedback;
+
 #ifdef SIP_RUN
     QgsProcessingContext( const QgsProcessingContext &other );
 #endif
 };
-
-
-
-
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::Flags )
 

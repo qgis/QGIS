@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingutils.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include <QFile>
@@ -292,6 +293,18 @@ QString QgsProcessingModelAlgorithm::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingModel.svg" ) );
 }
 
+QString QgsProcessingModelAlgorithm::shortHelpString() const
+{
+  if ( mHelpContent.contains( QStringLiteral( "ALG_DESC" ) ) )
+    return mHelpContent.value( QStringLiteral( "ALG_DESC" ) ).toString();
+  return QString();
+}
+
+QString QgsProcessingModelAlgorithm::helpUrl() const
+{
+  return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
+}
+
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap< QString, QVariantMap > &results ) const
 {
   QVariantMap childParams;
@@ -468,6 +481,26 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   return finalResults;
 }
 
+QString QgsProcessingModelAlgorithm::sourceFilePath() const
+{
+  return mSourceFile;
+}
+
+void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
+{
+  mSourceFile = sourceFile;
+}
+
+QVariantMap QgsProcessingModelAlgorithm::helpContent() const
+{
+  return mHelpContent;
+}
+
+void QgsProcessingModelAlgorithm::setHelpContent( const QVariantMap &helpContent )
+{
+  mHelpContent = helpContent;
+}
+
 void QgsProcessingModelAlgorithm::setName( const QString &name )
 {
   mModelName = name;
@@ -559,6 +592,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   QVariantMap map;
   map.insert( QStringLiteral( "model_name" ), mModelName );
   map.insert( QStringLiteral( "model_group" ), mModelGroup );
+  map.insert( QStringLiteral( "help" ), mHelpContent );
 
   QVariantMap childMap;
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -592,6 +626,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   mModelName = map.value( QStringLiteral( "model_name" ) ).toString();
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
+  mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();
@@ -878,6 +913,14 @@ bool QgsProcessingModelAlgorithm::canExecute( QString *errorMessage ) const
     }
   }
   return true;
+}
+
+QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const
+{
+  if ( mSourceFile.isEmpty() )
+    return QString(); // temporary model - can't run as python command
+
+  return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
 

@@ -566,8 +566,14 @@ Copies are protected to avoid slicing
 
     virtual QString svgIconPath() const;
 
+    virtual QString shortHelpString() const;
+
+    virtual QString helpUrl() const;
+
 
     virtual bool canExecute( QString *errorMessage /Out/ = 0 ) const;
+
+    virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
 
     void setName( const QString &name );
@@ -765,6 +771,35 @@ Copies are protected to avoid slicing
  Reads the model from a file, at the specified ``path``.
 .. seealso:: toFile()
  :rtype: bool
+%End
+
+    QVariantMap &helpContent();
+%Docstring
+ Returns the model's help contents (a free-form map of values describing the algorithm's
+ use and metadata).
+.. seealso:: setHelpContent()
+ :rtype: QVariantMap
+%End
+
+
+    void setHelpContent( const QVariantMap &contents );
+%Docstring
+ Sets the model's help ``contents`` (a free-form map of values describing the algorithm's
+ use and metadata).
+.. seealso:: helpContent()
+%End
+
+    QString sourceFilePath() const;
+%Docstring
+ Returns the source file path for the model, if available.
+.. seealso:: setSourceFilePath()
+ :rtype: str
+%End
+
+    void setSourceFilePath( const QString &path );
+%Docstring
+ Sets the source file ``path`` for the model, if available.
+.. seealso:: sourceFilePath()
 %End
 
   protected:

@@ -38,7 +38,7 @@ from qgis.utils import iface
 from qgis.core import (QgsProject,
                        QgsProcessingFeedback,
                        QgsSettings)
-
+from qgis.gui import QgsHelp
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -189,7 +189,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def setInfo(self, msg, error=False, escape_html=True):
         if error:
-            self.txtLog.append('<span style="color:red"><br>{}<br></span>'.format(msg, quote=False))
+            self.txtLog.append('<span style="color:red">{}</span><br />'.format(msg, quote=False))
         elif escape_html:
             self.txtLog.append(html.escape(msg))
         else:
@@ -255,6 +255,10 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
     def openHelp(self):
         algHelp = self.alg.helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
+                self.alg.provider().id(), self.alg.id())).toString()
+
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)
 

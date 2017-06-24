@@ -569,8 +569,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QIcon icon() const override;
     QString svgIconPath() const override;
+    QString shortHelpString() const override;
+    QString helpUrl() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
+    QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
 
     /**
      * Sets the model \a name.
@@ -757,6 +760,39 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     bool fromFile( const QString &path );
 
+    /**
+     * Returns the model's help contents (a free-form map of values describing the algorithm's
+     * use and metadata).
+     * \see setHelpContent()
+     */
+    QVariantMap &helpContent() { return mHelpContent; }
+
+    /**
+     * Returns the model's help contents (a free-form map of values describing the algorithm's
+     * use and metadata).
+     * \see setHelpContent()
+     */
+    SIP_SKIP QVariantMap helpContent() const;
+
+    /**
+     * Sets the model's help \a contents (a free-form map of values describing the algorithm's
+     * use and metadata).
+     * \see helpContent()
+     */
+    void setHelpContent( const QVariantMap &contents );
+
+    /**
+     * Returns the source file path for the model, if available.
+     * \see setSourceFilePath()
+     */
+    QString sourceFilePath() const;
+
+    /**
+     * Sets the source file \a path for the model, if available.
+     * \see sourceFilePath()
+     */
+    void setSourceFilePath( const QString &path );
+
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
@@ -771,6 +807,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     //! Map of parameter name to model parameter component
     QMap< QString, ModelParameter > mParameterComponents;
+
+    QVariantMap mHelpContent;
+
+    //! Model source file
+    QString mSourceFile;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
