@@ -43,12 +43,6 @@ class StatisticsByCategories(QgisAlgorithm):
     CATEGORIES_FIELD_NAME = 'CATEGORIES_FIELD_NAME'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 

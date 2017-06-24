@@ -60,12 +60,6 @@ class ImportIntoPostGIS(QgisAlgorithm):
     PRIMARY_KEY = 'PRIMARY_KEY'
     ENCODING = 'ENCODING'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Database')
 

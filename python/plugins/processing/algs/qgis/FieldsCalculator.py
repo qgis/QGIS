@@ -61,12 +61,6 @@ class FieldsCalculator(QgisAlgorithm):
 
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 

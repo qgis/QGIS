@@ -61,12 +61,6 @@ class SelectByAttribute(QgisAlgorithm):
                         'contains',
                         'does not contain']
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('select,attribute,value,contains,null,field').split(',')
 

@@ -41,12 +41,6 @@ class DeleteHoles(QgisAlgorithm):
     MIN_AREA = 'MIN_AREA'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 

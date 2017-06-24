@@ -42,12 +42,6 @@ class DropGeometry(QgisAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_TABLE = 'OUTPUT_TABLE'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
 

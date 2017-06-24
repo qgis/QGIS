@@ -51,12 +51,6 @@ class AddTableField(QgisAlgorithm):
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 

@@ -51,12 +51,6 @@ class JoinAttributes(QgisAlgorithm):
     TABLE_FIELD = 'TABLE_FIELD'
     TABLE_FIELD_2 = 'TABLE_FIELD_2'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 

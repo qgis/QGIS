@@ -50,17 +50,6 @@ class PointsInPolygonWeighted(QgisAlgorithm):
     FIELD = 'FIELD'
     WEIGHT = 'WEIGHT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
-    # =========================================================================
-
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector analysis tools')
 

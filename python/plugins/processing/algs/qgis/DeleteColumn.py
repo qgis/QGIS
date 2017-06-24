@@ -41,12 +41,6 @@ class DeleteColumn(QgisAlgorithm):
     COLUMNS = 'COLUMN'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
 

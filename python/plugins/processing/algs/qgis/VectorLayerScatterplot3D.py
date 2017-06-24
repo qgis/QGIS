@@ -47,12 +47,6 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     YFIELD = 'YFIELD'
     ZFIELD = 'ZFIELD'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Graphics')
 

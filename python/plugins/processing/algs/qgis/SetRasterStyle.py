@@ -45,12 +45,6 @@ class SetRasterStyle(QgisAlgorithm):
     STYLE = 'STYLE'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Raster general tools')
 
