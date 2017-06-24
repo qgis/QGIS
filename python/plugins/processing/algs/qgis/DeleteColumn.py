@@ -52,7 +52,7 @@ class DeleteColumn(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.COLUMNS,
-                                                      self.tr('Fields to delete'),
+                                                      self.tr('Fields to drop'),
                                                       None, self.INPUT, QgsProcessingParameterField.Any, True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
@@ -62,7 +62,7 @@ class DeleteColumn(QgisAlgorithm):
         return 'deletecolumn'
 
     def displayName(self):
-        return self.tr('Delete column')
+        return self.tr('Drop field(s)')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
