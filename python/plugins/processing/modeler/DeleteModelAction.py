@@ -48,5 +48,5 @@ class DeleteModelAction(ContextAction):
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No)
         if reply == QMessageBox.Yes:
-            os.remove(self.itemData.descriptionFile)
+            os.remove(self.itemData.sourceFilePath())
             QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
