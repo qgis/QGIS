@@ -716,14 +716,10 @@ namespace QgsWms
     }
 
     //read FILTER_GEOM
-    QgsGeometry* filterGeom = 0;
+    std::unique_ptr<QgsGeometry> filterGeom;
     if( mParameters.contains( QStringLiteral( "FILTER_GEOM" ) ) )
     {
-        filterGeom = new QgsGeometry( QgsGeometry::fromWkt( mParameters.value( QStringLiteral( "FILTER_GEOM" ) ) ) );
-        if( filterGeom->isNull() )
-        {
-            delete filterGeom; filterGeom = nullptr;
-        }
+        filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mParameters.value( QStringLiteral( "FILTER_GEOM" ) ) ) ) );
     }
 
     //In case the output image is distorted (WIDTH/HEIGHT ratio not equal to BBOX width/height), I and J need to be adapted as well
@@ -747,7 +743,7 @@ namespace QgsWms
       {
         featuresRect.reset( new QgsRectangle() );
       }
-      else if( !filterGeom )
+      else if( !filterGeom.get() )
       {
         throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                       QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
@@ -882,7 +878,7 @@ namespace QgsWms
 
         if ( vectorLayer )
         {
-          if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, infoFormat, featuresRect.get(), filterGeom ) )
+          if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, infoFormat, featuresRect.get(), filterGeom.get() ) )
           {
             continue;
           }
