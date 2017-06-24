@@ -59,12 +59,6 @@ class PointsToPaths(QgisAlgorithm):
     OUTPUT_LINES = 'OUTPUT_LINES'
     OUTPUT_TEXT = 'OUTPUT_TEXT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector creation tools')
 

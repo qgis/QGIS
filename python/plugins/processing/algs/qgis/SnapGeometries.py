@@ -45,12 +45,6 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     BEHAVIOR = 'BEHAVIOR'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector geometry tools')
 

@@ -42,12 +42,6 @@ class CreateConstantRaster(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     NUMBER = 'NUMBER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Raster tools')
 

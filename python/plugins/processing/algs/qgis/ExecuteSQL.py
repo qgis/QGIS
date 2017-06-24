@@ -56,12 +56,6 @@ class ExecuteSQL(QgisAlgorithm):
     INPUT_GEOMETRY_CRS = 'INPUT_GEOMETRY_CRS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector general tools')
 

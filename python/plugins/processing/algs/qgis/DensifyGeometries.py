@@ -45,12 +45,6 @@ class DensifyGeometries(QgisAlgorithm):
     VERTICES = 'VERTICES'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('add,vertices,points').split(',')
 

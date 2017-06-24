@@ -50,12 +50,6 @@ class Polygonize(QgisAlgorithm):
     FIELDS = 'FIELDS'
     GEOMETRY = 'GEOMETRY'
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def tags(self):
         return self.tr('create,lines,polygons,convert').split(',')
 

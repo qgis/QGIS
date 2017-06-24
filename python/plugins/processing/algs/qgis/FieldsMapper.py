@@ -54,12 +54,6 @@ class FieldsMapper(QgisAlgorithm):
         GeoAlgorithm.__init__(self)
         self.mapping = None
 
-    def icon(self):
-        return QgsApplication.getThemeIcon("/providerQgis.svg")
-
-    def svgIconPath(self):
-        return QgsApplication.iconPath("providerQgis.svg")
-
     def group(self):
         return self.tr('Vector table tools')
 
