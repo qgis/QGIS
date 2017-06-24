@@ -717,9 +717,9 @@ namespace QgsWms
 
     //read FILTER_GEOM
     std::unique_ptr<QgsGeometry> filterGeom;
-    if( mParameters.contains( QStringLiteral( "FILTER_GEOM" ) ) )
+    if ( mParameters.contains( QStringLiteral( "FILTER_GEOM" ) ) )
     {
-        filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mParameters.value( QStringLiteral( "FILTER_GEOM" ) ) ) ) );
+      filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mParameters.value( QStringLiteral( "FILTER_GEOM" ) ) ) ) );
     }
 
     //In case the output image is distorted (WIDTH/HEIGHT ratio not equal to BBOX width/height), I and J need to be adapted as well
@@ -743,7 +743,7 @@ namespace QgsWms
       {
         featuresRect.reset( new QgsRectangle() );
       }
-      else if( !filterGeom.get() )
+      else if ( !filterGeom.get() )
       {
         throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
                                       QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
@@ -1254,7 +1254,7 @@ namespace QgsWms
       const QString &version,
       const QString &infoFormat,
       QgsRectangle *featureBBox,
-      QgsGeometry* filterGeom ) const
+      QgsGeometry *filterGeom ) const
   {
     if ( !layer )
     {
@@ -1273,7 +1273,7 @@ namespace QgsWms
     {
       searchRect = featureInfoSearchRect( layer, mapSettings, renderContext, *infoPoint );
     }
-    else if( filterGeom )
+    else if ( filterGeom )
     {
       searchRect = filterGeom->boundingBox();
     }
@@ -1306,9 +1306,9 @@ namespace QgsWms
       fReq.setFlags( fReq.flags() & ~ QgsFeatureRequest::ExactIntersect );
     }
 
-    if( filterGeom )
+    if ( filterGeom )
     {
-        fReq.setFilterExpression( QString("intersects( $geometry, geom_from_wkt('%1') )").arg( filterGeom->exportToWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->exportToWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

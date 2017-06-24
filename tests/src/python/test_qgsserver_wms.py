@@ -125,7 +125,7 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&' +
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\' OR "utf8nameè" = \'three èé↓\''),
                                  'wms_getfeatureinfo_filter_or_utf8')
-        
+
         # Test feature info request with filter geometry
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
