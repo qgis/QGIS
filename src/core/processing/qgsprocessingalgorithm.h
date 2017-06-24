@@ -264,6 +264,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
+    /**
+     * Associates this algorithm with its provider. No transfer of ownership is involved.
+     */
+    void setProvider( QgsProcessingProvider *provider );
+
   protected:
 
     /**
@@ -445,17 +450,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     QStringList parameterAsFields( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
-
   private:
 
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
     QgsProcessingOutputDefinitions mOutputs;
-
-    /**
-     * Associates this algorithm with its provider. No transfer of ownership is involved.
-     */
-    void setProvider( QgsProcessingProvider *provider );
 
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;

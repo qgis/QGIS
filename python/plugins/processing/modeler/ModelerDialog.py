@@ -244,6 +244,7 @@ class ModelerDialog(BASE, WIDGET):
 
         else:
             self.model = ModelerAlgorithm()
+            self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
         self.fillAlgorithmTree()
@@ -476,6 +477,7 @@ class ModelerDialog(BASE, WIDGET):
             alg = ModelerAlgorithm()
             if alg.fromFile(filename):
                 self.model = alg
+                self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
                 self.textGroup.setText(alg.group())
                 self.textName.setText(alg.name())
                 self.repaintModel()

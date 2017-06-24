@@ -267,6 +267,11 @@ class QgsProcessingAlgorithm
  :rtype: str
 %End
 
+    void setProvider( QgsProcessingProvider *provider );
+%Docstring
+ Associates this algorithm with its provider. No transfer of ownership is involved.
+%End
+
   protected:
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/ );
@@ -472,7 +477,6 @@ class QgsProcessingAlgorithm
  Evaluates the parameter with matching ``name`` to a list of fields.
  :rtype: list of str
 %End
-
 
   private:
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
