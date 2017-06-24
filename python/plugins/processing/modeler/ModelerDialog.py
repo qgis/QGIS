@@ -598,6 +598,7 @@ class ModelerDialog(BASE, WIDGET):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
         search_strings = text.split(' ')
+        qgis_groups = {}
         for provider in QgsApplication.processingRegistry().providers():
             if not provider.isActive():
                 continue
@@ -620,12 +621,18 @@ class ModelerDialog(BASE, WIDGET):
                 if show:
                     if alg.group() in groups:
                         groupItem = groups[alg.group()]
+                    elif provider.id() in ('qgis', 'native') and alg.group() in qgis_groups:
+                        groupItem = qgis_groups[alg.group()]
                     else:
                         groupItem = QTreeWidgetItem()
                         name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
-                        groups[alg.group()] = groupItem
+                        if provider.id() in ('qgis', 'native'):
+                            groupItem.setIcon(0, provider.icon())
+                            qgis_groups[alg.group()] = groupItem
+                        else:
+                            groups[alg.group()] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
 
@@ -641,6 +648,13 @@ class ModelerDialog(BASE, WIDGET):
                 for groupItem in list(groups.values()):
                     if text != '':
                         groupItem.setExpanded(True)
+
+        if len(qgis_groups) > 0:
+            for groupItem in list(qgis_groups.values()):
+                self.algorithmTree.addTopLevelItem(groupItem)
+            for groupItem in list(qgis_groups.values()):
+                if text != '':
+                    groupItem.setExpanded(True)
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
