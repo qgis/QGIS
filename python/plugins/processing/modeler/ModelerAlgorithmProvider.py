@@ -58,6 +58,10 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
 
+        # must reload models if providers list is changed - previously unavailable algorithms
+        # which models depend on may now be available
+        QgsApplication.processingRegistry().providerAdded.connect(self.refreshAlgorithms)
+
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(),
