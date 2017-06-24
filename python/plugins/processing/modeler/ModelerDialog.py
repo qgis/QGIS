@@ -472,7 +472,7 @@ class ModelerDialog(BASE, WIDGET):
         filename, selected_filter = QFileDialog.getOpenFileName(self,
                                                                 self.tr('Open Model'),
                                                                 ModelerUtils.modelsFolders()[0],
-                                                                self.tr('Processing models (*.model *.MODEL)'))
+                                                                self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
             alg = ModelerAlgorithm()
             if alg.fromFile(filename):
