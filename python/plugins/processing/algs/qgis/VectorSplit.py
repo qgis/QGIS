@@ -54,9 +54,6 @@ class VectorSplit(QgisAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
-
     def group(self):
         return self.tr('Vector general tools')
 
