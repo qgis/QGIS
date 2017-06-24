@@ -81,12 +81,12 @@ class DataDefinedRestorer: public QObject
 class QgsSymbolSelectorDialog;
 
 /** \ingroup gui
- * Symbol selector widget that cna be used to select and build a symbol
+ * Symbol selector widget that can be used to select and build a symbol
  */
 class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
 {
     Q_OBJECT
-    /// Too allow for non API break access from the dialog.
+    /// To allow for non API break access from the dialog.
     friend class QgsSymbolSelectorDialog;
 
   public:
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void moveLayerUp();
 
     /**
-     * Add a symobl layer to the bottom of the stack.
+     * Add a symbol layer to the bottom of the stack.
      */
     void addLayer();
 

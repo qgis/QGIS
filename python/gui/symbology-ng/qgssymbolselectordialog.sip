@@ -20,7 +20,7 @@
 class QgsSymbolSelectorWidget: QgsPanelWidget
 {
 %Docstring
- Symbol selector widget that cna be used to select and build a symbol
+ Symbol selector widget that can be used to select and build a symbol
 %End
 
 %TypeHeaderCode
@@ -125,7 +125,7 @@ return menu for "advanced" button - create it if doesn't exist and show the adva
 
     void addLayer();
 %Docstring
- Add a symobl layer to the bottom of the stack.
+ Add a symbol layer to the bottom of the stack.
 %End
 
     void removeLayer();
