@@ -82,6 +82,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mGradientWidth( 0.0 )
   , mMapCanvas( canvas )
   , mHistogramWidget( nullptr )
+  , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;
@@ -700,40 +701,8 @@ void QgsRasterLayerProperties::sync()
    */
 
   //these properties (layer name and label) are provided by the qgsmaplayer superclass
-  leLayerSource->setText( mRasterLayer->source() );
   mLayerOrigNameLineEd->setText( mRasterLayer->originalName() );
   leDisplayName->setText( mRasterLayer->name() );
-
-  //display the raster dimensions and no data value
-  if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
-  {
-    lblColumns->setText( tr( "Columns: %1" ).arg( mRasterLayer->width() ) );
-    lblRows->setText( tr( "Rows: %1" ).arg( mRasterLayer->height() ) );
-  }
-  else
-  {
-    // TODO: Account for fixedWidth and fixedHeight WMS layers
-    lblColumns->setText( tr( "Columns: " ) + tr( "n/a" ) );
-    lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
-  }
-
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
-  {
-    lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
-  }
-  else
-  {
-    // TODO: all bands
-    if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
-    {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
-    }
-    else
-    {
-      lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
-    }
-  }
 
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
@@ -759,8 +728,10 @@ void QgsRasterLayerProperties::sync()
    */
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
-  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  mMetadataFilled = true;
 
   // WMS Name as layer short name
   mLayerShortNameLineEdit->setText( mRasterLayer->shortName() );
@@ -968,19 +939,57 @@ void QgsRasterLayerProperties::apply()
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
 
+  if ( mRasterLayer->shortName() != mLayerShortNameLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setShortName( mLayerShortNameLineEdit->text() );
+
+  if ( mRasterLayer->title() != mLayerTitleLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
+
+  if ( mRasterLayer->abstract() != mLayerAbstractTextEdit->toPlainText() )
+    mMetadataFilled = false;
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+
+  if ( mRasterLayer->keywordList() != mLayerKeywordListLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setKeywordList( mLayerKeywordListLineEdit->text() );
+
+  if ( mRasterLayer->dataUrl() != mLayerDataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setDataUrl( mLayerDataUrlLineEdit->text() );
+
+  if ( mRasterLayer->dataUrlFormat() != mLayerDataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
+
   //layer attribution and metadataUrl
+  if ( mRasterLayer->attribution() != mLayerAttributionLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setAttribution( mLayerAttributionLineEdit->text() );
+
+  if ( mRasterLayer->attributionUrl() != mLayerAttributionUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
+
+  if ( mRasterLayer->metadataUrl() != mLayerMetadataUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrl( mLayerMetadataUrlLineEdit->text() );
+
+  if ( mRasterLayer->metadataUrlType() != mLayerMetadataUrlTypeComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrlType( mLayerMetadataUrlTypeComboBox->currentText() );
+
+  if ( mRasterLayer->metadataUrlFormat() != mLayerMetadataUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setMetadataUrlFormat( mLayerMetadataUrlFormatComboBox->currentText() );
+
+  if ( mRasterLayer->legendUrl() != mLayerLegendUrlLineEdit->text() )
+    mMetadataFilled = false;
   mRasterLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
+
+  if ( mRasterLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
+    mMetadataFilled = false;
   mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
   // update symbology
@@ -1107,8 +1116,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml( mRasterLayer->htmlMetadata() );
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
 }
 
 void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int index )
@@ -1438,6 +1447,12 @@ void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
   {
     mHistogramWidget->setActive( false );
   }
+
+  if ( indx == mOptStackedWidget->indexOf( mOptsPage_Information ) || !mMetadataFilled )
+    //set the metadata contents (which can be expensive)
+    teMetadataViewer->clear();
+  teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  mMetadataFilled = true;
 }
 
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
