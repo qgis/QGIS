@@ -642,14 +642,14 @@ void TestQgsGeometryUtils::testClosestPoint()
 
   QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
-//  QVERIFY( qIsNaN( pt1.m() ) );
+  QVERIFY( qIsNaN( pt1.m() ) );
 
   QgsLineString linestringM( QVector<QgsPoint>()
                              << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
                              << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
 
   QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
-//  QVERIFY( qIsNaN( pt2.z() ) );
+  QVERIFY( qIsNaN( pt2.z() ) );
   QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
 
   QgsLineString linestringZM( QVector<QgsPoint>()

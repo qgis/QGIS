@@ -380,8 +380,8 @@ QgsPoint QgsLineString::pointN( int i ) const
 
   double x = mX.at( i );
   double y = mY.at( i );
-  double z = 0;
-  double m = 0;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
 
   bool hasZ = is3D();
   if ( hasZ )
@@ -441,7 +441,7 @@ double QgsLineString::zAt( int index ) const
   if ( index >= 0 && index < mZ.size() )
     return mZ.at( index );
   else
-    return 0.0;
+    return std::numeric_limits<double>::quiet_NaN();
 }
 
 double QgsLineString::mAt( int index ) const
@@ -449,7 +449,7 @@ double QgsLineString::mAt( int index ) const
   if ( index >= 0 && index < mM.size() )
     return mM.at( index );
   else
-    return 0.0;
+    return std::numeric_limits<double>::quiet_NaN();
 }
 
 void QgsLineString::setXAt( int index, double x )

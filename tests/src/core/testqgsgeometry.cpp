@@ -1317,8 +1317,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.zAt( 0 ), 3.0 );
   QCOMPARE( l9.zAt( 1 ), 13.0 );
   QCOMPARE( l9.zAt( 2 ), 23.0 );
-  QCOMPARE( l9.zAt( -1 ), 0.0 ); //out of range
-  QCOMPARE( l9.zAt( 11 ), 0.0 ); //out of range
+  QVERIFY( qIsNaN( l9.zAt( -1 ) ) ); //out of range
+  QVERIFY( qIsNaN( l9.zAt( 11 ) ) ); //out of range
 
   l9.setZAt( 0, 53.0 );
   QCOMPARE( l9.zAt( 0 ), 53.0 );
@@ -1330,8 +1330,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.mAt( 0 ), 4.0 );
   QCOMPARE( l9.mAt( 1 ), 14.0 );
   QCOMPARE( l9.mAt( 2 ), 24.0 );
-  QCOMPARE( l9.mAt( -1 ), 0.0 ); //out of range
-  QCOMPARE( l9.mAt( 11 ), 0.0 ); //out of range
+  QVERIFY( qIsNaN( l9.mAt( -1 ) ) ); //out of range
+  QVERIFY( qIsNaN( l9.mAt( 11 ) ) ); //out of range
 
   l9.setMAt( 0, 54.0 );
   QCOMPARE( l9.mAt( 0 ), 54.0 );
@@ -1346,8 +1346,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
-  QCOMPARE( l9.zAt( 0 ), 0.0 );
-  QCOMPARE( l9.zAt( 1 ), 0.0 );
+  QVERIFY( qIsNaN( l9.zAt( 0 ) ) );
+  QVERIFY( qIsNaN( l9.zAt( 1 ) ) );
   l9.setZAt( 0, 53.0 );
   l9.setZAt( 1, 63.0 );
 
@@ -1357,8 +1357,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
-  QCOMPARE( l9.mAt( 0 ), 0.0 );
-  QCOMPARE( l9.mAt( 1 ), 0.0 );
+  QVERIFY( qIsNaN( l9.mAt( 0 ) ) );
+  QVERIFY( qIsNaN( l9.mAt( 1 ) ) );
   l9.setMAt( 0, 53.0 );
   l9.setMAt( 1, 63.0 );
 

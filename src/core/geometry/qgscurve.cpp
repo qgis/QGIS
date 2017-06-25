@@ -31,9 +31,12 @@ bool QgsCurve::isClosed() const
   //don't consider M-coordinates when testing closedness
   QgsPoint start = startPoint();
   QgsPoint end = endPoint();
-  return ( qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
-           qgsDoubleNear( start.y(), end.y(), 1E-8 ) &&
-           qgsDoubleNear( start.z(), end.z(), 1E-8 ) );
+
+  bool closed = qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
+                qgsDoubleNear( start.y(), end.y(), 1E-8 );
+  if ( is3D() )
+    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( qIsNaN( start.z() ) && qIsNaN( end.z() ) );
+  return closed;
 }
 
 bool QgsCurve::isRing() const
