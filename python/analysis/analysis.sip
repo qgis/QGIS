@@ -1,5 +1,5 @@
 %Module(name=qgis._analysis,
-        keyword_arguments="Optional")
+        keyword_arguments="All")
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
