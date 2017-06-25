@@ -348,6 +348,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject *project )
     if ( QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
     {
       it->setJoinLayer( joinedLayer );
+      connectJoinedLayer( joinedLayer );
       resolved = true;
     }
   }
