@@ -36,6 +36,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
+                       QgsVectorLayerCache,
                        QgsReadWriteContext,
                        QgsProject,
                        QgsUnitTypes,
@@ -54,6 +55,9 @@ from qgis.core import (QgsWkbTypes,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
                        NULL)
+from qgis.gui import (QgsAttributeTableModel,
+                      QgsGui
+                      )
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -209,6 +213,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -1320,6 +1325,65 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.minimumValue(3), 111)
         self.assertEqual(layer.maximumValue(3), 321)
         self.assertEqual(set(layer.uniqueValues(3)), set([111, 321]))
+
+    def test_valid_join_when_opening_project(self):
+        join_field = "id"
+        fid = 4
+        attr_idx = 4
+        join_attr_idx = 1
+        new_value = 33.0
+
+        # read project and get layers
+        myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
+        rc = QgsProject.instance().read(myPath)
+
+        layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
+        join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[0]
+
+        # create an attribute table for the main_layer and the
+        # joined layer
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        join_cache = QgsVectorLayerCache(join_layer, 100)
+        join_am = QgsAttributeTableModel(join_cache)
+        join_am.loadLayer()
+
+        # check feature value of a joined field from the attribute model
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+
+        join_model_index = join_am.idToIndex(fid)
+        join_feature_model = join_am.feature(join_model_index)
+
+        self.assertEqual(feature_model.attribute(attr_idx), join_feature_model.attribute(join_attr_idx))
+
+        # change attribute value for a feature of the joined layer
+        join_layer.startEditing()
+        join_layer.changeAttributeValue(fid, join_attr_idx, new_value)
+        join_layer.commitChanges()
+
+        # check the feature previously modified
+        join_model_index = join_am.idToIndex(fid)
+        join_feature_model = join_am.feature(join_model_index)
+        self.assertEqual(join_feature_model.attribute(join_attr_idx), new_value)
+
+        # recreate a new cache and model to simulate the opening of
+        # a new attribute table
+        cache = QgsVectorLayerCache(layer, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+
+        # test that the model is up to date with the joined layer
+        model_index = am.idToIndex(fid)
+        feature_model = am.feature(model_index)
+        self.assertEqual(feature_model.attribute(attr_idx), new_value)
+
+        # restore value
+        join_layer.startEditing()
+        join_layer.changeAttributeValue(fid, join_attr_idx, 7.0)
+        join_layer.commitChanges()
 
     def testUniqueValue(self):
         """ test retrieving unique values """
