@@ -56,6 +56,7 @@ from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
 from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
+from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Merge import Merge
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
@@ -63,6 +64,7 @@ from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
 
@@ -123,8 +125,6 @@ from .VectorSplit import VectorSplit
 # from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 # from .RandomPointsAlongLines import RandomPointsAlongLines
 # from .PointsToPaths import PointsToPaths
-# from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-# from .ImportIntoSpatialite import ImportIntoSpatialite
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
 # from .SelectByExpression import SelectByExpression
@@ -216,7 +216,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomPointsLayer(), RandomPointsPolygonsFixed(),
         #         RandomPointsPolygonsVariable(),
         #         RandomPointsAlongLines(), PointsToPaths(),
-        #         SpatialiteExecuteSQL(), ImportIntoSpatialite(),
         #         SetVectorStyle(), SetRasterStyle(),
         #         SelectByExpression(), HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
@@ -259,6 +258,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExtentFromLayer(),
                 GridPolygon(),
                 ImportIntoPostGIS(),
+                ImportIntoSpatialite(),
                 Merge(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
@@ -266,6 +266,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RegularPoints(),
                 SimplifyGeometries(),
                 Smooth(),
+                SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
                 VectorSplit()
                 ]
