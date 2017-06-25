@@ -1,5 +1,5 @@
 %Module(name=qgis._server,
-        keyword_arguments="Optional")
+        keyword_arguments="All")
 
 
 %Import QtCore/QtCoremod.sip
