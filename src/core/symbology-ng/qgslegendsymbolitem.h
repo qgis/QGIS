@@ -18,8 +18,8 @@
 
 #include <memory>
 #include <QString>
-#include "qgis.h"
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 class QgsDataDefinedSizeLegend;
@@ -40,6 +40,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! \since QGIS 2.8
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
+
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
@@ -103,7 +104,7 @@ class CORE_EXPORT QgsLegendSymbolItem
 
     //! optional pointer to data-defined legend size settings - if set, the output legend
     //! node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
-    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegendSettings;
+    QgsDataDefinedSizeLegend *mDataDefinedSizeLegendSettings = nullptr;
 
     // additional data that may be used for filtering
 

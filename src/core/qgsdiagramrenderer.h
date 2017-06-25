@@ -646,6 +646,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer();
 
     QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -722,7 +723,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsDiagramInterpolationSettings mInterpolationSettings;
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
-    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
+    QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
 };
 
 #endif // QGSDIAGRAMRENDERERV2_H
