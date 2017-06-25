@@ -2157,7 +2157,7 @@ void QgsMapCanvas::startPreviewJobs()
 
       QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
       mPreviewJobs.append( job );
-      connect( job, SIGNAL( finished() ), this, SLOT( previewJobFinished() ) );
+      connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
       job->start();
     }
   }
