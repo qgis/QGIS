@@ -110,10 +110,17 @@ QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, co
       double length = pointBefore.distance( pointAfter );
       double distance = pointBefore.distance( closestPoint );
 
-      if ( QgsWkbTypes::hasZ( geometry.wkbType() ) )
-        closestPoint.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distance / length );
-      if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
-        closestPoint.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length );
+      if ( qgsDoubleNear( distance, 0.0 ) )
+        closestPoint = pointBefore;
+      else if ( qgsDoubleNear( distance, length ) )
+        closestPoint = pointAfter;
+      else
+      {
+        if ( QgsWkbTypes::hasZ( geometry.wkbType() ) && length )
+          closestPoint.addZValue( pointBefore.z() + ( pointAfter.z() - pointBefore.z() ) * distance / length );
+        if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
+          closestPoint.addMValue( pointBefore.m() + ( pointAfter.m() - pointBefore.m() ) * distance / length );
+      }
     }
   }
 
