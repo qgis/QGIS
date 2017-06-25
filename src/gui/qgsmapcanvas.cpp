@@ -2154,6 +2154,7 @@ void QgsMapCanvas::startPreviewJobs()
       jobExtent.setYMinimum( jobExtent.yMinimum() + dy );
 
       jobSettings.setExtent( jobExtent );
+      jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
       QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
       mPreviewJobs.append( job );
