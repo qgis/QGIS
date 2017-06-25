@@ -15,6 +15,7 @@
 *-stamp
 .*.swp
 .DS_Store
+.vscode
 .idea
 .kdev4/
 .project
