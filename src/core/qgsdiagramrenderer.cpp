@@ -613,6 +613,11 @@ QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer( 
 {
 }
 
+QgsLinearlyInterpolatedDiagramRenderer::~QgsLinearlyInterpolatedDiagramRenderer()
+{
+  delete mDataDefinedSizeLegend;
+}
+
 QgsLinearlyInterpolatedDiagramRenderer *QgsLinearlyInterpolatedDiagramRenderer::clone() const
 {
   return new QgsLinearlyInterpolatedDiagramRenderer( *this );
@@ -683,17 +688,19 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
     mSettings.readXml( settingsElem );
   }
 
+  delete mDataDefinedSizeLegend;
+
   QDomElement ddsLegendSizeElem = elem.firstChildElement( "data-defined-size-legend" );
   if ( !ddsLegendSizeElem.isNull() )
   {
-    mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
+    mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );
   }
   else
   {
     // pre-3.0 projects
     if ( elem.attribute( QStringLiteral( "sizeLegend" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) )
     {
-      mDataDefinedSizeLegend.reset( new QgsDataDefinedSizeLegend() );
+      mDataDefinedSizeLegend = new QgsDataDefinedSizeLegend();
       QDomElement sizeLegendSymbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
       if ( !sizeLegendSymbolElem.isNull() && sizeLegendSymbolElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "sizeSymbol" ) )
       {
@@ -702,7 +709,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
     }
     else
     {
-      mDataDefinedSizeLegend.reset( nullptr );
+      mDataDefinedSizeLegend = nullptr;
     }
   }
 
@@ -808,10 +815,11 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
 
 void QgsLinearlyInterpolatedDiagramRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
 {
-  mDataDefinedSizeLegend.reset( settings );
+  delete settings;
+  mDataDefinedSizeLegend = settings;
 }
 
 QgsDataDefinedSizeLegend *QgsLinearlyInterpolatedDiagramRenderer::dataDefinedSizeLegend() const
 {
-  return mDataDefinedSizeLegend.get();
+  return mDataDefinedSizeLegend;
 }

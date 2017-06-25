@@ -729,6 +729,11 @@ QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *n
 {
 }
 
+QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode()
+{
+  delete mSettings;
+}
+
 QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
 {
   if ( role == Qt::DecorationRole )

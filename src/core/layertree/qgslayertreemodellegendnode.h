@@ -391,6 +391,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
   public:
     //! Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
     QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsDataDefinedSizeLegendNode();
 
     virtual QVariant data( int role ) const override;
 
@@ -398,8 +399,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
 
   private:
     void cacheImage() const;
-
-    std::unique_ptr<QgsDataDefinedSizeLegend> mSettings;
+    QgsDataDefinedSizeLegend *mSettings = nullptr;
     mutable QImage mImage;
 };
 
