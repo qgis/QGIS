@@ -70,17 +70,17 @@ void QgsMapCanvasMap::paint( QPainter *painter )
 
   /*Offset between 0/0 and mRect.xMinimum/mRect.yMinimum.
   We need to consider the offset, because mRect is not updated yet and there might be an offset*/
-  QgsPoint pt = toMapCoordinates( QPoint( 0, 0 ) );
+  QgsPointXY pt = toMapCoordinates( QPoint( 0, 0 ) );
   double offsetX = pt.x() - mRect.xMinimum();
   double offsetY = pt.y() - mRect.yMaximum();
 
   //draw preview images first
-  QMap< QgsRectangle, QImage >::const_iterator previewIt = mPreviewImages.constBegin();
-  for ( ; previewIt != mPreviewImages.constEnd(); ++previewIt )
+  QList< QPair< QImage, QgsRectangle > >::const_iterator imIt = mPreviewImages.constBegin();
+  for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
-    QPointF ul = toCanvasCoordinates( QgsPoint( previewIt.key().xMinimum() + offsetX, previewIt.key().yMaximum() + offsetY ) );
-    QPointF lr = toCanvasCoordinates( QgsPoint( previewIt.key().xMaximum() + offsetX, previewIt.key().yMinimum() + offsetY ) );
-    painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), previewIt.value(), QRect( 0, 0, previewIt.value().width(), previewIt.value().height() ) );
+    QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );
+    QPointF lr = toCanvasCoordinates( QgsPoint( imIt->second.xMaximum() + offsetX, imIt->second.yMinimum() + offsetY ) );
+    painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
