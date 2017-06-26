@@ -480,6 +480,22 @@ QgsProcessingFeatureSource::~QgsProcessingFeatureSource()
     delete mSource;
 }
 
+QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request, Flags flags ) const
+{
+  QgsFeatureRequest req( request );
+  req.setTransformErrorCallback( mTransformErrorCallback );
+
+  if ( flags & FlagSkipGeometryValidityChecks )
+    req.setInvalidGeometryCheck( QgsFeatureRequest::GeometryNoCheck );
+  else
+  {
+    req.setInvalidGeometryCheck( mInvalidGeometryCheck );
+    req.setInvalidGeometryCallback( mInvalidGeometryCallback );
+  }
+
+  return mSource->getFeatures( req );
+}
+
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
 {
   QgsFeatureRequest req( request );

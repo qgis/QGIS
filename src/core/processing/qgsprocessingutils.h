@@ -230,6 +230,13 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 {
   public:
 
+    //! Flags controlling how QgsProcessingFeatureSource fetches features
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks = 1 << 1, //!< Invalid geometry checks should always be skipped. This flag can be useful for algorithms which always require invalid geometries, regardless of any user settings (e.g. "repair geometry" type algorithms).
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
      * and processing \a context.
@@ -240,6 +247,13 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
 
     ~QgsProcessingFeatureSource();
+
+    /**
+     * Returns an iterator for the features in the source, respecting the supplied feature \a flags.
+     * An optional \a request can be used to optimise the returned
+     * iterator, eg by restricting the returned attributes or geometry.
+     */
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsCoordinateReferenceSystem sourceCrs() const override;
