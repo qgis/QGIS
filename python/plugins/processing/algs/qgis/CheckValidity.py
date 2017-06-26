@@ -34,10 +34,12 @@ from qgis.core import (QgsSettings,
                        QgsGeometry,
                        QgsFeature,
                        QgsField,
+                       QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingUtils,
                        QgsFields,
+                       QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
@@ -129,7 +131,7 @@ class CheckValidity(QgisAlgorithm):
                                                                          error_fields, QgsWkbTypes.Point, source.sourceCrs())
         error_count = 0
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
             if feedback.isCanceled():
