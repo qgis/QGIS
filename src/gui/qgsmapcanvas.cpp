@@ -2171,9 +2171,10 @@ void QgsMapCanvas::stopPreviewJobs()
   {
     if ( *it )
     {
-      ( *it )->cancel();
+      disconnect( *it, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *it, &QgsMapRendererQImageJob::finished, *it, &QgsMapRendererQImageJob::deleteLater );
+      ( *it )->cancelWithoutBlocking();
     }
-    delete ( *it );
   }
   mPreviewJobs.clear();
 }
