@@ -391,6 +391,21 @@ Or install to your system
   make install
 
 
+    3.9.2. Suggested system tweaks
+    ==============================
+
+By default Fedora disables debugging calls from Qt applications. This prevents
+the useful debug output which is normally printed when running the unit tests.
+
+To enable debug prints for the current user, execute:
+
+cat > ~/.config/QtProject/qtlogging.ini << EOL
+[Rules]
+default.debug=true
+EOL
+
+
+
   4. Building on Windows
   ======================
 
