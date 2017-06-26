@@ -393,6 +393,7 @@ class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 %Docstring
 Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
 %End
+    ~QgsDataDefinedSizeLegendNode();
 
     virtual QVariant data( int role ) const;
 

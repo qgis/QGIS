@@ -30,6 +30,7 @@ class QgsLegendSymbolItem
 .. versionadded:: 2.8
 %End
     ~QgsLegendSymbolItem();
+
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
 
     QgsSymbol *symbol() const;
