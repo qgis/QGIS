@@ -2,19 +2,20 @@
 
 tests:
 
-#  - name: Centroid # Human readable identifier
-#    algorithm: qgis:polygoncentroids # Algorithm name
-#    params: # A list of parameters (only 1 here)
-#      - type: vector    # Param is a vector layer
-#        name: polys.gml # file name
-#    results: # A map of results (only one here)
-#      OUTPUT_LAYER:
-#        type: vector   # Expected result is a vector layer
-#        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - name: Centroid # Human readable identifier
+    algorithm: native:centroids # Algorithm name
+    params: # A list of parameters
+      INPUT:
+        type: vector    # Param is a vector layer
+        name: polys.gml # file name
+    results: # A map of results (only one here)
+      OUTPUT_LAYER:
+        type: vector   # Expected result is a vector layer
+        name: expected/polys_centroid.gml # The relative filepath from the processing testdata directory
+        compare:
+          geometry:
+            precision: 7
+
   - name: Delete Holes
     algorithm: qgis:deleteholes
     params:
@@ -727,90 +728,90 @@ tests:
 #          geometry:
 #            precision: 7
 #
-#  - algorithm: qgis:centroids
-#    name: Centroid (lines)
-#    params:
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multilines)
-#    params:
-#      INPUT_LAYER:
-#        name: multilines.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multilines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multipoints)
-#    params:
-#      INPUT_LAYER:
-#        name: multipoints.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multipoint.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (multipolygons)
-#    params:
-#      INPUT_LAYER:
-#        name: multipolys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_multipolys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (points)
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_points.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: qgis:centroids
-#    name: Centroid (polygons)
-#    params:
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/centroid_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: native:centroids
+    name: Centroid (lines)
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multilines)
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multilines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multipoints)
+    params:
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipoint.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (multipolygons)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_multipolys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (points)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: native:centroids
+    name: Centroid (polygons)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/centroid_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:translategeometry
 #    name: Lines translated
 #    params:
