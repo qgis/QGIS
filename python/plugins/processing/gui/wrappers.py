@@ -871,7 +871,7 @@ class VectorWidgetWrapper(WidgetWrapper):
             use_selected_features = self.use_selection_checkbox.isChecked()
             try:
                 layer = self.combo.currentLayer()
-                if layer:
+                if layer is not None:
                     return QgsProcessingFeatureSourceDefinition(layer.id(), use_selected_features)
                 else:
                     if self.combo.currentText():
