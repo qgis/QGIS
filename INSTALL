@@ -368,7 +368,7 @@ new subdirectory called `build` or `build-qt5` in it.
   clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
   qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
   qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
-  python3-psycopg2 python3-PyYAML qca-qt5-ossl
+  python3-psycopg2 python3-PyYAML qca-qt5-ossl qtbase5-private-dev
 
 To build QGIS server additional dependencies are required:
 
