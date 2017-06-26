@@ -44,6 +44,34 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
 {
 }
 
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
+    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
+    const QgsPointXY &errorLocation, QgsVertexId vidx,
+    const QVariant &value, ValueType valueType )
+  : mCheck( check )
+  , mLayerId( layerFeature.layer().id() )
+  , mFeatureId( layerFeature.feature().id() )
+  , mErrorLocation( errorLocation )
+  , mVidx( vidx )
+  , mValue( value )
+  , mValueType( valueType )
+  , mStatus( StatusPending )
+{
+  if ( vidx.part != -1 )
+  {
+    mGeometry = QgsGeometryCheckerUtils::getGeomPart( layerFeature.geometry(), vidx.part )->clone();
+  }
+  else
+  {
+    mGeometry = layerFeature.geometry()->clone();
+  }
+  if ( layerFeature.geometryCrs() != layerFeature.layerToMapTransform().destinationCrs().authid() )
+  {
+    mGeometry->transform( layerFeature.layerToMapTransform() );
+    mErrorLocation = layerFeature.layerToMapTransform().transform( mErrorLocation );
+  }
+}
+
 QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
 {
   return mGeometry->boundingBox();

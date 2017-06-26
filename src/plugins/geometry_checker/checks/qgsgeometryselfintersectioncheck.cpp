@@ -63,7 +63,7 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryChec
 void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -73,10 +73,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       {
         for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
         {
-          QgsAbstractGeometry *g = geom->clone();
-          g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-          QgsPointXY pos = layerFeature.mapToLayerTransform().transform( inter.point, QgsCoordinateTransform::ReverseTransform );
-          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), geom->clone(), pos, QgsVertexId( iPart, iRing ), inter ) );
+          errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature, inter.point, QgsVertexId( iPart, iRing ), inter ) );
         }
       }
     }

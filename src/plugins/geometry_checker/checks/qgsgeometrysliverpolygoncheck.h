@@ -33,7 +33,7 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
   private:
     double mMaxAreaMapUnits;
 
-    bool checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const override;
+    bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 };
 
 #endif // QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H

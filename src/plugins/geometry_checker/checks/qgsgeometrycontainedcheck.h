@@ -22,13 +22,11 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryContainedCheckError( const QgsGeometryCheck *check,
-                                    const QString &layerId,
-                                    QgsFeatureId featureId,
-                                    QgsAbstractGeometry *geometry,
+                                    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
                                     const QPair<QString, QgsFeatureId> &containingFeature
                                   )
-      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )
+      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), QString( "%1:%2" ).arg( containingFeature.first ).arg( containingFeature.second ), ValueOther )
       , mContainingFeature( containingFeature )
     { }
     const QPair<QString, QgsFeatureId> &containingFeature() const { return mContainingFeature; }

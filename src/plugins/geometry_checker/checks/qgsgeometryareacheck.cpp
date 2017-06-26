@@ -21,33 +21,18 @@
 void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double mapToLayerUnits = layerFeature.mapToLayerUnits();
+    double layerToMapUnits = layerFeature.layerToMapUnits();
     const QgsAbstractGeometry *geom = layerFeature.geometry();
-    if ( dynamic_cast<const QgsGeometryCollection *>( geom ) )
-    {
-      const QgsGeometryCollection *multiGeom = static_cast<const QgsGeometryCollection *>( geom );
-      for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
-      {
-        double value;
-        if ( checkThreshold( mapToLayerUnits, multiGeom->geometryN( i ), value ) )
-        {
-          QgsAbstractGeometry *part = multiGeom->geometryN( i )->clone();
-          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), part, part->centroid(), QgsVertexId( i ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
-        }
-      }
-    }
-    else
+    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       double value;
-      if ( checkThreshold( mapToLayerUnits, geom, value ) )
+      const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, iPart );
+      if ( checkThreshold( layerToMapUnits, part, value ) )
       {
-        QgsAbstractGeometry *g = geom->clone();
-        g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-        QgsPoint pos = g->centroid();
-        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( 0 ), value / ( mapToLayerUnits * mapToLayerUnits ), QgsGeometryCheckError::ValueArea ) );
+        errors.append( new QgsGeometryCheckError( this, layerFeature, part->centroid(), QgsVertexId( iPart ), value * layerToMapUnits * layerToMapUnits, QgsGeometryCheckError::ValueArea ) );
       }
     }
   }
@@ -62,7 +47,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
     error->setObsolete();
     return;
   }
-  double mapToLayerUnits = featurePool->getMapToLayerUnits();
+  double layerToMapUnits = featurePool->getLayerToMapUnits();
   QgsGeometry g = feature.geometry();
   QgsAbstractGeometry *geom = g.geometry();
   QgsVertexId vidx = error->vidx();
@@ -75,23 +60,11 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   }
 
   // Check if error still applies
-  if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+  double value;
+  if ( !checkThreshold( layerToMapUnits, QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part ), value ) )
   {
-    double value;
-    if ( !checkThreshold( mapToLayerUnits, static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
-    {
-      error->setObsolete();
-      return;
-    }
-  }
-  else
-  {
-    double value;
-    if ( !checkThreshold( mapToLayerUnits, geom, value ) )
-    {
-      error->setObsolete();
-      return;
-    }
+    error->setObsolete();
+    return;
   }
 
   // Fix with selected method
@@ -122,10 +95,10 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   }
 }
 
-bool QgsGeometryAreaCheck::checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const
+bool QgsGeometryAreaCheck::checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const
 {
   value = geom->area();
-  double threshold = mThresholdMapUnits * mapToLayerUnits * mapToLayerUnits;
+  double threshold = mThresholdMapUnits / ( layerToMapUnits * layerToMapUnits );
   return value < threshold;
 }
 
@@ -137,11 +110,11 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
-  QgsGeometry g = feature.geometry();
-  QgsAbstractGeometry *geom = g.geometry();
+  QgsGeometry featureGeometry = feature.geometry();
+  QgsAbstractGeometry *geom = featureGeometry.geometry();
 
   // Search for touching neighboring geometries
-  for ( QgsFeatureId testId : featurePool->getIntersects( g.boundingBox() ) )
+  for ( QgsFeatureId testId : featurePool->getIntersects( featureGeometry.boundingBox() ) )
   {
     QgsFeature testFeature;
     if ( !featurePool->get( testId, testFeature ) )

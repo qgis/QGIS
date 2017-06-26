@@ -30,33 +30,35 @@ namespace QgsGeometryCheckerUtils
   class LayerFeature
   {
     public:
-      LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform );
+      LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs );
       ~LayerFeature();
       const QgsVectorLayer &layer() const { return *mLayer; }
       const QgsFeature &feature() const { return mFeature; }
-      double mapToLayerUnits() const { return mMapToLayerUnits; }
-      const QgsCoordinateTransform &mapToLayerTransform() const { return mMapToLayerTransform; }
+      double layerToMapUnits() const { return mLayerToMapUnits; }
+      const QgsCoordinateTransform &layerToMapTransform() const { return mLayerToMapTransform; }
       const QgsAbstractGeometry *geometry() const { return mGeometry; }
+      QString geometryCrs() const { return mMapCrs ? mLayerToMapTransform.destinationCrs().authid() : mLayerToMapTransform.sourceCrs().authid(); }
       QString id() const { return QString( "%1:%2" ).arg( mLayer->id() ).arg( mFeature.id() ); }
 
     private:
       const QgsVectorLayer *mLayer = nullptr;
       QgsFeature mFeature;
-      double mMapToLayerUnits;
-      QgsCoordinateTransform mMapToLayerTransform;
+      double mLayerToMapUnits;
+      QgsCoordinateTransform mLayerToMapTransform;
       QgsAbstractGeometry *mGeometry = nullptr;
       bool mClonedGeometry = false;
+      bool mMapCrs;
   };
 
   class LayerFeatures
   {
     public:
-      LayerFeatures( const QMap<QString, QgsFeatureIds> &featureIds,
-                     const QMap<QString, QgsFeaturePool *> &featurePools,
+      LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
+                     const QMap<QString, QgsFeatureIds> &featureIds,
                      const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                     QAtomicInt *progressCounter, const QString &targetCrs = QString() );
-      LayerFeatures( const QList<QString> &layerIds, const QgsRectangle &extent, const QString &targetCrs,
-                     const QMap<QString, QgsFeaturePool *> &featurePools,
+                     QAtomicInt *progressCounter, bool useMapCrs = false );
+      LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
+                     const QList<QString> &layerIds, const QgsRectangle &extent,
                      const QList<QgsWkbTypes::GeometryType> &geometryTypes );
 
       class iterator
@@ -83,13 +85,13 @@ namespace QgsGeometryCheckerUtils
         return iterator( mLayerIds.end(), mFeatureIds[mLayerIds.back()].end(), QgsFeature(), this );
       }
     private:
-      QList<QString> mLayerIds;
-      QMap<QString, QgsFeatureIds> mFeatureIds;
       QMap<QString, QgsFeaturePool *> mFeaturePools;
+      QMap<QString, QgsFeatureIds> mFeatureIds;
+      QList<QString> mLayerIds;
+      QgsRectangle mExtent;
       QList<QgsWkbTypes::GeometryType> mGeometryTypes;
       QAtomicInt *mProgressCounter = nullptr;
-      QString mTargetCrs;
-      QgsRectangle mExtent;
+      bool mUseMapCrs;
   };
 
   QSharedPointer<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );

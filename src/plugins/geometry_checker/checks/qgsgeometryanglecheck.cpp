@@ -20,7 +20,7 @@
 void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -54,10 +54,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
           double angle = qAcos( v21 * v23 ) / M_PI * 180.0;
           if ( angle < mMinAngle )
           {
-            QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone();
-            part->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( p2, QgsCoordinateTransform::ReverseTransform );
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), part, pos, QgsVertexId( iPart, iRing, iVert ), angle ) );
+            errors.append( new QgsGeometryCheckError( this, layerFeature, p2, QgsVertexId( iPart, iRing, iVert ), angle ) );
           }
         }
       }
@@ -74,8 +71,8 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     error->setObsolete();
     return;
   }
-  QgsGeometry g = feature.geometry();
-  QgsAbstractGeometry *geometry = g.geometry();
+  QgsGeometry featureGeometry = feature.geometry();
+  QgsAbstractGeometry *geometry = featureGeometry.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -131,13 +128,14 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     else
     {
       changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
+      // Avoid duplicate nodes as result of deleting spike vertex
       if ( QgsGeometryUtils::sqrDistance2D( p1, p3 ) < mContext->tolerance &&
            QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) &&
            geometry->deleteVertex( error->vidx() ) ) // error->vidx points to p3 after removing p2
       {
         changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
       }
-      feature.setGeometry( g );
+      feature.setGeometry( featureGeometry );
       featurePool->updateFeature( feature );
       error->setFixed( method );
     }

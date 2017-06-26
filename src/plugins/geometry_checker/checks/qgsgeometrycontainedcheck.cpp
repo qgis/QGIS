@@ -20,20 +20,18 @@
 void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter, mContext->mapCrs );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featureIds.keys(), bboxA, mContext->mapCrs, mContext->featurePools, mCompatibleGeometryTypes );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, featureIds.keys(), bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       QString errMsg;
       if ( geomEngineA->within( *layerFeatureB.geometry(), &errMsg ) )
       {
-        QgsAbstractGeometry *g = layerFeatureA.geometry()->clone();
-        QgsPoint pos = g->centroid();
-        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), g, pos, qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
+        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
       }
       else if ( !errMsg.isEmpty() )
       {
@@ -59,18 +57,12 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   }
 
   // Check if error still applies
-  QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
-  featureGeomA->transform( featurePoolA->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-  QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->tolerance );
+  QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
+  QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
 
-  QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
-  featureGeomB->transform( featurePoolB->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
+  QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
-  bool within = geomEngineA->within( *featureGeomB );
-  delete featureGeomA;
-  delete featureGeomB;
-
-  if ( !within )
+  if ( !geomEngineA->within( *layerFeatureB.geometry() ) )
   {
     error->setObsolete();
     return;

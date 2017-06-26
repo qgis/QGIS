@@ -25,19 +25,20 @@
 
 namespace QgsGeometryCheckerUtils
 {
-  LayerFeature::LayerFeature( const QgsVectorLayer *layer, const QgsFeature &feature, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform )
-    : mLayer( layer )
+  LayerFeature::LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs )
+    : mLayer( pool->getLayer() )
     , mFeature( feature )
-    , mMapToLayerUnits( mapToLayerUnits )
-    , mMapToLayerTransform( mapToLayerTransform )
+    , mLayerToMapUnits( pool->getLayerToMapUnits() )
+    , mLayerToMapTransform( pool->getLayerToMapTransform() )
     , mClonedGeometry( false )
+    , mMapCrs( useMapCrs )
   {
     mGeometry = feature.geometry().geometry();
-    if ( !mapToLayerTransform.isShortCircuited() )
+    if ( useMapCrs && !mLayerToMapTransform.isShortCircuited() )
     {
       mClonedGeometry = true;
       mGeometry = mGeometry->clone();
-      mGeometry->transform( mapToLayerTransform, QgsCoordinateTransform::ReverseTransform );
+      mGeometry->transform( mLayerToMapTransform );
     }
   }
   LayerFeature::~LayerFeature()
@@ -55,7 +56,7 @@ namespace QgsGeometryCheckerUtils
     , mFeatureIt( featureIt )
     , mFeature( feature )
     , mParent( parent )
-    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt]->getLayer(), feature, parent->mFeaturePools[ * layerIt]->getMapToLayerUnits(), parent->mFeaturePools[ * layerIt]->getMapToLayerTransform() ) )
+    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt], feature, parent->mUseMapCrs ) )
   {
   }
 
@@ -89,7 +90,7 @@ namespace QgsGeometryCheckerUtils
         mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
       if ( featurePool->get( *mFeatureIt, mFeature ) )
       {
-        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt]->getLayer(), mFeature, mParent->mFeaturePools[*mLayerIt]->getMapToLayerUnits(), mParent->mFeaturePools[*mLayerIt]->getMapToLayerTransform() );
+        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt], mFeature, mParent->mUseMapCrs );
         return true;
       }
     }
@@ -99,33 +100,33 @@ namespace QgsGeometryCheckerUtils
 
 /////////////////////////////////////////////////////////////////////////////
 
-  LayerFeatures::LayerFeatures( const QMap<QString, QgsFeatureIds> &featureIds,
-                                const QMap<QString, QgsFeaturePool *> &featurePools,
+  LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
+                                const QMap<QString, QgsFeatureIds> &featureIds,
                                 const QList<QgsWkbTypes::GeometryType> &geometryTypes,
-                                QAtomicInt *progressCounter, const QString &targetCrs )
-    : mLayerIds( featurePools.keys() )
+                                QAtomicInt *progressCounter, bool useMapCrs )
+    : mFeaturePools( featurePools )
     , mFeatureIds( featureIds )
-    , mFeaturePools( featurePools )
+    , mLayerIds( featurePools.keys() )
     , mGeometryTypes( geometryTypes )
     , mProgressCounter( progressCounter )
-    , mTargetCrs( targetCrs )
+    , mUseMapCrs( useMapCrs )
   {}
 
-  LayerFeatures::LayerFeatures( const QList<QString> &layerIds, const QgsRectangle &extent,
-                                const QString &targetCrs, const QMap<QString, QgsFeaturePool *> &featurePools,
+  LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
+                                const QList<QString> &layerIds, const QgsRectangle &extent,
                                 const QList<QgsWkbTypes::GeometryType> &geometryTypes )
-    : mLayerIds( layerIds )
-    , mFeaturePools( featurePools )
-    , mGeometryTypes( geometryTypes )
-    , mTargetCrs( targetCrs )
+    : mFeaturePools( featurePools )
+    , mLayerIds( layerIds )
     , mExtent( extent )
+    , mGeometryTypes( geometryTypes )
+    , mUseMapCrs( true )
   {
     for ( const QString &layerId : layerIds )
     {
       const QgsFeaturePool *featurePool = featurePools[layerId];
       if ( geometryTypes.contains( featurePool->getLayer()->geometryType() ) )
       {
-        mFeatureIds.insert( layerId, featurePool->getIntersects( featurePool->getMapToLayerTransform().transform( extent ) ) );
+        mFeatureIds.insert( layerId, featurePool->getIntersects( featurePool->getLayerToMapTransform().transform( extent, QgsCoordinateTransform::ReverseTransform ) ) );
       }
       else
       {

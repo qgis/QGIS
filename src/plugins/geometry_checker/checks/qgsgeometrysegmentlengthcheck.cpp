@@ -20,11 +20,11 @@
 void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
-    double mapToLayerUnits = layerFeature.mapToLayerUnits();
-    double minLength = mMinLengthMapUnits * mapToLayerUnits;
+    double layerToMapUnits = layerFeature.layerToMapUnits();
+    double minLength = mMinLengthMapUnits / layerToMapUnits;
 
     const QgsAbstractGeometry *geom = layerFeature.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -43,10 +43,8 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
           double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
           if ( dist < minLength )
           {
-            QgsAbstractGeometry *g = layerFeature.geometry()->clone();
-            g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsCoordinateTransform::ReverseTransform );
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, iVert ), dist / mapToLayerUnits, QgsGeometryCheckError::ValueLength ) );
+            QgsPointXY pos( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) );
+            errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing, iVert ), dist * layerToMapUnits, QgsGeometryCheckError::ValueLength ) );
           }
         }
       }
@@ -86,8 +84,8 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
-  double mapToLayerUnits = featurePool->getMapToLayerUnits();
-  double minLength = mMinLengthMapUnits * mapToLayerUnits;
+  double layerToMapUnits = featurePool->getLayerToMapUnits();
+  double minLength = mMinLengthMapUnits / layerToMapUnits;
   if ( dist >= minLength )
   {
     error->setObsolete();

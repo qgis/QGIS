@@ -26,7 +26,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   QList<QgsAbstractGeometry *> geomList;
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, 0, mContext->mapCrs );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, 0, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     geomList.append( layerFeature.geometry()->clone() );
@@ -96,32 +96,16 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
-    for ( const QString &layerId : featureIds.keys() )
+    QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds.keys(), gapAreaBBox, mCompatibleGeometryTypes );
+    for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
-      QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
-      QgsRectangle gapAreaLayerBBox = featurePool->getMapToLayerTransform().transform( gapGeom->boundingBox() ); // Don't use gapAreaBBox since it is updated below
-
-      QgsFeatureIds intersectIds = featurePool->getIntersects( gapAreaLayerBBox );
-      QgsAbstractGeometry *gapLayerGeom = gapGeom->clone();
-      gapLayerGeom->transform( featurePool->getMapToLayerTransform() );
-
-      for ( QgsFeatureId id : intersectIds )
+      if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapGeom, layerFeature.geometry(), mContext->reducedTolerance ) > 0 )
       {
-        QgsFeature feature;
-        if ( !featurePool->get( id, feature ) )
-        {
-          continue;
-        }
-        QgsAbstractGeometry *featureGeom = feature.geometry().geometry();
-        if ( QgsGeometryCheckerUtils::sharedEdgeLength( gapLayerGeom, featureGeom, mContext->reducedTolerance ) > 0 )
-        {
-          neighboringIds[layerId].insert( feature.id() );
-          gapAreaLayerBBox.combineExtentWith( featureGeom->boundingBox() );
-        }
-        gapAreaBBox.combineExtentWith( featurePool->getMapToLayerTransform().transform( gapAreaLayerBBox, QgsCoordinateTransform::ReverseTransform ) );
+        neighboringIds[layerFeature.layer().id()].insert( layerFeature.feature().id() );
+        gapAreaBBox.combineExtentWith( layerFeature.geometry()->boundingBox() );
       }
-      delete gapLayerGeom;
     }
+
     if ( neighboringIds.isEmpty() )
     {
       delete gapGeom;
@@ -175,7 +159,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   {
     QgsFeaturePool *featurePool = mContext->featurePools[ err->layerId() ];
     QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
-    errLayerGeom->transform( featurePool->getMapToLayerTransform() );
+    errLayerGeom->transform( featurePool->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
 
     for ( QgsFeatureId testId : err->neighbors()[layerId] )
     {
@@ -209,7 +193,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   // Merge geometries
   QgsFeaturePool *featurePool = mContext->featurePools[ mergeLayerId ];
   QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
-  errLayerGeom->transform( featurePool->getMapToLayerTransform() );
+  errLayerGeom->transform( featurePool->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
   QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom, mContext->tolerance );

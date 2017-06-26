@@ -19,7 +19,7 @@
 void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -28,10 +28,8 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
       // Rings after the first one are interiors
       for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        QgsAbstractGeometry *g = geom->clone();
-        g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-        QgsPointXY pos = layerFeature.mapToLayerTransform().transform( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsCoordinateTransform::ReverseTransform );
-        errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing ) ) );
+        QgsPoint pos = QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid();
+        errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing ) ) );
       }
     }
   }

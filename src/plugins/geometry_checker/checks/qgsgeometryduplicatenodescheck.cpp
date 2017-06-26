@@ -20,7 +20,7 @@
 void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -37,10 +37,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < mContext->tolerance )
           {
-            QgsAbstractGeometry *g = geom->clone();
-            g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-            QgsPointXY pos = layerFeature.mapToLayerTransform().transform( pj, QgsCoordinateTransform::ReverseTransform );
-            errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, jVert ) ) );
+            errors.append( new QgsGeometryCheckError( this, layerFeature, pj, QgsVertexId( iPart, iRing, jVert ) ) );
           }
         }
       }

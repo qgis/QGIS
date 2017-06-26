@@ -25,11 +25,11 @@
 #include <QMutexLocker>
 #include <limits>
 
-QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double mapToLayerUnits, const QgsCoordinateTransform &mapToLayerTransform, bool selectedOnly )
+QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
-  , mMapToLayerUnits( mapToLayerUnits )
-  , mMapToLayerTransform( mapToLayerTransform )
+  , mLayerToMapUnits( layerToMapUnits )
+  , mLayerToMapTransform( layerToMapTransform )
   , mSelectedOnly( selectedOnly )
 {
   if ( selectedOnly )

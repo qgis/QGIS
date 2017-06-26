@@ -19,7 +19,7 @@
 void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -29,10 +29,8 @@ void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckErr
       {
         if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
         {
-          QgsAbstractGeometry *g = geom->clone();
-          g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-          QgsPointXY pos = layerFeature.mapToLayerTransform().transform( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsCoordinateTransform::ReverseTransform );
-          errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing ) ) );
+          QgsVertexId vidx( iPart, iRing );
+          errors.append( new QgsGeometryCheckError( this, layerFeature, geom->vertexAt( vidx ), vidx ) );
         }
       }
     }

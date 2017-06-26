@@ -96,9 +96,7 @@ class QgsGeometryCheckError
     enum ValueType { ValueLength, ValueArea, ValueOther };
 
     QgsGeometryCheckError( const QgsGeometryCheck *check,
-                           const QString &layerId,
-                           QgsFeatureId featureId,
-                           QgsAbstractGeometry *geometry,
+                           const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                            const QgsPointXY &errorLocation,
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
@@ -163,6 +161,16 @@ class QgsGeometryCheckError
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
 
   protected:
+    // Users of this constructor must ensure geometry and errorLocation are in map coordinates
+    QgsGeometryCheckError( const QgsGeometryCheck *check,
+                           const QString &layerId,
+                           QgsFeatureId featureId,
+                           QgsAbstractGeometry *geometry,
+                           const QgsPointXY &errorLocation,
+                           QgsVertexId vidx = QgsVertexId(),
+                           const QVariant &value = QVariant(),
+                           ValueType valueType = ValueOther );
+
     const QgsGeometryCheck *mCheck = nullptr;
     QString mLayerId;
     QgsFeatureId mFeatureId;

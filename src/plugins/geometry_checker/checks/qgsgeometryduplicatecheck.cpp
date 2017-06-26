@@ -22,7 +22,7 @@
 void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter, mContext->mapCrs );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
@@ -33,7 +33,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mContext->mapCrs, mContext->featurePools, mCompatibleGeometryTypes );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -55,9 +55,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     }
     if ( !duplicates.isEmpty() )
     {
-      QgsAbstractGeometry *g = layerFeatureA.geometry()->clone();
-      QgsPoint pos = g->centroid();
-      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), g, pos, duplicates ) );
+      errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), duplicates ) );
     }
   }
 }
@@ -78,9 +76,8 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == RemoveDuplicates )
   {
-    QgsAbstractGeometry *featureGeomA = featureA.geometry().geometry()->clone();
-    featureGeomA->transform( featurePoolA->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-    QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeomA, mContext->tolerance );
+    QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
+    QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     for ( const QString &layerIdB : duplicateError->duplicates().keys() )
@@ -93,9 +90,8 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
         {
           continue;
         }
-        QgsAbstractGeometry *featureGeomB = featureB.geometry().geometry()->clone();
-        featureGeomB->transform( featurePoolB->getMapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-        QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *featureGeomB );
+        QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
+        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry() );
         if ( diffGeom && diffGeom->area() < mContext->tolerance )
         {
           featurePoolB->deleteFeature( featureB );
@@ -103,10 +99,8 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
         }
 
         delete diffGeom;
-        delete featureGeomB;
       }
     }
-    delete featureGeomA;
     error->setFixed( method );
   }
   else

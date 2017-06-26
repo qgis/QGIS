@@ -22,12 +22,10 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
-                                    const QString &layerId,
-                                    QgsFeatureId featureId,
-                                    QgsAbstractGeometry *geometry,
+                                    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
                                     const QMap<QString, QList<QgsFeatureId>> &duplicates )
-      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
+      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
       , mDuplicates( duplicates )
     { }
     QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }

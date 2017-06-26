@@ -37,7 +37,7 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
   private:
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
 
-    virtual bool checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const;
+    virtual bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const;
     bool mergeWithNeighbor( const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;
 
   protected:

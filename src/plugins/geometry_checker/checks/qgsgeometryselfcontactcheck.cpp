@@ -12,7 +12,7 @@
 void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
@@ -65,10 +65,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
             QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
             if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
             {
-              QgsAbstractGeometry *g = geom->clone();
-              g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-              QgsPointXY pos = layerFeature.mapToLayerTransform().transform( p, QgsCoordinateTransform::ReverseTransform );
-              errors.append( new QgsGeometryCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
+              errors.append( new QgsGeometryCheckError( this, layerFeature, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
               break; // No need to report same contact on different segments multiple times
             }
           }

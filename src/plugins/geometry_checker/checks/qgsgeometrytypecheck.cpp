@@ -26,17 +26,14 @@
 void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featureIds, mContext->featurePools, mCompatibleGeometryTypes, progressCounter );
+  QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
     const QgsAbstractGeometry *geom = layerFeature.geometry();
     QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
     if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
     {
-      QgsAbstractGeometry *g = geom->clone();
-      g->transform( layerFeature.mapToLayerTransform(), QgsCoordinateTransform::ReverseTransform );
-      QgsPoint pos = g->centroid();
-      errors.append( new QgsGeometryTypeCheckError( this, layerFeature.layer().id(), layerFeature.feature().id(), g, pos, type ) );
+      errors.append( new QgsGeometryTypeCheckError( this, layerFeature, geom->centroid(), type ) );
     }
   }
 }
