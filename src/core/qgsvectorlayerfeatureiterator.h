@@ -282,11 +282,13 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
      */
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
-    virtual QgsCoordinateReferenceSystem sourceCrs() const override;
-    virtual QgsFields fields() const override;
-    virtual QgsWkbTypes::Type wkbType() const override;
-    virtual long featureCount() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsCoordinateReferenceSystem sourceCrs() const override;
+    QgsFields fields() const override;
+    QgsWkbTypes::Type wkbType() const override;
+    long featureCount() const override;
+    QString sourceName() const override;
+
 
   private:
 
@@ -294,6 +296,7 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource
     mutable QgsVectorLayerFeatureSource mSource;
     QgsFeatureIds mSelectedFeatureIds;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QString mName;
 
 };
 

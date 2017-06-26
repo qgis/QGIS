@@ -168,10 +168,18 @@ class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
     virtual QgsFields fields() const;
+
     virtual QgsWkbTypes::Type wkbType() const;
+
     virtual long featureCount() const;
+
+    virtual QString sourceName() const;
+
+
 
 };
 

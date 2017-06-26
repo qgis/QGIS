@@ -698,6 +698,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString providerType() const;
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
+    QString sourceName() const override;
 
     /** Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().

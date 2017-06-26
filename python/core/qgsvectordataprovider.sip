@@ -128,6 +128,7 @@ Bitmask of all provider's editing capabilities
 
     virtual QgsRectangle sourceExtent() const;
 
+    virtual QString sourceName() const;
 
     virtual QString dataComment() const;
 %Docstring
