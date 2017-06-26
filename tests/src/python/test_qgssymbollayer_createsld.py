@@ -495,6 +495,48 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertScaleDenominator(root, '5000', '40000000', 0)
         self.assertScaleDenominator(root, '5000', '50000000', 1)
 
+    def testCategorizedFunctionConflict(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedFunctionConflict"))
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based, with root scale deps:" + dom.toString())
+
+        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
+        self.assertEqual(7, ruleCount)
+        self.assertRuleRangeFilter(root, 0, 'Area', '0', True, '500', True)
+        self.assertRuleRangeFilter(root, 1, 'Area', '500', False, '1000', True)
+        self.assertRuleRangeFilter(root, 2, 'Area', '1000', False, '5000', True)
+        self.assertRuleRangeFilter(root, 3, 'Area', '5000', False, '10000', True)
+        self.assertRuleRangeFilter(root, 4, 'Area', '10000', False, '50000', True)
+        self.assertRuleRangeFilter(root, 5, 'Area', '50000', False, '100000', True)
+        self.assertRuleRangeFilter(root, 6, 'Area', '100000', False, '200000', True)
+
+    def assertRuleRangeFilter(self, root, index, attributeName, min, includeMin, max, includeMax):
+        rule = root.elementsByTagName('se:Rule').item(index).toElement()
+        filter = rule.elementsByTagName("Filter").item(0).firstChild()
+        self.assertEqual("ogc:And", filter.nodeName())
+
+        gt = filter.firstChild()
+        expectedGtName = "ogc:PropertyIsGreaterThanOrEqualTo" if includeMin else "ogc:PropertyIsGreaterThan"
+        self.assertEquals(expectedGtName, gt.nodeName())
+        gtProperty = gt.firstChild()
+        self.assertEquals("ogc:PropertyName", gtProperty.nodeName())
+        self.assertEquals(attributeName, gtProperty.toElement().text())
+        gtValue = gt.childNodes().item(1)
+        self.assertEquals(min, gtValue.toElement().text())
+
+        lt = filter.childNodes().item(1)
+        expectedLtName = "ogc:PropertyIsLessThanOrEqualTo" if includeMax else "ogc:PropertyIsLessThan"
+        self.assertEquals(expectedLtName, lt.nodeName())
+        ltProperty = lt.firstChild()
+        self.assertEquals("ogc:PropertyName", ltProperty.nodeName())
+        self.assertEquals(attributeName, ltProperty.toElement().text())
+        ltValue = lt.childNodes().item(1)
+        self.assertEquals(max, ltValue.toElement().text())
+
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()
 

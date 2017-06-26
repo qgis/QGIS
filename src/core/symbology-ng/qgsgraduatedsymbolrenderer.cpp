@@ -167,7 +167,7 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsString
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
-  QString filterFunc = QStringLiteral( "%1 %2 %3 AND %1 <= %4" )
+  QString filterFunc = QStringLiteral( "\"%1\" %2 %3 AND \"%1\" <= %4" )
                        .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
                              firstRange ? ">=" : ">",
                              qgsDoubleToString( mLowerValue ),
