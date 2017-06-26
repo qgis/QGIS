@@ -23,6 +23,8 @@
 class QWidget;
 class QgsMessageBar;
 
+#define SIP_NO_FILE
+
 
 /** \ingroup gui
  * \brief Utility functions for use by authentication GUI widgets or standalone apps

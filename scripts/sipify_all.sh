@@ -27,25 +27,22 @@ pushd ${DIR} > /dev/null
 
 count=0
 
-while read -r sipfile; do
-  if ! grep -Fxq "$sipfile" python/auto_sip.blacklist; then
-    echo "$sipfile"
-    header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
-    if [ ! -f $header ]; then
-      echo "*** Missing header: $header for sipfile $sipfile"
-    else
-      ./scripts/sipify.pl $header > python/$sipfile
-    fi
-    count=$((count+1))
-  fi
-done < <(
-${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
-${GP}sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server.sip
-  )
+modules=(core gui analysis server)
+for module in "${modules[@]}"; do
+  while read -r sipfile; do
+      echo "$sipfile"
+      header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
+      if [ ! -f $header ]; then
+        echo "*** Missing header: $header for sipfile $sipfile"
+      else
+        path=$(sed -r 's@/[^/]+$@@' <<< $sipfile)
+        mkdir -p python/$path
+        ./scripts/sipify.pl $header > python/$sipfile
+      fi
+      count=$((count+1))
+  done < <( ${GP}sed -n -r "s/^%Include (.*\.sip)/${module}\/\1/p" python/${module}/${module}_auto.sip )
+done
 
 echo " => $count files sipified! 🍺"
-echo " only `cat python/auto_sip.blacklist | wc -l` to go 👏👏👏"
 
 popd > /dev/null

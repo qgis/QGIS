@@ -35,6 +35,8 @@
 #ifndef QGISPLUGIN_H
 #define QGISPLUGIN_H
 
+#define SIP_NO_FILE
+
 
 #include <QString>
 

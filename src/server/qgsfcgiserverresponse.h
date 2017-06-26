@@ -19,6 +19,9 @@
 #ifndef QGSFCGISERVERRESPONSE_H
 #define QGSFCGISERVERRESPONSE_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 

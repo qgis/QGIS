@@ -18,6 +18,8 @@
 #ifndef QGSCONFIGPARSERUTILS_H
 #define QGSCONFIGPARSERUTILS_H
 
+#define SIP_NO_FILE
+
 #include <QMap>
 #include <QStringList>
 

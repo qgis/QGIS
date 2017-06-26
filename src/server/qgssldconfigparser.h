@@ -18,6 +18,9 @@
 #ifndef QGSSLDCONFIGPARSER_H
 #define QGSSLDCONFIGPARSER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgswmsconfigparser.h"
 #include <QFont>
 

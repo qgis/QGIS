@@ -16,6 +16,8 @@
 #ifndef QGSSQLEXPRESSIONCOMPILER_H
 #define QGSSQLEXPRESSIONCOMPILER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsfields.h"
 

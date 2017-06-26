@@ -16,6 +16,8 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 

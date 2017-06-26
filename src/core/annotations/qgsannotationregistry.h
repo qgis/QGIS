@@ -16,6 +16,8 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgstextannotation.h"

@@ -24,6 +24,8 @@ class QLineEdit;
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 
 
 /** \ingroup gui

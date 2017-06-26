@@ -18,6 +18,8 @@
 #ifndef QGSDXFPAINTDEVICE_H
 #define QGSDXFPAINTDEVICE_H
 
+#define SIP_NO_FILE
+
 #include <QPaintDevice>
 
 #include "qgis_core.h"

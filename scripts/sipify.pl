@@ -293,6 +293,11 @@ while ($LINE_IDX < $LINE_COUNT){
     $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME] unless $#CLASSNAME < 0;
     $LINE = read_line();
 
+    if ( $LINE =~ m/^\s*(#define )?+SIP_IF_MODULE\(.*\)$/ ){
+        dbg_info('skipping SIP include condition macro');
+        next;
+    }
+
     if ($LINE =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
         write_output("SF1", "%Feature $1$2\n");
         next;

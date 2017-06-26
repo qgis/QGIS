@@ -30,6 +30,9 @@
 #ifndef LABELPOSITION_H
 #define LABELPOSITION_H
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
 #include "pointset.h"
 #include "rtree.hpp"

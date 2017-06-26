@@ -16,6 +16,8 @@
 #ifndef QGSCONNECTIONPOOL_H
 #define QGSCONNECTIONPOOL_H
 
+#define SIP_NO_FILE
+
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>

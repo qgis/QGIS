@@ -621,6 +621,7 @@ SET(QGIS_GUI_MOC_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
 )
+SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
 QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
@@ -714,6 +715,8 @@ SET(QGIS_GUI_HDRS
 
   symbology-ng/qgssymbolwidgetcontext.h
 )
+SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
+
 
 SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthauthoritieseditor.h

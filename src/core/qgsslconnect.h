@@ -16,6 +16,8 @@
 #ifndef QGSSLCONNECT_H
 #define QGSSLCONNECT_H
 
+#define SIP_NO_FILE
+
 #include <QHash>
 
 #include "qgis_core.h"

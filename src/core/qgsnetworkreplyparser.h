@@ -19,6 +19,8 @@
 #ifndef QGSNETWORKREPLYPARSER_H
 #define QGSNETWORKREPLYPARSER_H
 
+#define SIP_NO_FILE
+
 #include <QNetworkReply>
 
 #include "qgis_core.h"

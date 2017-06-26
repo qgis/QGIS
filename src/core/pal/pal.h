@@ -30,6 +30,9 @@
 #ifndef PAL_H
 #define PAL_H
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"

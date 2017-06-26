@@ -41,8 +41,6 @@ class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
 
 
-SIP_FEATURE( ANDROID )
-
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
