@@ -700,6 +700,8 @@ Return the provider type for this layer
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
 
+    virtual QString sourceName() const;
+
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 %Docstring

@@ -47,6 +47,11 @@ class CORE_EXPORT QgsFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
 
     /**
+     * Returns a friendly display name for the source. The returned value can be an empty string.
+     */
+    virtual QString sourceName() const = 0;
+
+    /**
      * Returns the coordinate reference system for features in the source.
      */
     virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;

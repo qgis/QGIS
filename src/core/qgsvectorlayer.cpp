@@ -312,6 +312,11 @@ QgsCoordinateReferenceSystem QgsVectorLayer::sourceCrs() const
   return crs();
 }
 
+QString QgsVectorLayer::sourceName() const
+{
+  return name();
+}
+
 void QgsVectorLayer::reload()
 {
   if ( mDataProvider )

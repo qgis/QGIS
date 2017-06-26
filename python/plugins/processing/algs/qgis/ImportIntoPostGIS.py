@@ -137,7 +137,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if table:
             table.strip()
         if not table or table == '':
-            table = layer.name()
+            table = source.name()
             table = table.replace('.', '_')
         table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'

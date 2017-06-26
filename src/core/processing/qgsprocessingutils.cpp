@@ -508,3 +508,9 @@ long QgsProcessingFeatureSource::featureCount() const
 {
   return mSource->featureCount();
 }
+
+QString QgsProcessingFeatureSource::sourceName() const
+{
+  return mSource->sourceName();
+
+}

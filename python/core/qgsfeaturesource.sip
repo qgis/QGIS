@@ -33,6 +33,12 @@ class QgsFeatureSource
  :rtype: QgsFeatureIterator
 %End
 
+    virtual QString sourceName() const = 0;
+%Docstring
+ Returns a friendly display name for the source. The returned value can be an empty string.
+ :rtype: str
+%End
+
     virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
 %Docstring
  Returns the coordinate reference system for features in the source.

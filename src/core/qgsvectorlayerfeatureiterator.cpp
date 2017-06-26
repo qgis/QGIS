@@ -1064,6 +1064,7 @@ QgsVectorLayerSelectedFeatureSource::QgsVectorLayerSelectedFeatureSource( QgsVec
   : mSource( layer )
   , mSelectedFeatureIds( layer->selectedFeatureIds() )
   , mWkbType( layer->wkbType() )
+  , mName( layer->name() )
 {}
 
 QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
@@ -1102,4 +1103,9 @@ QgsWkbTypes::Type QgsVectorLayerSelectedFeatureSource::wkbType() const
 long QgsVectorLayerSelectedFeatureSource::featureCount() const
 {
   return mSelectedFeatureIds.count();
+}
+
+QString QgsVectorLayerSelectedFeatureSource::sourceName() const
+{
+  return mName;
 }
