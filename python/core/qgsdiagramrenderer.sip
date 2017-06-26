@@ -650,6 +650,7 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRenderer
 %End
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer();
 
     virtual QgsLinearlyInterpolatedDiagramRenderer *clone() const /Factory/;
 
