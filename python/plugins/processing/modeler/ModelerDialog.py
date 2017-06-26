@@ -425,7 +425,7 @@ class ModelerDialog(BASE, WIDGET):
         if not filename.lower().endswith('.py'):
             filename += '.py'
 
-        text = self.model.toPython()
+        text = self.model.asPythonCode()
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 

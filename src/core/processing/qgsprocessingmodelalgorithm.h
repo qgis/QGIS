@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 
+///@cond NOT_STABLE
 
 /**
  * \class QgsProcessingModelAlgorithm
@@ -151,6 +152,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          * \see toVariant()
          */
         bool loadVariant( const QVariantMap &map );
+
+        /**
+         * Attempts to convert the source to executable Python code.
+         */
+        QString asPythonCode() const;
 
       private:
 
@@ -536,6 +542,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          */
         bool loadVariant( const QVariant &child );
 
+        /**
+         * Attempts to convert the child to executable Python code.
+         */
+        QString asPythonCode() const;
+
       private:
 
         QString mId;
@@ -793,6 +804,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setSourceFilePath( const QString &path );
 
+    /**
+     * Attempts to convert the model to executable Python code.
+     */
+    QString asPythonCode() const;
+
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
@@ -842,6 +858,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     friend class TestQgsProcessing;
 };
+
+///@endcond
 
 #endif // QGSPROCESSINGMODELALGORITHM_H
 

@@ -318,9 +318,6 @@ class ModelerParametersDialog(QDialog):
             if (isinstance(val,
                            QgsProcessingModelAlgorithm.ChildParameterSource) and val.source() == QgsProcessingModelAlgorithm.ChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
                     val.staticValue())) \
-                    or (not isinstance(val,
-                                       QgsProcessingModelAlgorithm.ChildParameterSource) and not param.checkValueIsAcceptable(
-                        val))\
                     or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                 self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
                                      level=QgsMessageBar.WARNING)
