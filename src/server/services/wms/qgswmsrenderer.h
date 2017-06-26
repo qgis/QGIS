@@ -223,7 +223,8 @@ namespace QgsWms
                                        QgsRenderContext &renderContext,
                                        const QString &version,
                                        const QString &infoFormat,
-                                       QgsRectangle *featureBBox = nullptr ) const;
+                                       QgsRectangle *featureBBox = nullptr,
+                                       QgsGeometry *filterGeom = nullptr ) const;
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
