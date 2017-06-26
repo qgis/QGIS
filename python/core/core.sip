@@ -1,5 +1,5 @@
 %Module(name=qgis._core,
-        keyword_arguments="Optional")
+        keyword_arguments="All")
 
 %ModuleCode
 
