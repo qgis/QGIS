@@ -62,6 +62,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
     void changeSymbol();
     void addSizeClass();
     void removeSizeClass();
+    void onSizeClassesChanged();
 
   private:
     std::unique_ptr<QgsMarkerSymbol> mSourceSymbol;   //!< Source symbol (without data-defined size set)

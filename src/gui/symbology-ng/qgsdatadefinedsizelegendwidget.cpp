@@ -16,6 +16,7 @@
 #include "qgsdatadefinedsizelegendwidget.h"
 
 #include <QInputDialog>
+#include <QStyledItemDelegate>
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgslayertree.h"
@@ -27,6 +28,26 @@
 #include "qgssymbollayer.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
+
+
+//! Simple delegate to allow only numeric values
+class SizeClassDelegate : public QStyledItemDelegate
+{
+  public:
+    SizeClassDelegate( QObject *parent )
+      : QStyledItemDelegate( parent )
+    {
+    }
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
+    {
+      QLineEdit *lineEdit = new QLineEdit( parent );
+      QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );
+      lineEdit->setValidator( validator );
+      return lineEdit;
+    }
+};
+
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -74,18 +95,20 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
 
+  editTitle->setText( ddsLegend ? ddsLegend->title() : QString() );
+
   mSizeClassesModel = new QStandardItemModel( viewSizeClasses );
-  mSizeClassesModel->setHorizontalHeaderLabels( QStringList() << tr( "Value" ) );
+  mSizeClassesModel->setHorizontalHeaderLabels( QStringList() << tr( "Value" ) << tr( "Label" ) );
   mSizeClassesModel->setSortRole( Qt::UserRole + 1 );
   if ( ddsLegend )
   {
     groupManualSizeClasses->setChecked( !ddsLegend->classes().isEmpty() );
     Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddsLegend->classes() )
     {
-      QStandardItem *item = new QStandardItem( sc.label );
-      item->setEditable( false );
-      item->setData( sc.label.toInt() );
-      mSizeClassesModel->appendRow( item );
+      QStandardItem *item = new QStandardItem( QString::number( sc.size ) );
+      item->setData( sc.size );
+      QStandardItem *itemLabel = new QStandardItem( sc.label );
+      mSizeClassesModel->appendRow( QList<QStandardItem *>() << item << itemLabel );
     }
     mSizeClassesModel->sort( 0 );
   }
@@ -93,7 +116,9 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( btnAddClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::addSizeClass );
   connect( btnRemoveClass, &QToolButton::clicked, this, &QgsDataDefinedSizeLegendWidget::removeSizeClass );
 
+  viewSizeClasses->setItemDelegateForColumn( 0, new SizeClassDelegate( viewSizeClasses ) );
   viewSizeClasses->setModel( mSizeClassesModel );
+  connect( mSizeClassesModel, &QStandardItemModel::dataChanged, this, &QgsDataDefinedSizeLegendWidget::onSizeClassesChanged );
 
   // prepare layer and model to preview legend
   mPreviewLayer = new QgsVectorLayer( "Point?crs=EPSG:4326", "Preview", "memory" );
@@ -110,6 +135,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( groupManualSizeClasses, &QGroupBox::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( btnChangeSymbol, &QPushButton::clicked, this, &QgsDataDefinedSizeLegendWidget::changeSymbol );
+  connect( editTitle, &QLineEdit::textChanged, this, &QgsPanelWidget::widgetChanged );
   connect( this, &QgsPanelWidget::widgetChanged, this, &QgsDataDefinedSizeLegendWidget::updatePreview );
   updatePreview();
 }
@@ -133,15 +159,17 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegendWidget::dataDefinedSizeLegend(
   {
     ddsLegend->setSymbol( mSourceSymbol->clone() );
   }
+
+  ddsLegend->setTitle( editTitle->text() );
+
   if ( groupManualSizeClasses->isChecked() )
   {
-    const QgsSizeScaleTransformer *transformer = dynamic_cast<const QgsSizeScaleTransformer *>( mSizeProperty.transformer() );
     QList<QgsDataDefinedSizeLegend::SizeClass> classes;
     for ( int i = 0; i < mSizeClassesModel->rowCount(); ++i )
     {
-      double value = mSizeClassesModel->data( mSizeClassesModel->index( i, 0 ), Qt::UserRole + 1 ).toDouble();
-      double size = transformer ? transformer->size( value ) : value;
-      classes << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( value ) );
+      double value = mSizeClassesModel->item( i, 0 )->data().toDouble();
+      QString label = mSizeClassesModel->item( i, 1 )->text();
+      classes << QgsDataDefinedSizeLegend::SizeClass( value, label );
     }
     ddsLegend->setClasses( classes );
   }
@@ -199,9 +227,9 @@ void QgsDataDefinedSizeLegendWidget::addSizeClass()
     return;
 
   QStandardItem *item = new QStandardItem( QString::number( v ) );
-  item->setEditable( false );
   item->setData( v );
-  mSizeClassesModel->appendRow( item );
+  QStandardItem *itemLabel = new QStandardItem( QString::number( v ) );
+  mSizeClassesModel->appendRow( QList<QStandardItem *>() << item << itemLabel );
   mSizeClassesModel->sort( 0 );
   emit widgetChanged();
 }
@@ -213,5 +241,17 @@ void QgsDataDefinedSizeLegendWidget::removeSizeClass()
     return;
 
   mSizeClassesModel->removeRow( idx.row() );
+  emit widgetChanged();
+}
+
+void QgsDataDefinedSizeLegendWidget::onSizeClassesChanged()
+{
+  for ( int row = 0; row < mSizeClassesModel->rowCount(); ++row )
+  {
+    QStandardItem *item = mSizeClassesModel->item( row, 0 );
+    item->setData( item->text().toDouble() );
+  }
+
+  mSizeClassesModel->sort( 0 );
   emit widgetChanged();
 }
