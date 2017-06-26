@@ -41,7 +41,10 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
 {
   public:
 
-    QgsLayoutMeasurementConverter();
+    /**
+     * Constructor for QgsLayoutMeasurementConverter.
+     */
+    QgsLayoutMeasurementConverter() = default;
 
     /**
      * Sets the dots per inch (\a dpi) for the measurement converter. This is used
@@ -83,7 +86,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
 
   private:
 
-    double mDpi;
+    double mDpi = 300.0;
 
     double convertToMillimeters( const QgsLayoutMeasurement &measurement ) const;
     double convertToCentimeters( const QgsLayoutMeasurement &measurement ) const;

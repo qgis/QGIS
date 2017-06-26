@@ -18,11 +18,6 @@
 #include "qgslayoutmeasurementconverter.h"
 
 
-QgsLayoutMeasurementConverter::QgsLayoutMeasurementConverter()
-  : mDpi( 300.0 )
-{
-}
-
 QgsLayoutMeasurement QgsLayoutMeasurementConverter::convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const
 {
   if ( measurement.units() == targetUnits )

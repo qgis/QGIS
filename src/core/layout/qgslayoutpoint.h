@@ -151,9 +151,9 @@ class CORE_EXPORT QgsLayoutPoint
 
   private:
 
-    double mX;
-    double mY;
-    QgsUnitTypes::LayoutUnit mUnits;
+    double mX = 0.0;
+    double mY = 0.0;
+    QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
 
 };
 

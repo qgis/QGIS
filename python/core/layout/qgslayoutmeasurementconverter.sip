@@ -27,6 +27,9 @@ class QgsLayoutMeasurementConverter
   public:
 
     QgsLayoutMeasurementConverter();
+%Docstring
+ Constructor for QgsLayoutMeasurementConverter.
+%End
 
     void setDpi( const double dpi );
 %Docstring
