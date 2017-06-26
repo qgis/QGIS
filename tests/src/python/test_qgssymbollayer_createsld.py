@@ -231,6 +231,15 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
 
+    def testSimpleLineHairline(self):
+        symbol = QgsSimpleLineSymbolLayer(QColor("black"), 0)
+        dom, root = self.symbolToSld(symbol)
+
+        # print ("Simple line px: \n" + dom.toString())
+
+        # Hairline is turned into 0.5px
+        self.assertStrokeWidth(root, 1, 0.5)
+
     def testSimpleLineUnitDefault(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 1)
         symbol.setCustomDashVector([10, 10])
