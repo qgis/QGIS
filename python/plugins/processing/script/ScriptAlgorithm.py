@@ -35,7 +35,10 @@ from qgis.core import (QgsExpressionContextUtils,
                        QgsProject,
                        QgsApplication,
                        QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingAlgorithm)
+
+from qgis.PyQt.QtCore import (QCoreApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
@@ -46,7 +49,7 @@ from processing.script.WrongScriptException import WrongScriptException
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ScriptAlgorithm(GeoAlgorithm):
+class ScriptAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
@@ -56,7 +59,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         not be used in other cases.
         """
 
-        GeoAlgorithm.__init__(self)
+        super().__init__()
         self._icon = QgsApplication.getThemeIcon("/processingScript.svg")
         self._name = ''
         self._display_name = ''
@@ -236,3 +239,8 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     return descs
         return descs
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)
