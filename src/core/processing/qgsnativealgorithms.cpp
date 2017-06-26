@@ -91,7 +91,7 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Point, source->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Point, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -166,7 +166,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -270,7 +270,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
 
   if ( !sink )
     return QVariantMap();
@@ -417,7 +417,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     return QVariantMap();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
     return QVariantMap();
@@ -563,7 +563,7 @@ QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &paramete
   QgsCoordinateReferenceSystem targetCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(), source->wkbType(), targetCrs, dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), targetCrs ) );
   if ( !sink )
     return QVariantMap();
 
@@ -626,8 +626,8 @@ QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &paramete
 
   int maxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
-                                          QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
+                                          QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -693,8 +693,8 @@ QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantM
   QgsWkbTypes::Type sinkType = QgsWkbTypes::singleType( source->wkbType() );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
-                                          sinkType, source->sourceCrs(), dest ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
+                                          sinkType, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -775,20 +775,19 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
   QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
 
   QString matchingSinkId;
-  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
-      source->wkbType(), source->sourceCrs(), matchingSinkId ) );
+  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
+      source->wkbType(), source->sourceCrs() ) );
   if ( !matchingSink )
     return QVariantMap();
 
   QString nonMatchingSinkId;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, source->fields(),
-      source->wkbType(), source->sourceCrs(), nonMatchingSinkId ) );
+  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
+      source->wkbType(), source->sourceCrs() ) );
 
   QgsExpression expression( expressionString );
   if ( expression.hasParserError() )
   {
-    // raise GeoAlgorithmExecutionException(expression.parserErrorString())
-    return QVariantMap();
+    throw QgsProcessingException( expression.parserErrorString() );
   }
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
@@ -904,14 +903,14 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
 
   QString matchingSinkId;
-  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, source->fields(),
-      source->wkbType(), source->sourceCrs(), matchingSinkId ) );
+  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
+      source->wkbType(), source->sourceCrs() ) );
   if ( !matchingSink )
     return QVariantMap();
 
   QString nonMatchingSinkId;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, source->fields(),
-      source->wkbType(), source->sourceCrs(), nonMatchingSinkId ) );
+  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
+      source->wkbType(), source->sourceCrs() ) );
 
 
   int idx = source->fields().lookupField( fieldName );
