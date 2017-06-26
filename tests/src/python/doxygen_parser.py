@@ -146,6 +146,11 @@ class DoxygenParser():
                         #     print('"%s": [%s],' % (class_name, ", ".join(['"%s"' % e.replace('"', '\\"') for e in undocumented])))
 
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
+                        if unacceptable_undocumented:
+                            print("ACCEPTABLE IS")
+                            print(acceptable_missing)
+                            print("WHAT WE GOT WAS")
+                            print(undocumented)
 
                         # do a case insensitive check too
                         unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
