@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 
+///@cond NOT_STABLE
 
 /**
  * \class QgsProcessingModelAlgorithm
@@ -857,6 +858,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     friend class TestQgsProcessing;
 };
+
+///@endcond
 
 #endif // QGSPROCESSINGMODELALGORITHM_H
 

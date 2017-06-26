@@ -24,6 +24,8 @@
 #include <QFile>
 #include <QTextStream>
 
+///@cond NOT_STABLE
+
 QgsProcessingModelAlgorithm::ChildAlgorithm::ChildAlgorithm( const QString &algorithmId )
   : mAlgorithmId( algorithmId )
 {
@@ -1188,3 +1190,5 @@ bool QgsProcessingModelAlgorithm::ModelParameter::loadVariant( const QVariantMap
   restoreCommonProperties( map );
   return true;
 }
+
+///@endcond
