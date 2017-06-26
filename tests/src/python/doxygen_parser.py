@@ -132,6 +132,7 @@ class DoxygenParser():
                         documented_members += documented
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
+                        acceptable_missing = [v.strip() for v in acceptable_missing]
 
                         if not self.hasGroup(class_name) and class_name not in self.acceptable_missing_group:
                             self.classes_missing_group.append(class_name)
