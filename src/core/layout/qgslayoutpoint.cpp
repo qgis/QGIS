@@ -29,9 +29,7 @@ QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const QgsUnitTyp
 }
 
 QgsLayoutPoint::QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units )
-  : mX( 0.0 )
-  , mY( 0.0 )
-  , mUnits( units )
+  : mUnits( units )
 {
 
 }

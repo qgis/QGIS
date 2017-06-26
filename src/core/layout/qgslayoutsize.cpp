@@ -27,9 +27,7 @@ QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgs
 }
 
 QgsLayoutSize::QgsLayoutSize( const QgsUnitTypes::LayoutUnit units )
-  : mWidth( 0.0 )
-  , mHeight( 0.0 )
-  , mUnits( units )
+  : mUnits( units )
 {
 
 }

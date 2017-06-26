@@ -123,8 +123,8 @@ class CORE_EXPORT QgsLayoutMeasurement
 
   private:
 
-    double mLength;
-    QgsUnitTypes::LayoutUnit mUnits;
+    double mLength = 0.0;
+    QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
 
 };
 

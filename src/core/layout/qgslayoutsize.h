@@ -155,9 +155,9 @@ class CORE_EXPORT QgsLayoutSize
 
   private:
 
-    double mWidth;
-    double mHeight;
-    QgsUnitTypes::LayoutUnit mUnits;
+    double mWidth = 0.0;
+    double mHeight = 0.0;
+    QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
 
 };
 
