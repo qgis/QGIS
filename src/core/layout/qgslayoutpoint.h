@@ -22,7 +22,8 @@
 #include "qgsunittypes.h"
 #include <QPointF>
 
-/** \ingroup Layout
+/**
+ * \ingroup core
  * \class QgsLayoutPoint
  * \brief This class provides a method of storing points, consisting of an x and y coordinate,
  * for use in QGIS layouts. Measurement units are stored alongside the position.
@@ -41,9 +42,6 @@ class CORE_EXPORT QgsLayoutPoint
 
     /**
      * Constructor for QgsLayoutPoint.
-     * \param x x coordinate
-     * \param x y coordinate
-     * \param units units for x and y
     */
     QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
@@ -52,8 +50,6 @@ class CORE_EXPORT QgsLayoutPoint
      * \param units units for measurement
     */
     explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
-
-    ~QgsLayoutPoint();
 
     /**
      * Sets new x and y coordinates for the point.
@@ -132,9 +128,25 @@ class CORE_EXPORT QgsLayoutPoint
 
     bool operator==( const QgsLayoutPoint &other ) const;
     bool operator!=( const QgsLayoutPoint &other ) const;
+
+    /**
+     * Multiplies the x and y by a scalar value.
+     */
     QgsLayoutPoint operator*( const double v ) const;
+
+    /**
+     * Multiplies the x and y by a scalar value.
+     */
     QgsLayoutPoint operator*=( const double v );
+
+    /**
+     * Divides the x and y by a scalar value.
+     */
     QgsLayoutPoint operator/( const double v ) const;
+
+    /**
+     * Divides the x and y by a scalar value.
+     */
     QgsLayoutPoint operator/=( const double v );
 
   private:

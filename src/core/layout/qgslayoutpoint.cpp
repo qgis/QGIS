@@ -36,11 +36,6 @@ QgsLayoutPoint::QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units )
 
 }
 
-QgsLayoutPoint::~QgsLayoutPoint()
-{
-
-}
-
 bool QgsLayoutPoint::isNull() const
 {
   return qgsDoubleNear( mX, 0 ) && qgsDoubleNear( mY, 0 );

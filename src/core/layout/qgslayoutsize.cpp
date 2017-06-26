@@ -34,10 +34,6 @@ QgsLayoutSize::QgsLayoutSize( const QgsUnitTypes::LayoutUnit units )
 
 }
 
-QgsLayoutSize::~QgsLayoutSize()
-{
-}
-
 bool QgsLayoutSize::isEmpty() const
 {
   return qgsDoubleNear( mWidth, 0 ) && qgsDoubleNear( mHeight, 0 );

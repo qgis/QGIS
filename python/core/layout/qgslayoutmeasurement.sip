@@ -31,8 +31,6 @@ class QgsLayoutMeasurement
  \param units measurement units
 %End
 
-    ~QgsLayoutMeasurement();
-
     double length() const;
 %Docstring
  Returns the length of the measurement.
@@ -79,36 +77,52 @@ class QgsLayoutMeasurement
 %Docstring
  :rtype: bool
 %End
+
     QgsLayoutMeasurement operator+( const double v ) const;
 %Docstring
+ Adds a scalar value to the measurement.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator+=( const double v );
 %Docstring
+ Adds a scalar value to the measurement.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator-( const double v ) const;
 %Docstring
+ Subtracts a scalar value from the measurement.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator-=( const double v );
 %Docstring
+ Subtracts a scalar value from the measurement.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator*( const double v ) const;
 %Docstring
+ Multiplies the measurement by a scalar value.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator*=( const double v );
 %Docstring
+ Multiplies the measurement by a scalar value.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator/( const double v ) const;
 %Docstring
+ Divides the measurement by a scalar value.
  :rtype: QgsLayoutMeasurement
 %End
+
     QgsLayoutMeasurement operator/=( const double v );
 %Docstring
+ Divides the measurement by a scalar value.
  :rtype: QgsLayoutMeasurement
 %End
 

@@ -46,8 +46,6 @@ class QgsLayoutSize
  \param units units for measurement
 %End
 
-    ~QgsLayoutSize();
-
     void setSize( const double width, const double height );
 %Docstring
  Sets new ``width`` and ``height`` for the size.
@@ -135,20 +133,28 @@ class QgsLayoutSize
 %Docstring
  :rtype: bool
 %End
+
     QgsLayoutSize operator*( const double v ) const;
 %Docstring
+ Multiplies the width and height by a scalar value.
  :rtype: QgsLayoutSize
 %End
+
     QgsLayoutSize operator*=( const double v );
 %Docstring
+ Multiplies the width and height by a scalar value.
  :rtype: QgsLayoutSize
 %End
+
     QgsLayoutSize operator/( const double v ) const;
 %Docstring
+ Divides the width and height by a scalar value.
  :rtype: QgsLayoutSize
 %End
+
     QgsLayoutSize operator/=( const double v );
 %Docstring
+ Divides the width and height by a scalar value.
  :rtype: QgsLayoutSize
 %End
 

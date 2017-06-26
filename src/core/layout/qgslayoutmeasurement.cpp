@@ -25,10 +25,6 @@ QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const QgsUnitTy
 {
 }
 
-QgsLayoutMeasurement::~QgsLayoutMeasurement()
-{
-}
-
 QString QgsLayoutMeasurement::encodeMeasurement() const
 {
   return QStringLiteral( "%1,%2" ).arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );

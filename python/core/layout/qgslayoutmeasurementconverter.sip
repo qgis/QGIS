@@ -28,8 +28,6 @@ class QgsLayoutMeasurementConverter
 
     QgsLayoutMeasurementConverter();
 
-    ~QgsLayoutMeasurementConverter();
-
     void setDpi( const double dpi );
 %Docstring
  Sets the dots per inch (``dpi``) for the measurement converter. This is used

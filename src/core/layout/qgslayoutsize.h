@@ -24,7 +24,7 @@
 
 
 /**
- * \ingroup Layout
+ * \ingroup core
  * \class QgsLayoutSize
  * \brief This class provides a method of storing sizes, consisting of a width and height,
  * for use in QGIS layouts. Measurement units are stored alongside the size.
@@ -54,8 +54,6 @@ class CORE_EXPORT QgsLayoutSize
      * \param units units for measurement
     */
     explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
-
-    ~QgsLayoutSize();
 
     /**
      * Sets new \a width and \a height for the size.
@@ -134,9 +132,25 @@ class CORE_EXPORT QgsLayoutSize
 
     bool operator==( const QgsLayoutSize &other ) const;
     bool operator!=( const QgsLayoutSize &other ) const;
+
+    /**
+     * Multiplies the width and height by a scalar value.
+     */
     QgsLayoutSize operator*( const double v ) const;
+
+    /**
+     * Multiplies the width and height by a scalar value.
+     */
     QgsLayoutSize operator*=( const double v );
+
+    /**
+     * Divides the width and height by a scalar value.
+     */
     QgsLayoutSize operator/( const double v ) const;
+
+    /**
+     * Divides the width and height by a scalar value.
+     */
     QgsLayoutSize operator/=( const double v );
 
   private:
