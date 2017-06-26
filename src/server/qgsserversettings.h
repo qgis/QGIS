@@ -25,12 +25,14 @@
 
 #include "qgsmessagelog.h"
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 /**
   * QgsServerSettingsEnv provides some enum describing the environment
   * currently supported for configuration.
   * \since QGIS 3.0
   */
+#ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
@@ -58,6 +60,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( EnvVar )
 };
+#endif
 
 /** \ingroup server
  * QgsServerSettings provides a way to retrieve settings by prioritizing
@@ -67,7 +70,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 class SERVER_EXPORT QgsServerSettings
 {
   public:
-    struct Setting
+    struct Setting SIP_SKIP
     {
       QgsServerSettingsEnv::EnvVar envVar;
       QgsServerSettingsEnv::Source src;

@@ -877,7 +877,10 @@ while ($LINE_IDX < $LINE_COUNT){
         # do not comment now for templates, wait for class definition
         next;
     }
-    elsif ( $LINE =~ m/\/\// ||
+    if ( $LINE =~ m/^\s*namespace\s+\w+/){
+        $COMMENT = '';
+    }
+    if ( $LINE =~ m/\/\// ||
             $LINE =~ m/\s*typedef / ||
             $LINE =~ m/\s*struct / ||
             $LINE =~ m/operator\[\]\(/ ||

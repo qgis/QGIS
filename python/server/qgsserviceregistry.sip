@@ -1,90 +1,101 @@
-/***************************************************************************
-                          qgsserviceregistry.h
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserviceregistry.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-  Class defining the service manager for QGIS server services.
-  -------------------
-  begin                : 2016-12-05
-  copyright            : (C) 2016 by David Marteau
-  email                : david dot marteau at 3liz dot com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
- * \ingroup server
- * QgsServiceRegistry
- * Class defining the registry manager for QGIS server services
- *
- * This class provides methods for registering and retrieving
- * services.
- *
- * IMPORTANT: The registry hold ownership of registered services and
- * will call 'delete'  on cleanup
- *
- */
+
+
+
 class QgsServiceRegistry
 {
+%Docstring
+ QgsServiceRegistry
+ Class defining the registry manager for QGIS server services
+
+ This class provides methods for registering and retrieving
+ services.
+
+ IMPORTANT: The registry hold ownership of registered services and
+ will call 'delete'  on cleanup
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsserviceregistry.h"
-#include "qgsservice.h"
 %End
   public:
 
-    //! Constructor
     QgsServiceRegistry();
+%Docstring
+Constructor
+%End
 
-    //! Destructor
     ~QgsServiceRegistry();
+%Docstring
+Destructor
+%End
 
-    /**
-     * Retrieve a service from its name
-     * @param name the name of the service
-     * @param version the required version (optional)
-     * @return QgsService
-     */
     QgsService *getService( const QString &name, const QString &version = QString() );
+%Docstring
+ Retrieve a service from its name
+ \param name the name of the service
+ \param version the version string (optional)
+ :return: QgsService
 
-    /**
-     * Register a service by its name
-     *
-     * This method is intended to  be called by modules for registering
-     * services. A module may register multiple services.
-     * The registry gain ownership of services.
-     *
-     * @param service a QgsServerResponse to be registered
-     */
+ If the version is not provided the higher version of the service is returned
+ :rtype: QgsService
+%End
+
     void registerService( QgsService *service /Transfer/ );
+%Docstring
+ Register a service by its name and version
 
-    /**
-     * Unregister service from its name and version
-     *
-     * @param name the tame of the service
-     * @param version (optional) the specific version to unload
-     * @return the number of unregistered services
-     *
-     * If the version is not specified then all versions from the specified service
-     * are unloaded
-     */
+ This method is intended to  be called by modules for registering
+ services. A module may register multiple services.
+
+ The registry gain ownership of services and will call 'delete' on cleanup
+
+ \param service a QgsServerResponse to be registered
+%End
+
     int unregisterService( const QString &name, const QString &version = QString() );
+%Docstring
+ Unregister service from its name and version
 
-    /**
-     * Initialize registry, load modules and auto register services
-     * @param nativeModulepath the native module path
-     */
-    // XXX Do we want this exposed to python ?
+ \param name the tame of the service
+ \param version (optional) the specific version to unload
+ :return: the number of services unregistered
+
+ If the version is not specified then all versions from the specified service
+ are unloaded
+ :rtype: int
+%End
+
     void init( const QString &nativeModulepath, QgsServerInterface *serverIface = 0 );
+%Docstring
+ Initialize registry, load modules and auto register services
+ \param serverIface the server interface
+ \param nativeModulepath the native module path
+%End
 
-    /**
-     * Clean up registered service and unregister modules
-     */
     void cleanUp();
+%Docstring
+ Clean up registered service and unregister modules
+%End
+
 };
 
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserviceregistry.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

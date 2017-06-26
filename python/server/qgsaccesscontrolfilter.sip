@@ -1,52 +1,44 @@
-/***************************************************************************
-                          qgsaccesscontrolfilter.sip
-                          --------------------------
- Access control interface for Qgis Server plugins
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsaccesscontrolfilter.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-  begin                : 2015-05-19
-  copyright            : (C) 2015 by Stéphane Brunner
-  email                : stephane dot brunner at camptocamp dot org
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
- * \ingroup server
- * \class QgsAccessControlFilter
- * \brief Class defining access control interface for QGIS Server plugins.
- *
- * Security can define any (or none) of the following method:
- *  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
- *  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
- *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
- *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
- *  * allowToEdit() - (all WFS-T requests)
- *  * cacheKey()
- */
+
+
 
 class QgsAccessControlFilter
 {
+%Docstring
+ Class defining access control interface for QGIS Server plugins.
+
+ Security can define any (or none) of the following method:
+  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
+  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
+  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+  * allowToEdit() - (all WFS-T requests)
+  * cacheKey()
+%End
+
 %TypeHeaderCode
 #include "qgsaccesscontrolfilter.h"
 %End
-
   public:
-    /** Constructor
-     * QgsServerInterface passed to plugins constructors
-     * and must be passed to QgsAccessControlFilter instances.
-     */
+
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
-    /** Destructor */
+%Docstring
+ Constructor
+ QgsServerInterface passed to plugins constructors
+ and must be passed to QgsAccessControlFilter instances.
+%End
+
     virtual ~QgsAccessControlFilter();
 
-    /** Describe the layer permission */
     struct LayerPermissions
     {
       bool canRead;
@@ -55,45 +47,70 @@ class QgsAccessControlFilter
       bool canDelete;
     };
 
-    /** Return the QgsServerInterface instance*/
     const QgsServerInterface *serverInterface() const;
+%Docstring
+Return the QgsServerInterface instance
+ :rtype: QgsServerInterface
+%End
 
-    /** Return an additional expression filter
-     * @param layer the layer to control
-     * @return the filter expression
-     */
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
+%Docstring
+ Return an additional expression filter
+ \param layer the layer to control
+ :return: the filter expression
+ :rtype: str
+%End
 
-    /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
-     * @return the subset string
-     */
     virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
+%Docstring
+ Return an additional subset string (typically SQL) filter
+ \param layer the layer to control
+ :return: the subset string
+ :rtype: str
+%End
 
-    /** Return the layer permissions
-     * @param layer the layer to control
-     * @return the permission to use on the layer
-     */
     virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
+%Docstring
+ Return the layer permissions
+ \param layer the layer to control
+ :return: the permission to use on the layer
+ :rtype: LayerPermissions
+%End
 
-    /** Return the authorized layer attributes
-     * @param layer the layer to control
-     * @param attributes the current list of visible attribute
-     * @return the new list of visible attributes
-     */
     virtual QStringList authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+%Docstring
+ Return the authorized layer attributes
+ \param layer the layer to control
+ \param attributes the current list of visible attribute
+ :return: the new list of visible attributes
+ :rtype: list of str
+%End
 
-    /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
-     * @param feature the concerned feature
-     * @return true if we are allowed to edit
-     */
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
+%Docstring
+ Are we authorized to modify the following geometry
+ \param layer the layer to control
+ \param feature the concerned feature
+ :return: true if we are allowed to edit
+ :rtype: bool
+%End
 
-    /** Cache key to used to create the capabilities cache
-     * @return the cache key, "" for no cache
-     */
     virtual QString cacheKey() const;
+%Docstring
+ Cache key to used to create the capabilities cache
+ :return: the cache key, "" for no cache
+ :rtype: str
+%End
+
 };
 
-typedef QMultiMap<int, QgsAccessControlFilter*> QgsAccessControlFilterMap;
+typedef QMultiMap<int, QgsAccessControlFilter *> QgsAccessControlFilterMap;
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsaccesscontrolfilter.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

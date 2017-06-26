@@ -90,7 +90,7 @@ class SERVER_EXPORT QgsServerProjectParser
     QHash< QString, QDomElement > projectLayerElementsByName() const { return mProjectLayerElementsByName; }
     QHash< QString, QDomElement > projectLayerElementsById() const { return mProjectLayerElementsById; }
 
-    void layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const;
+    void layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const SIP_SKIP;
 
     QStringList wfsLayerNames() const;
     QStringList wcsLayerNames() const;

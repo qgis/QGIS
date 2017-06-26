@@ -38,6 +38,11 @@ class QgsProject;
  */
 class SERVER_EXPORT QgsService
 {
+#ifdef SIP_RUN
+#include "qgsserverrequest.h"
+#include "qgsserverresponse.h"
+#endif
+
   public:
 
     //! Constructor

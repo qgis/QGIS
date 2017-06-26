@@ -23,6 +23,8 @@
 
 #include "qgsexception.h"
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
 
 /** \ingroup server
  * \class  QgsServerException
@@ -30,8 +32,13 @@
  *
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class SERVER_EXPORT QgsServerException : public QgsException
 {
+#else
+class SERVER_EXPORT QgsServerException
+{
+#endif
   public:
     //! Constructor
     QgsServerException( const QString &message, int responseCode = 500 );
@@ -48,7 +55,7 @@ class SERVER_EXPORT QgsServerException : public QgsException
      *
      * The defaolt implementation return text/xml format.
      */
-    virtual QByteArray formatResponse( QString &responseFormat ) const;
+    virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const;
 
   private:
     int mResponseCode;
@@ -63,8 +70,13 @@ class SERVER_EXPORT QgsServerException : public QgsException
  *
  * \since QGIS 3.0
  */
+#ifndef SIP_RUN
 class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
 {
+#else
+class SERVER_EXPORT QgsOgcServiceException
+{
+#endif
   public:
     //! Construction
     QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(),
@@ -83,7 +95,7 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
     QString version() const { return mVersion; }
 
     //! Overridden from QgsServerException
-    virtual QByteArray formatResponse( QString &responseFormat ) const override;
+    virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override;
 
   private:
     QString mCode;

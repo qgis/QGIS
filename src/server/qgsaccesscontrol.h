@@ -35,6 +35,10 @@ class QgsAccessControlPlugin;
  **/
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 {
+#ifdef SIP_RUN
+#include "qgsaccesscontrolfilter.h"
+#endif
+
   public:
     //! Constructor
     QgsAccessControl()
