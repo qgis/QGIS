@@ -96,7 +96,7 @@ void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
 
 void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings )
 {
-  delete settings;
+  delete mDataDefinedSizeLegendSettings;
   mDataDefinedSizeLegendSettings = settings;
 }
 
