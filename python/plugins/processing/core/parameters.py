@@ -44,6 +44,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProject,
                        QgsRectangle,
                        QgsVectorFileWriter,
+                       QgsProcessingParameters,
                        QgsProcessingParameterDefinition)
 
 from processing.tools.vector import resolveFieldIndex
@@ -602,6 +603,13 @@ def getParameterFromString(s):
         except:
             return None
     else:  # try script syntax
+
+        # try native method
+        param = QgsProcessingParameters.parameterFromScriptCode(s)
+        if param:
+            return param
+
+        # try Python duck-typed method
         for paramClass in paramClasses:
             try:
                 param = paramClass.fromScriptCode(s)

@@ -64,7 +64,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = ''
         self._display_name = ''
         self._group = ''
-        self._flags = 0
+        self._flags = None
 
         self.script = script
         self.allowEdit = True
@@ -88,7 +88,10 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         return self._group
 
     def flags(self):
-        return self._flags
+        if self._flags is not None:
+            return QgsProcessingAlgorithm.Flags(self._flags)
+        else:
+            return QgsProcessingAlgorithm.flags(self)
 
     def svgIconPath(self):
         return QgsApplication.iconPath("processingScript.svg")
@@ -98,6 +101,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self.script = ''
         filename = os.path.basename(self.descriptionFile)
         self._name = filename[:filename.rfind('.')].replace('_', ' ')
+        self._display_name = self._name
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
         with open(self.descriptionFile) as lines:
             line = lines.readline()
@@ -163,8 +167,8 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         if param is not None:
             self.addParameter(param)
         elif out is not None:
-            out.name = tokens[0]
-            out.description = desc
+            out.setName(tokens[0])
+            out.setDescription(desc)
             self.addOutput(out)
         else:
             raise WrongScriptException(
@@ -173,33 +177,37 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         ns = {}
-        ns['feedback'] = feedback
+
         ns['scriptDescriptionFile'] = self.descriptionFile
-        ns['context'] = context
 
         for param in self.parameterDefinitions():
-            ns[param.name] = parameters[param.name()]
+            ns[param.name()] = parameters[param.name()]
 
-        for out in self.outputs:
-            ns[out.name] = out.value
+        ns['self'] = self
+        ns['parameters'] = parameters
+        ns['feedback'] = feedback
+        ns['context'] = context
+
+#        for out in self.outputDefinitions():
+#            ns[out.name()] = out.value
 
         variables = re.findall('@[a-zA-Z0-9_]*', self.script)
         script = 'import processing\n'
         script += self.script
-
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+        context = self.createExpressionContext(parameters, context)
         for var in variables:
             varname = var[1:]
             if context.hasVariable(varname):
                 script = script.replace(var, context.variable(varname))
             else:
+                # messy - it's probably NOT a variable, and instead an email address or some other string containing '@'
                 QgsMessageLog.logMessage(self.tr('Cannot find variable: {0}').format(varname), self.tr('Processing'), QgsMessageLog.WARNING)
 
         exec((script), ns)
-        for out in self.outputs:
-            out.setValue(ns[out.name])
+        results = {}
+        for out in self.outputDefinitions():
+            results[out.name()] = ns[out.name()]
+        return results
 
     def helpUrl(self):
         if self.descriptionFile is None:
