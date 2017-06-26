@@ -213,7 +213,10 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
             elif param.type() == "vector":
                 method = self.parameterAsVectorLayer
             elif param.type() == "field":
-                method = self.parameterAsString
+                if param.allowMultiple():
+                    method = self.parameterAsFields
+                else:
+                    method = self.parameterAsString
             elif param.type() == "source":
                 method = self.parameterAsSource
 
