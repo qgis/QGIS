@@ -815,7 +815,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
 
 void QgsLinearlyInterpolatedDiagramRenderer::setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings )
 {
-  delete mDataDefinedSizeLegendSettings;
+  delete mDataDefinedSizeLegend;
   mDataDefinedSizeLegend = settings;
 }
 
