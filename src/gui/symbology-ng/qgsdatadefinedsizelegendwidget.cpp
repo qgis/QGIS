@@ -30,6 +30,8 @@
 #include "qgsvectorlayer.h"
 
 
+///@cond PRIVATE
+
 //! Simple delegate to allow only numeric values
 class SizeClassDelegate : public QStyledItemDelegate
 {
@@ -47,6 +49,8 @@ class SizeClassDelegate : public QStyledItemDelegate
       return lineEdit;
     }
 };
+
+///@endcond
 
 
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
