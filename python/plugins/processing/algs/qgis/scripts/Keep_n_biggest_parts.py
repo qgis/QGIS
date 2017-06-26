@@ -1,8 +1,15 @@
 from builtins import range
 ##Vector geometry tools=group
-##Polygons=vector polygon
+
+#inputs
+
+##Polygons=source polygon
 ##To_keep=number 1
-##Biggest parts=output vector
+##Biggest parts=sink polygon
+
+#outputs
+
+##Biggest parts=output outputVector
 
 from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter
@@ -13,15 +20,17 @@ if To_keep < 1:
     To_keep = 1
 
 
-polyLayer = QgsProcessingUtils.mapLayerFromString(Polygons, context)
-polyPrder = polyLayer.dataProvider()
-count = polyLayer.featureCount()
-writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-                                 QgsWkbTypes.MultiPolygon, polyPrder.crs())
+source = self.parameterAsSource(parameters, 'Polygons', context)
+count = source.featureCount()
+(sink, Biggest_parts) = self.parameterAsSink(parameters, 'Biggest parts', context,
+                                             source.fields(), QgsWkbTypes.MultiPolygon, source.sourceCrs())
 
 
-for n, feat in enumerate(QgsProcessingUtils.getFeatures(polyLayer, context)):
+for n, feat in enumerate(source.getFeatures()):
+    if feedback.isCanceled():
+        break
     feedback.setProgress(int(100 * n / count))
+
     geom = feat.geometry()
     if geom.isMultipart():
         features = feat
@@ -36,8 +45,6 @@ for n, feat in enumerate(QgsProcessingUtils.getFeatures(polyLayer, context)):
             features.setGeometry(geom)
             geomres = [geoms[i].asPolygon() for i, a in geomarea[-1 * To_keep:]]
             features.setGeometry(QgsGeometry.fromMultiPolygon(geomres))
-        writer.addFeature(features)
+        sink.addFeature(features)
     else:
-        writer.addFeature(feat)
-
-del writer
+        sink.addFeature(feat)
