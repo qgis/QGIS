@@ -50,8 +50,6 @@ QDomElement QgsMultiLineStringV2::asGML2( QDomDocument& doc, int precision, cons
       QDomElement elemLineStringMember = doc.createElementNS( ns, "lineStringMember" );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
-
-      delete lineString;
     }
   }
 
