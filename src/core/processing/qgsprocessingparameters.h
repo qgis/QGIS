@@ -239,7 +239,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       TypeVectorPolygon = 2, //!< Vector polygon layers
       TypeRaster = 3, //!< Raster layers
       TypeFile = 4, //!< Files
-      TypeTable = 5, //!< Tables (i.e. vector layers with or without geometry)
+      TypeTable = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
     };
 
     /**
