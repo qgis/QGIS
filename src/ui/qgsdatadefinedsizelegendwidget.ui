@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Data-defined size legend</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QRadioButton" name="radDisabled">
@@ -46,6 +46,20 @@
         <string>Legend symbol...</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Title</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="editTitle"/>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QGroupBox" name="groupManualSizeClasses">
@@ -132,7 +146,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
+   <item>
     <widget class="QTreeView" name="viewLayerTree">
      <property name="headerHidden">
       <bool>true</bool>
@@ -146,6 +160,7 @@
   <tabstop>radSeparated</tabstop>
   <tabstop>radCollapsed</tabstop>
   <tabstop>btnChangeSymbol</tabstop>
+  <tabstop>editTitle</tabstop>
   <tabstop>groupManualSizeClasses</tabstop>
   <tabstop>btnAddClass</tabstop>
   <tabstop>btnRemoveClass</tabstop>

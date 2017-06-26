@@ -226,9 +226,9 @@ class CORE_EXPORT QgsPropertyTransformer
 
     /**
      * Loads this transformer from a QVariantMap, wrapped in a QVariant.
-     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * You can use QgsXmlUtils::readVariant to read it from an XML document.
      *
-     * \see loadVariant()
+     * \see toVariant()
      */
     virtual bool loadVariant( const QVariant &transformer );
 
@@ -236,7 +236,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * Saves this transformer to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      *
-     * \see toVariant()
+     * \see loadVariant()
      */
     virtual QVariant toVariant() const;
 

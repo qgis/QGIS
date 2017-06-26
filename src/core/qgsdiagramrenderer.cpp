@@ -789,17 +789,26 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
     ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
 
+    QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
     if ( ddSizeLegend.classes().isEmpty() )
     {
       // automatic class creation if the classes are not defined manually
-      QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
       Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( mInterpolationSettings.lowerValue, mInterpolationSettings.upperValue, 4 ) )
       {
         double size = mDiagram->legendSize( v, mSettings, mInterpolationSettings );
         sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, QString::number( v ) );
       }
-      ddSizeLegend.setClasses( sizeClasses );
     }
+    else
+    {
+      // manual classes need to get size scaled because the QgsSizeScaleTransformer is not used in diagrams :-(
+      Q_FOREACH ( const QgsDataDefinedSizeLegend::SizeClass &sc, ddSizeLegend.classes() )
+      {
+        double size = mDiagram->legendSize( sc.size, mSettings, mInterpolationSettings );
+        sizeClasses << QgsDataDefinedSizeLegend::SizeClass( size, sc.label );
+      }
+    }
+    ddSizeLegend.setClasses( sizeClasses );
 
     Q_FOREACH ( const QgsLegendSymbolItem &si, ddSizeLegend.legendSymbolList() )
     {

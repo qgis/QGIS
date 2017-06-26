@@ -18,6 +18,7 @@
 #include "qgsproperty.h"
 #include "qgspropertytransformer.h"
 #include "qgssymbollayerutils.h"
+#include "qgsxmlutils.h"
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
@@ -28,6 +29,7 @@ QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLege
   , mTitleLabel( other.mTitleLabel )
   , mSizeClasses( other.mSizeClasses )
   , mSymbol( other.mSymbol.get() ? other.mSymbol->clone() : nullptr )
+  , mSizeScaleTransformer( other.mSizeScaleTransformer.get() ? new QgsSizeScaleTransformer( *other.mSizeScaleTransformer ) : nullptr )
   , mVAlign( other.mVAlign )
   , mFont( other.mFont )
   , mTextColor( other.mTextColor )
@@ -43,6 +45,7 @@ QgsDataDefinedSizeLegend &QgsDataDefinedSizeLegend::operator=( const QgsDataDefi
     mTitleLabel = other.mTitleLabel;
     mSizeClasses = other.mSizeClasses;
     mSymbol.reset( other.mSymbol.get() ? other.mSymbol->clone() : nullptr );
+    mSizeScaleTransformer.reset( other.mSizeScaleTransformer.get() ? new QgsSizeScaleTransformer( *other.mSizeScaleTransformer ) : nullptr );
     mVAlign = other.mVAlign;
     mFont = other.mFont;
     mTextColor = other.mTextColor;
@@ -61,24 +64,35 @@ QgsMarkerSymbol *QgsDataDefinedSizeLegend::symbol() const
   return mSymbol.get();
 }
 
+void QgsDataDefinedSizeLegend::setSizeScaleTransformer( QgsSizeScaleTransformer *transformer )
+{
+  mSizeScaleTransformer.reset( transformer );
+}
+
+QgsSizeScaleTransformer *QgsDataDefinedSizeLegend::sizeScaleTransformer() const
+{
+  return mSizeScaleTransformer.get();
+}
+
 
 void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbol *symbol, const QgsProperty &ddSize )
 {
   mSymbol.reset( symbol->clone() );
   mSymbol->setDataDefinedSize( QgsProperty() );  // original symbol may have had data-defined size associated
 
-  mTitleLabel = ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString() : ddSize.field();
+  const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() );
+  mSizeScaleTransformer.reset( sizeTransformer ? sizeTransformer->clone() : nullptr );
 
-  if ( !mSizeClasses.isEmpty() )
-    return;   // manually generated classes
+  if ( mTitleLabel.isEmpty() )
+    mTitleLabel = ddSize.propertyType() == QgsProperty::ExpressionBasedProperty ? ddSize.expressionString() : ddSize.field();
 
-  // automatically generated classes
-  if ( const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() ) )
+  // automatically generate classes if no classes are defined
+  if ( sizeTransformer && mSizeClasses.isEmpty() )
   {
     mSizeClasses.clear();
     Q_FOREACH ( double v, QgsSymbolLayerUtils::prettyBreaks( sizeTransformer->minValue(), sizeTransformer->maxValue(), 4 ) )
     {
-      mSizeClasses << SizeClass( sizeTransformer->size( v ), QString::number( v ) );
+      mSizeClasses << SizeClass( v, QString::number( v ) );
     }
   }
 }
@@ -130,8 +144,16 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
 
   std::unique_ptr<QgsMarkerSymbol> s( mSymbol->clone() );
 
-  // make sure we draw bigger symbols first
   QList<SizeClass> classes = mSizeClasses;
+
+  // optionally scale size values if transformer is defined
+  if ( mSizeScaleTransformer )
+  {
+    for ( auto it = classes.begin(); it != classes.end(); ++it )
+      it->size = mSizeScaleTransformer->size( it->size );
+  }
+
+  // make sure we draw bigger symbols first
   std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
 
   int hLengthLine = qRound( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
@@ -308,6 +330,15 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
     ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ) );
   }
 
+  QgsSizeScaleTransformer *transformer = nullptr;
+  QDomElement elemTransformer = elem.firstChildElement( "transformer" );
+  if ( !elemTransformer.isNull() )
+  {
+    transformer = new QgsSizeScaleTransformer;
+    transformer->loadVariant( QgsXmlUtils::readVariant( elemTransformer ) );
+  }
+  ddsLegend->setSizeScaleTransformer( transformer );
+
   QDomElement elemTextStyle = elem.firstChildElement( "text-style" );
   if ( !elemTextStyle.isNull() )
   {
@@ -349,6 +380,13 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   {
     QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( "source", mSymbol.get(), doc, context );
     elem.appendChild( elemSymbol );
+  }
+
+  if ( mSizeScaleTransformer )
+  {
+    QDomElement elemTransformer = QgsXmlUtils::writeVariant( mSizeScaleTransformer->toVariant(), doc );
+    elemTransformer.setTagName( "transformer" );
+    elem.appendChild( elemTransformer );
   }
 
   QDomElement elemFont = doc.createElement( "font" );

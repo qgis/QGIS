@@ -26,6 +26,7 @@ class QgsMarkerSymbol;
 class QgsProperty;
 class QgsReadWriteContext;
 class QgsRenderContext;
+class QgsSizeScaleTransformer;
 
 
 /** \ingroup core
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     {
       SizeClass( double size, const QString &label ): size( size ), label( label ) {}
 
-      double size;    //!< Marker size in units used by the symbol (usually millimeters)
+      double size;    //!< Marker size in units used by the symbol (usually millimeters). May be further scaled before rendering if size scale transformer is enabled.
       QString label;  //!< Label to be shown with the particular symbol size
     };
 
@@ -76,6 +77,11 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
     //! Returns marker symbol that will be used to draw markers in legend
     QgsMarkerSymbol *symbol() const;
+
+    //! Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts null pointer to set no transformer.
+    void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer SIP_TRANSFER );
+    //! Returns transformer for scaling of symbol sizes. Returns null if no transformer is defined.
+    QgsSizeScaleTransformer *sizeScaleTransformer() const;
 
     //! Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
     void setClasses( const QList<QgsDataDefinedSizeLegend::SizeClass> &classes ) { mSizeClasses = classes; }
@@ -134,6 +140,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     QString mTitleLabel;  //!< Title label for the following size-based item(s)
     QList<SizeClass> mSizeClasses;  //!< List of classes: symbol size (in whatever units symbol uses) + label
     std::unique_ptr<QgsMarkerSymbol> mSymbol;
+    std::unique_ptr<QgsSizeScaleTransformer> mSizeScaleTransformer;  //!< Optional transformer for classes
     VerticalAlignment mVAlign = AlignBottom;
     QFont mFont;
     QColor mTextColor = Qt::black;

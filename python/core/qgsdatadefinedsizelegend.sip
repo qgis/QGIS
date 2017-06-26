@@ -48,7 +48,7 @@ Copy constructor
     {
       SizeClass( double size, const QString &label );
 
-      double size;    //!< Marker size in units used by the symbol (usually millimeters)
+      double size;    //!< Marker size in units used by the symbol (usually millimeters). May be further scaled before rendering if size scale transformer is enabled.
       QString label;  //!< Label to be shown with the particular symbol size
     };
 
@@ -70,6 +70,16 @@ Sets marker symbol that will be used to draw markers in legend
 %Docstring
 Returns marker symbol that will be used to draw markers in legend
  :rtype: QgsMarkerSymbol
+%End
+
+    void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer /Transfer/ );
+%Docstring
+Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts null pointer to set no transformer.
+%End
+    QgsSizeScaleTransformer *sizeScaleTransformer() const;
+%Docstring
+Returns transformer for scaling of symbol sizes. Returns null if no transformer is defined.
+ :rtype: QgsSizeScaleTransformer
 %End
 
     void setClasses( const QList<QgsDataDefinedSizeLegend::SizeClass> &classes );

@@ -945,7 +945,9 @@ void QgsDiagramProperties::showSizeLegendDialog()
   bool isExpression;
   QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
   QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
-  ddSize.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
+  bool scaleByArea = mScaleDependencyComboBox->currentData().toBool();
+  ddSize.setTransformer( new QgsSizeScaleTransformer( scaleByArea ? QgsSizeScaleTransformer::Area : QgsSizeScaleTransformer::Linear,
+                         0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
 
   QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
 
