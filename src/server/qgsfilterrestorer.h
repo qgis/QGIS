@@ -18,6 +18,9 @@
 #ifndef QGSFILTERRESTORER_H
 #define QGSFILTERRESTORER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgis_server.h"
 
 #include <QHash>

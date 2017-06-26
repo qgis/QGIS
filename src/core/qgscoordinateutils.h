@@ -18,6 +18,8 @@
 #ifndef QGSCOORDINATEUTILS_H
 #define QGSCOORDINATEUTILS_H
 
+#define SIP_NO_FILE
+
 #include <QString>
 
 #include "qgis_core.h"

@@ -23,6 +23,7 @@
 #include <QMap>
 #include "qgis_gui.h"
 
+
 class QFrame;
 class QBoxLayout;
 

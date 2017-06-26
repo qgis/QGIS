@@ -18,6 +18,11 @@
 #ifndef QGSMSLAYERBUILDER_H
 #define QGSMSLAYERBUILDER_H
 
+
+#define SIP_NO_FILE
+
+
+
 class QgsMapLayer;
 class QgsRasterLayer;
 class QDomElement;

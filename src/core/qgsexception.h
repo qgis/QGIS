@@ -19,6 +19,8 @@
 
 #define SIP_NO_CREATION
 
+#define SIP_NO_FILE
+
 #include <QString>
 
 #include "qgis_core.h"

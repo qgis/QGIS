@@ -50,6 +50,8 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
+SIP_NO_FILE
+
 /**
  * Hack to show wrapped text without spaces
  */

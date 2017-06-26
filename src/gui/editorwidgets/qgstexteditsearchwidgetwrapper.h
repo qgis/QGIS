@@ -19,6 +19,8 @@
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsTextEditWidgetFactory;
 
 /** \ingroup gui

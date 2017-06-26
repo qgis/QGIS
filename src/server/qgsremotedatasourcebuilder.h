@@ -18,6 +18,9 @@
 #ifndef QGSRDSBUILDER_H
 #define QGSRDSBUILDER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmslayerbuilder.h"
 class QgsRasterLayer;
 class QgsVectorLayer;

@@ -18,6 +18,11 @@
 #ifndef QGSRASTERRENDERERREGISTRY_H
 #define QGSRASTERRENDERERREGISTRY_H
 
+
+#define SIP_NO_FILE
+
+
+
 #include "qgis_core.h"
 #include "qgsrasterlayer.h" //for DrawingStyle enum
 #include <QHash>

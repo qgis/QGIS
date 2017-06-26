@@ -18,6 +18,9 @@
 #ifndef QGSSERVERPLUGINS_H
 #define QGSSERVERPLUGINS_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
 

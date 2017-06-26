@@ -22,6 +22,8 @@
 #include "ui_qgsauthmasterpassresetdialog.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QLabel;
 class QVBoxLayout;
 class QgsMessageBar;

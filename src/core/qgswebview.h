@@ -17,6 +17,8 @@
 #define QGSWEBVIEW_H
 
 
+#define SIP_NO_FILE
+
 #include <QWidget>
 
 #ifdef WITH_QTWEBKIT

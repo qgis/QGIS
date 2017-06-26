@@ -16,6 +16,8 @@
 #ifndef QGSINDEXEDFEATURE_H
 #define QGSINDEXEDFEATURE_H
 
+#define SIP_NO_FILE
+
 #include <QVector>
 #include "qgsfeature.h"
 

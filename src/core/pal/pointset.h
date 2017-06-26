@@ -30,6 +30,9 @@
 #ifndef POINTSET_H
 #define POINTSET_H
 
+#define SIP_NO_FILE
+
+
 #include <cfloat>
 #include <cmath>
 #include <QLinkedList>

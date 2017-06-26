@@ -30,6 +30,9 @@
 #ifndef PAL_GEOM_FUNCTION
 #define PAL_GEOM_FUNCTION
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
 #include "math.h"
 #include "qgsgeos.h"

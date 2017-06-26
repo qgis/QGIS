@@ -30,6 +30,9 @@
 #ifndef PALSTAT_H
 #define PALSTAT_H
 
+#define SIP_NO_FILE
+
+
 #include <QStringList>
 
 namespace pal

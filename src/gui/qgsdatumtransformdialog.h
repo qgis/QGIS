@@ -21,6 +21,8 @@
 #include "ui_qgsdatumtransformdialogbase.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup gui
  * \class QgsDatumTransformDialog
  * \note not available in Python bindings

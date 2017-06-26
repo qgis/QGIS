@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsCodeEditor : QsciScintilla
 {
 %Docstring

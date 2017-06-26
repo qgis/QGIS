@@ -24,6 +24,8 @@
 #include <QLineEdit>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsValueRelationWidgetFactory;
 
 /** \ingroup gui

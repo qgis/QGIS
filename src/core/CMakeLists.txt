@@ -745,7 +745,6 @@ SET(QGIS_CORE_HDRS
   qgscrscache.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
-  qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
@@ -772,6 +771,7 @@ SET(QGIS_CORE_HDRS
   qgsfield_p.h
   qgsfields.h
   qgsfontutils.h
+  qgsgeometrysimplifier.h
   qgshistogram.h
   qgsindexedfeature.h
   qgsinterval.h
@@ -825,6 +825,7 @@ SET(QGIS_CORE_HDRS
   qgsreadwritecontext.h
   qgsrenderchecker.h
   qgsrendercontext.h
+  qgsrulebasedlabeling.h
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
@@ -832,6 +833,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgssqlexpressioncompiler.h
+  qgssqlstatement.h
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
@@ -856,12 +858,11 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerundocommand.h
   qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
+  qgsvirtuallayerdefinition.h
+  qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
   qgsxmlutils.h
   qgsvector.h
-  qgswebpage.h
-  qgswebframe.h
-  qgswebview.h
   qgslocalec.h
 
   annotations/qgsannotationregistry.h
@@ -878,6 +879,8 @@ SET(QGIS_CORE_HDRS
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
+
+  dxf/qgsdxfexport.h
 
   effects/qgsimageoperation.h
   effects/qgspainteffect.h
@@ -896,11 +899,6 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposermultiframecommand.h
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
-
-  layout/qgslayoutmeasurement.h
-  layout/qgslayoutmeasurementconverter.h
-  layout/qgslayoutpoint.h
-  layout/qgslayoutsize.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
@@ -1052,7 +1050,6 @@ INCLUDE_DIRECTORIES(
   fieldformatter
   geometry
   layertree
-  layout
   metadata
   pal
   processing

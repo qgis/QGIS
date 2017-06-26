@@ -18,6 +18,8 @@
 #ifndef QGSNETWORKDISKCACHE_H
 #define QGSNETWORKDISKCACHE_H
 
+#define SIP_NO_FILE
+
 #include <QNetworkDiskCache>
 #include <QMutex>
 

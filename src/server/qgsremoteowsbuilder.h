@@ -18,6 +18,9 @@
 #ifndef QGSREMOTEOWSBUILDER_H
 #define QGSREMOTEOWSBUILDER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmslayerbuilder.h"
 #include <QMap>
 

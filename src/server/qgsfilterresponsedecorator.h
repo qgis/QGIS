@@ -19,6 +19,9 @@
 #ifndef QGSFILTERRESPONSEDECORATOR_H
 #define QGSFILTERRESPONSEDECORATOR_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverresponse.h"
 #include "qgsserverfilter.h"
 

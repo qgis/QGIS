@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"

@@ -20,6 +20,8 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsMapCanvas;
 class QgsMessageBar;
 

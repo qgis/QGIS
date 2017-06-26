@@ -117,8 +117,10 @@ SET(QGIS_ANALYSIS_HDRS
   raster/qgstotalcurvaturefilter.h
 
   vector/qgsgeometryanalyzer.h
-  vector/qgszonalstatistics.h
   vector/qgsoverlayanalyzer.h
+  vector/qgspointsample.h
+  vector/qgstransectsample.h
+  vector/qgszonalstatistics.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h
@@ -140,8 +142,6 @@ SET(QGIS_ANALYSIS_HDRS
 
   openstreetmap/qgsosmbase.h
   openstreetmap/qgsosmdatabase.h
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
@@ -149,8 +149,6 @@ SET(QGIS_ANALYSIS_HDRS
   network/qgsnetworkstrategy.h
   network/qgsnetworkspeedstrategy.h
   network/qgsnetworkdistancestrategy.h
-  network/qgsgraphdirector.h
-  network/qgsvectorlayerdirector.h
   network/qgsgraphanalyzer.h
 )
 

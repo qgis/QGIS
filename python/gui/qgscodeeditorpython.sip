@@ -9,6 +9,7 @@
 
 
 
+
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring

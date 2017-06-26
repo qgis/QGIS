@@ -15,6 +15,8 @@
 #ifndef QGSTEXTLABELFEATURE_H
 #define QGSTEXTLABELFEATURE_H
 
+#define SIP_NO_FILE
+
 #include "qgslabelfeature.h"
 
 /** \ingroup core

@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "qgis.h"
 #include "qgis_gui.h"
+
 #include "qgseditorwidgetwrapper.h"
 #include "qgsexpressioncontextgenerator.h"
 

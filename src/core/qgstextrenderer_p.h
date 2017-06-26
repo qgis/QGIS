@@ -17,6 +17,8 @@
 #ifndef QGSTEXTRENDERER_PRIVATE_H
 #define QGSTEXTRENDERER_PRIVATE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgstextrenderer.h"
 #include "qgsmapunitscale.h"

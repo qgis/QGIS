@@ -21,6 +21,8 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /** \ingroup gui
  * \class QgsValueMapConfigDlg
  * \note not available in Python bindings

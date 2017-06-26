@@ -17,6 +17,8 @@
 #ifndef QGSAUTHCRYPTO_H
 #define QGSAUTHCRYPTO_H
 
+#define SIP_NO_FILE
+
 #include <QFile>
 #include <QString>
 

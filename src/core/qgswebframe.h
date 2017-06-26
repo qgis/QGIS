@@ -16,6 +16,8 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 
 #ifdef WITH_QTWEBKIT

@@ -16,6 +16,8 @@
 #ifndef QGSINTERNALGEOMETRYENGINE_H
 #define QGSINTERNALGEOMETRYENGINE_H
 
+#define SIP_NO_FILE
+
 class QgsGeometry;
 class QgsAbstractGeometry;
 

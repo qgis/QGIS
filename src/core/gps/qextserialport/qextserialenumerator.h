@@ -7,6 +7,9 @@
 #ifndef QEXTSERIALENUMERATOR_H
 #define QEXTSERIALENUMERATOR_H
 
+#define SIP_NO_FILE
+
+
 #include <QString>
 #include <QList>
 #include <QObject>

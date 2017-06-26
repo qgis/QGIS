@@ -16,6 +16,8 @@
 #ifndef QGSRASTERLAYERRENDERER_H
 #define QGSRASTERLAYERRENDERER_H
 
+#define SIP_NO_FILE
+
 #include "qgsmaplayerrenderer.h"
 
 class QPainter;

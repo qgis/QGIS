@@ -18,6 +18,9 @@
 #ifndef QGSHOSTEDRDSBUILDER_H
 #define QGSHOSTEDRDSBUILDER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmslayerbuilder.h"
 
 class QgsHostedRDSBuilder: public QgsMSLayerBuilder

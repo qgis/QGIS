@@ -20,6 +20,7 @@
 #include "ui_qgsexpressionbuilderdialogbase.h"
 #include "qgis_gui.h"
 
+
 /** \ingroup gui
  * A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget

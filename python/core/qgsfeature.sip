@@ -14,7 +14,6 @@
 
 
 
-typedef qint64 QgsFeatureId;
 
 
 class QgsFeature

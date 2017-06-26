@@ -30,6 +30,9 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
+#define SIP_NO_FILE
+
+
 #include <QList>
 
 namespace pal

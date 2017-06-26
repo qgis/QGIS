@@ -18,6 +18,9 @@
 #ifndef QGSHOSTEDVDSBUILDER_H
 #define QGSHOSTEDVDSBUILDER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmslayerbuilder.h"
 
 class QgsHostedVDSBuilder: public QgsMSLayerBuilder

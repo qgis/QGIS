@@ -18,6 +18,8 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"

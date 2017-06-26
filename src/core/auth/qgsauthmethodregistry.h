@@ -17,6 +17,8 @@
 #ifndef QGSAUTHMETHODREGISTRY_H
 #define QGSAUTHMETHODREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include <QDir>
 #include <QLibrary>
 #include <QMap>

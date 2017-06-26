@@ -25,7 +25,8 @@
 
 /** \ingroup core
  * Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
- * drawn above all other composer items, while the paper item is drawn below all others.*/
+ * drawn above all other composer items, while the paper item is drawn below all others.
+ */
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {
   public:

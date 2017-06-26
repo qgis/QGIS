@@ -12,6 +12,7 @@
 
 
 
+
 class QgsUserInputDockWidget : QgsDockWidget
 {
 %Docstring

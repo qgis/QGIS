@@ -21,6 +21,8 @@
 #include <QMap>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /** \ingroup gui
  * \class QgsValueRelationWidgetFactory
  * \note not available in Python bindings

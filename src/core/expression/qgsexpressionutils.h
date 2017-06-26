@@ -17,6 +17,8 @@
 #ifndef QGSEXPRESSIONUTILS_H
 #define QGSEXPRESSIONUTILS_H
 
+#define SIP_NO_FILE
+
 #include "qgsfeature.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"

@@ -30,6 +30,9 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum

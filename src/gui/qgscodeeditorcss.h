@@ -17,8 +17,10 @@
 #define QGSCODEEDITORCSS_H
 
 #include "qgscodeeditor.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
+
+SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 
 /** \ingroup gui

@@ -16,6 +16,8 @@
 #ifndef QGSVECTORLAYERDIAGRAMPROVIDER_H
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgslabelfeature.h"

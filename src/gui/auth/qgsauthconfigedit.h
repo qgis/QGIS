@@ -23,6 +23,8 @@
 #include "ui_qgsauthconfigedit.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QgsAuthMethodEdit;
 
 

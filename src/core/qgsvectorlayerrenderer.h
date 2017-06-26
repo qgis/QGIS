@@ -27,6 +27,8 @@ class QgsDiagramLayerSettings;
 class QgsFeatureIterator;
 class QgsSingleSymbolRenderer;
 
+#define SIP_NO_FILE
+
 #include <QList>
 #include <QPainter>
 

@@ -10,8 +10,6 @@
 
 
 
-%Feature ANDROID
-
 
 class QgsApplication : QApplication
 {
