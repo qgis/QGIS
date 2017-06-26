@@ -3051,7 +3051,7 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
   // multiple
-  def.reset( new QgsProcessingParameterField( "non_optional", QString(), QString(), QString(), QgsProcessingParameterField::Any, true, false ) );
+  def.reset( new QgsProcessingParameterField( "non_optional", QString(), QVariant(), QString(), QgsProcessingParameterField::Any, true, false ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
@@ -3081,6 +3081,17 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromMap.allowMultiple(), def->allowMultiple() );
   def.reset( dynamic_cast< QgsProcessingParameterField *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterField *>( def.get() ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterField * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentLayerParameter(), def->parentLayerParameter() );
+  QCOMPARE( fromCode->dataType(), def->dataType() );
+  QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
   // optional
   def.reset( new QgsProcessingParameterField( "optional", QString(), QString( "def" ), QString(), QgsProcessingParameterField::Any, false, true ) );
@@ -3438,6 +3449,11 @@ void TestQgsProcessing::parameterFeatureSink()
   def->setDataType( QgsProcessingParameterDefinition::TypeVectorPolygon );
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=sink polygon" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterFeatureSink * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QCOMPARE( fromCode->dataType(), def->dataType() );
+  def->setDataType( QgsProcessingParameterDefinition::TypeTable );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=sink table" ) );
   fromCode.reset( dynamic_cast< QgsProcessingParameterFeatureSink * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QCOMPARE( fromCode->dataType(), def->dataType() );
 

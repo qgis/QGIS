@@ -2207,6 +2207,9 @@ QString QgsProcessingParameterField::asScriptCode() const
       break;
   }
 
+  if ( mAllowMultiple )
+    code += QStringLiteral( "multiple " );
+
   code += mParentLayerParameter + ' ';
 
   code += mDefault.toString();
@@ -2283,6 +2286,13 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
     type = DateTime;
     def = def.mid( 9 );
   }
+
+  if ( def.startsWith( QStringLiteral( "multiple" ), Qt::CaseInsensitive ) )
+  {
+    allowMultiple = true;
+    def = def.mid( 8 ).trimmed();
+  }
+
   QRegularExpression re( "(.*?)\\s+(.*)$" );
   QRegularExpressionMatch m = re.match( def );
   if ( m.hasMatch() )
@@ -2535,6 +2545,10 @@ QString QgsProcessingParameterFeatureSink::asScriptCode() const
       code += QStringLiteral( "polygon " );
       break;
 
+    case TypeTable:
+      code += QStringLiteral( "table " );
+      break;
+
     default:
       break;
   }
@@ -2630,6 +2644,11 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
   {
     type = QgsProcessingParameterDefinition::TypeVectorPolygon;
     def = def.mid( 8 );
+  }
+  else if ( def.startsWith( QStringLiteral( "table" ), Qt::CaseInsensitive ) )
+  {
+    type = QgsProcessingParameterDefinition::TypeTable;
+    def = def.mid( 6 );
   }
 
   return new QgsProcessingParameterFeatureSink( name, description, type, definition, isOptional );
