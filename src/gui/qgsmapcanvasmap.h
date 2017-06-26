@@ -47,7 +47,7 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
 
     void addPreviewImage( const QImage &image, const QgsRectangle &rect );
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
   private:
 
