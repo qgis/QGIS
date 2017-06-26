@@ -4639,12 +4639,26 @@ void TestQgsProcessing::modelExecution()
   alg2c3.setAlgorithmId( "native:extractbyexpression" );
   alg2c3.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
   alg2c3.addParameterSource( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
+  alg2c3.setDependencies( QStringList() << "cx2" );
   model2.addChildAlgorithm( alg2c3 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
+
+  QStringList actualParts = model2.asPythonCode().split( '\n' );
+  QStringList expectedParts = QStringLiteral( "##model=name\n"
+                              "##DIST=number\n"
+                              "##SOURCE_LAYER=source\n"
+                              "##model_out_layer=output outputVector\n"
+                              "results={}\n"
+                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
+                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT_LAYER']\n"
+                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
+                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
+                              "return results" ).split( '\n' );
+  QCOMPARE( actualParts, expectedParts );
 }
 
 void TestQgsProcessing::tempUtils()

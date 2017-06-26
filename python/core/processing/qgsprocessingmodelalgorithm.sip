@@ -153,6 +153,12 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
  :rtype: bool
 %End
 
+        QString asPythonCode() const;
+%Docstring
+ Attempts to convert the source to executable Python code.
+ :rtype: str
+%End
+
     };
 
     class Component
@@ -549,6 +555,12 @@ Copies are protected to avoid slicing
  :rtype: bool
 %End
 
+        QString asPythonCode() const;
+%Docstring
+ Attempts to convert the child to executable Python code.
+ :rtype: str
+%End
+
     };
 
     QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString() );
@@ -800,6 +812,12 @@ Copies are protected to avoid slicing
 %Docstring
  Sets the source file ``path`` for the model, if available.
 .. seealso:: sourceFilePath()
+%End
+
+    QString asPythonCode() const;
+%Docstring
+ Attempts to convert the model to executable Python code.
+ :rtype: str
 %End
 
   protected:

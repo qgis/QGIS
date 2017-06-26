@@ -213,6 +213,33 @@ bool QgsProcessingModelAlgorithm::ChildAlgorithm::loadVariant( const QVariant &c
   return true;
 }
 
+QString QgsProcessingModelAlgorithm::ChildAlgorithm::asPythonCode() const
+{
+  QStringList lines;
+
+  if ( !algorithm() )
+    return QString();
+
+  QStringList paramParts;
+  QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource >::const_iterator paramIt = mParams.constBegin();
+  for ( ; paramIt != mParams.constEnd(); ++paramIt )
+  {
+    QString part = paramIt->asPythonCode();
+    if ( !part.isEmpty() )
+      paramParts << QStringLiteral( "'%1':%2" ).arg( paramIt.key(), part );
+  }
+
+  lines << QStringLiteral( "outputs['%1']=processing.run('%2', {%3}, context=context, feedback=feedback)" ).arg( mId, mAlgorithmId, paramParts.join( ',' ) );
+
+  QMap< QString, QgsProcessingModelAlgorithm::ModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
+  for ( ; outputIt != mModelOutputs.constEnd(); ++outputIt )
+  {
+    lines << QStringLiteral( "results['%1']=outputs['%2']['%3']" ).arg( outputIt.key(), mId, outputIt.value().childOutputName() );
+  }
+
+  return lines.join( '\n' );
+}
+
 bool QgsProcessingModelAlgorithm::ChildAlgorithm::parametersCollapsed() const
 {
   return mParametersCollapsed;
@@ -489,6 +516,92 @@ QString QgsProcessingModelAlgorithm::sourceFilePath() const
 void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
 {
   mSourceFile = sourceFile;
+}
+
+QString QgsProcessingModelAlgorithm::asPythonCode() const
+{
+  QStringList lines;
+  lines << QStringLiteral( "##%1=name" ).arg( name() );
+
+  QMap< QString, ModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
+  for ( ; paramIt != mParameterComponents.constEnd(); ++paramIt )
+  {
+    QString name = paramIt.value().parameterName();
+    if ( parameterDefinition( name ) )
+    {
+      lines << parameterDefinition( name )->asScriptCode();
+    }
+  }
+
+  auto safeName = []( const QString & name )->QString
+  {
+    QString n = name.toLower().trimmed();
+    QRegularExpression rx( "[^a-z_]" );
+    n.replace( rx, QString() );
+    return n;
+  };
+
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( !childIt->isActive() || !childIt->algorithm() )
+      continue;
+
+    // look through all outputs for child
+    QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs = childIt->modelOutputs();
+    QMap<QString, QgsProcessingModelAlgorithm::ModelOutput>::const_iterator outputIt = outputs.constBegin();
+    for ( ; outputIt != outputs.constEnd(); ++outputIt )
+    {
+      const QgsProcessingOutputDefinition *output = childIt->algorithm()->outputDefinition( outputIt->childOutputName() );
+      lines << QStringLiteral( "##%1=output %2" ).arg( safeName( outputIt->name() ), output->type() );
+    }
+  }
+
+  lines << QStringLiteral( "results={}" );
+
+  QSet< QString > toExecute;
+  childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->isActive() && childIt->algorithm() )
+      toExecute.insert( childIt->childId() );
+  }
+
+  QSet< QString > executed;
+  bool executedAlg = true;
+  while ( executedAlg && executed.count() < toExecute.count() )
+  {
+    executedAlg = false;
+    Q_FOREACH ( const QString &childId, toExecute )
+    {
+      if ( executed.contains( childId ) )
+        continue;
+
+      bool canExecute = true;
+      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+      {
+        if ( !executed.contains( dependency ) )
+        {
+          canExecute = false;
+          break;
+        }
+      }
+
+      if ( !canExecute )
+        continue;
+
+      executedAlg = true;
+
+      const ChildAlgorithm &child = mChildAlgorithms[ childId ];
+      lines << child.asPythonCode();
+
+      executed.insert( childId );
+    }
+  }
+
+  lines << QStringLiteral( "return results" );
+
+  return lines.join( '\n' );
 }
 
 QVariantMap QgsProcessingModelAlgorithm::helpContent() const
@@ -1012,6 +1125,22 @@ bool QgsProcessingModelAlgorithm::ChildParameterSource::loadVariant( const QVari
       break;
   }
   return true;
+}
+
+QString QgsProcessingModelAlgorithm::ChildParameterSource::asPythonCode() const
+{
+  switch ( mSource )
+  {
+    case ModelParameter:
+      return QStringLiteral( "parameters['%1']" ).arg( mParameterName );
+
+    case ChildOutput:
+      return QStringLiteral( "outputs['%1']['%2']" ).arg( mChildId, mOutputName );
+
+    case StaticValue:
+      return mStaticValue.toString();
+  }
+  return QString();
 }
 
 QgsProcessingModelAlgorithm::ModelOutput::ModelOutput( const QString &name, const QString &description )
