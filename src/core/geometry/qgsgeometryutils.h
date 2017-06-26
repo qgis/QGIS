@@ -44,9 +44,12 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id SIP_OUT );
 
-    /** Returns measure of nearest point on a geometry for a specified point or NaN if geometry does not have measures
+    /**
+     * Returns the nearest point on a segment of a \a geometry
+     * for the specified \a point. The z and m values will be linearly interpolated between
+     * the two neighbouring vertices.
      */
-    static double closestPointMeasure( const QgsAbstractGeometry &geom, const QgsPoint &pt );
+    static QgsPoint closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point );
 
     /** Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
