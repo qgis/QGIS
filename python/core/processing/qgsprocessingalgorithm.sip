@@ -376,7 +376,7 @@ class QgsProcessingAlgorithm
  :rtype: QgsFeatureSink
 %End
 
-    QgsFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
+    QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
 %Docstring
  Evaluates the parameter with matching ``definition`` to a feature source.
 
@@ -384,7 +384,7 @@ class QgsProcessingAlgorithm
  sources and stored temporarily in the ``context``.
 
  This function creates a new object and the caller takes responsibility for deleting the returned object.
- :rtype: QgsFeatureSource
+ :rtype: QgsProcessingFeatureSource
 %End
 
     QgsMapLayer *parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

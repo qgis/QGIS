@@ -30,6 +30,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsFeatureSink;
 class QgsFeatureSource;
+class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 
 /**
@@ -479,7 +480,7 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    static QgsFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+    static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.
