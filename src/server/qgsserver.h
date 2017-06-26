@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsServer
 
 
     //! Returns a pointer to the server interface
-    QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Initialize Python
@@ -85,6 +85,10 @@ class SERVER_EXPORT QgsServer
 #endif
 
   private:
+#ifdef SIP_RUN
+    QgsServer( const QgsServer & );
+    QgsServer &operator=( const QgsServer & );
+#endif
 
     //! Server initialization
     static bool init();

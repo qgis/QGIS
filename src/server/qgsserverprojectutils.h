@@ -21,6 +21,13 @@
 #include "qgis_server.h"
 #include "qgsproject.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsserverprojectutils.h"
+% End
+#endif
+
+
 /** \ingroup server
  * The QgsServerProjectUtils namespace provides a way to retrieve specific
  * entries from a QgsProject.

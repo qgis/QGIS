@@ -22,6 +22,7 @@
 #include "qgsserverprojectparser.h"
 #include "qgis_server.h"
 
+
 class QgsAccessControl;
 
 class QTextDocument;
@@ -32,10 +33,7 @@ class QgsLayerTree;
 class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 {
   public:
-    QgsWmsProjectParser(
-      const QString &filePath
-      , const QgsAccessControl *accessControl
-    );
+    QgsWmsProjectParser( const QString &filePath, const QgsAccessControl *accessControl );
     virtual ~QgsWmsProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
@@ -67,7 +65,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void inspireCapabilities( QDomElement &parentElement, QDomDocument &doc ) const override;
 
     //printing
-    QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap * > &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const override;
+    QgsComposition *initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap * > &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const override SIP_SKIP;
     void printCapabilities( QDomElement &parentElement, QDomDocument &doc ) const override;
 
     //todo: fixme

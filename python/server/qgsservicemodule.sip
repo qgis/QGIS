@@ -1,51 +1,55 @@
-/***************************************************************************
-                          qgsservicemodule.h
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservicemodule.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-  Class defining the service module interface for QGIS server services.
-  -------------------
-  begin                : 2016-12-05
-  copyright            : (C) 2016 by David Marteau
-  email                : david dot marteau at 3liz dot com
- ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
- * \ingroup server
- * QgsServiceModule
- * Class defining the service module interface for QGIS server services
- *
- * This class acts as a service registrar for services.
- *
- * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
- */
+
+
+
 class QgsServiceModule
 {
+%Docstring
+ QgsServiceModule
+ Class defining the service module interface for QGIS server services
+
+ This class acts as a service registrar for services.
+
+ For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
+%End
+
 %TypeHeaderCode
 #include "qgsservicemodule.h"
-#include "qgsserviceregistry.h"
 %End
   public:
 
-    //! Constructor
     QgsServiceModule();
+%Docstring
+Constructor
+%End
 
-    //! Destructor
     virtual ~QgsServiceModule() = 0;
+%Docstring
+Destructor
+%End
 
-    /**
-     * Ask module to register all provided services
-     * @param registry QgsServiceRegistry
-     */
-    virtual void registerSelf( QgsServiceRegistry& registry,
+    virtual void registerSelf( QgsServiceRegistry &registry,
                                QgsServerInterface *serverIface = 0 ) = 0;
+%Docstring
+ Ask module to register all provided services
+ \param registry QgsServiceRegistry
+%End
 };
 
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservicemodule.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
