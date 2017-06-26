@@ -146,6 +146,14 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
   }
 
+  if ( !CPLGetConfigOption( "VRT_SHARED_SOURCE", nullptr ) )
+  {
+    // GDAL version up to this date have issues will use of VRT in multi-threaded
+    // scenarios. See https://issues.qgis.org/issues/16507 /
+    // https://trac.osgeo.org/gdal/ticket/6939
+    CPLSetConfigOption( "VRT_SHARED_SOURCE", "NO" );
+  }
+
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
   {
