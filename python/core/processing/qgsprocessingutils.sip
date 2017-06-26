@@ -160,6 +160,59 @@ class QgsProcessingUtils
 
 };
 
+class QgsProcessingFeatureSource : QgsFeatureSource
+{
+%Docstring
+ QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
+ results according to the settings in a QgsProcessingContext.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingutils.h"
+%End
+  public:
+
+    enum Flag
+    {
+      FlagSkipGeometryValidityChecks,
+    };
+    typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
+
+
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+%Docstring
+ Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
+ and processing ``context``.
+ Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is false,
+ ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
+ If ``ownsOriginalSource`` is true, then this object will take ownership of ``originalSource``.
+%End
+
+    ~QgsProcessingFeatureSource();
+
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
+%Docstring
+ Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
+ An optional ``request`` can be used to optimise the returned
+ iterator, eg by restricting the returned attributes or geometry.
+ :rtype: QgsFeatureIterator
+%End
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
+
+    virtual QgsCoordinateReferenceSystem sourceCrs() const;
+
+    virtual QgsFields fields() const;
+
+    virtual QgsWkbTypes::Type wkbType() const;
+
+    virtual long featureCount() const;
+
+    virtual QString sourceName() const;
+
+
+};
 
 
 

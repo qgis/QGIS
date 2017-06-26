@@ -370,7 +370,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
-    QgsFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_FACTORY;
+    QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.

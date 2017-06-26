@@ -219,17 +219,14 @@ class CORE_EXPORT QgsProcessingUtils
 
 };
 
-#ifndef SIP_RUN
-
 /**
  * \class QgsProcessingFeatureSource
  * \ingroup core
  * QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
  * results according to the settings in a QgsProcessingContext.
- * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class QgsProcessingFeatureSource : public QgsFeatureSource
+class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 {
   public:
 
@@ -260,8 +257,6 @@ class QgsProcessingFeatureSource : public QgsFeatureSource
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
 
 };
-
-#endif
 
 #endif // QGSPROCESSINGUTILS_H
 
