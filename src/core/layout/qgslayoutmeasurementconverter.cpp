@@ -23,10 +23,6 @@ QgsLayoutMeasurementConverter::QgsLayoutMeasurementConverter()
 {
 }
 
-QgsLayoutMeasurementConverter::~QgsLayoutMeasurementConverter()
-{
-}
-
 QgsLayoutMeasurement QgsLayoutMeasurementConverter::convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const
 {
   if ( measurement.units() == targetUnits )

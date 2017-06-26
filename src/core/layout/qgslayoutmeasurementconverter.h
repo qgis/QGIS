@@ -28,7 +28,7 @@
 
 
 /**
- * \ingroup Layout
+ * \ingroup core
  * \class QgsLayoutMeasurementConverter
  * \brief This class provides a method of converting QgsLayoutMeasurements from
  * one unit to another. Conversion to or from pixel units utilizes a specified
@@ -42,8 +42,6 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
   public:
 
     QgsLayoutMeasurementConverter();
-
-    ~QgsLayoutMeasurementConverter();
 
     /**
      * Sets the dots per inch (\a dpi) for the measurement converter. This is used

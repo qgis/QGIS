@@ -22,7 +22,8 @@
 
 #include "qgsunittypes.h"
 
-/** \ingroup Layout
+/**
+ * \ingroup core
  * \class QgsLayoutMeasurement
  * \brief This class provides a method of storing measurements for use in QGIS layouts
  * using a variety of different measurement units.
@@ -39,8 +40,6 @@ class CORE_EXPORT QgsLayoutMeasurement
      * \param units measurement units
     */
     explicit QgsLayoutMeasurement( const double length, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
-
-    ~QgsLayoutMeasurement();
 
     /**
      * Returns the length of the measurement.
@@ -81,13 +80,45 @@ class CORE_EXPORT QgsLayoutMeasurement
 
     bool operator==( const QgsLayoutMeasurement &other ) const;
     bool operator!=( const QgsLayoutMeasurement &other ) const;
+
+    /**
+     * Adds a scalar value to the measurement.
+     */
     QgsLayoutMeasurement operator+( const double v ) const;
+
+    /**
+     * Adds a scalar value to the measurement.
+     */
     QgsLayoutMeasurement operator+=( const double v );
+
+    /**
+     * Subtracts a scalar value from the measurement.
+     */
     QgsLayoutMeasurement operator-( const double v ) const;
+
+    /**
+     * Subtracts a scalar value from the measurement.
+     */
     QgsLayoutMeasurement operator-=( const double v );
+
+    /**
+     * Multiplies the measurement by a scalar value.
+     */
     QgsLayoutMeasurement operator*( const double v ) const;
+
+    /**
+     * Multiplies the measurement by a scalar value.
+     */
     QgsLayoutMeasurement operator*=( const double v );
+
+    /**
+     * Divides the measurement by a scalar value.
+     */
     QgsLayoutMeasurement operator/( const double v ) const;
+
+    /**
+     * Divides the measurement by a scalar value.
+     */
     QgsLayoutMeasurement operator/=( const double v );
 
   private:

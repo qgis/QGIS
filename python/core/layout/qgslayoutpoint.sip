@@ -34,9 +34,6 @@ class QgsLayoutPoint
     QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
  Constructor for QgsLayoutPoint.
- \param x x coordinate
- \param x y coordinate
- \param units units for x and y
 %End
 
     explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
@@ -44,8 +41,6 @@ class QgsLayoutPoint
  Constructor for an empty point, where both x and y are set to 0.
  \param units units for measurement
 %End
-
-    ~QgsLayoutPoint();
 
     void setPoint( const double x, const double y );
 %Docstring
@@ -134,20 +129,28 @@ class QgsLayoutPoint
 %Docstring
  :rtype: bool
 %End
+
     QgsLayoutPoint operator*( const double v ) const;
 %Docstring
+ Multiplies the x and y by a scalar value.
  :rtype: QgsLayoutPoint
 %End
+
     QgsLayoutPoint operator*=( const double v );
 %Docstring
+ Multiplies the x and y by a scalar value.
  :rtype: QgsLayoutPoint
 %End
+
     QgsLayoutPoint operator/( const double v ) const;
 %Docstring
+ Divides the x and y by a scalar value.
  :rtype: QgsLayoutPoint
 %End
+
     QgsLayoutPoint operator/=( const double v );
 %Docstring
+ Divides the x and y by a scalar value.
  :rtype: QgsLayoutPoint
 %End
 
