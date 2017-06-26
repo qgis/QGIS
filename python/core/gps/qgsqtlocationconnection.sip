@@ -12,6 +12,7 @@
 
 
 %Feature MOBILITY_LOCATION
+
 %If (MOBILITY_LOCATION)
 
 class QgsQtLocationConnection: QgsGPSConnection

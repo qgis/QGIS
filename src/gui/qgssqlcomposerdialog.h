@@ -29,6 +29,8 @@ email                : even.rouault at spatialys.com
 #include <QSet>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /** \ingroup gui
  * SQL composer dialog
  *  \note not available in Python bindings

@@ -2,6 +2,8 @@
 #ifndef QEXTSERIALPORT_H
 #define QEXTSERIALPORT_H
 
+#define SIP_NO_FILE
+
 
 /*if all warning messages are turned off, flag portability warnings to be turned off as well*/
 #ifdef _TTY_NOWARN_

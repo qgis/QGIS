@@ -24,6 +24,8 @@
 #ifndef MERSENNE_TWISTER_H
 #define MERSENNE_TWISTER_H
 
+#define SIP_NO_FILE
+
 #ifndef _MSC_VER
 #include <stdint.h>
 #else

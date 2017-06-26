@@ -16,6 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsgeometryengine.h"
 #include <geos_c.h>

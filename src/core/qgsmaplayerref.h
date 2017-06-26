@@ -16,6 +16,8 @@
 #ifndef QGSMAPLAYERREF_H
 #define QGSMAPLAYERREF_H
 
+#define SIP_NO_FILE
+
 #include <QPointer>
 
 #include "qgsmaplayer.h"

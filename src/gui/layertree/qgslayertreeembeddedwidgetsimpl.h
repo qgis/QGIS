@@ -24,6 +24,8 @@ class QSlider;
 class QTimer;
 class QgsMapLayer;
 
+SIP_NO_FILE
+
 ///@cond PRIVATE
 
 /**

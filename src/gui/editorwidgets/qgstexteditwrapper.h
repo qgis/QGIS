@@ -23,6 +23,8 @@
 #include <QTextEdit>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 /** \ingroup gui
  * Wraps a text widget. Users will be able to modify text with this widget type.
  *

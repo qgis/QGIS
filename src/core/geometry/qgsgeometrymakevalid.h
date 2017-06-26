@@ -16,6 +16,8 @@
 #ifndef QGSGEOMETRYMAKEVALID_H
 #define QGSGEOMETRYMAKEVALID_H
 
+#define SIP_NO_FILE
+
 class QString;
 class QgsAbstractGeometry;
 

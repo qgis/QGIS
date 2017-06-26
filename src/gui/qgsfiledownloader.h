@@ -20,9 +20,10 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QProgressDialog>
+#include "qgis_gui.h"
+
 #ifndef QT_NO_SSL
 #include <QSslError>
-#include "qgis_gui.h"
 #endif
 
 /** \ingroup gui

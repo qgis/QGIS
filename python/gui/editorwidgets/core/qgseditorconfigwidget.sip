@@ -10,6 +10,7 @@
 
 
 
+
 class QgsEditorConfigWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring

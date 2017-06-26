@@ -17,6 +17,8 @@
 #ifndef QGSCOMPOSERMOUSEHANDLES_H
 #define QGSCOMPOSERMOUSEHANDLES_H
 
+#define SIP_NO_FILE
+
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPointer>

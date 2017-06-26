@@ -21,6 +21,8 @@
 class QgsMapSettings;
 class QgsMapCanvas;
 
+#define SIP_NO_FILE
+
 /// @cond PRIVATE
 
 /** \ingroup gui

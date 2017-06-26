@@ -19,6 +19,9 @@
 #include "qgsifeatureselectionmanager.h"
 #include "qgis_gui.h"
 
+
+SIP_NO_FILE
+
 class QgsVectorLayer;
 
 /** \ingroup gui

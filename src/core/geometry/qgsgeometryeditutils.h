@@ -21,6 +21,8 @@ class QgsCurve;
 class QgsGeometryEngine;
 class QgsVectorLayer;
 
+#define SIP_NO_FILE
+
 #include "qgsfeature.h"
 #include <QMap>
 

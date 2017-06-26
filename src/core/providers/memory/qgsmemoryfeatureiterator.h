@@ -15,6 +15,8 @@
 #ifndef QGSMEMORYFEATUREITERATOR_H
 #define QGSMEMORYFEATUREITERATOR_H
 
+#define SIP_NO_FILE
+
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfields.h"
