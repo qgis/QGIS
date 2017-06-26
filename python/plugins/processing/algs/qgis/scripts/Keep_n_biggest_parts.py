@@ -19,14 +19,12 @@ if To_keep < 1:
     feedback.pushInfo("'To keep' value has been modified to be at least 1.")
     To_keep = 1
 
-
-source = self.parameterAsSource(parameters, 'Polygons', context)
-count = source.featureCount()
+count = Polygons.featureCount()
 (sink, Biggest_parts) = self.parameterAsSink(parameters, 'Biggest parts', context,
-                                             source.fields(), QgsWkbTypes.MultiPolygon, source.sourceCrs())
+                                             Polygons.fields(), QgsWkbTypes.MultiPolygon, Polygons.sourceCrs())
 
 
-for n, feat in enumerate(source.getFeatures()):
+for n, feat in enumerate(Polygons.getFeatures()):
     if feedback.isCanceled():
         break
     feedback.setProgress(int(100 * n / count))

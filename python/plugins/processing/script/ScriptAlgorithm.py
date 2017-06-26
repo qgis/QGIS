@@ -181,15 +181,52 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         ns['scriptDescriptionFile'] = self.descriptionFile
 
         for param in self.parameterDefinitions():
-            ns[param.name()] = parameters[param.name()]
+            method = None
+            if param.type() == "boolean":
+                method = self.parameterAsBool
+            elif param.type() == "crs":
+                method = self.parameterAsCrs
+            elif param.type() == "layer":
+                method = self.parameterAsLayer
+            elif param.type() == "extent":
+                method = self.parameterAsExtent
+            elif param.type() == "point":
+                method = self.parameterAsPoint
+            elif param.type() == "file":
+                method = self.parameterAsFile
+            elif param.type() == "matrix":
+                method = self.parameterAsMatrix
+            elif param.type() == "multilayer":
+                method = self.parameterAsLayerList
+            elif param.type() == "number":
+                method = self.parameterAsDouble
+            elif param.type() == "range":
+                method = self.parameterAsRange
+            elif param.type() == "raster":
+                method = self.parameterAsRasterLayer
+            elif param.type() == "enum":
+                method = self.parameterAsEnum
+            elif param.type() == "string":
+                method = self.parameterAsString
+            elif param.type() == "expression":
+                method = self.parameterAsString
+            elif param.type() == "vector":
+                method = self.parameterAsVectorLayer
+            elif param.type() == "field":
+                method = self.parameterAsString
+            elif param.type() == "source":
+                method = self.parameterAsSource
+
+            if method:
+                ns[param.name()] = method(parameters, param.name(), context)
+
+        for out in self.outputDefinitions():
+            ns[out.name()] = None
 
         ns['self'] = self
         ns['parameters'] = parameters
         ns['feedback'] = feedback
         ns['context'] = context
-
-#        for out in self.outputDefinitions():
-#            ns[out.name()] = out.value
 
         variables = re.findall('@[a-zA-Z0-9_]*', self.script)
         script = 'import processing\n'
