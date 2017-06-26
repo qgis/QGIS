@@ -36,6 +36,7 @@ class QgsAccessControlFilter;
 #endif
 #include "qgsserviceregistry.h"
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 
 
@@ -57,7 +58,7 @@ class SERVER_EXPORT QgsServerInterface
   public:
 
     //! Constructor
-    QgsServerInterface();
+    QgsServerInterface() SIP_SKIP;
 
     virtual ~QgsServerInterface() = default;
 
@@ -79,26 +80,26 @@ class SERVER_EXPORT QgsServerInterface
      * Get pointer to the capabiblities cache
      * \returns QgsCapabilitiesCache
      */
-    virtual QgsCapabilitiesCache *capabilitiesCache() = 0;
+    virtual QgsCapabilitiesCache *capabilitiesCache() = 0 SIP_KEEPREFERENCE;
 
     /**
      * Get pointer to the request handler
      * \returns QgsRequestHandler
      */
-    virtual QgsRequestHandler *requestHandler() = 0;
+    virtual QgsRequestHandler *requestHandler() = 0 SIP_KEEPREFERENCE;
 
     /**
      * Register a QgsServerFilter
      * \param filter the QgsServerFilter to add
      * \param priority an optional priority for the filter order
      */
-    virtual void registerFilter( QgsServerFilter *filter, int priority = 0 ) = 0;
+    virtual void registerFilter( QgsServerFilter *filter SIP_TRANSFER, int priority = 0 ) = 0;
 
     /**
      * Set the filters map
      * \param filters the QgsServerFiltersMap
      */
-    virtual void setFilters( QgsServerFiltersMap *filters ) = 0;
+    virtual void setFilters( QgsServerFiltersMap *filters SIP_TRANSFER ) = 0;
 
     /**
      * Return the list of current QgsServerFilter
@@ -110,7 +111,7 @@ class SERVER_EXPORT QgsServerInterface
      * \param accessControl the access control to register
      * \param priority the priority used to order them
      */
-    virtual void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) = 0;
+    virtual void registerAccessControl( QgsAccessControlFilter *accessControl SIP_TRANSFER, int priority = 0 ) = 0;
 
     //! Gets the registered access control filters
     virtual QgsAccessControl *accessControls() const = 0;
@@ -146,7 +147,7 @@ class SERVER_EXPORT QgsServerInterface
      * Return the service registry
      * \returns QgsServiceResgistry
      */
-    virtual QgsServiceRegistry *serviceRegistry() = 0;
+    virtual QgsServiceRegistry *serviceRegistry() = 0 SIP_KEEPREFERENCE;
 
     /**
      * Return the server settings
@@ -157,6 +158,10 @@ class SERVER_EXPORT QgsServerInterface
     virtual QgsServerSettings *serverSettings() = 0 SIP_SKIP;
 
   private:
+#ifdef SIP_RUN
+    QgsServerInterface();
+#endif
+
     QString mConfigFilePath;
 };
 
