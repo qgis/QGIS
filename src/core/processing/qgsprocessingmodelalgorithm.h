@@ -152,6 +152,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          */
         bool loadVariant( const QVariantMap &map );
 
+        /**
+         * Attempts to convert the source to executable Python code.
+         */
+        QString asPythonCode() const;
+
       private:
 
         Source mSource = StaticValue;
@@ -536,6 +541,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          */
         bool loadVariant( const QVariant &child );
 
+        /**
+         * Attempts to convert the child to executable Python code.
+         */
+        QString asPythonCode() const;
+
       private:
 
         QString mId;
@@ -792,6 +802,11 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see sourceFilePath()
      */
     void setSourceFilePath( const QString &path );
+
+    /**
+     * Attempts to convert the model to executable Python code.
+     */
+    QString asPythonCode() const;
 
   protected:
 
