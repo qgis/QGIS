@@ -27,16 +27,15 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsWkbTypes,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
+                       QgsProcessingFeatureSource,
                        QgsGeometry,
-                       QgsApplication,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
 
 
 class FixGeometry(QgisAlgorithm):
@@ -52,11 +51,9 @@ class FixGeometry(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Layer with fixed geometries')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Fixed geometries')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Fixed geometries")))
 
     def name(self):
         return 'fixgeometries'
@@ -65,22 +62,22 @@ class FixGeometry(QgisAlgorithm):
         return self.tr('Fix geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.multiType(layer.wkbType()), layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.multiType(source.wkbType()), source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        if QgsProcessingUtils.featureCount(layer, context) == 0:
-            raise GeoAlgorithmExecutionException(self.tr('There are no features in the input layer'))
-
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inputFeature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             outputFeature = inputFeature
             if inputFeature.geometry():
                 outputGeometry = inputFeature.geometry().makeValid()
                 if not outputGeometry:
-                    QgsMessageLog.logMessage('makeValid failed for feature {}'.format(inputFeature.id()), self.tr('Processing'), QgsMessageLog.WARNING)
+                    feedback.pushInfo('makeValid failed for feature {}'.format(inputFeature.id()))
 
                 if outputGeometry.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(outputGeometry.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                     tmpGeometries = outputGeometry.asGeometryCollection()
@@ -89,7 +86,7 @@ class FixGeometry(QgisAlgorithm):
                             try:
                                 g.convertToMultiType()
                                 outputFeature.setGeometry(QgsGeometry(g))
-                                writer.addFeature(outputFeature, QgsFeatureSink.FastInsert)
+                                sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
                             except:
                                 pass
                     feedback.setProgress(int(current * total))
@@ -98,7 +95,7 @@ class FixGeometry(QgisAlgorithm):
                 outputGeometry.convertToMultiType()
                 outputFeature.setGeometry(outputGeometry)
 
-            writer.addFeature(outputFeature, QgsFeatureSink.FastInsert)
+            sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

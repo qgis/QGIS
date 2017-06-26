@@ -54,6 +54,7 @@ from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .DropGeometry import DropGeometry
 from .ExtentFromLayer import ExtentFromLayer
+from .FixGeometry import FixGeometry
 from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .Merge import Merge
@@ -168,7 +169,6 @@ from .VectorSplit import VectorSplit
 # from .ServiceAreaFromLayer import ServiceAreaFromLayer
 # from .TruncateTable import TruncateTable
 # from .Polygonize import Polygonize
-# from .FixGeometry import FixGeometry
 # from .ExecuteSQL import ExecuteSQL
 # from .FindProjection import FindProjection
 # from .TopoColors import TopoColor
@@ -240,7 +240,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ShortestPathPointToPoint(), ShortestPathPointToLayer(),
         #         ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
         #         ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
-        #         FixGeometry(), ExecuteSQL(), FindProjection(),
+        #          ExecuteSQL(), FindProjection(),
         #         TopoColor(), EliminateSelection()
         #         ]
         algs = [AddTableField(),
@@ -257,6 +257,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 DropGeometry(),
                 ExtentFromLayer(),
+                FixGeometry(),
                 GridPolygon(),
                 ImportIntoPostGIS(),
                 Merge(),
