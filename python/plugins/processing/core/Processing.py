@@ -122,7 +122,7 @@ class Processing(object):
         provider.refreshAlgorithms()
 
     @staticmethod
-    def runAlgorithm(algOrName, onFinish, *args, **kwargs):
+    def runAlgorithm(algOrName, parameters, onFinish, feedback=None, context=None):
         if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
@@ -134,47 +134,21 @@ class Processing(object):
                                      Processing.tr("Processing"))
             return
 
-        parameters = {}
-        if len(args) == 1 and isinstance(args[0], dict):
-            # Set params by name and try to run the alg even if not all parameter values are provided,
-            # by using the default values instead.
-            for (name, value) in list(args[0].items()):
-                param = alg.parameterDefinition(name)
-                if param:
-                    parameters[param.name()] = value
-                    continue
-                # fix_print_with_import
-                print('Error: Wrong parameter value %s for parameter %s.' % (value, name))
-                QgsMessageLog.logMessage(
-                    Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name),
-                    Processing.tr("Processing"))
-                QgsMessageLog.logMessage(Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                    alg.name(), value, name
-                ), Processing.tr("Processing"),
-                    QgsMessageLog.CRITICAL
-                )
-                return
-            # check for any manadatory parameters which were not specified
-            for param in alg.parameterDefinitions():
-                if param.name() not in parameters:
-                    if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        # fix_print_with_import
-                        print('Error: Missing parameter value for parameter %s.' % param.name())
-                        QgsMessageLog.logMessage(
-                            Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name()),
-                            Processing.tr("Processing"))
-                        return
+        # check for any manadatory parameters which were not specified
+        for param in alg.parameterDefinitions():
+            if param.name() not in parameters:
+                if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    # fix_print_with_import
+                    print('Error: Missing parameter value for parameter %s.' % param.name())
+                    QgsMessageLog.logMessage(
+                        Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name()),
+                        Processing.tr("Processing"))
+                    return
 
-        feedback = None
-        if kwargs is not None and "feedback" in list(kwargs.keys()):
-            feedback = kwargs["feedback"]
-        elif iface is not None:
+        if feedback is None:
             feedback = MessageBarProgress(alg.displayName())
 
-        context = None
-        if kwargs is not None and 'context' in list(kwargs.keys()):
-            context = kwargs["context"]
-        else:
+        if context is None:
             context = dataobjects.createContext(feedback)
 
         ok, msg = alg.checkParameterValues(parameters, context)
