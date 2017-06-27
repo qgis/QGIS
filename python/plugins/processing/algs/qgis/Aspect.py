@@ -78,7 +78,7 @@ class Aspect(QgisAlgorithm):
         inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
-        outputFile = self.parameterAsRasterOutputLayer(parameters, self.OUTPUT, context)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         outputFormat = raster.formatShortNameFromFileName(outputFile)
 

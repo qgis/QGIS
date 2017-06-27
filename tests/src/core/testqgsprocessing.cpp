@@ -3696,9 +3696,9 @@ void TestQgsProcessing::parameterRasterOut()
 
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
-  QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
   params.insert( "non_optional", QgsProcessingOutputLayerDefinition( "test.tif" ) );
-  QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
 
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingOutputLayerDefinition( "abc" ) ), context ), QStringLiteral( "QgsProcessingOutputLayerDefinition('abc')" ) );
@@ -3738,7 +3738,7 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( "layer1231123" ) ) );
 
   params.insert( "optional", QVariant() );
-  QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "default.tif" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "default.tif" ) );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional rasterOut default.tif" ) );

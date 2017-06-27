@@ -413,7 +413,7 @@ QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProces
   return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context ) );
 }
 
-QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val;
   if ( definition )

@@ -508,9 +508,9 @@ class QgsProcessingParameters
  :rtype: QgsRasterLayer
 %End
 
-    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
- Evaluates the parameter with matching ``definition`` to a raster output layer destination.
+ Evaluates the parameter with matching ``definition`` to a output layer destination.
  :rtype: str
 %End
 
