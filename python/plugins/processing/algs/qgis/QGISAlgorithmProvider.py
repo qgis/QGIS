@@ -63,6 +63,9 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .SaveSelectedFeatures import SaveSelectedFeatures
+from .SelectByAttribute import SelectByAttribute
+from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -98,7 +101,6 @@ from .VectorSplit import VectorSplit
 # from .SpatialJoin import SpatialJoin
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
-# from .SelectByAttribute import SelectByAttribute
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
@@ -110,7 +112,6 @@ from .VectorSplit import VectorSplit
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
 # from .FieldsCalculator import FieldsCalculator
-# from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
@@ -128,7 +129,6 @@ from .VectorSplit import VectorSplit
 # from .PointsToPaths import PointsToPaths
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
-# from .SelectByExpression import SelectByExpression
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
 # from .SplitWithLines import SplitWithLines
@@ -202,11 +202,10 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtractByLocation(),
         #         SpatialJoin(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
-        #         SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
-        #         SaveSelectedFeatures(), JoinAttributes(),
+        #          JoinAttributes(),
         #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(), PointsLayerFromTable(),
         #         StatisticsByCategories(), ConcaveHull(),
@@ -217,7 +216,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomPointsPolygonsVariable(),
         #         RandomPointsAlongLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
-        #         SelectByExpression(), HypsometricCurves(),
+        #          HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
@@ -265,6 +264,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                SaveSelectedFeatures(),
+                SelectByAttribute(),
+                SelectByExpression(),
                 SimplifyGeometries(),
                 Smooth(),
                 SpatialiteExecuteSQL(),

@@ -39,6 +39,8 @@ from qgis.core import (QgsProject,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputHtml,
+                       QgsProcessingParameterVectorOutput,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterOutput,
@@ -48,7 +50,7 @@ from qgis.utils import iface
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-
+from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -82,7 +84,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.cornerWidget = QWidget()
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 5)
-        self.tabWidget.setStyleSheet("QTabBar::tab { height: 30px; }")
         self.runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         layout.addWidget(self.runAsBatchButton)
@@ -116,7 +117,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, OutputTable)):
+                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
@@ -272,6 +273,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
+
+            # add html results to results dock
+            for out in self.alg.outputDefinitions():
+                if isinstance(out, QgsProcessingOutputHtml) and out.name() in result and result[out.name()]:
+                    resultsList.addResult(icon=self.alg.icon(), name=out.description(),
+                                          result=result[out.name()])
 
             if not handleAlgorithmResults(self.alg, context, feedback, not keepOpen):
                 self.resetGUI()

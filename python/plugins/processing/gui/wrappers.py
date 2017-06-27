@@ -1077,16 +1077,12 @@ class TableWidgetWrapper(WidgetWrapper):
             return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
         else:
             self.combo = QComboBox()
-            layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
             self.combo.setEditable(True)
-            tables = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, OutputTable)
-            layers = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFeatureSource, QgsProcessingOutputVectorLayer)
+            tables = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer, QgsProcessingOutputVectorLayer)
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 self.combo.addItem(self.NOT_SELECTED, None)
             for table in tables:
                 self.combo.addItem(self.dialog.resolveValueDescription(table), table)
-            for layer in layers:
-                self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
 
             widget = QWidget()
             layout = QHBoxLayout()
