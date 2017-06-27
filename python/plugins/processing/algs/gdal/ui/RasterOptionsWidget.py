@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtWidgets import QLineEdit, QComboBox
 from qgis.gui import QgsRasterFormatSaveOptionsWidget
 
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputString
+from qgis.core import (QgsProcessingParameterString,
+                       QgsProcessingOutputString)
 from processing.gui.wrappers import WidgetWrapper, DIALOG_MODELER, DIALOG_BATCH
 
 
@@ -39,16 +39,16 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_MODELER:
             widget = QComboBox()
             widget.setEditable(True)
-            strings = self.dialog.getAvailableValuesOfType(ParameterString, OutputString)
+            strings = self.dialog.getAvailableValuesOfType(QgsProcessingParameterString, QgsProcessingOutputString)
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             for desc, val in options:
                 widget.addItem(desc, val)
-            widget.setEditText(self.param.default or '')
+            widget.setEditText(self.param.defaultValue() or '')
             return widget
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
-            if self.param.default:
-                widget.setText(self.param.default)
+            if self.param.defaultValue():
+                widget.setText(self.param.defaultValue())
         else:
             return QgsRasterFormatSaveOptionsWidget()
 

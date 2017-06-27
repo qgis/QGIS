@@ -35,7 +35,7 @@ from .GdalUtils import GdalUtils
 
 # from .nearblack import nearblack
 # from .information import information
-# from .warp import warp
+from .warp import warp
 # from .rgb2pct import rgb2pct
 # from .translate import translate
 # from .pct2rgb import pct2rgb
@@ -141,7 +141,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         self.algs = [
             # nearblack(),
             # information(),
-            # warp(),
+            warp(),
             # translate(),
             # rgb2pct(),
             # pct2rgb(),
