@@ -1101,6 +1101,13 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
+QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::clone() const
+{
+  QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
+  alg->loadVariant( toVariant() );
+  alg->setProvider( provider() );
+  return alg;
+}
 
 bool QgsProcessingModelAlgorithm::ChildParameterSource::operator==( const QgsProcessingModelAlgorithm::ChildParameterSource &other ) const
 {

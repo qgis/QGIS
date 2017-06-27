@@ -61,10 +61,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
-    //! Algorithms cannot be copied
+
+    //! Algorithms cannot be copied - clone() should be used instead
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
-    //! Algorithms cannot be copied
+    //! Algorithms cannot be copied- clone() should be used instead
     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
+    /**
+     * Clones the algorithm, returning a new copy for safe use in background threads.
+     */
+    virtual QgsProcessingAlgorithm *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string

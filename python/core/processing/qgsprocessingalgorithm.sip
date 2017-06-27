@@ -43,6 +43,13 @@ class QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm();
 
 
+
+    virtual QgsProcessingAlgorithm *clone() const = 0 /Factory/;
+%Docstring
+ Clones the algorithm, returning a new copy for safe use in background threads.
+ :rtype: QgsProcessingAlgorithm
+%End
+
     virtual QString name() const = 0;
 %Docstring
  Returns the algorithm name, used for identifying the algorithm. This string
