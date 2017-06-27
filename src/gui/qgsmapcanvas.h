@@ -242,7 +242,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * This is called from destructor of map tools to make sure
      * that this map tool won't be used any more.
-     * You don't have to call it manualy, QgsMapTool takes care of it.
+     * You don't have to call it manually, QgsMapTool takes care of it.
      */
     void unsetMapTool( QgsMapTool *mapTool );
 

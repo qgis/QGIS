@@ -794,7 +794,7 @@ int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Point
     }
 
     QgsDebugMsg( QString( "oldLid = %1 oldestLid = %2 newLine = %3 numLines = %4" )
-                 .arg( oldLid ).arg( oldestLid ).arg( newLid ).arg( mLayer->map()->numLines() ) );
+    .arg( oldLid ).arg( oldestLid ).arg( newLid ).arg( mLayer->map()->numLines() ) );
     QgsDebugMsg( QString( "oldLids : %1 -> %2" ).arg( newLid ).arg( oldestLid ) );
     mLayer->map()->oldLids()[newLid] = oldestLid;
     QgsDebugMsg( QString( "newLids : %1 -> %2" ).arg( oldestLid ).arg( newLid ) );
@@ -1269,7 +1269,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       // TODO: redo of deleted new features - save new cats somewhere,
       // resetting fid probably is not possible because it is stored in undo commands and used in buffer maps
 
-      // It may be that user manualy entered cat value
+      // It may be that user manually entered cat value
       QgsFeatureMap &addedFeatures = mEditBuffer->mAddedFeatures;
       QgsFeature &feature = addedFeatures[fid];
       int catIndex = feature.fields().indexFromName( mLayer->keyColumnName() );

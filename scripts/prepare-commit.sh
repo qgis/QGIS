@@ -117,7 +117,7 @@ for f in $MODIFIED; do
     if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
       #echo "in SIP"
       sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
-      # check it is not blacklisted (i.e. manualy SIP)
+      # check it is not blacklisted (i.e. manually SIP)
       if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
         #echo "automatic file"
         m=python/$sip_file.$REV.prepare
@@ -152,4 +152,4 @@ exec git diff-index --check --cached HEAD --
 
 exit 0
 
-# vim: set ts=8 noexpandtab :
+# vim: set ts=2 expandtab :
