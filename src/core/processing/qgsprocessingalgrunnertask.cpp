@@ -22,13 +22,18 @@
 #include "qgsprocessingutils.h"
 #include "qgsvectorlayer.h"
 
-QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
   : QgsTask( tr( "Running %1" ).arg( algorithm->name() ), QgsTask::CanCancel )
-  , mAlgorithm( algorithm )
   , mParameters( parameters )
   , mContext( context )
+  , mFeedback( feedback )
+  , mAlgorithm( algorithm->clone() )
 {
-  mFeedback.reset( new QgsProcessingFeedback() );
+  if ( !mFeedback )
+  {
+    mOwnedFeedback.reset( new QgsProcessingFeedback() );
+    mFeedback = mOwnedFeedback.get();
+  }
 }
 
 void QgsProcessingAlgRunnerTask::cancel()
@@ -38,7 +43,7 @@ void QgsProcessingAlgRunnerTask::cancel()
 
 bool QgsProcessingAlgRunnerTask::run()
 {
-  connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
+  connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
   bool ok = false;
   try
   {
@@ -48,7 +53,7 @@ bool QgsProcessingAlgRunnerTask::run()
   {
     return false;
   }
-  return !mFeedback->isCanceled();
+  return ok && !mFeedback->isCanceled();
 }
 
 void QgsProcessingAlgRunnerTask::finished( bool result )
