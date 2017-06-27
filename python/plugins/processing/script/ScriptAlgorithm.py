@@ -75,6 +75,9 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
 
+    def clone(self):
+        return ScriptAlgorithm(self.descriptionFile)
+
     def icon(self):
         return self._icon
 
