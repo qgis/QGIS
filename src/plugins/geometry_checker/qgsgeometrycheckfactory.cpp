@@ -27,6 +27,7 @@
 #include "checks/qgsgeometryholecheck.h"
 #include "checks/qgsgeometrymultipartcheck.h"
 #include "checks/qgsgeometryoverlapcheck.h"
+#include "checks/qgsgeometrypointcoveredbylinecheck.h"
 #include "checks/qgsgeometrysegmentlengthcheck.h"
 #include "checks/qgsgeometryselfcontactcheck.h"
 #include "checks/qgsgeometryselfintersectioncheck.h"
@@ -353,6 +354,34 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck>::
 }
 
 REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryOverlapCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
+
+template<> void QgsGeometryCheckFactoryT<QgsGeometryPointCoveredByLineCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkPointCoveredByLine->setChecked( QgsSettings().value( sSettingsGroup + "checkPointCoveredByLine" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryPointCoveredByLineCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int /*nLineString*/, int /*nPolygon*/ ) const
+{
+  ui.checkPointCoveredByLine->setEnabled( nPoint > 0 );
+  return ui.checkPointCoveredByLine->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryPointCoveredByLineCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkPointCoveredByLine", ui.checkPointCoveredByLine->isChecked() );
+  if ( ui.checkPointCoveredByLine->isEnabled() && ui.checkPointCoveredByLine->isChecked() )
+  {
+    return new QgsGeometryPointCoveredByLineCheck( context );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryPointCoveredByLineCheck> )
 
 ///////////////////////////////////////////////////////////////////////////////
 

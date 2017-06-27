@@ -213,7 +213,7 @@ namespace QgsGeometryCheckerUtils
     {
       QgsPoint p1 = line->vertexAt( QgsVertexId( 0, 0, i ) );
       QgsPoint p2 = line->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
-      double dist = pointLineDist( p1, p2, 1 );
+      double dist = pointLineDist( p1, p2, p );
       if ( dist < tol )
       {
         return true;

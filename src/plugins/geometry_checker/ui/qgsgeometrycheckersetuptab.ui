@@ -43,7 +43,7 @@
         <x>0</x>
         <y>0</y>
         <width>626</width>
-        <height>872</height>
+        <height>895</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -485,30 +485,16 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkBoxDuplicates">
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="checkBoxGaps">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
-                <string>Check for duplicates</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
-               <property name="decimals">
-                <number>6</number>
-               </property>
-               <property name="maximum">
-                <double>999999999.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
-               <property name="decimals">
-                <number>6</number>
-               </property>
-               <property name="maximum">
-                <double>999999999.000000000000000</double>
+                <string>Check for gaps smaller than (map units sqr.)</string>
                </property>
               </widget>
              </item>
@@ -525,16 +511,10 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QCheckBox" name="checkBoxGaps">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicates">
                <property name="text">
-                <string>Check for gaps smaller than (map units sqr.)</string>
+                <string>Check for duplicates</string>
                </property>
               </widget>
              </item>
@@ -545,10 +525,37 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0" colspan="2">
+             <item row="3" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="2">
               <widget class="QLabel" name="label">
                <property name="text">
                 <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <widget class="QCheckBox" name="checkPointCoveredByLine">
+               <property name="text">
+                <string>Points must be covered by lines</string>
                </property>
               </widget>
              </item>
