@@ -84,6 +84,11 @@ QString QgsCentroidAlgorithm::shortHelpString() const
                       "The attributes associated to each point in the output layer are the same ones associated to the original features." );
 }
 
+QgsCentroidAlgorithm *QgsCentroidAlgorithm::clone() const
+{
+  return new QgsCentroidAlgorithm();
+}
+
 QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -157,6 +162,11 @@ QString QgsBufferAlgorithm::shortHelpString() const
                       "The end cap style parameter controls how line endings are handled in the buffer.\n\n"
                       "The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.\n\n"
                       "The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join." );
+}
+
+QgsBufferAlgorithm *QgsBufferAlgorithm::clone() const
+{
+  return new QgsBufferAlgorithm();
 }
 
 QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -261,6 +271,11 @@ QString QgsDissolveAlgorithm::shortHelpString() const
                       "all geometries can be dissolved.\n\n"
                       "If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
+}
+
+QgsDissolveAlgorithm *QgsDissolveAlgorithm::clone() const
+{
+  return new QgsDissolveAlgorithm();
 }
 
 QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -404,6 +419,11 @@ QString QgsClipAlgorithm::shortHelpString() const
                       "The attributes of the features are not modified, although properties such as area or length of the features will "
                       "be modified by the clipping operation. If such properties are stored as attributes, those attributes will have to "
                       "be manually updated." );
+}
+
+QgsClipAlgorithm *QgsClipAlgorithm::clone() const
+{
+  return new QgsClipAlgorithm();
 }
 
 QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -554,6 +574,11 @@ QString QgsTransformAlgorithm::shortHelpString() const
                       "Attributes are not modified by this algorithm." );
 }
 
+QgsTransformAlgorithm *QgsTransformAlgorithm::clone() const
+{
+  return new QgsTransformAlgorithm();
+}
+
 QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -616,6 +641,11 @@ QString QgsSubdivideAlgorithm::shortHelpString() const
                       "indexed and faster to perform further operations such as intersects on. The returned geometry parts may "
                       "not be valid and may contain self-intersections.\n\n"
                       "Curved geometries will be segmentized before subdivision." );
+}
+
+QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::clone() const
+{
+  return new QgsSubdivideAlgorithm();
 }
 
 QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -682,6 +712,11 @@ QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
                       "a single part. Features with multipart geometries are divided in as many different features as parts the geometry "
                       "contain, and the same attributes are used for each of them." );
+}
+
+QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::clone() const
+{
+  return new QgsMultipartToSinglepartAlgorithm();
 }
 
 QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -764,6 +799,11 @@ QString QgsExtractByExpressionAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an input layer. "
                       "The criteria for adding features to the resulting layer is based on a QGIS expression.\n\n"
                       "For more information about expressions see the <a href =\"{qgisdocs}/user_manual/working_with_vector/expression.html\">user manual</a>" );
+}
+
+QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::clone() const
+{
+  return new QgsExtractByExpressionAlgorithm();
 }
 
 QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
@@ -890,6 +930,11 @@ QString QgsExtractByAttributeAlgorithm::shortHelpString() const
   return QObject::tr( "  This algorithm creates a new vector layer that only contains matching features from an input layer. "
                       "The criteria for adding features to the resulting layer is defined based on the values "
                       "of an attribute from the input layer." );
+}
+
+QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::clone() const
+{
+  return new QgsExtractByAttributeAlgorithm();
 }
 
 QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
