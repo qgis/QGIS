@@ -67,21 +67,21 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = self.getConsoleCommands(parameters, context, feedback)
-        layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
-        supported = QgsVectorFileWriter.supportedFormatExtensions()
-        for i, c in enumerate(commands):
-            for layer in layers:
-                if layer.source() in c:
-                    exported = dataobjects.exportVectorLayer(layer, supported)
-                    exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
-                    c = c.replace(layer.source(), exported)
-                    if os.path.isfile(layer.source()):
-                        fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
-                        c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
-                        c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
-                        c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
+        #layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+        #supported = QgsVectorFileWriter.supportedFormatExtensions()
+        #for i, c in enumerate(commands):
+        #    for layer in layers:
+        #        if layer.source() in c:
+        #            exported = dataobjects.exportVectorLayer(layer, supported)
+        #            exportedFileName = os.path.splitext(os.path.split(exported)[1])[0]
+        #            c = c.replace(layer.source(), exported)
+        #            if os.path.isfile(layer.source()):
+        #                fileName = os.path.splitext(os.path.split(layer.source())[1])[0]
+        #                c = re.sub('[\s]{}[\s]'.format(fileName), ' ' + exportedFileName + ' ', c)
+        #                c = re.sub('[\s]{}'.format(fileName), ' ' + exportedFileName, c)
+        #                c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
-            commands[i] = c
+        #    commands[i] = c
         GdalUtils.runGdal(commands, feedback)
 
         # auto generate outputs

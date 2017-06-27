@@ -75,7 +75,7 @@ from .warp import warp
 # from .ogr2ogrclipextent import Ogr2OgrClipExtent
 # from .ogr2ogrtopostgis import Ogr2OgrToPostGis
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-# from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
+from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 # from .ogr2ogrbuffer import Ogr2OgrBuffer
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
 # from .onesidebuffer import OneSideBuffer
@@ -182,7 +182,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # Ogr2OgrClipExtent(),
             # Ogr2OgrToPostGis(),
             # Ogr2OgrToPostGisList(),
-            # Ogr2OgrPointsOnLines(),
+            Ogr2OgrPointsOnLines(),
             # Ogr2OgrBuffer(),
             # Ogr2OgrDissolve(),
             # OneSideBuffer(),
