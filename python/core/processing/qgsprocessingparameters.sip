@@ -472,6 +472,22 @@ class QgsProcessingParameters
  :rtype: QgsProcessingFeatureSource
 %End
 
+    static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 );
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a source vector layer file path of compatible format.
+
+ If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+ :rtype: str
+%End
+
     static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a map layer.

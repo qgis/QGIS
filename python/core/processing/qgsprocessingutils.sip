@@ -158,6 +158,27 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
+    static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback );
+%Docstring
+ Converts a source vector ``layer`` to a file path to a vector layer of compatible format.
+
+ If the specified ``layer`` is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location using ``baseName``. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required. This defaults to shapefiles.
+ :rtype: str
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

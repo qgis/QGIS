@@ -28,6 +28,7 @@
 class QgsProject;
 class QgsProcessingContext;
 class QgsMapLayerStore;
+class QgsProcessingFeedback;
 
 #include <QString>
 #include <QVariant>
@@ -188,6 +189,26 @@ class CORE_EXPORT QgsProcessingUtils
      * a specified \a algorithm.
      */
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+
+    /**
+     * Converts a source vector \a layer to a file path to a vector layer of compatible format.
+     *
+     * If the specified \a layer is not of the format listed in the
+     * \a compatibleFormats argument, then the layer will first be exported to a compatible format
+     * in a temporary location using \a baseName. The function will then return the path to that temporary file.
+     *
+     * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
+     * layer export is required. This defaults to shapefiles.
+     */
+    static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
+        bool selectedFeaturesOnly,
+        const QString &baseName,
+        const QStringList &compatibleFormats,
+        const QString &preferredFormat,
+        QgsProcessingContext &context,
+        QgsProcessingFeedback *feedback );
 
   private:
 
