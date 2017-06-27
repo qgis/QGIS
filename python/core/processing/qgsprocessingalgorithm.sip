@@ -514,13 +514,29 @@ class QgsProcessingAlgorithm
 
     QgsProcessingFeatureSource *parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const /Factory/;
 %Docstring
- Evaluates the parameter with matching ``definition`` to a feature source.
+ Evaluates the parameter with matching ``name`` to a feature source.
 
  Sources will either be taken from ``context``'s active project, or loaded from external
  sources and stored temporarily in the ``context``.
 
  This function creates a new object and the caller takes responsibility for deleting the returned object.
  :rtype: QgsProcessingFeatureSource
+%End
+
+    QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 );
+%Docstring
+ Evaluates the parameter with matching ``name`` to a source vector layer file path of compatible format.
+
+ If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+ ``compatibleFormats`` argument, then the layer will first be exported to a compatible format
+ in a temporary location. The function will then return the path to that temporary file.
+
+ ``compatibleFormats`` should consist entirely of lowercase file extensions, e.g. 'shp'.
+
+ The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
+ layer export is required.
+ :rtype: str
 %End
 
     QgsMapLayer *parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

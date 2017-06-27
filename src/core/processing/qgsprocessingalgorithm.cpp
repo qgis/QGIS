@@ -503,6 +503,11 @@ QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVa
   return QgsProcessingParameters::parameterAsSource( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
+{
+  return QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( parameterDefinition( name ), parameters, context, compatibleFormats, preferredFormat, feedback );
+}
+
 QgsMapLayer *QgsProcessingAlgorithm::parameterAsLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsLayer( parameterDefinition( name ), parameters, context );
