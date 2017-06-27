@@ -56,7 +56,7 @@ from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # 
 #from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
 #from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 #from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-#from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 #from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
