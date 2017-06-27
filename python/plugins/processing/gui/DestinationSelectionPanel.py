@@ -267,6 +267,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
         key = None
         if self.use_temporary and isinstance(self.parameter, QgsProcessingParameterFeatureSink):
             key = 'memory:'
+        elif self.use_temporary:
+            key = self.parameter.generateTemporaryDestination()
         else:
             key = self.leText.text()
 
