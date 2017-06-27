@@ -543,9 +543,9 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
-     * Evaluates the parameter with matching \a definition to a raster output layer destination.
+     * Evaluates the parameter with matching \a definition to a output layer destination.
      */
-    static QString parameterAsRasterOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a file based output destination.

@@ -518,9 +518,9 @@ QgsRasterLayer *QgsProcessingAlgorithm::parameterAsRasterLayer( const QVariantMa
   return QgsProcessingParameters::parameterAsRasterLayer( parameterDefinition( name ), parameters, context );
 }
 
-QString QgsProcessingAlgorithm::parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QString QgsProcessingAlgorithm::parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
-  return QgsProcessingParameters::parameterAsRasterOutputLayer( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsOutputLayer( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

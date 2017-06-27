@@ -529,9 +529,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsRasterLayer *parameterAsRasterLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
-     * Evaluates the parameter with matching \a name to a raster output layer destination.
+     * Evaluates the parameter with matching \a name to a output layer destination.
      */
-    QString parameterAsRasterOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a file based output destination.
