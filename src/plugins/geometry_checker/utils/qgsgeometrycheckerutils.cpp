@@ -206,6 +206,22 @@ namespace QgsGeometryCheckerUtils
     return nom / std::sqrt( dx * dx + dy * dy );
   }
 
+  bool pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities )
+  {
+    int nVerts = line->vertexCount();
+    for ( int i = 0 + excludeExtremities; i < nVerts - 1 - excludeExtremities; ++i )
+    {
+      QgsPoint p1 = line->vertexAt( QgsVertexId( 0, 0, i ) );
+      QgsPoint p2 = line->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
+      double dist = pointLineDist( p1, p2, 1 );
+      if ( dist < tol )
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
   double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
   {
     double len = 0;

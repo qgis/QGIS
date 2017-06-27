@@ -43,7 +43,7 @@
         <x>0</x>
         <y>0</y>
         <width>626</width>
-        <height>820</height>
+        <height>872</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -277,6 +277,13 @@
               <widget class="QCheckBox" name="checkBoxMultipart">
                <property name="text">
                 <string>Multipart objects must consist of more that one part</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxDangle">
+               <property name="text">
+                <string>Lines must not have dangles</string>
                </property>
               </widget>
              </item>

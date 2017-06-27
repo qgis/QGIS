@@ -19,6 +19,7 @@
 #include "checks/qgsgeometryanglecheck.h"
 #include "checks/qgsgeometryareacheck.h"
 #include "checks/qgsgeometrycontainedcheck.h"
+#include "checks/qgsgeometrydanglecheck.h"
 #include "checks/qgsgeometrydegeneratepolygoncheck.h"
 #include "checks/qgsgeometryduplicatecheck.h"
 #include "checks/qgsgeometryduplicatenodescheck.h"
@@ -123,6 +124,34 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryContainedCheck>
 }
 
 REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryContainedCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
+
+template<> void QgsGeometryCheckFactoryT<QgsGeometryDangleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkBoxDangle->setChecked( QgsSettings().value( sSettingsGroup + "checkDangle" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDangleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int /*nPolygon*/ ) const
+{
+  ui.checkBoxDangle->setEnabled( nLineString > 0 );
+  return ui.checkBoxDangle->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryDangleCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkDangle", ui.checkBoxDangle->isChecked() );
+  if ( ui.checkBoxDangle->isEnabled() && ui.checkBoxDangle->isChecked() )
+  {
+    return new QgsGeometryDangleCheck( context );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryDangleCheck> )
 
 ///////////////////////////////////////////////////////////////////////////////
 

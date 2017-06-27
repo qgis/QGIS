@@ -8,6 +8,7 @@ SET (geometrychecker_SRCS
     qgsgeometrycheckfactory.cpp
     checks/qgsgeometryanglecheck.cpp
     checks/qgsgeometryareacheck.cpp
+    checks/qgsgeometrydanglecheck.cpp
     checks/qgsgeometrydegeneratepolygoncheck.cpp
     checks/qgsgeometryduplicatecheck.cpp
     checks/qgsgeometryduplicatenodescheck.cpp
@@ -45,6 +46,7 @@ SET (geometrychecker_MOC_HDRS
     checks/qgsgeometryanglecheck.h
     checks/qgsgeometryareacheck.h
     checks/qgsgeometrycheck.h
+    checks/qgsgeometrydanglecheck.h
     checks/qgsgeometrydegeneratepolygoncheck.h
     checks/qgsgeometryduplicatecheck.h
     checks/qgsgeometryduplicatenodescheck.h
