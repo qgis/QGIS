@@ -69,11 +69,11 @@ def algorithmHelp(id):
         print('Algorithm "{}" not found.'.format(id))
 
 
-def run(algOrName, *args, **kwargs):
+def run(algOrName, parameters, onFinish=None, feedback=None, context=None):
     """Executes given algorithm and returns its outputs as dictionary
     object.
     """
-    return Processing.runAlgorithm(algOrName, None, *args, **kwargs)
+    return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
 
 
 def runAndLoadResults(name, *args, **kwargs):
