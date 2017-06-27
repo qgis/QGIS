@@ -166,18 +166,6 @@ class Processing(object):
                 Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'),
                 Processing.tr("Processing"))
 
-        # Don't set the wait cursor twice, because then when you
-        # restore it, it will still be a wait cursor.
-        overrideCursor = False
-        if iface is not None:
-            cursor = QApplication.overrideCursor()
-            if cursor is None or cursor == 0:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                overrideCursor = True
-            elif cursor.shape() != Qt.WaitCursor:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                overrideCursor = True
-
         ret, results = execute(alg, parameters, context, feedback)
         if ret:
             if onFinish is not None:
@@ -186,8 +174,6 @@ class Processing(object):
             QgsMessageLog.logMessage(Processing.tr("There were errors executing the algorithm."),
                                      Processing.tr("Processing"))
 
-        if overrideCursor:
-            QApplication.restoreOverrideCursor()
         if isinstance(feedback, MessageBarProgress):
             feedback.close()
         return results
