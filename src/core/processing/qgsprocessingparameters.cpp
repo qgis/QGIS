@@ -158,6 +158,9 @@ QList<int> QgsProcessingParameters::parameterAsEnums( const QgsProcessingParamet
   else
     resultList << val;
 
+  if ( resultList.isEmpty() )
+    return QList< int >();
+
   if ( ( !val.isValid() || !resultList.at( 0 ).isValid() ) && definition )
   {
     resultList.clear();
