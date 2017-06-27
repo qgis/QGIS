@@ -30,16 +30,17 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
-from qgis.core import QgsProcessingUtils, QgsFeatureSink
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -51,7 +52,6 @@ class ZonalStatisticsQgis(QgisAlgorithm):
     INPUT_VECTOR = 'INPUT_VECTOR'
     COLUMN_PREFIX = 'COLUMN_PREFIX'
     STATISTICS = 'STATS'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
@@ -75,24 +75,23 @@ class ZonalStatisticsQgis(QgisAlgorithm):
                       self.tr('All'): QgsZonalStatistics.All
                       }
 
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Raster layer')))
-        self.addParameter(ParameterNumber(self.RASTER_BAND,
-                                          self.tr('Raster band'),
-                                          1, 999, 1))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer containing zones'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterString(self.COLUMN_PREFIX,
-                                          self.tr('Output column prefix'), '_'))
-        self.addParameter(ParameterSelection(self.STATISTICS,
-                                             self.tr('Statistics to calculate'),
-                                             list(self.STATS.keys()),
-                                             multiple=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Zonal statistics'),
-                                    True,
-                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
+                                                            self.tr('Raster layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.RASTER_BAND,
+                                                       self.tr('Raster band'),
+                                                       minValue=1, maxValue=999, defaultValue=1))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_VECTOR,
+                                                            self.tr('Vector layer containing zones'),
+                                                            [QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterString(self.COLUMN_PREFIX,
+                                                       self.tr('Output column prefix'), '_'))
+        self.addParameter(QgsProcessingParameterEnum(self.STATISTICS,
+                                                     self.tr('Statistics to calculate'),
+                                                     list(self.STATS.keys()),
+                                                     allowMultiple=True))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT_VECTOR,
+                                                      self.tr('Zonal statistics'),
+                                                      QgsProcessingParameterDefinition.TypeVectorPolygon))
 
     def name(self):
         return 'zonalstatisticsqgis'
@@ -101,14 +100,12 @@ class ZonalStatisticsQgis(QgisAlgorithm):
         return self.tr('Zonal Statistics (QGIS)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        rasterPath = self.getParameterValue(self.INPUT_RASTER)
-        vectorPath = self.getParameterValue(self.INPUT_VECTOR)
-        bandNumber = self.getParameterValue(self.RASTER_BAND)
-        columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
-        st = self.getParameterValue(self.STATISTICS)
+        bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)
+        columnPrefix = self.parameterAsString(parameters, self.COLUMN_PREFIX, context)
+        st = self.parameterAsEnums(parameters, self.STATISTICS, context)
 
-        vectorLayer = QgsProcessingUtils.mapLayerFromString(vectorPath, context)
-        rasterLayer = QgsProcessingUtils.mapLayerFromString(rasterPath, context)
+        vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
+        rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
 
         keys = list(self.STATS.keys())
         selectedStats = 0
@@ -120,6 +117,6 @@ class ZonalStatisticsQgis(QgisAlgorithm):
                                 columnPrefix,
                                 bandNumber,
                                 selectedStats)
-        zs.calculateStatistics(None)
+        zs.calculateStatistics(feedback)
 
-        self.setOutputValue(self.OUTPUT_LAYER, vectorPath)
+        return {self.INPUT_VECTOR: vectorLayer}

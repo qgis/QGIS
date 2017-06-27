@@ -71,6 +71,7 @@ from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
 
 # from .ExtractByLocation import ExtractByLocation
 # from .PointsInPolygon import PointsInPolygon
@@ -152,7 +153,6 @@ from .VectorSplit import VectorSplit
 # from .Relief import Relief
 # from .IdwInterpolation import IdwInterpolation
 # from .TinInterpolation import TinInterpolation
-# from .ZonalStatisticsQgis import ZonalStatisticsQgis
 # from .RemoveNullGeometry import RemoveNullGeometry
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
@@ -227,7 +227,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         OffsetLine(), Translate(),
         #         SingleSidedBuffer(), PointsAlongGeometry(),
         #          Slope(), Ruggedness(), Hillshade(),
-        #         Relief(), ZonalStatisticsQgis(),
+        #         Relief(),
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
@@ -271,7 +271,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Smooth(),
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
-                VectorSplit()
+                VectorSplit(),
+                ZonalStatisticsQgis()
                 ]
 
         if hasPlotly:
