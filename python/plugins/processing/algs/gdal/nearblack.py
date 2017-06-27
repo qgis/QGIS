@@ -52,6 +52,8 @@ class nearblack(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.NEAR,
@@ -70,7 +72,7 @@ class nearblack(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-o')
         output = str(self.getOutputValue(self.OUTPUT))

@@ -65,6 +65,8 @@ class translate(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),
@@ -103,7 +105,7 @@ class translate(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT)
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(self.OUTSIZE))

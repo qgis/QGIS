@@ -50,6 +50,8 @@ class aspect(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))
@@ -74,7 +76,7 @@ class aspect(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = ['aspect']
         arguments.append(str(self.getParameterValue(self.INPUT)))
         output = str(self.getOutputValue(self.OUTPUT))

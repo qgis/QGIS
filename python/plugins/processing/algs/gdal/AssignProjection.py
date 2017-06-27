@@ -48,6 +48,8 @@ class AssignProjection(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.CRS,
                                        self.tr('Desired CRS'), ''))
@@ -66,7 +68,7 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         fileName = self.getParameterValue(self.INPUT)
         crs = self.getParameterValue(self.CRS)
         output = self.getOutputValue(self.OUTPUT)  # NOQA

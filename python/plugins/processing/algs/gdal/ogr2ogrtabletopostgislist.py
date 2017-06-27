@@ -77,6 +77,8 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
@@ -131,7 +133,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         GdalAlgorithm.processAlgorithm(parameters, self, context)
         self.processing = False
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         uri = uri_from_name(connection)
         if self.processing:

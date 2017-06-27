@@ -49,6 +49,8 @@ class OgrSql(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input layer or table')))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL'), ''))
 
@@ -69,7 +71,7 @@ class OgrSql(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         sql = self.getParameterValue(self.SQL)
         if sql == '':
             raise GeoAlgorithmExecutionException(

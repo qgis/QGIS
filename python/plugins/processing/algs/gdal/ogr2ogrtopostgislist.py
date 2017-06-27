@@ -86,6 +86,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'),
@@ -183,7 +185,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.processAlgorithm(parameters, None, self)
         self.processing = False
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         uri = uri_from_name(connection)
         if self.processing:

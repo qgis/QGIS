@@ -46,6 +46,8 @@ class ExtractProjection(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))
@@ -62,7 +64,7 @@ class ExtractProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         return ["extractprojection"]
 
     def processAlgorithm(self, parameters, context, feedback):
