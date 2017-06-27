@@ -25,13 +25,10 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
-    // Don't check already checked layers
-    layerIds.removeOne( layerFeatureA.layer().id() );
-
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mCompatibleGeometryTypes );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, layerIds, bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -62,6 +59,8 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
         delete interGeom;
       }
     }
+    // Don't check already checked layers
+    layerIds.removeOne( layerFeatureA.layer().id() );
   }
 }
 
