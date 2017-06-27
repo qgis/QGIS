@@ -22,8 +22,8 @@
 #include "qgis.h"
 #include "qgstaskmanager.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingalgorithm.h"
 
-class QgsProcessingAlgorithm;
 class QgsProcessingContext;
 
 /**
@@ -44,7 +44,8 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
      */
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
-                                QgsProcessingContext &context );
+                                QgsProcessingContext &context,
+                                QgsProcessingFeedback *feedback = nullptr );
 
     virtual void cancel() override;
 
@@ -55,11 +56,12 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
   private:
 
-    const QgsProcessingAlgorithm *mAlgorithm = nullptr;
     QVariantMap mParameters;
     QVariantMap mResults;
     QgsProcessingContext &mContext;
-    std::unique_ptr< QgsProcessingFeedback > mFeedback;
+    QgsProcessingFeedback *mFeedback = nullptr;
+    std::unique_ptr< QgsProcessingFeedback > mOwnedFeedback;
+    std::unique_ptr< const QgsProcessingAlgorithm > mAlgorithm;
 
 };
 

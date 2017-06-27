@@ -24,7 +24,8 @@ class QgsProcessingAlgRunnerTask : QgsTask
 
     QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm,
                                 const QVariantMap &parameters,
-                                QgsProcessingContext &context );
+                                QgsProcessingContext &context,
+                                QgsProcessingFeedback *feedback = 0 );
 %Docstring
  Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``, algorithm ``parameters``
  and processing ``context``.
