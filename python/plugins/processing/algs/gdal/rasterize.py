@@ -113,7 +113,7 @@ class rasterize(GdalAlgorithm):
         opts = self.getParameterValue(self.OPTIONS)
         out = self.getOutputValue(self.OUTPUT)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
 
         if noData is not None:
             noData = str(noData)

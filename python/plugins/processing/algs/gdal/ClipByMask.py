@@ -109,7 +109,7 @@ class ClipByMask(GdalAlgorithm):
         mask = self.getParameterValue(self.MASK)
         context = dataobjects.createContext()
         maskLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.MASK), context)
-        ogrMask = ogrConnectionString(mask)[1:-1]
+        ogrMask = ogrConnectionString(mask, context)[1:-1]
         noData = self.getParameterValue(self.NO_DATA)
         opts = self.getParameterValue(self.OPTIONS)
 

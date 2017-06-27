@@ -69,14 +69,14 @@ class Ogr2OgrClip(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
-        ogrClipLayer = ogrConnectionString(clipLayer)[1:-1]
+        ogrClipLayer = ogrConnectionString(clipLayer, context)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile, context)
         options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []

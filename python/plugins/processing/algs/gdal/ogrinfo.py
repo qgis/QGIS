@@ -69,7 +69,7 @@ class OgrInfo(GdalAlgorithm):
         if self.getParameterValue(self.SUMMARY_ONLY):
             arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer)
+        conn = ogrConnectionString(layer, context)
         arguments.append(conn)
         return arguments
 

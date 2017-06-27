@@ -247,15 +247,15 @@ def snapToPrecision(geom, precision):
     return QgsPointXY(snapped.x(), snapped.y())
 
 
-def ogrConnectionString(uri):
+def ogrConnectionString(uri, context):
     """Generates OGR connection sting from layer source
     """
     ogrstr = None
 
-    context = dataobjects.createContext()
     layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
     if layer is None:
         return '"' + uri + '"'
+
     provider = layer.dataProvider().name()
     if provider == 'spatialite':
         # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=

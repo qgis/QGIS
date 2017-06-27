@@ -80,12 +80,12 @@ class OffsetCurve(GdalAlgorithm):
         distance = self.getParameterValue(self.RADIUS)
         options = self.getParameterValue(self.OPTIONS)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = ogrConnectionString(inLayer, context)[1:-1]
         layername = "'" + ogrLayerName(inLayer) + "'"
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
-        output = ogrConnectionString(outFile)
+        output = ogrConnectionString(outFile, context)
 
         layername = ogrLayerName(inLayer)
 

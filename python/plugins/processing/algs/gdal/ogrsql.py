@@ -93,7 +93,7 @@ class OgrSql(GdalAlgorithm):
         arguments.append(outFile)
 
         layer = self.getParameterValue(self.INPUT)
-        conn = ogrConnectionString(layer)[1:-1]
+        conn = ogrConnectionString(layer, context)[1:-1]
         arguments.append(conn)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
