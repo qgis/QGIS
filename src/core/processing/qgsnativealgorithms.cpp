@@ -1035,8 +1035,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   QgsExpression expression( expr );
   if ( expression.hasParserError() )
   {
-    // raise GeoAlgorithmExecutionException(expression.parserErrorString())
-    return QVariantMap();
+    throw QgsProcessingException( expression.parserErrorString() );
   }
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
