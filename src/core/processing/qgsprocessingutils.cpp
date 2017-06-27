@@ -408,7 +408,7 @@ QString QgsProcessingUtils::tempFolder()
   sMutex.lock();
   if ( sFolder.isEmpty() )
   {
-    QString subPath = QUuid::createUuid().toString();
+    QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
     sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
     if ( !QDir( sFolder ).exists() )
       QDir().mkpath( sFolder );
@@ -419,12 +419,12 @@ QString QgsProcessingUtils::tempFolder()
 
 QString QgsProcessingUtils::generateTempFilename( const QString &basename )
 {
-  QString subPath = QUuid::createUuid().toString();
+  QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
   QString path = tempFolder() + '/' + subPath;
   if ( !QDir( path ).exists() ) //make sure the directory exists - it shouldn't, but lets be safe...
   {
-    QDir tmpDir( QDir::tempPath() );
-    tmpDir.mkdir( subPath );
+    QDir tmpDir;
+    tmpDir.mkdir( path );
   }
   return path + '/' + basename;
 }
