@@ -63,6 +63,7 @@ from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
+from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -110,7 +111,6 @@ from .VectorSplit import VectorSplit
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
 # from .FieldsCalculator import FieldsCalculator
-# from .SaveSelectedFeatures import SaveSelectedFeatures
 # from .Explode import Explode
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
@@ -206,7 +206,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
-        #         SaveSelectedFeatures(), JoinAttributes(),
+        #          JoinAttributes(),
         #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(), PointsLayerFromTable(),
         #         StatisticsByCategories(), ConcaveHull(),
@@ -265,6 +265,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
+                SaveSelectedFeatures(),
                 SimplifyGeometries(),
                 Smooth(),
                 SpatialiteExecuteSQL(),
