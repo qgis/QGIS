@@ -65,6 +65,7 @@ from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
+from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -128,7 +129,6 @@ from .VectorSplit import VectorSplit
 # from .PointsToPaths import PointsToPaths
 # from .SetVectorStyle import SetVectorStyle
 # from .SetRasterStyle import SetRasterStyle
-# from .SelectByExpression import SelectByExpression
 # from .SelectByAttributeSum import SelectByAttributeSum
 # from .HypsometricCurves import HypsometricCurves
 # from .SplitWithLines import SplitWithLines
@@ -216,7 +216,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         RandomPointsPolygonsVariable(),
         #         RandomPointsAlongLines(), PointsToPaths(),
         #         SetVectorStyle(), SetRasterStyle(),
-        #         SelectByExpression(), HypsometricCurves(),
+        #          HypsometricCurves(),
         #         SplitWithLines(), CreateConstantRaster(),
         #         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
         #         OrientedMinimumBoundingBox(),
@@ -266,6 +266,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RegularPoints(),
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
+                SelectByExpression(),
                 SimplifyGeometries(),
                 Smooth(),
                 SpatialiteExecuteSQL(),
