@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProject)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -44,16 +45,19 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class GdalAlgorithm(GeoAlgorithm):
+class GdalAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
-        GeoAlgorithm.__init__(self)
+        super().__init__()
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGdal.svg")
 
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGdal.svg")
+
+    def createInstance(self, config={}):
+        return self.__class__()
 
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
@@ -62,7 +66,7 @@ class GdalAlgorithm(GeoAlgorithm):
         return None
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = self.getConsoleCommands(parameters)
+        commands = self.getConsoleCommands(parameters, context, feedback)
         layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         supported = QgsVectorFileWriter.supportedFormatExtensions()
         for i, c in enumerate(commands):
@@ -79,6 +83,12 @@ class GdalAlgorithm(GeoAlgorithm):
 
             commands[i] = c
         GdalUtils.runGdal(commands, feedback)
+
+        # auto generate outputs
+        results = {}
+        for o in self.outputDefinitions():
+            results[o.name()] = parameters[o.name()]
+        return results
 
     def helpUrl(self):
         helpPath = GdalUtils.gdalHelpPath()
@@ -100,3 +110,8 @@ class GdalAlgorithm(GeoAlgorithm):
         if name.endswith(".py"):
             name = name[:-3]
         return name
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)
