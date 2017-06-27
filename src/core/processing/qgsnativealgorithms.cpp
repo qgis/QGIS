@@ -74,8 +74,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
 QgsCentroidAlgorithm::QgsCentroidAlgorithm()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
 }
 
 QString QgsCentroidAlgorithm::shortHelpString() const
@@ -89,23 +89,27 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::clone() const
   return new QgsCentroidAlgorithm();
 }
 
-QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsCentroidAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Point, source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(), QgsWkbTypes::Point, mSource->sourceCrs() ) );
+  if ( !mSink )
+    return false;
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  return true;
+}
+
+bool QgsCentroidAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -125,14 +129,20 @@ QVariantMap QgsCentroidAlgorithm::processAlgorithm( const QVariantMap &parameter
         QgsMessageLog::logMessage( QObject::tr( "Error calculating centroid for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    sink->addFeature( out, QgsFeatureSink::FastInsert );
+    mSink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
   }
+  mSource.reset();
+  mSink.reset();
+  return true;
+}
 
+QVariantMap QgsCentroidAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
+  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), mSinkId );
   return outputs;
 }
 
@@ -151,8 +161,8 @@ QgsBufferAlgorithm::QgsBufferAlgorithm()
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MITRE_LIMIT" ), QObject::tr( "Miter limit" ), QgsProcessingParameterNumber::Double, 2, false, 1 ) );
 
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISSOLVE" ), QObject::tr( "Dissolve result" ), false ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPolygon ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Buffered" ), QgsProcessingParameterDefinition::TypeVectorPoint ) );
 }
 
 QString QgsBufferAlgorithm::shortHelpString() const
@@ -169,36 +179,46 @@ QgsBufferAlgorithm *QgsBufferAlgorithm::clone() const
   return new QgsBufferAlgorithm();
 }
 
-QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsBufferAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_LAYER" ), context, dest, source->fields(), QgsWkbTypes::Polygon, source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(), QgsWkbTypes::Polygon, mSource->sourceCrs() ) );
+  if ( !mSink )
+    return false;
 
   // fixed parameters
-  bool dissolve = parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
-  int segments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  QgsGeometry::EndCapStyle endCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
-  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
-  double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
-  double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
-  const QgsProcessingParameterDefinition *distanceParamDef = parameterDefinition( QStringLiteral( "DISTANCE" ) );
+  mDissolve = parameterAsBool( parameters, QStringLiteral( "DISSOLVE" ), context );
+  mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  mEndCapStyle = static_cast< QgsGeometry::EndCapStyle >( 1 + parameterAsInt( parameters, QStringLiteral( "END_CAP_STYLE" ), context ) );
+  mJoinStyle = static_cast< QgsGeometry::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITRE_LIMIT" ), context );
+  mBufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
+  mDynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  if ( mDynamicBuffer )
+  {
+    mDynamicBufferProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
+    mExpContext = context.expressionContext();
+    mDefaultBuffer = parameterDefinition( QStringLiteral( "DISTANCE" ) )->defaultValue().toDouble();
+  }
+  return true;
+}
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+bool QgsBufferAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return false;
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
+
+  double bufferDistance = mBufferDistance;
 
   QList< QgsGeometry > bufferedGeometriesForDissolve;
   QgsAttributes dissolveAttrs;
@@ -215,44 +235,50 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsFeature out = f;
     if ( out.hasGeometry() )
     {
-      if ( dynamicBuffer )
+      if ( mDynamicBuffer )
       {
-        context.expressionContext().setFeature( f );
-        bufferDistance = QgsProcessingParameters::parameterAsDouble( distanceParamDef, parameters, context );
+        mExpContext.setFeature( f );
+        bufferDistance = mDynamicBufferProperty.valueAsDouble( mExpContext, mDefaultBuffer );
       }
 
-      QgsGeometry outputGeometry = f.geometry().buffer( bufferDistance, segments, endCapStyle, joinStyle, miterLimit );
+      QgsGeometry outputGeometry = f.geometry().buffer( bufferDistance, mSegments, mEndCapStyle, mJoinStyle, mMiterLimit );
       if ( !outputGeometry )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error calculating buffer for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
-      if ( dissolve )
+      if ( mDissolve )
         bufferedGeometriesForDissolve << outputGeometry;
       else
         out.setGeometry( outputGeometry );
     }
 
-    if ( !dissolve )
-      sink->addFeature( out, QgsFeatureSink::FastInsert );
+    if ( !mDissolve )
+      mSink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
   }
 
-  if ( dissolve )
+  if ( mDissolve )
   {
     QgsGeometry finalGeometry = QgsGeometry::unaryUnion( bufferedGeometriesForDissolve );
     QgsFeature f;
     f.setGeometry( finalGeometry );
     f.setAttributes( dissolveAttrs );
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    mSink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), dest );
-  return outputs;
+  mSource.reset();
+  mSink.reset();
+  return true;
 }
 
+QVariantMap QgsBufferAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
+  return outputs;
+}
 
 QgsDissolveAlgorithm::QgsDissolveAlgorithm()
 {
@@ -278,31 +304,34 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::clone() const
   return new QgsDissolveAlgorithm();
 }
 
-QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsDissolveAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(), QgsWkbTypes::multiType( mSource->wkbType() ), mSource->sourceCrs() ) );
 
-  if ( !sink )
-    return QVariantMap();
+  if ( !mSink )
+    return false;
 
-  QStringList fields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
+  mFields = parameterAsFields( parameters, QStringLiteral( "FIELD" ), context );
+  return true;
+}
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+bool QgsDissolveAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
 
-  if ( fields.isEmpty() )
+  if ( mFields.isEmpty() )
   {
     // dissolve all - not using fields
     bool firstFeature = true;
@@ -340,14 +369,14 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
     }
 
     outputFeature.setGeometry( QgsGeometry::unaryUnion( geomQueue ) );
-    sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+    mSink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
   }
   else
   {
     QList< int > fieldIndexes;
-    Q_FOREACH ( const QString &field, fields )
+    Q_FOREACH ( const QString &field, mFields )
     {
-      int index = source->fields().lookupField( field );
+      int index = mSource->fields().lookupField( field );
       if ( index >= 0 )
         fieldIndexes << index;
     }
@@ -391,15 +420,23 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsFeature outputFeature;
       outputFeature.setGeometry( QgsGeometry::unaryUnion( geomIt.value() ) );
       outputFeature.setAttributes( attributeHash.value( geomIt.key() ) );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      mSink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
       current++;
     }
   }
 
+  mSource.reset();
+  mSink.reset();
+
+  return true;
+}
+
+QVariantMap QgsDissolveAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
   return outputs;
 }
 
@@ -426,25 +463,29 @@ QgsClipAlgorithm *QgsClipAlgorithm::clone() const
   return new QgsClipAlgorithm();
 }
 
-QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsClipAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !featureSource )
-    return QVariantMap();
+  mFeatureSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mFeatureSource )
+    return false;
 
-  std::unique_ptr< QgsFeatureSource > maskSource( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
-  if ( !maskSource )
-    return QVariantMap();
+  mMaskSource.reset( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
+  if ( !mMaskSource )
+    return false;
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mFeatureSource->fields(), QgsWkbTypes::multiType( mFeatureSource->wkbType() ), mFeatureSource->sourceCrs() ) );
 
-  if ( !sink )
-    return QVariantMap();
+  if ( !mSink )
+    return false;
 
+  return true;
+}
+
+bool QgsClipAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
   // first build up a list of clip geometries
   QList< QgsGeometry > clipGeoms;
-  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs() ) );
+  QgsFeatureIterator it = mMaskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( mFeatureSource->sourceCrs() ) );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
@@ -453,7 +494,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   if ( clipGeoms.isEmpty() )
-    return QVariantMap();
+    return true;
 
   // are we clipping against a single feature? if so, we can show finer progress reports
   bool singleClipFeature = false;
@@ -484,7 +525,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       break;
     }
 
-    QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( clipGeom.boundingBox() ) );
+    QgsFeatureIterator inputIt = mFeatureSource->getFeatures( QgsFeatureRequest().setFilterRect( clipGeom.boundingBox() ) );
     QgsFeatureList inputFeatures;
     QgsFeature f;
     while ( inputIt.nextFeature( f ) )
@@ -539,8 +580,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       QgsFeature outputFeature;
       outputFeature.setGeometry( newGeometry );
       outputFeature.setAttributes( inputFeature.attributes() );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
-
+      mSink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
       if ( singleClipFeature )
         feedback->setProgress( current * step );
@@ -552,12 +592,18 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       feedback->setProgress( 100.0 * static_cast< double >( i ) / clipGeoms.length() );
     }
   }
-
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  mFeatureSource.reset();
+  mMaskSource.reset();
+  mSink.reset();
+  return true;
 }
 
+QVariantMap QgsClipAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
+  return outputs;
+}
 
 QgsTransformAlgorithm::QgsTransformAlgorithm()
 {
@@ -579,29 +625,41 @@ QgsTransformAlgorithm *QgsTransformAlgorithm::clone() const
   return new QgsTransformAlgorithm();
 }
 
-QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QgsCoordinateReferenceSystem targetCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  mCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), targetCrs ) );
-  if ( !sink )
-    return QVariantMap();
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(), mSource->wkbType(), mCrs ) );
+  if ( !mSink )
+    return false;
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  return true;
+}
+
+QVariantMap QgsTransformAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
+  return outputs;
+}
+
+bool QgsTransformAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   QgsFeature f;
   QgsFeatureRequest req;
   // perform reprojection in the iterators...
-  req.setDestinationCrs( targetCrs );
+  req.setDestinationCrs( mCrs );
 
-  QgsFeatureIterator it = source->getFeatures( req );
+  QgsFeatureIterator it = mSource->getFeatures( req );
 
   double step = 100.0 / count;
   int current = 0;
@@ -612,14 +670,12 @@ QVariantMap QgsTransformAlgorithm::processAlgorithm( const QVariantMap &paramete
       break;
     }
 
-    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    mSink->addFeature( f, QgsFeatureSink::FastInsert );
     feedback->setProgress( current * step );
     current++;
   }
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return true;
 }
 
 
@@ -648,25 +704,29 @@ QgsSubdivideAlgorithm *QgsSubdivideAlgorithm::clone() const
   return new QgsSubdivideAlgorithm();
 }
 
-QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  int maxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
+  mMaxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(),
+                                QgsWkbTypes::multiType( mSource->wkbType() ), mSource->sourceCrs() ) );
+  if ( !mSink )
+    return false;
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  return true;
+}
+
+bool QgsSubdivideAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -680,23 +740,28 @@ QVariantMap QgsSubdivideAlgorithm::processAlgorithm( const QVariantMap &paramete
     QgsFeature out = f;
     if ( out.hasGeometry() )
     {
-      out.setGeometry( f.geometry().subdivide( maxNodes ) );
+      out.setGeometry( f.geometry().subdivide( mMaxNodes ) );
       if ( !out.geometry() )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error calculating subdivision for feature %1" ).arg( f.id() ), QObject::tr( "Processing" ), QgsMessageLog::WARNING );
       }
     }
-    sink->addFeature( out, QgsFeatureSink::FastInsert );
+    mSink->addFeature( out, QgsFeatureSink::FastInsert );
 
     feedback->setProgress( current * step );
     current++;
   }
-
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  mSource.reset();
+  mSink.reset();
+  return true;
 }
 
+QVariantMap QgsSubdivideAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
+  return outputs;
+}
 
 
 QgsMultipartToSinglepartAlgorithm::QgsMultipartToSinglepartAlgorithm()
@@ -719,26 +784,30 @@ QgsMultipartToSinglepartAlgorithm *QgsMultipartToSinglepartAlgorithm::clone() co
   return new QgsMultipartToSinglepartAlgorithm();
 }
 
-QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsMultipartToSinglepartAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QgsWkbTypes::Type sinkType = QgsWkbTypes::singleType( source->wkbType() );
+  QgsWkbTypes::Type sinkType = QgsWkbTypes::singleType( mSource->wkbType() );
 
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
-                                          sinkType, source->sourceCrs() ) );
-  if ( !sink )
-    return QVariantMap();
+  mSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mSinkId, mSource->fields(),
+                                sinkType, mSource->sourceCrs() ) );
+  if ( !mSink )
+    return false;
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  return true;
+}
+
+bool QgsMultipartToSinglepartAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   QgsFeature f;
-  QgsFeatureIterator it = source->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures();
 
   double step = 100.0 / count;
   int current = 0;
@@ -758,29 +827,35 @@ QVariantMap QgsMultipartToSinglepartAlgorithm::processAlgorithm( const QVariantM
         Q_FOREACH ( const QgsGeometry &g, inputGeometry.asGeometryCollection() )
         {
           out.setGeometry( g );
-          sink->addFeature( out, QgsFeatureSink::FastInsert );
+          mSink->addFeature( out, QgsFeatureSink::FastInsert );
         }
       }
       else
       {
-        sink->addFeature( out, QgsFeatureSink::FastInsert );
+        mSink->addFeature( out, QgsFeatureSink::FastInsert );
       }
     }
     else
     {
       // feature with null geometry
-      sink->addFeature( out, QgsFeatureSink::FastInsert );
+      mSink->addFeature( out, QgsFeatureSink::FastInsert );
     }
 
     feedback->setProgress( current * step );
     current++;
   }
+  mSource.reset();
+  mSink.reset();
 
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
-  return outputs;
+  return true;
 }
 
+QVariantMap QgsMultipartToSinglepartAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
+  return outputs;
+}
 
 QgsExtractByExpressionAlgorithm::QgsExtractByExpressionAlgorithm()
 {
@@ -806,47 +881,50 @@ QgsExtractByExpressionAlgorithm *QgsExtractByExpressionAlgorithm::clone() const
   return new QgsExtractByExpressionAlgorithm();
 }
 
-QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsExtractByExpressionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
+  mExpressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
 
-  QString matchingSinkId;
-  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
-      source->wkbType(), source->sourceCrs() ) );
-  if ( !matchingSink )
-    return QVariantMap();
+  mMatchingSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mMatchingSinkId, mSource->fields(),
+                                        mSource->wkbType(), mSource->sourceCrs() ) );
+  if ( !mMatchingSink )
+    return false;
 
-  QString nonMatchingSinkId;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
-      source->wkbType(), source->sourceCrs() ) );
+  mNonMatchingSink.reset( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, mNonMatchingSinkId, mSource->fields(),
+                          mSource->wkbType(), mSource->sourceCrs() ) );
 
-  QgsExpression expression( expressionString );
+  mExpressionContext = createExpressionContext( parameters, context );
+  return true;
+}
+
+bool QgsExtractByExpressionAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  QgsExpression expression( mExpressionString );
   if ( expression.hasParserError() )
   {
     throw QgsProcessingException( expression.parserErrorString() );
   }
 
-  QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
 
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   double step = 100.0 / count;
   int current = 0;
 
-  if ( !nonMatchingSink )
+  if ( !mNonMatchingSink )
   {
     // not saving failing features - so only fetch good features
     QgsFeatureRequest req;
-    req.setFilterExpression( expressionString );
-    req.setExpressionContext( expressionContext );
+    req.setFilterExpression( mExpressionString );
+    req.setExpressionContext( mExpressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req );
+    QgsFeatureIterator it = mSource->getFeatures( req );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -855,7 +933,7 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+      mMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * step );
       current++;
@@ -864,10 +942,10 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
   else
   {
     // saving non-matching features, so we need EVERYTHING
-    expressionContext.setFields( source->fields() );
-    expression.prepare( &expressionContext );
+    mExpressionContext.setFields( mSource->fields() );
+    expression.prepare( &mExpressionContext );
 
-    QgsFeatureIterator it = source->getFeatures();
+    QgsFeatureIterator it = mSource->getFeatures();
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -876,14 +954,14 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      expressionContext.setFeature( f );
-      if ( expression.evaluate( &expressionContext ).toBool() )
+      mExpressionContext.setFeature( f );
+      if ( expression.evaluate( &mExpressionContext ).toBool() )
       {
-        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        mMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
       else
       {
-        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        mNonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
 
       feedback->setProgress( current * step );
@@ -891,14 +969,21 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
     }
   }
 
-
-  QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), matchingSinkId );
-  if ( nonMatchingSink )
-    outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), nonMatchingSinkId );
-  return outputs;
+  mSource.reset();
+  mMatchingSink.reset();
+  mNonMatchingSink.reset();
+  return true;
 }
 
+
+QVariantMap QgsExtractByExpressionAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), mMatchingSinkId );
+  if ( !mNonMatchingSinkId.isEmpty() )
+    outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), mNonMatchingSinkId );
+  return outputs;
+}
 
 QgsExtractByAttributeAlgorithm::QgsExtractByAttributeAlgorithm()
 {
@@ -937,34 +1022,38 @@ QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::clone() const
   return new QgsExtractByAttributeAlgorithm();
 }
 
-QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const
+bool QgsExtractByAttributeAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  if ( !source )
-    return QVariantMap();
+  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !mSource )
+    return false;
 
-  QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
-  Operation op = static_cast< Operation >( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
-  QString value = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
+  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  mOp = static_cast< Operation >( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
+  mValue = parameterAsString( parameters, QStringLiteral( "VALUE" ), context );
 
-  QString matchingSinkId;
-  std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
-      source->wkbType(), source->sourceCrs() ) );
-  if ( !matchingSink )
-    return QVariantMap();
+  mMatchingSink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, mMatchingSinkId, mSource->fields(),
+                                        mSource->wkbType(), mSource->sourceCrs() ) );
+  if ( !mMatchingSink )
+    return false;
 
-  QString nonMatchingSinkId;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
-      source->wkbType(), source->sourceCrs() ) );
+  mNonMatchingSink.reset( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, mNonMatchingSinkId, mSource->fields(),
+                          mSource->wkbType(), mSource->sourceCrs() ) );
 
 
-  int idx = source->fields().lookupField( fieldName );
-  QVariant::Type fieldType = source->fields().at( idx ).type();
+  mExpressionContext = createExpressionContext( parameters, context );
+  return true;
+}
 
-  if ( fieldType != QVariant::String && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )
+bool QgsExtractByAttributeAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback *feedback )
+{
+  int idx = mSource->fields().lookupField( mFieldName );
+  QVariant::Type fieldType = mSource->fields().at( idx ).type();
+
+  if ( fieldType != QVariant::String && ( mOp == BeginsWith || mOp == Contains || mOp == DoesNotContain ) )
   {
     QString method;
-    switch ( op )
+    switch ( mOp )
     {
       case BeginsWith:
         method = QObject::tr( "begins with" );
@@ -983,10 +1072,10 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( QObject::tr( "Operator '%1' can be used only with string fields." ).arg( method ) );
   }
 
-  QString fieldRef = QgsExpression::quotedColumnRef( fieldName );
-  QString quotedVal = QgsExpression::quotedValue( value );
+  QString fieldRef = QgsExpression::quotedColumnRef( mFieldName );
+  QString quotedVal = QgsExpression::quotedValue( mValue );
   QString expr;
-  switch ( op )
+  switch ( mOp )
   {
     case Equals:
       expr = QStringLiteral( "%1 = %3" ).arg( fieldRef, quotedVal );
@@ -1007,10 +1096,10 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       expr = QStringLiteral( "%1 <= %3" ).arg( fieldRef, quotedVal );
       break;
     case BeginsWith:
-      expr = QStringLiteral( "%1 LIKE '%2%'" ).arg( fieldRef, value );
+      expr = QStringLiteral( "%1 LIKE '%2%'" ).arg( fieldRef, mValue );
       break;
     case Contains:
-      expr = QStringLiteral( "%1 LIKE '%%2%'" ).arg( fieldRef, value );
+      expr = QStringLiteral( "%1 LIKE '%%2%'" ).arg( fieldRef, mValue );
       break;
     case IsNull:
       expr = QStringLiteral( "%1 IS NULL" ).arg( fieldRef );
@@ -1019,7 +1108,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
       expr = QStringLiteral( "%1 IS NOT NULL" ).arg( fieldRef );
       break;
     case DoesNotContain:
-      expr = QStringLiteral( "%1 NOT LIKE '%%2%'" ).arg( fieldRef, value );
+      expr = QStringLiteral( "%1 NOT LIKE '%%2%'" ).arg( fieldRef, mValue );
       break;
   }
 
@@ -1029,23 +1118,21 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( expression.parserErrorString() );
   }
 
-  QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
-
-  long count = source->featureCount();
-  if ( count <= 0 )
-    return QVariantMap();
+  long count = mSource->featureCount();
+  if ( count == 0 )
+    return true;
 
   double step = 100.0 / count;
   int current = 0;
 
-  if ( !nonMatchingSink )
+  if ( !mNonMatchingSink )
   {
     // not saving failing features - so only fetch good features
     QgsFeatureRequest req;
     req.setFilterExpression( expr );
-    req.setExpressionContext( expressionContext );
+    req.setExpressionContext( mExpressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req );
+    QgsFeatureIterator it = mSource->getFeatures( req );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -1054,7 +1141,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
         break;
       }
 
-      matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+      mMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * step );
       current++;
@@ -1063,10 +1150,10 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   else
   {
     // saving non-matching features, so we need EVERYTHING
-    expressionContext.setFields( source->fields() );
-    expression.prepare( &expressionContext );
+    mExpressionContext.setFields( mSource->fields() );
+    expression.prepare( &mExpressionContext );
 
-    QgsFeatureIterator it = source->getFeatures();
+    QgsFeatureIterator it = mSource->getFeatures();
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -1075,14 +1162,14 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
         break;
       }
 
-      expressionContext.setFeature( f );
-      if ( expression.evaluate( &expressionContext ).toBool() )
+      mExpressionContext.setFeature( f );
+      if ( expression.evaluate( &mExpressionContext ).toBool() )
       {
-        matchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        mMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
       else
       {
-        nonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
+        mNonMatchingSink->addFeature( f, QgsFeatureSink::FastInsert );
       }
 
       feedback->setProgress( current * step );
@@ -1090,12 +1177,20 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     }
   }
 
+  mSource.reset();
+  mMatchingSink.reset();
+  mNonMatchingSink.reset();
+  return true;
+}
 
+QVariantMap QgsExtractByAttributeAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), matchingSinkId );
-  if ( nonMatchingSink )
-    outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), nonMatchingSinkId );
+  outputs.insert( QStringLiteral( "OUTPUT" ), mMatchingSinkId );
+  if ( !mNonMatchingSinkId.isEmpty() )
+    outputs.insert( QStringLiteral( "FAIL_OUTPUT" ), mNonMatchingSinkId );
   return outputs;
 }
+
 
 ///@endcond

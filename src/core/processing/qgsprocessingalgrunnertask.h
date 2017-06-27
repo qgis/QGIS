@@ -61,7 +61,7 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
     QgsProcessingContext &mContext;
     QgsProcessingFeedback *mFeedback = nullptr;
     std::unique_ptr< QgsProcessingFeedback > mOwnedFeedback;
-    std::unique_ptr< const QgsProcessingAlgorithm > mAlgorithm;
+    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
 
 };
 

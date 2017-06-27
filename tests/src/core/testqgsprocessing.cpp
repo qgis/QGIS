@@ -42,8 +42,9 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
     QString name() const override { return mName; }
     QString displayName() const override { return mName; }
-    virtual QVariantMap processAlgorithm( const QVariantMap &,
-                                          QgsProcessingContext &, QgsProcessingFeedback * ) const override { return QVariantMap(); }
+    bool processAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) override { return true; }
+    bool prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return true; }
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
     virtual Flags flags() const override { return mFlags; }
     DummyAlgorithm *clone() const override { return new DummyAlgorithm( name() ); }
