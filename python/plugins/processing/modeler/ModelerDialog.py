@@ -238,6 +238,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if model is not None:
             self.model = model.clone()
+            self.model.setSourceFilePath(model.sourceFilePath())
             self.textGroup.setText(self.model.group())
             self.textName.setText(self.model.displayName())
             self.repaintModel()
