@@ -1,17 +1,24 @@
 ##Centroids=name
 ##Geometry=group
-##INPUT_LAYER=vector
-##OUTPUT_LAYER=output vector
+
+#inputs
+
+##INPUT_LAYER=source
+##OUTPUT_LAYER=sink point
+
+#outputs
+
+##OUTPUT_LAYER=output outputVector
 
 from qgis.core import QgsWkbTypes, QgsProcessingUtils
 
-layer = QgsProcessingUtils.mapLayerFromString(INPUT_LAYER, context)
-fields = layer.fields()
+fields = INPUT_LAYER.fields()
 
-writer, writer_dest = QgsProcessingUtils.createFeatureSink(OUTPUT_LAYER, context, fields, QgsWkbTypes.Point, layer.crs(), {'fileEncoding': 'utf-8'})
+(sink, OUTPUT_LAYER) = self.parameterAsSink(parameters, 'OUTPUT_LAYER', context,
+                                            fields, QgsWkbTypes.Point, INPUT_LAYER.sourceCrs())
 
-features = QgsProcessingUtils.getFeatures(layer, context)
-count = QgsProcessingUtils.featureCount(layer, context)
+features = INPUT_LAYER.getFeatures()
+count = INPUT_LAYER.featureCount()
 if count == 0:
     raise GeoAlgorithmExecutionException('Input layer contains no features.')
 
@@ -23,5 +30,5 @@ for count, f in enumerate(features):
         outputGeometry = f.geometry().centroid()
         outputFeature.setGeometry(outputGeometry)
 
-    writer.addFeature(outputFeature)
+    sink.addFeature(outputFeature)
     feedback.setProgress(int(count * total))
