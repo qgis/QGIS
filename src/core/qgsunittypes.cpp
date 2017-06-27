@@ -1773,3 +1773,80 @@ QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
   }
   return QString();
 }
+
+
+
+QString QgsUnitTypes::encodeUnit( QgsUnitTypes::LayoutUnit unit )
+{
+  switch ( unit )
+  {
+    case LayoutCentimeters:
+      return QStringLiteral( "cm" );
+    case LayoutMeters:
+      return QStringLiteral( "m" );
+    case LayoutInches:
+      return QStringLiteral( "in" );
+    case LayoutFeet:
+      return QStringLiteral( "ft" );
+    case LayoutPoints:
+      return QStringLiteral( "pt" );
+    case LayoutPicas:
+      return QStringLiteral( "pi" );
+    case LayoutPixels:
+      return QStringLiteral( "px" );
+    case  LayoutMillimeters:
+      return QStringLiteral( "mm" );
+  }
+  return QString();
+}
+
+QgsUnitTypes::LayoutUnit QgsUnitTypes::decodeLayoutUnit( const QString &string, bool *ok )
+{
+  QString normalized = string.trimmed().toLower();
+
+  if ( ok )
+    *ok = true;
+
+  if ( normalized == encodeUnit( LayoutMillimeters ).toLower() )
+    return LayoutMillimeters;
+  if ( normalized == encodeUnit( LayoutCentimeters ).toLower() )
+    return LayoutCentimeters;
+  if ( normalized == encodeUnit( LayoutMeters ).toLower() )
+    return LayoutMeters;
+  if ( normalized == encodeUnit( LayoutInches ).toLower() )
+    return LayoutInches;
+  if ( normalized == encodeUnit( LayoutFeet ).toLower() )
+    return LayoutFeet;
+  if ( normalized == encodeUnit( LayoutPoints ).toLower() )
+    return LayoutPoints;
+  if ( normalized == encodeUnit( LayoutPicas ).toLower() )
+    return LayoutPicas;
+  if ( normalized == encodeUnit( LayoutPixels ).toLower() )
+    return LayoutPixels;
+
+  if ( ok )
+    *ok = false;
+
+  // millimeters are default
+  return LayoutMillimeters;
+}
+
+QgsUnitTypes::LayoutUnitType QgsUnitTypes::unitType( const QgsUnitTypes::LayoutUnit units )
+{
+  switch ( units )
+  {
+    case LayoutPixels:
+      return LayoutScreenUnits;
+    case  LayoutMillimeters:
+    case LayoutCentimeters:
+    case LayoutMeters:
+    case LayoutInches:
+    case LayoutFeet:
+    case LayoutPoints:
+    case LayoutPicas:
+      return LayoutPaperUnits;
+  }
+
+  // avoid warnings
+  return LayoutPaperUnits;
+}

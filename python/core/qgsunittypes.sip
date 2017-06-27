@@ -81,6 +81,24 @@ class QgsUnitTypes
       RenderUnknownUnit,
     };
 
+    enum LayoutUnit
+    {
+      LayoutMillimeters,
+      LayoutCentimeters,
+      LayoutMeters,
+      LayoutInches,
+      LayoutFeet,
+      LayoutPoints,
+      LayoutPicas,
+      LayoutPixels
+    };
+
+    enum LayoutUnitType
+    {
+      LayoutPaperUnits,
+      LayoutScreenUnits
+    };
+
     struct DistanceValue
     {
 
@@ -368,6 +386,34 @@ class QgsUnitTypes
 .. versionadded:: 3.0
  :rtype: str
 %End
+
+
+
+    static QString encodeUnit( LayoutUnit unit );
+%Docstring
+ Encodes a layout unit to a string.
+ \param unit unit to encode
+ :return: encoded string
+.. seealso:: decodeLayoutUnit()
+ :rtype: str
+%End
+
+    static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+ Decodes a layout unit from a string.
+ \param string string to decode
+ \param ok optional boolean, will be set to true if string was converted successfully
+ :return: decoded units
+.. seealso:: encodeUnit()
+ :rtype: LayoutUnit
+%End
+
+    static LayoutUnitType unitType( const LayoutUnit units );
+%Docstring
+ Returns the type for a unit of measurement.
+ :rtype: LayoutUnitType
+%End
+
 };
 
 /************************************************************************
