@@ -64,9 +64,16 @@ class QgsCentroidAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
 };
 
 /**
@@ -88,9 +95,17 @@ class QgsTransformAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 /**
@@ -112,9 +127,28 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
+    bool mDissolve = false;
+    int mSegments = 8;
+    QgsGeometry::EndCapStyle mEndCapStyle = QgsGeometry::CapRound;
+    QgsGeometry::JoinStyle mJoinStyle = QgsGeometry::JoinStyleRound;
+    double mMiterLimit = 1;
+    double mBufferDistance = 1;
+    bool mDynamicBuffer = false;
+    QgsProperty mDynamicBufferProperty;
+    QVariantMap mDynamicParams;
+    double mDefaultBuffer;
+    const QgsProcessingParameterDefinition *mDistanceParamDef = nullptr;
+    QgsExpressionContext mExpContext;
 };
 
 /**
@@ -136,8 +170,17 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
+    QStringList mFields;
 
 };
 
@@ -175,9 +218,22 @@ class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mMatchingSink;
+    QString mMatchingSinkId;
+    std::unique_ptr< QgsFeatureSink > mNonMatchingSink;
+    QString mNonMatchingSinkId;
+    QString mFieldName;
+    Operation mOp;
+    QString mValue;
+    QgsExpressionContext mExpressionContext;
 };
 
 /**
@@ -199,9 +255,20 @@ class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mMatchingSink;
+    QString mMatchingSinkId;
+    std::unique_ptr< QgsFeatureSink > mNonMatchingSink;
+    QString mNonMatchingSinkId;
+    QString mExpressionString;
+    QgsExpressionContext mExpressionContext;
 };
 
 /**
@@ -223,8 +290,18 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mFeatureSource;
+    std::unique_ptr< QgsFeatureSource > mMaskSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
 
 };
 
@@ -248,8 +325,17 @@ class QgsSubdivideAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
+    int mMaxNodes = 64;
 
 };
 
@@ -272,9 +358,16 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+
+    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr< QgsFeatureSink > mSink;
+    QString mSinkId;
 };
 
 ///@endcond PRIVATE

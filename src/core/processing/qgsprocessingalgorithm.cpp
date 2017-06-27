@@ -260,6 +260,11 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
   return true;
 }
 
+bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return true;
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
@@ -316,22 +321,76 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
 {
+  std::unique_ptr< QgsProcessingAlgorithm > alg( clone() );
   if ( ok )
     *ok = false;
 
-  QVariantMap results;
+  bool res = alg->prepare( parameters, context, feedback );
+  if ( !res )
+    return QVariantMap();
+
+  res = alg->runPrepared( context, feedback );
+  if ( !res )
+    return QVariantMap();
+
+  if ( ok )
+    *ok = true;
+
+  return alg->postProcess( context, feedback );
+}
+
+bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( QApplication::instance()->thread() == QThread::currentThread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the main thread" );
+  Q_ASSERT_X( !mHasPrepared, "QgsProcessingAlgorithm::prepare", "prepare() has already been called for the algorithm instance" );
   try
   {
-    results = processAlgorithm( parameters, context, feedback );
-    if ( ok )
-      *ok = true;
+    mHasPrepared = prepareAlgorithm( parameters, context, feedback );
+    return mHasPrepared;
   }
   catch ( QgsProcessingException &e )
   {
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
     feedback->reportError( e.what() );
+    return false;
   }
-  return results;
+}
+
+bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", "prepare() was not called for the algorithm instance" );
+  Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
+
+  try
+  {
+    mHasExecuted = processAlgorithm( context, feedback );
+    return mHasExecuted;
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
+    return false;
+  }
+}
+
+QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_ASSERT_X( QApplication::instance()->thread() == QThread::currentThread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the main thread" );
+  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", "runPrepared() was not called for the algorithm instance" );
+  Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
+
+  mHasPostProcessed = true;
+  try
+  {
+    return postProcessAlgorithm( context, feedback );
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
+    return QVariantMap();
+  }
 }
 
 QString QgsProcessingAlgorithm::parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const
