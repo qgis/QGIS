@@ -203,10 +203,6 @@ Adds print capabilities to xml document. ParentElem usually is the <Capabilities
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString &layerName, QDomDocument *gmlDoc ) = 0;
 
-    virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const = 0;
-%Docstring
- :rtype: list of QPair< str, QgsDatumTransformStore.Entry >
-%End
 
     virtual int nLayers() const = 0;
 %Docstring

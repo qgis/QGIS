@@ -106,7 +106,7 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QList<QDomElement> publishedComposerElements() const;
 
-    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const SIP_SKIP;
 
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;

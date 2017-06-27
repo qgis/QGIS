@@ -174,10 +174,6 @@ Returns the layer id under a <legendlayer> tag in the QGIS projectfile
  :rtype: list of QDomElement
 %End
 
-    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
-%Docstring
- :rtype: list of QPair< str, QgsDatumTransformStore.Entry >
-%End
 
     QStringList wfsLayers() const;
 %Docstring

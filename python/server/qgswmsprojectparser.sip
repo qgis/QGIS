@@ -83,8 +83,6 @@ class QgsWmsProjectParser : QgsWmsConfigParser
     virtual void setScaleDenominator( double );
     virtual void addExternalGMLData( const QString &, QDomDocument * );
 
-    virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
-
 
     virtual int layersAndStyles( QStringList &layers, QStringList &styles ) const;
 
