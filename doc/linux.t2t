@@ -130,7 +130,7 @@ be pressed several times before the 'g' option becomes available.
 After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 
-/!\ **Warning:** Make sure that your build directory is completely empty when you 
+/!\ **Warning:** Make sure that your build directory is completely empty when you
 enter the command. Do never try to "re-use" an existing **Qt4** build directory.
 If you want to use `ccmake` or other interactive tools, run the command in
 the empty build directory once before starting to use the interactive tools.
@@ -252,13 +252,7 @@ new subdirectory called `build` or `build-qt5` in it.
 === Install build dependencies ===
 
 ```
-dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
-qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel 
-qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
-clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
-qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
-qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
-python3-psycopg2 python3-PyYAML qca-qt5-ossl
+dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OSWLib qca-qt5-ossl
 ```
 
 To build QGIS server additional dependencies are required:
@@ -296,4 +290,18 @@ Or install to your system
 
 ```
 make install
+```
+
+=== Suggested system tweaks ===
+
+By default Fedora disables debugging calls from Qt applications. This prevents
+the useful debug output which is normally printed when running the unit tests.
+
+To enable debug prints for the current user, execute:
+
+```
+cat > ~/.config/QtProject/qtlogging.ini << EOL
+[Rules]
+default.debug=true
+EOL
 ```
