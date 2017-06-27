@@ -20,9 +20,12 @@
 
 #include <QString>
 #include <QMap>
+
 #include <limits>
 #include <cfloat>
+
 #include "qgis_analysis.h"
+#include "qgsfeedback.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
@@ -67,7 +70,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     /** Starts the calculation
       \returns 0 in case of success*/
-    int calculateStatistics( QProgressDialog *p );
+    int calculateStatistics( QgsFeedback *feedback );
 
   private:
     QgsZonalStatistics() = default;
