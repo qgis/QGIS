@@ -30,6 +30,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgswkbtypes.h"
 #include "qgis.h"
 
 
@@ -1175,7 +1176,12 @@ size_t QgsOgrProvider::layerCount() const
  */
 QgsWkbTypes::Type QgsOgrProvider::wkbType() const
 {
-  return static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  QgsWkbTypes::Type wkb = static_cast<QgsWkbTypes::Type>( mOGRGeomType );
+  if ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
+  {
+    wkb = QgsWkbTypes::multiType( wkb );
+  }
+  return wkb;
 }
 
 /**
