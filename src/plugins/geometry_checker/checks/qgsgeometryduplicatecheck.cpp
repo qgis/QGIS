@@ -26,14 +26,12 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
-    // Don't check already checked layers
-    layerIds.removeOne( layerFeatureA.layer().id() );
-
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, mCompatibleGeometryTypes );
+    QgsWkbTypes::GeometryType geomType = layerFeatureA.feature().geometry().type();
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, layerIds, bboxA, {geomType} );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -41,22 +39,36 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       {
         continue;
       }
-      QString errMsg;
-      QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry(), &errMsg );
-      if ( diffGeom && diffGeom->area() < mContext->tolerance )
+      if ( geomType == QgsWkbTypes::PointGeometry )
       {
-        duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
+        const QgsPoint *p = dynamic_cast<const QgsPoint *>( layerFeatureA.geometry() );
+        const QgsPoint *q = dynamic_cast<const QgsPoint *>( layerFeatureB.geometry() );
+        if ( p && q && p->distanceSquared( *q ) < mContext->tolerance * mContext->tolerance )
+        {
+          duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
+        }
       }
-      else if ( !diffGeom )
+      else if ( geomType == QgsWkbTypes::PolygonGeometry )
       {
-        messages.append( tr( "Duplicate check between features %1 and %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+        QString errMsg;
+        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry(), &errMsg );
+        if ( diffGeom && diffGeom->area() < mContext->tolerance )
+        {
+          duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
+        }
+        else if ( !diffGeom )
+        {
+          messages.append( tr( "Duplicate check between features %1 and %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+        }
+        delete diffGeom;
       }
-      delete diffGeom;
     }
     if ( !duplicates.isEmpty() )
     {
       errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), duplicates ) );
     }
+    // Don't check already checked layers
+    layerIds.removeOne( layerFeatureA.layer().id() );
   }
 }
 
@@ -76,6 +88,8 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == RemoveDuplicates )
   {
+    QgsWkbTypes::GeometryType geomType = featureA.geometry().type();
+
     QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
@@ -91,14 +105,27 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
           continue;
         }
         QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
-        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry() );
-        if ( diffGeom && diffGeom->area() < mContext->tolerance )
+        if ( geomType == QgsWkbTypes::PointGeometry )
         {
-          featurePoolB->deleteFeature( featureB );
-          changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
+          const QgsPoint *p = dynamic_cast<const QgsPoint *>( layerFeatureA.geometry() );
+          const QgsPoint *q = dynamic_cast<const QgsPoint *>( layerFeatureB.geometry() );
+          if ( p && q && p->distanceSquared( *q ) < mContext->tolerance * mContext->tolerance )
+          {
+            featurePoolB->deleteFeature( featureB );
+            changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
+          }
         }
+        else if ( geomType == QgsWkbTypes::PolygonGeometry )
+        {
+          QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry() );
+          if ( diffGeom && diffGeom->area() < mContext->tolerance )
+          {
+            featurePoolB->deleteFeature( featureB );
+            changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
+          }
 
-        delete diffGeom;
+          delete diffGeom;
+        }
       }
     }
     error->setFixed( method );
