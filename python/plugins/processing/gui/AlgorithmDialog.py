@@ -39,6 +39,7 @@ from qgis.core import (QgsProject,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterVectorOutput,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterOutput,
@@ -115,7 +116,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             else:
                 dest_project = None
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, OutputTable)):
+                        isinstance(param, (QgsProcessingParameterRasterOutput, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput)):
                     if self.mainWidget.checkBoxes[param.name()].isChecked():
                         dest_project = QgsProject.instance()
 
