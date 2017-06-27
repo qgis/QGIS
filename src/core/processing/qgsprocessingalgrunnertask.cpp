@@ -47,7 +47,7 @@ bool QgsProcessingAlgRunnerTask::run()
   bool ok = false;
   try
   {
-    mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get(), &ok );
+    mResults = mAlgorithm->run( mParameters, mContext, mFeedback, &ok );
   }
   catch ( QgsProcessingException & )
   {
