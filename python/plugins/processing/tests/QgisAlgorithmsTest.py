@@ -48,6 +48,9 @@ class TestAlg(QgsProcessingAlgorithm):
     def displayName(self):
         return 'testalg'
 
+    def clone(self):
+        return TestAlg()
+
     def processAlgorithm(self, parameters, context, feedback):
         raise GeoAlgorithmExecutionException('Exception while processing')
         return {}
