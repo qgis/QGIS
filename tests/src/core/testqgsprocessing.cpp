@@ -333,6 +333,7 @@ class TestQgsProcessing: public QObject
     void modelExecution();
     void modelAcceptableValues();
     void tempUtils();
+    void convertCompatible();
 
   private:
 
@@ -5037,6 +5038,81 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile1 != tempFile2 );
   QVERIFY( tempFile2.endsWith( "test.txt" ) );
   QVERIFY( tempFile2.startsWith( tempFolder ) );
+}
+
+void TestQgsProcessing::convertCompatible()
+{
+  // start with a compatible shapefile
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString vector = testDataDir + "points.shp";
+  QgsVectorLayer *layer = new QgsVectorLayer( vector, "vl" );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+  QgsProcessingFeedback feedback;
+  QString out = QgsProcessingUtils::convertToCompatibleFormat( layer, false, QStringLiteral( "test" ), QStringList() << "shp", QString( "shp" ), context, &feedback );
+  // layer should be returned unchanged - underlying source is compatible
+  QCOMPARE( out, layer->source() );
+
+  // don't include shp as compatible type
+  out = QgsProcessingUtils::convertToCompatibleFormat( layer, false, QStringLiteral( "test" ), QStringList() << "tab", QString( "tab" ), context, &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".tab" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+
+  // make sure all features are copied
+  QgsVectorLayer *t = new QgsVectorLayer( out, "vl2" );
+  QCOMPARE( layer->featureCount(), t->featureCount() );
+  QCOMPARE( layer->crs(), t->crs() );
+
+  // use a selection - this will require translation
+  QgsFeatureIds ids;
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures();
+  it.nextFeature( f );
+  ids.insert( f.id() );
+  it.nextFeature( f );
+  ids.insert( f.id() );
+
+  layer->selectByIds( ids );
+  out = QgsProcessingUtils::convertToCompatibleFormat( layer, true, QStringLiteral( "test" ), QStringList() << "tab", QString( "tab" ), context, &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".tab" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  delete t;
+  t = new QgsVectorLayer( out, "vl2" );
+  QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
+
+  // using a selection but existing format - will still require translation
+  out = QgsProcessingUtils::convertToCompatibleFormat( layer, true, QStringLiteral( "test" ), QStringList() << "shp", QString( "shp" ), context, &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".shp" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+  delete t;
+  t = new QgsVectorLayer( out, "vl2" );
+  QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
+
+
+  // also test evaluating parameter to compatible format
+  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterFeatureSource( QStringLiteral( "source" ) ) );
+  QVariantMap params;
+  params.insert( QStringLiteral( "source" ), QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
+  QCOMPARE( out, layer->source() );
+
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "tab", QString( "tab" ), &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".tab" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+
+  // selected only, will force export
+  params.insert( QStringLiteral( "source" ), QgsProcessingFeatureSourceDefinition( layer->id(), true ) );
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".shp" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

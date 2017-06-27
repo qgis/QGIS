@@ -32,6 +32,7 @@ class QgsFeatureSink;
 class QgsFeatureSource;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
+class QgsProcessingFeedback;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -507,6 +508,21 @@ class CORE_EXPORT QgsProcessingParameters
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
+
+    /**
+     * Evaluates the parameter with matching \a definition to a source vector layer file path of compatible format.
+     *
+     * If the parameter is evaluated to an existing layer, and that layer is not of the format listed in the
+     * \a compatibleFormats argument, then the layer will first be exported to a compatible format
+     * in a temporary location. The function will then return the path to that temporary file.
+     *
+     * \a compatibleFormats should consist entirely of lowercase file extensions, e.g. 'shp'.
+     *
+     * The \a preferredFormat argument is used to specify to desired file extension to use when a temporary
+     * layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
+     */
+    static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr );
 
     /**
      * Evaluates the parameter with matching \a definition to a map layer.

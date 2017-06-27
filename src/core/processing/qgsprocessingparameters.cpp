@@ -21,6 +21,7 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
+#include "qgsvectorfilewriter.h"
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
@@ -326,6 +327,49 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
     return new QgsProcessingFeatureSource( vl, context );
   }
 }
+
+QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
+{
+  if ( !definition )
+    return QString();
+
+  QVariant val = parameters.value( definition->name() );
+
+  bool selectedFeaturesOnly = false;
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    val = fromVar.source;
+  }
+
+  QString layerRef;
+  if ( val.canConvert<QgsProperty>() )
+  {
+    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  }
+  else if ( !val.isValid() || val.toString().isEmpty() )
+  {
+    // fall back to default
+    layerRef = definition->defaultValue().toString();
+  }
+  else
+  {
+    layerRef = val.toString();
+  }
+
+  if ( layerRef.isEmpty() )
+    return QString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  if ( !vl )
+    return QString();
+
+  return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
+         compatibleFormats, preferredFormat, context, feedback );
+}
+
 
 QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
