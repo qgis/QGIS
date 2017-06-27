@@ -222,6 +222,25 @@ namespace QgsGeometryCheckerUtils
     return false;
   }
 
+  bool linesIntersect( const QgsLineString *line1, const QgsLineString *line2, double tol, QgsPoint &inter )
+  {
+    for ( int i = 0, n = line1->vertexCount() - 1; i < n; ++i )
+    {
+      for ( int j = 0, m = line2->vertexCount() - 1; j < m; ++j )
+      {
+        QgsPoint p1 = line1->vertexAt( QgsVertexId( 0, 0, i ) );
+        QgsPoint p2 = line1->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
+        QgsPoint q1 = line1->vertexAt( QgsVertexId( 0, 0, j ) );
+        QgsPoint q2 = line1->vertexAt( QgsVertexId( 0, 0, j + 1 ) );
+        if ( QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, inter, tol ) )
+        {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
   {
     double len = 0;

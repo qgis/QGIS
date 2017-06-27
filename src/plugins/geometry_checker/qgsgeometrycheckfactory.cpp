@@ -25,6 +25,7 @@
 #include "checks/qgsgeometryduplicatenodescheck.h"
 #include "checks/qgsgeometrygapcheck.h"
 #include "checks/qgsgeometryholecheck.h"
+#include "checks/qgsgeometrylineintersectioncheck.h"
 #include "checks/qgsgeometrymultipartcheck.h"
 #include "checks/qgsgeometryoverlapcheck.h"
 #include "checks/qgsgeometrypointcoveredbylinecheck.h"
@@ -298,6 +299,35 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryHoleCheck>::cre
 REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryHoleCheck> )
 
 ///////////////////////////////////////////////////////////////////////////////
+
+template<> void QgsGeometryCheckFactoryT<QgsGeometryLineIntersectionCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkLineIntersection->setChecked( QgsSettings().value( sSettingsGroup + "checkLineIntersection" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryLineIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int /*nPolygon*/ ) const
+{
+  ui.checkLineIntersection->setEnabled( nLineString > 0 );
+  return ui.checkLineIntersection->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryLineIntersectionCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkLineIntersection", ui.checkLineIntersection->isChecked() );
+  if ( ui.checkLineIntersection->isEnabled() && ui.checkLineIntersection->isChecked() )
+  {
+    return new QgsGeometryLineIntersectionCheck( context );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryLineIntersectionCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
+
 
 template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {

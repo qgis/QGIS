@@ -43,7 +43,7 @@
         <x>0</x>
         <y>0</y>
         <width>626</width>
-        <height>895</height>
+        <height>918</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -511,6 +511,13 @@
                </property>
               </widget>
              </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="checkLineIntersection">
+               <property name="text">
+                <string>Lines must not intersect</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QCheckBox" name="checkBoxDuplicates">
                <property name="text">
@@ -535,7 +542,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0" colspan="2">
+             <item row="8" column="0" colspan="2">
               <widget class="QLabel" name="label">
                <property name="text">
                 <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
@@ -552,7 +559,7 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="0" colspan="2">
+             <item row="4" column="0">
               <widget class="QCheckBox" name="checkPointCoveredByLine">
                <property name="text">
                 <string>Points must be covered by lines</string>

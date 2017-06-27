@@ -128,6 +128,8 @@ namespace QgsGeometryCheckerUtils
 
   bool pointOnLine( const QgsPoint &p, const QgsLineString *line, double tol, bool excludeExtremities = false );
 
+  bool linesIntersect( const QgsLineString *line1, const QgsLineString *line2, double tol, QgsPoint &inter );
+
   double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol );
 
   /**
