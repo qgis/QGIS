@@ -64,6 +64,7 @@ from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RegularPoints import RegularPoints
 from .SaveSelectedFeatures import SaveSelectedFeatures
+from .SelectByAttribute import SelectByAttribute
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
@@ -99,7 +100,6 @@ from .VectorSplit import VectorSplit
 # from .SpatialJoin import SpatialJoin
 # from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 # from .TextToFloat import TextToFloat
-# from .SelectByAttribute import SelectByAttribute
 # from .GridLine import GridLine
 # from .Gridify import Gridify
 # from .HubDistancePoints import HubDistancePoints
@@ -202,7 +202,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         ExtractByLocation(),
         #         SpatialJoin(),
         #         DeleteDuplicateGeometries(), TextToFloat(),
-        #         SelectByAttribute(),
         #         GridLine(), Gridify(), HubDistancePoints(),
         #         HubDistanceLines(), HubLines(),
         #         GeometryConvert(), FieldsCalculator(),
@@ -266,6 +265,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 RandomExtractWithinSubsets(),
                 RegularPoints(),
                 SaveSelectedFeatures(),
+                SelectByAttribute(),
                 SimplifyGeometries(),
                 Smooth(),
                 SpatialiteExecuteSQL(),

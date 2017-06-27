@@ -28,14 +28,14 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
-                       QgsProcessingUtils)
+                       QgsProcessingUtils,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
 
 
 class SelectByAttribute(QgisAlgorithm):
@@ -82,15 +82,15 @@ class SelectByAttribute(QgisAlgorithm):
                                self.tr('does not contain')
                                ]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Selection attribute'), self.INPUT))
-        self.addParameter(ParameterSelection(self.OPERATOR,
-                                             self.tr('Operator'), self.i18n_operators))
-        self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Selection attribute'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterEnum(self.OPERATOR,
+                                                     self.tr('Operator'), self.i18n_operators))
+        self.addParameter(QgsProcessingParameterString(self.VALUE, self.tr('Value')))
+
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
     def name(self):
         return 'selectbyattribute'
@@ -99,11 +99,11 @@ class SelectByAttribute(QgisAlgorithm):
         return self.tr('Select by attribute')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
-        fieldName = self.getParameterValue(self.FIELD)
-        operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
-        value = self.getParameterValue(self.VALUE)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        operator = self.OPERATORS[self.parameterAsEnum(parameters, self.OPERATOR, context)]
+        value = self.parameterAsString(parameters, self.VALUE, context)
 
         fields = layer.fields()
 
@@ -135,4 +135,4 @@ class SelectByAttribute(QgisAlgorithm):
             raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
         layer.selectByExpression(expression_string)
-        self.setOutputValue(self.OUTPUT, fileName)
+        return {self.OUTPUT: parameters[self.INPUT]}
