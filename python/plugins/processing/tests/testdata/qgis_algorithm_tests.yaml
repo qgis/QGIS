@@ -2543,29 +2543,29 @@ tests:
 #      MIN_DISTANCE: 0.0
 #      POINT_NUMBER: 5
 #    results: {}
-#
-#  - algorithm: script:selectbyattribute
-#    name: Select by attribute
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/selected_points.gml
-#        type: vector
-#
-#  - algorithm: script:selectbyexpression
-#    name: Select by expression
-#    params:
-#      INPUT_LAYER:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/select_by_expression.gml
-#        type: vector
-#
+
+  - algorithm: script:selectbyattribute
+    name: Select by attribute
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/selected_points.gml
+        type: vector
+
+  - algorithm: script:selectbyexpression
+    name: Select by expression
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/select_by_expression.gml
+        type: vector
+
   - algorithm: qgis:randomextract
     name: Random extract by number
     params:
