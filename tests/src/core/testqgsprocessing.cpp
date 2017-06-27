@@ -2693,6 +2693,11 @@ void TestQgsProcessing::parameterEnum()
   iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
   QCOMPARE( iNumbers, QList<int>() << 0 << 2 );
 
+  // empty list
+  params.insert( "non_optional", QVariantList() );
+  iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
+  QCOMPARE( iNumbers, QList<int>() );
+
   QCOMPARE( def->valueAsPythonString( QVariantList() << 1 << 2, context ), QStringLiteral( "[1,2]" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "1,2" ), context ), QStringLiteral( "[1,2]" ) );
 
@@ -2760,6 +2765,10 @@ void TestQgsProcessing::parameterEnum()
   params.insert( "optional",  QVariant() );
   iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
   QCOMPARE( iNumbers, QList<int>() << 1 << 2 );
+  // empty list
+  params.insert( "optional", QVariantList() );
+  iNumbers = QgsProcessingParameters::parameterAsEnums( def.get(), params, context );
+  QCOMPARE( iNumbers, QList<int>() );
 
   code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##optional=optional enum multiple A;B;C 1,2" ) );
