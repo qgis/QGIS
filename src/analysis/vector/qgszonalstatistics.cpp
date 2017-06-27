@@ -17,16 +17,17 @@
 
 #include "qgszonalstatistics.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeedback.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterblock.h"
-#include "qmath.h"
 #include "qgslogger.h"
 
-#include <QProgressDialog>
+#include "qmath.h"
+
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
@@ -37,7 +38,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterL
   , mStatistics( stats )
 {}
 
-int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
+int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
   if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
@@ -191,10 +192,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
 
   //progress dialog
   long featureCount = vectorProvider->featureCount();
-  if ( p )
-  {
-    p->setMaximum( featureCount );
-  }
 
   //iterate over each polygon
   QgsFeatureRequest request;
@@ -213,14 +210,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
   QgsChangedAttributesMap changeMap;
   while ( fi.nextFeature( f ) )
   {
-    if ( p )
-    {
-      p->setValue( featureCounter );
-    }
-
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
     }
 
     if ( !f.hasGeometry() )
@@ -333,14 +330,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog *p )
 
   vectorProvider->changeAttributeValues( changeMap );
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( featureCount );
+    feedback->setProgress( 100 );
   }
 
   mPolygonLayer->updateFields();
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     return 9;
   }
