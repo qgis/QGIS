@@ -39,7 +39,7 @@ from qgis.utils import iface
 from qgis.core import (QgsMessageLog,
                        QgsApplication,
                        QgsProcessingProvider,
-                       QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition)
 
 import processing
@@ -123,7 +123,7 @@ class Processing(object):
 
     @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
-        if isinstance(algOrName, GeoAlgorithm):
+        if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
             alg = QgsApplication.processingRegistry().algorithmById(algOrName)
@@ -164,36 +164,6 @@ class Processing(object):
                             Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name()),
                             Processing.tr("Processing"))
                         return
-        else:
-            if len(args) != alg.countVisibleParameters():
-                # fix_print_with_import
-                print('Error: Wrong number of parameters')
-                QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'),
-                                         Processing.tr("Processing"))
-                processing.algorithmHelp(algOrName)
-                return
-            i = 0
-            for param in alg.parameterDefinitions():
-                if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                    if not True: # TODO param.setValue(args[i]):
-                        # fix_print_with_import
-                        print('Error: Wrong parameter value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value: ') + str(args[i]),
-                                                 Processing.tr("Processing"))
-                        return
-                    else:
-                        parameters[param.name()] = args[i]
-                    i = i + 1
-
-            for output in alg.outputs:
-                if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                    if not output.setValue(args[i]):
-                        # fix_print_with_import
-                        print('Error: Wrong output value: ' + str(args[i]))
-                        QgsMessageLog.logMessage(Processing.tr('Error: Wrong output value: ') + str(args[i]),
-                                                 Processing.tr("Processing"))
-                        return
-                    i = i + 1
 
         feedback = None
         if kwargs is not None and "feedback" in list(kwargs.keys()):
