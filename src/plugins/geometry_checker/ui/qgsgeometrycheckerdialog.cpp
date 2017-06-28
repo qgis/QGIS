@@ -44,6 +44,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mTabWidget->addTab( new QgsGeometryCheckerSetupTab( iface, this ), tr( "Setup" ) );
   mTabWidget->addTab( new QWidget(), tr( "Result" ) );
   mTabWidget->setTabEnabled( 1, false );
+  resize( 640, 640 );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsGeometryCheckerDialog::showHelp );
