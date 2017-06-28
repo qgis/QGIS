@@ -141,13 +141,14 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.tableWidgetErrors->insertRow( row );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
-  ui.tableWidgetErrors->setItem( row, 0, idItem );
-  ui.tableWidgetErrors->setItem( row, 1, new QTableWidgetItem( error->description() ) );
-  ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( posStr ) );
+  ui.tableWidgetErrors->setItem( row, 0, new QTableWidgetItem( mChecker->getContext()->featurePools[error->layerId()]->getLayer()->name() ) );
+  ui.tableWidgetErrors->setItem( row, 1, idItem );
+  ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( error->description() ) );
+  ui.tableWidgetErrors->setItem( row, 3, new QTableWidgetItem( posStr ) );
   QTableWidgetItem *valueItem = new QTableWidgetItem();
   valueItem->setData( Qt::EditRole, error->value() );
-  ui.tableWidgetErrors->setItem( row, 3, valueItem );
-  ui.tableWidgetErrors->setItem( row, 4, new QTableWidgetItem( QLatin1String( "" ) ) );
+  ui.tableWidgetErrors->setItem( row, 4, valueItem );
+  ui.tableWidgetErrors->setItem( row, 5, new QTableWidgetItem( QLatin1String( "" ) ) );
   ui.tableWidgetErrors->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( error ) );
   ++mErrorCount;
   ui.labelErrorCount->setText( tr( "Total errors: %1, fixed errors: %2" ).arg( mErrorCount ).arg( mFixedCount ) );
@@ -164,17 +165,16 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   {
     return;
   }
-  // Disable sorting to prevent crashes: if i.e. sorting by col 0, as soon as the item(row, 0)
-  // is set, the row is potentially moved due to sorting, and subsequent item(row, col) reference wrong
-  // item
+  // Disable sorting to prevent crashes: if i.e. sorting by col 0, as soon as the item(row, 0) is set,
+  // the row is potentially moved due to sorting, and subsequent item(row, col) reference wrong item
   ui.tableWidgetErrors->setSortingEnabled( false );
 
   int row = mErrorMap.value( error ).row();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
 
-  ui.tableWidgetErrors->item( row, 2 )->setText( posStr );
-  ui.tableWidgetErrors->item( row, 3 )->setData( Qt::EditRole, error->value() );
+  ui.tableWidgetErrors->item( row, 3 )->setText( posStr );
+  ui.tableWidgetErrors->item( row, 4 )->setData( Qt::EditRole, error->value() );
   if ( error->status() == QgsGeometryCheckError::StatusFixed )
   {
     setRowStatus( row, Qt::green, tr( "Fixed: %1" ).arg( error->resolutionMessage() ), true );
@@ -533,7 +533,7 @@ void QgsGeometryCheckerResultTab::setRowStatus( int row, const QColor &color, co
       item->setForeground( Qt::lightGray );
     }
   }
-  ui.tableWidgetErrors->item( row, 4 )->setText( message );
+  ui.tableWidgetErrors->item( row, 5 )->setText( message );
 }
 
 void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()

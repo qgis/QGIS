@@ -295,6 +295,11 @@
          </attribute>
          <column>
           <property name="text">
+           <string>Layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
            <string>Object ID</string>
           </property>
          </column>
