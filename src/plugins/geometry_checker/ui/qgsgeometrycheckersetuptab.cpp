@@ -41,9 +41,10 @@
 
 static const int LayerIdRole = Qt::UserRole + 1;
 
-QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QWidget *parent )
+QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent )
   : QWidget( parent )
   , mIface( iface )
+  , mCheckerDialog( checkerDialog )
 
 {
   ui.setupUi( this );
@@ -90,13 +91,13 @@ QgsGeometryCheckerSetupTab::~QgsGeometryCheckerSetupTab()
 
 void QgsGeometryCheckerSetupTab::updateLayers()
 {
-  QStringList prevLayers;
+  QStringList prevCheckedLayers;
   for ( int row = 0, nRows = ui.listWidgetInputLayers->count(); row < nRows; ++row )
   {
     QListWidgetItem *item = ui.listWidgetInputLayers->item( row );
     if ( item->checkState() == Qt::Checked )
     {
-      prevLayers.append( item->data( LayerIdRole ).toString() );
+      prevCheckedLayers.append( item->data( LayerIdRole ).toString() );
     }
   }
   ui.listWidgetInputLayers->clear();
@@ -125,7 +126,16 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     item->setData( LayerIdRole, layer->id() );
     if ( supportedGeometryType )
     {
-      item->setCheckState( prevLayers.contains( layer->id() ) ? Qt::Checked : Qt::Unchecked );
+      if ( mCheckerDialog->isVisible() )
+      {
+        // If dialog is visible, only set item to checked if it previously was
+        item->setCheckState( prevCheckedLayers.contains( layer->id() ) ? Qt::Checked : Qt::Unchecked );
+      }
+      else
+      {
+        // Otherwise, set item to checked
+        item->setCheckState( Qt::Checked );
+      }
     }
     else
     {

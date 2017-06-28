@@ -31,7 +31,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerSetupTab( QgisInterface *iface, QWidget *parent = nullptr );
+    QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent = nullptr );
     ~QgsGeometryCheckerSetupTab();
 
   signals:
@@ -40,6 +40,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
 
   private:
     QgisInterface *mIface = nullptr;
+    QDialog *mCheckerDialog;
     Ui::QgsGeometryCheckerSetupTab ui;
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;
