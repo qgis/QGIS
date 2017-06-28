@@ -98,6 +98,12 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
 
   ui.progressBarFixErrors->setVisible( false );
   ui.tableWidgetErrors->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
+  ui.tableWidgetErrors->resizeColumnToContents( 0 );
+  ui.tableWidgetErrors->resizeColumnToContents( 1 );
+  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
+  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
+  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
+  ui.tableWidgetErrors->horizontalHeader()->setResizeMode( 5, QHeaderView::Stretch );
   // Not sure why, but this is needed...
   ui.tableWidgetErrors->setSortingEnabled( true );
   ui.tableWidgetErrors->setSortingEnabled( false );
@@ -398,7 +404,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
 void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newSel, const QItemSelection &/*oldSel*/ )
 {
   QModelIndex idx = ui.tableWidgetErrors->currentIndex();
-  if ( idx.isValid() && !ui.tableWidgetErrors->isRowHidden( idx.row() )  && ui.tableWidgetErrors->selectionModel()->selectedIndexes().contains( idx ) )
+  if ( idx.isValid() && !ui.tableWidgetErrors->isRowHidden( idx.row() ) && newSel.contains( idx ) )
   {
     highlightErrors();
   }
@@ -484,6 +490,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     connect( &fixdialog, &QgsGeometryCheckerFixDialog::currentErrorChanged, this, &QgsGeometryCheckerResultTab::highlightError );
     connect( &fixdialog, &QDialog::finished, &loop, &QEventLoop::quit );
     fixdialog.show();
+    fixdialog.move( window()->frameGeometry().topLeft() + window()->rect().center() - fixdialog.rect().center() );
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
     loop.exec();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( true );
@@ -512,13 +519,10 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
 
   if ( mStatistics.itemCount() > 0 )
   {
-    QgsGeometryCheckerFixSummaryDialog summarydialog( mStatistics, mChecker, mIface->mainWindow() );
-    QEventLoop loop;
-    connect( &summarydialog, &QgsGeometryCheckerFixSummaryDialog::errorSelected, this, &QgsGeometryCheckerResultTab::highlightError );
-    connect( &summarydialog, &QDialog::finished, &loop, &QEventLoop::quit );
-    summarydialog.show();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( false );
-    loop.exec();
+    QgsGeometryCheckerFixSummaryDialog summarydialog( mStatistics, mChecker, mIface->mainWindow() );
+    connect( &summarydialog, &QgsGeometryCheckerFixSummaryDialog::errorSelected, this, &QgsGeometryCheckerResultTab::highlightError );
+    summarydialog.exec();
     parentWidget()->parentWidget()->parentWidget()->setEnabled( true );
   }
   mCloseable = true;
@@ -546,9 +550,9 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 
   QVBoxLayout *layout = new QVBoxLayout( &dialog );
 
-  scrollArea->setFrameShape( QFrame::NoFrame );
-  layout->setContentsMargins( 0, 0, 0, 0 );
   QgsGeometryCheckerUtils::VScrollArea *scrollArea = new QgsGeometryCheckerUtils::VScrollArea( &dialog );
+  layout->setContentsMargins( 6, 6, 6, 6 );
+  layout->addWidget( new QLabel( tr( "Select default error resolutions:" ) ) );
   layout->addWidget( scrollArea );
 
   QWidget *scrollAreaContents = new QWidget( scrollArea );
@@ -577,6 +581,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 
     scrollAreaLayout->addWidget( groupBox );
   }
+  scrollAreaLayout->addItem( new QSpacerItem( 1, 1, QSizePolicy::Preferred, QSizePolicy::Expanding ) );
   scrollArea->setWidget( scrollAreaContents );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok, Qt::Horizontal, &dialog );

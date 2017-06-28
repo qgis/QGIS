@@ -41,16 +41,17 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
   setWindowTitle( tr( "Fix Errors" ) );
 
   QGridLayout *layout = new QGridLayout();
-  layout->setContentsMargins( 4, 4, 4, 4 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
   setLayout( layout );
 
   mResolutionsBox = new QGroupBox();
   mResolutionsBox->setFlat( true );
   mResolutionsBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
   layout->addWidget( mResolutionsBox, 0, 0, 1, 2 );
+  layout->addItem( new QSpacerItem( 1, 1, QSizePolicy::Preferred, QSizePolicy::Expanding ), 1, 0, 1, 2 );
 
   mStatusLabel = new QLabel();
-  layout->addWidget( mStatusLabel, 1, 0, 1, 2 );
+  layout->addWidget( mStatusLabel, 2, 0, 1, 2 );
 
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Abort, Qt::Horizontal );
   mNextBtn = mButtonBox->addButton( tr( "Next" ), QDialogButtonBox::ActionRole );
@@ -58,12 +59,12 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
   mSkipBtn = mButtonBox->addButton( tr( "Skip" ), QDialogButtonBox::ActionRole );
   mNextBtn->setAutoDefault( true );
   mFixBtn->setAutoDefault( true );
-  layout->addWidget( mButtonBox, 2, 0, 1, 1 );
+  layout->addWidget( mButtonBox, 3, 0, 1, 1 );
 
   mProgressBar = new QProgressBar();
   mProgressBar->setRange( 0, errors.size() );
   mProgressBar->setValue( 0 );
-  layout->addWidget( mProgressBar, 2, 1, 1, 1 );
+  layout->addWidget( mProgressBar, 3, 1, 1, 1 );
 
   mRadioGroup = new QButtonGroup( this );
 
