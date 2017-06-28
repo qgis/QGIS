@@ -64,6 +64,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
       ui.comboBoxOutputFormat->setCurrentIndex( ui.comboBoxOutputFormat->count() - 1 );
     }
   }
+  ui.listWidgetInputLayers->setIconSize( QSize( 16, 16 ) );
 
   connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
   connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
