@@ -68,9 +68,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
 
     /**
-     * Clones the algorithm, returning a new copy for safe use in background threads.
+     * Creates a copy of the algorithm, ready for execution.
      */
-    virtual QgsProcessingAlgorithm *clone() const = 0 SIP_FACTORY;
+    virtual QgsProcessingAlgorithm *create() const = 0 SIP_FACTORY;
 
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string

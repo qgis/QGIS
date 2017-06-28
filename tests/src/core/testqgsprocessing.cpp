@@ -47,7 +47,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     QVariantMap postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
     virtual Flags flags() const override { return mFlags; }
-    DummyAlgorithm *clone() const override { return new DummyAlgorithm( name() ); }
+    DummyAlgorithm *create() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
 

@@ -321,7 +321,7 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok ) const
 {
-  std::unique_ptr< QgsProcessingAlgorithm > alg( clone() );
+  std::unique_ptr< QgsProcessingAlgorithm > alg( create() );
   if ( ok )
     *ok = false;
 

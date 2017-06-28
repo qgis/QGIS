@@ -588,7 +588,7 @@ Copies are protected to avoid slicing
 
     virtual QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const;
 
-    virtual QgsProcessingModelAlgorithm *clone() const /Factory/;
+    virtual QgsProcessingModelAlgorithm *create() const /Factory/;
 
 
     void setName( const QString &name );
