@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>442</height>
+    <width>501</width>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,11 @@
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
+        <column>
+         <property name="text">
+          <string>Layer</string>
+         </property>
+        </column>
         <column>
          <property name="text">
           <string>Object ID</string>
@@ -102,6 +107,11 @@
         </attribute>
         <column>
          <property name="text">
+          <string>Layer</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Object ID</string>
          </property>
         </column>
@@ -159,6 +169,11 @@
         </attribute>
         <column>
          <property name="text">
+          <string>Layer</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Object ID</string>
          </property>
         </column>
@@ -214,6 +229,11 @@
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
+        <column>
+         <property name="text">
+          <string>Layer</string>
+         </property>
+        </column>
         <column>
          <property name="text">
           <string>Object ID</string>

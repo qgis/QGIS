@@ -70,25 +70,26 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 
   int row = table->rowCount();
   table->insertRow( row );
+  table->setItem( row, 0, new QTableWidgetItem( mChecker->getContext()->featurePools[error->layerId()]->getLayer()->name() ) );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
-  idItem->setData( Qt::UserRole, QVariant::fromValue( reinterpret_cast<void *>( error ) ) );
-  table->setItem( row, 0, idItem );
-  table->setItem( row, 1, new QTableWidgetItem( error->description() ) );
-  table->setItem( row, 2, new QTableWidgetItem( posStr ) );
+  table->setItem( row, 1, idItem );
+  table->setItem( row, 2, new QTableWidgetItem( error->description() ) );
+  table->setItem( row, 3, new QTableWidgetItem( posStr ) );
   QTableWidgetItem *valueItem = new QTableWidgetItem();
   valueItem->setData( Qt::EditRole, error->value() );
-  table->setItem( row, 3, valueItem );
+  table->setItem( row, 4, valueItem );
+  table->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( reinterpret_cast<void *>( error ) ) );
+  QTextStream( stdout ) << "Set data: " << row << " = " << error << endl;
 }
 
 void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
 {
   table->resizeColumnToContents( 0 );
-  table->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
-  table->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
-  table->horizontalHeader()->setSectionResizeMode( 3, QHeaderView::Stretch );
-  table->horizontalHeader()->setSectionResizeMode( 4, QHeaderView::Stretch );
-
+  table->resizeColumnToContents( 1 );
+  table->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
+  table->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
+  table->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
   table->setEditTriggers( QAbstractItemView::NoEditTriggers );
   table->setSelectionBehavior( QAbstractItemView::SelectRows );
   table->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -101,15 +102,18 @@ void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
 
 void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSelection &newSel, const QItemSelection & /*oldSel*/ )
 {
-  const QAbstractItemModel *model = qobject_cast<QItemSelectionModel *>( QObject::sender() )->model();
+  QItemSelectionModel *selModel = qobject_cast<QItemSelectionModel *>( QObject::sender() );
+  const QAbstractItemModel *model = selModel->model();
 
-  for ( QTableWidget *table : QList<QTableWidget *>() << ui.tableWidgetFixedErrors << ui.tableWidgetNewErrors << ui.tableWidgetNotFixed << ui.tableWidgetObsoleteErrors )
-    if ( table->model() != model )
+  for ( QTableWidget *table : {ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors} )
+  {
+    if ( table->selectionModel() != selModel )
     {
       table->selectionModel()->blockSignals( true );
       table->clearSelection();
       table->selectionModel()->blockSignals( false );
     }
+  }
 
   if ( !newSel.isEmpty() && !newSel.first().indexes().isEmpty() )
   {
