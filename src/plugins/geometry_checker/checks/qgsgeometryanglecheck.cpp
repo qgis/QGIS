@@ -28,13 +28,14 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
+        bool closed = false;
+        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing, &closed );
         // Less than three points, no angles to check
         if ( nVerts < 3 )
         {
           continue;
         }
-        for ( int iVert = 0; iVert < nVerts; ++iVert )
+        for ( int iVert = !closed; iVert < nVerts - !closed; ++iVert )
         {
           const QgsPoint &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
           const QgsPoint &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
