@@ -51,6 +51,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious
 template<> bool QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int nPolygon ) const
 {
   ui.checkBoxAngle->setEnabled( nPolygon > 0 || nLineString > 0 );
+  ui.doubleSpinBoxAngle->setEnabled( ui.checkBoxAngle->isEnabled() );
   return ui.checkBoxAngle->isEnabled();
 }
 
@@ -81,6 +82,7 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::restorePrevious(
 template<> bool QgsGeometryCheckFactoryT<QgsGeometryAreaCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int /*nLineString*/, int nPolygon ) const
 {
   ui.checkBoxArea->setEnabled( nPolygon > 0 );
+  ui.doubleSpinBoxArea->setEnabled( ui.checkBoxArea->isEnabled() );
   return ui.checkBoxArea->isEnabled();
 }
 
@@ -335,9 +337,10 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrev
   ui.checkBoxMultipart->setChecked( QgsSettings().value( sSettingsGroup + "checkMultipart" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, int /*nPoint*/, int /*nLineString*/, int /*nPolygon*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const
 {
-  return true;
+  ui.checkBoxMultipart->setEnabled( nPoint + nLineString + nPolygon > 0 );
+  return ui.checkBoxMultipart->isEnabled();
 }
 
 template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
@@ -578,9 +581,15 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::restorePrevious(
   ui.checkBoxMultipolygon->setChecked( QgsSettings().value( sSettingsGroup + "checkTypeMultipolygon" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, int /*nPoint*/, int /*nLineString*/, int /*nPolygon*/ ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const
 {
-  return true;
+  ui.checkBoxPoint->setEnabled( nPoint > 0 );
+  ui.checkBoxMultipoint->setEnabled( nPoint > 0 );
+  ui.checkBoxLine->setEnabled( nLineString > 0 );
+  ui.checkBoxMultiline->setEnabled( nLineString > 0 );
+  ui.checkBoxPolygon->setEnabled( nPolygon > 0 );
+  ui.checkBoxMultipolygon->setEnabled( nPolygon > 0 );
+  return nPoint + nLineString + nPolygon > 0;
 }
 
 template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
