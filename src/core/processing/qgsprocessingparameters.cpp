@@ -277,6 +277,11 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
     val = fromVar.source;
   }
 
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
+  {
+    return new QgsProcessingFeatureSource( layer, context );
+  }
+
   QString layerRef;
   if ( val.canConvert<QgsProperty>() )
   {
@@ -285,6 +290,11 @@ QgsProcessingFeatureSource *QgsProcessingParameters::parameterAsSource( const Qg
   else if ( !val.isValid() || val.toString().isEmpty() )
   {
     // fall back to default
+    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( definition->defaultValue() ) ) )
+    {
+      return new QgsProcessingFeatureSource( layer, context );
+    }
+
     layerRef = definition->defaultValue().toString();
   }
   else
