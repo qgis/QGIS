@@ -59,6 +59,7 @@ from .GridPolygon import GridPolygon
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Merge import Merge
+from .PointsLayerFromTable import PointsLayerFromTable
 from .PostGISExecuteSQL import PostGISExecuteSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
@@ -117,7 +118,6 @@ from .ZonalStatisticsQgis import ZonalStatisticsQgis
 # from .FieldPyculator import FieldsPyculator
 # from .JoinAttributes import JoinAttributes
 # from .CreateConstantRaster import CreateConstantRaster
-# from .PointsLayerFromTable import PointsLayerFromTable
 # from .PointsDisplacement import PointsDisplacement
 # from .ZonalStatistics import ZonalStatistics
 # from .PointsFromPolygons import PointsFromPolygons
@@ -207,7 +207,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         GeometryConvert(), FieldsCalculator(),
         #          JoinAttributes(),
         #         Explode(), FieldsPyculator(),
-        #         EquivalentNumField(), PointsLayerFromTable(),
+        #         EquivalentNumField(),
         #         StatisticsByCategories(), ConcaveHull(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         ZonalStatistics(), PointsFromPolygons(),
@@ -260,6 +260,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Merge(),
+                PointsLayerFromTable(),
                 PostGISExecuteSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
