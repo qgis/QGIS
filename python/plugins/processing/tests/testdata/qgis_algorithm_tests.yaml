@@ -1600,22 +1600,22 @@ tests:
         name: expected/delete_column.gml
         type: vector
 
-#  - algorithm: qgis:createpointslayerfromtable
-#    name: Create points from table
-#    params:
-#      INPUT:
-#        name: create_points.gml
-#        type: table
-#      MFIELD: mcoord
-#      TARGET_CRS: EPSG:4326
-#      XFIELD: xcoord
-#      YFIELD: ycoord
-#      ZFIELD: zcoord
-#    results:
-#      OUTPUT:
-#        name: expected/create_points.gml
-#        type: vector
-#
+  - algorithm: qgis:createpointslayerfromtable
+    name: Create points from table
+    params:
+      INPUT:
+        name: create_points.gml
+        type: table
+      MFIELD: mcoord
+      TARGET_CRS: EPSG:4326
+      XFIELD: xcoord
+      YFIELD: ycoord
+      ZFIELD: zcoord
+    results:
+      OUTPUT:
+        name: expected/create_points.gml
+        type: vector
+
 #  - algorithm: qgis:splitwithlines
 #    name: Split lines with lines (new alg)
 #    params:
