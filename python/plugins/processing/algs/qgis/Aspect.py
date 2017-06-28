@@ -47,7 +47,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class Aspect(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
@@ -60,13 +60,18 @@ class Aspect(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_LAYER,
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
                                                        1, False, 1, 999999.99))
-        self.addParameter(QgsProcessingParameterRasterOutput(self.OUTPUT_LAYER, self.tr('Aspect')))
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT_LAYER, self.tr('Aspect')))
+        self.addParameter(QgsProcessingParameterRasterOutput(self.OUTPUT, self.tr('Aspect')))
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Aspect')))
+
+        self.inputFile = None
+        self.outputFile = None
+        self.outputFormat = None
+        self.zFactor = None
 
     def name(self):
         return 'aspect'
@@ -74,16 +79,19 @@ class Aspect(QgisAlgorithm):
     def displayName(self):
         return self.tr('Aspect')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT_LAYER, context))
-        zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        self.zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
-        outputFile = self.parameterAsRasterOutputLayer(parameters, self.OUTPUT_LAYER, context)
+        self.outputFile = self.parameterAsRasterOutputLayer(parameters, self.OUTPUT, context)
 
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+        self.outputFormat = raster.formatShortNameFromFileName(self.outputFile)
+        return True
 
-        aspect = QgsAspectFilter(inputFile, outputFile, outputFormat)
-        aspect.setZFactor(zFactor)
-        aspect.processRaster(feedback)
+    def processAlgorithm(self, context, feedback):
+        aspect = QgsAspectFilter(self.inputFile, self.outputFile, self.outputFormat)
+        aspect.setZFactor(self.zFactor)
+        return aspect.processRaster(feedback) == 0
 
-        return {self.OUTPUT_LAYER: outputFile}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.outputFile}

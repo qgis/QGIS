@@ -58,46 +58,56 @@ class DeleteColumn(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Output layer')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Output layer")))
 
+        self.source = None
+        self.fields_to_delete = None
+        self.sink = None
+        self.dest_id = None
+        self.field_indices = []
+
     def name(self):
         return 'deletecolumn'
 
     def displayName(self):
         return self.tr('Drop field(s)')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
 
-        fields = source.fields()
-        field_indices = []
+        fields = self.source.fields()
         # loop through twice - first we need to build up a list of original attribute indices
-        for f in fields_to_delete:
+        for f in self.fields_to_delete:
             index = fields.lookupField(f)
-            field_indices.append(index)
+            self.field_indices.append(index)
 
         # important - make sure we remove from the end so we aren't changing used indices as we go
-        field_indices.sort(reverse=True)
+        self.field_indices.sort(reverse=True)
 
         # this second time we make a cleaned version of the fields
-        for index in field_indices:
+        for index in self.field_indices:
             fields.remove(index)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, source.wkbType(), source.sourceCrs())
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         fields, self.source.wkbType(), self.source.sourceCrs())
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processAlgorithm(self, context, feedback):
+        features = self.source.getFeatures()
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
             attributes = f.attributes()
-            for index in field_indices:
+            for index in self.field_indices:
                 del attributes[index]
             f.setAttributes(attributes)
-            sink.addFeature(f, QgsFeatureSink.FastInsert)
+            self.sink.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        return {self.OUTPUT: dest_id}
+        return True
+
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}

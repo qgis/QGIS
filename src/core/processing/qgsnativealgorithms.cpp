@@ -142,7 +142,7 @@ bool QgsCentroidAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessi
 QVariantMap QgsCentroidAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYER" ), mSinkId );
+  outputs.insert( QStringLiteral( "OUTPUT" ), mSinkId );
   return outputs;
 }
 

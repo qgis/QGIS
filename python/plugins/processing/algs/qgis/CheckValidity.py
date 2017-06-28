@@ -93,46 +93,60 @@ class CheckValidity(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputVectorLayer(self.ERROR_OUTPUT, self.tr('Error output')))
         self.addOutput(QgsProcessingOutputNumber(self.ERROR_COUNT, self.tr('Count of errors')))
 
+        self.method = None
+        self.source = None
+        self.valid_output_sink = None
+        self.valid_output_dest_id = None
+        self.valid_count = 0
+        self.invalid_output_sink = None
+        self.invalid_output_dest_id = None
+        self.invalid_count = 0
+        self.error_output_sink = None
+        self.error_output_dest_id = None
+        self.error_count = 0
+
     def name(self):
         return 'checkvalidity'
 
     def displayName(self):
         return self.tr('Check validity')
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def prepareAlgorithm(self, parameters, context, feedback):
         method_param = self.parameterAsEnum(parameters, self.METHOD, context)
         if method_param == 0:
             settings = QgsSettings()
-            method = int(settings.value(settings_method_key, 0)) - 1
-            if method < 0:
-                method = 0
+            self.method = int(settings.value(settings_method_key, 0)) - 1
+            if self.method < 0:
+                self.method = 0
         else:
-            method = method_param - 1
+            self.method = method_param - 1
 
-        results = self.doCheck(method, parameters, context, feedback)
-        return results
+        self.source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-    def doCheck(self, method, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        (self.valid_output_sink, self.valid_output_dest_id) = self.parameterAsSink(parameters, self.VALID_OUTPUT,
+                                                                                   context,
+                                                                                   self.source.fields(),
+                                                                                   self.source.wkbType(),
+                                                                                   self.source.sourceCrs())
 
-        (valid_output_sink, valid_output_dest_id) = self.parameterAsSink(parameters, self.VALID_OUTPUT, context,
-                                                                         source.fields(), source.wkbType(), source.sourceCrs())
-        valid_count = 0
-
-        invalid_fields = source.fields()
+        invalid_fields = self.source.fields()
         invalid_fields.append(QgsField('_errors', QVariant.String, 'string', 255))
-        (invalid_output_sink, invalid_output_dest_id) = self.parameterAsSink(parameters, self.INVALID_OUTPUT, context,
-                                                                             invalid_fields, source.wkbType(), source.sourceCrs())
-        invalid_count = 0
+        (self.invalid_output_sink, self.invalid_output_dest_id) = self.parameterAsSink(parameters, self.INVALID_OUTPUT,
+                                                                                       context,
+                                                                                       invalid_fields,
+                                                                                       self.source.wkbType(),
+                                                                                       self.source.sourceCrs())
 
         error_fields = QgsFields()
         error_fields.append(QgsField('message', QVariant.String, 'string', 255))
-        (error_output_sink, error_output_dest_id) = self.parameterAsSink(parameters, self.ERROR_OUTPUT, context,
-                                                                         error_fields, QgsWkbTypes.Point, source.sourceCrs())
-        error_count = 0
+        (self.error_output_sink, self.error_output_dest_id) = self.parameterAsSink(parameters, self.ERROR_OUTPUT, context,
+                                                                                   error_fields, QgsWkbTypes.Point,
+                                                                                   self.source.sourceCrs())
+        return True
 
-        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processAlgorithm(self, context, feedback):
+        features = self.source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
         for current, inFeat in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -141,10 +155,10 @@ class CheckValidity(QgisAlgorithm):
 
             valid = True
             if not geom.isNull() and not geom.isEmpty():
-                errors = list(geom.validateGeometry(method))
+                errors = list(geom.validateGeometry(self.method))
                 if errors:
                     # QGIS method return a summary at the end
-                    if method == 1:
+                    if self.method == 1:
                         errors.pop()
                     valid = False
                     reasons = []
@@ -153,9 +167,9 @@ class CheckValidity(QgisAlgorithm):
                         error_geom = QgsGeometry.fromPoint(error.where())
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
-                        if error_output_sink:
-                            error_output_sink.addFeature(errFeat, QgsFeatureSink.FastInsert)
-                        error_count += 1
+                        if self.error_output_sink:
+                            self.error_output_sink.addFeature(errFeat, QgsFeatureSink.FastInsert)
+                        self.error_count += 1
 
                         reasons.append(error.what())
 
@@ -169,26 +183,28 @@ class CheckValidity(QgisAlgorithm):
             outFeat.setAttributes(attrs)
 
             if valid:
-                if valid_output_sink:
-                    valid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-                valid_count += 1
+                if self.valid_output_sink:
+                    self.valid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                self.valid_count += 1
 
             else:
-                if invalid_output_sink:
-                    invalid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
-                invalid_count += 1
+                if self.invalid_output_sink:
+                    self.invalid_output_sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                self.invalid_count += 1
 
             feedback.setProgress(int(current * total))
+        return True
 
+    def postProcessAlgorithm(self, context, feedback):
         results = {
-            self.VALID_COUNT: valid_count,
-            self.INVALID_COUNT: invalid_count,
-            self.ERROR_COUNT: error_count
+            self.VALID_COUNT: self.valid_count,
+            self.INVALID_COUNT: self.invalid_count,
+            self.ERROR_COUNT: self.error_count
         }
-        if valid_output_sink:
-            results[self.VALID_OUTPUT] = valid_output_dest_id
-        if invalid_output_sink:
-            results[self.INVALID_OUTPUT] = invalid_output_dest_id
-        if error_output_sink:
-            results[self.ERROR_OUTPUT] = error_output_dest_id
+        if self.valid_output_sink:
+            results[self.VALID_OUTPUT] = self.valid_output_dest_id
+        if self.invalid_output_sink:
+            results[self.INVALID_OUTPUT] = self.invalid_output_dest_id
+        if self.error_output_sink:
+            results[self.ERROR_OUTPUT] = self.error_output_dest_id
         return results

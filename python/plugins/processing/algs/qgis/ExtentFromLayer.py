@@ -79,15 +79,20 @@ class ExtentFromLayer(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Extent"), QgsProcessingParameterDefinition.TypeVectorPolygon))
 
+        self.source = None
+        self.byFeature = None
+        self.sink = None
+        self.dest_id = None
+
     def name(self):
         return 'polygonfromlayerextent'
 
     def displayName(self):
         return self.tr('Polygon from layer extent')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
-        byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        self.byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
@@ -101,15 +106,19 @@ class ExtentFromLayer(QgisAlgorithm):
         fields.append(QgsField('HEIGHT', QVariant.Double))
         fields.append(QgsField('WIDTH', QVariant.Double))
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         fields, QgsWkbTypes.Polygon, self.source.sourceCrs())
+        return True
 
-        if byFeature:
-            self.featureExtent(source, context, sink, feedback)
+    def processAlgorithm(self, context, feedback):
+        if self.byFeature:
+            self.featureExtent(self.source, context, self.sink, feedback)
         else:
-            self.layerExtent(source, sink, feedback)
+            self.layerExtent(self.source, self.sink, feedback)
+        return True
 
-        return {self.OUTPUT: dest_id}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}
 
     def layerExtent(self, source, sink, feedback):
         rect = source.sourceExtent()

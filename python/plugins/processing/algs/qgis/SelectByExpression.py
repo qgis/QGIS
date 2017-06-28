@@ -60,30 +60,42 @@ class SelectByExpression(QgisAlgorithm):
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
+        self.layer = None
+        self.behavior = None
+        self.input = None
+        self.expression = None
+
     def name(self):
         return 'selectbyexpression'
 
     def displayName(self):
         return self.tr('Select by expression')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         if method == 0:
-            behavior = QgsVectorLayer.SetSelection
+            self.behavior = QgsVectorLayer.SetSelection
         elif method == 1:
-            behavior = QgsVectorLayer.AddToSelection
+            self.behavior = QgsVectorLayer.AddToSelection
         elif method == 2:
-            behavior = QgsVectorLayer.RemoveFromSelection
+            self.behavior = QgsVectorLayer.RemoveFromSelection
         elif method == 3:
-            behavior = QgsVectorLayer.IntersectSelection
+            self.behavior = QgsVectorLayer.IntersectSelection
 
-        expression = self.parameterAsString(parameters, self.EXPRESSION, context)
-        qExp = QgsExpression(expression)
+        self.expression = self.parameterAsString(parameters, self.EXPRESSION, context)
+        qExp = QgsExpression(self.expression)
         if qExp.hasParserError():
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
 
-        layer.selectByExpression(expression, behavior)
-        return {self.OUTPUT: parameters[self.INPUT]}
+        self.input = parameters[self.INPUT]
+        return True
+
+    def processAlgorithm(self, context, feedback):
+        self.layer.selectByExpression(self.expression, self.behavior)
+        return True
+
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.input}

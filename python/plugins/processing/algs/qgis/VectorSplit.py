@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingUtils,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
@@ -39,10 +38,6 @@ from qgis.core import (QgsProcessingUtils,
                        QgsFeatureRequest)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputDirectory
-from processing.tools import vector
 from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -71,42 +66,51 @@ class VectorSplit(QgisAlgorithm):
 
         self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
 
+        self.source = None
+        self.fieldName = None
+        self.directory = None
+        self.uniqueValues = None
+        self.sinks = {}
+
     def name(self):
         return 'splitvectorlayer'
 
     def displayName(self):
         return self.tr('Split vector layer')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        directory = self.parameterAsString(parameters, self.OUTPUT, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        self.fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        self.directory = self.parameterAsString(parameters, self.OUTPUT, context)
+        mkdir(self.directory)
 
-        mkdir(directory)
+        fieldIndex = self.source.fields().lookupField(self.fieldName)
+        self.uniqueValues = self.source.uniqueValues(fieldIndex)
 
-        fieldIndex = source.fields().lookupField(fieldName)
-        uniqueValues = source.uniqueValues(fieldIndex)
-        baseName = os.path.join(directory, '{0}'.format(fieldName))
-
-        fields = source.fields()
-        crs = source.sourceCrs()
-        geomType = source.wkbType()
-
-        total = 100.0 / len(uniqueValues) if uniqueValues else 1
-
-        for current, i in enumerate(uniqueValues):
+        baseName = os.path.join(self.directory, '{0}'.format(self.fieldName))
+        self.sinks = {}
+        for current, i in enumerate(self.uniqueValues):
             if feedback.isCanceled():
                 break
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
+            sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, self.source.fields, self.source.wkbType(), self.source.sourceCrs())
+            self.sinks[i] = sink
+        return True
 
-            sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
+    def processAlgorithm(self, context, feedback):
+        total = 100.0 / len(self.uniqueValues) if self.uniqueValues else 1
+        for current, i in enumerate(self.uniqueValues):
+            if feedback.isCanceled():
+                break
 
-            filter = '{} = {}'.format(QgsExpression.quotedColumnRef(fieldName), QgsExpression.quotedValue(i))
+            sink = self.sinks[i]
+
+            filter = '{} = {}'.format(QgsExpression.quotedColumnRef(self.fieldName), QgsExpression.quotedValue(i))
             req = QgsFeatureRequest().setFilterExpression(filter)
 
             count = 0
-            for f in source.getFeatures(req):
+            for f in self.source.getFeatures(req):
                 if feedback.isCanceled():
                     break
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
@@ -115,5 +119,7 @@ class VectorSplit(QgisAlgorithm):
             del sink
 
             feedback.setProgress(int(current * total))
+        return True
 
-        return {self.OUTPUT: directory}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.directory}
