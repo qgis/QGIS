@@ -22,20 +22,16 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-precise-3.8
-            - george-edison55-precise-backports # doxygen 1.8.3 # TODO: remove
             - ubuntu-toolchain-r-test
           packages:
-            - doxygen # TODO: remove
             - bison
             - flex
-            - graphviz  # TODO: remove
             - libpq-dev
             - libfcgi-dev
             - libfftw3-3
             - libgsl0-dev
             - pkg-config
             - poppler-utils
-            - txt2tags # TODO: remove
             - xvfb
             - clang-3.8
 
