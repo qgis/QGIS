@@ -1962,23 +1962,23 @@ tests:
 #        compare:
 #          geometry:
 #            precision: 7
-#
-#
-#  - algorithm: qgis:reprojectlayer
-#    name: reproject vector layer
-#    params:
-#      INPUT:
-#        name: points.gml
-#        type: vector
-#      TARGET_CRS: EPSG:3857
-#    results:
-#      OUTPUT:
-#        name: expected/reprojected.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+
+
+  - algorithm: native:reprojectlayer
+    name: reproject vector layer
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      TARGET_CRS: EPSG:3857
+    results:
+      OUTPUT:
+        name: expected/reprojected.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: qgis:variabledistancebuffer
 #    name: variable buffer on points
 #    params:
