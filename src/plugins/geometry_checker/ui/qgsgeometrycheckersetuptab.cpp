@@ -77,12 +77,11 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );
   connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
 
-  updateLayers();
-
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     factory->restorePrevious( ui );
   }
+  updateLayers();
 }
 
 QgsGeometryCheckerSetupTab::~QgsGeometryCheckerSetupTab()
@@ -145,6 +144,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     }
     ui.listWidgetInputLayers->addItem( item );
   }
+  validateInput();
 }
 
 QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
@@ -153,11 +153,14 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
   for ( int row = 0, nRows = ui.listWidgetInputLayers->count(); row < nRows; ++row )
   {
     QListWidgetItem *item = ui.listWidgetInputLayers->item( row );
-    QString layerId = item->data( LayerIdRole ).toString();
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
-    if ( layer )
+    if ( item->checkState() == Qt::Checked )
     {
-      layers.append( layer );
+      QString layerId = item->data( LayerIdRole ).toString();
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+      if ( layer )
+      {
+        layers.append( layer );
+      }
     }
   }
   return layers;
