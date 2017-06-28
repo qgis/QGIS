@@ -171,11 +171,11 @@ void QgsGeometryCheckerSetupTab::validateInput()
   QStringList layerCrs = QStringList() << mIface->mapCanvas()->mapSettings().destinationCrs().authid();
   QList<QgsVectorLayer *> layers = getSelectedLayers();
   int nApplicable = 0;
+  int nPoint = 0;
+  int nLineString = 0;
+  int nPolygon = 0;
   if ( !layers.isEmpty() )
   {
-    int nPoint = 0;
-    int nLineString = 0;
-    int nPolygon = 0;
     for ( QgsVectorLayer *layer : layers )
     {
       QgsWkbTypes::GeometryType geomType = layer->geometryType();
@@ -193,10 +193,10 @@ void QgsGeometryCheckerSetupTab::validateInput()
       }
       layerCrs.append( layer->crs().authid() );
     }
-    for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
-    {
-      nApplicable += factory->checkApplicability( ui, nPoint, nLineString, nPolygon );
-    }
+  }
+  for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  {
+    nApplicable += factory->checkApplicability( ui, nPoint, nLineString, nPolygon );
   }
 
   bool outputOk = ui.radioButtonOutputModifyInput->isChecked() || !ui.lineEditOutputDirectory->text().isEmpty();
