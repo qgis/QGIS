@@ -59,6 +59,7 @@ from processing.preconfigured.PreconfiguredAlgorithmProvider import Preconfigure
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsMapLayer,
                        QgsProject,
                        QgsApplication,
                        QgsProcessingContext,
@@ -241,7 +242,10 @@ class AlgorithmsTest(object):
             if expected_result['type'] in ('vector', 'table'):
                 if 'compare' in expected_result and not expected_result['compare']:
                     # skipping the comparison, so just make sure output is valid
-                    result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    if isinstance(results[id], QgsMapLayer):
+                        result_lyr = results[id]
+                    else:
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
                     self.assertTrue(result_lyr.isValid())
                     continue
 
@@ -254,7 +258,11 @@ class AlgorithmsTest(object):
                     except KeyError as e:
                         raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
-                    result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    if isinstance(results[id], QgsMapLayer):
+                        assert False
+                        result_lyr = results[id]
+                    else:
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
 
                 compare = expected_result.get('compare', {})
 

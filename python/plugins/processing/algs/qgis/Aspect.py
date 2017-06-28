@@ -84,6 +84,6 @@ class Aspect(QgisAlgorithm):
 
         aspect = QgsAspectFilter(inputFile, outputFile, outputFormat)
         aspect.setZFactor(zFactor)
-        aspect.processRaster(None)
+        aspect.processRaster(feedback)
 
         return {self.OUTPUT_LAYER: outputFile}

@@ -40,8 +40,15 @@ bool QgsProcessingAlgRunnerTask::run()
 {
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
   bool ok = false;
-  mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get(), &ok );
-  return ok && !mFeedback->isCanceled();
+  try
+  {
+    mResults = mAlgorithm->run( mParameters, mContext, mFeedback.get(), &ok );
+  }
+  catch ( QgsProcessingException & )
+  {
+    return false;
+  }
+  return !mFeedback->isCanceled();
 }
 
 void QgsProcessingAlgRunnerTask::finished( bool result )

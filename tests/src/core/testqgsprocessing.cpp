@@ -3924,6 +3924,15 @@ void TestQgsProcessing::processingFeatureSource()
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
   QCOMPARE( f2.geometry(), f.geometry() );
 
+  // direct map layer
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( layer ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
+  // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
+  QVERIFY( source.get() );
+  QVERIFY( source->getFeatures().nextFeature( f2 ) );
+  QCOMPARE( f2.geometry(), f.geometry() );
+
+
   // next using property based definition
   params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('%1' + ' ')" ).arg( layer->id() ) ), false ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );

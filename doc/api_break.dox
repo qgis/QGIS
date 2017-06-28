@@ -1663,6 +1663,12 @@ QgsNewVectorLayerDialog        {#qgis_api_break_3_0_QgsNewVectorLayerDialog}
 - selectedCrsId() was removed. Use crs() instead.
 
 
+QgsNineCellFilter        {#qgis_api_break_3_0_QgsNineCellFilter}
+-----------------
+
+- The QProgressBar argument for processRaster was changed to a QgsFeedback object.
+
+
 QgsOSMElement        {#qgis_api_break_3_0_QgsOSMElement}
 -------------
 

@@ -918,12 +918,24 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
 
   if ( fieldType != QVariant::String && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )
   {
-#if 0
-    op = ''.join( ['"%s", ' % o for o in self.STRING_OPERATORS] )
-         raise GeoAlgorithmExecutionException(
-           self.tr( 'Operators {0} can be used only with string fields.' ).format( op ) )
-#endif
-         return QVariantMap();
+    QString method;
+    switch ( op )
+    {
+      case BeginsWith:
+        method = QObject::tr( "begins with" );
+        break;
+      case Contains:
+        method = QObject::tr( "contains" );
+        break;
+      case DoesNotContain:
+        method = QObject::tr( "does not contain" );
+        break;
+
+      default:
+        break;
+    }
+
+    throw QgsProcessingException( QObject::tr( "Operator '%1' can be used only with string fields." ).arg( method ) );
   }
 
   QString fieldRef = QgsExpression::quotedColumnRef( fieldName );
@@ -969,8 +981,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   QgsExpression expression( expr );
   if ( expression.hasParserError() )
   {
-    // raise GeoAlgorithmExecutionException(expression.parserErrorString())
-    return QVariantMap();
+    throw QgsProcessingException( expression.parserErrorString() );
   }
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context );
