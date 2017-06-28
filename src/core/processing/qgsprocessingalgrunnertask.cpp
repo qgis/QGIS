@@ -27,7 +27,7 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
   , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
-  , mAlgorithm( algorithm->clone() )
+  , mAlgorithm( algorithm->create() )
 {
   if ( !mFeedback )
   {

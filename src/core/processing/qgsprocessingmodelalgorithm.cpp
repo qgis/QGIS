@@ -524,7 +524,7 @@ bool QgsProcessingModelAlgorithm::processAlgorithm( QgsProcessingContext &contex
       childTime.start();
 
       bool ok = false;
-      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->clone() );
+      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create() );
       QVariantMap results = childAlg->run( childParams, context, feedback, &ok );
       childAlg.reset( nullptr );
       if ( !ok )
@@ -1115,7 +1115,7 @@ QString QgsProcessingModelAlgorithm::asPythonCommand( const QVariantMap &paramet
   return QgsProcessingAlgorithm::asPythonCommand( parameters, context );
 }
 
-QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::clone() const
+QgsProcessingModelAlgorithm *QgsProcessingModelAlgorithm::create() const
 {
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );

@@ -237,7 +237,7 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionRun.triggered.connect(self.runModel)
 
         if model is not None:
-            self.model = model.clone()
+            self.model = model.create()
             self.model.setSourceFilePath(model.sourceFilePath())
             self.textGroup.setText(self.model.group())
             self.textName.setText(self.model.displayName())
