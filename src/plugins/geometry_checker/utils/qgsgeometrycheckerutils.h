@@ -21,12 +21,34 @@
 #include "qgsvectorlayer.h"
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
+#include <qmath.h>
+#include <QScrollArea>
+#include <QScrollBar>
 
 class QgsGeometryEngine;
 class QgsFeaturePool;
 
 namespace QgsGeometryCheckerUtils
 {
+  class VScrollArea : public QScrollArea
+  {
+    public:
+      explicit VScrollArea( QWidget *parent = 0 )
+        : QScrollArea( parent )
+      {
+        setWidgetResizable( true );
+        setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+        setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+      }
+      virtual bool eventFilter( QObject *o, QEvent *e )
+      {
+        // This works because QScrollArea::setWidget installs an eventFilter on the widget
+        if ( o && o == widget() && e->type() == QEvent::Resize )
+          setMinimumWidth( widget()->minimumSizeHint().width() + verticalScrollBar()->width() );
+        return QScrollArea::eventFilter( o, e );
+      }
+  };
+
   class LayerFeature
   {
     public:

@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QgsScrollArea" name="scrollArea">
+    <widget class="QgsGeometryCheckerUtils::VScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -800,9 +800,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
+   <class>QgsGeometryCheckerUtils::VScrollArea</class>
    <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <header>utils/qgsgeometrycheckerutils.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

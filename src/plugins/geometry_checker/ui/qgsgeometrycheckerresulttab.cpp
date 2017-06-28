@@ -546,9 +546,9 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 
   QVBoxLayout *layout = new QVBoxLayout( &dialog );
 
-  QgsScrollArea *scrollArea = new QgsScrollArea( &dialog );
   scrollArea->setFrameShape( QFrame::NoFrame );
   layout->setContentsMargins( 0, 0, 0, 0 );
+  QgsGeometryCheckerUtils::VScrollArea *scrollArea = new QgsGeometryCheckerUtils::VScrollArea( &dialog );
   layout->addWidget( scrollArea );
 
   QWidget *scrollAreaContents = new QWidget( scrollArea );
