@@ -18,6 +18,7 @@
 #include "qgsninecellfilter.h"
 #include "qgslogger.h"
 #include "cpl_string.h"
+#include "qgsfeedback.h"
 #include <QProgressDialog>
 #include <QFile>
 
@@ -43,7 +44,7 @@ QgsNineCellFilter::QgsNineCellFilter()
 {
 }
 
-int QgsNineCellFilter::processRaster( QProgressDialog *p )
+int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
   GDALAllRegister();
 
@@ -103,22 +104,17 @@ int QgsNineCellFilter::processRaster( QProgressDialog *p )
 
   float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  if ( p )
-  {
-    p->setMaximum( ySize );
-  }
-
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
-    if ( p )
-    {
-      p->setValue( i );
-    }
-
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
     }
 
     if ( i == 0 )
@@ -182,11 +178,6 @@ int QgsNineCellFilter::processRaster( QProgressDialog *p )
     }
   }
 
-  if ( p )
-  {
-    p->setValue( ySize );
-  }
-
   CPLFree( resultLine );
   CPLFree( scanLine1 );
   CPLFree( scanLine2 );
@@ -194,7 +185,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog *p )
 
   GDALClose( inputDataset );
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );

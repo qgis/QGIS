@@ -29,10 +29,10 @@ Constructor that takes input file, output file and output format (GDAL string)
 %End
     virtual ~QgsNineCellFilter();
 
-    int processRaster( QProgressDialog *p );
+    int processRaster( QgsFeedback *feedback = 0 );
 %Docstring
  Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-\param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
+\param feedback feedback object that receives update and that is checked for cancelation.
 :return: 0 in case of success*
  :rtype: int
 %End

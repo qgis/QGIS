@@ -22,7 +22,7 @@
 #include "gdal.h"
 #include "qgis_analysis.h"
 
-class QProgressDialog;
+class QgsFeedback;
 
 /** \ingroup analysis
  * Base class for raster analysis methods that work with a 3x3 cell filter and calculate the value of each cell based on
@@ -37,9 +37,9 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     virtual ~QgsNineCellFilter() = default;
 
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      \param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
+      \param feedback feedback object that receives update and that is checked for cancelation.
       \returns 0 in case of success*/
-    int processRaster( QProgressDialog *p );
+    int processRaster( QgsFeedback *feedback = nullptr );
 
     double cellSizeX() const { return mCellSizeX; }
     void setCellSizeX( double size ) { mCellSizeX = size; }
