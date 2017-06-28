@@ -141,6 +141,7 @@ SET(TESTS
  testqgsnetworkcontentfetcher.cpp
  testqgsogcutils.cpp
  testqgsogrutils.cpp
+ testqgspagesizeregistry.cpp
  testqgspainteffectregistry.cpp
  testqgspainteffect.cpp
  testqgspallabeling.cpp

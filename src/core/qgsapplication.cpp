@@ -42,6 +42,8 @@
 #include "processing/qgsprocessingregistry.h"
 #include "processing/qgsnativealgorithms.h"
 
+#include "layout/qgspagesizeregistry.h"
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -1552,6 +1554,11 @@ QgsProcessingRegistry *QgsApplication::processingRegistry()
   return members()->mProcessingRegistry;
 }
 
+QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
+{
+  return members()->mPageSizeRegistry;
+}
+
 QgsAnnotationRegistry *QgsApplication::annotationRegistry()
 {
   return members()->mAnnotationRegistry;
@@ -1581,6 +1588,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
+  mPageSizeRegistry = new QgsPageSizeRegistry();
   mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
 }
@@ -1596,6 +1604,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPaintEffectRegistry;
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
+  delete mPageSizeRegistry;
   delete mProfiler;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;

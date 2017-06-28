@@ -675,6 +675,13 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsProcessingRegistry
 %End
 
+    static QgsPageSizeRegistry *pageSizeRegistry();
+%Docstring
+ Returns the application's page size registry, used for managing layout page sizes.
+.. versionadded:: 3.0
+ :rtype: QgsPageSizeRegistry
+%End
+
 
     static QgsActionScopeRegistry *actionScopeRegistry();
 %Docstring

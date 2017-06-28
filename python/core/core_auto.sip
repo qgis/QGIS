@@ -153,6 +153,11 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
+%Include layout/qgslayoutmeasurement.sip
+%Include layout/qgslayoutmeasurementconverter.sip
+%Include layout/qgspagesizeregistry.sip
+%Include layout/qgslayoutpoint.sip
+%Include layout/qgslayoutsize.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include processing/qgsprocessingalgorithm.sip
@@ -378,7 +383,3 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 %Include composer/qgscomposerutils.sip
-%Include layout/qgslayoutmeasurement.sip
-%Include layout/qgslayoutmeasurementconverter.sip
-%Include layout/qgslayoutpoint.sip
-%Include layout/qgslayoutsize.sip
