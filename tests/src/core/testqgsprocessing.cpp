@@ -4610,7 +4610,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c1outputs;
   QgsProcessingModelAlgorithm::ModelOutput alg7c1out1( QStringLiteral( "my_output" ) );
   alg7c1out1.setChildId( "cx1" );
-  alg7c1out1.setChildOutputName( "OUTPUT_LAYER" );
+  alg7c1out1.setChildOutputName( "OUTPUT" );
   alg7c1out1.setDescription( QStringLiteral( "my output" ) );
   alg7c1outputs.insert( QStringLiteral( "my_output" ), alg7c1out1 );
   alg7c1.setModelOutputs( alg7c1outputs );
@@ -4630,7 +4630,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> alg7c2outputs;
   QgsProcessingModelAlgorithm::ModelOutput alg7c2out1( QStringLiteral( "my_output2" ) );
   alg7c2out1.setChildId( "cx2" );
-  alg7c2out1.setChildOutputName( "OUTPUT_LAYER" );
+  alg7c2out1.setChildOutputName( "OUTPUT" );
   alg7c2out1.setDescription( QStringLiteral( "my output2" ) );
   alg7c2outputs.insert( QStringLiteral( "my_output2" ), alg7c2out1 );
   alg7c2.setModelOutputs( alg7c2outputs );
@@ -4700,7 +4700,7 @@ void TestQgsProcessing::modelExecution()
   alg2c1.addParameterSources( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
   QgsProcessingModelAlgorithm::ModelOutput out1( "MODEL_OUT_LAYER" );
-  out1.setChildOutputName( "OUTPUT_LAYER" );
+  out1.setChildOutputName( "OUTPUT" );
   outputs1.insert( QStringLiteral( "MODEL_OUT_LAYER" ), out1 );
   alg2c1.setModelOutputs( outputs1 );
   model2.addChildAlgorithm( alg2c1 );
@@ -4720,7 +4720,7 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.value( "END_CAP_STYLE" ).toInt(), 1 );
   QCOMPARE( params.value( "JOIN_STYLE" ).toInt(), 2 );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "my_layer_id" ) );
-  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "dest.shp" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.count(), 7 );
 
   QVariantMap results;
@@ -4735,7 +4735,7 @@ void TestQgsProcessing::modelExecution()
   model2.addChildAlgorithm( alg2c2 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
-  QCOMPARE( params.value( "OUTPUT_LAYER" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 2 );
 
   // a child with an optional output
@@ -4770,8 +4770,8 @@ void TestQgsProcessing::modelExecution()
                               "##my_out=output outputVector\n"
                               "results={}\n"
                               "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
-                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT_LAYER']\n"
-                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
+                              "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
+                              "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
                               "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
                               "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );

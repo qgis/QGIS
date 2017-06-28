@@ -39,8 +39,8 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 class DropGeometry(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_TABLE = 'OUTPUT_TABLE'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
@@ -51,9 +51,13 @@ class DropGeometry(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_TABLE, self.tr('Dropped geometry')))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_TABLE, self.tr("Dropped geometry")))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessingParameterDefinition.TypeVectorPoint, QgsProcessingParameterDefinition.TypeVectorLine, QgsProcessingParameterDefinition.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Dropped geometry')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Dropped geometry")))
+
+        self.source = None
+        self.sink = None
+        self.dest_id = None
 
     def name(self):
         return 'dropgeometries'
@@ -61,21 +65,26 @@ class DropGeometry(QgisAlgorithm):
     def displayName(self):
         return self.tr('Drop geometries')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_TABLE, context,
-                                               source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         self.source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        return True
 
+    def processAlgorithm(self, context, feedback):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = source.getFeatures(request)
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        features = self.source.getFeatures(request)
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
 
             input_feature.clearGeometry()
-            sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
+            self.sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        return {self.OUTPUT_TABLE: dest_id}
+        return True
+
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}

@@ -28,8 +28,6 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
                        QgsVectorLayerExporter,
-                       QgsApplication,
-                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
@@ -73,13 +71,26 @@ class ImportIntoSpatialite(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
 
+        self.db = None
+        self.overwrite = None
+        self.createIndex = None
+        self.dropStringLength = None
+        self.convertLowerCase = None
+        self.forceSinglePart = None
+        self.primaryKeyField = None
+        self.encoding = None
+        self.source = None
+        self.table = None
+        self.providerName = None
+        self.geomColumn = None
+
     def name(self):
         return 'importintospatialite'
 
     def displayName(self):
         return self.tr('Import into Spatialite')
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def prepareAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
@@ -87,61 +98,64 @@ class ImportIntoSpatialite(QgisAlgorithm):
             if '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
-        db = spatialite.GeoDB(uri)
+        self.db = spatialite.GeoDB(uri)
 
-        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
-        createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
-        convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
-        dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
-        forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
-        primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
-        encoding = self.parameterAsString(parameters, self.ENCODING, context)
+        self.overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
+        self.createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
+        self.convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
+        self.dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
+        self.forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
+        self.primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
+        self.encoding = self.parameterAsString(parameters, self.ENCODING, context)
 
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        table = self.parameterAsString(parameters, self.TABLENAME, context)
-        if table:
-            table.strip()
-        if not table or table == '':
-            table = source.sourceName()
-            table = table.replace('.', '_')
-        table = table.replace(' ', '').lower()
-        providerName = 'spatialite'
+        self.table = self.parameterAsString(parameters, self.TABLENAME, context)
+        if self.table:
+            self.table.strip()
+        if not self.table or self.table == '':
+            self.table = self.source.sourceName()
+            self.table = self.table.replace('.', '_')
+        self.table = self.table.replace(' ', '').lower()
+        self.providerName = 'spatialite'
 
-        geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)
-        if not geomColumn:
-            geomColumn = 'geom'
+        self.geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)
+        if not self.geomColumn:
+            self.geomColumn = 'geom'
 
+        return True
+
+    def processAlgorithm(self, context, feedback):
         options = {}
-        if overwrite:
+        if self.overwrite:
             options['overwrite'] = True
-        if convertLowerCase:
+        if self.convertLowerCase:
             options['lowercaseFieldNames'] = True
-            geomColumn = geomColumn.lower()
-        if dropStringLength:
+            self.geomColumn = self.geomColumn.lower()
+        if self.dropStringLength:
             options['dropStringConstraints'] = True
-        if forceSinglePart:
+        if self.forceSinglePart:
             options['forceSinglePartGeometryType'] = True
 
         # Clear geometry column for non-geometry tables
-        if source.wkbType() == QgsWkbTypes.NoGeometry:
-            geomColumn = None
+        if self.source.wkbType() == QgsWkbTypes.NoGeometry:
+            self.geomColumn = None
 
-        uri = db.uri
-        uri.setDataSource('', table, geomColumn, '', primaryKeyField)
+        uri = self.db.uri
+        uri.setDataSource('', self.table, self.geomColumn, '', self.primaryKeyField)
 
-        if encoding:
-            options['fileEncoding'] = encoding
+        if self.encoding:
+            options['fileEncoding'] = self.encoding
 
-        exporter = QgsVectorLayerExporter(uri.uri(), providerName, source.fields(),
-                                          source.wkbType(), source.sourceCrs(), overwrite, options)
+        exporter = QgsVectorLayerExporter(uri.uri(), self.providerName, self.source.fields(),
+                                          self.source.wkbType(), self.source.sourceCrs(), self.overwrite, options)
 
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error importing to Spatialite\n{0}').format(exporter.errorMessage()))
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+        features = self.source.getFeatures()
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -156,7 +170,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Error importing to Spatialite\n{0}').format(exporter.errorMessage()))
 
-        if geomColumn and createIndex:
-            db.create_spatial_index(table, geomColumn)
+        if self.geomColumn and self.createIndex:
+            self.db.create_spatial_index(self.table, self.geomColumn)
+        return True
 
+    def postProcessAlgorithm(self, context, feedback):
         return {}

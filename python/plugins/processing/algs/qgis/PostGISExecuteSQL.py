@@ -53,20 +53,28 @@ class PostGISExecuteSQL(QgisAlgorithm):
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query')))
 
+        self.connection = None
+        self.sql = None
+
     def name(self):
         return 'postgisexecutesql'
 
     def displayName(self):
         return self.tr('PostGIS execute SQL')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
-        db = postgis.GeoDB.from_name(connection)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.connection = self.parameterAsString(parameters, self.DATABASE, context)
+        self.sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
+        return True
 
-        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
+    def processAlgorithm(self, context, feedback):
+        db = postgis.GeoDB.from_name(self.connection)
         try:
-            db._exec_sql_and_commit(str(sql))
+            db._exec_sql_and_commit(str(self.sql))
         except postgis.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
+        return True
+
+    def postProcessAlgorithm(self, context, feedback):
         return {}

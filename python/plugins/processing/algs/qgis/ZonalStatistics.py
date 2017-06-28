@@ -94,30 +94,40 @@ class ZonalStatistics(QgisAlgorithm):
                                                       self.tr('Zonal statistics'),
                                                       QgsProcessingParameterDefinition.TypeVectorPolygon))
 
+        self.bandNumber = None
+        self.columnPrefix = None
+        self.selectedStats = None
+        self.vectorLayer = None
+        self.rasterLayer = None
+
     def name(self):
         return 'zonalstatistics'
 
     def displayName(self):
         return self.tr('Zonal Statistics')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)
-        columnPrefix = self.parameterAsString(parameters, self.COLUMN_PREFIX, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)
+        self.columnPrefix = self.parameterAsString(parameters, self.COLUMN_PREFIX, context)
         st = self.parameterAsEnums(parameters, self.STATISTICS, context)
 
-        vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
-        rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
-
         keys = list(self.STATS.keys())
-        selectedStats = 0
+        self.selectedStats = 0
         for i in st:
-            selectedStats |= self.STATS[keys[i]]
+            self.selectedStats |= self.STATS[keys[i]]
 
-        zs = QgsZonalStatistics(vectorLayer,
-                                rasterLayer,
-                                columnPrefix,
-                                bandNumber,
-                                selectedStats)
+        self.vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
+        self.rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        return True
+
+    def processAlgorithm(self, context, feedback):
+        zs = QgsZonalStatistics(self.vectorLayer,
+                                self.rasterLayer,
+                                self.columnPrefix,
+                                self.bandNumber,
+                                self.selectedStats)
         zs.calculateStatistics(feedback)
+        return True
 
-        return {self.INPUT_VECTOR: vectorLayer}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.INPUT_VECTOR: self.vectorLayer}

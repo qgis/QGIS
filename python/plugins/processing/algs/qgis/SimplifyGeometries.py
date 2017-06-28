@@ -76,28 +76,37 @@ class SimplifyGeometries(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Simplified')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Simplified')))
 
+        self.source = None
+        self.tolerance = None
+        self.method = None
+        self.sink = None
+        self.dest_id = None
+
     def name(self):
         return 'simplifygeometries'
 
     def displayName(self):
         return self.tr('Simplify geometries')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
-        method = self.parameterAsEnum(parameters, self.METHOD, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        self.tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
+        self.method = self.parameterAsEnum(parameters, self.METHOD, context)
 
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         self.source.fields(), self.source.wkbType(), self.source.sourceCrs())
+        return True
+
+    def processAlgorithm(self, context, feedback):
         pointsBefore = 0
         pointsAfter = 0
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+        features = self.source.getFeatures()
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-
-        if method != 0:
-            simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, tolerance, method)
+        simplifier = None
+        if self.method != 0:
+            simplifier = QgsMapToPixelSimplifier(QgsMapToPixelSimplifier.SimplifyGeometry, self.tolerance, self.method)
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
@@ -107,18 +116,20 @@ class SimplifyGeometries(QgisAlgorithm):
                 input_geometry = input_feature.geometry()
                 pointsBefore += input_geometry.geometry().nCoordinates()
 
-                if method == 0:  # distance
-                    output_geometry = input_geometry.simplify(tolerance)
+                if self.method == 0:  # distance
+                    output_geometry = input_geometry.simplify(self.tolerance)
                 else:
                     output_geometry = simplifier.simplify(input_geometry)
 
                 pointsAfter += output_geometry.geometry().nCoordinates()
                 out_feature.setGeometry(output_geometry)
 
-            sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
+            self.sink.addFeature(out_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
         QgsMessageLog.logMessage(self.tr('Simplify: Input geometries have been simplified from {0} to {1} points').format(pointsBefore, pointsAfter),
                                  self.tr('Processing'), QgsMessageLog.INFO)
+        return True
 
-        return {self.OUTPUT: dest_id}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}

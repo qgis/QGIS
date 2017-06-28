@@ -66,37 +66,48 @@ class Smooth(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Smoothed')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Smoothed')))
 
+        self.source = None
+        self.iterations = None
+        self.offset = None
+        self.max_angle = None
+        self.sink = None
+        self.dest_id = None
+
     def name(self):
         return 'smoothgeometry'
 
     def displayName(self):
         return self.tr('Smooth geometry')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        iterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
-        offset = self.parameterAsDouble(parameters, self.OFFSET, context)
-        max_angle = self.parameterAsDouble(parameters, self.MAX_ANGLE, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        self.iterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
+        self.offset = self.parameterAsDouble(parameters, self.OFFSET, context)
+        self.max_angle = self.parameterAsDouble(parameters, self.MAX_ANGLE, context)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         self.source.fields(), self.source.wkbType(), self.source.sourceCrs())
+        return True
 
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processAlgorithm(self, context, feedback):
+        features = self.source.getFeatures()
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
             output_feature = input_feature
             if input_feature.geometry():
-                output_geometry = input_feature.geometry().smooth(iterations, offset, -1, max_angle)
+                output_geometry = input_feature.geometry().smooth(self.iterations, self.offset, -1, self.max_angle)
                 if not output_geometry:
                     raise GeoAlgorithmExecutionException(
                         self.tr('Error smoothing geometry'))
 
                 output_feature.setGeometry(output_geometry)
 
-            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            self.sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
+        return True
 
-        return {self.OUTPUT: dest_id}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}

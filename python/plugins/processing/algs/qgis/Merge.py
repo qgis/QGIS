@@ -68,19 +68,26 @@ class Merge(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Merged')))
 
+        self.input_layers = []
+        self.fields = None
+        self.add_layer_field = None
+        self.add_path_field = None
+        self.sink = None
+        self.dest_id = None
+        self.dest_crs = None
+
     def name(self):
         return 'mergevectorlayers'
 
     def displayName(self):
         return self.tr('Merge vector layers')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
-
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.input_layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
         layers = []
-        fields = QgsFields()
+        self.fields = QgsFields()
         totalFeatureCount = 0
-        for layer in input_layers:
+        for layer in self.input_layers:
             if layer.type() != QgsMapLayer.VectorLayer:
                 raise GeoAlgorithmExecutionException(
                     self.tr('All layers must be vector layers!'))
@@ -95,7 +102,7 @@ class Merge(QgisAlgorithm):
 
             for sindex, sfield in enumerate(layer.fields()):
                 found = None
-                for dfield in fields:
+                for dfield in self.fields:
                     if (dfield.name().upper() == sfield.name().upper()):
                         found = dfield
                         if (dfield.type() != sfield.type()):
@@ -104,35 +111,38 @@ class Merge(QgisAlgorithm):
                                         'data type than in other layers.'.format(sfield.name(), layerSource)))
 
                 if not found:
-                    fields.append(sfield)
+                    self.fields.append(sfield)
 
-        add_layer_field = False
-        if fields.lookupField('layer') < 0:
-            fields.append(QgsField('layer', QVariant.String, '', 100))
-            add_layer_field = True
-        add_path_field = False
-        if fields.lookupField('path') < 0:
-            fields.append(QgsField('path', QVariant.String, '', 200))
-            add_path_field = True
+        self.add_layer_field = False
+        if self.fields.lookupField('layer') < 0:
+            self.fields.append(QgsField('layer', QVariant.String, '', 100))
+            self.add_layer_field = True
+        self.add_path_field = False
+        if self.fields.lookupField('path') < 0:
+            self.fields.append(QgsField('path', QVariant.String, '', 200))
+            self.add_path_field = True
 
         total = 100.0 / totalFeatureCount if totalFeatureCount else 1
-        dest_crs = layers[0].crs()
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, layers[0].wkbType(), dest_crs)
+        self.dest_crs = layers[0].crs()
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         self.fields, layers[0].wkbType(), self.dest_crs)
+        return True
+
+    def processAlgorithm(self, context, feedback):
 
         featureCount = 0
-        for layer in layers:
-            for feature in layer.getFeatures(QgsFeatureRequest().setDestinationCrs(dest_crs)):
+        for layer in self.layers:
+            for feature in layer.getFeatures(QgsFeatureRequest().setDestinationCrs(self.dest_crs)):
                 if feedback.isCanceled():
                     break
 
                 sattributes = feature.attributes()
                 dattributes = []
-                for dindex, dfield in enumerate(fields):
-                    if add_layer_field and dfield.name() == 'layer':
+                for dindex, dfield in enumerate(self.fields):
+                    if self.add_layer_field and dfield.name() == 'layer':
                         dattributes.append(layer.name())
                         continue
-                    if add_path_field and dfield.name() == 'path':
+                    if self.add_path_field and dfield.name() == 'path':
                         dattributes.append(layer.publicSource())
                         continue
 
@@ -154,8 +164,10 @@ class Merge(QgisAlgorithm):
                     dattributes.append(dattribute)
 
                 feature.setAttributes(dattributes)
-                sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                self.sink.addFeature(feature, QgsFeatureSink.FastInsert)
                 featureCount += 1
-                feedback.setProgress(int(featureCount * total))
+                feedback.setProgress(int(featureCount * self.total))
+        return True
 
-        return {self.OUTPUT: dest_id}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}

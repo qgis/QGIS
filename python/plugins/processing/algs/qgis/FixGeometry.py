@@ -55,20 +55,26 @@ class FixGeometry(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Fixed geometries')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Fixed geometries")))
 
+        self.source = None
+        self.sink = None
+        self.dest_id = None
+
     def name(self):
         return 'fixgeometries'
 
     def displayName(self):
         return self.tr('Fix geometries')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), QgsWkbTypes.multiType(source.wkbType()), source.sourceCrs())
+        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                         self.source.fields(), QgsWkbTypes.multiType(self.source.wkbType()), self.source.sourceCrs())
+        return True
 
-        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
+    def processAlgorithm(self, context, feedback):
+        features = self.source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
         for current, inputFeature in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -86,7 +92,7 @@ class FixGeometry(QgisAlgorithm):
                             try:
                                 g.convertToMultiType()
                                 outputFeature.setGeometry(QgsGeometry(g))
-                                sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
+                                self.sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
                             except:
                                 pass
                     feedback.setProgress(int(current * total))
@@ -95,7 +101,9 @@ class FixGeometry(QgisAlgorithm):
                 outputGeometry.convertToMultiType()
                 outputFeature.setGeometry(outputGeometry)
 
-            sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
+            self.sink.addFeature(outputFeature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
+        return True
 
-        return {self.OUTPUT: dest_id}
+    def postProcessAlgorithm(self, context, feedback):
+        return {self.OUTPUT: self.dest_id}
