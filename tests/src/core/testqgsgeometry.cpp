@@ -2900,12 +2900,29 @@ void TestQgsGeometry::polygonV2()
                   << QgsPointV2( QgsWKBTypes::Point, 0, 10 ) << QgsPointV2( QgsWKBTypes::Point, 10, 10 )
                   << QgsPointV2( QgsWKBTypes::Point, 10, 0 ) << QgsPointV2( QgsWKBTypes::Point, 0, 0 ) );
   exportPolygon.setExteriorRing( ext );
+
+  // GML document for compare
+  QDomDocument doc( "gml" );
+
+  // as GML2
+  QString expectedSimpleGML2( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" );
+  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+
+  //as GML3
+  QString expectedSimpleGML3( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" );
+  QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
+
+  // as JSON
+  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" );
+  QCOMPARE( exportPolygon.asJSON(), expectedSimpleJson );
+
   ring = new QgsLineStringV2();
   ring->setPoints( QgsPointSequenceV2() << QgsPointV2( QgsWKBTypes::Point, 1, 1 )
                    << QgsPointV2( QgsWKBTypes::Point, 1, 9 ) << QgsPointV2( QgsWKBTypes::Point, 9, 9 )
                    << QgsPointV2( QgsWKBTypes::Point, 9, 1 ) << QgsPointV2( QgsWKBTypes::Point, 1, 1 ) );
   exportPolygon.addInteriorRing( ring );
 
+  // as JSON
   QString expectedJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]], [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]] }" );
   QCOMPARE( exportPolygon.asJSON(), expectedJson );
 
@@ -2921,11 +2938,11 @@ void TestQgsGeometry::polygonV2()
                    << QgsPointV2( QgsWKBTypes::Point, 4 / 3.0, 2 / 3.0 ) << QgsPointV2( QgsWKBTypes::Point, 2 / 3.0, 2 / 3.0 ) );
   exportPolygonFloat.addInteriorRing( ring );
 
+  // as JSON
   QString expectedJsonPrec3( "{\"type\": \"Polygon\", \"coordinates\": [[ [1.111, 1.111], [1.111, 11.111], [11.111, 11.111], [11.111, 1.111], [1.111, 1.111]], [ [0.667, 0.667], [0.667, 1.333], [1.333, 1.333], [1.333, 0.667], [0.667, 0.667]]] }" );
   QCOMPARE( exportPolygonFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   // as GML2
-  QDomDocument doc( "gml" );
   QString expectedGML2( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" );
   expectedGML2 += QString( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
   QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
