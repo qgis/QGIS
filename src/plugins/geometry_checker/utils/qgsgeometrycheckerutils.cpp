@@ -30,71 +30,106 @@ namespace QgsGeometryCheckerUtils
     , mFeature( feature )
     , mLayerToMapUnits( pool->getLayerToMapUnits() )
     , mLayerToMapTransform( pool->getLayerToMapTransform() )
-    , mClonedGeometry( false )
     , mMapCrs( useMapCrs )
   {
-    mGeometry = feature.geometry().geometry();
+    mGeometry = feature.geometry().geometry()->clone();
     if ( useMapCrs && !mLayerToMapTransform.isShortCircuited() )
     {
-      mClonedGeometry = true;
-      mGeometry = mGeometry->clone();
       mGeometry->transform( mLayerToMapTransform );
     }
   }
   LayerFeature::~LayerFeature()
   {
-    if ( mClonedGeometry )
-    {
-      delete mGeometry;
-    }
+    delete mGeometry;
   }
 
 /////////////////////////////////////////////////////////////////////////////
 
-  LayerFeatures::iterator::iterator( const QList<QString>::iterator &layerIt, const QgsFeatureIds::const_iterator &featureIt, const QgsFeature &feature, LayerFeatures *parent )
+  LayerFeatures::iterator::iterator( const QList<QString>::iterator &layerIt, LayerFeatures *parent )
     : mLayerIt( layerIt )
-    , mFeatureIt( featureIt )
-    , mFeature( feature )
+    , mFeatureIt( QgsFeatureIds::const_iterator() )
     , mParent( parent )
-    , mCurrentFeature( LayerFeature( parent->mFeaturePools[ * layerIt], feature, parent->mUseMapCrs ) )
   {
+    nextLayerFeature( true );
+  }
+  LayerFeatures::iterator::~iterator()
+  {
+    delete mCurrentFeature;
   }
 
   const LayerFeatures::iterator &LayerFeatures::iterator::operator++()
   {
-    if ( nextFeature() )
-    {
-      return *this;
-    }
-    do
-    {
-      ++mLayerIt;
-      mFeatureIt = mParent->mFeatureIds[*mLayerIt].begin();
-      if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->getLayer()->geometryType() ) && nextFeature() )
-      {
-        return *this;
-      }
-    }
-    while ( mLayerIt != mParent->mLayerIds.end() );
+    nextLayerFeature( false );
     return *this;
   }
-
-  bool LayerFeatures::iterator::nextFeature()
+  bool LayerFeatures::iterator::nextLayerFeature( bool begin )
   {
-    QgsFeaturePool *featurePool = mParent->mFeaturePools[*mLayerIt];
-    const QgsFeatureIds &featureIds = mParent->mFeatureIds[*mLayerIt];
-    do
+    if ( !begin && nextFeature( false ) )
     {
-      ++mFeatureIt;
-      if ( mParent->mProgressCounter )
-        mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
-      if ( featurePool->get( *mFeatureIt, mFeature ) )
+      return true;
+    }
+    while ( nextLayer( begin ) )
+    {
+      begin = false;
+      if ( nextFeature( true ) )
       {
-        mCurrentFeature = LayerFeature( mParent->mFeaturePools[*mLayerIt], mFeature, mParent->mUseMapCrs );
         return true;
       }
     }
-    while ( mFeatureIt != featureIds.end() );
+    // End
+    mFeatureIt = QgsFeatureIds::const_iterator();
+    delete mCurrentFeature;
+    mCurrentFeature = 0;
+    return false;
+  }
+
+  bool LayerFeatures::iterator::nextLayer( bool begin )
+  {
+    if ( !begin )
+    {
+      ++mLayerIt;
+    }
+    while ( true )
+    {
+      if ( mLayerIt == mParent->mLayerIds.end() )
+      {
+        break;
+      }
+      if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->getLayer()->geometryType() ) )
+      {
+        mFeatureIt = mParent->mFeatureIds[*mLayerIt].begin();
+        return true;
+      }
+      ++mLayerIt;
+    }
+    return false;
+  }
+
+  bool LayerFeatures::iterator::nextFeature( bool begin )
+  {
+    QgsFeaturePool *featurePool = mParent->mFeaturePools[*mLayerIt];
+    const QgsFeatureIds &featureIds = mParent->mFeatureIds[*mLayerIt];
+    if ( !begin )
+    {
+      ++mFeatureIt;
+    }
+    while ( true )
+    {
+      if ( mFeatureIt == featureIds.end() )
+      {
+        break;
+      }
+      if ( mParent->mProgressCounter )
+        mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( featurePool->get( *mFeatureIt, feature ) )
+      {
+        delete mCurrentFeature;
+        mCurrentFeature = new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mUseMapCrs );
+        return true;
+      }
+      ++mFeatureIt;
+    }
     return false;
   }
 
@@ -133,29 +168,6 @@ namespace QgsGeometryCheckerUtils
         mFeatureIds.insert( layerId, QgsFeatureIds() );
       }
     }
-  }
-
-  LayerFeatures::iterator LayerFeatures::begin()
-  {
-    for ( auto layerIt = mLayerIds.begin(), layerItEnd = mLayerIds.end(); layerIt != layerItEnd; ++layerIt )
-    {
-      if ( !mGeometryTypes.contains( mFeaturePools[*layerIt]->getLayer()->geometryType() ) )
-      {
-        continue;
-      }
-      const QgsFeatureIds &featureIds = mFeatureIds[*layerIt];
-      for ( auto featureIt = featureIds.begin(), featureItEnd = featureIds.end(); featureIt != featureItEnd; ++featureIt )
-      {
-        if ( mProgressCounter )
-          mProgressCounter->fetchAndAddRelaxed( 1 );
-        QgsFeature feature;
-        if ( mFeaturePools[*layerIt]->get( *featureIt, feature ) )
-        {
-          return iterator( layerIt, featureIt, feature, this );
-        }
-      }
-    }
-    return end();
   }
 
   /////////////////////////////////////////////////////////////////////////////

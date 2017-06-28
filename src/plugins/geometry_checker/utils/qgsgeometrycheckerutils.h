@@ -46,7 +46,6 @@ namespace QgsGeometryCheckerUtils
       double mLayerToMapUnits;
       QgsCoordinateTransform mLayerToMapTransform;
       QgsAbstractGeometry *mGeometry = nullptr;
-      bool mClonedGeometry = false;
       bool mMapCrs;
   };
 
@@ -64,26 +63,25 @@ namespace QgsGeometryCheckerUtils
       class iterator
       {
         public:
-          iterator( const QList<QString>::iterator &layerIt, const QgsFeatureIds::const_iterator &featureIt, const QgsFeature &feature, LayerFeatures *parent );
+          iterator( const QList<QString>::iterator &layerIt, LayerFeatures *parent );
+          ~iterator();
           const iterator &operator++();
           iterator operator++( int ) { iterator tmp( *this ); ++*this; return tmp; }
-          const LayerFeature &operator*() const { return mCurrentFeature; }
+          const LayerFeature &operator*() const { Q_ASSERT( mCurrentFeature ); return *mCurrentFeature; }
           bool operator!=( const iterator &other ) { return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt; }
 
         private:
-          bool nextFeature();
+          bool nextLayerFeature( bool begin );
+          bool nextLayer( bool begin );
+          bool nextFeature( bool begin );
           QList<QString>::iterator mLayerIt;
           QgsFeatureIds::const_iterator mFeatureIt;
-          QgsFeature mFeature;
           LayerFeatures *mParent;
-          LayerFeature mCurrentFeature;
+          LayerFeature *mCurrentFeature = nullptr;
       };
 
-      iterator begin();
-      iterator end()
-      {
-        return iterator( mLayerIds.end(), mFeatureIds[mLayerIds.back()].end(), QgsFeature(), this );
-      }
+      iterator begin() { return iterator( mLayerIds.begin(), this ); }
+      iterator end() { return iterator( mLayerIds.end(), this ); }
     private:
       QMap<QString, QgsFeaturePool *> mFeaturePools;
       QMap<QString, QgsFeatureIds> mFeatureIds;
