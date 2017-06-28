@@ -263,7 +263,7 @@
           <item>
            <widget class="QLabel" name="labelMergeAttribute">
             <property name="text">
-             <string>Attribute to use when merging features by attribute value</string>
+             <string>Attribute to use when merging features by attribute value:</string>
             </property>
            </widget>
           </item>
