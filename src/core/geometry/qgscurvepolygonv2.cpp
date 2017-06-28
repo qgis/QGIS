@@ -300,18 +300,14 @@ QDomElement QgsCurvePolygonV2::asGML2( QDomDocument& doc, int precision, const Q
   elemOuterBoundaryIs.appendChild( outerRing );
   delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
-  int n = numInteriorRings();
-  if ( n > 0 )
+  for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, "innerBoundaryIs" );
-    for ( int i = 0; i < n; ++i )
-    {
-      QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
-      QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
-      innerRing.toElement().setTagName( "LinearRing" );
-      elemInnerBoundaryIs.appendChild( innerRing );
-      delete interiorLineString;
-    }
+    QgsLineStringV2* interiorLineString = interiorRing( i )->curveToLine();
+    QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
+    innerRing.toElement().setTagName( "LinearRing" );
+    elemInnerBoundaryIs.appendChild( innerRing );
+    delete interiorLineString;
     elemPolygon.appendChild( elemInnerBoundaryIs );
   }
   return elemPolygon;
@@ -325,16 +321,12 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
   outerRing.toElement().setTagName( "LinearRing" );
   elemExterior.appendChild( outerRing );
   elemCurvePolygon.appendChild( elemExterior );
-  int n = numInteriorRings();
-  if ( n > 0 )
+  for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, "interior" );
-    for ( int i = 0; i < n; ++i )
-    {
-      QDomElement innerRing = interiorRing( i )->asGML2( doc, precision, ns );
-      innerRing.toElement().setTagName( "LinearRing" );
-      elemInterior.appendChild( innerRing );
-    }
+    QDomElement innerRing = interiorRing( i )->asGML3( doc, precision, ns );
+    innerRing.toElement().setTagName( "LinearRing" );
+    elemInterior.appendChild( innerRing );
     elemCurvePolygon.appendChild( elemInterior );
   }
   return elemCurvePolygon;
