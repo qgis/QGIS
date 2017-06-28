@@ -216,21 +216,21 @@ void QgsGeometryCheckerSetupTab::selectOutputDirectory()
     }
   }
   QString initialdir = ui.lineEditOutputDirectory->text();
-  if ( !QDir( initialdir ).exists() )
+  if ( initialdir.isEmpty() || !QDir( initialdir ).exists() )
   {
-    QList<QgsVectorLayer *> layers = getSelectedLayers();
-    if ( !layers.isEmpty() )
+    for ( const QgsVectorLayer *layer : getSelectedLayers() )
     {
-      QDir dir = QFileInfo( layers.front()->dataProvider()->dataSourceUri() ).dir();
+      QDir dir = QFileInfo( layer->dataProvider()->dataSourceUri() ).dir();
       if ( dir.exists() )
       {
-        initialdir = dir.absoluteFilePath( tr( "geometry_checker_result" ) );
+        initialdir = dir.absolutePath();
+        break;
       }
     }
-    else
-    {
-      initialdir = QDir::home().absoluteFilePath( tr( "geometry_checker_result" ) );
-    }
+  }
+  if ( initialdir.isEmpty() || !QDir( initialdir ).exists() )
+  {
+    initialdir = QDir::homePath();
   }
   QString dir = QFileDialog::getExistingDirectory( this, tr( "Select Output Directory" ), initialdir );
   if ( !dir.isEmpty() )
@@ -252,7 +252,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       if ( layer->dataProvider()->dataSourceUri().startsWith( ui.lineEditOutputDirectory->text() ) )
       {
-        QMessageBox::critical( this, tr( "Invalid Output Layer" ), tr( "The chosen output directory contains one or more input layers." ) );
+        QMessageBox::critical( this, tr( "Invalid Output Directory" ), tr( "The chosen output directory contains one or more input layers." ) );
         return;
       }
     }
