@@ -269,7 +269,7 @@ QString QgsDissolveAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a polygon or line vector layer and combines their geometries into new geometries. One or more attributes can "
                       "be specified to dissolve only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
                       "all geometries can be dissolved.\n\n"
-                      "If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. "
+                      "All output geometries will be converted to multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased." );
 }
 
@@ -362,26 +362,27 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
         break;
       }
 
+      QVariantList indexAttributes;
+      Q_FOREACH ( int index, fieldIndexes )
+      {
+        indexAttributes << f.attribute( index );
+      }
+
+      if ( !attributeHash.contains( indexAttributes ) )
+      {
+        // keep attributes of first feature
+        attributeHash.insert( indexAttributes, f.attributes() );
+      }
+
       if ( f.hasGeometry() && f.geometry() )
       {
-        QVariantList indexAttributes;
-        Q_FOREACH ( int index, fieldIndexes )
-        {
-          indexAttributes << f.attribute( index );
-        }
-
-        if ( !attributeHash.contains( indexAttributes ) )
-        {
-          // keep attributes of first feature
-          attributeHash.insert( indexAttributes, f.attributes() );
-        }
         geometryHash[ indexAttributes ].append( f.geometry() );
       }
     }
 
     int numberFeatures = attributeHash.count();
-    QHash< QVariant, QList< QgsGeometry > >::const_iterator geomIt = geometryHash.constBegin();
-    for ( ; geomIt != geometryHash.constEnd(); ++geomIt )
+    QHash< QVariant, QgsAttributes >::const_iterator attrIt = attributeHash.constBegin();
+    for ( ; attrIt != attributeHash.constEnd(); ++attrIt )
     {
       if ( feedback->isCanceled() )
       {
@@ -389,8 +390,16 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       }
 
       QgsFeature outputFeature;
-      outputFeature.setGeometry( QgsGeometry::unaryUnion( geomIt.value() ) );
-      outputFeature.setAttributes( attributeHash.value( geomIt.key() ) );
+      if ( geometryHash.contains( attrIt.key() ) )
+      {
+        QgsGeometry geom = QgsGeometry::unaryUnion( geometryHash.value( attrIt.key() ) );
+        if ( !geom.isMultipart() )
+        {
+          geom.convertToMultiType();
+        }
+        outputFeature.setGeometry( geom );
+      }
+      outputFeature.setAttributes( attrIt.value() );
       sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
 
       feedback->setProgress( current * 100.0 / numberFeatures );
