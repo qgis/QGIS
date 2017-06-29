@@ -27,7 +27,9 @@ inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
 
 inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsPostgresConn *&c )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   c = QgsPostgresConn::connectDb( connInfo, true, false );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn *c )

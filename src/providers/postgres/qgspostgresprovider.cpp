@@ -147,7 +147,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
     return;
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
+  Q_NOWARN_DEPRECATED_POP
   if ( !mConnectionRO )
   {
     return;
@@ -300,7 +302,9 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
   }
   else if ( !mConnectionRW )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
+    Q_NOWARN_DEPRECATED_POP
   }
   return mConnectionRW;
 }
@@ -3670,7 +3674,9 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   QgsDebugMsg( QString( "Table name is: %1" ).arg( tableName ) );
 
   // create the table
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     if ( errorMessage )
@@ -4312,7 +4318,9 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
   }
   schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4378,7 +4386,9 @@ QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4409,7 +4419,9 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 {
   QgsDataSourceUri dsUri( uri );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4554,7 +4566,9 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -4592,7 +4606,9 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
 {
   QgsDataSourceUri dsUri( uri );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -4662,7 +4678,9 @@ QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &e
   QgsDataSourceUri dsUri( uri );
   bool deleted;
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  Q_NOWARN_DEPRECATED_POP
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );

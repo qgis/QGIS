@@ -187,11 +187,13 @@ class QgsPostgresConn : public QObject
 
   public:
     /*
-     * \param shared allow using a shared connection. Should never be
+     * @param shared allow using a shared connection. Should never be
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
+     *
+     *  @deprecated Use QgsPostgresConnPool
      */
-    static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
+    Q_DECL_DEPRECATED static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
 
     void ref() { ++mRef; }
     void unref();
