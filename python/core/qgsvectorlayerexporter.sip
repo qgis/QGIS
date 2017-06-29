@@ -124,12 +124,8 @@ class QgsVectorLayerExporter : QgsFeatureSink
  Finalizes the export and closes the new created layer.
 %End
 
-    bool flushBuffer();
-%Docstring
- Flush the buffer writing the features to the new layer.
-.. versionadded:: 3.0
- :rtype: bool
-%End
+    virtual bool flushBuffer();
+
 
   private:
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );

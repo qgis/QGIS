@@ -71,6 +71,11 @@ class CORE_EXPORT QgsFeatureSink
      */
     virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
 
+    /**
+     * Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
+     * \returns false if any buffered features could not be added to the sink.
+     */
+    virtual bool flushBuffer() { return true; }
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureSink::Flags )
