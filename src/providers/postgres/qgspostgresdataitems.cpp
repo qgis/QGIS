@@ -152,6 +152,17 @@ void QgsPGConnectionItem::refreshConnection()
   refresh();
 }
 
+void QgsPGConnectionItem::refreshSchema( const QString &schema )
+{
+  Q_FOREACH ( QgsDataItem *child, mChildren )
+  {
+    if ( child->name() == schema || schema.isEmpty() )
+    {
+      child->refresh();
+    }
+  }
+}
+
 void QgsPGConnectionItem::createSchema()
 {
   QString schemaName = QInputDialog::getText( nullptr, tr( "Create Schema" ), tr( "Schema name:" ) );
@@ -229,7 +240,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       // when an error occurs:
@@ -242,7 +253,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
-        refresh();
+        refreshSchema( toSchema );
       } );
 
       QgsApplication::taskManager()->addTask( exportTask.release() );
@@ -448,11 +459,11 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connection
 
 QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 {
-
   QVector<QgsDataItem *>items;
 
   QgsDataSourceUri uri = QgsPostgresConn::connUri( mConnectionName );
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
+
   if ( !conn )
   {
     items.append( new QgsErrorItem( this, tr( "Connection failed" ), mPath + "/error" ) );
