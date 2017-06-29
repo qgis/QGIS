@@ -70,8 +70,9 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection();
     void refreshConnection();
+    // refresh specified schema or all schemas if schema name is empty
+    void refreshSchema( const QString &schema );
     void createSchema();
-
 };
 
 class QgsPGSchemaItem : public QgsDataCollectionItem
