@@ -185,7 +185,7 @@
             </item>
             <item>
              <property name="text">
-              <string>Appearance</string>
+              <string>Rendering</string>
              </property>
              <property name="toolTip">
               <string>Rendering</string>
@@ -267,7 +267,7 @@
           <item>
            <widget class="QStackedWidget" name="mDiagramStackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="mDiagramPage_Attributes">
              <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -303,8 +303,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>640</width>
-                   <height>428</height>
+                   <width>642</width>
+                   <height>421</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -522,7 +522,7 @@
                  <string notr="true">text-decoration: underline;</string>
                 </property>
                 <property name="text">
-                 <string>Appearance</string>
+                 <string>Rendering</string>
                 </property>
                </widget>
               </item>
@@ -539,8 +539,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>640</width>
-                   <height>428</height>
+                   <width>626</width>
+                   <height>465</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
@@ -859,17 +859,7 @@
                        <property name="bottomMargin">
                         <number>0</number>
                        </property>
-                       <item row="0" column="0">
-                        <widget class="QCheckBox" name="mShowAllCheckBox">
-                         <property name="text">
-                          <string>Show all diagrams</string>
-                         </property>
-                         <property name="checked">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="1" column="0">
+                       <item row="2" column="0">
                         <widget class="QgsCollapsibleGroupBox" name="mScaleVisibilityGroupBox">
                          <property name="title">
                           <string>Scale dependent visibility</string>
@@ -889,6 +879,60 @@
                           </item>
                          </layout>
                         </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QCheckBox" name="mShowAllCheckBox">
+                         <property name="text">
+                          <string>Show all diagrams</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <layout class="QHBoxLayout" name="horizontalLayout_8">
+                         <item>
+                          <widget class="QLabel" name="label_16">
+                           <property name="text">
+                            <string>Diagram z-index</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QgsDoubleSpinBox" name="mZIndexSpinBox">
+                           <property name="toolTip">
+                            <string>Controls how diagrams are drawn on top of each other. Diagrams with a higher z-index are drawn above diagrams and labels with a lower z-index.</string>
+                           </property>
+                           <property name="minimum">
+                            <double>-9999999.000000000000000</double>
+                           </property>
+                           <property name="maximum">
+                            <double>9999999.000000000000000</double>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
+                           <property name="text">
+                            <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <spacer name="horizontalSpacer_10">
+                           <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>40</width>
+                             <height>20</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                        </layout>
                        </item>
                       </layout>
                      </widget>
@@ -1095,8 +1139,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>413</width>
-                   <height>238</height>
+                   <width>642</width>
+                   <height>421</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1411,8 +1455,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>213</width>
-                   <height>220</height>
+                   <width>642</width>
+                   <height>421</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1560,50 +1604,6 @@
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="6" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_8">
-                    <item>
-                     <widget class="QLabel" name="label_16">
-                      <property name="text">
-                       <string>Diagram z-index</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsDoubleSpinBox" name="mZIndexSpinBox">
-                      <property name="toolTip">
-                       <string>Controls how labels are drawn on top of each other. Labels with a higher z-index are drawn above labels with a lower z-index.</string>
-                      </property>
-                      <property name="minimum">
-                       <double>-9999999.000000000000000</double>
-                      </property>
-                      <property name="maximum">
-                       <double>9999999.000000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QgsPropertyOverrideButton" name="mZOrderDDBtn">
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_10">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -1837,8 +1837,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>137</height>
+                   <width>642</width>
+                   <height>421</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -2056,8 +2056,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>246</width>
-                   <height>72</height>
+                   <width>642</width>
+                   <height>421</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
