@@ -61,6 +61,8 @@ namespace QgsGeometryCheckerUtils
       const QgsAbstractGeometry *geometry() const { return mGeometry; }
       QString geometryCrs() const { return mMapCrs ? mLayerToMapTransform.destinationCrs().authid() : mLayerToMapTransform.sourceCrs().authid(); }
       QString id() const { return QString( "%1:%2" ).arg( mLayer->id() ).arg( mFeature.id() ); }
+      bool operator==( const LayerFeature &other ) const { return layer().id() == other.layer().id() && feature().id() == other.feature().id(); }
+      bool operator!=( const LayerFeature &other ) const { return layer().id() != other.layer().id() || feature().id() != other.feature().id(); }
 
     private:
       const QgsVectorLayer *mLayer = nullptr;

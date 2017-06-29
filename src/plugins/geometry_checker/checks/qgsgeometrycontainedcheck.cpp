@@ -28,10 +28,14 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, featureIds.keys(), bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
+      if ( layerFeatureA == layerFeatureB )
+      {
+        continue;
+      }
       QString errMsg;
       if ( geomEngineA->within( *layerFeatureB.geometry(), &errMsg ) )
       {
-        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
+        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), layerFeatureB ) );
       }
       else if ( !errMsg.isEmpty() )
       {
