@@ -199,7 +199,7 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.element.setDescription(dlg.param.name())
                 self.model.addModelParameter(dlg.param, self.element)
                 self.text = dlg.param.description()
-                self.update()
+                self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelAlgorithm.ChildAlgorithm):
             dlg = None
             try:
@@ -336,6 +336,9 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, QgsProcessingModelAlgorithm.ChildAlgorithm) and self.element.parametersCollapsed():
             paramIndex = -1
             offsetX = 17
+        if isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
+            paramIndex = -1
+            offsetX = 0
         font = QFont('Verdana', 8)
         font.setPixelSize(12)
         fm = QFontMetricsF(font)
