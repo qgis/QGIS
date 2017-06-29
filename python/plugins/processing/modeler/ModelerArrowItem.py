@@ -119,4 +119,6 @@ class ModelerArrowItem(QGraphicsPathItem):
 
         for point in self.endPoints:
             painter.drawEllipse(point.x(), point.y(), 6, 6)
-        painter.strokePath(self.shape(), painter.pen())
+
+        painter.setBrush(Qt.NoBrush)
+        painter.drawPath(self.path())
