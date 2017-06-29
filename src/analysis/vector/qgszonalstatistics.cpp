@@ -158,6 +158,13 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
     QgsField varietyField( varietyFieldName, QVariant::Int, QStringLiteral( "int" ) );
     newFieldList.push_back( varietyField );
   }
+  QString varianceFieldName;
+  if ( mStatistics & QgsZonalStatistics::Variance )
+  {
+    varianceFieldName = getUniqueFieldName( mAttributePrefix + "variance", newFieldList );
+    QgsField varianceField( varianceFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
+    newFieldList.push_back( varianceField );
+  }
   vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
@@ -172,6 +179,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   int minorityIndex = mStatistics & QgsZonalStatistics::Minority ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
   int majorityIndex = mStatistics & QgsZonalStatistics::Majority ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
   int varietyIndex = mStatistics & QgsZonalStatistics::Variety ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
+  int varianceIndex = mStatistics & QgsZonalStatistics::Variance ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
 
   if ( ( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
@@ -184,6 +192,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
        || ( mStatistics & QgsZonalStatistics::Minority && minorityIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Majority && majorityIndex == -1 )
        || ( mStatistics & QgsZonalStatistics::Variety && varietyIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Variance && varianceIndex == -1 )
      )
   {
     //failed to create a required field
@@ -200,7 +209,8 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   QgsFeature f;
 
   bool statsStoreValues = ( mStatistics & QgsZonalStatistics::Median ) ||
-                          ( mStatistics & QgsZonalStatistics::StDev );
+                          ( mStatistics & QgsZonalStatistics::StDev ) ||
+                          ( mStatistics & QgsZonalStatistics::Variance );
   bool statsStoreValueCount = ( mStatistics & QgsZonalStatistics::Minority ) ||
                               ( mStatistics & QgsZonalStatistics::Majority );
 
@@ -288,7 +298,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         }
         changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
       }
-      if ( mStatistics & QgsZonalStatistics::StDev )
+      if ( mStatistics & QgsZonalStatistics::StDev || mStatistics & QgsZonalStatistics::Variance )
       {
         double sumSquared = 0;
         for ( int i = 0; i < featureStats.values.count(); ++i )
@@ -296,8 +306,14 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
           double diff = featureStats.values.at( i ) - mean;
           sumSquared += diff * diff;
         }
-        double stdev = qPow( sumSquared / featureStats.values.count(), 0.5 );
-        changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        double variance = sumSquared / featureStats.values.count();
+        if ( mStatistics & QgsZonalStatistics::StDev )
+        {
+          double stdev = qPow( variance, 0.5 );
+          changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        }
+        if ( mStatistics & QgsZonalStatistics::Variance )
+          changeAttributeMap.insert( varianceIndex, QVariant( variance ) );
       }
       if ( mStatistics & QgsZonalStatistics::Min )
         changeAttributeMap.insert( minIndex, QVariant( featureStats.min ) );
