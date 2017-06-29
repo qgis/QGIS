@@ -55,7 +55,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       Minority = 256, //!< Minority of pixel values
       Majority = 512, //!< Majority of pixel values
       Variety = 1024, //!< Variety (count of distinct) pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 

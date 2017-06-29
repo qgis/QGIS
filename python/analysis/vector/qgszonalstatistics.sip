@@ -36,6 +36,7 @@ class QgsZonalStatistics
       Minority,
       Majority,
       Variety,
+      Variance,
       All
     };
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
