@@ -62,7 +62,7 @@ class MetaSearchPlugin(object):
         self.action_run.setWhatsThis(QCoreApplication.translate('MetaSearch',
                                                                 'MetaSearch plugin'))
         self.action_run.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                                                'Search Metadata Catalogues'))
+                                                                'Search Metadata Catalogs'))
 
         self.action_run.triggered.connect(self.run)
 

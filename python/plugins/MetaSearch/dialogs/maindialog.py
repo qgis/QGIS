@@ -8,7 +8,7 @@ from builtins import range
 #
 # CSW Client
 # ---------------------------------------------------------
-# QGIS Catalogue Service client.
+# QGIS Catalog Service client.
 #
 # Copyright (C) 2010 NextGIS (http://nextgis.org),
 #                    Alexander Bruy (alexander.bruy@gmail.com),
@@ -297,7 +297,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """add new service"""
 
         conn_new = NewConnectionDialog()
-        conn_new.setWindowTitle(self.tr('New Catalogue service'))
+        conn_new.setWindowTitle(self.tr('New Catalog service'))
         if conn_new.exec_() == QDialog.Accepted:  # add to service list
             self.populate_connection_list()
         self.textMetadata.clear()
@@ -310,7 +310,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         url = self.settings.value('/MetaSearch/%s/url' % current_text)
 
         conn_edit = NewConnectionDialog(current_text)
-        conn_edit.setWindowTitle(self.tr('Edit Catalogue service'))
+        conn_edit.setWindowTitle(self.tr('Edit Catalog service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
         conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))
@@ -447,7 +447,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.setValue('/MetaSearch/returnRecords',
                                self.spnRecords.cleanText())
 
-        # set current catalogue
+        # set current catalog
         current_text = self.cmbConnectionsSearch.currentText()
         key = '/MetaSearch/%s' % current_text
         self.catalog_url = self.settings.value('%s/url' % key)
