@@ -94,6 +94,22 @@ class ModelerScene(QGraphicsScene):
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
 
+        # Input dependency arrows
+        for input_name in list(model.parameterComponents().keys()):
+            idx = 0
+            parameter_def = model.parameterDefinition(input_name)
+            if hasattr(parameter_def, 'parentLayerParameter') and parameter_def.parentLayerParameter():
+                parent_name = parameter_def.parentLayerParameter()
+                if input_name in self.paramItems and parent_name in self.paramItems:
+                    input_item = self.paramItems[input_name]
+                    parent_item = self.paramItems[parent_name]
+                    arrow = ModelerArrowItem(parent_item, -1, input_item, -1)
+                    input_item.addArrow(arrow)
+                    parent_item.addArrow(arrow)
+                    arrow.setPenStyle(Qt.DotLine)
+                    arrow.updatePath()
+                    self.addItem(arrow)
+
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
             item = ModelerGraphicItem(alg, model, controls, scene=self)
@@ -104,6 +120,7 @@ class ModelerScene(QGraphicsScene):
             self.algItems[alg.childId()] = item
 
         # And then the arrows
+
         for alg in list(model.childAlgorithms().values()):
             idx = 0
             for parameter in alg.algorithm().parameterDefinitions():
