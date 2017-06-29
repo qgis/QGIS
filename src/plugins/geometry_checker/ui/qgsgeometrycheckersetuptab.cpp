@@ -123,6 +123,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     {
       supportedGeometryType = false;
     }
+    item->setToolTip( layer->dataProvider()->dataSourceUri() );
     item->setData( LayerIdRole, layer->id() );
     if ( supportedGeometryType )
     {
