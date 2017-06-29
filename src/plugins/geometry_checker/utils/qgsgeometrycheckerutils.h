@@ -54,18 +54,18 @@ namespace QgsGeometryCheckerUtils
     public:
       LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs );
       ~LayerFeature();
-      const QgsVectorLayer &layer() const { return *mLayer; }
       const QgsFeature &feature() const { return mFeature; }
-      double layerToMapUnits() const { return mLayerToMapUnits; }
-      const QgsCoordinateTransform &layerToMapTransform() const { return mLayerToMapTransform; }
+      const QgsVectorLayer &layer() const;
+      double layerToMapUnits() const;
+      const QgsCoordinateTransform &layerToMapTransform() const;
       const QgsAbstractGeometry *geometry() const { return mGeometry; }
-      QString geometryCrs() const { return mMapCrs ? mLayerToMapTransform.destinationCrs().authid() : mLayerToMapTransform.sourceCrs().authid(); }
-      QString id() const { return QString( "%1:%2" ).arg( mLayer->id() ).arg( mFeature.id() ); }
+      QString geometryCrs() const { return mMapCrs ? layerToMapTransform().destinationCrs().authid() : layerToMapTransform().sourceCrs().authid(); }
+      QString id() const { return QString( "%1:%2" ).arg( layer().name() ).arg( mFeature.id() ); }
       bool operator==( const LayerFeature &other ) const { return layer().id() == other.layer().id() && feature().id() == other.feature().id(); }
       bool operator!=( const LayerFeature &other ) const { return layer().id() != other.layer().id() || feature().id() != other.feature().id(); }
 
     private:
-      const QgsVectorLayer *mLayer = nullptr;
+      const QgsFeaturePool *mFeaturePool;
       QgsFeature mFeature;
       double mLayerToMapUnits;
       QgsCoordinateTransform mLayerToMapTransform;

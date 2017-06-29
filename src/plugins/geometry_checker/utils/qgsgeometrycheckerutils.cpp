@@ -26,10 +26,8 @@
 namespace QgsGeometryCheckerUtils
 {
   LayerFeature::LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, bool useMapCrs )
-    : mLayer( pool->getLayer() )
+    : mFeaturePool( pool )
     , mFeature( feature )
-    , mLayerToMapUnits( pool->getLayerToMapUnits() )
-    , mLayerToMapTransform( pool->getLayerToMapTransform() )
     , mMapCrs( useMapCrs )
   {
     mGeometry = feature.geometry().geometry()->clone();
@@ -42,6 +40,9 @@ namespace QgsGeometryCheckerUtils
   {
     delete mGeometry;
   }
+  const QgsVectorLayer &LayerFeature::layer() const { return *mFeaturePool->getLayer(); }
+  double LayerFeature::layerToMapUnits() const { return mFeaturePool->getLayerToMapUnits(); }
+  const QgsCoordinateTransform &LayerFeature::layerToMapTransform() const { return mFeaturePool->getLayerToMapTransform(); }
 
 /////////////////////////////////////////////////////////////////////////////
 
