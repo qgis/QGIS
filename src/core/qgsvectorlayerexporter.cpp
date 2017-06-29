@@ -495,14 +495,15 @@ bool QgsVectorLayerExporterTask::run()
              mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
              &mOptions, mOwnedFeedback.get() );
 
-  if ( mOwnsLayer )
-    delete mLayer;
-
   return mError == QgsVectorLayerExporter::NoError;
 }
 
 void QgsVectorLayerExporterTask::finished( bool result )
 {
+  // QgsMapLayer has QTimer member, which must not be destroyed from another thread
+  if ( mOwnsLayer )
+    delete mLayer;
+
   if ( result )
     emit exportComplete();
   else
