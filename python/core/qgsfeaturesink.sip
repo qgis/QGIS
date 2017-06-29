@@ -55,6 +55,12 @@ class QgsFeatureSink
  :rtype: bool
 %End
 
+    virtual bool flushBuffer();
+%Docstring
+ Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
+ :return: false if any buffered features could not be added to the sink.
+ :rtype: bool
+%End
 };
 
 QFlags<QgsFeatureSink::Flag> operator|(QgsFeatureSink::Flag f1, QFlags<QgsFeatureSink::Flag> f2);

@@ -141,11 +141,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     ~QgsVectorLayerExporter();
 
-    /**
-     * Flush the buffer writing the features to the new layer.
-     * \since QGIS 3.0
-     */
-    bool flushBuffer();
+    bool flushBuffer() override;
 
   private:
 
