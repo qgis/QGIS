@@ -412,9 +412,9 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( QgsVectorLayer *layer : processLayers )
   {
-    double mapToLayerUnits = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform mapToLayerTransform = QgsCoordinateTransformCache::instance()->transform( mIface->mapCanvas()->mapSettings().destinationCrs().authid(), layer->crs().authid() );
-    featurePools.insert( layer->id(), new QgsFeaturePool( layer, mapToLayerUnits, mapToLayerTransform, selectedOnly ) );
+    double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
+    QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mIface->mapCanvas()->mapSettings().destinationCrs().authid() );
+    featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
   }
 
   QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), mIface->mapCanvas()->mapSettings().destinationCrs().authid(), featurePools );
