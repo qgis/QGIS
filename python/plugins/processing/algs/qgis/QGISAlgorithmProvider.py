@@ -72,7 +72,7 @@ from .Smooth import Smooth
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
-from .ZonalStatisticsQgis import ZonalStatisticsQgis
+from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
 # from .PointsInPolygon import PointsInPolygon
@@ -119,7 +119,6 @@ from .ZonalStatisticsQgis import ZonalStatisticsQgis
 # from .JoinAttributes import JoinAttributes
 # from .CreateConstantRaster import CreateConstantRaster
 # from .PointsDisplacement import PointsDisplacement
-# from .ZonalStatistics import ZonalStatistics
 # from .PointsFromPolygons import PointsFromPolygons
 # from .PointsFromLines import PointsFromLines
 # from .RandomPointsExtent import RandomPointsExtent
@@ -210,7 +209,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         EquivalentNumField(),
         #         StatisticsByCategories(), ConcaveHull(),
         #         RasterLayerStatistics(), PointsDisplacement(),
-        #         ZonalStatistics(), PointsFromPolygons(),
+        #         PointsFromPolygons(),
         #         PointsFromLines(), RandomPointsExtent(),
         #         RandomPointsLayer(), RandomPointsPolygonsFixed(),
         #         RandomPointsPolygonsVariable(),
@@ -273,7 +272,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
                 VectorSplit(),
-                ZonalStatisticsQgis()
+                ZonalStatistics()
                 ]
 
         if hasPlotly:
