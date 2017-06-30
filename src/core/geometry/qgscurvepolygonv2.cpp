@@ -320,7 +320,7 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
   QDomElement outerRing = exteriorRing()->asGML3( doc, precision, ns );
   if ( outerRing.tagName() == QString( "Curve" ) )
   {
-    QDomNodeList posListElements = outerRing.elementsByTagName("posList");
+    QDomNodeList posListElements = outerRing.elementsByTagName( "posList" );
     outerRing = doc.createElementNS( ns, "LinearRing" );
     outerRing.appendChild( posListElements.at( 0 ) );
   }
@@ -336,7 +336,7 @@ QDomElement QgsCurvePolygonV2::asGML3( QDomDocument& doc, int precision, const Q
     QDomElement innerRing = interiorRing( i )->asGML3( doc, precision, ns );
     if ( innerRing.tagName() == QString( "Curve" ) )
     {
-      QDomNodeList posListElements = innerRing.elementsByTagName("posList");
+      QDomNodeList posListElements = innerRing.elementsByTagName( "posList" );
       innerRing = doc.createElementNS( ns, "LinearRing" );
       innerRing.appendChild( posListElements.at( 0 ) );
     }
