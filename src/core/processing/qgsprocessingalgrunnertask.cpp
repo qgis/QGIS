@@ -24,7 +24,6 @@
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
   : QgsTask( tr( "Running %1" ).arg( algorithm->name() ), QgsTask::CanCancel )
-  , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
   , mAlgorithm( algorithm->create() )
@@ -34,6 +33,8 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
     mOwnedFeedback.reset( new QgsProcessingFeedback() );
     mFeedback = mOwnedFeedback.get();
   }
+  if ( !mAlgorithm->prepare( parameters, context, mFeedback ) )
+    cancel();
 }
 
 void QgsProcessingAlgRunnerTask::cancel()
@@ -47,7 +48,7 @@ bool QgsProcessingAlgRunnerTask::run()
   bool ok = false;
   try
   {
-    mResults = mAlgorithm->run( mParameters, mContext, mFeedback, &ok );
+    ok = mAlgorithm->runPrepared( mContext, mFeedback );
   }
   catch ( QgsProcessingException & )
   {
@@ -59,12 +60,9 @@ bool QgsProcessingAlgRunnerTask::run()
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
   Q_UNUSED( result );
-  if ( !mResults.isEmpty() )
+  if ( result )
   {
-    QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( mResults.value( "OUTPUT_LAYER" ).toString(), mContext );
-    if ( layer )
-    {
-      mContext.project()->addMapLayer( mContext.temporaryLayerStore()->takeMapLayer( layer ) );
-    }
+    mResults = mAlgorithm->postProcess( mContext, mFeedback );
   }
+  emit executed( result, mResults );
 }

@@ -49,6 +49,15 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
     virtual void cancel() override;
 
+  signals:
+
+    /**
+     * Emitted when the algorithm has finished execution. If the algorithm completed
+     * execution without errors then \a successful will be true. The \a results argument
+     * contains the results reported by the algorithm.
+     */
+    void executed( bool successful, const QVariantMap &results );
+
   protected:
 
     virtual bool run() override;
@@ -56,7 +65,6 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
   private:
 
-    QVariantMap mParameters;
     QVariantMap mResults;
     QgsProcessingContext &mContext;
     QgsProcessingFeedback *mFeedback = nullptr;
