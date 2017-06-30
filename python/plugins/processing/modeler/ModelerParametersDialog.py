@@ -285,6 +285,8 @@ class ModelerParametersDialog(QDialog):
                     continue
                 if param.name() in alg.parameterSources():
                     value = alg.parameterSources()[param.name()]
+                    if isinstance(value, list) and len(value) == 1:
+                        value = value[0]
                 else:
                     value = param.defaultValue()
 
@@ -325,9 +327,11 @@ class ModelerParametersDialog(QDialog):
             if val is None:
                 continue
             elif isinstance(val, QgsProcessingModelAlgorithm.ChildParameterSource):
-                alg.addParameterSource(param.name(), val)
+                alg.addParameterSources(param.name(), [val])
+            elif isinstance(val, list):
+                alg.addParameterSources(param.name(), val)
             else:
-                alg.addParameterSource(param.name(), QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val))
+                alg.addParameterSources(param.name(), [QgsProcessingModelAlgorithm.ChildParameterSource.fromStaticValue(val)])
 
         outputs = {}
         for dest in self._alg.destinationParameterDefinitions():

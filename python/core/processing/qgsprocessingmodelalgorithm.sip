@@ -161,6 +161,7 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 
     };
 
+
     class Component
 {
 %Docstring
@@ -415,30 +416,30 @@ Copies are protected to avoid slicing
  :rtype: QgsProcessingAlgorithm
 %End
 
-        QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource > parameterSources() const;
+        QMap< QString, QList< QgsProcessingModelAlgorithm::ChildParameterSource > > parameterSources() const;
 %Docstring
  Returns a map of parameter sources. The keys are the child algorithm
- parameter names, the values are the source for that parameter.
+ parameter names, the values are the sources for that parameter.
 .. seealso:: setParameterSources()
-.. seealso:: addParameterSource()
- :rtype: QMap< str, QgsProcessingModelAlgorithm.ChildParameterSource >
+.. seealso:: addParameterSources()
+ :rtype: QMap< str, QList< QgsProcessingModelAlgorithm.ChildParameterSource > >
 %End
 
-        void setParameterSources( const QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource > &sources );
+        void setParameterSources( const QMap< QString, QList< QgsProcessingModelAlgorithm::ChildParameterSource > > &sources );
 %Docstring
  Sets the map of parameter ``sources``. The keys are the child algorithm
- parameter names, the values are the source for that parameter.
+ parameter names, the values are the sources for that parameter.
 .. seealso:: parameterSources()
-.. seealso:: addParameterSource()
+.. seealso:: addParameterSources()
 %End
 
-        void addParameterSource( const QString &name, const QgsProcessingModelAlgorithm::ChildParameterSource &source );
+        void addParameterSources( const QString &name, const QList< QgsProcessingModelAlgorithm::ChildParameterSource > &source );
 %Docstring
  Adds a parameter source. The ``name`` argument should match
- one of the child algorithm's parameter names, and the ``source``
- argument is used to set the source for that parameter.
+ one of the child algorithm's parameter names, and the ``sources``
+ argument is used to set the sources for that parameter.
 
- Any existing parameter source with matching name will be replaced.
+ Any existing parameter sources with matching name will be replaced.
 .. seealso:: parameterSources()
 .. seealso:: setParameterSources()
 %End
