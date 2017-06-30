@@ -419,7 +419,9 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
   if ( info.joinLayer() )
   {
     const QVariant targetValue = feature.attribute( info.targetFieldName() );
-    const QString filter = QString( "\"%1\" = %2" ).arg( info.joinFieldName(), targetValue.toString() );
+    QString fieldRef = QgsExpression::quotedColumnRef( info.joinFieldName() );
+    QString quotedVal = QgsExpression::quotedValue( targetValue.toString() );
+    const QString filter = QString( "%1 = %2" ).arg( fieldRef, quotedVal );
 
     QgsFeatureRequest request;
     request.setFilterExpression( filter );
