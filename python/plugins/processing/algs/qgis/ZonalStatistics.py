@@ -90,7 +90,7 @@ class ZonalStatistics(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.STATISTICS,
                                                      self.tr('Statistics to calculate'),
                                                      keys,
-                                                     allowMultiple=True, defaultValue=[0,1,2]))
+                                                     allowMultiple=True, defaultValue=[0, 1, 2]))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT_VECTOR,
                                                       self.tr('Zonal statistics'),
                                                       QgsProcessingParameterDefinition.TypeVectorPolygon))
