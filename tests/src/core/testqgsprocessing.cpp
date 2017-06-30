@@ -583,12 +583,18 @@ void TestQgsProcessing::context()
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
 
+  QgsVectorLayer *vector = new QgsVectorLayer( "Polygon", "vector", "memory" );
+  context.temporaryLayerStore()->addMapLayer( vector );
+  QCOMPARE( context.temporaryLayerStore()->mapLayer( vector->id() ), vector );
+
   QgsProcessingContext context2;
   context2.copyThreadSafeSettings( context );
   QCOMPARE( context2.defaultEncoding(), context.defaultEncoding() );
   QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
   QCOMPARE( context2.flags(), context.flags() );
   QCOMPARE( context2.project(), context.project() );
+  // layers from temporaryLayerStore must not be copied by copyThreadSafeSettings
+  QVERIFY( context2.temporaryLayerStore()->mapLayers().isEmpty() );
 
   // layers to load on completion
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
@@ -606,6 +612,11 @@ void TestQgsProcessing::context()
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "v1" ) );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 1 ).name, QStringLiteral( "v2" ) );
+
+  // ensure that copyThreadSafeSettings doesn't copy layersToLoadOnCompletion()
+  context2.copyThreadSafeSettings( context );
+  QVERIFY( context2.layersToLoadOnCompletion().isEmpty() );
+
   layers.clear();
   layers.insert( v2->id(), QgsProcessingContext::LayerDetails( QStringLiteral( "v2" ), &p ) );
   context.setLayersToLoadOnCompletion( layers );
@@ -616,8 +627,20 @@ void TestQgsProcessing::context()
   QCOMPARE( context.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
-  delete v1;
-  delete v2;
+
+  context.temporaryLayerStore()->addMapLayer( v1 );
+  context.temporaryLayerStore()->addMapLayer( v2 );
+
+  // test takeResultsFrom
+  context2.takeResultsFrom( context );
+  QVERIFY( context.temporaryLayerStore()->mapLayers().isEmpty() );
+  QVERIFY( context.layersToLoadOnCompletion().isEmpty() );
+  // should now be in context2
+  QCOMPARE( context2.temporaryLayerStore()->mapLayer( v1->id() ), v1 );
+  QCOMPARE( context2.temporaryLayerStore()->mapLayer( v2->id() ), v2 );
+  QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
 }
 
 void TestQgsProcessing::mapLayers()
