@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -61,20 +62,19 @@ class ZonalStatistics(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
-                      self.tr('Sum'): QgsZonalStatistics.Sum,
-                      self.tr('Mean'): QgsZonalStatistics.Mean,
-                      self.tr('Median'): QgsZonalStatistics.Median,
-                      self.tr('Std. dev.'): QgsZonalStatistics.StDev,
-                      self.tr('Min'): QgsZonalStatistics.Min,
-                      self.tr('Max'): QgsZonalStatistics.Max,
-                      self.tr('Range'): QgsZonalStatistics.Range,
-                      self.tr('Minority'): QgsZonalStatistics.Minority,
-                      self.tr('Majority (mode)'): QgsZonalStatistics.Majority,
-                      self.tr('Variety'): QgsZonalStatistics.Variety,
-                      self.tr('Variance'): QgsZonalStatistics.Variance,
-                      self.tr('All'): QgsZonalStatistics.All
-                      }
+        self.STATS = OrderedDict([(self.tr('Count'), QgsZonalStatistics.Count),
+                                  (self.tr('Sum'), QgsZonalStatistics.Sum),
+                                  (self.tr('Mean'), QgsZonalStatistics.Mean),
+                                  (self.tr('Median'), QgsZonalStatistics.Median),
+                                  (self.tr('Std. dev.'), QgsZonalStatistics.StDev),
+                                  (self.tr('Min'), QgsZonalStatistics.Min),
+                                  (self.tr('Max'), QgsZonalStatistics.Max),
+                                  (self.tr('Range'), QgsZonalStatistics.Range),
+                                  (self.tr('Minority'), QgsZonalStatistics.Minority),
+                                  (self.tr('Majority (mode)'), QgsZonalStatistics.Majority),
+                                  (self.tr('Variety'), QgsZonalStatistics.Variety),
+                                  (self.tr('Variance'), QgsZonalStatistics.Variance),
+                                  (self.tr('All'), QgsZonalStatistics.All)])
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
                                                             self.tr('Raster layer')))
@@ -86,10 +86,11 @@ class ZonalStatistics(QgisAlgorithm):
                                                             [QgsProcessingParameterDefinition.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterString(self.COLUMN_PREFIX,
                                                        self.tr('Output column prefix'), '_'))
+        keys = list(self.STATS.keys())
         self.addParameter(QgsProcessingParameterEnum(self.STATISTICS,
                                                      self.tr('Statistics to calculate'),
-                                                     list(self.STATS.keys()),
-                                                     allowMultiple=True))
+                                                     keys,
+                                                     allowMultiple=True, defaultValue=[0,1,2]))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT_VECTOR,
                                                       self.tr('Zonal statistics'),
                                                       QgsProcessingParameterDefinition.TypeVectorPolygon))
