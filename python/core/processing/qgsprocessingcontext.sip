@@ -216,6 +216,21 @@ Destination project
 .. seealso:: setFeedback()
 %End
 
+    QThread *thread();
+%Docstring
+ Returns the thread in which the context lives.
+.. seealso:: pushToThread()
+ :rtype: QThread
+%End
+
+    void pushToThread( QThread *thread );
+%Docstring
+ Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
+ another ``thread``. This method is only safe to call when the current thread matches the existing thread
+ affinity for the context (see thread()).
+.. seealso:: thread()
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };
