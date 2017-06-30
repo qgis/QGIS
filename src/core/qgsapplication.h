@@ -40,7 +40,7 @@ class QgsMessageLog;
 class QgsProcessingRegistry;
 class QgsAnnotationRegistry;
 class QgsPageSizeRegistry;
-
+class QgsLayoutItemRegistry;
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -523,6 +523,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
     /**
+     * Returns the application's layout item registry, used for layout item types.
+     * \since QGIS 3.0
+     */
+    static QgsLayoutItemRegistry *layoutItemRegistry();
+
+    /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * \since QGIS 3.0
      */
@@ -709,6 +715,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsSvgCache *mSvgCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
+      QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();

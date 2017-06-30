@@ -153,6 +153,7 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
+%Include layout/qgslayout.sip
 %Include layout/qgslayoutmeasurement.sip
 %Include layout/qgslayoutmeasurementconverter.sip
 %Include layout/qgspagesizeregistry.sip
@@ -371,6 +372,9 @@
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
+%Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemregistry.sip
+%Include layout/qgslayoutobject.sip
 %Include symbology-ng/qgscptcityarchive.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgsstyle.sip

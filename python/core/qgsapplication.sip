@@ -10,7 +10,6 @@
 
 
 
-
 class QgsApplication : QApplication
 {
 %Docstring
@@ -644,6 +643,13 @@ Returns path to the build output directory. Valid only when running from build d
  Returns the application's symbol layer registry, used for managing symbol layers.
 .. versionadded:: 3.0
  :rtype: QgsSymbolLayerRegistry
+%End
+
+    static QgsLayoutItemRegistry *layoutItemRegistry();
+%Docstring
+ Returns the application's layout item registry, used for layout item types.
+.. versionadded:: 3.0
+ :rtype: QgsLayoutItemRegistry
 %End
 
     static QgsGPSConnectionRegistry *gpsConnectionRegistry();

@@ -18,6 +18,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsnetworkaccessmanager.h"
@@ -1534,6 +1535,11 @@ QgsSymbolLayerRegistry *QgsApplication::symbolLayerRegistry()
   return members()->mSymbolLayerRegistry;
 }
 
+QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
+{
+  return members()->mLayoutItemRegistry;
+}
+
 QgsGPSConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
@@ -1589,6 +1595,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
   mPageSizeRegistry = new QgsPageSizeRegistry();
+  mLayoutItemRegistry = new QgsLayoutItemRegistry();
   mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
 }
@@ -1605,6 +1612,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mPluginLayerRegistry;
   delete mProcessingRegistry;
   delete mPageSizeRegistry;
+  delete mLayoutItemRegistry;
   delete mProfiler;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
