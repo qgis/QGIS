@@ -252,6 +252,7 @@ class AlgorithmsTest(object):
                 expected_lyr = self.load_layer(id, expected_result)
                 if 'in_place_result' in expected_result:
                     result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
+                    self.assertTrue(result_lyr, self.in_place_layers[id])
                 else:
                     try:
                         results[id]
@@ -262,8 +263,8 @@ class AlgorithmsTest(object):
                         result_lyr = results[id]
                     else:
                         result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    self.assertTrue(result_lyr, results[id])
 
-                self.assertTrue(result_lyr, results[id])
                 compare = expected_result.get('compare', {})
 
                 self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
