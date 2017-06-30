@@ -134,8 +134,7 @@ bool QgsCentroidAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessi
     feedback->setProgress( current * step );
     current++;
   }
-  mSource.reset();
-  mSink.reset();
+  mSink->flushBuffer();
   return true;
 }
 
@@ -268,8 +267,7 @@ bool QgsBufferAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessing
     mSink->addFeature( f, QgsFeatureSink::FastInsert );
   }
 
-  mSource.reset();
-  mSink.reset();
+  mSink->flushBuffer();
   return true;
 }
 
@@ -427,9 +425,7 @@ bool QgsDissolveAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessi
     }
   }
 
-  mSource.reset();
-  mSink.reset();
-
+  mSink->flushBuffer();
   return true;
 }
 
@@ -592,9 +588,7 @@ bool QgsClipAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcessingFe
       feedback->setProgress( 100.0 * static_cast< double >( i ) / clipGeoms.length() );
     }
   }
-  mFeatureSource.reset();
-  mMaskSource.reset();
-  mSink.reset();
+  mSink->flushBuffer();
   return true;
 }
 
@@ -751,8 +745,7 @@ bool QgsSubdivideAlgorithm::processAlgorithm( QgsProcessingContext &, QgsProcess
     feedback->setProgress( current * step );
     current++;
   }
-  mSource.reset();
-  mSink.reset();
+  mSink->flushBuffer();
   return true;
 }
 
@@ -844,9 +837,7 @@ bool QgsMultipartToSinglepartAlgorithm::processAlgorithm( QgsProcessingContext &
     feedback->setProgress( current * step );
     current++;
   }
-  mSource.reset();
-  mSink.reset();
-
+  mSink->flushBuffer();
   return true;
 }
 
@@ -968,10 +959,10 @@ bool QgsExtractByExpressionAlgorithm::processAlgorithm( QgsProcessingContext &, 
       current++;
     }
   }
-
-  mSource.reset();
-  mMatchingSink.reset();
-  mNonMatchingSink.reset();
+  if ( mMatchingSink )
+    mMatchingSink->flushBuffer();
+  if ( mNonMatchingSink )
+    mNonMatchingSink->flushBuffer();
   return true;
 }
 
@@ -1177,9 +1168,10 @@ bool QgsExtractByAttributeAlgorithm::processAlgorithm( QgsProcessingContext &, Q
     }
   }
 
-  mSource.reset();
-  mMatchingSink.reset();
-  mNonMatchingSink.reset();
+  if ( mMatchingSink )
+    mMatchingSink->flushBuffer();
+  if ( mNonMatchingSink )
+    mNonMatchingSink->flushBuffer();
   return true;
 }
 
