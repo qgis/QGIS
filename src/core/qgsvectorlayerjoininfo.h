@@ -66,6 +66,13 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     void setDynamicFormEnabled( bool enabled ) { mDynamicForm = enabled; }
 
+    /** Returns the prefixed name of the field.
+     * \param field the field
+     * \returns the prefixed name of the field
+     * \since QGIS 3.0
+     */
+    QString prefixedFieldName( const QgsField &field ) const;
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
       return mTargetFieldName == other.mTargetFieldName &&

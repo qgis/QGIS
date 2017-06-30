@@ -99,6 +99,15 @@ Returns whether values from the joined layer should be cached in memory to speed
 .. versionadded:: 3.0
 %End
 
+    QString prefixedFieldName( const QgsField &field ) const;
+%Docstring
+ Returns the prefixed name of the field.
+ \param field the field
+ :return: the prefixed name of the field
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const;
 
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset /Transfer/ );
