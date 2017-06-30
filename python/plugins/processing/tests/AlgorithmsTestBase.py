@@ -259,11 +259,11 @@ class AlgorithmsTest(object):
                         raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
                     if isinstance(results[id], QgsMapLayer):
-                        assert False
                         result_lyr = results[id]
                     else:
                         result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
 
+                self.assertTrue(result_lyr, results[id])
                 compare = expected_result.get('compare', {})
 
                 self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
