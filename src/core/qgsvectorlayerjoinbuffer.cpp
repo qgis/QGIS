@@ -394,6 +394,44 @@ const QgsVectorLayerJoinInfo *QgsVectorLayerJoinBuffer::joinForFieldIndex( int i
   return &( mVectorJoins[sourceJoinIndex] );
 }
 
+QList<const QgsVectorLayerJoinInfo *> QgsVectorLayerJoinBuffer::joinsWhereFieldIsId( const QgsField &field ) const
+{
+  QList<const QgsVectorLayerJoinInfo *> infos;
+
+  for ( int i = 0; i < mVectorJoins.count(); i++ )
+  {
+    const QgsVectorLayerJoinInfo *info = &( mVectorJoins[i] );
+
+    if ( infos.contains( info ) )
+      continue;
+
+    if ( info->targetFieldName() == field.name() )
+      infos.append( info );
+  }
+
+  return infos;
+}
+
+QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const
+{
+  QgsFeature joinedFeature;
+
+  if ( info.joinLayer() )
+  {
+    const QVariant targetValue = feature.attribute( info.targetFieldName() );
+    const QString filter = QString( "\"%1\" = %2" ).arg( info.joinFieldName(), targetValue.toString() );
+
+    QgsFeatureRequest request;
+    request.setFilterExpression( filter );
+    request.setLimit( 1 );
+
+    QgsFeatureIterator it = info.joinLayer()->getFeatures( request );
+    it.nextFeature( joinedFeature );
+  }
+
+  return joinedFeature;
+}
+
 QgsVectorLayerJoinBuffer *QgsVectorLayerJoinBuffer::clone() const
 {
   QgsVectorLayerJoinBuffer *cloned = new QgsVectorLayerJoinBuffer( mLayer );

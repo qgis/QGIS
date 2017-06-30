@@ -33,6 +33,8 @@
 #include "qgssettings.h"
 #include "qgsscrollarea.h"
 #include "qgsgui.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -659,6 +661,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       {
         emit attributeChanged( eww->field().name(), value );
       }
+
+      updateJoinedFields( *eww );
+
       break;
     }
     case MultiEditMode:
@@ -1928,5 +1933,52 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
     }
 
     isVisible = newVisibility;
+  }
+}
+
+QgsFeature QgsAttributeForm::joinedFeature( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const
+{
+  QgsFeature joinedFeature = mLayer->joinBuffer()->joinedFeatureOf( info, feature );
+
+  if ( !joinedFeature.isValid() )
+    joinedFeature = QgsVectorLayerUtils::createFeature( info.joinLayer(), QgsGeometry(), QgsAttributeMap() );
+
+  return joinedFeature;
+}
+
+void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
+{
+  QgsFeature formFeature;
+  QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
+  QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
+
+  if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
+    return;
+
+  Q_FOREACH ( const QgsVectorLayerJoinInfo *info, infos )
+  {
+    if ( !info->isDynamicFormEnabled() )
+      continue;
+
+    QgsFeature joinFeature = joinedFeature( *info, formFeature );
+
+    QStringList *subsetFields = info->joinFieldNamesSubset();
+    if ( subsetFields )
+    {
+      Q_FOREACH ( const QString &field, *subsetFields )
+      {
+        QString prefixedName = info->prefixedFieldName( field );
+        changeAttribute( prefixedName, joinFeature.attribute( field ) );
+      }
+    }
+    else
+    {
+      for ( int i = 0; i < joinFeature.fields().count(); i++ )
+      {
+        QgsField field = joinFeature.fields().field( i );
+        QString prefixedName = info->prefixedFieldName( field );
+        changeAttribute( prefixedName, joinFeature.attribute( field.name() ) );
+      }
+    }
   }
 }
