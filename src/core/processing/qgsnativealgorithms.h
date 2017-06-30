@@ -147,7 +147,6 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QgsProperty mDynamicBufferProperty;
     QVariantMap mDynamicParams;
     double mDefaultBuffer;
-    const QgsProcessingParameterDefinition *mDistanceParamDef = nullptr;
     QgsExpressionContext mExpContext;
 };
 
