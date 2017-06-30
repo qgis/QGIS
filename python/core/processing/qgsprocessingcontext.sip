@@ -237,6 +237,15 @@ Destination project
 .. seealso:: thread()
 %End
 
+    void takeResultsFrom( QgsProcessingContext &context );
+%Docstring
+ Takes the results from another ``context`` and merges them with the results currently
+ stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
+ and layersToLoadOnCompletion().
+ This is only safe to call when both this context and the other ``context`` share the same
+ thread() affinity, and that thread is the current thread.
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };

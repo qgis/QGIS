@@ -340,8 +340,27 @@ class CORE_EXPORT QgsProcessingContext
      */
     void pushToThread( QThread *thread )
     {
-      Q_ASSERTX( QThread::currentThread() == thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
+      Q_ASSERT_X( QThread::currentThread() == QgsProcessingContext::thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
       tempLayerStore.moveToThread( thread );
+    }
+
+    /**
+     * Takes the results from another \a context and merges them with the results currently
+     * stored in this context. This includes settings like any layers loaded in the temporaryLayerStore()
+     * and layersToLoadOnCompletion().
+     * This is only safe to call when both this context and the other \a context share the same
+     * thread() affinity, and that thread is the current thread.
+     */
+    void takeResultsFrom( QgsProcessingContext &context )
+    {
+      QMap< QString, LayerDetails > loadOnCompletion = context.layersToLoadOnCompletion();
+      QMap< QString, LayerDetails >::const_iterator llIt = loadOnCompletion.constBegin();
+      for ( ; llIt != loadOnCompletion.constEnd(); ++llIt )
+      {
+        mLayersToLoadOnCompletion.insert( llIt.key(), llIt.value() );
+      }
+      context.setLayersToLoadOnCompletion( QMap< QString, LayerDetails >() );
+      tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
     }
 
   private:
