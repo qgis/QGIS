@@ -388,7 +388,7 @@ bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProc
 
   try
   {
-    mHasExecuted = processAlgorithm( runContext, feedback );
+    mHasExecuted = processAlgorithm( *runContext, feedback );
 
     if ( mLocalContext )
     {
