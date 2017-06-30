@@ -38,6 +38,12 @@ class QgsProcessingContext
 %End
 
 
+    void copyThreadSafeSettings( const QgsProcessingContext &other );
+%Docstring
+ Copies all settings which are safe for use across different threads from
+ ``other`` to this context.
+%End
+
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.

@@ -67,6 +67,22 @@ class CORE_EXPORT QgsProcessingContext
     QgsProcessingContext &operator=( const QgsProcessingContext &other ) = delete;
 
     /**
+     * Copies all settings which are safe for use across different threads from
+     * \a other to this context.
+     */
+    void copyThreadSafeSettings( const QgsProcessingContext &other )
+    {
+      mFlags = other.mFlags;
+      mProject = other.mProject;
+      mExpressionContext = other.mExpressionContext;
+      mInvalidGeometryCallback = other.mInvalidGeometryCallback;
+      mInvalidGeometryCheck = other.mInvalidGeometryCheck;
+      mTransformErrorCallback = other.mTransformErrorCallback;
+      mDefaultEncoding = other.mDefaultEncoding;
+      mFeedback = other.mFeedback;
+    }
+
+    /**
      * Returns any flags set in the context.
      * \see setFlags()
      */
