@@ -256,6 +256,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self.results = {}
         for out in self.outputDefinitions():
             self.results[out.name()] = self.ns[out.name()]
+        del self.ns
         return True
 
     def postProcessAlgorithm(self, context, feedback):
