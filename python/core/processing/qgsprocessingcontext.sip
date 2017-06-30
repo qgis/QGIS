@@ -132,7 +132,6 @@ Destination project
 .. seealso:: layersToLoadOnCompletion()
 %End
 
-
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the behavior used for checking invalid geometries in input layers.

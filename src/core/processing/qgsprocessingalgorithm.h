@@ -22,12 +22,12 @@
 #include "qgis.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingcontext.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
 
 class QgsProcessingProvider;
-class QgsProcessingContext;
 class QgsProcessingFeedback;
 class QgsFeatureSink;
 
@@ -539,6 +539,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool mHasPrepared = false;
     bool mHasExecuted = false;
     bool mHasPostProcessed = false;
+    std::unique_ptr< QgsProcessingContext > mLocalContext;
 
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;
