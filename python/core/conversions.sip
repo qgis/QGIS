@@ -1198,6 +1198,112 @@ template<double, TYPE>
 };
 
 
+template<TYPE2>
+%MappedType QMap<QString, QList<TYPE2> >
+{
+%TypeHeaderCode
+#include <QMap>
+#include <QList>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE2>");
+
+    // Set the dictionary elements.
+    QMap<QString, QList< TYPE2 > >::const_iterator i;
+
+    for (i = sipCpp->constBegin(); i != sipCpp->constEnd(); ++i)
+    {
+        QString *t1 = new QString(i.key());
+
+        PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
+
+        QList< TYPE2 > *t2 = new QList< TYPE2 >( i.value() );
+
+        PyObject *t2obj = sipConvertFromMappedType(t2, qlist_type, sipTransferObj);
+
+        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (t1obj)
+                Py_DECREF(t1obj);
+
+            if (t2obj)
+                Py_DECREF(t2obj);
+            else
+                delete t2;
+
+            return NULL;
+        }
+
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+    }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+    Py_ssize_t i = 0;
+
+
+    const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE2>");
+
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+            if (!sipCanConvertToType(t1obj, sipType_QString, SIP_NOT_NONE))
+                return 0;
+        }
+
+        return 1;
+    }
+
+    QMap<QString, QList< TYPE2 > > *qm = new QMap<QString, QList< TYPE2 > >;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+
+        QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+    QList<TYPE2> *t2 = reinterpret_cast< QList<TYPE2> * >(sipConvertToMappedType(t2obj, qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+        if (*sipIsErr)
+        {
+            sipReleaseType(t2, sipType_TYPE2, state);
+            delete qm;
+            return 0;
+        }
+
+        if ( t2 )
+          qm->insert(*t1, *t2);
+        else
+          qm->insert(*t1, QList<TYPE2>() );
+
+        sipReleaseType(t1, sipType_QString, state);
+
+        sipReleaseType(t2, sipType_TYPE2, state);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 template<double, TYPE2>
 %MappedType QMultiMap<double, TYPE2>

@@ -109,17 +109,18 @@ class ModelerScene(QGraphicsScene):
             for parameter in alg.algorithm().parameterDefinitions():
                 if not parameter.isDestination() and not parameter.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     if parameter.name() in alg.parameterSources():
-                        value = alg.parameterSources()[parameter.name()]
+                        sources = alg.parameterSources()[parameter.name()]
                     else:
-                        value = None
-                    sourceItems = self.getItemsFromParamValue(value)
-                    for sourceItem, sourceIdx in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
-                        sourceItem.addArrow(arrow)
-                        self.algItems[alg.childId()].addArrow(arrow)
-                        arrow.updatePath()
-                        self.addItem(arrow)
-                    idx += 1
+                        sources = []
+                    for source in sources:
+                        sourceItems = self.getItemsFromParamValue(source)
+                        for sourceItem, sourceIdx in sourceItems:
+                            arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
+                            sourceItem.addArrow(arrow)
+                            self.algItems[alg.childId()].addArrow(arrow)
+                            arrow.updatePath()
+                            self.addItem(arrow)
+                        idx += 1
             for depend in alg.dependencies():
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                                          self.algItems[alg.childId()], -1)
