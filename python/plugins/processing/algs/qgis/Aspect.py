@@ -49,7 +49,7 @@ class Aspect(QgisAlgorithm):
 
     INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
