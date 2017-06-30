@@ -1973,9 +1973,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     }
     else
     {
-      for ( int i = 0; i < joinFeature.fields().count(); i++ )
+      Q_FOREACH ( const QgsField &field, joinFeature.fields() )
       {
-        QgsField field = joinFeature.fields().field( i );
         QString prefixedName = info->prefixedFieldName( field );
         changeAttribute( prefixedName, joinFeature.attribute( field.name() ) );
       }
