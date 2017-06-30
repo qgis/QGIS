@@ -54,6 +54,18 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     //! Returns whether values from the joined layer should be cached in memory to speed up lookups
     bool isUsingMemoryCache() const { return mMemoryCache; }
 
+    /** Returns whether the form has to be dynamically updated with joined fields
+     *  when  a feature is being created in the target layer.
+     * \since QGIS 3.0
+     */
+    bool isDynamicFormEnabled() const { return mDynamicForm; }
+
+    /** Sets whether the form has to be dynamically updated with joined fields
+     *  when a feature is being created in the target layer.
+     * \since QGIS 3.0
+     */
+    void setDynamicFormEnabled( bool enabled ) { mDynamicForm = enabled; }
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
       return mTargetFieldName == other.mTargetFieldName &&
@@ -98,6 +110,8 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     //! True if the cached join attributes need to be updated
     bool cacheDirty;
+
+    bool mDynamicForm;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;
