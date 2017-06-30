@@ -310,6 +310,24 @@ class CORE_EXPORT QgsProcessingContext
      */
     void setFeedback( QgsProcessingFeedback *feedback ) { mFeedback = feedback; }
 
+    /**
+     * Returns the thread in which the context lives.
+     * \see pushToThread()
+     */
+    QThread *thread() { return tempLayerStore.thread(); }
+
+    /**
+     * Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
+     * another \a thread. This method is only safe to call when the current thread matches the existing thread
+     * affinity for the context (see thread()).
+     * \see thread()
+     */
+    void pushToThread( QThread *thread )
+    {
+      Q_ASSERTX( QThread::currentThread() == thread(), "QgsProcessingContext::pushToThread", "Cannot push context to another thread unless the current thread matches the existing context thread affinity" );
+      tempLayerStore.moveToThread( thread );
+    }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
