@@ -133,7 +133,7 @@ int nmea_printf( char *buff, int buff_sz, const char *format, ... )
 }
 
 /**
- * \brief Analyse string (specificate for NMEA sentences)
+ * \brief Analyze string (specificate for NMEA sentences)
  */
 int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
 {
