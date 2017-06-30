@@ -145,8 +145,6 @@ bool QgsMapRendererTask::run()
     annotation->render( context );
     context.painter()->restore();
   }
-  qDeleteAll( mAnnotations );
-  mAnnotations.clear();
 
   if ( !mFileName.isEmpty() )
   {
@@ -181,6 +179,9 @@ bool QgsMapRendererTask::run()
 
 void QgsMapRendererTask::finished( bool result )
 {
+  qDeleteAll( mAnnotations );
+  mAnnotations.clear();
+
   if ( result )
     emit renderingComplete();
   else
