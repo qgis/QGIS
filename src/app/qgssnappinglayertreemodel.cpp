@@ -375,7 +375,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       }
       else
       {
-        // i.e. this is a group, analyse its children
+        // i.e. this is a group, analyze its children
         bool hasChecked = false, hasUnchecked = false;
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
