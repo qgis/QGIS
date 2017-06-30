@@ -583,6 +583,13 @@ void TestQgsProcessing::context()
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( context.invalidGeometryCheck(), QgsFeatureRequest::GeometrySkipInvalid );
 
+  QgsProcessingContext context2;
+  context2.copyThreadSafeSettings( context );
+  QCOMPARE( context2.defaultEncoding(), context.defaultEncoding() );
+  QCOMPARE( context2.invalidGeometryCheck(), context.invalidGeometryCheck() );
+  QCOMPARE( context2.flags(), context.flags() );
+  QCOMPARE( context2.project(), context.project() );
+
   // layers to load on completion
   QgsVectorLayer *v1 = new QgsVectorLayer( "Polygon", "V1", "memory" );
   QgsVectorLayer *v2 = new QgsVectorLayer( "Polygon", "V2", "memory" );
