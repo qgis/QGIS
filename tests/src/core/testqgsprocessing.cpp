@@ -4180,13 +4180,15 @@ void TestQgsProcessing::modelerAlgorithm()
   child.setDependencies( QStringList() << "a" << "b" );
   QCOMPARE( child.dependencies(), QStringList() << "a" << "b" );
 
-  QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSource > sources;
-  sources.insert( QStringLiteral( "a" ), QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  QMap< QString, QgsProcessingModelAlgorithm::ChildParameterSources > sources;
+  sources.insert( QStringLiteral( "a" ), QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
   child.setParameterSources( sources );
-  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).staticValue().toInt(), 5 );
-  child.addParameterSource( QStringLiteral( "b" ), QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 7 ) );
-  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).staticValue().toInt(), 5 );
-  QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).staticValue().toInt(), 7 );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).at( 0 ).staticValue().toInt(), 5 );
+  child.addParameterSources( QStringLiteral( "b" ), QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 7 ) << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 9 ) );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "a" ) ).at( 0 ).staticValue().toInt(), 5 );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).count(), 2 );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 0 ).staticValue().toInt(), 7 );
+  QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 1 ).staticValue().toInt(), 9 );
 
   QgsProcessingModelAlgorithm::ModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
@@ -4358,7 +4360,7 @@ void TestQgsProcessing::modelerAlgorithm()
   // dependency via parameter source
   QgsProcessingModelAlgorithm::ChildAlgorithm c9;
   c9.setChildId( "c9" );
-  c9.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "c8", "x" ) );
+  c9.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "c8", "x" ) );
   alg3.addChildAlgorithm( c9 );
   QVERIFY( alg3.dependentChildAlgorithms( "c9" ).isEmpty() );
   QCOMPARE( alg3.dependentChildAlgorithms( "c8" ).count(), 1 );
@@ -4441,10 +4443,10 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm::ModelParameter bool2;
   alg4.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool2 );
   QVERIFY( !alg4.childAlgorithmsDependOnParameter( "p1" ) );
-  c10.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p2" ) );
+  c10.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p2" ) );
   alg4.setChildAlgorithm( c10 );
   QVERIFY( !alg4.childAlgorithmsDependOnParameter( "p1" ) );
-  c10.addParameterSource( "y", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
+  c10.addParameterSources( "y", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
   alg4.setChildAlgorithm( c10 );
   QVERIFY( alg4.childAlgorithmsDependOnParameter( "p1" ) );
 
@@ -4457,9 +4459,12 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm::ChildAlgorithm alg5c1;
   alg5c1.setChildId( "cx1" );
   alg5c1.setAlgorithmId( "buffer" );
-  alg5c1.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
-  alg5c1.addParameterSource( "y", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out3" ) );
-  alg5c1.addParameterSource( "z", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  alg5c1.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
+  alg5c1.addParameterSources( "y", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out3" ) );
+  alg5c1.addParameterSources( "z", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  alg5c1.addParameterSources( "zm", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 6 )
+                              << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p2" )
+                              << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out4" ) );
   alg5c1.setActive( true );
   alg5c1.setOutputsCollapsed( true );
   alg5c1.setParametersCollapsed( true );
@@ -4504,14 +4509,22 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
   QCOMPARE( alg6c1.position().x(), 1.0 );
   QCOMPARE( alg6c1.position().y(), 2.0 );
-  QCOMPARE( alg6c1.parameterSources().count(), 3 );
-  QCOMPARE( alg6c1.parameterSources().value( "x" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
-  QCOMPARE( alg6c1.parameterSources().value( "x" ).parameterName(), QStringLiteral( "p1" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "y" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
-  QCOMPARE( alg6c1.parameterSources().value( "y" ).outputChildId(), QStringLiteral( "cx2" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "y" ).outputName(), QStringLiteral( "out3" ) );
-  QCOMPARE( alg6c1.parameterSources().value( "z" ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
-  QCOMPARE( alg6c1.parameterSources().value( "z" ).staticValue().toInt(), 5 );
+  QCOMPARE( alg6c1.parameterSources().count(), 4 );
+  QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).parameterName(), QStringLiteral( "p1" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).at( 0 ).outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "y" ).at( 0 ).outputName(), QStringLiteral( "out3" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "z" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( "z" ).at( 0 ).staticValue().toInt(), 5 );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).staticValue().toInt(), 6 );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).parameterName(), QStringLiteral( "p2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputName(), QStringLiteral( "out4" ) );
+
   QCOMPARE( alg6c1.modelOutputs().count(), 1 );
   QCOMPARE( alg6c1.modelOutputs().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "my output" ) );
   QCOMPARE( alg6c1.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
@@ -4602,12 +4615,12 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm::ChildAlgorithm algc2;
   algc2.setChildId( "cx2" );
   algc2.setAlgorithmId( "native:centroids" );
-  algc2.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p1" ) );
+  algc2.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p1" ) );
   model1.addChildAlgorithm( algc2 );
   QgsProcessingModelAlgorithm::ChildAlgorithm algc3;
   algc3.setChildId( "cx3" );
   algc3.setAlgorithmId( "native:centroids" );
-  algc3.addParameterSource( "x", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p2" ) );
+  algc3.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "p2" ) );
   algc3.setActive( false );
   model1.addChildAlgorithm( algc3 );
 
@@ -4624,12 +4637,12 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c1;
   alg2c1.setChildId( "cx1" );
   alg2c1.setAlgorithmId( "native:buffer" );
-  alg2c1.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
-  alg2c1.addParameterSource( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
-  alg2c1.addParameterSource( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 16 ) );
-  alg2c1.addParameterSource( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
-  alg2c1.addParameterSource( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
-  alg2c1.addParameterSource( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
+  alg2c1.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
+  alg2c1.addParameterSources( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
+  alg2c1.addParameterSources( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 16 ) );
+  alg2c1.addParameterSources( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
+  alg2c1.addParameterSources( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
+  alg2c1.addParameterSources( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
   QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs1;
   QgsProcessingModelAlgorithm::ModelOutput out1( "MODEL_OUT_LAYER" );
   out1.setChildOutputName( "OUTPUT_LAYER" );
@@ -4660,7 +4673,7 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
   alg2c2.setChildId( "cx2" );
   alg2c2.setAlgorithmId( "native:centroids" );
-  alg2c2.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
   model2.addChildAlgorithm( alg2c2 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
@@ -4671,8 +4684,8 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
   alg2c3.setChildId( "cx3" );
   alg2c3.setAlgorithmId( "native:extractbyexpression" );
-  alg2c3.addParameterSource( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
-  alg2c3.addParameterSource( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
+  alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
+  alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
   alg2c3.setDependencies( QStringList() << "cx2" );
   model2.addChildAlgorithm( alg2c3 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
