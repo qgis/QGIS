@@ -711,7 +711,7 @@ Base Path (i.e. keep only filename from attribute)</string>
           <item row="2" column="2" colspan="2">
            <widget class="QCheckBox" name="chkboxSaveUseOnlyFilenameData">
             <property name="toolTip">
-             <string>If checked, the current check-box setting will be saved for the next session.</string>
+             <string>If checked, the current checkbox setting will be saved for the next session.</string>
             </property>
             <property name="whatsThis">
              <string notr="true"/>
@@ -736,7 +736,7 @@ Base Path (i.e. keep only filename from attribute)</string>
              <string>Reset to default</string>
             </property>
             <property name="whatsThis">
-             <string>Clears the check-box on this line.</string>
+             <string>Clears the checkbox on this line.</string>
             </property>
             <property name="text">
              <string>Reset</string>
@@ -775,7 +775,7 @@ Base Path (i.e. keep only filename from attribute)</string>
           <item row="3" column="2" colspan="2">
            <widget class="QCheckBox" name="chkboxSaveApplyPathRulesToDocs">
             <property name="toolTip">
-             <string>If checked, the current check-box setting will be saved for the next session.</string>
+             <string>If checked, the current checkbox setting will be saved for the next session.</string>
             </property>
             <property name="whatsThis">
              <string notr="true"/>
@@ -800,7 +800,7 @@ Base Path (i.e. keep only filename from attribute)</string>
              <string>Reset to default</string>
             </property>
             <property name="whatsThis">
-             <string>Clears the check-box on this line.</string>
+             <string>Clears the checkbox on this line.</string>
             </property>
             <property name="text">
              <string>Reset</string>
