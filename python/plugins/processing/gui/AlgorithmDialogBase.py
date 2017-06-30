@@ -31,7 +31,7 @@ import webbrowser
 import html
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtCore import pyqtSignal, Qt, QCoreApplication, QByteArray, QUrl
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QVBoxLayout, QToolButton
 
 from qgis.utils import iface
@@ -52,27 +52,34 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
     Directs algorithm feedback to an algorithm dialog
     """
 
+    error = pyqtSignal(str)
+    progress_text = pyqtSignal(str)
+    info = pyqtSignal(str)
+    command_info = pyqtSignal(str)
+    debug_info = pyqtSignal(str)
+    console_info = pyqtSignal(str)
+
     def __init__(self, dialog):
         QgsProcessingFeedback.__init__(self)
         self.dialog = dialog
 
     def reportError(self, msg):
-        self.dialog.error(msg)
+        self.error.emit(msg)
 
     def setProgressText(self, text):
-        self.dialog.setText(text)
+        self.progress_text.emit(text)
 
     def pushInfo(self, msg):
-        self.dialog.setInfo(msg)
+        self.info.emit(msg)
 
     def pushCommandInfo(self, msg):
-        self.dialog.setCommand(msg)
+        self.command_info.emit(msg)
 
     def pushDebugInfo(self, msg):
-        self.dialog.setDebugInfo(msg)
+        self.debug_info.emit(msg)
 
     def pushConsoleInfo(self, msg):
-        self.dialog.setConsoleInfo(msg)
+        self.console_info.emit(msg)
 
 
 class AlgorithmDialogBase(BASE, WIDGET):
@@ -151,6 +158,13 @@ class AlgorithmDialogBase(BASE, WIDGET):
     def createFeedback(self):
         feedback = AlgorithmDialogFeedback(self)
         feedback.progressChanged.connect(self.setPercentage)
+        feedback.error.connect(self.error)
+        feedback.progress_text.connect(self.setText)
+        feedback.info.connect(self.setInfo)
+        feedback.command_info.connect(self.setCommand)
+        feedback.debug_info.connect(self.setDebugInfo)
+        feedback.console_info.connect(self.setConsoleInfo)
+
         self.buttonCancel.clicked.connect(feedback.cancel)
         return feedback
 

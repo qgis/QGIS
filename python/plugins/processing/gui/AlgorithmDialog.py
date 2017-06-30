@@ -34,11 +34,13 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget,
 from qgis.PyQt.QtGui import QCursor, QColor, QPalette
 
 from qgis.core import (QgsProject,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingAlgRunnerTask,
                        QgsProcessingOutputHtml,
                        QgsProcessingParameterVectorOutput,
                        QgsProcessingOutputLayerDefinition,
@@ -244,18 +246,24 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(command)
                 self.buttonCancel.setEnabled(self.alg.flags() & QgsProcessingAlgorithm.FlagCanCancel)
-                result, ok = executeAlgorithm(self.alg, parameters, context, feedback)
-                if ok:
-                    feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
-                    feedback.pushInfo(self.tr('Results:'))
-                    feedback.pushCommandInfo(pformat(result))
-                else:
-                    feedback.reportError(
-                        self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
-                feedback.pushInfo('')
 
-                self.buttonCancel.setEnabled(False)
-                self.finish(result, context, feedback)
+                def on_complete(ok, results):
+                    if ok:
+                        feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                        feedback.pushInfo(self.tr('Results:'))
+                        feedback.pushCommandInfo(pformat(results))
+                    else:
+                        feedback.reportError(
+                            self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
+                    feedback.pushInfo('')
+
+                    self.buttonCancel.setEnabled(False)
+                    self.finish(results, context, feedback)
+
+                task = QgsProcessingAlgRunnerTask(self.alg, parameters, context, feedback)
+                task.executed.connect(on_complete)
+                QgsApplication.taskManager().addTask(task)
+
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
                 self.buttonBox.accepted.connect(lambda e=e:
