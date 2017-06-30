@@ -434,6 +434,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -443,11 +448,6 @@
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -465,6 +465,12 @@
  <tabstops>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>btnColor</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
+  <tabstop>spinWidth</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>groupsCombo</tabstop>
   <tabstop>openStyleManagerButton</tabstop>
   <tabstop>viewSymbols</tabstop>
