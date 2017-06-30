@@ -341,7 +341,7 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
 
 bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_ASSERT_X( QApplication::instance()->thread() == QThread::currentThread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the main thread" );
+  Q_ASSERT_X( QApplication::instance()->thread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::prepare", "prepare() must be called from the same thread as context was created in" );
   Q_ASSERT_X( !mHasPrepared, "QgsProcessingAlgorithm::prepare", "prepare() has already been called for the algorithm instance" );
   try
   {
@@ -376,7 +376,7 @@ bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProc
 
 QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_ASSERT_X( QApplication::instance()->thread() == QThread::currentThread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the main thread" );
+  Q_ASSERT_X( QApplication::instance()->thread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
   Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", "runPrepared() was not called for the algorithm instance" );
   Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
 
