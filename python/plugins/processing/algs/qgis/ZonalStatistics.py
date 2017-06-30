@@ -125,7 +125,7 @@ class ZonalStatistics(QgisAlgorithm):
                                 self.rasterLayer,
                                 self.columnPrefix,
                                 self.bandNumber,
-                                self.selectedStats)
+                                QgsZonalStatistics.Statistics(self.selectedStats))
         zs.calculateStatistics(feedback)
         return True
 
