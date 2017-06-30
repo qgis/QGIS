@@ -495,6 +495,36 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store = None
         self.assertTrue(l1.isValid())
 
+    def testTransferLayers(self):
+        # test transferring all layers from another store
+        store1 = QgsMapLayerStore()
+        store2 = QgsMapLayerStore()
+
+        # empty stores
+        store1.transferLayersFromStore(store2)
+
+        # silly behavior checks
+        store1.transferLayersFromStore(None)
+        store1.transferLayersFromStore(store1)
+
+        l1 = createLayer('l1')
+        l2 = createLayer('l2')
+        store1.addMapLayer(l1)
+        store1.addMapLayer(l2)
+
+        l3 = createLayer('l3')
+        store2.addMapLayer(l3)
+
+        store2.transferLayersFromStore(store1)
+        self.assertFalse(store1.mapLayers()) # no layers left
+        self.assertEqual(len(store2.mapLayers()), 3)
+        self.assertEqual(store2.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
+
+        store1.transferLayersFromStore(store2)
+        self.assertFalse(store2.mapLayers()) # no layers left
+        self.assertEqual(len(store1.mapLayers()), 3)
+        self.assertEqual(store1.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
+
 
 if __name__ == '__main__':
     unittest.main()

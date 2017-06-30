@@ -180,6 +180,23 @@ void QgsMapLayerStore::removeAllMapLayers()
   mMapLayers.clear();
 }
 
+void QgsMapLayerStore::transferLayersFromStore( QgsMapLayerStore *other )
+{
+  if ( !other || other == this )
+    return;
+
+  Q_ASSERT_X( other->thread() == thread(), "QgsMapLayerStore::transferLayersFromStore", "Cannot transfer layers from store with different thread affinity" );
+
+  QMap<QString, QgsMapLayer *> otherLayers = other->mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator it = otherLayers.constBegin();
+  for ( ; it != otherLayers.constEnd(); ++it )
+  {
+    QgsMapLayer *layer = other->takeMapLayer( it.value() );
+    if ( layer )
+      addMapLayer( layer );
+  }
+}
+
 void QgsMapLayerStore::onMapLayerDeleted( QObject *obj )
 {
   QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );

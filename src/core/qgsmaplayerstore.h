@@ -238,6 +238,13 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      */
     void removeAllMapLayers();
 
+    /**
+     * Transfers all the map layers contained within another map layer store and adds
+     * them to this store.
+     * Note that \a other and this store must have the same thread affinity.
+     */
+    void transferLayersFromStore( QgsMapLayerStore *other );
+
   signals:
 
     /**
