@@ -188,13 +188,11 @@ class AlgorithmDialogBase(BASE, WIDGET):
         QgsProject.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def error(self, msg):
-        QApplication.restoreOverrideCursor()
         self.setInfo(msg, True)
         self.resetGUI()
         self.tabWidget.setCurrentIndex(1)
 
     def resetGUI(self):
-        QApplication.restoreOverrideCursor()
         self.lblProgress.setText('')
         self.progressBar.setMaximum(100)
         self.progressBar.setValue(0)
@@ -208,33 +206,27 @@ class AlgorithmDialogBase(BASE, WIDGET):
             self.txtLog.append(html.escape(msg))
         else:
             self.txtLog.append(msg)
-        QCoreApplication.processEvents()
 
     def setCommand(self, cmd):
         if self.showDebug:
             self.txtLog.append('<code>{}<code>'.format(html.escape(cmd, quote=False)))
-        QCoreApplication.processEvents()
 
     def setDebugInfo(self, msg):
         if self.showDebug:
             self.txtLog.append('<span style="color:blue">{}</span>'.format(html.escape(msg, quote=False)))
-        QCoreApplication.processEvents()
 
     def setConsoleInfo(self, msg):
         if self.showDebug:
             self.txtLog.append('<code><span style="color:darkgray">{}</span></code>'.format(html.escape(msg, quote=False)))
-        QCoreApplication.processEvents()
 
     def setPercentage(self, value):
         if self.progressBar.maximum() == 0:
             self.progressBar.setMaximum(100)
         self.progressBar.setValue(value)
-        QCoreApplication.processEvents()
 
     def setText(self, text):
         self.lblProgress.setText(text)
         self.setInfo(text, False)
-        QCoreApplication.processEvents()
 
     def getParamValues(self):
         return {}

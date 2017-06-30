@@ -220,8 +220,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
             except:
                 pass
 
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
             self.setInfo(
                 self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.alg.displayName()), escape_html=False)
 
@@ -239,7 +237,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     self.finish(parameters, context, feedback)
                 else:
                     self.buttonCancel.setEnabled(False)
-                    QApplication.restoreOverrideCursor()
                     self.resetGUI()
             else:
                 command = self.alg.asPythonCommand(parameters, context)
@@ -294,7 +291,6 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         self.executed = True
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.alg.displayName()), escape_html=False)
-        QApplication.restoreOverrideCursor()
 
         if not keepOpen:
             self.close()
