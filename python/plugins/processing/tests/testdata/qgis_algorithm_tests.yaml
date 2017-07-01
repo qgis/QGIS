@@ -1376,100 +1376,100 @@ tests:
 #      OUTPUT_LAYER:
 #        name: expected/geometry_by_expression_line.gml
 #        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap lines to lines
-#    params:
-#      INPUT:
-#        name: snap_lines.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: lines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_lines_to_lines.gml
-#        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap polygons to polygons
-#    params:
-#      INPUT:
-#        name: snap_polys.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: polys.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_polys_to_polys.gml
-#        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap points to points
-#    params:
-#      INPUT:
-#        name: snap_points.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: points.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_points_to_points.gml
-#        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap points to lines (prefer nodes)
-#    params:
-#      BEHAVIOR: '0'
-#      INPUT:
-#        name: snap_points.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: lines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_point_to_lines_prefer_nodes.gml
-#        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap points to lines (prefer closest)
-#    params:
-#      BEHAVIOR: '1'
-#      INPUT:
-#        name: snap_points.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: lines.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_point_to_lines_prefer_closest.gml
-#        type: vector
-#
-#  - algorithm: qgis:snapgeometries
-#    name: Snap internal
-#    params:
-#      BEHAVIOR: '0'
-#      INPUT:
-#        name: custom/snap_internal.gml
-#        type: vector
-#      REFERENCE_LAYER:
-#        name: custom/snap_internal.gml
-#        type: vector
-#      TOLERANCE: 1.0
-#    results:
-#      OUTPUT:
-#        name: expected/snap_internal.gml
-#        type: vector
-#
+
+  - algorithm: qgis:snapgeometries
+    name: Snap lines to lines
+    params:
+      INPUT:
+        name: snap_lines.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_lines_to_lines.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometries
+    name: Snap polygons to polygons
+    params:
+      INPUT:
+        name: snap_polys.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: polys.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_polys_to_polys.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometries
+    name: Snap points to points
+    params:
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: points.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_points_to_points.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometries
+    name: Snap points to lines (prefer nodes)
+    params:
+      BEHAVIOR: '0'
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_point_to_lines_prefer_nodes.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometries
+    name: Snap points to lines (prefer closest)
+    params:
+      BEHAVIOR: '1'
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: lines.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_point_to_lines_prefer_closest.gml
+        type: vector
+
+  - algorithm: qgis:snapgeometries
+    name: Snap internal
+    params:
+      BEHAVIOR: '0'
+      INPUT:
+        name: custom/snap_internal.gml
+        type: vector
+      REFERENCE_LAYER:
+        name: custom/snap_internal.gml
+        type: vector
+      TOLERANCE: 1.0
+    results:
+      OUTPUT:
+        name: expected/snap_internal.gml
+        type: vector
+
 #  - algorithm: qgis:poleofinaccessibility
 #    name: Pole of inaccessibility (polygons)
 #    params:
