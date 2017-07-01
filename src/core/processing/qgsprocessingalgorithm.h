@@ -265,7 +265,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
      * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
      */
-    bool runPrepared( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     /**
      * Should be called in the main thread following the completion of runPrepared(). This method
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see prepareAlgorithm()
      * \see postProcessAlgorithm()
      */
-    virtual bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Allows the algorithm to perform any required cleanup tasks. The returned variant map
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see prepareAlgorithm()
      * \see processAlgorithm()
      */
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.

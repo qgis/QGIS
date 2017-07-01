@@ -24,6 +24,7 @@
 
 QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
   : QgsTask( tr( "Running %1" ).arg( algorithm->name() ), QgsTask::CanCancel )
+  , mParameters( parameters )
   , mContext( context )
   , mFeedback( feedback )
   , mAlgorithm( algorithm->create() )
@@ -33,7 +34,7 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
     mOwnedFeedback.reset( new QgsProcessingFeedback() );
     mFeedback = mOwnedFeedback.get();
   }
-  if ( !mAlgorithm->prepare( parameters, context, mFeedback ) )
+  if ( !mAlgorithm->prepare( mParameters, context, mFeedback ) )
     cancel();
 }
 
@@ -48,7 +49,8 @@ bool QgsProcessingAlgRunnerTask::run()
   bool ok = false;
   try
   {
-    ok = mAlgorithm->runPrepared( mContext, mFeedback );
+    mResults = mAlgorithm->runPrepared( mParameters, mContext, mFeedback );
+    ok = true;
   }
   catch ( QgsProcessingException & )
   {
@@ -60,9 +62,10 @@ bool QgsProcessingAlgRunnerTask::run()
 void QgsProcessingAlgRunnerTask::finished( bool result )
 {
   Q_UNUSED( result );
+  QVariantMap ppResults;
   if ( result )
   {
-    mResults = mAlgorithm->postProcess( mContext, mFeedback );
+    ppResults = mAlgorithm->postProcess( mContext, mFeedback );
   }
-  emit executed( result, mResults );
+  emit executed( result, !ppResults.isEmpty() ? ppResults : mResults );
 }

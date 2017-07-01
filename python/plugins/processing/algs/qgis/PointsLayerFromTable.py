@@ -80,49 +80,39 @@ class PointsLayerFromTable(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points from table'), type=QgsProcessingParameterDefinition.TypeVectorPoint))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Points from table'), type=QgsProcessingParameterDefinition.TypeVectorPoint))
 
-        self.source = None
-        self.x_field_index = None
-        self.y_field_index = None
-        self.z_field_index = None
-        self.m_field_index = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'createpointslayerfromtable'
 
     def displayName(self):
         return self.tr('Create points layer from table')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        fields = self.source.fields()
-        self.x_field_index = fields.lookupField(self.parameterAsString(parameters, self.XFIELD, context))
-        self.y_field_index = fields.lookupField(self.parameterAsString(parameters, self.YFIELD, context))
-        self.z_field_index = -1
+        fields = source.fields()
+        x_field_index = fields.lookupField(self.parameterAsString(parameters, self.XFIELD, context))
+        y_field_index = fields.lookupField(self.parameterAsString(parameters, self.YFIELD, context))
+        z_field_index = -1
         if self.parameterAsString(parameters, self.ZFIELD, context):
-            self.z_field_index = fields.lookupField(self.parameterAsString(parameters, self.ZFIELD, context))
-        self.m_field_index = -1
+            z_field_index = fields.lookupField(self.parameterAsString(parameters, self.ZFIELD, context))
+        m_field_index = -1
         if self.parameterAsString(parameters, self.MFIELD, context):
-            self.m_field_index = fields.lookupField(self.parameterAsString(parameters, self.MFIELD, context))
+            m_field_index = fields.lookupField(self.parameterAsString(parameters, self.MFIELD, context))
 
         wkb_type = QgsWkbTypes.Point
-        if self.z_field_index >= 0:
+        if z_field_index >= 0:
             wkb_type = QgsWkbTypes.addZ(wkb_type)
-        if self.m_field_index >= 0:
+        if m_field_index >= 0:
             wkb_type = QgsWkbTypes.addM(wkb_type)
 
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         fields, wkb_type, target_crs)
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, target_crs)
 
-    def processAlgorithm(self, context, feedback):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = self.source.getFeatures(request)
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, feature in enumerate(features):
             if feedback.isCanceled():
@@ -132,20 +122,20 @@ class PointsLayerFromTable(QgisAlgorithm):
             attrs = feature.attributes()
 
             try:
-                x = float(attrs[self.x_field_index])
-                y = float(attrs[self.y_field_index])
+                x = float(attrs[x_field_index])
+                y = float(attrs[y_field_index])
 
                 point = QgsPoint(x, y)
 
-                if self.z_field_index >= 0:
+                if z_field_index >= 0:
                     try:
-                        point.addZValue(float(attrs[self.z_field_index]))
+                        point.addZValue(float(attrs[z_field_index]))
                     except:
                         point.addZValue(0.0)
 
-                if self.m_field_index >= 0:
+                if m_field_index >= 0:
                     try:
-                        point.addMValue(float(attrs[self.m_field_index]))
+                        point.addMValue(float(attrs[m_field_index]))
                     except:
                         point.addMValue(0.0)
 
@@ -153,8 +143,6 @@ class PointsLayerFromTable(QgisAlgorithm):
             except:
                 pass  # no geometry
 
-            self.sink.addFeature(feature)
-        return True
+            sink.addFeature(feature)
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

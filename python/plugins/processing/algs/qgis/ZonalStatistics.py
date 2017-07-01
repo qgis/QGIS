@@ -121,14 +121,11 @@ class ZonalStatistics(QgisAlgorithm):
         self.rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         return True
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         zs = QgsZonalStatistics(self.vectorLayer,
                                 self.rasterLayer,
                                 self.columnPrefix,
                                 self.bandNumber,
                                 QgsZonalStatistics.Statistics(self.selectedStats))
         zs.calculateStatistics(feedback)
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
         return {self.INPUT_VECTOR: self.vectorLayer}

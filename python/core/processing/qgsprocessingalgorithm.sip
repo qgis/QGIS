@@ -259,7 +259,7 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
-    bool runPrepared( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 %Docstring
  Runs the algorithm, which has been prepared by an earlier call to prepare().
  This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
@@ -272,7 +272,7 @@ class QgsProcessingAlgorithm
    This method modifies the algorithm instance, so it is not safe to call
  on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
  of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
- :rtype: bool
+ :rtype: QVariantMap
 %End
 
     QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
@@ -374,7 +374,7 @@ class QgsProcessingAlgorithm
  :rtype: bool
 %End
 
-    virtual bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
  Runs the algorithm using the specified ``parameters``. Algorithms should implement
  their custom processing logic here.
@@ -389,10 +389,10 @@ class QgsProcessingAlgorithm
  values such as statistical calculations.
 .. seealso:: prepareAlgorithm()
 .. seealso:: postProcessAlgorithm()
- :rtype: bool
+ :rtype: QVariantMap
 %End
 
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
  Allows the algorithm to perform any required cleanup tasks. The returned variant map
  includes the results evaluated by the algorithm. These may be output layer references, or calculated

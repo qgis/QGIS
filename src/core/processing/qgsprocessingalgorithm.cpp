@@ -265,6 +265,11 @@ bool QgsProcessingAlgorithm::prepareAlgorithm( const QVariantMap &, QgsProcessin
   return true;
 }
 
+QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  return QVariantMap();
+}
+
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
@@ -329,14 +334,19 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   if ( !res )
     return QVariantMap();
 
-  res = alg->runPrepared( context, feedback );
-  if ( !res )
+  QVariantMap runRes = alg->runPrepared( parameters, context, feedback );
+
+  if ( !alg->mHasExecuted )
     return QVariantMap();
 
   if ( ok )
     *ok = true;
 
-  return alg->postProcess( context, feedback );
+  QVariantMap ppRes = alg->postProcess( context, feedback );
+  if ( !ppRes.isEmpty() )
+    return ppRes;
+  else
+    return runRes;
 }
 
 bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -356,9 +366,9 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
   }
 }
 
-bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", "prepare() was not called for the algorithm instance" );
+  Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QString( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
 
   // Hey kids, let's all be thread safe! It's the fun thing to do!
@@ -388,8 +398,9 @@ bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProc
 
   try
   {
-    mHasExecuted = processAlgorithm( *runContext, feedback );
+    QVariantMap runResults = processAlgorithm( parameters, *runContext, feedback );
 
+    mHasExecuted = true;
     if ( mLocalContext )
     {
       // ok, time to clean things up. We need to push the temporary context back into
@@ -397,7 +408,7 @@ bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProc
       // current thread, so we HAVE to do this here)
       mLocalContext->pushToThread( context.thread() );
     }
-    return mHasExecuted;
+    return runResults;
   }
   catch ( QgsProcessingException &e )
   {
@@ -409,14 +420,14 @@ bool QgsProcessingAlgorithm::runPrepared( QgsProcessingContext &context, QgsProc
       // see above!
       mLocalContext->pushToThread( context.thread() );
     }
-    return false;
+    return QVariantMap();
   }
 }
 
 QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_ASSERT_X( QThread::currentThread() == context.temporaryLayerStore()->thread(), "QgsProcessingAlgorithm::postProcess", "postProcess() must be called from the same thread the context was created in" );
-  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", "runPrepared() was not called for the algorithm instance" );
+  Q_ASSERT_X( mHasExecuted, "QgsProcessingAlgorithm::postProcess", QString( "algorithm instance %1 was not executed" ).arg( name() ).toLatin1() );
   Q_ASSERT_X( !mHasPostProcessed, "QgsProcessingAlgorithm::postProcess", "postProcess() was already called for this algorithm instance" );
 
   if ( mLocalContext )

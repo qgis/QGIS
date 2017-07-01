@@ -65,6 +65,7 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
   private:
 
+    QVariantMap mParameters;
     QVariantMap mResults;
     QgsProcessingContext &mContext;
     QgsProcessingFeedback *mFeedback = nullptr;

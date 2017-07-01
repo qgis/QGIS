@@ -92,60 +92,47 @@ class SelectByAttribute(QgisAlgorithm):
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
-        self.layer = None
-        self.fieldName = None
-        self.operator = None
-        self.value = None
-        self.input = None
-
     def name(self):
         return 'selectbyattribute'
 
     def displayName(self):
         return self.tr('Select by attribute')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
-        self.fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        self.operator = self.OPERATORS[self.parameterAsEnum(parameters, self.OPERATOR, context)]
-        self.value = self.parameterAsString(parameters, self.VALUE, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        operator = self.OPERATORS[self.parameterAsEnum(parameters, self.OPERATOR, context)]
+        value = self.parameterAsString(parameters, self.VALUE, context)
 
-        self.input = parameters[self.INPUT]
-        return True
+        fields = layer.fields()
 
-    def processAlgorithm(self, context, feedback):
-        fields = self.layer.fields()
-
-        idx = self.layer.fields().lookupField(self.fieldName)
+        idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
-        if fieldType != QVariant.String and self.operator in self.STRING_OPERATORS:
+        if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
             op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
             raise GeoAlgorithmExecutionException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))
 
-        field_ref = QgsExpression.quotedColumnRef(self.fieldName)
-        quoted_val = QgsExpression.quotedValue(self.value)
-        if self.operator == 'is null':
+        field_ref = QgsExpression.quotedColumnRef(fieldName)
+        quoted_val = QgsExpression.quotedValue(value)
+        if operator == 'is null':
             expression_string = '{} IS NULL'.format(field_ref)
-        elif self.operator == 'is not null':
+        elif operator == 'is not null':
             expression_string = '{} IS NOT NULL'.format(field_ref)
-        elif self.operator == 'begins with':
-            expression_string = """%s LIKE '%s%%'""" % (field_ref, self.value)
-        elif self.operator == 'contains':
-            expression_string = """%s LIKE '%%%s%%'""" % (field_ref, self.value)
-        elif self.operator == 'does not contain':
-            expression_string = """%s NOT LIKE '%%%s%%'""" % (field_ref, self.value)
+        elif operator == 'begins with':
+            expression_string = """%s LIKE '%s%%'""" % (field_ref, value)
+        elif operator == 'contains':
+            expression_string = """%s LIKE '%%%s%%'""" % (field_ref, value)
+        elif operator == 'does not contain':
+            expression_string = """%s NOT LIKE '%%%s%%'""" % (field_ref, value)
         else:
-            expression_string = '{} {} {}'.format(field_ref, self.operator, quoted_val)
+            expression_string = '{} {} {}'.format(field_ref, operator, quoted_val)
 
         expression = QgsExpression(expression_string)
         if expression.hasParserError():
             raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
-        self.layer.selectByExpression(expression_string)
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.input}
+        layer.selectByExpression(expression_string)
+        return {self.OUTPUT: parameters[self.INPUT]}

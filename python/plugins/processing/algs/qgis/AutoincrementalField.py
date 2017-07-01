@@ -51,10 +51,6 @@ class AutoincrementalField(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Incremented')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Incremented')))
 
-        self.source = None
-        self.sink = None
-        self.dest_id = None
-
     def group(self):
         return self.tr('Vector table tools')
 
@@ -64,18 +60,16 @@ class AutoincrementalField(QgisAlgorithm):
     def displayName(self):
         return self.tr('Add autoincremental field')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
-        fields = self.source.fields()
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fields = source.fields()
         fields.append(QgsField('AUTO', QVariant.Int))
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         fields, self.source.wkbType(), self.source.sourceCrs())
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        features = self.source.getFeatures()
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -85,9 +79,7 @@ class AutoincrementalField(QgisAlgorithm):
             attributes.append(current)
             output_feature.setAttributes(attributes)
 
-            self.sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

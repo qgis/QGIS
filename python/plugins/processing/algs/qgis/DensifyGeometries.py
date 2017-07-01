@@ -63,28 +63,21 @@ class DensifyGeometries(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Densified')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Densified')))
 
-        self.source = None
-        self.sink = None
-        self.vertices = None
-        self.dest_id = None
-
     def name(self):
         return 'densifygeometries'
 
     def displayName(self):
         return self.tr('Densify geometries')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
-        self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        vertices = self.parameterAsInt(parameters, self.VERTICES, context)
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         self.source.fields(), self.source.wkbType(), self.source.sourceCrs())
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        features = self.source.getFeatures()
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -92,11 +85,9 @@ class DensifyGeometries(QgisAlgorithm):
 
             feature = f
             if feature.hasGeometry():
-                new_geometry = feature.geometry().densifyByCount(self.vertices)
+                new_geometry = feature.geometry().densifyByCount(vertices)
                 feature.setGeometry(new_geometry)
-            self.sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

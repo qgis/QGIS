@@ -835,11 +835,7 @@ Copies are protected to avoid slicing
 
   protected:
 
-     virtual bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback );
-    virtual bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
-
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
 
 };

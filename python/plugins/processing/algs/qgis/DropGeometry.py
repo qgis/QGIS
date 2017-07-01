@@ -55,36 +55,27 @@ class DropGeometry(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Dropped geometry')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Dropped geometry")))
 
-        self.source = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'dropgeometries'
 
     def displayName(self):
         return self.tr('Drop geometries')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         self.source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
-        return True
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
-    def processAlgorithm(self, context, feedback):
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        features = self.source.getFeatures(request)
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures(request)
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
                 break
 
             input_feature.clearGeometry()
-            self.sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

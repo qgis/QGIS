@@ -119,52 +119,42 @@ class BasicStatisticsForField(QgisAlgorithm):
         self.addOutput(QgsProcessingOutputNumber(self.THIRDQUARTILE, self.tr('Third quartile')))
         self.addOutput(QgsProcessingOutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-        self.source = None
-        self.field = None
-        self.field_name = None
-        self.output_file = None
-        self.results = {}
-
     def name(self):
         return 'basicstatisticsforfields'
 
     def displayName(self):
         return self.tr('Basic statistics for fields')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
-        self.field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        self.field = self.source.fields().at(self.source.fields().lookupField(self.field_name))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        field = source.fields().at(source.fields().lookupField(field_name))
 
-        self.output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
-        return True
+        output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
-    def processAlgorithm(self, context, feedback):
-        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([self.field_name], self.source.fields())
-        features = self.source.getFeatures(request)
-        count = self.source.featureCount()
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
+        features = source.getFeatures(request)
+        count = source.featureCount()
 
         data = []
-        data.append(self.tr('Analyzed field: {}').format(self.field_name))
+        data.append(self.tr('Analyzed field: {}').format(field_name))
+        results = {}
 
-        if self.field.isNumeric():
-            d, self.results = self.calcNumericStats(features, feedback, self.field, count)
+        if field.isNumeric():
+            d, results = self.calcNumericStats(features, feedback, field, count)
             data.extend(d)
-        elif self.field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
-            d, self.results = self.calcDateTimeStats(features, feedback, self.field, count)
+        elif field.type() in (QVariant.Date, QVariant.Time, QVariant.DateTime):
+            d, results = self.calcDateTimeStats(features, feedback, field, count)
             data.extend(d)
         else:
-            d, self.results = self.calcStringStats(features, feedback, self.field, count)
+            d, results = self.calcStringStats(features, feedback, field, count)
             data.extend(d)
 
-        if self.output_file:
-            self.createHTML(self.output_file, data)
-            self.results[self.OUTPUT_HTML_FILE] = self.output_file
+        if output_file:
+            self.createHTML(output_file, data)
+            results[self.OUTPUT_HTML_FILE] = output_file
 
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return self.results
+        return results
 
     def calcNumericStats(self, features, feedback, field, count):
         total = 100.0 / count if count else 0

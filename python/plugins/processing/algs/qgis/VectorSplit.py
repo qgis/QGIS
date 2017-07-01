@@ -66,51 +66,42 @@ class VectorSplit(QgisAlgorithm):
 
         self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
 
-        self.source = None
-        self.fieldName = None
-        self.directory = None
-        self.uniqueValues = None
-        self.sinks = {}
-
     def name(self):
         return 'splitvectorlayer'
 
     def displayName(self):
         return self.tr('Split vector layer')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
-        self.fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        self.directory = self.parameterAsString(parameters, self.OUTPUT, context)
-        mkdir(self.directory)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        directory = self.parameterAsString(parameters, self.OUTPUT, context)
 
-        fieldIndex = self.source.fields().lookupField(self.fieldName)
-        self.uniqueValues = self.source.uniqueValues(fieldIndex)
+        mkdir(directory)
 
-        baseName = os.path.join(self.directory, '{0}'.format(self.fieldName))
-        self.sinks = {}
-        for current, i in enumerate(self.uniqueValues):
+        fieldIndex = source.fields().lookupField(fieldName)
+        uniqueValues = source.uniqueValues(fieldIndex)
+        baseName = os.path.join(directory, '{0}'.format(fieldName))
+
+        fields = source.fields()
+        crs = source.sourceCrs()
+        geomType = source.wkbType()
+
+        total = 100.0 / len(uniqueValues) if uniqueValues else 1
+
+        for current, i in enumerate(uniqueValues):
             if feedback.isCanceled():
                 break
             fName = u'{0}_{1}.shp'.format(baseName, str(i).strip())
             feedback.pushInfo(self.tr('Creating layer: {}').format(fName))
-            sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, self.source.fields, self.source.wkbType(), self.source.sourceCrs())
-            self.sinks[i] = sink
-        return True
 
-    def processAlgorithm(self, context, feedback):
-        total = 100.0 / len(self.uniqueValues) if self.uniqueValues else 1
-        for current, i in enumerate(self.uniqueValues):
-            if feedback.isCanceled():
-                break
+            sink, dest = QgsProcessingUtils.createFeatureSink(fName, context, fields, geomType, crs)
 
-            sink = self.sinks[i]
-
-            filter = '{} = {}'.format(QgsExpression.quotedColumnRef(self.fieldName), QgsExpression.quotedValue(i))
+            filter = '{} = {}'.format(QgsExpression.quotedColumnRef(fieldName), QgsExpression.quotedValue(i))
             req = QgsFeatureRequest().setFilterExpression(filter)
 
             count = 0
-            for f in self.source.getFeatures(req):
+            for f in source.getFeatures(req):
                 if feedback.isCanceled():
                     break
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
@@ -119,7 +110,5 @@ class VectorSplit(QgisAlgorithm):
             del sink
 
             feedback.setProgress(int(current * total))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.directory}
+        return {self.OUTPUT: directory}
