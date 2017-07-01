@@ -72,6 +72,15 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool selectedFeaturesOnly;
 
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other )
+    {
+      return source == other.source && selectedFeaturesOnly == other.selectedFeaturesOnly;
+    }
+
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other )
+    {
+      return !( *this == other );
+    }
 
     //! Allows direct construction of QVariants.
     operator QVariant() const

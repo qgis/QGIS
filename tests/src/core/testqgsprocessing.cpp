@@ -932,6 +932,10 @@ void TestQgsProcessing::features()
   ids = getIds( source->getFeatures() );
   QVERIFY( !encountered );
 
+  // equality operator
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) == QgsProcessingFeatureSourceDefinition( layer->id(), true ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( "b", true ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
 }
 
 void TestQgsProcessing::uniqueValues()
