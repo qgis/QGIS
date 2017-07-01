@@ -69,6 +69,7 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SimplifyGeometries import SimplifyGeometries
 from .Smooth import Smooth
+from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
@@ -156,7 +157,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtendLines import ExtendLines
 # from .ExtractSpecificNodes import ExtractSpecificNodes
 # from .GeometryByExpression import GeometryByExpression
-# from .SnapGeometries import SnapGeometriesToLayer
 # from .PoleOfInaccessibility import PoleOfInaccessibility
 # from .RasterCalculator import RasterCalculator
 # from .Heatmap import Heatmap
@@ -230,7 +230,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         IdwInterpolation(), TinInterpolation(),
         #         RemoveNullGeometry(),
         #         ExtendLines(), ExtractSpecificNodes(),
-        #         GeometryByExpression(), SnapGeometriesToLayer(),
+        #         GeometryByExpression(),
         #         PoleOfInaccessibility(),
         #
         #         RasterCalculator(), Heatmap(), Orthogonalize(),
@@ -269,6 +269,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SimplifyGeometries(),
                 Smooth(),
+                SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
                 VectorSplit(),
