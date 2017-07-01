@@ -320,7 +320,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Fill</string>
+      <string>Fill color</string>
      </property>
      <property name="buddy">
       <cstring>btnChangeColorFill</cstring>
@@ -470,7 +470,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Stroke</string>
+      <string>Stroke color</string>
      </property>
      <property name="buddy">
       <cstring>btnChangeColorStroke</cstring>
