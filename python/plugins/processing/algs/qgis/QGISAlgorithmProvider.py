@@ -47,6 +47,7 @@ from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
 from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
+from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
@@ -110,7 +111,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .HubDistanceLines import HubDistanceLines
 # from .HubLines import HubLines
 # from .GeometryConvert import GeometryConvert
-# from .ConcaveHull import ConcaveHull
 # from .RasterLayerStatistics import RasterLayerStatistics
 # from .StatisticsByCategories import StatisticsByCategories
 # from .EquivalentNumField import EquivalentNumField
@@ -206,7 +206,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #          JoinAttributes(),
         #         Explode(), FieldsPyculator(),
         #         EquivalentNumField(),
-        #         StatisticsByCategories(), ConcaveHull(),
+        #         StatisticsByCategories(),
         #         RasterLayerStatistics(), PointsDisplacement(),
         #         PointsFromPolygons(),
         #         PointsFromLines(), RandomPointsExtent(),
@@ -246,6 +246,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Boundary(),
                 BoundingBox(),
                 CheckValidity(),
+                ConcaveHull(),
                 CreateAttributeIndex(),
                 Delaunay(),
                 DeleteColumn(),
