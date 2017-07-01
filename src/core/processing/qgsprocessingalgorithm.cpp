@@ -334,10 +334,17 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   if ( !res )
     return QVariantMap();
 
-  QVariantMap runRes = alg->runPrepared( parameters, context, feedback );
-
-  if ( !alg->mHasExecuted )
+  QVariantMap runRes;
+  try
+  {
+    runRes = alg->runPrepared( parameters, context, feedback );
+  }
+  catch ( QgsProcessingException &e )
+  {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    feedback->reportError( e.what() );
     return QVariantMap();
+  }
 
   if ( ok )
     *ok = true;
@@ -410,17 +417,15 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     }
     return runResults;
   }
-  catch ( QgsProcessingException &e )
+  catch ( QgsProcessingException & )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
-    feedback->reportError( e.what() );
-
     if ( mLocalContext )
     {
       // see above!
       mLocalContext->pushToThread( context.thread() );
     }
-    return QVariantMap();
+    //rethrow
+    throw;
   }
 }
 

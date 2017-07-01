@@ -52,8 +52,10 @@ bool QgsProcessingAlgRunnerTask::run()
     mResults = mAlgorithm->runPrepared( mParameters, mContext, mFeedback );
     ok = true;
   }
-  catch ( QgsProcessingException & )
+  catch ( QgsProcessingException &e )
   {
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    mFeedback->reportError( e.what() );
     return false;
   }
   return ok && !mFeedback->isCanceled();
