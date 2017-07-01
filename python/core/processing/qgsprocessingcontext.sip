@@ -245,6 +245,15 @@ Destination project
  thread() affinity, and that thread is the current thread.
 %End
 
+    QgsMapLayer *takeResultLayer( const QString &id ) /TransferBack/;
+%Docstring
+ Takes the result map layer with matching ``id`` from the context and
+ transfers ownership of it back to the caller. This method can be used
+ to remove temporary layers which are not required for further processing
+ from a context.
+ :rtype: QgsMapLayer
+%End
+
   private:
     QgsProcessingContext( const QgsProcessingContext &other );
 };

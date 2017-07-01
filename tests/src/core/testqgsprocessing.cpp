@@ -639,6 +639,19 @@ void TestQgsProcessing::context()
   QCOMPARE( context2.layersToLoadOnCompletion().count(), 2 );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), v1->id() );
   QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 1 ), v2->id() );
+
+  // take result layer
+  QgsMapLayer *result = context2.takeResultLayer( v1->id() );
+  QCOMPARE( result, v1 );
+  QString id = v1->id();
+  delete v1;
+  QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
+  QVERIFY( !context2.takeResultLayer( v1->id() ) );
+  result = context2.takeResultLayer( v2->id() );
+  QCOMPARE( result, v2 );
+  id = v2->id();
+  delete v2;
+  QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
 }
 
 void TestQgsProcessing::mapLayers()
