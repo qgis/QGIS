@@ -356,6 +356,17 @@ class CORE_EXPORT QgsProcessingContext
       tempLayerStore.transferLayersFromStore( context.temporaryLayerStore() );
     }
 
+    /**
+     * Takes the result map layer with matching \a id from the context and
+     * transfers ownership of it back to the caller. This method can be used
+     * to remove temporary layers which are not required for further processing
+     * from a context.
+     */
+    QgsMapLayer *takeResultLayer( const QString &id ) SIP_TRANSFERBACK
+    {
+      return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
+    }
+
   private:
 
     QgsProcessingContext::Flags mFlags = 0;
