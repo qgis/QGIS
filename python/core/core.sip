@@ -104,5 +104,7 @@ done:
 %Include core_auto.sip
 
 %VirtualErrorHandler processing_exception_handler
-    throw QgsProcessingException( getTraceback() );
+    QString trace = getTraceback();
+    SIP_RELEASE_GIL( sipGILState );
+    throw QgsProcessingException( trace );
 %End
