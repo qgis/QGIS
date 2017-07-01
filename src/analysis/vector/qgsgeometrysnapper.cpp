@@ -477,9 +477,8 @@ void QgsGeometrySnapper::processFeature( QgsFeature &feature, double snapToleran
 {
   if ( !feature.geometry().isNull() )
     feature.setGeometry( snapGeometry( feature.geometry(), snapTolerance, mode ) );
+  emit featureSnapped();
 }
-
-
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, SnapMode mode ) const
 {
