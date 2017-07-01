@@ -45,6 +45,12 @@ class QgsProcessingFeatureSourceDefinition
  True if only selected features in the source should be used by algorithms.
 %End
 
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other );
+
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other );
+%Docstring
+ :rtype: bool
+%End
 
     operator QVariant() const;
 %Docstring
