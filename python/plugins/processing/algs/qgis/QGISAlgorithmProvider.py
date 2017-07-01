@@ -73,6 +73,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SymmetricalDifference import SymmetricalDifference
 from .VectorSplit import VectorSplit
+from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
 # from .ExtractByLocation import ExtractByLocation
@@ -87,7 +88,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
 # from .Delaunay import Delaunay
-# from .VoronoiPolygons import VoronoiPolygons
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
@@ -190,7 +190,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
-        #         Delaunay(), VoronoiPolygons(),
+        #         Delaunay(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
@@ -273,6 +273,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SymmetricalDifference(),
                 VectorSplit(),
+                VoronoiPolygons(),
                 ZonalStatistics()
                 ]
 

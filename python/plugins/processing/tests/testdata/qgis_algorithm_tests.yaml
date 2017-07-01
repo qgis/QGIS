@@ -2300,31 +2300,31 @@ tests:
 #      OUTPUT:
 #        name: expected/polygonize.gml
 #        type: vector
-#
-#  - algorithm: qgis:voronoipolygons
-#    name: Standard voronoi
-#    params:
-#      BUFFER: 0.0
-#      INPUT:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/voronoi.gml
-#        type: vector
-#
-#  - algorithm: qgis:voronoipolygons
-#    name: Vornoi with buffer region
-#    params:
-#      BUFFER: 10.0
-#      INPUT:
-#        name: points.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/voronoi_buffer.gml
-#        type: vector
-#
+
+  - algorithm: qgis:voronoipolygons
+    name: Standard voronoi
+    params:
+      BUFFER: 0.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi.gml
+        type: vector
+
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with buffer region
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer.gml
+        type: vector
+
 #  - algorithm: qgis:findprojection
 #    name: Find projection
 #    params:
