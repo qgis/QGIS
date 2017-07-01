@@ -47,7 +47,7 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.csw import CatalogueServiceWeb # spellok
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
 
@@ -821,7 +821,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,
+            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
                                       username=self.catalog_username,
                                       password=self.catalog_password)
             cat.getrecordbyid(
@@ -899,12 +899,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.rubber_band.reset()
 
     def _get_csw(self):
-        """convenience function to init owslib.csw.CatalogueServiceWeb"""
+        """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
 
         # connect to the server
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.catalog = CatalogueServiceWeb(self.catalog_url,
+            self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
                                                timeout=self.timeout,
                                                username=self.catalog_username,
                                                password=self.catalog_password)
