@@ -64,6 +64,8 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+        cls.in_place_layers = {}
+        cls.vector_layer_params = {}
 
     @classmethod
     def tearDownClass(cls):
