@@ -131,7 +131,7 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
       disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
-      delete mCurrentItem;
+      mCurrentItem->deleteLater();
       mCurrentItem = nullptr;
     }
 
@@ -168,7 +168,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     if ( existingItem == item )
     {
       mItems.removeOne( existingItem );
-      delete existingItem;
+      existingItem->deleteLater();
       return true;
     }
   }
