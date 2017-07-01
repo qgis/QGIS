@@ -53,35 +53,27 @@ class CreateAttributeIndex(QgisAlgorithm):
                                                       self.tr('Attribute to index'), None, self.INPUT))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
 
-        self.layer = None
-        self.field = None
-
     def name(self):
         return 'createattributeindex'
 
     def displayName(self):
         return self.tr('Create attribute index')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        self.field = self.parameterAsString(parameters, self.FIELD, context)
-        return True
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        field = self.parameterAsString(parameters, self.FIELD, context)
+        provider = layer.dataProvider()
 
-    def processAlgorithm(self, context, feedback):
-        provider = self.layer.dataProvider()
-
-        field_index = self.layer.fields().lookupField(self.field)
-        if field_index < 0 or self.layer.fields().fieldOrigin(field_index) != QgsFields.OriginProvider:
-            feedback.pushInfo(self.tr('Can not create attribute index on "{}"').format(self.field))
+        field_index = layer.fields().lookupField(field)
+        if field_index < 0 or layer.fields().fieldOrigin(field_index) != QgsFields.OriginProvider:
+            feedback.pushInfo(self.tr('Can not create attribute index on "{}"').format(field))
         else:
-            provider_index = self.layer.fields().fieldOriginIndex(field_index)
+            provider_index = layer.fields().fieldOriginIndex(field_index)
             if provider.capabilities() & QgsVectorDataProvider.CreateAttributeIndex:
                 if not provider.createAttributeIndex(provider_index):
                     feedback.pushInfo(self.tr('Could not create attribute index'))
             else:
                 feedback.pushInfo(self.tr("Layer's data provider does not support "
                                           "creating attribute indexes"))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.layer.id()}
+        return {self.OUTPUT: layer.id()}

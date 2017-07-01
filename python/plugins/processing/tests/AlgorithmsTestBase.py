@@ -138,7 +138,7 @@ class AlgorithmsTest(object):
                 pass
         else:
             results, ok = alg.run(parameters, context, feedback)
-            self.assertTrue(ok, parameters)
+            self.assertTrue(ok, 'params: {}, results: {}'.format(parameters, results))
             self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):

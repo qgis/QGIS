@@ -49,34 +49,26 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), False, False))
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), '', True))
 
-        self.database = None
-        self.sql = None
-
     def name(self):
         return 'spatialiteexecutesql'
 
     def displayName(self):
         return self.tr('Spatialite execute SQL')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
-        self.sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
-        return True
-
-    def processAlgorithm(self, context, feedback):
-        databaseuri = self.database.dataProvider().dataSourceUri()
+    def processAlgorithm(self, parameters, context, feedback):
+        database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
+        databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
             if '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)
+        sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            db._exec_sql_and_commit(str(self.sql))
+            db._exec_sql_and_commit(str(sql))
         except spatialite.DbError as e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n{0}').format(str(e)))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
         return {}

@@ -248,7 +248,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
 
         return True
 
-    def processAlgorithm(self, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         self.ns['feedback'] = feedback
         self.ns['context'] = context
 
@@ -257,9 +257,6 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         for out in self.outputDefinitions():
             self.results[out.name()] = self.ns[out.name()]
         del self.ns
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
         return self.results
 
     def helpUrl(self):

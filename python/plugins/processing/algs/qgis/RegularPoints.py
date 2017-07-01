@@ -81,66 +81,55 @@ class RegularPoints(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Regular points'), QgsProcessingParameterDefinition.TypeVectorPoint))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Regular points'), QgsProcessingParameterDefinition.TypeVectorPoint))
 
-        self.extent = None
-        self.spacing = None
-        self.inset = None
-        self.randomize = None
-        self.isSpacing = None
-        self.fields = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'regularpoints'
 
     def displayName(self):
         return self.tr('Regular points')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
 
-        self.spacing = self.parameterAsDouble(parameters, self.SPACING, context)
-        self.inset = self.parameterAsDouble(parameters, self.INSET, context)
-        self.randomize = self.parameterAsBool(parameters, self.RANDOMIZE, context)
-        self.isSpacing = self.parameterAsBool(parameters, self.IS_SPACING, context)
+        spacing = self.parameterAsDouble(parameters, self.SPACING, context)
+        inset = self.parameterAsDouble(parameters, self.INSET, context)
+        randomize = self.parameterAsBool(parameters, self.RANDOMIZE, context)
+        isSpacing = self.parameterAsBool(parameters, self.IS_SPACING, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
 
-        self.fields = QgsFields()
-        self.fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        fields = QgsFields()
+        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         self.fields, QgsWkbTypes.Point, crs)
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Point, crs)
 
-    def processAlgorithm(self, context, feedback):
-        if self.randomize:
+        if randomize:
             seed()
 
-        area = self.extent.width() * self.extent.height()
-        if self.isSpacing:
-            pSpacing = self.spacing
+        area = extent.width() * extent.height()
+        if isSpacing:
+            pSpacing = spacing
         else:
-            pSpacing = sqrt(area / self.spacing)
+            pSpacing = sqrt(area / spacing)
 
         f = QgsFeature()
         f.initAttributes(1)
-        f.setFields(self.fields)
+        f.setFields(fields)
 
         count = 0
         total = 100.0 / (area / pSpacing)
-        y = self.extent.yMaximum() - self.inset
+        y = extent.yMaximum() - inset
 
-        extent_geom = QgsGeometry.fromRect(self.extent)
+        extent_geom = QgsGeometry.fromRect(extent)
         extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
         extent_engine.prepareGeometry()
 
-        while y >= self.extent.yMinimum():
-            x = self.extent.xMinimum() + self.inset
-            while x <= self.extent.xMaximum():
+        while y >= extent.yMinimum():
+            x = extent.xMinimum() + inset
+            while x <= extent.xMaximum():
                 if feedback.isCanceled():
                     break
 
-                if self.randomize:
+                if randomize:
                     geom = QgsGeometry().fromPoint(QgsPointXY(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
@@ -150,13 +139,10 @@ class RegularPoints(QgisAlgorithm):
                 if extent_engine.intersects(geom.geometry()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
-                    self.sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
                     count += 1
                     feedback.setProgress(int(count * total))
             y = y - pSpacing
 
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

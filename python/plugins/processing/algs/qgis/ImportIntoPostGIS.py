@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorLayerExporter,
                        QgsSettings,
+                       QgsApplication,
                        QgsFeatureSink,
+                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterField,
@@ -106,86 +108,70 @@ class ImportIntoPostGIS(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART,
                                                         self.tr('Create single-part geometries instead of multi-part'), False))
 
-        self.db = None
-        self.schema = None
-        self.overwrite = None
-        self.createIndex = None
-        self.convertLowerCase = None
-        self.dropStringLength = None
-        self.forceSinglePart = None
-        self.primaryKeyField = None
-        self.encoding = None
-        self.source = None
-        self.table = None
-        self.providerName = None
-        self.geomColumn = None
-
     def name(self):
         return 'importintopostgis'
 
     def displayName(self):
         return self.tr('Import into PostGIS')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
+    def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
-        self.db = postgis.GeoDB.from_name(connection)
+        db = postgis.GeoDB.from_name(connection)
 
-        self.schema = self.parameterAsString(parameters, self.SCHEMA, context)
-        self.overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
-        self.createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
-        self.convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
-        self.dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
-        self.forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
-        self.primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
-        self.encoding = self.parameterAsString(parameters, self.ENCODING, context)
+        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        overwrite = self.parameterAsBool(parameters, self.OVERWRITE, context)
+        createIndex = self.parameterAsBool(parameters, self.CREATEINDEX, context)
+        convertLowerCase = self.parameterAsBool(parameters, self.LOWERCASE_NAMES, context)
+        dropStringLength = self.parameterAsBool(parameters, self.DROP_STRING_LENGTH, context)
+        forceSinglePart = self.parameterAsBool(parameters, self.FORCE_SINGLEPART, context)
+        primaryKeyField = self.parameterAsString(parameters, self.PRIMARY_KEY, context) or 'id'
+        encoding = self.parameterAsString(parameters, self.ENCODING, context)
 
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        self.table = self.parameterAsString(parameters, self.TABLENAME, context)
-        if self.table:
-            self.table.strip()
-        if not self.table or self.table == '':
-            self.table = self.source.sourceName()
-            self.table = self.table.replace('.', '_')
-        self.table = self.table.replace(' ', '').lower()[0:62]
-        self.providerName = 'postgres'
+        table = self.parameterAsString(parameters, self.TABLENAME, context)
+        if table:
+            table.strip()
+        if not table or table == '':
+            table = source.sourceName()
+            table = table.replace('.', '_')
+        table = table.replace(' ', '').lower()[0:62]
+        providerName = 'postgres'
 
-        self.geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)
-        if not self.geomColumn:
-            self.geomColumn = 'geom'
-        return True
+        geomColumn = self.parameterAsString(parameters, self.GEOMETRY_COLUMN, context)
+        if not geomColumn:
+            geomColumn = 'geom'
 
-    def processAlgorithm(self, context, feedback):
         options = {}
-        if self.overwrite:
+        if overwrite:
             options['overwrite'] = True
-        if self.convertLowerCase:
+        if convertLowerCase:
             options['lowercaseFieldNames'] = True
-            self.geomColumn = self.geomColumn.lower()
-        if self.dropStringLength:
+            geomColumn = geomColumn.lower()
+        if dropStringLength:
             options['dropStringConstraints'] = True
-        if self.forceSinglePart:
+        if forceSinglePart:
             options['forceSinglePartGeometryType'] = True
 
         # Clear geometry column for non-geometry tables
-        if self.source.wkbType() == QgsWkbTypes.NoGeometry:
-            self.geomColumn = None
+        if source.wkbType() == QgsWkbTypes.NoGeometry:
+            geomColumn = None
 
-        uri = self.db.uri
-        uri.setDataSource(self.schema, self.table, self.geomColumn, '', self.primaryKeyField)
+        uri = db.uri
+        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
 
-        if self.encoding:
-            options['fileEncoding'] = self.encoding
+        if encoding:
+            options['fileEncoding'] = encoding
 
-        exporter = QgsVectorLayerExporter(uri.uri(), self.providerName, self.source.fields(),
-                                          self.source.wkbType(), self.source.sourceCrs(), self.overwrite, options)
+        exporter = QgsVectorLayerExporter(uri.uri(), providerName, source.fields(),
+                                          source.wkbType(), source.sourceCrs(), overwrite, options)
 
         if exporter.errorCode() != QgsVectorLayerExporter.NoError:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
-        features = self.source.getFeatures()
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -200,13 +186,11 @@ class ImportIntoPostGIS(QgisAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
-        if self.geomColumn and self.createIndex:
-            self.db.create_spatial_index(self.table, self.schema, self.geomColumn)
+        if geomColumn and createIndex:
+            db.create_spatial_index(table, schema, geomColumn)
 
-        self.db.vacuum_analyze(self.table, self.schema)
-        return True
+        db.vacuum_analyze(table, schema)
 
-    def postProcessAlgorithm(self, context, feedback):
         return {}
 
     def dbConnectionNames(self):

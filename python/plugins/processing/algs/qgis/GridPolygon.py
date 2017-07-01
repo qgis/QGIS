@@ -102,52 +102,41 @@ class GridPolygon(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Grid'), QgsProcessingParameterDefinition.TypeVectorPolygon))
 
-        self.idx = None
-        self.hSpacing = None
-        self.vSpacing = None
-        self.hOverlay = None
-        self.vOverlay = None
-        self.width = None
-        self.height = None
-        self.originX = None
-        self.originY = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'creategridpolygon'
 
     def displayName(self):
         return self.tr('Create grid (polygon)')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.idx = self.parameterAsEnum(parameters, self.TYPE, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        idx = self.parameterAsEnum(parameters, self.TYPE, context)
 
-        self.hSpacing = self.parameterAsDouble(parameters, self.HSPACING, context)
-        self.vSpacing = self.parameterAsDouble(parameters, self.VSPACING, context)
-        self.hOverlay = self.parameterAsDouble(parameters, self.HOVERLAY, context)
-        self.vOverlay = self.parameterAsDouble(parameters, self.VOVERLAY, context)
+        hSpacing = self.parameterAsDouble(parameters, self.HSPACING, context)
+        vSpacing = self.parameterAsDouble(parameters, self.VSPACING, context)
+        hOverlay = self.parameterAsDouble(parameters, self.HOVERLAY, context)
+        vOverlay = self.parameterAsDouble(parameters, self.VOVERLAY, context)
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        self.width = bbox.width()
-        self.height = bbox.height()
-        self.originX = bbox.xMinimum()
-        self.originY = bbox.yMaximum()
 
-        if self.hSpacing <= 0 or self.vSpacing <= 0:
+        width = bbox.width()
+        height = bbox.height()
+        originX = bbox.xMinimum()
+        originY = bbox.yMaximum()
+
+        if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: {0}/{1}').format(self.hSpacing, self.vSpacing))
+                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
-        if self.width < self.hSpacing:
+        if width < hSpacing:
             raise GeoAlgorithmExecutionException(
                 self.tr('Horizontal spacing is too small for the covered area'))
 
-        if self.hSpacing <= self.hOverlay or self.vSpacing <= self.vOverlay:
+        if hSpacing <= hOverlay or vSpacing <= vOverlay:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid overlay: {0}/{1}').format(self.hOverlay, self.vOverlay))
+                self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
-        if self.height < self.vSpacing:
+        if height < vSpacing:
             raise GeoAlgorithmExecutionException(
                 self.tr('Vertical spacing is too small for the covered area'))
 
@@ -158,24 +147,20 @@ class GridPolygon(QgisAlgorithm):
         fields.append(QgsField('bottom', QVariant.Double, '', 24, 16))
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         fields, QgsWkbTypes.Polygon, crs)
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.Polygon, crs)
 
-    def processAlgorithm(self, context, feedback):
-        if self.idx == 0:
+        if idx == 0:
             self._rectangleGrid(
-                self.sink, self.width, self.height, self.originX, self.originY, self.hSpacing, self.vSpacing, self.hOverlay, self.vOverlay, feedback)
-        elif self.idx == 1:
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+        elif idx == 1:
             self._diamondGrid(
-                self.sink, self.width, self.height, self.originX, self.originY, self.hSpacing, self.vSpacing, self.hOverlay, self.vOverlay, feedback)
-        elif self.idx == 2:
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+        elif idx == 2:
             self._hexagonGrid(
-                self.sink, self.width, self.height, self.originX, self.originY, self.hSpacing, self.vSpacing, self.hOverlay, self.vOverlay, feedback)
-        return True
+                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}
 
     def _rectangleGrid(self, sink, width, height, originX, originY,
                        hSpacing, vSpacing, hOverlay, vOverlay, feedback):

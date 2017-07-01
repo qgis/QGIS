@@ -66,26 +66,20 @@ class BoundingBox(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_LAYER, self.tr('Bounds'), QgsProcessingParameterDefinition.TypeVectorPolygon))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT_LAYER, self.tr("Bounds")))
 
-        self.source = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'boundingboxes'
 
     def displayName(self):
         return self.tr('Bounding boxes')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
-                                                         self.source.fields(), QgsWkbTypes.Polygon, self.source.sourceCrs())
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LAYER, context,
+                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        features = self.source.getFeatures()
-        total = 100.0 / self.source.featureCount() if self.source.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, input_feature in enumerate(features):
             if feedback.isCanceled():
@@ -100,9 +94,7 @@ class BoundingBox(QgisAlgorithm):
 
                 output_feature.setGeometry(output_geometry)
 
-            self.sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT_LAYER: self.dest_id}
+        return {self.OUTPUT_LAYER: dest_id}

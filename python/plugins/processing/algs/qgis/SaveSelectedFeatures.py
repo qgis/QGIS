@@ -47,35 +47,27 @@ class SaveSelectedFeatures(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Selection')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr("Selection")))
 
-        self.vectorLayer = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'saveselectedfeatures'
 
     def displayName(self):
         return self.tr('Save selected features')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         self.vectorLayer.fields(), self.vectorLayer.wkbType(), self.vectorLayer.sourceCrs())
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               vectorLayer.fields(), vectorLayer.wkbType(), vectorLayer.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        features = self.vectorLayer.getSelectedFeatures()
-        count = int(self.vectorLayer.selectedFeatureCount())
+        features = vectorLayer.getSelectedFeatures()
+        count = int(vectorLayer.selectedFeatureCount())
 
         total = 100.0 / count if count else 1
         for current, feat in enumerate(features):
             if feedback.isCanceled():
                 break
 
-            self.sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
-        return True
 
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

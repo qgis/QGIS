@@ -66,54 +66,42 @@ class RandomExtract(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random)')))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Extracted (random)')))
 
-        self.source = None
-        self.method = None
-        self.value = None
-        self.featureCount = None
-        self.sink = None
-        self.dest_id = None
-
     def name(self):
         return 'randomextract'
 
     def displayName(self):
         return self.tr('Random extract')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.source = self.parameterAsSource(parameters, self.INPUT, context)
-        self.method = self.parameterAsEnum(parameters, self.METHOD, context)
-        self.value = self.parameterAsInt(parameters, self.NUMBER, context)
-        self.featureCount = self.source.featureCount()
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
 
-        if self.method == 0:
-            if self.value > self.featureCount:
+        features = source.getFeatures()
+        featureCount = source.featureCount()
+        value = self.parameterAsInt(parameters, self.NUMBER, context)
+
+        if method == 0:
+            if value > featureCount:
                 raise GeoAlgorithmExecutionException(
                     self.tr('Selected number is greater than feature count. '
                             'Choose a lower value and try again.'))
         else:
-            if self.value > 100:
+            if value > 100:
                 raise GeoAlgorithmExecutionException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
-            self.value = int(round(self.value / 100.0000, 4) * self.featureCount)
+            value = int(round(value / 100.0000, 4) * featureCount)
 
-        (self.sink, self.dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                                         self.source.fields(), self.source.wkbType(), self.source.sourceCrs())
+        selran = random.sample(list(range(featureCount)), value)
 
-        return True
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-    def processAlgorithm(self, context, feedback):
-        selran = random.sample(list(range(self.featureCount)), self.value)
-        features = self.source.getFeatures()
-
-        total = 100.0 / self.featureCount if self.featureCount else 1
+        total = 100.0 / featureCount if featureCount else 1
         for i, feat in enumerate(features):
             if feedback.isCanceled():
                 break
             if i in selran:
-                self.sink.addFeature(feat, QgsFeatureSink.FastInsert)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(i * total))
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.dest_id}
+        return {self.OUTPUT: dest_id}

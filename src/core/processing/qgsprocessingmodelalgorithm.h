@@ -826,10 +826,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
 
@@ -845,8 +842,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     //! Model source file
     QString mSourceFile;
-
-    QVariantMap mInputParameters;
 
     QVariantMap mResults;
 

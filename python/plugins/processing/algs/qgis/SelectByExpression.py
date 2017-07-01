@@ -60,42 +60,30 @@ class SelectByExpression(QgisAlgorithm):
 
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (attribute)')))
 
-        self.layer = None
-        self.behavior = None
-        self.input = None
-        self.expression = None
-
     def name(self):
         return 'selectbyexpression'
 
     def displayName(self):
         return self.tr('Select by expression')
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        self.layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         if method == 0:
-            self.behavior = QgsVectorLayer.SetSelection
+            behavior = QgsVectorLayer.SetSelection
         elif method == 1:
-            self.behavior = QgsVectorLayer.AddToSelection
+            behavior = QgsVectorLayer.AddToSelection
         elif method == 2:
-            self.behavior = QgsVectorLayer.RemoveFromSelection
+            behavior = QgsVectorLayer.RemoveFromSelection
         elif method == 3:
-            self.behavior = QgsVectorLayer.IntersectSelection
+            behavior = QgsVectorLayer.IntersectSelection
 
-        self.expression = self.parameterAsString(parameters, self.EXPRESSION, context)
-        qExp = QgsExpression(self.expression)
+        expression = self.parameterAsString(parameters, self.EXPRESSION, context)
+        qExp = QgsExpression(expression)
         if qExp.hasParserError():
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
 
-        self.input = parameters[self.INPUT]
-        return True
-
-    def processAlgorithm(self, context, feedback):
-        self.layer.selectByExpression(self.expression, self.behavior)
-        return True
-
-    def postProcessAlgorithm(self, context, feedback):
-        return {self.OUTPUT: self.input}
+        layer.selectByExpression(expression, behavior)
+        return {self.OUTPUT: parameters[self.INPUT]}

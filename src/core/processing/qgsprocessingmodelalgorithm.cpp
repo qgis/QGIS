@@ -472,7 +472,7 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
   return false;
 }
 
-bool QgsProcessingModelAlgorithm::processAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QSet< QString > toExecute;
   QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
@@ -515,7 +515,7 @@ bool QgsProcessingModelAlgorithm::processAlgorithm( QgsProcessingContext &contex
 
       const ChildAlgorithm &child = mChildAlgorithms[ childId ];
 
-      QVariantMap childParams = parametersForChildAlgorithm( child, mInputParameters, childResults );
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults );
       feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
       //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
       //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
@@ -551,11 +551,6 @@ bool QgsProcessingModelAlgorithm::processAlgorithm( QgsProcessingContext &contex
   feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
-  return true;
-}
-
-QVariantMap QgsProcessingModelAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
-{
   return mResults;
 }
 
@@ -653,12 +648,6 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
   lines << QStringLiteral( "return results" );
 
   return lines.join( '\n' );
-}
-
-bool QgsProcessingModelAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &, QgsProcessingFeedback * )
-{
-  mInputParameters = parameters;
-  return true;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::helpContent() const
