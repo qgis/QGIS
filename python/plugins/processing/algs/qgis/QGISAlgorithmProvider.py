@@ -48,6 +48,7 @@ from .Boundary import Boundary
 from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .CreateAttributeIndex import CreateAttributeIndex
+from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
@@ -87,7 +88,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .PointDistance import PointDistance
 # from .UniqueValues import UniqueValues
 # from .ExportGeometryInfo import ExportGeometryInfo
-# from .Delaunay import Delaunay
 # from .LinesToPolygons import LinesToPolygons
 # from .PolygonsToLines import PolygonsToLines
 # from .SinglePartsToMultiparts import SinglePartsToMultiparts
@@ -190,7 +190,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         NearestNeighbourAnalysis(), MeanCoords(),
         #         LinesIntersection(), UniqueValues(), PointDistance(),
         #         ExportGeometryInfo(),
-        #         Delaunay(),
         #         , SinglePartsToMultiparts(),
         #         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
         #         ConvexHull(), FixedDistanceBuffer(),
@@ -248,6 +247,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 BoundingBox(),
                 CheckValidity(),
                 CreateAttributeIndex(),
+                Delaunay(),
                 DeleteColumn(),
                 DeleteHoles(),
                 DensifyGeometries(),
