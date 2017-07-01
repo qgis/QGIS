@@ -77,8 +77,6 @@ def processingTestDataPath():
 
 class AlgorithmsTest(object):
 
-    in_place_layers = {}
-
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
@@ -96,6 +94,7 @@ class AlgorithmsTest(object):
         :param name: The identifier name used in the test output heading
         :param defs: A python dict containing a test algorithm definition
         """
+        self.vector_layer_params = {}
         QgsProject.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
@@ -216,7 +215,11 @@ class AlgorithmsTest(object):
             self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
+            if filepath in self.vector_layer_params:
+                return self.vector_layer_params[filepath]
+
             lyr = QgsVectorLayer(filepath, param['name'], 'ogr', False)
+            self.vector_layer_params[filepath] = lyr
         elif param['type'] == 'raster':
             lyr = QgsRasterLayer(filepath, param['name'], 'gdal', False)
 
