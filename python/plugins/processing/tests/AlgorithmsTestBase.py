@@ -216,9 +216,9 @@ class AlgorithmsTest(object):
             self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
-            lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
+            lyr = QgsVectorLayer(filepath, param['name'], 'ogr', False)
         elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal', False)
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
         QgsProject.instance().addMapLayer(lyr)
