@@ -40,6 +40,7 @@ images/themes/default/propertyicons/diagram.svg
 images/themes/default/propertyicons/general.svg
 images/themes/default/svgbase/hammer.svg
 LexerR.py
+python/plugins/MetaSearch/resources/connections-default.xml
 python/plugins/processing/algs/grass7/description/i.landsat.toar.txt
 python/plugins/processing/gui/algnames.txt
 python/plugins/processing/tests/testdata/expected/orthagonal_lines.gfs
