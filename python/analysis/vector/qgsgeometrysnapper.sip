@@ -33,11 +33,11 @@ class QgsGeometrySnapper : QObject
       EndPointToEndPoint,
     };
 
-    QgsGeometrySnapper( QgsVectorLayer *referenceLayer );
+    QgsGeometrySnapper( QgsFeatureSource *referenceSource );
 %Docstring
- Constructor for QgsGeometrySnapper. A reference layer which contains geometries to snap to must be
+ Constructor for QgsGeometrySnapper. A reference feature source which contains geometries to snap to must be
  set. It is assumed that all geometries snapped using this object will have the
- same CRS as the reference layer (ie, no reprojection is performed).
+ same CRS as the reference source (ie, no reprojection is performed).
 %End
 
     QgsGeometry snapGeometry( const QgsGeometry &geometry, double snapTolerance, SnapMode mode = PreferNodes ) const;

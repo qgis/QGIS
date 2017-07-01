@@ -231,7 +231,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi )
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureSource &source )
 {
-  d = new QgsSpatialIndexData( source.getFeatures() );
+  d = new QgsSpatialIndexData( source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) ) );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
