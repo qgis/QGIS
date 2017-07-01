@@ -88,7 +88,7 @@ class ConcaveHull(QgisAlgorithm):
         # Delaunay triangulation from input point layer
         feedback.setProgressText(self.tr('Creating Delaunay triangles...'))
         delone_triangles = processing.run("qgis:delaunaytriangulation", {'INPUT': parameters[ConcaveHull.INPUT], 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
-        delaunay_layer = QgsProcessingUtils.mapLayerFromString(delone_triangles, context)
+        delaunay_layer = context.takeResultLayer(delone_triangles)
 
         # Get max edge length from Delaunay triangles
         feedback.setProgressText(self.tr('Computing edges max length...'))
@@ -127,20 +127,21 @@ class ConcaveHull(QgisAlgorithm):
             i += 1
 
         # Remove features
-        delaunay_layer.selectByIds(ids)
-        delaunay_layer.startEditing()
-        delaunay_layer.deleteSelectedFeatures()
-        delaunay_layer.commitChanges()
+        delaunay_layer.dataProvider().deleteFeatures(ids)
 
         # Dissolve all Delaunay triangles
         feedback.setProgressText(self.tr('Dissolving Delaunay triangles...'))
-        dissolved = processing.run("native:dissolve", {'INPUT': delaunay_layer.id(), 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
-        dissolved_layer = QgsProcessingUtils.mapLayerFromString(dissolved, context)
+        dissolved = processing.run("native:dissolve", {'INPUT': delaunay_layer, 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
+        dissolved_layer = context.takeResultLayer(dissolved)
 
         # Save result
         feedback.setProgressText(self.tr('Saving data...'))
         feat = QgsFeature()
         dissolved_layer.getFeatures().nextFeature(feat)
+
+        # Not needed anymore, free up some resources
+        del delaunay_layer
+        del dissolved_layer
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                layer.fields(), QgsWkbTypes.Polygon, layer.sourceCrs())
@@ -148,27 +149,23 @@ class ConcaveHull(QgisAlgorithm):
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():
             # Only singlepart geometries are allowed
-            geom_list = geom.asMultiPolygon()
-            for single_geom_list in geom_list:
+            geom_list = geom.asGeometryCollection()
+            for single_geom in geom_list:
                 if feedback.isCanceled():
                     break
 
                 single_feature = QgsFeature()
-                single_geom = QgsGeometry.fromPolygon(single_geom_list)
                 if not holes:
                     # Delete holes
-                    deleted = True
-                    while deleted:
-                        deleted = single_geom.deleteRing(1)
+                    single_geom = single_geom.removeInteriorRings()
                 single_feature.setGeometry(single_geom)
                 sink.addFeature(single_feature, QgsFeatureSink.FastInsert)
         else:
             # Multipart geometries are allowed
             if not holes:
                 # Delete holes
-                deleted = True
-                while deleted:
-                    deleted = geom.deleteRing(1)
+                geom = geom.removeInteriorRings()
+                feat.setGeometry(geom)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
         return {self.OUTPUT: dest_id}
