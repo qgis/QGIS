@@ -35,7 +35,13 @@ try:
 except ImportError:
     import configparser as configparser
 
-from qgis.core import (QgsApplication)
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorOutput,
+                       QgsProcessingParameterRasterOutput,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProject)
 from processing.core.Processing import Processing
 from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -76,11 +82,29 @@ def run(algOrName, parameters, onFinish=None, feedback=None, context=None):
     return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
 
 
-def runAndLoadResults(name, *args, **kwargs):
+def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
     """Executes given algorithm and load its results into QGIS project
     when possible.
     """
-    return Processing.runAlgorithm(name, handleAlgorithmResults, *args, **kwargs)
+    if isinstance(algOrName, QgsProcessingAlgorithm):
+        alg = algOrName
+    else:
+        alg = QgsApplication.processingRegistry().algorithmById(algOrName)
+
+    # output destination parameters to point to current project
+    for param in alg.parameterDefinitions():
+        if not param.name() in parameters:
+            continue
+
+        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorOutput, QgsProcessingParameterRasterOutput)):
+            p = parameters[param.name()]
+            if not isinstance(p, QgsProcessingOutputLayerDefinition):
+                parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, QgsProject.instance())
+            else:
+                p.destinationProject = QgsProject.instance()
+                parameters[param.name()] = p
+
+    return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)
 
 
 def version():
