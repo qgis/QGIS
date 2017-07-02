@@ -609,7 +609,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
     return false;
   if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
     return false;
-  // ok, possible candidate
+  // OK, possible candidate
   strcpy( table_raster + len - 9, "_rasters" );
 
   // checking if the related "_RASTERS table exists

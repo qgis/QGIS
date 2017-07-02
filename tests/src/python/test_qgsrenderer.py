@@ -100,7 +100,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test3')))
         self.assertTrue('test3' in QgsApplication.rendererRegistry().renderersList())
 
-        # try removing it again - should be ok this time
+        # try removing it again - should be OK this time
         self.assertTrue(QgsApplication.rendererRegistry().removeRenderer('test3'))
         self.assertFalse('test3' in QgsApplication.rendererRegistry().renderersList())
 

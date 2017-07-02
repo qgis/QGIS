@@ -114,7 +114,7 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   }
   if ( swap > parent )
   {
-    // ok, we have to swap something
+    // OK, we have to swap something
     tmp = treearray[parent];
     treearray[parent] = treearray[swap];
     // Update reference
@@ -141,7 +141,7 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
 
   while ( ( ( areanode * )treearray[c] )->area < ( ( areanode * )treearray[parent] )->area )
   {
-    // ok, we have to swap
+    // OK, we have to swap
     tmp = treearray[parent];
     treearray[parent] = treearray[c];
     // Update reference

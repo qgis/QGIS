@@ -175,7 +175,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
         self.assertEqual(ref_sum, ref_sum2)
-        # check the id is ok
+        # check the id is OK
         self.assertEqual(ref_sum, ref_sum3)
 
         # the same, without specifying the geometry column name
@@ -186,7 +186,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
         self.assertEqual(ref_sum, ref_sum2)
-        # check the id is ok
+        # check the id is OK
         self.assertEqual(ref_sum, ref_sum3)
 
         # with two geometry columns
@@ -198,7 +198,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
         self.assertEqual(ref_sum, ref_sum2)
-        # check the id is ok
+        # check the id is OK
         self.assertEqual(ref_sum, ref_sum3)
 
         # with two geometry columns, but no geometry column specified (will take the first)
@@ -209,7 +209,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         ref_sum3 = sum(f.id() for f in l2.getFeatures())
         # check we have the same rows
         self.assertEqual(ref_sum, ref_sum2)
-        # check the id is ok
+        # check the id is OK
         self.assertEqual(ref_sum, ref_sum3)
 
         # the same, without geometry

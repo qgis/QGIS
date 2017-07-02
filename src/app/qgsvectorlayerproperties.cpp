@@ -804,10 +804,10 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
 
   QString myMessage = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true );
 //  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    // all worked ok so no need to inform user
+    // all worked OK so no need to inform user
     syncToLayer();
   }
   else
@@ -881,7 +881,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   {
     myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
   }
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
     syncToLayer();
@@ -999,7 +999,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
       myMessage = mLayer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
     }
 
-    //reset if the default style was loaded ok only
+    //reset if the default style was loaded OK only
     if ( defaultLoadedFlag )
     {
       syncToLayer();

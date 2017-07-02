@@ -1900,7 +1900,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
     QgsDebugMsg( "Unable to find qgis element in project file" );
     return;
   }
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
   mapcanvasNode.setAttribute( QStringLiteral( "name" ), objectName() );

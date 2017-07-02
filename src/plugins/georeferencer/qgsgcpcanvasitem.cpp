@@ -108,7 +108,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
     residual = mDataPoint->residual();
   }
 
-  //only considering screen resolution is ok for the bounding box function
+  //only considering screen resolution is OK for the bounding box function
   double rf = residualToScreenFactor();
 
   if ( residual.x() > 0 )

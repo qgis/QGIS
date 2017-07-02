@@ -455,9 +455,9 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
       {
         suffix++;
         name = basename.arg( suffix );
-        // Not ok if it is already in the name list
+        // Not OK if it is already in the name list
         if ( mFieldNames.contains( name, Qt::CaseInsensitive ) ) continue;
-        // Not ok if it is already in proposed names
+        // Not OK if it is already in proposed names
         if ( names.contains( name, Qt::CaseInsensitive ) ) continue;
         break;
       }

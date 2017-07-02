@@ -1711,7 +1711,7 @@ static QVariant fcnSegmentsToLines( const QVariantList &values, const QgsExpress
 
   QList< QgsLineString * > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
-  //ok, now we have a complete list of segmentized lines from the geometry
+  //OK, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineString *ml = new QgsMultiLineString();
   Q_FOREACH ( QgsLineString *line, linesToProcess )
   {

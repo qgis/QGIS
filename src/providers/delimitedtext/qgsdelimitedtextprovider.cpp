@@ -982,7 +982,7 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
 {
   QString nonNullSubset = subset.isNull() ? QLatin1String( "" ) : subset;
 
-  // If not changing string, then oll ok, nothing to do
+  // If not changing string, then all OK, nothing to do
   if ( nonNullSubset == mSubsetString )
     return true;
 

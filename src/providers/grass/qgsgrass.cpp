@@ -945,7 +945,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QgsDebugMsg( "processResult: " + processResult );
 
   // lock exit code:
-  // 0 - ok
+  // 0 - OK
   // 1 - error
   // 2 - mapset in use
   if ( process.exitCode() == 2 )

@@ -107,7 +107,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
       QVariantMap geometryData = featureData[QStringLiteral( "geometry" )].toMap();
       QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( geometryData, queryData[QStringLiteral( "geometryType" )].toString(),
                                       QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ) );
-      // Above might return 0, which is ok since in theory empty geometries are allowed
+      // Above might return 0, which is OK since in theory empty geometries are allowed
       feature.setGeometry( QgsGeometry( geometry ) );
     }
     feature.setValid( true );
