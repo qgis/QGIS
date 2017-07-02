@@ -42,7 +42,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
 
   mTargetFieldComboBox->setLayer( mLayer );
 
-  mDynamicFormCheckBox->setToolTip( tr( "This option allows values of the joined fields to be automatically updated when the \"Target Field\" is updated" ) );
+  mDynamicFormCheckBox->setToolTip( tr( "This option allows values of the joined fields to be automatically reloaded when the \"Target Field\" is changed" ) );
 
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
