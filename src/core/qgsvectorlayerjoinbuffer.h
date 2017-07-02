@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject
      * \param feature the feature of the target layer
      * \since QGIS 3.0
      */
-    QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const;
+    QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
     //! Create a copy of the join buffer
     //! \since QGIS 2.6

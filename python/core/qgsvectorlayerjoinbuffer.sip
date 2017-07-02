@@ -108,7 +108,7 @@ Quick way to test if there is any join at all
  :rtype: list of const QgsVectorLayerJoinInfo
 %End
 
-    QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const;
+    QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 %Docstring
  Returns the joined feature corresponding to the feature.
  \param info the vector join information

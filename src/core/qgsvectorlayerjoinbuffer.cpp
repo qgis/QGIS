@@ -412,14 +412,14 @@ QList<const QgsVectorLayerJoinInfo *> QgsVectorLayerJoinBuffer::joinsWhereFieldI
   return infos;
 }
 
-QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const
+QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const
 {
   QgsFeature joinedFeature;
 
-  if ( info.joinLayer() )
+  if ( info->joinLayer() )
   {
-    const QVariant targetValue = feature.attribute( info.targetFieldName() );
-    QString fieldRef = QgsExpression::quotedColumnRef( info.joinFieldName() );
+    const QVariant targetValue = feature.attribute( info->targetFieldName() );
+    QString fieldRef = QgsExpression::quotedColumnRef( info->joinFieldName() );
     QString quotedVal = QgsExpression::quotedValue( targetValue.toString() );
     const QString filter = QString( "%1 = %2" ).arg( fieldRef, quotedVal );
 
@@ -427,7 +427,7 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
     request.setFilterExpression( filter );
     request.setLimit( 1 );
 
-    QgsFeatureIterator it = info.joinLayer()->getFeatures( request );
+    QgsFeatureIterator it = info->joinLayer()->getFeatures( request );
     it.nextFeature( joinedFeature );
   }
 
