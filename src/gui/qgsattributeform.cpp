@@ -731,7 +731,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     Q_FOREACH ( QgsEditorWidgetWrapper *depsEww, deps )
       depsEww->updateConstraint( ft, constraintOrigin );
 
-    // sync ok button status
+    // sync OK button status
     synchronizeEnabledState();
 
     mExpressionContext.setFeature( ft );
@@ -1017,7 +1017,7 @@ void QgsAttributeForm::synchronizeEnabledState()
     isEditable = isEditable & validConstraint;
   }
 
-  // change ok button status
+  // change OK button status
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
     okButton->setEnabled( isEditable );

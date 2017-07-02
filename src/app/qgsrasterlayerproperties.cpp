@@ -1708,7 +1708,7 @@ void QgsRasterLayerProperties::loadDefaultStyle_clicked()
 {
   bool defaultLoadedFlag = false;
   QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
     syncToLayer();

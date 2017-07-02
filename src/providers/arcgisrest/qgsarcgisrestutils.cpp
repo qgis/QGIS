@@ -587,7 +587,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
   }
   else
   {
-    // All ok
+    // All OK
     ( *mResults )[idx] = reply->readAll();
     --mPendingRequests;
   }

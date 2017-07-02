@@ -1407,7 +1407,7 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "undo ok" ) );
+              reportRow( QStringLiteral( "undo OK" ) );
             }
           }
         }
@@ -1436,7 +1436,7 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "redo ok" ) );
+              reportRow( QStringLiteral( "redo OK" ) );
             }
           }
         }
@@ -1464,7 +1464,7 @@ void TestQgsGrassProvider::edit()
         }
         else
         {
-          reportRow( QStringLiteral( "command ok" ) );
+          reportRow( QStringLiteral( "command OK" ) );
         }
       }
     }
@@ -1591,7 +1591,7 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
     }
     else
     {
-      reportRow( "comparison ok: " + grassUri );
+      reportRow( "comparison OK: " + grassUri );
     }
   }
   return ok;
@@ -1618,7 +1618,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
   {
-    //reportRow( "comparison with shared layer ok" );
+    //reportRow( "comparison with shared layer OK" );
   }
   else
   {
@@ -1678,7 +1678,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   independentOk = compare( features, expectedFeatures, ok );
   if ( independentOk )
   {
-    //reportRow( "comparison with independent layer ok" );
+    //reportRow( "comparison with independent layer OK" );
   }
   else
   {

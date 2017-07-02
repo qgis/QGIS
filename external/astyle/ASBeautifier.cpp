@@ -131,7 +131,7 @@ ASBeautifier::ASBeautifier(const ASBeautifier& other) : ASBase(other)
 	*preprocIndentStack = *other.preprocIndentStack;
 
 	// Copy the pointers to vectors.
-	// This is ok because the original ASBeautifier object
+	// This is OK because the original ASBeautifier object
 	// is not deleted until end of job.
 	beautifierFileType = other.beautifierFileType;
 	headers = other.headers;
@@ -2611,7 +2611,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 			}
 			isInComment = false;
 			i++;
-			blockCommentNoIndent = false;           // ok to indent next comment
+			blockCommentNoIndent = false;           // OK to indent next comment
 			continue;
 		}
 		// treat indented preprocessor lines as a line comment

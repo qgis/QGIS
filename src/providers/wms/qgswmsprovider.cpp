@@ -4164,7 +4164,7 @@ QgsWmsLegendDownloadHandler::finished()
   // or ::errored() should have been called before ::finished
   Q_ASSERT( mReply->error() == QNetworkReply::NoError );
 
-  QgsDebugMsg( "reply ok" );
+  QgsDebugMsg( "reply OK" );
   QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   if ( !redirect.isNull() )
   {

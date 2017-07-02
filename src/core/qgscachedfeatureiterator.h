@@ -42,7 +42,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * Rewind to the beginning of the iterator
      *
-     * \returns bool true if the operation was ok
+     * \returns bool true if the operation was OK
      */
     virtual bool rewind() override;
 
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * Implementation for fetching a feature.
      *
      * \param f      Will write to this feature
-     * \returns bool  true if the operation was ok
+     * \returns bool  true if the operation was OK
      *
      * \see bool getFeature( QgsFeature& f )
      */
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * We have a local special iterator for FilterFids, no need to run the generic.
      *
      * \param f      Will write to this feature
-     * \returns bool  true if the operation was ok
+     * \returns bool  true if the operation was OK
      */
     virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     /**
      * Rewind to the beginning of the iterator
      *
-     * \returns bool true if the operation was ok
+     * \returns bool true if the operation was OK
      */
     virtual bool rewind() override;
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      * Implementation for fetching a feature.
      *
      * \param f      Will write to this feature
-     * \returns bool  true if the operation was ok
+     * \returns bool  true if the operation was OK
      *
      * \see bool getFeature( QgsFeature& f )
      */

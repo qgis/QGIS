@@ -456,7 +456,7 @@ void TestQgsVectorFileWriter::regression1141()
     QVERIFY( error == QgsVectorFileWriter::NoError );
   }
 
-  // Now check we can delete it again ok
+  // Now check we can delete it again OK
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( fileName ) );
 }
 

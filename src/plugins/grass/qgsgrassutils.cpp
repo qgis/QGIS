@@ -161,7 +161,7 @@ void QgsGrassElementDialog::textChanged()
   QString text = mLineEdit->text().trimmed();
 
   mErrorLabel->setText( QStringLiteral( "   " ) );
-  mOkButton->setText( tr( "Ok" ) );
+  mOkButton->setText( tr( "OK" ) );
   mOkButton->setEnabled( true );
 
   if ( text.length() == 0 )

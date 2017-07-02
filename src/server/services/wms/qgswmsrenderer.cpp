@@ -1788,7 +1788,7 @@ namespace QgsWms
         continue;
       }
 
-      //numbers are ok
+      //numbers are OK
       bool isNumeric;
       tokenIt->toDouble( &isNumeric );
       if ( isNumeric )
@@ -1798,7 +1798,7 @@ namespace QgsWms
 
       //numeric strings need to be quoted once either with single or with double quotes
 
-      //empty strings are ok
+      //empty strings are OK
       if ( *tokenIt == QLatin1String( "''" ) )
       {
         continue;

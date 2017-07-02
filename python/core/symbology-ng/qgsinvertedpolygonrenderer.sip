@@ -53,7 +53,7 @@ Direct copies are forbidden. Use clone() instead.
  \param layer the symbol layer to render, if that makes sense
  \param selected whether this feature has been selected (this will add decorations)
  \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
- :return: true if the rendering was ok
+ :return: true if the rendering was OK
  :rtype: bool
 %End
 

@@ -1783,7 +1783,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
     OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->exportToWkb();
-    // We might receive null geometries. It is ok, but don't go through the
+    // We might receive null geometries. It is OK, but don't go through the
     // OGR_G_CreateFromWkb() route then
     if ( !wkb.isEmpty() )
     {

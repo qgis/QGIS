@@ -361,7 +361,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         chk.setColorTolerance(colortol)
         # noinspection PyUnusedLocal
         res = chk.runTest(self._Test, mismatch)
-        if PALREPORT and not res:  # don't report ok checks
+        if PALREPORT and not res:  # don't report OK checks
             testname = self._TestGroup + ' . ' + self._Test
             PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)

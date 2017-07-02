@@ -78,7 +78,7 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList *fieldList )
  */
 
 /**
-* Slot called when the ok/accept button is pressed
+* Slot called when the OK/Accept button is pressed
 */
 void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
 {

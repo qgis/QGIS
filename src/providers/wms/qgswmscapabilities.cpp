@@ -1996,7 +1996,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {

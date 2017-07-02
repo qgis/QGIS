@@ -157,7 +157,7 @@ Returns a value list with the numbers of the four points, which would be affecte
   protected:
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
 %Docstring
-Inserts an edge and makes sure, everything is ok with the storage of the edge. The number of the HalfEdge is returned
+Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
 %End
     int insertForcedSegment( int p1, int p2, bool breakline );
 %Docstring

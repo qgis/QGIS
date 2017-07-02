@@ -225,7 +225,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
         self.assertTrue(self.canvasImageCheck('theme1', 'theme1', canvas))
 
-        # ok, so all good with setting/rendering map styles
+        # OK, so all good with setting/rendering map styles
         # try setting canvas to a particular theme
 
         # make some themes...

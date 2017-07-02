@@ -453,7 +453,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
   mPrecalculatedColors.clear();
   mTotalColorCount = colorCount;
 
-  //This works ok for low color counts, but for > 10 or so colors there's still a good chance of
+  //This works OK for low color counts, but for > 10 or so colors there's still a good chance of
   //similar colors being picked. TODO - investigate alternative "n-visually distinct color" routines
 
   //random offsets

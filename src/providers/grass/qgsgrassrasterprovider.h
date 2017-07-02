@@ -64,7 +64,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     void set( const QString &gisdbase, const QString &location, const QString &mapset, const QString &map );
     void stop();
     // returns raster value, NaN for no data
-    // ok is set to true if ok or false on error
+    // OK is set to true if OK or false on error
     double value( double x, double y, bool *ok );
   private:
 

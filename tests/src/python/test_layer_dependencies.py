@@ -147,7 +147,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the snapped point is ok
+        # check the snapped point is OK
         m = u.snapToMap(QPoint(45, 50))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
@@ -169,7 +169,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the second snapped point is ok
+        # check the second snapped point is OK
         m = u.snapToMap(QPoint(75, 100 - 80))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
@@ -250,7 +250,7 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the second snapped point is ok
+        # check the second snapped point is OK
         m = u.snapToMap(QPoint(75, 100 - 0))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())

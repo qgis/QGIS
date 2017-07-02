@@ -133,7 +133,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     QColor mBreakEdgeColor;
     //! Pointer to the decorator using this triangulation. It it is used directly, mDecorator equals this
     Triangulation *mDecorator = nullptr;
-    //! Inserts an edge and makes sure, everything is ok with the storage of the edge. The number of the HalfEdge is returned
+    //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
     int insertForcedSegment( int p1, int p2, bool breakline );

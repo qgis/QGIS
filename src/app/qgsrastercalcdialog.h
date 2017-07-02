@@ -52,7 +52,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mCurrentLayerExtentButton_clicked();
     void on_mExpressionTextEdit_textChanged();
     void on_mOutputLayerLineEdit_textChanged( const QString &text );
-    //! Enables ok button if calculator expression is valid and output file path exists
+    //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
 
     //calculator buttons

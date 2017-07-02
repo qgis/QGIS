@@ -190,7 +190,7 @@ class QgsDualView : QStackedWidget
 %Docstring
  saveEditChanges
 
- :return: true if the saving was ok. false is possible due to connected
+ :return: true if the saving was OK. false is possible due to connected
          validation logic.
  :rtype: bool
 %End

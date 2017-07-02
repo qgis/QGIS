@@ -300,7 +300,7 @@ QgsStringMap QgsCptCityArchive::description( const QString &fileName )
     QgsDebugMsg( "Incorrect root tag: " + docElem.tagName() );
     return descMap;
   }
-  // should we make sure the <dir> tag is ok?
+  // should we make sure the <dir> tag is OK?
 
   QDomElement e = docElem.firstChildElement( QStringLiteral( "name" ) );
   if ( e.isNull() )

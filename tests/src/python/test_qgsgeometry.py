@@ -348,7 +348,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         Interestingly we could replicate the issue in PostGIS too:
          - doing straight simplify returned no feature
-         - transforming to UTM49, then simplify with e.g. 200 threshold is ok
+         - transforming to UTM49, then simplify with e.g. 200 threshold is OK
          - as above with 500 threshold drops the feature
 
          pgsql2shp -f /tmp/dissolve500.shp gis 'select *,

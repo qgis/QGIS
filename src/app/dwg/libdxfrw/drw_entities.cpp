@@ -376,7 +376,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
     QgsDebugMsg( QString( "haveNextLinks (forced): %1" ).arg( haveNextLinks ) );
   }
 //ENC color
-  color = buf->getEnColor( version, color24, transparency ); //BS or CMC //ok for R14 or negate
+  color = buf->getEnColor( version, color24, transparency ); //BS or CMC //OK for R14 or negate
   ltypeScale = buf->getBitDouble(); //BD
   QgsDebugMsg( QString( " entity color:%1 ltScale:%2" ).arg( color ).arg( ltypeScale ) );
 
@@ -2244,7 +2244,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   QgsDebugMsg( "***************************** parsing hatch *********************************************" );
 
-  //Gradient data, RLZ: is ok or if grad > 0 continue read ?
+  //Gradient data, RLZ: is OK or if grad > 0 continue read ?
   if ( version > DRW::AC1015 ) //2004+
   {
     dint32 isGradient = buf->getBitLong();
@@ -2675,7 +2675,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   else
   {
     QgsDebugMsg( QString( "spline, unknown scenario %1" ).arg( scenario ) );
-    return false; //RLZ: from doc only 1 or 2 are ok ?
+    return false; //RLZ: from doc only 1 or 2 are OK ?
   }
 
   RESERVE( knotslist, nknots );

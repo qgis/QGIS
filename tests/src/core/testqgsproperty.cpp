@@ -1694,7 +1694,7 @@ void TestQgsProperty::curveTransform()
                     QVector< double >() << -1 << 0 << 0.2 << 0.5 << 0.8 << 1 << 2,
                     QVector< double >() << 1.0 << 1.0 << 0.8 << 0.5 << 0.2 << 0.0 << 0.0 );
 
-  // ok, time for some more complex tests...
+  // OK, time for some more complex tests...
 
   // 3 control points, but linear
   checkCurveResult( QList< QgsPointXY >() << QgsPointXY( 0, 0.0 ) << QgsPointXY( 0.2, 0.2 ) << QgsPointXY( 1.0, 1.0 ),
@@ -1740,7 +1740,7 @@ void TestQgsProperty::curveTransform()
   // copy constructor
   QgsCurveTransform dest( src );
   QCOMPARE( dest.controlPoints(), QList< QgsPointXY >() << QgsPointXY( 0.0, 0.0 ) << QgsPointXY( 0.2, 0.3 ) << QgsPointXY( 1.0, 1.0 ) );
-  // check a value to ensure that derivative matrix was copied ok
+  // check a value to ensure that derivative matrix was copied OK
   QGSCOMPARENEAR( dest.y( 0.5 ), 0.1, 0.638672 );
 
   // assignment operator

@@ -411,7 +411,7 @@ bool QgsGrassRasterImport::import()
 
         outStream << byteArray;
 
-        // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
+        // Without waitForBytesWritten() it does not finish OK on Windows (process timeout)
         mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
@@ -652,14 +652,14 @@ bool QgsGrassVectorImport::import()
       outStream << false; // not canceled
       outStream << feature;
 
-      // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
+      // Without waitForBytesWritten() it does not finish OK on Windows (data lost)
       mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
 
       // Feedback disabled because it was sometimes hanging on Linux, for example, when importing polygons
-      // the features were written ok in the first run, but after cleaning of polygons, which takes some time
+      // the features were written OK in the first run, but after cleaning of polygons, which takes some time
       // it was hanging here for few seconds after each feature, but data did not arrive to the modulee anyway,
       // QFSFileEnginePrivate::nativeRead() was hanging on fgetc()
 

@@ -33,7 +33,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 %Docstring
  Rewind to the beginning of the iterator
 
- :return: bool true if the operation was ok
+ :return: bool true if the operation was OK
  :rtype: bool
 %End
 
@@ -52,7 +52,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
  Implementation for fetching a feature.
 
  \param f      Will write to this feature
- :return: bool  true if the operation was ok
+ :return: bool  true if the operation was OK
 
 .. seealso:: bool getFeature( QgsFeature& f )
  :rtype: bool
@@ -63,7 +63,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
  We have a local special iterator for FilterFids, no need to run the generic.
 
  \param f      Will write to this feature
- :return: bool  true if the operation was ok
+ :return: bool  true if the operation was OK
  :rtype: bool
 %End
 
@@ -93,7 +93,7 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 %Docstring
  Rewind to the beginning of the iterator
 
- :return: bool true if the operation was ok
+ :return: bool true if the operation was OK
  :rtype: bool
 %End
 
@@ -112,7 +112,7 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
  Implementation for fetching a feature.
 
  \param f      Will write to this feature
- :return: bool  true if the operation was ok
+ :return: bool  true if the operation was OK
 
 .. seealso:: bool getFeature( QgsFeature& f )
  :rtype: bool

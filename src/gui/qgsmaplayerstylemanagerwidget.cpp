@@ -274,7 +274,7 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
   }
 
 //  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
 
 
   if ( !defaultLoadedFlag )
@@ -318,7 +318,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
   {
     myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
   }
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
     emit widgetChanged();

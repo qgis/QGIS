@@ -202,7 +202,7 @@ void QgsProviderRegistry::init()
       if ( !fileVectorFilters.isEmpty() )
         mVectorFileFilters += fileVectorFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileVectorFilters.split( ";;" ).count() ) );
     }
 
     // now get raster file filters, if any
@@ -218,7 +218,7 @@ void QgsProviderRegistry::init()
       if ( !fileRasterFilters.isEmpty() )
         mRasterFileFilters += fileRasterFilters;
 
-      QgsDebugMsg( QString( "Checking %1: ...loaded ok (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
+      QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
   }
 } // QgsProviderRegistry ctor

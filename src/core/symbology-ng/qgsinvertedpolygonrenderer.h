@@ -62,7 +62,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      * \param layer the symbol layer to render, if that makes sense
      * \param selected whether this feature has been selected (this will add decorations)
      * \param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
-     * \returns true if the rendering was ok
+     * \returns true if the rendering was OK
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
