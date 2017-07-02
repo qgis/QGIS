@@ -398,15 +398,13 @@ QList<const QgsVectorLayerJoinInfo *> QgsVectorLayerJoinBuffer::joinsWhereFieldI
 {
   QList<const QgsVectorLayerJoinInfo *> infos;
 
-  for ( int i = 0; i < mVectorJoins.count(); i++ )
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &info, mVectorJoins )
   {
-    const QgsVectorLayerJoinInfo *info = &( mVectorJoins[i] );
-
-    if ( infos.contains( info ) )
+    if ( infos.contains( &info ) )
       continue;
 
-    if ( info->targetFieldName() == field.name() )
-      infos.append( info );
+    if ( info.targetFieldName() == field.name() )
+      infos.append( &info );
   }
 
   return infos;
