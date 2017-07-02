@@ -44,7 +44,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Stroke</string>
+      <string>Stroke color</string>
      </property>
     </widget>
    </item>
@@ -282,7 +282,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Fill</string>
+      <string>Fill color</string>
      </property>
     </widget>
    </item>
