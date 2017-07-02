@@ -1526,7 +1526,7 @@ under construction.
     in ogr provider
 - 2004-12-05 [gsherman] 0.6.0rc2 Fixed bug 1079392 that caused QGIS to crash when a query was entered that
  resulted in the layer being created with no records. Additional validation
- of the SQL query was added to the query builder.  When Ok is clicked on
+ of the SQL query was added to the query builder.  When OK is clicked on
  the builder dialog, the query is sent to the database and the result
  checked to ensure that it will create a valid PostreSQL layer.  Added tr
  to a number of strings that weren't prepared for translation in the vector

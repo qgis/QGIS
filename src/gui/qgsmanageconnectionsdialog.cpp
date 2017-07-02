@@ -60,7 +60,7 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
     QApplication::postEvent( this, new QCloseEvent() );
   }
 
-  // use Ok button for starting import and export operations
+  // use OK button for starting import and export operations
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsManageConnectionsDialog::doExportImport );
 

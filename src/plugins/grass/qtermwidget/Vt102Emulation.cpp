@@ -238,7 +238,7 @@ void Vt102Emulation::initTokenizer()
   resetTokenizer();
 }
 
-/* Ok, here comes the nasty part of the decoder.
+/* OK, here comes the nasty part of the decoder.
 
    Instead of keeping an explicit state, we deduce it from the
    token scanned so far. It is then immediately combined with

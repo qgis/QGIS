@@ -1922,7 +1922,7 @@ void TerminalDisplay::mouseMoveEvent(QMouseEvent* ev)
         ev->y() > dragInfo.start.y() + distance || ev->y() < dragInfo.start.y() - distance)
    {
       // we've left the drag square, we can start a real drag operation now
-      emit isBusySelecting(false); // Ok.. we can breath again.
+      emit isBusySelecting(false); // OK.. we can breath again.
 
        _screenWindow->clearSelection();
       doDrag();
