@@ -56,8 +56,8 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     //! Columns returned by the model
     enum Columns
     {
-      Visibility = 0, //!< Item visibility check box
-      LockStatus, //!< Item lock status check box
+      Visibility = 0, //!< Item visibility checkbox
+      LockStatus, //!< Item lock status checkbox
       ItemId, //!< Item ID
     };
 

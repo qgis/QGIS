@@ -22,7 +22,7 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
 {
   setupUi( this );
 
-  // Behavior for min and max zoom check box
+  // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
 }

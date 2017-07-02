@@ -170,7 +170,7 @@ class QgsEffectStackPropertiesDialog: QgsDialog
 class QgsEffectStackCompactWidget: QgsPanelWidget
 {
 %Docstring
- A small widget consisting of a check box for enabling/disabling an effect stack
+ A small widget consisting of a checkbox for enabling/disabling an effect stack
  and a button for opening an effect stack customisation dialog.
 
 .. versionadded:: 2.9

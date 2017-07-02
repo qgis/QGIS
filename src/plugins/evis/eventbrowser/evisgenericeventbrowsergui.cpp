@@ -806,7 +806,7 @@ void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton *b
 }
 
 /**
- * Slot called when the state changes for the chkboxApplyPathRulesToDocs check box.
+ * Slot called when the state changes for the chkboxApplyPathRulesToDocs checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int state )
@@ -911,7 +911,7 @@ void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( in
 }
 
 /**
- * Slot called when the state changes for the chkboxEventImagePathRelative check box.
+ * Slot called when the state changes for the chkboxEventImagePathRelative checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( int state )
@@ -927,7 +927,7 @@ void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( i
 }
 
 /**
- * Slot called when the state changes for the chkboxUseOnlyFilename check box.
+ * Slot called when the state changes for the chkboxUseOnlyFilename checkbox.
  * @param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::on_chkboxUseOnlyFilename_stateChanged( int state )
