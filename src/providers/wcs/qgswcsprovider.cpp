@@ -367,7 +367,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   }
 
   mValid = true;
-  QgsDebugMsg( "Constructed ok, provider valid." );
+  QgsDebugMsg( "Constructed OK, provider valid." );
 }
 
 bool QgsWcsProvider::parseUri( const QString &uriString )

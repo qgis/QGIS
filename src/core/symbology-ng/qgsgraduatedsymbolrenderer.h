@@ -35,7 +35,7 @@ class CORE_EXPORT QgsRendererRange
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
-    // default dtor is ok
+    // default dtor is OK
     QgsRendererRange &operator=( QgsRendererRange range );
 
     bool operator<( const QgsRendererRange &other ) const;

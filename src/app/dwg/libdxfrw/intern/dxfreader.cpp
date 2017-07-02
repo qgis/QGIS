@@ -83,7 +83,7 @@ bool dxfReader::readRec( int *codeData )
   else if ( code == 1071 ) //TODO this is an int 32b
     readInt32();
   else if ( skip )
-    //skip safely this dxf entry ( ok for ascii dxf)
+    //skip safely this dxf entry ( OK for ascii dxf)
     readString();
   else
     //break in binary files because the conduct is unpredictable

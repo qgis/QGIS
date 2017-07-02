@@ -39,7 +39,7 @@ WORKFLOW:
 - find out which widget to use
 - instantiate it and set in stacked widget
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
-- when clicked ok/apply, get the renderer from active widget and clone it for the layer
+- when clicked OK/Apply, get the renderer from active widget and clone it for the layer
 */
 class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {

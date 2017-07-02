@@ -835,7 +835,7 @@ bool QgsComposerItem::shouldDrawItem() const
 {
   if ( ( mComposition && mComposition->plotStyle() == QgsComposition::Preview ) || !mComposition )
   {
-    //preview mode or no composition, so ok to draw item
+    //preview mode or no composition, so OK to draw item
     return true;
   }
 

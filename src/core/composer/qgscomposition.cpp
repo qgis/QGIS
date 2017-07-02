@@ -1600,7 +1600,7 @@ void QgsComposition::selectNextByZOrder( ZValueDirection direction )
     return;
   }
 
-  //ok, found a good target item
+  //OK, found a good target item
   setAllDeselected();
   selectedItem->setSelected( true );
   emit selectedItemChanged( selectedItem );

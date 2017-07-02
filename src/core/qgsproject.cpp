@@ -586,7 +586,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
     return;
   }
 
-  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode titleNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
@@ -618,7 +618,7 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
-  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
+  QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element OK
 
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
   QgsProjectVersion projectVersion( qgisElement.attribute( QStringLiteral( "version" ) ) );

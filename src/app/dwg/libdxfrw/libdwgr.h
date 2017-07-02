@@ -27,7 +27,7 @@ class dwgR
   public:
     explicit dwgR( const char *name );
     ~dwgR();
-    //read: return true if all ok
+    //read: return true if all OK
     bool read( DRW_Interface *interface_, bool ext );
     bool getPreview();
     DRW::Version getVersion() {return version;}
