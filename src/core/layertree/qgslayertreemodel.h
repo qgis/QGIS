@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       // behavioral flags
       AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
       AllowNodeRename            = 0x2000,  //!< Allow renaming of groups and layers
-      AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a check box
+      AllowNodeChangeVisibility  = 0x4000,  //!< Allow user to set node visibility with a checkbox
       AllowLegendChangeState     = 0x8000,  //!< Allow check boxes for legend nodes (if supported by layer's legend)
       ActionHierarchical         = 0x10000, //!< Check/uncheck action has consequences on children (or parents for leaf node)
     };

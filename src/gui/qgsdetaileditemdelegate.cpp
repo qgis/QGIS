@@ -97,7 +97,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
     const QgsDetailedItemData &data ) const
 {
   //
-  // Get the strings and check box properties
+  // Get the strings and checkbox properties
   //
   //bool myCheckState = index.model()->data(theIndex, Qt::CheckStateRole).toBool();
   mpCheckBox->setChecked( data.isChecked() );

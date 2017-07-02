@@ -11,7 +11,7 @@ Choose the type of layer you want to create.
 <h4>EPSG SRID</h4>
 Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on <label>Find SRID</label> button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
 <h4>Create an auto-incrementing Primary Key</h4>
-Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don't have to enter a value for it when adding features to the attribute table of the layer.
+Clicking this checkbox will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don't have to enter a value for it when adding features to the attribute table of the layer.
 <h4>New attribute</h4>
 Add the desired attributes by clicking on the <label>Add to attributes list</label> button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.<br/>
 Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
