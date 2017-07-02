@@ -304,7 +304,7 @@ bool QgsDelimitedTextProvider::createSpatialIndex()
   if ( mBuildSpatialIndex ) return true; // Already built
   if ( mGeomRep == GeomNone ) return false; // Cannot build index - no geometries
 
-  // Ok, set the spatial index option, set the Uri parameter so that the index is
+  // OK, set the spatial index option, set the Uri parameter so that the index is
   // rebuilt when theproject is reloaded, and rescan the file to populate the index
 
   mBuildSpatialIndex = true;

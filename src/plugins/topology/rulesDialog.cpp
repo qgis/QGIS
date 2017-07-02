@@ -49,7 +49,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
 
   connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
   connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
-  // attempt to add new test when Ok clicked
+  // attempt to add new test when OK clicked
   //connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addTest() ) );
   connect( mDeleteTestButton, &QAbstractButton::clicked, this, &rulesDialog::deleteTest );
 

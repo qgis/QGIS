@@ -505,7 +505,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QVERIFY( mypLayer->isValid() );
 
   //
-  // Ok now we can go on to test
+  // OK now we can go on to test
   //
 
   QgsRaster::RasterPyramidsFormat myFormatFlag = QgsRaster::PyramidsGTiff;
