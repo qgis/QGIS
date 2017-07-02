@@ -1936,12 +1936,12 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
   }
 }
 
-QgsFeature QgsAttributeForm::joinedFeature( const QgsVectorLayerJoinInfo &info, const QgsFeature &feature ) const
+QgsFeature QgsAttributeForm::joinedFeature( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const
 {
   QgsFeature joinedFeature = mLayer->joinBuffer()->joinedFeatureOf( info, feature );
 
   if ( !joinedFeature.isValid() )
-    joinedFeature = QgsVectorLayerUtils::createFeature( info.joinLayer(), QgsGeometry(), QgsAttributeMap() );
+    joinedFeature = QgsVectorLayerUtils::createFeature( info->joinLayer(), QgsGeometry(), QgsAttributeMap() );
 
   return joinedFeature;
 }
@@ -1960,7 +1960,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     if ( !info->isDynamicFormEnabled() )
       continue;
 
-    QgsFeature joinFeature = joinedFeature( *info, formFeature );
+    QgsFeature joinFeature = joinedFeature( info, formFeature );
 
     QStringList *subsetFields = info->joinFieldNamesSubset();
     if ( subsetFields )
