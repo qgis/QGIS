@@ -118,11 +118,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="num_char" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PolygonPropertyType"/>
+          <!-- check that an element with ref without name doesn't confuse the DescribeFeatureType analyzer -->
+          <xsd:element maxOccurs="0" minOccurs="0" ref="my:somethingElseType"/>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
   <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+  <xsd:complexType name="somethingElseType"/>
 </xsd:schema>
 """.encode('UTF-8'))
 
@@ -2482,6 +2485,73 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert vl.isValid()
         self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities, 0)
         self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+
+    def testDeprecatedGML2GeometryDeclaration(self):
+        """Test ref="gml:pointProperty" """
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_deprecated_gml2'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=1.0.0'), 'wb') as f:
+            f.write("""
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox is in SRS units, not necessarily lat/long... -->
+      <LatLongBoundingBox minx="400000" miny="5400000" maxx="450000" maxy="5500000"/>
+    </FeatureType>
+  </FeatureTypeList>
+</WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" ref="gml:pointProperty"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="INTFIELD" nillable="true" type="xsd:int"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        assert vl.isValid()
+        self.assertEqual(vl.wkbType(), QgsWKBTypes.Point)
+        self.assertEqual(len(vl.fields()), 1)
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <gml:pointProperty>
+          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point>
+      </gml:pointProperty>
+      <my:INTFIELD>1</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        values = [f['INTFIELD'] for f in vl.getFeatures()]
+        self.assertEqual(values, [1])
+
+        got_f = [f for f in vl.getFeatures()]
+        got = got_f[0].geometry().geometry()
+        self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
 
 if __name__ == '__main__':

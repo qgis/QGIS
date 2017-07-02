@@ -1279,7 +1279,12 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       }
     }
 
+    // attribute ref
+    QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
+
     QRegExp gmlPT( "gml:(.*)PropertyType" );
+    QRegExp gmlRefProperty( "gml:(.*)Property" );
+
     // gmgml: is Geomedia Web Server
     if ( type == "gmgml:Polygon_Surface_MultiSurface_CompositeSurfacePropertyType" )
     {
@@ -1294,15 +1299,25 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
       geomType = QGis::WKBMultiLineString;
     }
     //is it a geometry attribute?
-    //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
     // the GeometryAssociationType has been seen in #11785
-    else if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
+    else if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
       geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
-    else //todo: distinguish between numerical and non-numerical types
+    //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty"
+    //Note: this was deprecated with GML3.
+    else if ( ref.indexOf( gmlRefProperty ) == 0 )
+    {
+      foundGeometryAttribute = true;
+      geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
+      QString propertyType( gmlRefProperty.cap( 1 ) );
+      // Set the first character in upper case
+      propertyType = propertyType.left( 1 ).toUpper() + propertyType.mid( 1 );
+      geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
+    }
+    else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
     {
       QVariant::Type  attributeType = QVariant::String; //string is default type
       if ( type.contains( "double", Qt::CaseInsensitive ) || type.contains( "float", Qt::CaseInsensitive ) || type.contains( "decimal", Qt::CaseInsensitive ) )
