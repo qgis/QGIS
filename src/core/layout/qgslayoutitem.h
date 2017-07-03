@@ -36,6 +36,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
   public:
 
+    /**
+     * Constructor for QgsLayoutItem, with the specified parent \a layout.
+     */
     QgsLayoutItem( QgsLayout *layout );
 
     //! Return correct graphics item type.
