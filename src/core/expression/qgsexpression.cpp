@@ -690,10 +690,15 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
 }
 
-QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )
+QString QgsExpression::variableHelpText( const QString &variableName )
 {
   QgsExpression::initVariableHelp();
-  QString text = sVariableHelpTexts.contains( variableName ) ? QStringLiteral( "<p>%1</p>" ).arg( sVariableHelpTexts.value( variableName ) ) : QString();
+  return sVariableHelpTexts.value( variableName, QString() );
+}
+
+QString QgsExpression::formatVariableHelp( const QString &description, bool showValue, const QVariant &value )
+{
+  QString text = !description.isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( description ) : QString();
   if ( showValue )
   {
     QString valueString;
