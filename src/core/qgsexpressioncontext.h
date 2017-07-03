@@ -133,12 +133,14 @@ class CORE_EXPORT QgsExpressionContextScope
        * \param value initial variable value
        * \param readOnly true if variable should not be editable by users
        * \param isStatic true if the variable will not change during the lifteime of an iterator.
+       * \param description optional translated description of variable, for use in expression builder widgets
        */
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false )
+      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() )
         : name( name )
         , value( value )
         , readOnly( readOnly )
         , isStatic( isStatic )
+        , description( description )
       {}
 
       //! Variable name
@@ -152,6 +154,9 @@ class CORE_EXPORT QgsExpressionContextScope
 
       //! A static variable can be cached for the lifetime of a context
       bool isStatic;
+
+      //! Translated description of variable, for use within expression builder widgets.
+      QString description;
     };
 
     /** Constructor for QgsExpressionContextScope
@@ -237,6 +242,14 @@ class CORE_EXPORT QgsExpressionContextScope
      * \since QGIS 3.0
      */
     bool isStatic( const QString &name ) const;
+
+    /**
+     * Returns the translated description for the variable with the specified \a name
+     * (if set).
+     *
+     * \since QGIS 3.0
+     */
+    QString description( const QString &name ) const;
 
     /** Returns the count of variables contained within the scope.
      */
@@ -462,6 +475,16 @@ class CORE_EXPORT QgsExpressionContext
      * matching scope which contains a matching variable.
      */
     bool isReadOnly( const QString &name ) const;
+
+    /**
+     * Returns a translated description string for the variable with specified \a name.
+     *
+     * If no specific description has been provided for the variable, the value from
+     * QgsExpression::variableHelpText() will be returned.
+     *
+     * \since QGIS 3.0
+     */
+    QString description( const QString &name ) const;
 
     /** Checks whether a specified function is contained in the context.
      * \param name function name

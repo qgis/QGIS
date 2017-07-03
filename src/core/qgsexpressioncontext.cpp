@@ -188,6 +188,11 @@ bool QgsExpressionContextScope::isStatic( const QString &name ) const
   return hasVariable( name ) ? mVariables.value( name ).isStatic : false;
 }
 
+QString QgsExpressionContextScope::description( const QString &name ) const
+{
+  return hasVariable( name ) ? mVariables.value( name ).description : QString();
+}
+
 bool QgsExpressionContextScope::hasFunction( const QString &name ) const
 {
   return mFunctions.contains( name );
@@ -402,6 +407,12 @@ bool QgsExpressionContext::isReadOnly( const QString &name ) const
       return true;
   }
   return false;
+}
+
+QString QgsExpressionContext::description( const QString &name ) const
+{
+  const QgsExpressionContextScope *scope = activeScopeForVariable( name );
+  return ( scope && !scope->description( name ).isEmpty() ) ? scope->description( name ) : QgsExpression::variableHelpText( name );
 }
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const

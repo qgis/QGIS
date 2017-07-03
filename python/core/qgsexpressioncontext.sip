@@ -92,13 +92,14 @@ class QgsExpressionContextScope
     struct StaticVariable
     {
 
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false );
+      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() );
 %Docstring
  Constructor for StaticVariable.
  \param name variable name (should be unique within the QgsExpressionContextScope)
  \param value initial variable value
  \param readOnly true if variable should not be editable by users
  \param isStatic true if the variable will not change during the lifteime of an iterator.
+ \param description optional translated description of variable, for use in expression builder widgets
 %End
 
       QString name;
@@ -119,6 +120,11 @@ True if variable should not be editable by users
       bool isStatic;
 %Docstring
 A static variable can be cached for the lifetime of a context
+%End
+
+      QString description;
+%Docstring
+Translated description of variable, for use within expression builder widgets.
 %End
     };
 
@@ -222,6 +228,15 @@ A static variable can be cached for the lifetime of a context
 
 .. versionadded:: 3.0
  :rtype: bool
+%End
+
+    QString description( const QString &name ) const;
+%Docstring
+ Returns the translated description for the variable with the specified ``name``
+ (if set).
+
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
     int variableCount() const;
@@ -473,6 +488,17 @@ class QgsExpressionContext
  :return: true if variable is read only. Read only status will be taken from last
  matching scope which contains a matching variable.
  :rtype: bool
+%End
+
+    QString description( const QString &name ) const;
+%Docstring
+ Returns a translated description string for the variable with specified ``name``.
+
+ If no specific description has been provided for the variable, the value from
+ QgsExpression.variableHelpText() will be returned.
+
+.. versionadded:: 3.0
+ :rtype: str
 %End
 
     bool hasFunction( const QString &name ) const;

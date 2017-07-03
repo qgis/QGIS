@@ -1116,6 +1116,8 @@ version instead.
 - QgsExpression::Node::referencedColumns() returns QSet<QString> instead of QStringList
 - `QgsExpression::Node` was renamed to `QgsExpressionNode`
 - `QgsExpression::Function` was renamed to `QgsExpressionFunction`
+- variableHelpText() no longer returns a formatted HTML string. It now just returns the plain text help string. Use formatVariableHelp() 
+to obtain the formatted version.
 
 
 QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
