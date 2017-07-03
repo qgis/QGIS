@@ -920,7 +920,7 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
 QString QgsProcessingParameterDefinition::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += type() + ' ';
   code += mDefault.toString();
@@ -963,7 +963,7 @@ QString QgsProcessingParameterBoolean::valueAsPythonString( const QVariant &val,
 QString QgsProcessingParameterBoolean::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += type() + ' ';
   code += mDefault.toBool() ? QStringLiteral( "true" ) : QStringLiteral( "false" );
@@ -1216,7 +1216,7 @@ bool QgsProcessingParameterFile::checkValueIsAcceptable( const QVariant &input, 
 QString QgsProcessingParameterFile::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += ( mBehavior == File ? QStringLiteral( "file" ) : QStringLiteral( "folder" ) ) + ' ';
   code += mDefault.toString();
@@ -1457,7 +1457,7 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
 QString QgsProcessingParameterMultipleLayers::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   switch ( mLayerType )
   {
@@ -1881,7 +1881,7 @@ QString QgsProcessingParameterEnum::valueAsPythonString( const QVariant &value, 
 QString QgsProcessingParameterEnum::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "enum " );
 
@@ -1973,7 +1973,7 @@ QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value
 QString QgsProcessingParameterString::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "string " );
 
@@ -2206,7 +2206,7 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
 QString QgsProcessingParameterField::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "field " );
 
@@ -2408,7 +2408,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 QString QgsProcessingParameterFeatureSource::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "source " );
 
@@ -2556,7 +2556,7 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
 QString QgsProcessingParameterFeatureSink::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "sink " );
 
@@ -2977,7 +2977,7 @@ QString QgsProcessingParameterVectorOutput::valueAsPythonString( const QVariant 
 QString QgsProcessingParameterVectorOutput::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
-  if ( mFlags && FlagOptional )
+  if ( mFlags & FlagOptional )
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "vectorOut " );
 
