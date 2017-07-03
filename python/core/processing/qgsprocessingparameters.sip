@@ -145,49 +145,49 @@ class QgsProcessingParameterDefinition
 %End
 
 %ConvertToSubClassCode
-    if ( sipCpp->type() == "boolean" )
+    if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
       sipType = sipType_QgsProcessingParameterBoolean;
-    else if ( sipCpp->type() == "crs" )
+    else if ( sipCpp->type() == QgsProcessingParameterCrs::typeName() )
       sipType = sipType_QgsProcessingParameterCrs;
-    else if ( sipCpp->type() == "layer" )
+    else if ( sipCpp->type() == QgsProcessingParameterMapLayer::typeName() )
       sipType = sipType_QgsProcessingParameterMapLayer;
-    else if ( sipCpp->type() == "extent" )
+    else if ( sipCpp->type() == QgsProcessingParameterExtent::typeName() )
       sipType = sipType_QgsProcessingParameterExtent;
-    else if ( sipCpp->type() == "point" )
+    else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
-    else if ( sipCpp->type() == "file" )
+    else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
-    else if ( sipCpp->type() == "matrix" )
+    else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
       sipType = sipType_QgsProcessingParameterMatrix;
-    else if ( sipCpp->type() == "multilayer" )
+    else if ( sipCpp->type() == QgsProcessingParameterMultipleLayers::typeName() )
       sipType = sipType_QgsProcessingParameterMultipleLayers;
-    else if ( sipCpp->type() == "number" )
+    else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
       sipType = sipType_QgsProcessingParameterNumber;
-    else if ( sipCpp->type() == "range" )
+    else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
-    else if ( sipCpp->type() == "raster" )
+    else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
-    else if ( sipCpp->type() == "enum" )
+    else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
-    else if ( sipCpp->type() == "string" )
+    else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
       sipType = sipType_QgsProcessingParameterString;
-    else if ( sipCpp->type() == "expression" )
+    else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
       sipType = sipType_QgsProcessingParameterExpression;
-    else if ( sipCpp->type() == "vector" )
+    else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
       sipType = sipType_QgsProcessingParameterVectorLayer;
-    else if ( sipCpp->type() == "field" )
+    else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
       sipType = sipType_QgsProcessingParameterField;
-    else if ( sipCpp->type() == "source" )
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSource::typeName() )
       sipType = sipType_QgsProcessingParameterFeatureSource;
-    else if ( sipCpp->type() == "sink" )
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSink::typeName() )
       sipType = sipType_QgsProcessingParameterFeatureSink;
-    else if ( sipCpp->type() == "vectorOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterVectorOutput::typeName() )
       sipType = sipType_QgsProcessingParameterVectorOutput;
-    else if ( sipCpp->type() == "rasterOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterRasterOutput::typeName() )
       sipType = sipType_QgsProcessingParameterRasterOutput;
-    else if ( sipCpp->type() == "fileOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterFileOutput::typeName() )
       sipType = sipType_QgsProcessingParameterFileOutput;
-    else if ( sipCpp->type() == "folderOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterFolderOutput::typeName() )
       sipType = sipType_QgsProcessingParameterFolderOutput;
 %End
   public:
@@ -607,6 +607,11 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterBoolean.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -638,6 +643,11 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterCrs.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -670,6 +680,11 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterMapLayer.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -702,6 +717,11 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterExtent.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -735,6 +755,11 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterPoint.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -771,6 +796,11 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterFile.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -836,6 +866,11 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterMatrix.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -919,6 +954,11 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterMultipleLayers.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -997,6 +1037,11 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterNumber.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1075,6 +1120,11 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterRange.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1125,6 +1175,11 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterRasterLayer.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1159,6 +1214,11 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterEnum.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1225,6 +1285,11 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterString.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1276,6 +1341,11 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterExpression.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1327,6 +1397,11 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterVectorLayer.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1370,6 +1445,11 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterField.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1451,6 +1531,11 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
  Constructor for QgsProcessingParameterFeatureSource.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1570,6 +1655,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  Constructor for QgsProcessingParameterFeatureSink.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1637,6 +1727,11 @@ class QgsProcessingParameterVectorOutput : QgsProcessingDestinationParameter
  Constructor for QgsProcessingParameterVectorOutput.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1702,6 +1797,11 @@ class QgsProcessingParameterRasterOutput : QgsProcessingDestinationParameter
  Constructor for QgsProcessingParameterRasterOutput.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1739,6 +1839,11 @@ class QgsProcessingParameterFileOutput : QgsProcessingDestinationParameter
  Constructor for QgsProcessingParameterFileOutput.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1795,6 +1900,11 @@ class QgsProcessingParameterFolderOutput : QgsProcessingDestinationParameter
  Constructor for QgsProcessingParameterFolderOutput.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the parameter class.
+ :rtype: str
+%End
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 

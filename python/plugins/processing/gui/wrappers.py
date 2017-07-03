@@ -909,7 +909,7 @@ class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         else:
             # strings, numbers, files and table fields are all allowed input types
             strings = self.dialog.getAvailableValuesOfType([QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
-                                                            QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
+                                                            QgsProcessingParameterField, QgsProcessingParameterExpression], [QgsProcessingOutputString])
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             if self.param.multiLine():
                 widget = MultilineTextPanel(options)

@@ -678,7 +678,7 @@ QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::
     {
       if ( !dataTypes.isEmpty() )
       {
-        if ( def->type() == QStringLiteral( "field" ) )
+        if ( def->type() == QgsProcessingParameterField::typeName() )
         {
           const QgsProcessingParameterField *fieldDef = static_cast< const QgsProcessingParameterField * >( def );
           if ( !( dataTypes.contains( fieldDef->dataType() ) || fieldDef->dataType() == QgsProcessingParameterField::Any ) )
@@ -686,7 +686,7 @@ QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::
             continue;
           }
         }
-        else if ( def->type() == "source" )
+        else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
         {
           const QgsProcessingParameterFeatureSource *sourceDef = static_cast< const QgsProcessingParameterFeatureSource *>( def );
           bool ok = !sourceDef->dataTypes().isEmpty();
@@ -729,7 +729,7 @@ QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::
       {
         if ( !dataTypes.isEmpty() )
         {
-          if ( out->type() == QStringLiteral( "outputVector" ) )
+          if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
             if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessingParameterDefinition::TypeAny ) )

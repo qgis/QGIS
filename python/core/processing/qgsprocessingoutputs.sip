@@ -28,17 +28,17 @@ class QgsProcessingOutputDefinition
 %End
 
 %ConvertToSubClassCode
-    if ( sipCpp->type() == "outputVector" )
+    if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
       sipType = sipType_QgsProcessingOutputVectorLayer;
-    else if ( sipCpp->type() == "outputRaster" )
+    else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
-    else if ( sipCpp->type() == "outputHtml" )
+    else if ( sipCpp->type() == QgsProcessingOutputHtml::typeName() )
       sipType = sipType_QgsProcessingOutputHtml;
-    else if ( sipCpp->type() == "outputNumber" )
+    else if ( sipCpp->type() == QgsProcessingOutputNumber::typeName() )
       sipType = sipType_QgsProcessingOutputNumber;
-    else if ( sipCpp->type() == "outputString" )
+    else if ( sipCpp->type() == QgsProcessingOutputString::typeName() )
       sipType = sipType_QgsProcessingOutputString;
-    else if ( sipCpp->type() == "outputFolder" )
+    else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
 %End
   public:
@@ -111,6 +111,11 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
  Constructor for QgsProcessingOutputVectorLayer.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
 
     QgsProcessingParameterDefinition::LayerType dataType() const;
@@ -145,7 +150,14 @@ class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
  Constructor for QgsProcessingOutputRasterLayer.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
+
+
 };
 
 class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
@@ -165,7 +177,13 @@ class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
  Constructor for QgsProcessingOutputHtml.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
+
 };
 
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
@@ -185,6 +203,11 @@ class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
  Constructor for QgsProcessingOutputNumber.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
 };
 
@@ -205,7 +228,13 @@ class QgsProcessingOutputString : QgsProcessingOutputDefinition
  Constructor for QgsProcessingOutputString.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
+
 };
 
 class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
@@ -220,12 +249,19 @@ class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 %End
   public:
 
+
     QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
 %Docstring
  Constructor for QgsProcessingOutputFolder.
 %End
 
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
     virtual QString type() const;
+
 };
 
 
