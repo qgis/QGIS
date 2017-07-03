@@ -18,8 +18,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgspathresolver.h"
 #include <QGraphicsItem> //for QGraphicsItem::UserType
+#include <QIcon>
 #include <functional>
 
 class QgsLayout;
@@ -50,6 +52,11 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
      * Returns the unique item type code for the layout item class.
      */
     int type() const { return mType; }
+
+    /**
+     * Returns an icon representing the layout item type.
+     */
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
     /**
      * Returns a translated, user visible name for the layout item class.
@@ -112,11 +119,12 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      * and \a visibleName, and function pointers for the various item and
      * configuration widget creation functions.
      */
-    QgsLayoutItemMetadata( int type, const QString &visibleName,
+    QgsLayoutItemMetadata( int type, const QString &visibleName, const QIcon &icon,
                            QgsLayoutItemCreateFunc pfCreate,
                            QgsLayoutItemPathResolverFunc pfPathResolver = nullptr,
                            QgsLayoutItemWidgetFunc pfWidget = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName )
+      , mIcon( icon )
       , mCreateFunc( pfCreate )
       , mWidgetFunc( pfWidget )
       , mPathResolverFunc( pfPathResolver )
@@ -144,15 +152,17 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      */
     void setWidgetFunction( QgsLayoutItemWidgetFunc function ) { mWidgetFunc = function; }
 
-    virtual QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) override { return mCreateFunc ? mCreateFunc( layout, properties ) : nullptr; }
-    virtual QWidget *createItemWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
-    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
+    QIcon icon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractMetadata::icon() : mIcon; }
+    QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) override { return mCreateFunc ? mCreateFunc( layout, properties ) : nullptr; }
+    QWidget *createItemWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
       if ( mPathResolverFunc )
         mPathResolverFunc( properties, pathResolver, saving );
     }
 
   protected:
+    QIcon mIcon;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemWidgetFunc mWidgetFunc = nullptr;
     QgsLayoutItemPathResolverFunc mPathResolverFunc = nullptr;

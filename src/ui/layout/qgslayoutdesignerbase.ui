@@ -80,19 +80,19 @@
      <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuLayout">
+   <widget class="QMenu" name="mLayoutMenu">
     <property name="title">
      <string>&amp;Layout</string>
     </property>
     <addaction name="mActionClose"/>
    </widget>
-   <widget class="QMenu" name="menuItems">
+   <widget class="QMenu" name="mItemMenu">
     <property name="title">
      <string>&amp;Items</string>
     </property>
    </widget>
-   <addaction name="menuLayout"/>
-   <addaction name="menuItems"/>
+   <addaction name="mLayoutMenu"/>
+   <addaction name="mItemMenu"/>
   </widget>
   <action name="mActionClose">
    <property name="text">
