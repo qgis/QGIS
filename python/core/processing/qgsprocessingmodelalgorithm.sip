@@ -877,6 +877,13 @@ Copies are protected to avoid slicing
  :rtype: list of QgsProcessingModelAlgorithm.ChildParameterSource
 %End
 
+    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const /Factory/;
+%Docstring
+ Creates a new expression context scope for a child algorithm within the model.
+ :rtype: QgsExpressionContextScope
+%End
+
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );

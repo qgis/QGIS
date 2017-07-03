@@ -32,12 +32,12 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
+                       QgsProcessingModelAlgorithm,
                        QgsProcessingUtils,
                        QgsXmlUtils)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
@@ -109,7 +109,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
 
-                        alg = ModelerAlgorithm()
+                        alg = QgsProcessingModelAlgorithm()
                         if alg.fromFile(fullpath):
                             if alg.name():
                                 alg.setSourceFilePath(fullpath)

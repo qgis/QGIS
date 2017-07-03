@@ -34,8 +34,8 @@ from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from qgis.core import (QgsMessageLog,
                        QgsProcessingUtils,
-                       QgsProcessingParameterDefinition)
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -55,7 +55,7 @@ class HelpEditionDialog(BASE, WIDGET):
 
         self.alg = alg
         self.descriptions = {}
-        if isinstance(self.alg, ModelerAlgorithm):
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
             self.descriptions = self.alg.helpContent()
         else:
             if self.alg.descriptionFile is not None:

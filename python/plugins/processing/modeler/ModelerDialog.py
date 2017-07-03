@@ -48,7 +48,6 @@ from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
@@ -244,7 +243,7 @@ class ModelerDialog(BASE, WIDGET):
             self.repaintModel()
 
         else:
-            self.model = ModelerAlgorithm()
+            self.model = QgsProcessingModelAlgorithm()
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
@@ -475,7 +474,7 @@ class ModelerDialog(BASE, WIDGET):
                                                                 ModelerUtils.modelsFolders()[0],
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
-            alg = ModelerAlgorithm()
+            alg = QgsProcessingModelAlgorithm()
             if alg.fromFile(filename):
                 self.model = alg
                 self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
