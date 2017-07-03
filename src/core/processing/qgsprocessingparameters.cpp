@@ -2047,6 +2047,14 @@ QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &v
   return s.prepend( '\'' ).append( '\'' );
 }
 
+QStringList QgsProcessingParameterExpression::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayerParameter.isEmpty() )
+    depends << mParentLayerParameter;
+  return depends;
+}
+
 QString QgsProcessingParameterExpression::parentLayerParameter() const
 {
   return mParentLayerParameter;
@@ -2227,6 +2235,14 @@ QString QgsProcessingParameterField::asScriptCode() const
 
   code += mDefault.toString();
   return code.trimmed();
+}
+
+QStringList QgsProcessingParameterField::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentLayerParameter.isEmpty() )
+    depends << mParentLayerParameter;
+  return depends;
 }
 
 QString QgsProcessingParameterField::parentLayerParameter() const

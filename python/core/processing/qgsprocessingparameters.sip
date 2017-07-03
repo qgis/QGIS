@@ -338,6 +338,13 @@ class QgsProcessingParameterDefinition
 .. seealso:: metadata()
 %End
 
+    virtual QStringList dependsOnOtherParameters() const;
+%Docstring
+ Returns a list of other parameter names on which this parameter is dependent (e.g.
+ field parameters which depend on a parent layer parameter).
+ :rtype: list of str
+%End
+
   protected:
 
 
@@ -1261,6 +1268,8 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QStringList dependsOnOtherParameters() const;
+
 
     QString parentLayerParameter() const;
 %Docstring
@@ -1356,6 +1365,8 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
     virtual QString asScriptCode() const;
+
+    virtual QStringList dependsOnOtherParameters() const;
 
 
     QString parentLayerParameter() const;

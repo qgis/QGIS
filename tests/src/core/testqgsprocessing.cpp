@@ -1314,6 +1314,7 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.description(), QString( "desc" ) );
   QCOMPARE( param.defaultValue(), QVariant( true ) );
   QVERIFY( param.flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( param.dependsOnOtherParameters().isEmpty() );
 
   // test getters and setters
   param.setDescription( "p2" );
@@ -2951,6 +2952,10 @@ void TestQgsProcessing::parameterExpression()
   def.reset( dynamic_cast< QgsProcessingParameterExpression *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterExpression *>( def.get() ) );
 
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentLayerParameter( QStringLiteral( "test_layer" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "test_layer" ) );
+
   // optional
   def.reset( new QgsProcessingParameterExpression( "optional", QString(), QString( "default" ), QString(), true ) );
   QVERIFY( def->checkValueIsAcceptable( 1 ) );
@@ -3011,7 +3016,10 @@ void TestQgsProcessing::parameterField()
   QCOMPARE( fromCode->dataType(), def->dataType() );
   QCOMPARE( fromCode->allowMultiple(), def->allowMultiple() );
 
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
   def->setParentLayerParameter( "my_parent" );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
+
   code = def->asScriptCode();
   fromCode.reset( dynamic_cast< QgsProcessingParameterField * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
   QVERIFY( fromCode.get() );
