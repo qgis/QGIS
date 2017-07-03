@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsprocessingcontext.h"
 
 ///@cond NOT_STABLE
 
@@ -866,6 +867,12 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QList< QgsProcessingModelAlgorithm::ChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
         const QStringList &outputTypes = QStringList(), const QList< int > dataTypes = QList< int >() ) const;
 
+    /**
+     * Creates a new expression context scope for a child algorithm within the model.
+     */
+    QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const SIP_FACTORY;
+
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -890,7 +897,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
 
-    QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap<QString, QVariantMap> &results, const QgsExpressionContext &expressionContext ) const;
+    QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Returns true if an output from a child algorithm is required elsewhere in

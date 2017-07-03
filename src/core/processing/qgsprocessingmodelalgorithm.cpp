@@ -351,7 +351,7 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
-QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap< QString, QVariantMap > &results, const QgsExpressionContext &expressionContext ) const
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
@@ -381,7 +381,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
 
           case ChildParameterSource::ChildOutput:
           {
-            QVariantMap linkedChildResults = results.value( source.outputChildId() );
+            QVariantMap linkedChildResults = results.value( source.outputChildId() ).toMap();
             paramParts << linkedChildResults.value( source.outputName() );
             break;
           }
@@ -494,7 +494,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
-  QMap< QString, QVariantMap > childResults;
+  QVariantMap childResults;
   QVariantMap finalResults;
   QSet< QString > executed;
   bool executedAlg = true;
@@ -525,7 +525,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       const ChildAlgorithm &child = mChildAlgorithms[ childId ];
 
       QgsExpressionContext expContext = baseContext;
-      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context );
+      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
+                 << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
 
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
       feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
@@ -660,6 +661,147 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
   lines << QStringLiteral( "return results" );
 
   return lines.join( '\n' );
+}
+
+QgsExpressionContextScope *QgsProcessingModelAlgorithm::createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters, const QVariantMap &results ) const
+{
+  QVariantMap variables;
+  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope() );
+  ChildParameterSources sources = availableSourcesForChild( childId, QStringList() << QgsProcessingParameterNumber::typeName(),
+                                  QStringList() << QgsProcessingOutputNumber::typeName() );
+  Q_FOREACH ( const ChildParameterSource &source, sources )
+  {
+    QString name;
+    QVariant value;
+
+    switch ( source.source() )
+    {
+      case ChildParameterSource::ModelParameter:
+      {
+        name = source.parameterName();
+        value = modelParameters.value( source.parameterName() );
+        break;
+      }
+      case ChildParameterSource::ChildOutput:
+      {
+        name = QStringLiteral( "%1_%2" ).arg( mChildAlgorithms.value( source.outputChildId() ).description().isEmpty() ?
+                                              source.outputChildId() : mChildAlgorithms.value( source.outputChildId() ).description(), source.outputName() );
+        value = results.value( source.outputChildId() ).toMap().value( source.outputName() );
+        break;
+      }
+
+      case ChildParameterSource::Expression:
+      case ChildParameterSource::StaticValue:
+        continue;
+
+    };
+
+    variables.insert( name, value );
+  }
+
+  sources = availableSourcesForChild( childId, QStringList()
+                                      << QgsProcessingParameterVectorLayer::typeName()
+                                      << QgsProcessingParameterRasterLayer::typeName(),
+                                      QStringList() << QgsProcessingOutputVectorLayer::typeName()
+                                      << QgsProcessingOutputRasterLayer::typeName() );
+
+  Q_FOREACH ( const ChildParameterSource &source, sources )
+  {
+    QString name;
+    QVariant value;
+
+    switch ( source.source() )
+    {
+      case ChildParameterSource::ModelParameter:
+      {
+        name = source.parameterName();
+        value = modelParameters.value( source.parameterName() );
+        break;
+      }
+      case ChildParameterSource::ChildOutput:
+      {
+        name = QStringLiteral( "%1_%2" ).arg( mChildAlgorithms.value( source.outputChildId() ).description().isEmpty() ?
+                                              source.outputChildId() : mChildAlgorithms.value( source.outputChildId() ).description(), source.outputName() );
+        value = results.value( source.outputChildId() ).toMap().value( source.outputName() );
+        break;
+      }
+
+      case ChildParameterSource::Expression:
+      case ChildParameterSource::StaticValue:
+        continue;
+
+    };
+
+    QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( value ) );
+    if ( !layer )
+      layer = QgsProcessingUtils::mapLayerFromString( value.toString(), context );
+
+    variables.insert( QStringLiteral( "%1_minx" ).arg( name ), layer ? layer->extent().xMinimum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_miny" ).arg( name ), layer ? layer->extent().yMinimum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_maxx" ).arg( name ), layer ? layer->extent().xMaximum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_maxy" ).arg( name ), layer ? layer->extent().yMaximum() : QVariant() );
+  }
+
+  sources = availableSourcesForChild( childId, QStringList()
+                                      << QgsProcessingParameterFeatureSource::typeName() );
+  Q_FOREACH ( const ChildParameterSource &source, sources )
+  {
+    QString name;
+    QVariant value;
+
+    switch ( source.source() )
+    {
+      case ChildParameterSource::ModelParameter:
+      {
+        name = source.parameterName();
+        value = modelParameters.value( source.parameterName() );
+        break;
+      }
+      case ChildParameterSource::ChildOutput:
+      {
+        name = QStringLiteral( "%1_%2" ).arg( mChildAlgorithms.value( source.outputChildId() ).description().isEmpty() ?
+                                              source.outputChildId() : mChildAlgorithms.value( source.outputChildId() ).description(), source.outputName() );
+        value = results.value( source.outputChildId() ).toMap().value( source.outputName() );
+        break;
+      }
+
+      case ChildParameterSource::Expression:
+      case ChildParameterSource::StaticValue:
+        continue;
+
+    };
+
+    QgsFeatureSource *featureSource = nullptr;
+    if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    {
+      QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+      value = fromVar.source;
+    }
+    if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
+    {
+      featureSource = layer;
+    }
+    if ( !featureSource )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( value.toString(), context ) ) )
+        featureSource = vl;
+    }
+
+    variables.insert( QStringLiteral( "%1_minx" ).arg( name ), featureSource ? featureSource->sourceExtent().xMinimum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_miny" ).arg( name ), featureSource ? featureSource->sourceExtent().yMinimum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_maxx" ).arg( name ), featureSource ? featureSource->sourceExtent().xMaximum() : QVariant() );
+    variables.insert( QStringLiteral( "%1_maxy" ).arg( name ), featureSource ? featureSource->sourceExtent().yMaximum() : QVariant() );
+  }
+
+  QVariantMap::const_iterator varIt = variables.constBegin();
+  for ( ; varIt != variables.constEnd(); ++varIt )
+  {
+    QString name = varIt.key();
+    name = name.replace( QRegularExpression( "[\\s'\"\\(\\):]" ), QStringLiteral( "_" ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( name, varIt.value(), true ) );
+  }
+
+  return scope.release();
 }
 
 QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> dataTypes ) const

@@ -32,7 +32,6 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
-from processing.modeler.ModelerAlgorithm import CompoundValue
 
 
 class ModelerScene(QGraphicsScene):
@@ -78,9 +77,6 @@ class ModelerScene(QGraphicsScene):
                         break
                 if value.outputChildId() in self.algItems:
                     items.append((self.algItems[value.outputChildId()], i))
-        elif isinstance(value, CompoundValue):
-            for v in value.values:
-                items.extend(self.getItemsFromParamValue(v))
         return items
 
     def paintModel(self, model, controls=True):

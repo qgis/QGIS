@@ -4788,7 +4788,7 @@ void TestQgsProcessing::modelExecution()
   QgsProcessingOutputLayerDefinition layerDef( "memory:" );
   layerDef.destinationName = "my_dest";
   modelInputs.insert( "cx3:MY_OUT", QVariant::fromValue( layerDef ) );
-  QMap<QString, QVariantMap> childResults;
+  QVariantMap childResults;
   QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults, expContext );
   QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
   QCOMPARE( params.value( "DISTANCE" ).toInt(), 271 );
