@@ -718,8 +718,17 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Returns true if any child algorithms depend on the model parameter
      * with the specified \a name.
+     * \see otherParametersDependOnParameter()
      */
     bool childAlgorithmsDependOnParameter( const QString &name ) const;
+
+    /**
+     * Returns true if any other model parameters depend on the parameter
+     * with the specified \a name (e.g. field parameters where \a name
+     * is the parent layer parameter).
+     * \see childAlgorithmsDependOnParameter()
+     */
+    bool otherParametersDependOnParameter( const QString &name ) const;
 
     /**
      * Returns the map of parameter components used by the model. The keys

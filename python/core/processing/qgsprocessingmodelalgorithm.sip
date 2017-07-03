@@ -724,6 +724,16 @@ Copies are protected to avoid slicing
 %Docstring
  Returns true if any child algorithms depend on the model parameter
  with the specified ``name``.
+.. seealso:: otherParametersDependOnParameter()
+ :rtype: bool
+%End
+
+    bool otherParametersDependOnParameter( const QString &name ) const;
+%Docstring
+ Returns true if any other model parameters depend on the parameter
+ with the specified ``name`` (e.g. field parameters where ``name``
+ is the parent layer parameter).
+.. seealso:: childAlgorithmsDependOnParameter()
  :rtype: bool
 %End
 

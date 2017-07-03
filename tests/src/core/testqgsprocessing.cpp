@@ -4458,6 +4458,16 @@ void TestQgsProcessing::modelerAlgorithm()
   alg4.setChildAlgorithm( c10 );
   QVERIFY( alg4.childAlgorithmsDependOnParameter( "p1" ) );
 
+  QgsProcessingModelAlgorithm::ModelParameter vlP;
+  alg4.addModelParameter( new QgsProcessingParameterVectorLayer( "layer" ), vlP );
+  QgsProcessingModelAlgorithm::ModelParameter field;
+  alg4.addModelParameter( new QgsProcessingParameterField( "field", QString(), QVariant(), QStringLiteral( "layer" ) ), field );
+  QVERIFY( !alg4.otherParametersDependOnParameter( "p1" ) );
+  QVERIFY( !alg4.otherParametersDependOnParameter( "field" ) );
+  QVERIFY( alg4.otherParametersDependOnParameter( "layer" ) );
+
+
+
 
 
   // to/from XML
