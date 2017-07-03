@@ -96,11 +96,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     virtual void closeEvent( QCloseEvent * ) override;
 
+  private slots:
+
+    void itemTypeAdded( int type, const QString &name );
+
   private:
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
     QgsLayout *mLayout = nullptr;
+
+    QActionGroup *mToolsActionGroup = nullptr;
+
 
     //! Save window state
     void saveWindowState();
@@ -108,6 +115,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Restore the window and toolbar state
     void restoreWindowState();
 
+    //! Switch to new item creation tool, for a new item of the specified \a type.
+    void activateNewItemCreationTool( int type );
 
 };
 

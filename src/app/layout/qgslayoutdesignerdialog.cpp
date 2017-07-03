@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutdesignerdialog.h"
+#include "qgslayoutitemregistry.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
@@ -39,6 +40,7 @@ void QgsAppLayoutDesignerInterface::close()
 QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
+  , mToolsActionGroup( new QActionGroup( this ) )
 {
   QgsSettings settings;
   int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
@@ -54,6 +56,16 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 #endif
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
+
+  // populate with initial items...
+  QMap< int, QString> types = QgsApplication::layoutItemRegistry()->itemTypes();
+  QMap< int, QString>::const_iterator typeIt = types.constBegin();
+  for ( ; typeIt != types.constEnd(); ++typeIt )
+  {
+    itemTypeAdded( typeIt.key(), typeIt.value() );
+  }
+  //..and listen out for new item types
+  connect( QgsApplication::layoutItemRegistry(), &QgsLayoutItemRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
   restoreWindowState();
 }
@@ -122,6 +134,23 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
   saveWindowState();
 }
 
+void QgsLayoutDesignerDialog::itemTypeAdded( int type, const QString &name )
+{
+  // update UI for new item type
+  QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
+  action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
+  action->setCheckable( true );
+  action->setData( type );
+  action->setIcon( QgsApplication::layoutItemRegistry()->itemMetadata( type )->icon() );
+  mToolsActionGroup->addAction( action );
+  mItemMenu->addAction( action );
+  mItemToolbar->addAction( action );
+  connect( action, &QAction::triggered, this, [this, type]()
+  {
+    activateNewItemCreationTool( type );
+  } );
+}
+
 void QgsLayoutDesignerDialog::saveWindowState()
 {
   QgsSettings settings;
@@ -145,6 +174,11 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   {
     QgsDebugMsg( "restore of layout UI geometry failed" );
   }
+}
+
+void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
+{
+  QgsLogger::debug( QStringLiteral( "creating new %1 item  " ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName() ) );
 }
 
 

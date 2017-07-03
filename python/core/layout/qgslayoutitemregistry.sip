@@ -37,6 +37,12 @@ class QgsLayoutItemAbstractMetadata
  :rtype: int
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+ Returns an icon representing the layout item type.
+ :rtype: QIcon
+%End
+
     QString visibleName() const;
 %Docstring
  Returns a translated, user visible name for the layout item class.
