@@ -373,6 +373,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
 
+    /**
+     * Returns a list of other parameter names on which this parameter is dependent (e.g.
+     * field parameters which depend on a parent layer parameter).
+     */
+    virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
+
   protected:
 
     //! Parameter name
@@ -1219,6 +1225,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
     QString type() const override { return QStringLiteral( "expression" ); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QStringList dependsOnOtherParameters() const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -1306,6 +1313,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
+    QStringList dependsOnOtherParameters() const override;
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.

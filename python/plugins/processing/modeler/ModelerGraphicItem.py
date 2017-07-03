@@ -229,8 +229,12 @@ class ModelerGraphicItem(QGraphicsItem):
     def removeElement(self):
         if isinstance(self.element, QgsProcessingModelAlgorithm.ModelParameter):
             if self.model.childAlgorithmsDependOnParameter(self.element.parameterName()):
-                QMessageBox.warning(None, 'Could not remove element',
-                                    'Other elements depend on the selected one.\n'
+                QMessageBox.warning(None, 'Could not remove input',
+                                    'Algorithms depend on the selected input.\n'
+                                    'Remove them before trying to remove it.')
+            elif self.model.otherParametersDependOnParameter(self.element.parameterName()):
+                QMessageBox.warning(None, 'Could not remove input',
+                                    'Other inputs depend on the selected input.\n'
                                     'Remove them before trying to remove it.')
             else:
                 self.model.removeModelParameter(self.element.parameterName())
