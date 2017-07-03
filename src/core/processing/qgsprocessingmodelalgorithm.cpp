@@ -949,6 +949,19 @@ bool QgsProcessingModelAlgorithm::childAlgorithmsDependOnParameter( const QStrin
   return false;
 }
 
+bool QgsProcessingModelAlgorithm::otherParametersDependOnParameter( const QString &name ) const
+{
+  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  {
+    if ( def->name() == name )
+      continue;
+
+    if ( def->dependsOnOtherParameters().contains( name ) )
+      return true;
+  }
+  return false;
+}
+
 QMap<QString, QgsProcessingModelAlgorithm::ModelParameter> QgsProcessingModelAlgorithm::parameterComponents() const
 {
   return mParameterComponents;
