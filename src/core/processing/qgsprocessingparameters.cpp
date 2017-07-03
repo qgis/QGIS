@@ -219,6 +219,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   }
 
   QgsProject *destinationProject = nullptr;
+  QString destName;
   QVariantMap createOptions;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
@@ -227,6 +228,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     destinationProject = fromVar.destinationProject;
     createOptions = fromVar.createOptions;
     val = fromVar.sink;
+    destName = fromVar.destinationName;
   }
 
   QString dest;
@@ -256,7 +258,13 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   destinationIdentifier = dest;
 
   if ( destinationProject )
-    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( definition ? definition->description() : QString(), destinationProject ) );
+  {
+    if ( destName.isEmpty() && definition )
+    {
+      destName = definition->description();
+    }
+    context.addLayerToLoadOnCompletion( destinationIdentifier, QgsProcessingContext::LayerDetails( destName, destinationProject ) );
+  }
 
   return sink.release();
 }
@@ -371,6 +379,7 @@ QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessi
 
   QgsProject *destinationProject = nullptr;
   QVariantMap createOptions;
+  QString destName;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
@@ -378,6 +387,7 @@ QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessi
     destinationProject = fromVar.destinationProject;
     createOptions = fromVar.createOptions;
     val = fromVar.sink;
+    destName = fromVar.destinationName;
   }
 
   QString dest;
@@ -396,7 +406,13 @@ QString QgsProcessingParameters::parameterAsRasterOutputLayer( const QgsProcessi
   }
 
   if ( destinationProject )
-    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( definition ? definition->description() : QString(), destinationProject ) );
+  {
+    if ( destName.isEmpty() && definition )
+    {
+      destName = definition->description();
+    }
+    context.addLayerToLoadOnCompletion( dest, QgsProcessingContext::LayerDetails( destName, destinationProject ) );
+  }
 
   return dest;
 }

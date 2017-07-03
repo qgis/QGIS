@@ -129,6 +129,11 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     QgsProject *destinationProject;
 
     /**
+     * Name to use for sink if it's to be loaded into a destination project.
+     */
+    QString destinationName;
+
+    /**
      * Map of optional sink/layer creation options, which
      * are passed to the underlying provider when creating new layers. Known options also
      * include 'fileEncoding', which is used to specify a file encoding to use for created

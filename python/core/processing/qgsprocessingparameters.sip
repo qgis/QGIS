@@ -95,6 +95,11 @@ class QgsProcessingOutputLayerDefinition
  The default behavior is not to load the result into any project (None).
 %End
 
+    QString destinationName;
+%Docstring
+ Name to use for sink if it's to be loaded into a destination project.
+%End
+
     QVariantMap createOptions;
 %Docstring
  Map of optional sink/layer creation options, which
