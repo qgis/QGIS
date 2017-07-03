@@ -3197,6 +3197,22 @@ void TestQgsGeometry::polygon()
                   << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
                   << QgsPoint( QgsWkbTypes::Point, 10, 0 ) << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
   exportPolygon.setExteriorRing( ext );
+
+  // GML document for compare
+  QDomDocument doc( "gml" );
+
+  // as GML2
+  QString expectedSimpleGML2( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" );
+  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+
+  //as GML3
+  QString expectedSimpleGML3( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" );
+  QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
+
+  // as JSON
+  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" );
+  QCOMPARE( exportPolygon.asJSON(), expectedSimpleJson );
+
   ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
                    << QgsPoint( QgsWkbTypes::Point, 1, 9 ) << QgsPoint( QgsWkbTypes::Point, 9, 9 )
@@ -3222,7 +3238,6 @@ void TestQgsGeometry::polygon()
   QCOMPARE( exportPolygonFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   // as GML2
-  QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
   QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
