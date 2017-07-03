@@ -644,131 +644,161 @@ namespace QgsWms
 
   QDomDocument QgsRenderer::getFeatureInfo( const QString &version )
   {
-    if ( !mConfigParser )
+    // Verifying Mandatory parameters
+    // The INFO_FORMAT parameter is Mandatory
+    if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::NONE )
     {
-      throw QgsException( QStringLiteral( "No config parser" ) );
+      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
+                                    QStringLiteral( "INFO_FORMAT parameter is required for GetFeatureInfo" ) );
     }
 
-    QDomDocument result;
-    QStringList layersList, stylesList;
-    bool conversionSuccess;
-
-    for ( auto it = mParameters.constBegin(); it != mParameters.constEnd(); ++it )
+    // The QUERY_LAYERS parameter is Mandatory
+    QStringList queryLayers = mWmsParameters.queryLayersNickname();
+    if ( queryLayers.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "%1 // %2" ).arg( it.key(), it.value() ) );
+      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
+                                    QStringLiteral( "QUERY_LAYERS parameter is required for GetFeatureInfo" ) );
     }
 
-    readLayersAndStyles( mParameters, layersList, stylesList );
-    initializeSLDParser( layersList, stylesList );
+    // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
+    bool ijDefined = false;
+    if ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() )
+      ijDefined = true;
 
+    bool xyDefined = false;
+    if ( !mWmsParameters.x().isEmpty() && !mWmsParameters.y().isEmpty() )
+      xyDefined = true;
+
+    bool filtersDefined = false;
+    if ( !mWmsParameters.filters().isEmpty() )
+      filtersDefined = true;
+
+    bool filterGeomDefined = false;
+    if ( !mWmsParameters.filterGeom().isEmpty() )
+      filterGeomDefined = true;
+
+    if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
+    {
+      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
+                                    QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
+    }
+
+    // get layers parameters
+    QList<QgsMapLayer *> layers;
+    QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
+
+    // init layer restorer before doing anything
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mNicknameLayers.values() ) );
+
+    // init stylized layers according to LAYERS/STYLES or SLD
+    QString sld = mWmsParameters.sld();
+    if ( !sld.isEmpty() )
+      layers = sldStylizedLayers( sld );
+    else
+      layers = stylizedLayers( params );
+
+    // create the mapSettings and the output image
     QgsMapSettings mapSettings;
     std::unique_ptr<QImage> outputImage( createImage() );
 
+    // configure map settings (background, DPI, ...)
     configureMapSettings( outputImage.get(), mapSettings );
 
+    QgsMessageLog::logMessage( "mapSettings.destinationCrs(): " +  mapSettings.destinationCrs().authid() );
     QgsMessageLog::logMessage( "mapSettings.extent(): " +  mapSettings.extent().toString() );
     QgsMessageLog::logMessage( QStringLiteral( "mapSettings width = %1 height = %2" ).arg( mapSettings.outputSize().width() ).arg( mapSettings.outputSize().height() ) );
     QgsMessageLog::logMessage( QStringLiteral( "mapSettings.mapUnitsPerPixel() = %1" ).arg( mapSettings.mapUnitsPerPixel() ) );
 
-    //find out the current scale denominator and set it to the SLD parser
     QgsScaleCalculator scaleCalc( ( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mapSettings.destinationCrs().mapUnits() );
     QgsRectangle mapExtent = mapSettings.extent();
     double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
-    mConfigParser->setScaleDenominator( scaleDenominator );
 
-    //read FEATURE_COUNT
-    int featureCount = 1;
-    if ( mParameters.contains( QStringLiteral( "FEATURE_COUNT" ) ) )
+    // remove unwanted layers (restricted layers, ...)
+    removeUnwantedLayers( layers, scaleDenominator );
+    // remove non identifiable layers
+    QStringList nonIdentifiableLayers = mProject->nonIdentifiableLayers();
+    if ( !nonIdentifiableLayers.isEmpty() )
     {
-      featureCount = mParameters[ QStringLiteral( "FEATURE_COUNT" )].toInt( &conversionSuccess );
-      if ( !conversionSuccess )
+      QList<QgsMapLayer *> wantedLayers;
+
+      Q_FOREACH ( QgsMapLayer *layer, layers )
       {
-        featureCount = 1;
+        if ( nonIdentifiableLayers.contains( layer->id() ) )
+          continue;
+
+        wantedLayers.append( layer );
+      }
+
+      layers = wantedLayers;
+    }
+
+    Q_FOREACH ( QgsMapLayer *layer, layers )
+    {
+      Q_FOREACH ( QgsWmsParametersLayer param, params )
+      {
+        if ( param.mNickname == layerNickname( *layer ) )
+        {
+          checkLayerReadPermissions( layer );
+
+          setLayerFilter( layer, param.mFilter );
+
+          setLayerAccessControlFilter( layer );
+
+          break;
+        }
       }
     }
 
-    //read QUERY_LAYERS
-    if ( !mParameters.contains( QStringLiteral( "QUERY_LAYERS" ) ) )
+    // add layers to map settings (revert order for the rendering)
+    std::reverse( layers.begin(), layers.end() );
+    mapSettings.setLayers( layers );
+
+    int featureCount = mWmsParameters.featureCountAsInt();
+    if ( featureCount < 1 )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ), QStringLiteral( "No QUERY_LAYERS" ) );
+      featureCount = 1;
     }
 
-    QStringList queryLayerList = mParameters[ QStringLiteral( "QUERY_LAYERS" )].split( ',', QString::SkipEmptyParts );
-    if ( queryLayerList.isEmpty() )
+    int i = mWmsParameters.iAsInt();
+    int j = mWmsParameters.jAsInt();
+    if ( xyDefined && !ijDefined )
     {
-      throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Malformed QUERY_LAYERS" ) );
+      i = mWmsParameters.xAsInt();
+      j = mWmsParameters.yAsInt();
+    }
+    int width = mWmsParameters.widthAsInt();
+    int height = mWmsParameters.heightAsInt();
+    if ( ( i != -1 && j != -1 && width != 0 && height != 0 ) && ( width != outputImage->width() || height != outputImage->height() ) )
+    {
+      i *= ( outputImage->width() / ( double )width );
+      j *= ( outputImage->height() / ( double )height );
     }
 
-    //read I,J resp. X,Y
-    QString iString = mParameters.value( QStringLiteral( "I" ), mParameters.value( QStringLiteral( "X" ) ) );
-    int i = iString.toInt( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      i = -1;
-    }
-
-    QString jString = mParameters.value( QStringLiteral( "J" ), mParameters.value( QStringLiteral( "Y" ) ) );
-    int j = jString.toInt( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      j = -1;
-    }
-
-    //read FILTER_GEOM
-    std::unique_ptr<QgsGeometry> filterGeom;
-    if ( mParameters.contains( QStringLiteral( "FILTER_GEOM" ) ) )
-    {
-      filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mParameters.value( QStringLiteral( "FILTER_GEOM" ) ) ) ) );
-    }
-
-    //In case the output image is distorted (WIDTH/HEIGHT ratio not equal to BBOX width/height), I and J need to be adapted as well
-    int widthParam = mParameters.value( "WIDTH", "-1" ).toInt();
-    int heightParam = mParameters.value( "HEIGHT", "-1" ).toInt();
-    if ( ( i != -1 && j != -1 && widthParam != -1 && heightParam != -1 ) && ( widthParam != outputImage->width() || heightParam != outputImage->height() ) )
-    {
-      i *= ( outputImage->width() / ( double )widthParam );
-      j *= ( outputImage->height() / ( double )heightParam );
-    }
-
-    //Normally, I/J or X/Y are mandatory parameters.
-    //However, in order to make attribute only queries via the FILTER parameter, it is allowed to skip them if the FILTER parameter is there
-
+    // init search variables
     std::unique_ptr<QgsRectangle> featuresRect;
+    std::unique_ptr<QgsGeometry> filterGeom;
     std::unique_ptr<QgsPointXY> infoPoint;
 
-    if ( i == -1 || j == -1 )
-    {
-      if ( mParameters.contains( QStringLiteral( "FILTER" ) ) )
-      {
-        featuresRect.reset( new QgsRectangle() );
-      }
-      else if ( !filterGeom.get() )
-      {
-        throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                      QStringLiteral( "I/J parameters are required for GetFeatureInfo" ) );
-      }
-    }
-    else
+    if ( i != -1 && j != -1 )
     {
       infoPoint.reset( new QgsPointXY() );
       infoPointToMapCoordinates( i, j, infoPoint.get(), mapSettings );
     }
+    else if ( filtersDefined )
+    {
+      featuresRect.reset( new QgsRectangle() );
+    }
+    else if ( filterGeomDefined )
+    {
+      filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
+    }
 
-    //get the layer registered in QgsMapLayerRegistry and apply possible filters
-    ( void )layerSet( layersList, stylesList, mapSettings.destinationCrs() );
-
-    //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
-    //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( mAccessControl ) );
-    applyRequestedLayerFilters( layersList, mapSettings, filterRestorer->originalFilters() );
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    applyAccessControlLayersFilters( layersList, filterRestorer->originalFilters() );
-#endif
+    QDomDocument result;
 
     QDomElement getFeatureInfoElement;
-    QString infoFormat = mParameters.value( QStringLiteral( "INFO_FORMAT" ) );
-    if ( infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
+    QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
+    if ( infoFormat == QgsWmsParameters::Format::GML )
     {
       getFeatureInfoElement = result.createElement( QStringLiteral( "wfs:FeatureCollection" ) );
       getFeatureInfoElement.setAttribute( QStringLiteral( "xmlns:wfs" ), QStringLiteral( "http://www.opengis.net/wfs" ) );
@@ -782,18 +812,22 @@ namespace QgsWms
     }
     else
     {
-      QString featureInfoElemName = mConfigParser->featureInfoDocumentElement( QStringLiteral( "GetFeatureInfoResponse" ) );
-      QString featureInfoElemNS = mConfigParser->featureInfoDocumentElementNS();
-      if ( featureInfoElemNS.isEmpty() )
+      QString featureInfoElemName = QgsServerProjectUtils::wmsFeatureInfoDocumentElement( *mProject );
+      if ( featureInfoElemName.isEmpty() )
+      {
+        featureInfoElemName = QStringLiteral( "GetFeatureInfoResponse" );
+      }
+      QString featureInfoElemNs = QgsServerProjectUtils::wmsFeatureInfoDocumentElementNs( *mProject );
+      if ( featureInfoElemNs.isEmpty() )
       {
         getFeatureInfoElement = result.createElement( featureInfoElemName );
       }
       else
       {
-        getFeatureInfoElement = result.createElementNS( featureInfoElemNS, featureInfoElemName );
+        getFeatureInfoElement = result.createElementNS( featureInfoElemNs, featureInfoElemName );
       }
       //feature info schema
-      QString featureInfoSchema = mConfigParser->featureInfoSchema();
+      QString featureInfoSchema = QgsServerProjectUtils::wmsFeatureInfoSchema( *mProject );
       if ( !featureInfoSchema.isEmpty() )
       {
         getFeatureInfoElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
@@ -802,122 +836,92 @@ namespace QgsWms
     }
     result.appendChild( getFeatureInfoElement );
 
-    QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
-
     //Render context is needed to determine feature visibility for vector layers
     QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( mapSettings );
 
-    bool sia2045 = mConfigParser->featureInfoFormatSIA2045();
+    bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *mProject );
 
     //layers can have assigned a different name for GetCapabilities
-    QHash<QString, QString> layerAliasMap = mConfigParser->featureInfoLayerAliasMap();
+    QHash<QString, QString> layerAliasMap = QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( *mProject );
 
-    QList<QgsMapLayer *> layerList;
-    QgsMapLayer *currentLayer = nullptr;
-    for ( auto layerIt = queryLayerList.constBegin(); layerIt != queryLayerList.constEnd(); ++layerIt )
+    Q_FOREACH ( QString queryLayer, queryLayers )
     {
-      //create maplayers from sld parser (several layers are possible in case of feature info on a group)
-      layerList = mConfigParser->mapLayerFromStyle( *layerIt, QLatin1String( "" ) );
-      for ( auto layerListIt = layerList.begin() ; layerListIt != layerList.end(); ++layerListIt )
+      Q_FOREACH ( QgsMapLayer *layer, layers )
       {
-        currentLayer = *layerListIt;
-        if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->id() ) )
+        if ( queryLayer == layerNickname( *layer ) )
         {
-          continue;
-        }
-        QgsMapLayer *registeredMapLayer = QgsProject::instance()->mapLayer( currentLayer->id() );
-        if ( registeredMapLayer )
-        {
-          currentLayer = registeredMapLayer;
-        }
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-        if ( !mAccessControl->layerReadPermission( currentLayer ) )
-        {
-          throw QgsSecurityException( QStringLiteral( "You are not allowed to access to the layer: %1" ).arg( currentLayer->name() ) );
-        }
-#endif
-
-        //skip layer if not visible at current map scale
-        if ( scaleDenominator > 0 && !currentLayer->isInScaleRange( scaleDenominator ) )
-        {
-          continue;
-        }
-
-        //switch depending on vector or raster
-        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-
-        QDomElement layerElement;
-        if ( infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-        {
-          layerElement = getFeatureInfoElement;
-        }
-        else
-        {
-          layerElement = result.createElement( QStringLiteral( "Layer" ) );
-          QString layerName =  currentLayer->name();
-          if ( mConfigParser->useLayerIds() )
-            layerName = currentLayer->id();
-          else if ( !currentLayer->shortName().isEmpty() )
-            layerName = currentLayer->shortName();
-
-          //check if the layer is given a different name for GetFeatureInfo output
-          QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
-          if ( layerAliasIt != layerAliasMap.constEnd() )
+          QDomElement layerElement;
+          if ( infoFormat == QgsWmsParameters::Format::GML )
           {
-            layerName = layerAliasIt.value();
+            layerElement = getFeatureInfoElement;
           }
-          layerElement.setAttribute( QStringLiteral( "name" ), layerName );
-          getFeatureInfoElement.appendChild( layerElement );
-          if ( sia2045 ) //the name might not be unique after alias replacement
+          else
           {
-            layerElement.setAttribute( QStringLiteral( "id" ), currentLayer->id() );
-          }
-        }
+            layerElement = result.createElement( QStringLiteral( "Layer" ) );
+            QString layerName = queryLayer;
 
-        if ( vectorLayer )
-        {
-          if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, infoFormat, featuresRect.get(), filterGeom.get() ) )
-          {
-            continue;
-          }
-        }
-        else //raster layer
-        {
-          if ( infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
-          {
-            layerElement = result.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
-            getFeatureInfoElement.appendChild( layerElement );
-          }
-
-          QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
-          if ( rasterLayer )
-          {
-            if ( !infoPoint )
+            //check if the layer is given a different name for GetFeatureInfo output
+            QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
+            if ( layerAliasIt != layerAliasMap.constEnd() )
             {
-              continue;
+              layerName = layerAliasIt.value();
             }
-            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( currentLayer, *( infoPoint.get() ) );
-            if ( !featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version, infoFormat ) )
+
+            layerElement.setAttribute( QStringLiteral( "name" ), layerName );
+            getFeatureInfoElement.appendChild( layerElement );
+            if ( sia2045 ) //the name might not be unique after alias replacement
             {
-              continue;
+              layerElement.setAttribute( QStringLiteral( "id" ), layer->id() );
+            }
+          }
+
+          if ( layer->type() == QgsMapLayer::VectorLayer )
+          {
+            QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+            if ( vectorLayer )
+            {
+              if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, mWmsParameters.infoFormatAsString(), featuresRect.get(), filterGeom.get() ) )
+              {
+                break;
+              }
+              break;
             }
           }
           else
           {
-            continue;
+            if ( infoFormat == QgsWmsParameters::Format::GML )
+            {
+              layerElement = result.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
+              getFeatureInfoElement.appendChild( layerElement );
+            }
+
+            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+            if ( rasterLayer )
+            {
+              if ( !infoPoint )
+              {
+                break;
+              }
+              QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+              if ( !featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version, mWmsParameters.infoFormatAsString() ) )
+              {
+                break;
+              }
+              break;
+            }
           }
+          break;
         }
       }
     }
 
     if ( featuresRect )
     {
-      if ( infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml" ) ) )
+      if ( infoFormat == QgsWmsParameters::Format::GML )
       {
         QDomElement bBoxElem = result.createElement( QStringLiteral( "gml:boundedBy" ) );
         QDomElement boxElem;
-        int gmlVersion = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
+        int gmlVersion = mWmsParameters.infoFormatAsString().startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
         if ( gmlVersion < 3 )
         {
           boxElem = QgsOgcUtils::rectangleToGMLBox( featuresRect.get(), result, 8 );
@@ -947,15 +951,10 @@ namespace QgsWms
       }
     }
 
-    if ( sia2045 && infoFormat.compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0 )
+    if ( sia2045 && infoFormat == QgsWmsParameters::Format::XML )
     {
       convertFeatureInfoToSIA2045( result );
     }
-
-    //force restoration of original filters
-    filterRestorer.reset();
-
-    QgsProject::instance()->removeAllMapLayers();
 
     return result;
   }
@@ -1288,8 +1287,8 @@ namespace QgsWms
     int featureCounter = 0;
     layer->updateFields();
     const QgsFields &fields = layer->pendingFields();
-    bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
-    bool segmentizeWktGeometry = mConfigParser && mConfigParser->segmentizeFeatureInfoWktGeometry();
+    bool addWktGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject );
+    bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
     QgsFeatureRequest fReq;
@@ -1385,17 +1384,13 @@ namespace QgsWms
         outputCrs = mapSettings.destinationCrs();
       }
 
-      if ( infoFormat == QLatin1String( "application/vnd.ogc.gml" ) )
+      if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::GML )
       {
         bool withGeom = layer->wkbType() != QgsWkbTypes::NoGeometry && addWktGeometry;
-        int version = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
-        QString typeName =  layer->name();
-        if ( mConfigParser && mConfigParser->useLayerIds() )
-          typeName = layer->id();
-        else if ( !layer->shortName().isEmpty() )
-          typeName = layer->shortName();
+        int gmlVersion = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
+        QString typeName = layerNickname( *layer );
         QDomElement elem = createFeatureGML(
-                             &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, version
+                             &feature, layer, infoDocument, outputCrs, mapSettings, typeName, withGeom, gmlVersion
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
                              , &attributes
 #endif
@@ -1453,14 +1448,14 @@ namespace QgsWms
         }
 
         //append feature bounding box to feature info xml
-        if ( layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry && mConfigParser )
+        if ( layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
-          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), getWMSPrecision( 8 ) ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), getWMSPrecision( 8 ) ) );
-          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), getWMSPrecision( 8 ) ) );
-          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), getWMSPrecision( 8 ) ) );
+          bBoxElem.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( box.xMinimum(), getWMSPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( box.xMaximum(), getWMSPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( box.yMinimum(), getWMSPrecision() ) );
+          bBoxElem.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( box.yMaximum(), getWMSPrecision() ) );
           featureElement.appendChild( bBoxElem );
         }
 
@@ -1484,14 +1479,14 @@ namespace QgsWms
               {
                 if ( QgsWkbTypes::isCurvedType( abstractGeom->wkbType() ) )
                 {
-                  QgsAbstractGeometry *segmentizedGeom = abstractGeom-> segmentize();
+                  QgsAbstractGeometry *segmentizedGeom = abstractGeom->segmentize();
                   geom.setGeometry( segmentizedGeom );
                 }
               }
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.exportToWkt( getWMSPrecision( 8 ) ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.exportToWkt( getWMSPrecision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }
@@ -1540,7 +1535,7 @@ namespace QgsWms
       attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mapSettings.extent(), mapSettings.outputSize().width(), mapSettings.outputSize().height() ).results();
     }
 
-    if ( infoFormat == QLatin1String( "application/vnd.ogc.gml" ) )
+    if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::GML )
     {
       QgsFeature feature;
       QgsFields fields;
@@ -1554,14 +1549,10 @@ namespace QgsWms
       feature.setFields( fields );
 
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
-      int version = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
-      QString typeName =  layer->name();
-      if ( mConfigParser && mConfigParser->useLayerIds() )
-        typeName = layer->id();
-      else if ( !layer->shortName().isEmpty() )
-        typeName = layer->shortName();
+      int gmlVersion = infoFormat.startsWith( QLatin1String( "application/vnd.ogc.gml/3" ) ) ? 3 : 2;
+      QString typeName = layerNickname( *layer );
       QDomElement elem = createFeatureGML(
-                           &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, version, nullptr );
+                           &feature, nullptr, infoDocument, layerCrs, mapSettings, typeName, false, gmlVersion, nullptr );
       layerElement.appendChild( elem );
     }
     else
@@ -2263,11 +2254,11 @@ namespace QgsWms
       QDomElement boxElem;
       if ( version < 3 )
       {
-        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, 8 );
+        boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc, getWMSPrecision() );
       }
       else
       {
-        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, 8 );
+        boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc, getWMSPrecision() );
       }
 
       if ( crs.isValid() )
@@ -2291,11 +2282,11 @@ namespace QgsWms
       QDomElement gmlElem;
       if ( version < 3 )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, 8 );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, getWMSPrecision() );
       }
       else
       {
-        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), 8 );
+        gmlElem = QgsOgcUtils::geometryToGML( geom, doc, QStringLiteral( "GML3" ), getWMSPrecision() );
       }
 
       if ( !gmlElem.isNull() )
@@ -2388,27 +2379,18 @@ namespace QgsWms
     return imageQuality;
   }
 
-  int QgsRenderer::getWMSPrecision( int defaultValue = 8 ) const
+  int QgsRenderer::getWMSPrecision() const
   {
-    // First taken from QGIS project
-    int WMSPrecision = mConfigParser->wmsPrecision();
+    // First taken from QGIS project and the default value is 6
+    int WMSPrecision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );
 
     // Then checks if a parameter is given, if so use it instead
-    if ( mParameters.contains( QStringLiteral( "WMS_PRECISION" ) ) )
-    {
-      bool conversionSuccess;
-      int WMSPrecisionParameter;
-      WMSPrecisionParameter = mParameters[ QStringLiteral( "WMS_PRECISION" )].toInt( &conversionSuccess );
-      if ( conversionSuccess )
-      {
-        WMSPrecision = WMSPrecisionParameter;
-      }
-    }
-    if ( WMSPrecision == -1 )
-    {
-      WMSPrecision = defaultValue;
-    }
-    return WMSPrecision;
+    int WMSPrecisionParameter = mWmsParameters.wmsPrecisionAsInt();
+
+    if ( WMSPrecisionParameter > -1 )
+      return WMSPrecisionParameter;
+    else
+      return WMSPrecision;
   }
 
   QgsRectangle QgsRenderer::featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &mapSettings, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const
