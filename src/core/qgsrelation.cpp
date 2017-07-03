@@ -170,22 +170,23 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
   {
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
+    const QString quotedColRef = QgsExpression::quotedColumnRef( fieldPair.referencingField() ) ;
 
     QVariant val( feature.attribute( fieldPair.referencedField() ) );
 
     if ( val.isNull() )
     {
-      conditions << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
+      conditions << QStringLiteral( "%1 IS NULL" ).arg( quotedColRef );
     }
     else if ( referencingField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), QgsExpression::quotedValue( val.toString() ) );
+      conditions << QStringLiteral( "%1 = %2" ).arg( quotedColRef, QgsExpression::quotedValue( val.toString() ) );
     }
     else
     {
       // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
+      conditions << QStringLiteral( "%1 = %2" ).arg( quotedColRef, val.toString() );
     }
   }
 
@@ -202,16 +203,17 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
 
     QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
+    const QString quotedColRef = QgsExpression::quotedColumnRef( fieldPair.referencedField() ) ;
 
     if ( referencedField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QStringLiteral( "%1 = %2" ).arg( quotedColRef, QgsExpression::quotedValue( attributes.at( referencingIdx ).toString() ) );
     }
     else
     {
       // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
+      conditions << QStringLiteral( "%1 = %2" ).arg( quotedColRef, attributes.at( referencingIdx ).toString() );
     }
   }
 
