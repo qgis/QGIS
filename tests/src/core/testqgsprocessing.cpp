@@ -1292,6 +1292,18 @@ void TestQgsProcessing::parameters()
   QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
   QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), destId );
   QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
+
+  // with name overloading
+  QgsProcessingContext context2;
+  fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.shp" ) );
+  fs.destinationProject = &p;
+  fs.destinationName = QStringLiteral( "my_dest" );
+  params.insert( QStringLiteral( "fs" ), QVariant::fromValue( fs ) );
+  sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, fields, wkbType, crs, context2, destId ) );
+  QVERIFY( sink.get() );
+  QCOMPARE( context2.layersToLoadOnCompletion().size(), 1 );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), destId );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
 }
 
 void TestQgsProcessing::algorithmParameters()
@@ -3687,6 +3699,29 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // test layers to load on completion
+  def.reset( new QgsProcessingParameterRasterOutput( "x", QStringLiteral( "desc" ), QStringLiteral( "default.tif" ), true ) );
+  QgsProcessingOutputLayerDefinition fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.tif" ) );
+  fs.destinationProject = &p;
+  params.insert( QStringLiteral( "x" ), QVariant::fromValue( fs ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
+
+  // make sure layer was automatically added to list to load on completion
+  QCOMPARE( context.layersToLoadOnCompletion().size(), 1 );
+  QCOMPARE( context.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( context.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "desc" ) );
+
+  // with name overloading
+  QgsProcessingContext context2;
+  fs = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.tif" ) );
+  fs.destinationProject = &p;
+  fs.destinationName = QStringLiteral( "my_dest" );
+  params.insert( QStringLiteral( "x" ), QVariant::fromValue( fs ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsRasterOutputLayer( def.get(), params, context2 ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( context2.layersToLoadOnCompletion().size(), 1 );
+  QCOMPARE( context2.layersToLoadOnCompletion().keys().at( 0 ), QStringLiteral( "test.tif" ) );
+  QCOMPARE( context2.layersToLoadOnCompletion().values().at( 0 ).name, QStringLiteral( "my_dest" ) );
 }
 
 void TestQgsProcessing::parameterFileOut()
@@ -4672,6 +4707,9 @@ void TestQgsProcessing::modelExecution()
   modelInputs.insert( "SOURCE_LAYER", "my_layer_id" );
   modelInputs.insert( "DIST", 271 );
   modelInputs.insert( "cx1:MODEL_OUT_LAYER", "dest.shp" );
+  QgsProcessingOutputLayerDefinition layerDef( "memory:" );
+  layerDef.destinationName = "my_dest";
+  modelInputs.insert( "cx3:MY_OUT", QVariant::fromValue( layerDef ) );
   QMap<QString, QVariantMap> childResults;
   QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults );
   QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
@@ -4704,12 +4742,22 @@ void TestQgsProcessing::modelExecution()
   alg2c3.setAlgorithmId( "native:extractbyexpression" );
   alg2c3.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT_LAYER" ) );
   alg2c3.addParameterSources( "EXPRESSION", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( "true" ) );
+  alg2c3.addParameterSources( "OUTPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "MY_OUT" ) );
   alg2c3.setDependencies( QStringList() << "cx2" );
+  QMap<QString, QgsProcessingModelAlgorithm::ModelOutput> outputs3;
+  QgsProcessingModelAlgorithm::ModelOutput out2( "MY_OUT" );
+  out2.setChildOutputName( "OUTPUT" );
+  outputs3.insert( QStringLiteral( "MY_OUT" ), out2 );
+  alg2c3.setModelOutputs( outputs3 );
+
   model2.addChildAlgorithm( alg2c3 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
-  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
+  QVERIFY( params.value( "OUTPUT" ).canConvert<QgsProcessingOutputLayerDefinition>() );
+  QgsProcessingOutputLayerDefinition outDef = qvariant_cast<QgsProcessingOutputLayerDefinition>( params.value( "OUTPUT" ) );
+  QCOMPARE( outDef.destinationName, QStringLiteral( "MY_OUT" ) );
+  QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 
   QStringList actualParts = model2.asPythonCode().split( '\n' );
@@ -4717,11 +4765,13 @@ void TestQgsProcessing::modelExecution()
                               "##DIST=number\n"
                               "##SOURCE_LAYER=source\n"
                               "##model_out_layer=output outputVector\n"
+                              "##my_out=output outputVector\n"
                               "results={}\n"
                               "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
                               "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT_LAYER']\n"
                               "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
-                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER']}, context=context, feedback=feedback)\n"
+                              "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT_LAYER'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
+                              "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
 }
