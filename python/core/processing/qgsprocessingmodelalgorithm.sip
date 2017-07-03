@@ -889,10 +889,10 @@ Copies are protected to avoid slicing
 %End
       public:
 
-        VariableDefinition( const QVariant &value, const QgsProcessingModelAlgorithm::ChildParameterSource &source );
+        VariableDefinition( const QVariant &value, const QgsProcessingModelAlgorithm::ChildParameterSource &source, const QString &description = QString() );
 %Docstring
  Constructor for a new VariableDefinition with the specified ``value`` and original
- parameter ``source``.
+ parameter ``source``, and ``description``.
 %End
 
         QVariant value;
@@ -903,6 +903,11 @@ Value of variable
         QgsProcessingModelAlgorithm::ChildParameterSource source;
 %Docstring
 Original source of variable's value
+%End
+
+        QString description;
+%Docstring
+Translated description of variable
 %End
     };
 
