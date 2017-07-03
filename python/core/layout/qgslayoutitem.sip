@@ -26,12 +26,6 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  Constructor for QgsLayoutItem, with the specified parent ``layout``.
 %End
 
-    virtual int type() const = 0;
-%Docstring
-Return correct graphics item type.
- :rtype: int
-%End
-
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring

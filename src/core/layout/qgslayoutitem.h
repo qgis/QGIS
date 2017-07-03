@@ -34,15 +34,14 @@ class QPainter;
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem
 {
 
+    Q_OBJECT
+
   public:
 
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
      */
     QgsLayoutItem( QgsLayout *layout );
-
-    //! Return correct graphics item type.
-    virtual int type() const = 0;
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
