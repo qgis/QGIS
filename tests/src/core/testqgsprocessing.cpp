@@ -331,6 +331,7 @@ class TestQgsProcessing: public QObject
     void asPythonCommand();
     void modelerAlgorithm();
     void modelExecution();
+    void modelAcceptableValues();
     void tempUtils();
 
   private:
@@ -4851,6 +4852,84 @@ void TestQgsProcessing::modelExecution()
                               "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
+}
+
+void TestQgsProcessing::modelAcceptableValues()
+{
+  QgsProcessingModelAlgorithm m;
+  QgsProcessingModelAlgorithm::ModelParameter stringParam1( "string" );
+  m.addModelParameter( new QgsProcessingParameterString( "string" ), stringParam1 );
+
+  QgsProcessingModelAlgorithm::ModelParameter stringParam2( "string2" );
+  m.addModelParameter( new QgsProcessingParameterString( "string2" ), stringParam2 );
+
+  QgsProcessingModelAlgorithm::ModelParameter numParam( "number" );
+  m.addModelParameter( new QgsProcessingParameterNumber( "number" ), numParam );
+
+  QgsProcessingModelAlgorithm::ModelParameter tableFieldParam( "field" );
+  m.addModelParameter( new QgsProcessingParameterField( "field" ), tableFieldParam );
+
+  QgsProcessingModelAlgorithm::ModelParameter fileParam( "file" );
+  m.addModelParameter( new QgsProcessingParameterFile( "file" ), fileParam );
+
+  // test single types
+  QgsProcessingModelAlgorithm::ChildParameterSources sources = m.availableSourcesForChild( QString(), QStringList() << "number" );
+  QCOMPARE( sources.count(), 1 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "number" ) );
+  sources = m.availableSourcesForChild( QString(), QStringList() << "field" );
+  QCOMPARE( sources.count(), 1 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "field" ) );
+  sources = m.availableSourcesForChild( QString(), QStringList() << "file" );
+  QCOMPARE( sources.count(), 1 );
+  QCOMPARE( sources.at( 0 ).parameterName(), QStringLiteral( "file" ) );
+
+  // test multiple types
+  sources = m.availableSourcesForChild( QString(), QStringList() << "string" << "number" << "file" );
+  QCOMPARE( sources.count(), 4 );
+  QSet< QString > res;
+  res << sources.at( 0 ).parameterName();
+  res << sources.at( 1 ).parameterName();
+  res << sources.at( 2 ).parameterName();
+  res << sources.at( 3 ).parameterName();
+
+  QCOMPARE( res, QSet< QString >() << QStringLiteral( "string" )
+            << QStringLiteral( "string2" )
+            << QStringLiteral( "number" )
+            << QStringLiteral( "file" ) );
+
+  // check outputs
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c1;
+  alg2c1.setChildId( "cx1" );
+  alg2c1.setAlgorithmId( "native:centroids" );
+  m.addChildAlgorithm( alg2c1 );
+
+  sources = m.availableSourcesForChild( QString(), QStringList(), QStringList() << "string" << "outputVector" );
+  QCOMPARE( sources.count(), 1 );
+  res.clear();
+  res << sources.at( 0 ).outputChildId() + ':' + sources.at( 0 ).outputName();
+  QCOMPARE( res, QSet< QString >() << "cx1:OUTPUT_LAYER" );
+
+  // with dependencies between child algs
+  QgsProcessingModelAlgorithm::ChildAlgorithm alg2c2;
+  alg2c2.setChildId( "cx2" );
+  alg2c2.setAlgorithmId( "native:centroids" );
+  alg2c2.setDependencies( QStringList() << "cx1" );
+  m.addChildAlgorithm( alg2c2 );
+  sources = m.availableSourcesForChild( QString(), QStringList(), QStringList() << "string" << "outputVector" );
+  QCOMPARE( sources.count(), 2 );
+  res.clear();
+  res << sources.at( 0 ).outputChildId() + ':' + sources.at( 0 ).outputName();
+  res << sources.at( 1 ).outputChildId() + ':' + sources.at( 1 ).outputName();
+  QCOMPARE( res, QSet< QString >() << "cx1:OUTPUT_LAYER" << "cx2:OUTPUT_LAYER" );
+
+  sources = m.availableSourcesForChild( QStringLiteral( "cx1" ), QStringList(), QStringList() << "string" << "outputVector" );
+  QCOMPARE( sources.count(), 0 );
+
+  sources = m.availableSourcesForChild( QString( "cx2" ), QStringList(), QStringList() << "string" << "outputVector" );
+  QCOMPARE( sources.count(), 1 );
+  res.clear();
+  res << sources.at( 0 ).outputChildId() + ':' + sources.at( 0 ).outputName();
+  QCOMPARE( res, QSet< QString >() << "cx1:OUTPUT_LAYER" );
 }
 
 void TestQgsProcessing::tempUtils()

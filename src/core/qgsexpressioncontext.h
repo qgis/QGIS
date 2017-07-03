@@ -797,6 +797,12 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
+    /**
+     * Creates a new scope which contains variables and functions relating to processing model results
+     */
+    static QgsExpressionContextScope *processingModelResultsScope( const QVariantMap &results, QgsProcessingContext &context ) SIP_FACTORY;
+
+
     /** Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();
