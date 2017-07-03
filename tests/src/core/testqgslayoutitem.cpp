@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitem.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgstest.h"
@@ -33,6 +34,7 @@ class TestQgsLayoutItem: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayoutItem
+    void registry();
 
   private:
 
@@ -101,6 +103,54 @@ void TestQgsLayoutItem::creation()
   TestItem *item = new TestItem( mLayout );
   QVERIFY( item );
   delete item;
+}
+
+void TestQgsLayoutItem::registry()
+{
+  // test QgsLayoutItemRegistry
+  QgsLayoutItemRegistry registry;
+
+  // empty registry
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QVERIFY( registry.itemTypes().isEmpty() );
+  QVERIFY( !registry.createItem( 1, nullptr ) );
+  QVERIFY( !registry.createItemWidget( 1 ) );
+
+  auto create = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  {
+    return new TestItem( layout );
+  };
+  auto createWidget = []()->QWidget*
+  {
+    return new QWidget();
+  };
+  auto resolve = []( QVariantMap & props, const QgsPathResolver &, bool )
+  {
+    props.clear();
+  };
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), create, resolve, createWidget );
+  QVERIFY( registry.addLayoutItemType( metadata ) );
+  // duplicate type id
+  QVERIFY( !registry.addLayoutItemType( metadata ) );
+
+  //retrieve metadata
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QCOMPARE( registry.itemMetadata( 2 )->visibleName(), QStringLiteral( "my type" ) );
+  QCOMPARE( registry.itemTypes().count(), 1 );
+  QCOMPARE( registry.itemTypes().value( 2 ), QStringLiteral( "my type" ) );
+  QgsLayoutItem *item = registry.createItem( 2, nullptr );
+  QVERIFY( item );
+  QVERIFY( dynamic_cast< TestItem *>( item ) );
+  delete item;
+  QWidget *config = registry.createItemWidget( 2 );
+  QVERIFY( config );
+  delete config;
+  QVariantMap props;
+  props.insert( QStringLiteral( "a" ), 5 );
+  registry.resolvePaths( 1, props, QgsPathResolver(), true );
+  QCOMPARE( props.size(), 1 );
+  registry.resolvePaths( 2, props, QgsPathResolver(), true );
+  QVERIFY( props.isEmpty() );
 }
 
 bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismatchCount )

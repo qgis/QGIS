@@ -63,7 +63,7 @@ Create a symbol layer of this type given the map of properties.
  Resolve paths in symbol layer's properties (if there are any paths).
  When saving is true, paths are converted from absolute to relative,
  when saving is false, paths are converted from relative to absolute.
- This ensures that paths in project files are absolute, but in symbol layer
+ This ensures that paths in project files can be relative, but in symbol layer
  instances the paths are always absolute
 .. versionadded:: 3.0
 %End
