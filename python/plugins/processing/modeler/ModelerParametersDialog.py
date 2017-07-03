@@ -40,7 +40,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterOutput,
                        QgsProcessingParameterFileOutput,
-                       QgsProcessingParameterFolderOutput)
+                       QgsProcessingParameterFolderOutput,
+                       QgsProcessingOutputDefinition)
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea)
@@ -65,7 +66,7 @@ class ModelerParametersDialog(QDialog):
         # The model this algorithm is going to be added to
         self.model = model
         # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
-        self._algName = algName
+        self.childId = algName
         self.setupUi()
         self.params = None
 
@@ -191,11 +192,11 @@ class ModelerParametersDialog(QDialog):
             wrapper.postInitialize(list(self.wrappers.values()))
 
     def getAvailableDependencies(self):  # spellok
-        if self._algName is None:
+        if self.childId is None:
             dependent = []
         else:
-            dependent = list(self.model.dependentChildAlgorithms(self._algName))
-            dependent.append(self._algName)
+            dependent = list(self.model.dependentChildAlgorithms(self.childId))
+            dependent.append(self.childId)
         opts = []
         for alg in list(self.model.childAlgorithms().values()):
             if alg.childId() not in dependent:
@@ -216,7 +217,7 @@ class ModelerParametersDialog(QDialog):
                 self.labels[param.name()].setVisible(self.showAdvanced)
                 self.widgets[param.name()].setVisible(self.showAdvanced)
 
-    def getAvailableValuesOfType(self, paramType, outTypes=[], dataType=None):
+    def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
         # upgrade paramType to list
         if paramType is None:
             paramType = []
@@ -227,41 +228,8 @@ class ModelerParametersDialog(QDialog):
         elif not isinstance(outTypes, list):
             outTypes = [outTypes]
 
-        values = []
-        inputs = self.model.parameterComponents()
-        for i in list(inputs.values()):
-            param = self.model.parameterDefinition(i.parameterName())
-            for t in paramType:
-                if isinstance(param, t):
-                    if dataType is not None:
-                        if param.datatype in dataType:
-                            values.append(
-                                QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name()))
-                    else:
-                        values.append(QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name()))
-                    break
-        if not outTypes:
-            return values
-        if self._algName is None:
-            dependent = []
-        else:
-            dependent = list(self.model.dependentChildAlgorithms(self._algName))
-            dependent.append(self._algName)
-        for alg in list(self.model.childAlgorithms().values()):
-            if alg.childId() not in dependent:
-                for out in alg.algorithm().outputDefinitions():
-                    for t in outTypes:
-                        if isinstance(out, t):
-                            if dataType is not None and out.datatype in dataType:
-                                values.append(
-                                    QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(),
-                                                                                                     out.name()))
-                            else:
-                                values.append(
-                                    QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(),
-                                                                                                     out.name()))
-
-        return values
+        return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if issubclass(p, QgsProcessingParameterDefinition)],
+                                                   [o.typeName() for o in outTypes if issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
 
     def resolveValueDescription(self, value):
         if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
@@ -277,8 +245,8 @@ class ModelerParametersDialog(QDialog):
         return value
 
     def setPreviousValues(self):
-        if self._algName is not None:
-            alg = self.model.childAlgorithm(self._algName)
+        if self.childId is not None:
+            alg = self.model.childAlgorithm(self.childId)
             self.descriptionBox.setText(alg.description())
             for param in alg.algorithm().parameterDefinitions():
                 if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -308,10 +276,10 @@ class ModelerParametersDialog(QDialog):
 
     def createAlgorithm(self):
         alg = QgsProcessingModelAlgorithm.ChildAlgorithm(self._alg.id())
-        if not self._algName:
+        if not self.childId:
             alg.generateChildId(self.model)
         else:
-            alg.setChildId(self._algName)
+            alg.setChildId(self.childId)
         alg.setDescription(self.descriptionBox.text())
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:

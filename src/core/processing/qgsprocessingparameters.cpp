@@ -747,49 +747,49 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
   QString name = map.value( QStringLiteral( "name" ) ).toString();
   std::unique_ptr< QgsProcessingParameterDefinition > def;
-  if ( type == QStringLiteral( "boolean" ) )
+  if ( type == QgsProcessingParameterBoolean::typeName() )
     def.reset( new QgsProcessingParameterBoolean( name ) );
-  else if ( type == QStringLiteral( "crs" ) )
+  else if ( type == QgsProcessingParameterCrs::typeName() )
     def.reset( new QgsProcessingParameterCrs( name ) );
-  else if ( type == QStringLiteral( "layer" ) )
+  else if ( type == QgsProcessingParameterMapLayer::typeName() )
     def.reset( new QgsProcessingParameterMapLayer( name ) );
-  else if ( type == QStringLiteral( "extent" ) )
+  else if ( type == QgsProcessingParameterExtent::typeName() )
     def.reset( new QgsProcessingParameterExtent( name ) );
-  else if ( type == QStringLiteral( "point" ) )
+  else if ( type == QgsProcessingParameterPoint::typeName() )
     def.reset( new QgsProcessingParameterPoint( name ) );
-  else if ( type == QStringLiteral( "file" ) )
+  else if ( type == QgsProcessingParameterFile::typeName() )
     def.reset( new QgsProcessingParameterFile( name ) );
-  else if ( type == QStringLiteral( "matrix" ) )
+  else if ( type == QgsProcessingParameterMatrix::typeName() )
     def.reset( new QgsProcessingParameterMatrix( name ) );
-  else if ( type == QStringLiteral( "multilayer" ) )
+  else if ( type == QgsProcessingParameterMultipleLayers::typeName() )
     def.reset( new QgsProcessingParameterMultipleLayers( name ) );
-  else if ( type == QStringLiteral( "number" ) )
+  else if ( type == QgsProcessingParameterNumber::typeName() )
     def.reset( new QgsProcessingParameterNumber( name ) );
-  else if ( type == QStringLiteral( "range" ) )
+  else if ( type == QgsProcessingParameterRange::typeName() )
     def.reset( new QgsProcessingParameterRange( name ) );
-  else if ( type == QStringLiteral( "raster" ) )
+  else if ( type == QgsProcessingParameterRasterLayer::typeName() )
     def.reset( new QgsProcessingParameterRasterLayer( name ) );
-  else if ( type == QStringLiteral( "enum" ) )
+  else if ( type == QgsProcessingParameterEnum::typeName() )
     def.reset( new QgsProcessingParameterEnum( name ) );
-  else if ( type == QStringLiteral( "string" ) )
+  else if ( type == QgsProcessingParameterString::typeName() )
     def.reset( new QgsProcessingParameterString( name ) );
-  else if ( type == QStringLiteral( "expression" ) )
+  else if ( type == QgsProcessingParameterExpression::typeName() )
     def.reset( new QgsProcessingParameterExpression( name ) );
-  else if ( type == QStringLiteral( "vector" ) )
+  else if ( type == QgsProcessingParameterVectorLayer::typeName() )
     def.reset( new QgsProcessingParameterVectorLayer( name ) );
-  else if ( type == QStringLiteral( "field" ) )
+  else if ( type == QgsProcessingParameterField::typeName() )
     def.reset( new QgsProcessingParameterField( name ) );
-  else if ( type == QStringLiteral( "source" ) )
+  else if ( type == QgsProcessingParameterFeatureSource::typeName() )
     def.reset( new QgsProcessingParameterFeatureSource( name ) );
-  else if ( type == QStringLiteral( "sink" ) )
+  else if ( type == QgsProcessingParameterFeatureSink::typeName() )
     def.reset( new QgsProcessingParameterFeatureSink( name ) );
-  else if ( type == QStringLiteral( "vectorOut" ) )
+  else if ( type == QgsProcessingParameterVectorOutput::typeName() )
     def.reset( new QgsProcessingParameterVectorOutput( name ) );
-  else if ( type == QStringLiteral( "rasterOut" ) )
+  else if ( type == QgsProcessingParameterRasterOutput::typeName() )
     def.reset( new QgsProcessingParameterRasterOutput( name ) );
-  else if ( type == QStringLiteral( "fileOut" ) )
+  else if ( type == QgsProcessingParameterFileOutput::typeName() )
     def.reset( new QgsProcessingParameterFileOutput( name ) );
-  else if ( type == QStringLiteral( "folderOut" ) )
+  else if ( type == QgsProcessingParameterFolderOutput::typeName() )
     def.reset( new QgsProcessingParameterFolderOutput( name ) );
 
   if ( !def )

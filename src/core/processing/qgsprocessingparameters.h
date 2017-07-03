@@ -185,49 +185,49 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->type() == "boolean" )
+    if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
       sipType = sipType_QgsProcessingParameterBoolean;
-    else if ( sipCpp->type() == "crs" )
+    else if ( sipCpp->type() == QgsProcessingParameterCrs::typeName() )
       sipType = sipType_QgsProcessingParameterCrs;
-    else if ( sipCpp->type() == "layer" )
+    else if ( sipCpp->type() == QgsProcessingParameterMapLayer::typeName() )
       sipType = sipType_QgsProcessingParameterMapLayer;
-    else if ( sipCpp->type() == "extent" )
+    else if ( sipCpp->type() == QgsProcessingParameterExtent::typeName() )
       sipType = sipType_QgsProcessingParameterExtent;
-    else if ( sipCpp->type() == "point" )
+    else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
-    else if ( sipCpp->type() == "file" )
+    else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
-    else if ( sipCpp->type() == "matrix" )
+    else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
       sipType = sipType_QgsProcessingParameterMatrix;
-    else if ( sipCpp->type() == "multilayer" )
+    else if ( sipCpp->type() == QgsProcessingParameterMultipleLayers::typeName() )
       sipType = sipType_QgsProcessingParameterMultipleLayers;
-    else if ( sipCpp->type() == "number" )
+    else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
       sipType = sipType_QgsProcessingParameterNumber;
-    else if ( sipCpp->type() == "range" )
+    else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
-    else if ( sipCpp->type() == "raster" )
+    else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
       sipType = sipType_QgsProcessingParameterRasterLayer;
-    else if ( sipCpp->type() == "enum" )
+    else if ( sipCpp->type() == QgsProcessingParameterEnum::typeName() )
       sipType = sipType_QgsProcessingParameterEnum;
-    else if ( sipCpp->type() == "string" )
+    else if ( sipCpp->type() == QgsProcessingParameterString::typeName() )
       sipType = sipType_QgsProcessingParameterString;
-    else if ( sipCpp->type() == "expression" )
+    else if ( sipCpp->type() == QgsProcessingParameterExpression::typeName() )
       sipType = sipType_QgsProcessingParameterExpression;
-    else if ( sipCpp->type() == "vector" )
+    else if ( sipCpp->type() == QgsProcessingParameterVectorLayer::typeName() )
       sipType = sipType_QgsProcessingParameterVectorLayer;
-    else if ( sipCpp->type() == "field" )
+    else if ( sipCpp->type() == QgsProcessingParameterField::typeName() )
       sipType = sipType_QgsProcessingParameterField;
-    else if ( sipCpp->type() == "source" )
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSource::typeName() )
       sipType = sipType_QgsProcessingParameterFeatureSource;
-    else if ( sipCpp->type() == "sink" )
+    else if ( sipCpp->type() == QgsProcessingParameterFeatureSink::typeName() )
       sipType = sipType_QgsProcessingParameterFeatureSink;
-    else if ( sipCpp->type() == "vectorOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterVectorOutput::typeName() )
       sipType = sipType_QgsProcessingParameterVectorOutput;
-    else if ( sipCpp->type() == "rasterOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterRasterOutput::typeName() )
       sipType = sipType_QgsProcessingParameterRasterOutput;
-    else if ( sipCpp->type() == "fileOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterFileOutput::typeName() )
       sipType = sipType_QgsProcessingParameterFileOutput;
-    else if ( sipCpp->type() == "folderOut" )
+    else if ( sipCpp->type() == QgsProcessingParameterFolderOutput::typeName() )
       sipType = sipType_QgsProcessingParameterFolderOutput;
     SIP_END
 #endif
@@ -628,7 +628,11 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
     QgsProcessingParameterBoolean( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                    bool optional = false );
 
-    QString type() const override { return QStringLiteral( "boolean" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "boolean" ); }
+    QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
 
@@ -654,7 +658,11 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QgsProcessingParameterCrs( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                bool optional = false );
 
-    QString type() const override { return QStringLiteral( "crs" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "crs" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -681,7 +689,11 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
     QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                     bool optional = false );
 
-    QString type() const override { return QStringLiteral( "layer" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "layer" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -708,7 +720,11 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
     QgsProcessingParameterExtent( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                   bool optional = false );
 
-    QString type() const override { return QStringLiteral( "extent" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "extent" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -736,7 +752,11 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
     QgsProcessingParameterPoint( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                  bool optional = false );
 
-    QString type() const override { return QStringLiteral( "point" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "point" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
     /**
@@ -769,7 +789,11 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
     QgsProcessingParameterFile( const QString &name, const QString &description = QString(), Behavior behavior = File, const QString &extension = QString(), const QVariant &defaultValue = QVariant(),
                                 bool optional = false );
 
-    QString type() const override { return QStringLiteral( "file" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "file" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString asScriptCode() const override;
 
@@ -829,7 +853,11 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
                                   const QVariant &defaultValue = QVariant(),
                                   bool optional = false );
 
-    QString type() const override { return QStringLiteral( "matrix" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "matrix" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -908,7 +936,11 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 
-    QString type() const override { return QStringLiteral( "multilayer" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "multilayer" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -982,7 +1014,11 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                            double maxValue = DBL_MAX
                                          );
 
-    QString type() const override { return QStringLiteral( "number" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "number" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -1055,7 +1091,11 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
                                  const QVariant &defaultValue = QVariant(),
                                  bool optional = false );
 
-    QString type() const override { return QStringLiteral( "range" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "range" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -1100,7 +1140,11 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
     QgsProcessingParameterRasterLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
-    QString type() const override { return QStringLiteral( "raster" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "raster" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -1129,7 +1173,11 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
                                 const QVariant &defaultValue = QVariant(),
                                 bool optional = false );
 
-    QString type() const override { return QStringLiteral( "enum" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "enum" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1190,7 +1238,11 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
                                   bool multiLine = false,
                                   bool optional = false );
 
-    QString type() const override { return QStringLiteral( "string" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "string" ); }
+    QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
 
@@ -1237,7 +1289,11 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
                                       const QString &parentLayerParameterName = QString(),
                                       bool optional = false );
 
-    QString type() const override { return QStringLiteral( "expression" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "expression" ); }
+    QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QStringList dependsOnOtherParameters() const override;
 
@@ -1284,7 +1340,11 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     QgsProcessingParameterVectorLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
-    QString type() const override { return QStringLiteral( "vector" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "vector" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
 
@@ -1323,7 +1383,11 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
                                  bool allowMultiple = false,
                                  bool optional = false );
 
-    QString type() const override { return QStringLiteral( "field" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "field" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1398,7 +1462,11 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
                                          const QList< int > &types = QList< int >(),
                                          const QVariant &defaultValue = QVariant(), bool optional = false );
 
-    QString type() const override { return QStringLiteral( "source" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "source" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1508,7 +1576,11 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
-    QString type() const override { return QStringLiteral( "sink" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "sink" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1565,7 +1637,11 @@ class CORE_EXPORT QgsProcessingParameterVectorOutput : public QgsProcessingDesti
     QgsProcessingParameterVectorOutput( const QString &name, const QString &description = QString(), QgsProcessingParameterDefinition::LayerType type = QgsProcessingParameterDefinition::TypeVectorAny, const QVariant &defaultValue = QVariant(),
                                         bool optional = false );
 
-    QString type() const override { return QStringLiteral( "vectorOut" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "vectorOut" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1621,7 +1697,11 @@ class CORE_EXPORT QgsProcessingParameterRasterOutput : public QgsProcessingDesti
                                         const QVariant &defaultValue = QVariant(),
                                         bool optional = false );
 
-    QString type() const override { return QStringLiteral( "rasterOut" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "rasterOut" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
@@ -1651,7 +1731,11 @@ class CORE_EXPORT QgsProcessingParameterFileOutput : public QgsProcessingDestina
                                       const QVariant &defaultValue = QVariant(),
                                       bool optional = false );
 
-    QString type() const override { return QStringLiteral( "fileOut" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "fileOut" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
@@ -1700,7 +1784,11 @@ class CORE_EXPORT QgsProcessingParameterFolderOutput : public QgsProcessingDesti
                                         const QVariant &defaultValue = QVariant(),
                                         bool optional = false );
 
-    QString type() const override { return QStringLiteral( "folderOut" ); }
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "folderOut" ); }
+    QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
