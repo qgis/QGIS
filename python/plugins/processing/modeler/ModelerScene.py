@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsExpression)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 

@@ -89,30 +89,20 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
     def getValue(self):
         value = self.leText.text()
-        values = []
-        #for param in self.modelParametersDialog.model.parameterDefinitions():
-        #    if isinstance(param, QgsProcessingParameterNumber):
-        #        if "@" + param.name() in value:
-        #            values.append(ValueFromInput(param.name()))
-        #for alg in list(self.modelParametersDialog.model.algs.values()):
-        #    for out in alg.algorithm.outputDefinitions():
-        #        if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.modeler_name, out.name) in value:
-        #            values.append(ValueFromOutput(alg.modeler_name, out.name()))
-
         for param in self.modelParametersDialog.model.parameterDefinitions():
             if isinstance(param, QgsProcessingParameterNumber):
-                if "@" + param.name() == value:
+                if "@" + param.name() == value.strip():
                     return QgsProcessingModelAlgorithm.ChildParameterSource.fromModelParameter(param.name())
 
         for alg in list(self.modelParametersDialog.model.childAlgorithms().values()):
             for out in alg.algorithm().outputDefinitions():
-                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value:
+                if isinstance(out, QgsProcessingOutputNumber) and "@%s_%s" % (alg.childId(), out.name()) == value.strip():
                     return QgsProcessingModelAlgorithm.ChildParameterSource.fromChildOutput(alg.childId(), out.outputName())
 
-        if values:
-            return CompoundValue(values, value)
-        else:
-            return value
+        try:
+            return float(value.strip())
+        except:
+            return QgsProcessingModelAlgorithm.ChildParameterSource.fromExpression(self.leText.text())
 
     def setValue(self, value):
         if isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
@@ -121,6 +111,8 @@ class ModellerNumberInputPanel(BASE, WIDGET):
             elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ChildOutput:
                 name = "%s_%s" % (value.outputChildId(), value.outputName())
                 self.leText.setText(name)
+            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.Expression:
+                self.leText.setText(value.expression())
             else:
                 self.leText.setText(str(value.staticValue()))
         else:
