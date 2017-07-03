@@ -4761,11 +4761,15 @@ void TestQgsProcessing::modelExecution()
   model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), QgsProcessingModelAlgorithm::ModelParameter( "SOURCE_LAYER" ) );
   model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelAlgorithm::ModelParameter( "DIST" ) );
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c1;
+  QgsExpressionContext expContext;
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  scope->setVariable( "myvar", 8 );
+  expContext.appendScope( scope );
   alg2c1.setChildId( "cx1" );
   alg2c1.setAlgorithmId( "native:buffer" );
   alg2c1.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
   alg2c1.addParameterSources( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
-  alg2c1.addParameterSources( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "8*2" ) ) );
+  alg2c1.addParameterSources( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "@myvar*2" ) ) );
   alg2c1.addParameterSources( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
   alg2c1.addParameterSources( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
   alg2c1.addParameterSources( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
@@ -4784,7 +4788,7 @@ void TestQgsProcessing::modelExecution()
   layerDef.destinationName = "my_dest";
   modelInputs.insert( "cx3:MY_OUT", QVariant::fromValue( layerDef ) );
   QMap<QString, QVariantMap> childResults;
-  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults );
+  QVariantMap params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx1" ), modelInputs, childResults, expContext );
   QCOMPARE( params.value( "DISSOLVE" ).toBool(), false );
   QCOMPARE( params.value( "DISTANCE" ).toInt(), 271 );
   QCOMPARE( params.value( "SEGMENTS" ).toInt(), 16 );
@@ -4804,7 +4808,7 @@ void TestQgsProcessing::modelExecution()
   alg2c2.setAlgorithmId( "native:centroids" );
   alg2c2.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx1", "OUTPUT" ) );
   model2.addChildAlgorithm( alg2c2 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults, expContext );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 2 );
@@ -4824,7 +4828,7 @@ void TestQgsProcessing::modelExecution()
   alg2c3.setModelOutputs( outputs3 );
 
   model2.addChildAlgorithm( alg2c3 );
-  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx3" ), modelInputs, childResults, expContext );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "EXPRESSION" ).toString(), QStringLiteral( "true" ) );
   QVERIFY( params.value( "OUTPUT" ).canConvert<QgsProcessingOutputLayerDefinition>() );
@@ -4840,7 +4844,7 @@ void TestQgsProcessing::modelExecution()
                               "##model_out_layer=output outputVector\n"
                               "##my_out=output outputVector\n"
                               "results={}\n"
-                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':QgsExpression('8*2').evaluate()}, context=context, feedback=feedback)\n"
+                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':QgsExpression('@myvar*2').evaluate()}, context=context, feedback=feedback)\n"
                               "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
                               "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
                               "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"

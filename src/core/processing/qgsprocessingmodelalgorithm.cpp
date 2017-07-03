@@ -351,7 +351,7 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
-QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap< QString, QVariantMap > &results ) const
+QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap< QString, QVariantMap > &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
@@ -389,7 +389,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
           case ChildParameterSource::Expression:
           {
             QgsExpression exp( source.expression() );
-            paramParts << exp.evaluate();
+            paramParts << exp.evaluate( &expressionContext );
             break;
           }
         }
@@ -492,6 +492,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QTime totalTime;
   totalTime.start();
 
+  QgsExpressionContext baseContext = createExpressionContext( parameters, context );
+
   QMap< QString, QVariantMap > childResults;
   QVariantMap finalResults;
   QSet< QString > executed;
@@ -522,7 +524,10 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       const ChildAlgorithm &child = mChildAlgorithms[ childId ];
 
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults );
+      QgsExpressionContext expContext = baseContext;
+      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context );
+
+      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
       feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
       //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
       //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
