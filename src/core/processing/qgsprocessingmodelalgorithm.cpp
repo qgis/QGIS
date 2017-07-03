@@ -385,6 +385,13 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
             paramParts << linkedChildResults.value( source.outputName() );
             break;
           }
+
+          case ChildParameterSource::Expression:
+          {
+            QgsExpression exp( source.expression() );
+            paramParts << exp.evaluate();
+            break;
+          }
         }
       }
       if ( paramParts.count() == 1 )
@@ -1125,6 +1132,8 @@ bool QgsProcessingModelAlgorithm::ChildParameterSource::operator==( const QgsPro
       return mChildId == other.mChildId && mOutputName == other.mOutputName;
     case ModelParameter:
       return mParameterName == other.mParameterName;
+    case Expression:
+      return mExpression == other.mExpression;
   }
   return false;
 }
@@ -1154,6 +1163,14 @@ QgsProcessingModelAlgorithm::ChildParameterSource QgsProcessingModelAlgorithm::C
   return src;
 }
 
+QgsProcessingModelAlgorithm::ChildParameterSource QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( const QString &expression )
+{
+  ChildParameterSource src;
+  src.mSource = Expression;
+  src.mExpression = expression;
+  return src;
+}
+
 QgsProcessingModelAlgorithm::ChildParameterSource::Source QgsProcessingModelAlgorithm::ChildParameterSource::source() const
 {
   return mSource;
@@ -1177,6 +1194,10 @@ QVariant QgsProcessingModelAlgorithm::ChildParameterSource::toVariant() const
     case StaticValue:
       map.insert( QStringLiteral( "static_value" ), mStaticValue );
       break;
+
+    case Expression:
+      map.insert( QStringLiteral( "expression" ), mExpression );
+      break;
   }
   return map;
 }
@@ -1198,6 +1219,10 @@ bool QgsProcessingModelAlgorithm::ChildParameterSource::loadVariant( const QVari
     case StaticValue:
       mStaticValue = map.value( QStringLiteral( "static_value" ) );
       break;
+
+    case Expression:
+      mExpression = map.value( QStringLiteral( "expression" ) ).toString();
+      break;
   }
   return true;
 }
@@ -1214,6 +1239,9 @@ QString QgsProcessingModelAlgorithm::ChildParameterSource::asPythonCode() const
 
     case StaticValue:
       return mStaticValue.toString();
+
+    case Expression:
+      return QStringLiteral( "QgsExpression('%1').evaluate()" ).arg( mExpression );
   }
   return QString();
 }

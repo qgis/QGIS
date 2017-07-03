@@ -4220,6 +4220,19 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( oSource.outputName(), QStringLiteral( "d" ) );
   QCOMPARE( oSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
 
+  // expression source
+  QgsProcessingModelAlgorithm::ChildParameterSource expSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( "1+2" );
+  QCOMPARE( expSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::Expression );
+  QCOMPARE( expSource.expression(), QStringLiteral( "1+2" ) );
+  expSource.setExpression( "1+3" );
+  QCOMPARE( expSource.expression(), QStringLiteral( "1+3" ) );
+  expSource = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 );
+  // check that calling setExpression flips source to Expression
+  QCOMPARE( expSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
+  expSource.setExpression( "1+4" );
+  QCOMPARE( expSource.expression(), QStringLiteral( "1+4" ) );
+  QCOMPARE( expSource.source(), QgsProcessingModelAlgorithm::ChildParameterSource::Expression );
+
   // source equality operator
   QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) ==
            QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
@@ -4239,6 +4252,12 @@ void TestQgsProcessing::modelerAlgorithm()
            QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg2" ), QStringLiteral( "out" ) ) );
   QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out" ) ) !=
            QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( QStringLiteral( "alg" ), QStringLiteral( "out2" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "a" ) ) ==
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "a" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "a" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "b" ) ) );
+  QVERIFY( QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "a" ) ) !=
+           QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( QStringLiteral( "b" ) ) );
 
 
 
@@ -4562,9 +4581,11 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5c1.addParameterSources( "x", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p1" ) );
   alg5c1.addParameterSources( "y", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out3" ) );
   alg5c1.addParameterSources( "z", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 5 ) );
+  alg5c1.addParameterSources( "a", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( "2*2" ) );
   alg5c1.addParameterSources( "zm", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 6 )
                               << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "p2" )
-                              << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out4" ) );
+                              << QgsProcessingModelAlgorithm::ChildParameterSource::fromChildOutput( "cx2", "out4" )
+                              << QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( "1+2" ) );
   alg5c1.setActive( true );
   alg5c1.setOutputsCollapsed( true );
   alg5c1.setParametersCollapsed( true );
@@ -4609,7 +4630,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
   QCOMPARE( alg6c1.position().x(), 1.0 );
   QCOMPARE( alg6c1.position().y(), 2.0 );
-  QCOMPARE( alg6c1.parameterSources().count(), 4 );
+  QCOMPARE( alg6c1.parameterSources().count(), 5 );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).parameterName(), QStringLiteral( "p1" ) );
   QCOMPARE( alg6c1.parameterSources().value( "y" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
@@ -4617,6 +4638,9 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.parameterSources().value( "y" ).at( 0 ).outputName(), QStringLiteral( "out3" ) );
   QCOMPARE( alg6c1.parameterSources().value( "z" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( "z" ).at( 0 ).staticValue().toInt(), 5 );
+  QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::Expression );
+  QCOMPARE( alg6c1.parameterSources().value( "a" ).at( 0 ).expression(), QStringLiteral( "2*2" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).count(), 4 );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::StaticValue );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 0 ).staticValue().toInt(), 6 );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 1 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
@@ -4624,6 +4648,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputChildId(), QStringLiteral( "cx2" ) );
   QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 2 ).outputName(), QStringLiteral( "out4" ) );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).source(), QgsProcessingModelAlgorithm::ChildParameterSource::Expression );
+  QCOMPARE( alg6c1.parameterSources().value( "zm" ).at( 3 ).expression(), QStringLiteral( "1+2" ) );
 
   QCOMPARE( alg6c1.modelOutputs().count(), 1 );
   QCOMPARE( alg6c1.modelOutputs().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "my output" ) );
@@ -4739,7 +4765,7 @@ void TestQgsProcessing::modelExecution()
   alg2c1.setAlgorithmId( "native:buffer" );
   alg2c1.addParameterSources( "INPUT", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "SOURCE_LAYER" ) );
   alg2c1.addParameterSources( "DISTANCE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromModelParameter( "DIST" ) );
-  alg2c1.addParameterSources( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 16 ) );
+  alg2c1.addParameterSources( "SEGMENTS", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromExpression( QStringLiteral( "8*2" ) ) );
   alg2c1.addParameterSources( "END_CAP_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 1 ) );
   alg2c1.addParameterSources( "JOIN_STYLE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( 2 ) );
   alg2c1.addParameterSources( "DISSOLVE", QgsProcessingModelAlgorithm::ChildParameterSources() << QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( false ) );
@@ -4814,7 +4840,7 @@ void TestQgsProcessing::modelExecution()
                               "##model_out_layer=output outputVector\n"
                               "##my_out=output outputVector\n"
                               "results={}\n"
-                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':16}, context=context, feedback=feedback)\n"
+                              "outputs['cx1']=processing.run('native:buffer', {'DISSOLVE':false,'DISTANCE':parameters['DIST'],'END_CAP_STYLE':1,'INPUT':parameters['SOURCE_LAYER'],'JOIN_STYLE':2,'SEGMENTS':QgsExpression('8*2').evaluate()}, context=context, feedback=feedback)\n"
                               "results['MODEL_OUT_LAYER']=outputs['cx1']['OUTPUT']\n"
                               "outputs['cx2']=processing.run('native:centroids', {'INPUT':outputs['cx1']['OUTPUT']}, context=context, feedback=feedback)\n"
                               "outputs['cx3']=processing.run('native:extractbyexpression', {'EXPRESSION':true,'INPUT':outputs['cx1']['OUTPUT'],'OUTPUT':parameters['MY_OUT']}, context=context, feedback=feedback)\n"
