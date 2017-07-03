@@ -38,7 +38,11 @@ def createReferencingLayer():
     f2.setFields(layer.pendingFields())
     f2.setAttributes(["test2", 123])
     f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
-    assert pr.addFeatures([f1, f2])
+    f3 = QgsFeature()
+    f3.setFields(layer.pendingFields())
+    f3.setAttributes(["foobar'bar", 124])
+    f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
+    assert pr.addFeatures([f1, f2, f3])
     return layer
 
 
@@ -57,7 +61,7 @@ def createReferencedLayer():
     f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 2)))
     f3 = QgsFeature()
     f3.setFields(layer.pendingFields())
-    f3.setAttributes(["foobar", 789, 554])
+    f3.setAttributes(["foobar'bar", 789, 554])
     f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 3)))
     assert pr.addFeatures([f1, f2, f3])
     return layer
@@ -111,6 +115,20 @@ class TestQgsRelation(unittest.TestCase):
 
         it = rel.getRelatedFeatures(feat)
         assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
+
+    def test_getRelatedFeaturesWithQuote(self):
+        rel = QgsRelation()
+
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('fldtxt', 'x')
+
+        feat = self.referencedLayer.getFeature(3)
+
+        it = rel.getRelatedFeatures(feat)
+        assert next(it).attributes() == ["foobar'bar", 124]
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
