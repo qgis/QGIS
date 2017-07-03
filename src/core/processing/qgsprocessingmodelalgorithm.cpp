@@ -407,7 +407,18 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const Chil
         {
           QString paramName = child.childId() + ':' + outputIt.key();
           if ( modelParameters.contains( paramName ) )
-            childParams.insert( destParam->name(), modelParameters.value( paramName ) );
+          {
+            QVariant value = modelParameters.value( paramName );
+            if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+            {
+              // make sure layout output name is correctly set
+              QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+              fromVar.destinationName = outputIt.key();
+              value = QVariant::fromValue( fromVar );
+            }
+
+            childParams.insert( destParam->name(), value );
+          }
           isFinalOutput = true;
           break;
         }
