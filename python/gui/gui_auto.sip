@@ -273,6 +273,7 @@
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
+%Include layout/qgslayoutdesignerinterface.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip

@@ -56,12 +56,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual void drawDebugRect( QPainter *painter );
 
-  private:
-
     /**
      * Draws the item's contents on a specified \a painter.
      */
     virtual void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) = 0;
+
+  private:
 
     //! Prepares a painter by setting rendering flags
     void preparePainter( QPainter *painter );

@@ -155,6 +155,8 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
+  layout/qgslayoutdesignerdialog.cpp
+
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
@@ -330,6 +332,8 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
+  layout/qgslayoutdesignerdialog.h
+
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
 
@@ -473,6 +477,7 @@ ENDIF(PEDANTIC)
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/composer
+  ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
@@ -534,6 +539,7 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/layout
   ../core/metadata
   ../core/layertree
   ../core/providers/memory
@@ -549,6 +555,7 @@ INCLUDE_DIRECTORIES(
   ../gui/editorwidgets
   ../gui/editorwidgets/core
   ../gui/layertree
+  ../gui/layout
   ../plugins
   ../python
   gps

@@ -46,6 +46,11 @@ Return correct graphics item type.
  @param painter destination QPainter
 %End
 
+    virtual void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) = 0;
+%Docstring
+ Draws the item's contents on a specified ``painter``.
+%End
+
 };
 
 

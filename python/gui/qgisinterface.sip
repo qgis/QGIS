@@ -344,6 +344,23 @@ Adds a widget to the user input tool bar.
 .. seealso:: openComposer()
 %End
 
+    virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
+%Docstring
+ Returns all currently open layout designers.
+.. versionadded:: 3.0
+ :rtype: list of QgsLayoutDesignerInterface
+%End
+
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+%Docstring
+ Opens a new layout designer dialog for the specified ``layout``, or
+ brings an already open designer window to the foreground if one
+ is already created for the layout.
+.. versionadded:: 3.0
+.. seealso:: closeComposer()
+ :rtype: QgsLayoutDesignerInterface
+%End
+
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 %Docstring
  Opens the options dialog. The ``currentPage`` argument can be used to force

@@ -188,6 +188,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
@@ -2104,6 +2105,10 @@ void QgisApp::setAppStyleSheet( const QString &stylesheet )
   {
     c->setStyleSheet( stylesheet );
   }
+  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  {
+    d->setStyleSheet( stylesheet );
+  }
 }
 
 int QgisApp::messageTimeout()
@@ -2762,6 +2767,10 @@ void QgisApp::setIconSizes( int size )
   Q_FOREACH ( QgsComposer *c, mPrintComposers )
   {
     c->setIconSizes( size );
+  }
+  Q_FOREACH ( QgsLayoutDesignerDialog *d, mLayoutDesignerDialogs )
+  {
+    d->setIconSizes( size );
   }
 }
 
@@ -7163,6 +7172,40 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
 
   return newComposerObject;
+}
+
+QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
+{
+  // maybe a designer already open for this layout
+  Q_FOREACH ( QgsLayoutDesignerDialog *designer, mLayoutDesignerDialogs )
+  {
+    if ( designer->currentLayout() == layout )
+    {
+      designer->show();
+      designer->activate();
+      designer->raise();
+      return designer;
+    }
+  }
+
+  //nope, so make a new one
+  QgsLayoutDesignerDialog *newDesigner = new QgsLayoutDesignerDialog( this );
+  newDesigner->setCurrentLayout( layout );
+  connect( newDesigner, &QgsLayoutDesignerDialog::aboutToClose, this, [this, newDesigner]
+  {
+    emit layoutDesignerWillBeClosed( newDesigner->iface() );
+    mLayoutDesignerDialogs.remove( newDesigner );
+    emit layoutDesignerClosed();
+  } );
+
+  //add it to the map of existing print designers
+  mLayoutDesignerDialogs.insert( newDesigner );
+
+  newDesigner->open();
+  emit layoutDesignerOpened( newDesigner->iface() );
+  //connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+
+  return newDesigner;
 }
 
 void QgisApp::deleteComposer( QgsComposer *c )
