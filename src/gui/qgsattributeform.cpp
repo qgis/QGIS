@@ -1936,16 +1936,6 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
   }
 }
 
-QgsFeature QgsAttributeForm::joinedFeature( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const
-{
-  QgsFeature joinedFeature = mLayer->joinBuffer()->joinedFeatureOf( info, feature );
-
-  if ( !joinedFeature.isValid() )
-    joinedFeature = QgsVectorLayerUtils::createFeature( info->joinLayer(), QgsGeometry(), QgsAttributeMap() );
-
-  return joinedFeature;
-}
-
 void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 {
   QgsFeature formFeature;
@@ -1960,7 +1950,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     if ( !info->isDynamicFormEnabled() )
       continue;
 
-    QgsFeature joinFeature = joinedFeature( info, formFeature );
+    QgsFeature joinFeature = mLayer->joinBuffer()->joinedFeatureOf( info, formFeature );
 
     QStringList *subsetFields = info->joinFieldNamesSubset();
     if ( subsetFields )
@@ -1968,7 +1958,12 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       Q_FOREACH ( const QString &field, *subsetFields )
       {
         QString prefixedName = info->prefixedFieldName( field );
-        changeAttribute( prefixedName, joinFeature.attribute( field ) );
+        QVariant val;
+
+        if ( joinFeature.isValid() )
+          val = joinFeature.attribute( field );
+
+        changeAttribute( prefixedName, val );
       }
     }
     else
@@ -1976,7 +1971,12 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       Q_FOREACH ( const QgsField &field, joinFeature.fields() )
       {
         QString prefixedName = info->prefixedFieldName( field );
-        changeAttribute( prefixedName, joinFeature.attribute( field.name() ) );
+        QVariant val;
+
+        if ( joinFeature.isValid() )
+          val = joinFeature.attribute( field.name() );
+
+        changeAttribute( prefixedName, val );
       }
     }
   }
