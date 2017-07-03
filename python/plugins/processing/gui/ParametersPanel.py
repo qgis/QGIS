@@ -41,7 +41,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorOutput)
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
                                  QLabel, QCheckBox)
 from qgis.PyQt.QtGui import QIcon
@@ -121,6 +121,7 @@ class ParametersPanel(BASE, WIDGET):
                         button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
                         button.setCheckable(True)
                         layout.addWidget(button)
+                        layout.setAlignment(button, Qt.AlignTop)
                         self.iterateButtons[param.name()] = button
                         button.toggled.connect(self.buttonToggled)
                         widget = QWidget()

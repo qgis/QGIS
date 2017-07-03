@@ -89,7 +89,7 @@ from qgis.gui import (
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
 )
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
+from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
 from qgis.utils import iface
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
@@ -762,11 +762,13 @@ class VectorWidgetWrapper(WidgetWrapper):
             layout.setSpacing(2)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
+            layout.setAlignment(self.combo, Qt.AlignTop)
             btn = QToolButton()
             btn.setText('...')
             btn.setToolTip(self.tr("Select file"))
             btn.clicked.connect(self.selectFile)
             layout.addWidget(btn)
+            layout.setAlignment(btn, Qt.AlignTop)
 
             vl = QVBoxLayout()
             vl.setMargin(0)
