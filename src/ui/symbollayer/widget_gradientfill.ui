@@ -557,7 +557,6 @@
   <zorder>mSpinAngle</zorder>
   <zorder>cboGradientSpread</zorder>
   <zorder>cboCoordinateMode</zorder>
-  <zorder>verticalSpacer</zorder>
  </widget>
  <customwidgets>
   <customwidget>
