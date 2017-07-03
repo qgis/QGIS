@@ -1280,7 +1280,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc,
     }
 
     // attribute ref
-    QString ref = attributeElement.attribute( QStringLiteral( "ref" ) );
+    QString ref = attributeElement.attribute( "ref" );
 
     QRegExp gmlPT( "gml:(.*)PropertyType" );
     QRegExp gmlRefProperty( "gml:(.*)Property" );
