@@ -148,6 +148,14 @@ class QgsLayoutItemRegistry : QObject
  :rtype: QMap< int, str>
 %End
 
+  signals:
+
+    void typeAdded( int type, const QString &name );
+%Docstring
+ Emitted whenever a new item type is added to the registry, with the specified
+ ``type`` and visible ``name``.
+%End
+
   private:
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );
 };
