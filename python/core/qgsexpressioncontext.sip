@@ -874,6 +874,13 @@ class QgsExpressionContextUtils
  :rtype: QgsExpressionContextScope
 %End
 
+    static QgsExpressionContextScope *processingModelResultsScope( const QVariantMap &results, QgsProcessingContext &context ) /Factory/;
+%Docstring
+ Creates a new scope which contains variables and functions relating to processing model results
+ :rtype: QgsExpressionContextScope
+%End
+
+
     static void registerContextFunctions();
 %Docstring
  Registers all known core functions provided by QgsExpressionContextScope objects.

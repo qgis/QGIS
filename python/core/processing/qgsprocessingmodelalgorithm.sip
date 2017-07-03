@@ -865,6 +865,18 @@ Copies are protected to avoid slicing
  :rtype: str
 %End
 
+    QList< QgsProcessingModelAlgorithm::ChildParameterSource > availableSourcesForChild( const QString &childId, const QStringList &parameterTypes = QStringList(),
+        const QStringList &outputTypes = QStringList(), const QList< int > dataTypes = QList< int >() ) const;
+%Docstring
+ Returns a list of possible sources which can be used for the parameters for a child
+ algorithm in the model. Returned sources are those which match either one of the
+ specified ``parameterTypes`` (see QgsProcessingParameterDefinition.type() ) or
+ on of the specified ``outputTypes`` (see QgsProcessingOutputDefinition.type() ).
+ If specified, an optional list of ``dataTypes`` can be used to filter the returned
+ sources to those with compatible data types for the parameter/outputs.
+ :rtype: list of QgsProcessingModelAlgorithm.ChildParameterSource
+%End
+
   protected:
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );

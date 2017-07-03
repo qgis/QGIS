@@ -662,6 +662,90 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
   return lines.join( '\n' );
 }
 
+QgsProcessingModelAlgorithm::ChildParameterSources QgsProcessingModelAlgorithm::availableSourcesForChild( const QString &childId, const QStringList &parameterTypes, const QStringList &outputTypes, const QList<int> dataTypes ) const
+{
+  ChildParameterSources sources;
+
+  // first look through model parameters
+  QMap< QString, ModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
+  for ( ; paramIt != mParameterComponents.constEnd(); ++paramIt )
+  {
+    const QgsProcessingParameterDefinition *def = parameterDefinition( paramIt->parameterName() );
+    if ( !def )
+      continue;
+
+    if ( parameterTypes.contains( def->type() ) )
+    {
+      if ( !dataTypes.isEmpty() )
+      {
+        if ( def->type() == QStringLiteral( "field" ) )
+        {
+          const QgsProcessingParameterField *fieldDef = static_cast< const QgsProcessingParameterField * >( def );
+          if ( !( dataTypes.contains( fieldDef->dataType() ) || fieldDef->dataType() == QgsProcessingParameterField::Any ) )
+          {
+            continue;
+          }
+        }
+        else if ( def->type() == "source" )
+        {
+          const QgsProcessingParameterFeatureSource *sourceDef = static_cast< const QgsProcessingParameterFeatureSource *>( def );
+          bool ok = !sourceDef->dataTypes().isEmpty();
+          Q_FOREACH ( int type, sourceDef->dataTypes() )
+          {
+            if ( dataTypes.contains( type ) || type == QgsProcessingParameterDefinition::TypeAny )
+            {
+              ok = true;
+              break;
+            }
+          }
+          if ( !ok )
+            continue;
+        }
+      }
+      sources << ChildParameterSource::fromModelParameter( paramIt->parameterName() );
+    }
+  }
+
+  QSet< QString > dependents;
+  if ( !childId.isEmpty() )
+  {
+    dependents = dependentChildAlgorithms( childId );
+    dependents << childId;
+  }
+
+  QMap< QString, ChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( dependents.contains( childIt->childId() ) )
+      continue;
+
+    const QgsProcessingAlgorithm *alg = childIt->algorithm();
+    if ( !alg )
+      continue;
+
+    Q_FOREACH ( const QgsProcessingOutputDefinition *out, alg->outputDefinitions() )
+    {
+      if ( outputTypes.contains( out->type() ) )
+      {
+        if ( !dataTypes.isEmpty() )
+        {
+          if ( out->type() == QStringLiteral( "outputVector" ) )
+          {
+            const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
+            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessingParameterDefinition::TypeAny ) )
+            {
+              continue;
+            }
+          }
+        }
+        sources << ChildParameterSource::fromChildOutput( childIt->childId(), out->name() );
+      }
+    }
+  }
+
+  return sources;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::helpContent() const
 {
   return mHelpContent;
