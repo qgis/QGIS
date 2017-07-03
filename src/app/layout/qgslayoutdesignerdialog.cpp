@@ -44,9 +44,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
   setStyleSheet( QgisApp::instance()->styleSheet() );
-  setWindowTitle( tr( "QGIS Layout Designer" ) );
 
   setupUi( this );
+  setWindowTitle( tr( "QGIS Layout Designer" ) );
 
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
