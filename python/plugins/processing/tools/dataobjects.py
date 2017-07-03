@@ -81,6 +81,8 @@ def createContext(feedback=None):
     settings = QgsSettings()
     context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
 
+    context.setExpressionContext(createExpressionContext())
+
     return context
 
 

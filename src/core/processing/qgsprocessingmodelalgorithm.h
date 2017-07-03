@@ -879,7 +879,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
 
-    QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap<QString, QVariantMap> &results ) const;
+    QVariantMap parametersForChildAlgorithm( const ChildAlgorithm &child, const QVariantMap &modelParameters, const QMap<QString, QVariantMap> &results, const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Returns true if an output from a child algorithm is required elsewhere in
