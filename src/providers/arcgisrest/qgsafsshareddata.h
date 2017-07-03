@@ -40,7 +40,7 @@ class QgsAfsSharedData : public QObject
     friend class QgsAfsProvider;
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
-    QgsWkbTypes::Type mGeometryType;
+    QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
     QList<quint32> mObjectIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
