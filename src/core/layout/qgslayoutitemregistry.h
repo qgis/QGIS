@@ -239,6 +239,14 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      */
     QMap< int, QString> itemTypes() const;
 
+  signals:
+
+    /**
+     * Emitted whenever a new item type is added to the registry, with the specified
+     * \a type and visible \a name.
+     */
+    void typeAdded( int type, const QString &name );
+
   private:
 #ifdef SIP_RUN
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );

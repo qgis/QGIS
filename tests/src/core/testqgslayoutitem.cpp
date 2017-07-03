@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QPainter>
 #include <QImage>
+#include <QtTest/QSignalSpy>
 
 class TestQgsLayoutItem: public QObject
 {
@@ -128,10 +129,17 @@ void TestQgsLayoutItem::registry()
   {
     props.clear();
   };
+
+  QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
+
   QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), create, resolve, createWidget );
   QVERIFY( registry.addLayoutItemType( metadata ) );
+  QCOMPARE( spyTypeAdded.count(), 1 );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), QStringLiteral( "my type" ) );
   // duplicate type id
   QVERIFY( !registry.addLayoutItemType( metadata ) );
+  QCOMPARE( spyTypeAdded.count(), 1 );
 
   //retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );

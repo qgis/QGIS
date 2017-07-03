@@ -38,6 +38,7 @@ bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *me
     return false;
 
   mMetadata[metadata->type()] = metadata;
+  emit typeAdded( metadata->type(), metadata->visibleName() );
   return true;
 }
 
