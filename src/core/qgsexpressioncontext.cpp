@@ -1120,13 +1120,6 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   return scope.release();
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::processingModelResultsScope( const QVariantMap &results, QgsProcessingContext &context )
-{
-  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope( QObject::tr( "Model results" ) ) );
-
-  return scope.release();
-}
-
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );
