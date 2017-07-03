@@ -180,7 +180,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     else if ( referencingField.type() == QVariant::String )
     {
       // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
+      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), QgsExpression::quotedValue( val.toString() ) );
     }
     else
     {
