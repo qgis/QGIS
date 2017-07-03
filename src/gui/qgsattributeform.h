@@ -273,8 +273,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void initPython();
 
-    QgsFeature joinedFeature( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
-
     void updateJoinedFields( const QgsEditorWidgetWrapper &eww );
 
     struct WidgetInfo
