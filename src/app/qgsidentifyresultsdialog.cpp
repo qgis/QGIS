@@ -447,6 +447,8 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
+  lstResults->header()->setResizeMode( QHeaderView::ResizeToContents );
+  lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
   {
