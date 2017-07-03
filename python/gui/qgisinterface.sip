@@ -1195,6 +1195,30 @@ Get timeout for timed messages: default of 5 seconds
 .. seealso:: composerOpened()
 %End
 
+    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
+%Docstring
+ This signal is emitted when a new layout ``designer`` has been opened.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerWillBeClosed()
+%End
+
+    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+%Docstring
+ This signal is emitted before a layout ``designer`` is going to be closed
+ and deleted.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerClosed()
+.. seealso:: layoutDesignerOpened()
+%End
+
+    void layoutDesignerClosed();
+%Docstring
+ This signal is emitted after a layout designer window is closed.
+.. versionadded:: 3.0
+.. seealso:: layoutDesignerWillBeClosed()
+.. seealso:: layoutDesignerOpened()
+%End
+
     void initializationCompleted();
 %Docstring
  This signal is emitted when the initialization is complete

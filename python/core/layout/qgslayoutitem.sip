@@ -22,6 +22,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
   public:
 
     QgsLayoutItem( QgsLayout *layout );
+%Docstring
+ Constructor for QgsLayoutItem, with the specified parent ``layout``.
+%End
 
     virtual int type() const = 0;
 %Docstring
