@@ -868,7 +868,49 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
         const QStringList &outputTypes = QStringList(), const QList< int > dataTypes = QList< int >() ) const;
 
     /**
+     * Definition of a expression context variable available during model execution.
+     * \since QGIS 3.0
+     * \ingroup core
+     */
+    class CORE_EXPORT VariableDefinition
+    {
+      public:
+
+        /**
+         * Constructor for a new VariableDefinition with the specified \a value and original
+         * parameter \a source.
+         */
+        VariableDefinition( const QVariant &value, const QgsProcessingModelAlgorithm::ChildParameterSource &source )
+          : value( value )
+          , source( source )
+        {}
+
+        //! Value of variable
+        QVariant value;
+
+        //! Original source of variable's value
+        QgsProcessingModelAlgorithm::ChildParameterSource source;
+    };
+
+    /**
+     * Returns a map of variable name to variable definition for expression context variables which are available
+     * for use by child algorithm during model execution.
+     *
+     * The child algorithm \a childId and processing \a context
+     * are manadatory. If \a modelParameters and \a results are not specified, then only the variable names and sources
+     * will be returned, but all variable values will be null. This can be used to determine in advance which variables
+     * will be available for a specific child algorithm, e.g. for use in expression builder widgets.
+     *
+     * In order to calculate the actual variable value, the input model \a modelParameters and already executed child
+     * algorithm \a results must be passed.
+     * \see createExpressionContextScopeForChildAlgorithm()
+     */
+    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const;
+
+    /**
      * Creates a new expression context scope for a child algorithm within the model.
+     * \see variablesForChildAlgorithm()
      */
     QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
         const QVariantMap &results = QVariantMap() ) const SIP_FACTORY;

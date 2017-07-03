@@ -877,10 +877,57 @@ Copies are protected to avoid slicing
  :rtype: list of QgsProcessingModelAlgorithm.ChildParameterSource
 %End
 
+    class VariableDefinition
+{
+%Docstring
+ Definition of a expression context variable available during model execution.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelalgorithm.h"
+%End
+      public:
+
+        VariableDefinition( const QVariant &value, const QgsProcessingModelAlgorithm::ChildParameterSource &source );
+%Docstring
+ Constructor for a new VariableDefinition with the specified ``value`` and original
+ parameter ``source``.
+%End
+
+        QVariant value;
+%Docstring
+Value of variable
+%End
+
+        QgsProcessingModelAlgorithm::ChildParameterSource source;
+%Docstring
+Original source of variable's value
+%End
+    };
+
+    QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
+        const QVariantMap &results = QVariantMap() ) const;
+%Docstring
+ Returns a map of variable name to variable definition for expression context variables which are available
+ for use by child algorithm during model execution.
+
+ The child algorithm ``childId`` and processing ``context``
+ are manadatory. If ``modelParameters`` and ``results`` are not specified, then only the variable names and sources
+ will be returned, but all variable values will be null. This can be used to determine in advance which variables
+ will be available for a specific child algorithm, e.g. for use in expression builder widgets.
+
+ In order to calculate the actual variable value, the input model ``modelParameters`` and already executed child
+ algorithm ``results`` must be passed.
+.. seealso:: createExpressionContextScopeForChildAlgorithm()
+ :rtype: QMap< str, QgsProcessingModelAlgorithm.VariableDefinition >
+%End
+
     QgsExpressionContextScope *createExpressionContextScopeForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),
         const QVariantMap &results = QVariantMap() ) const /Factory/;
 %Docstring
  Creates a new expression context scope for a child algorithm within the model.
+.. seealso:: variablesForChildAlgorithm()
  :rtype: QgsExpressionContextScope
 %End
 

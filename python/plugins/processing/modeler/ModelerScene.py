@@ -33,6 +33,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsExpression)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
+from processing.tools.dataobjects import createContext
 
 
 class ModelerScene(QGraphicsScene):
@@ -63,11 +64,11 @@ class ModelerScene(QGraphicsScene):
             pos[algName] = outputPos
         return pos
 
-    def getItemsFromParamValue(self, value):
+    def getItemsFromParamValue(self, value, child_id, context):
         items = []
         if isinstance(value, list):
             for v in value:
-                items.extend(self.getItemsFromParamValue(v))
+                items.extend(self.getItemsFromParamValue(v, child_id, context))
         elif isinstance(value, QgsProcessingModelAlgorithm.ChildParameterSource):
             if value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.ModelParameter:
                 items.append((self.paramItems[value.parameterName()], 0))
@@ -78,10 +79,17 @@ class ModelerScene(QGraphicsScene):
                         break
                 if value.outputChildId() in self.algItems:
                     items.append((self.algItems[value.outputChildId()], i))
+            elif value.source() == QgsProcessingModelAlgorithm.ChildParameterSource.Expression:
+                variables = self.model.variablesForChildAlgorithm(child_id, context)
+                exp = QgsExpression(value.expression())
+                for v in exp.referencedVariables():
+                    if v in variables:
+                        items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
     def paintModel(self, model, controls=True):
         self.model = model
+        context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
             item = ModelerGraphicItem(inp, model, controls, scene=self)
@@ -127,7 +135,7 @@ class ModelerScene(QGraphicsScene):
                     else:
                         sources = []
                     for source in sources:
-                        sourceItems = self.getItemsFromParamValue(source)
+                        sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
                         for sourceItem, sourceIdx in sourceItems:
                             arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
                             sourceItem.addArrow(arrow)
