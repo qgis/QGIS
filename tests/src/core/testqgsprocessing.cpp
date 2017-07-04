@@ -4781,8 +4781,11 @@ void TestQgsProcessing::modelExecution()
   alg2c1.setModelOutputs( outputs1 );
   model2.addChildAlgorithm( alg2c1 );
 
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString vector = testDataDir + "points.shp";
+
   QVariantMap modelInputs;
-  modelInputs.insert( "SOURCE_LAYER", "my_layer_id" );
+  modelInputs.insert( "SOURCE_LAYER", vector );
   modelInputs.insert( "DIST", 271 );
   modelInputs.insert( "cx1:MODEL_OUT_LAYER", "dest.shp" );
   QgsProcessingOutputLayerDefinition layerDef( "memory:" );
@@ -4795,9 +4798,39 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.value( "SEGMENTS" ).toInt(), 16 );
   QCOMPARE( params.value( "END_CAP_STYLE" ).toInt(), 1 );
   QCOMPARE( params.value( "JOIN_STYLE" ).toInt(), 2 );
-  QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "my_layer_id" ) );
+  QCOMPARE( params.value( "INPUT" ).toString(), vector );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.count(), 7 );
+
+  QgsProcessingContext context;
+
+  // Check variables for child algorithm
+  // without values
+  QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model2.variablesForChildAlgorithm( "cx1", context );
+  QCOMPARE( variables.count(), 5 );
+  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+
+  // with values
+  variables = model2.variablesForChildAlgorithm( "cx1", context, modelInputs, childResults );
+  QCOMPARE( variables.count(), 5 );
+  QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_miny" ).value.toDouble(), 22.8002, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
+
+  std::unique_ptr< QgsExpressionContextScope > childScope( model2.createExpressionContextScopeForChildAlgorithm( "cx1", context, modelInputs, childResults ) );
+  QCOMPARE( childScope->variableCount(), 5 );
+  QCOMPARE( childScope->variable( "DIST" ).toInt(), 271 );
+  QGSCOMPARENEAR( childScope->variable( "SOURCE_LAYER_minx" ).toDouble(), -118.8888, 0.001 );
+  QGSCOMPARENEAR( childScope->variable( "SOURCE_LAYER_miny" ).toDouble(), 22.8002, 0.001 );
+  QGSCOMPARENEAR( childScope->variable( "SOURCE_LAYER_maxx" ).toDouble(), -83.3333, 0.001 );
+  QGSCOMPARENEAR( childScope->variable( "SOURCE_LAYER_maxy" ).toDouble(), 46.8719, 0.001 );
+
 
   QVariantMap results;
   results.insert( "OUTPUT", QStringLiteral( "dest.shp" ) );
@@ -4813,6 +4846,31 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
   QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 2 );
+
+  variables = model2.variablesForChildAlgorithm( "cx2", context );
+  QCOMPARE( variables.count(), 9 );
+  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_minx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_miny" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxy" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+
+  // with values
+  variables = model2.variablesForChildAlgorithm( "cx2", context, modelInputs, childResults );
+  QCOMPARE( variables.count(), 9 );
+  QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_miny" ).value.toDouble(), 22.8002, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
   // a child with an optional output
   QgsProcessingModelAlgorithm::ChildAlgorithm alg2c3;
@@ -4837,6 +4895,38 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( outDef.destinationName, QStringLiteral( "MY_OUT" ) );
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
+
+  variables = model2.variablesForChildAlgorithm( "cx3", context );
+  QCOMPARE( variables.count(), 13 );
+  QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "SOURCE_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ModelParameter );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_minx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_miny" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxx" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx1_OUTPUT_LAYER_maxy" ).source.outputChildId(), QStringLiteral( "cx1" ) );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_minx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_minx" ).source.outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_miny" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_miny" ).source.outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_maxx" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_maxx" ).source.outputChildId(), QStringLiteral( "cx2" ) );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_maxy" ).source.source(), QgsProcessingModelAlgorithm::ChildParameterSource::ChildOutput );
+  QCOMPARE( variables.value( "cx2_OUTPUT_LAYER_maxy" ).source.outputChildId(), QStringLiteral( "cx2" ) );
+  // with values
+  variables = model2.variablesForChildAlgorithm( "cx3", context, modelInputs, childResults );
+  QCOMPARE( variables.count(), 13 );
+  QCOMPARE( variables.value( "DIST" ).value.toInt(), 271 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_minx" ).value.toDouble(), -118.8888, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_miny" ).value.toDouble(), 22.8002, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxx" ).value.toDouble(), -83.3333, 0.001 );
+  QGSCOMPARENEAR( variables.value( "SOURCE_LAYER_maxy" ).value.toDouble(), 46.8719, 0.001 );
 
   QStringList actualParts = model2.asPythonCode().split( '\n' );
   QStringList expectedParts = QStringLiteral( "##model=name\n"
