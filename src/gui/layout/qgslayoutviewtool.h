@@ -27,6 +27,12 @@ class QWheelEvent;
 class QKeyEvent;
 class QgsLayoutView;
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgslayoutviewtooladditem.h>
+% End
+#endif
+
 /**
  * \ingroup gui
  * Abstract base class for all layout view tools.
@@ -39,8 +45,8 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
-      sipType = sipType_QgsMapToolZoom;
+    if ( dynamic_cast<QgsLayoutViewToolAddItem *>( sipCpp ) != NULL )
+      sipType = sipType_QgsLayoutViewToolAddItem;
     else
       sipType = NULL;
     SIP_END

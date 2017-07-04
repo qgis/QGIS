@@ -9,6 +9,10 @@
 
 
 
+%ModuleHeaderCode
+#include <qgslayoutviewtooladditem.h>
+%End
+
 class QgsLayoutViewTool : QObject
 {
 %Docstring
@@ -23,8 +27,8 @@ class QgsLayoutViewTool : QObject
 %End
 
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
-      sipType = sipType_QgsMapToolZoom;
+    if ( dynamic_cast<QgsLayoutViewToolAddItem *>( sipCpp ) != NULL )
+      sipType = sipType_QgsLayoutViewToolAddItem;
     else
       sipType = NULL;
 %End
