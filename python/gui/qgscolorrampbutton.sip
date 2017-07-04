@@ -14,7 +14,7 @@ class QgsColorRampButton : QToolButton
 {
 %Docstring
  A cross platform button subclass for selecting color ramps. Will open color ramp dialogs when clicked.
- Offers live updates to button from color ramp dialog. An attached drop down menu allows for access to
+ Offers live updates to button from color ramp dialog. An attached drop-down menu allows for access to
  saved color ramps, as well as option to invert the current color ramp and create new ramps.
 .. versionadded:: 3.0
 %End
@@ -75,23 +75,23 @@ class QgsColorRampButton : QToolButton
 
     void setShowMenu( const bool showMenu );
 %Docstring
- Sets whether the drop down menu should be shown for the button. The default behavior is to
+ Sets whether the drop-down menu should be shown for the button. The default behavior is to
  show the menu.
- \param showMenu set to false to hide the drop down menu
+ \param showMenu set to false to hide the drop-down menu
 .. seealso:: showMenu
 %End
 
     bool showMenu() const;
 %Docstring
- Returns whether the drop down menu is shown for the button.
- :return: true if drop down menu is shown
+ Returns whether the drop-down menu is shown for the button.
+ :return: true if drop-down menu is shown
 .. seealso:: setShowMenu
  :rtype: bool
 %End
 
     void setDefaultColorRamp( QgsColorRamp *colorramp );
 %Docstring
- Sets the default color ramp for the button, which is shown in the button's drop down menu for the
+ Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
  "default color ramp" option.
  \param colorramp default color ramp for the button. Set to a null pointer to disable the default color
  ramp option. The ramp will be cloned and ownership is not transferred.
@@ -100,7 +100,7 @@ class QgsColorRampButton : QToolButton
 
     QgsColorRamp *defaultColorRamp() const /Factory/;
 %Docstring
- Returns a copy of the default color ramp for the button, which is shown in the button's drop down menu for the
+ Returns a copy of the default color ramp for the button, which is shown in the button's drop-down menu for the
  "default color ramp" option.
  :return: default color ramp for the button. Returns a null pointer if the default color ramp
  option is disabled.
@@ -110,14 +110,14 @@ class QgsColorRampButton : QToolButton
 
     void setShowRandomColorRamp( bool showRandom );
 %Docstring
- Sets whether a random colors option is shown in the button's drop down menu.
+ Sets whether a random colors option is shown in the button's drop-down menu.
  \param showRandom set to true to show a random colors option
 .. seealso:: showRandom()
 %End
 
     bool showRandomColorRamp() const;
 %Docstring
- Returns whether random colors option is shown in the button's drop down menu.
+ Returns whether random colors option is shown in the button's drop-down menu.
 .. seealso:: setShowRandom()
  :rtype: bool
 %End
@@ -132,7 +132,7 @@ class QgsColorRampButton : QToolButton
 
     void setShowNull( bool showNull );
 %Docstring
- Sets whether a set to null (clear) option is shown in the button's drop down menu.
+ Sets whether a set to null (clear) option is shown in the button's drop-down menu.
  \param showNull set to true to show a null option
 .. seealso:: showNull()
 .. seealso:: isNull()
@@ -140,7 +140,7 @@ class QgsColorRampButton : QToolButton
 
     bool showNull() const;
 %Docstring
- Returns whether the set to null (clear) option is shown in the button's drop down menu.
+ Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 .. seealso:: setShowNull()
 .. seealso:: isNull()
  :rtype: bool
@@ -157,7 +157,7 @@ class QgsColorRampButton : QToolButton
     void setContext( const QString &context );
 %Docstring
  Sets the context string for the color ramp button. The context string is passed to all color ramp
- preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
+ preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
  based on the context.
  \param context context string for the color dialog button's color ramp preview icons
 .. seealso:: context
@@ -166,7 +166,7 @@ class QgsColorRampButton : QToolButton
     QString context() const;
 %Docstring
  Returns the context string for the color ramp button. The context string is passed to all color ramp
- preview icons shown in the button's drop down menu, to (eventually) allow them to customise their display colors
+ preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
  based on the context.
  :return: context context string for the color dialog button's color ramp preview icons
 .. seealso:: setContext

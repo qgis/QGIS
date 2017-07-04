@@ -639,7 +639,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     QLineEdit *mLineEdit = nullptr;
 
-    /*Dropdown menu button*/
+    /*Drop-down menu button*/
     QToolButton *mMenuButton = nullptr;
 
     /*Display format for colors*/
@@ -655,7 +655,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     void textChanged();
 
-    /** Called when the dropdown arrow is clicked to show the format selection menu
+    /** Called when the drop-down arrow is clicked to show the format selection menu
      */
     void showMenu();
 };

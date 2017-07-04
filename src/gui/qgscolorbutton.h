@@ -28,7 +28,7 @@ class QgsPanelWidget;
 /** \ingroup gui
  * \class QgsColorButton
  * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
- * Offers live updates to button from color chooser dialog. An attached drop down menu allows for copying
+ * Offers live updates to button from color chooser dialog. An attached drop-down menu allows for copying
  * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
  * \since QGIS 2.5
  */
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /** Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.
      * Use \a cdt string to define the title to show in the color ramp dialog
-     * Use a color scheme \a registry for color swatch grids to show in the drop down menu. If not specified,
+     * Use a color scheme \a registry for color swatch grids to show in the drop-down menu. If not specified,
      * the button will use the global color scheme registry instead
      */
     QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
@@ -127,15 +127,15 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
-    /** Sets whether the drop down menu should be shown for the button. The default behavior is to
+    /** Sets whether the drop-down menu should be shown for the button. The default behavior is to
      * show the menu.
-     * \param showMenu set to false to hide the drop down menu
+     * \param showMenu set to false to hide the drop-down menu
      * \see showMenu
      */
     void setShowMenu( const bool showMenu );
 
-    /** Returns whether the drop down menu is shown for the button.
-     * \returns true if drop down menu is shown
+    /** Returns whether the drop-down menu is shown for the button.
+     * \returns true if drop-down menu is shown
      * \see setShowMenu
      */
     bool showMenu() const { return menu() ? true : false; }
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     Behavior behavior() const { return mBehavior; }
 
-    /** Sets the default color for the button, which is shown in the button's drop down menu for the
+    /** Sets the default color for the button, which is shown in the button's drop-down menu for the
      * "default color" option.
      * \param color default color for the button. Set to an invalid QColor to disable the default color
      * option.
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setDefaultColor( const QColor &color );
 
-    /** Returns the default color for the button, which is shown in the button's drop down menu for the
+    /** Returns the default color for the button, which is shown in the button's drop-down menu for the
      * "default color" option.
      * \returns default color for the button. Returns an invalid QColor if the default color
      * option is disabled.
@@ -169,7 +169,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QColor defaultColor() const { return mDefaultColor; }
 
-    /** Sets whether the "no color" option should be shown in the button's drop down menu. If selected,
+    /** Sets whether the "no color" option should be shown in the button's drop-down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
      * \param showNoColorOption set to true to show the no color option. This is disabled by default.
      * \see showNoColor
@@ -179,7 +179,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setShowNoColor( const bool showNoColorOption ) { mShowNoColorOption = showNoColorOption; }
 
-    /** Returns whether the "no color" option is shown in the button's drop down menu. If selected,
+    /** Returns whether the "no color" option is shown in the button's drop-down menu. If selected,
      * the "no color" option sets the color button's color to a totally transparent color.
      * \returns true if the no color option is shown.
      * \see setShowNoColor
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     bool showNoColor() const { return mShowNoColorOption; }
 
-    /** Sets the string to use for the "no color" option in the button's drop down menu.
+    /** Sets the string to use for the "no color" option in the button's drop-down menu.
      * \param noColorString string to use for the "no color" menu option
      * \see noColorString
      * \see setShowNoColor
@@ -198,7 +198,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
 
-    /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
+    /** Sets whether a set to null (clear) option is shown in the button's drop-down menu.
      * \param showNull set to true to show a null option
      * \since QGIS 2.16
      * \see showNull()
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void setShowNull( bool showNull );
 
-    /** Returns whether the set to null (clear) option is shown in the button's drop down menu.
+    /** Returns whether the set to null (clear) option is shown in the button's drop-down menu.
      * \since QGIS 2.16
      * \see setShowNull()
      * \see isNull()
@@ -220,7 +220,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     bool isNull() const;
 
-    /** Returns the string used for the "no color" option in the button's drop down menu.
+    /** Returns the string used for the "no color" option in the button's drop-down menu.
      * \returns string used for the "no color" menu option
      * \see setNoColorString
      * \see showNoColor
@@ -230,7 +230,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QString noColorString() const { return mNoColorString; }
 
     /** Sets the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customise their display colors
      * based on the context.
      * \param context context string for the color button's color swatch grids
      * \see context
@@ -238,7 +238,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void setContext( const QString &context ) { mContext = context; }
 
     /** Returns the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customise their display colors
      * based on the context.
      * \returns context string for the color button's color swatch grids
      * \see setContext
@@ -246,17 +246,17 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QString context() const { return mContext; }
 
     /** Sets the color scheme registry for the button, which controls the color swatch grids
-     * that are shown in the button's drop down menu.
+     * that are shown in the button's drop-down menu.
      * \param registry color scheme registry for the button. Set to 0 to hide all color
-     * swatch grids from the button's drop down menu.
+     * swatch grids from the button's drop-down menu.
      * \see colorSchemeRegistry
      */
     void setColorSchemeRegistry( QgsColorSchemeRegistry *registry ) { mColorSchemeRegistry = registry; }
 
     /** Returns the color scheme registry for the button, which controls the color swatch grids
-     * that are shown in the button's drop down menu.
+     * that are shown in the button's drop-down menu.
      * \returns color scheme registry for the button. If returned value is 0 then all color
-     * swatch grids are hidden from the button's drop down menu.
+     * swatch grids are hidden from the button's drop-down menu.
      * \see setColorSchemeRegistry
      */
     QgsColorSchemeRegistry *colorSchemeRegistry() { return mColorSchemeRegistry; }
@@ -417,7 +417,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void stopPicking( QPointF eventPos, bool sampleColor = true );
 
-    /** Create a color icon for display in the drop down menu
+    /** Create a color icon for display in the drop-down menu
      * \param color for icon
      * \param showChecks set to true to display a checkboard pattern behind
      * transparent colors
@@ -444,7 +444,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     void addRecentColor( const QColor &color );
 
-    /** Creates the drop down menu entries
+    /** Creates the drop-down menu entries
      */
     void prepareMenu();
 };
