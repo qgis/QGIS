@@ -419,7 +419,7 @@ void QgsSourceSelectDialog::on_cmbConnections_activated( int index )
 
 void QgsSourceSelectDialog::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double click called" );
+  QgsDebugMsg( "double-click called" );
   QgsOwsConnection connection( mServiceName, cmbConnections->currentText() );
   buildQuery( connection, index );
 }

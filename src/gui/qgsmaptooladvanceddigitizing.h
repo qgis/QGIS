@@ -127,7 +127,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool mSnapOnPress;       //!< Snap on press
     bool mSnapOnRelease;     //!< Snap on release
     bool mSnapOnMove;        //!< Snap on move
-    bool mSnapOnDoubleClick; //!< Snap on double click
+    bool mSnapOnDoubleClick; //!< Snap on double-click
 
   private slots:
 

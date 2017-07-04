@@ -831,7 +831,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
       {
         if ( mPolygonItem && mPolylineItem )
         {
-          // ignore the last point due to release event before doubleClick event
+          // ignore the last point due to release event before doubleClick event # spellok
           QPolygonF poly = mPolygonItem->polygon();
 
           // last (temporary) point is removed

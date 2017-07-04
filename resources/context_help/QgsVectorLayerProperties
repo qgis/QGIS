@@ -12,7 +12,7 @@ This dialog allows you to work with vector layer settings and properties. There 
 <a name="symbology">
 <h4>Symbology</h4>
 </a>
-To change the symbology for a layer, simply double click on its legend entry and the vector <label>Layer Properties</label> dialog will be shown.<p>
+To change the symbology for a layer, simply double-click on its legend entry and the vector <label>Layer Properties</label> dialog will be shown.<p>
 Within this dialog you can style your vector layer. Depending on the selected rendering option you have the possibility to also classify your map features.
 
 <h5>Legend type</h5>

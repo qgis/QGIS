@@ -801,7 +801,7 @@ Overridden key release event
     virtual void mouseDoubleClickEvent( QMouseEvent *e );
 
 %Docstring
-Overridden mouse double click event
+Overridden mouse double-click event
 %End
 
     virtual void mouseMoveEvent( QMouseEvent *e );

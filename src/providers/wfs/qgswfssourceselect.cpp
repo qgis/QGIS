@@ -755,7 +755,7 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "double click called" );
+  QgsDebugMsg( "double-click called" );
   buildQuery( index );
 }
 

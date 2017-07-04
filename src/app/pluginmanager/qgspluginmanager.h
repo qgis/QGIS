@@ -112,7 +112,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Display details of inactive item too
     void on_vwPlugins_clicked( const QModelIndex &index );
 
-    //! Load/unload plugin by double click
+    //! Load/unload plugin by double-click
     void on_vwPlugins_doubleClicked( const QModelIndex &index );
 
     //! Handle click in the web view
