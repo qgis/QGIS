@@ -17,6 +17,7 @@
 
 #include "qgslayoutview.h"
 #include "qgslayout.h"
+#include "qgslayoutviewtool.h"
 
 QgsLayoutView::QgsLayoutView( QWidget *parent )
   : QGraphicsView( parent )
@@ -39,22 +40,91 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   emit layoutSet( layout );
 }
 
+QgsLayoutViewTool *QgsLayoutView::tool()
+{
+  return mTool;
+}
+
+void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
+{
+  if ( !tool )
+    return;
+
+  if ( mTool )
+  {
+    mTool->deactivate();
+  }
+
+  // set new tool and activate it
+  mTool = tool;
+  mTool->activate();
+
+  emit toolSet( mTool );
+}
+
+void QgsLayoutView::unsetTool( QgsLayoutViewTool *tool )
+{
+  if ( mTool && mTool == tool )
+  {
+    mTool->deactivate();
+    mTool = nullptr;
+    emit toolSet( nullptr );
+    setCursor( Qt::ArrowCursor );
+  }
+}
+
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
-  QGraphicsView::mousePressEvent( event );
+  if ( mTool )
+    mTool->layoutPressEvent( event );
+  else
+    QGraphicsView::mousePressEvent( event );
 }
 
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
-  QGraphicsView::mouseReleaseEvent( event );
+  if ( mTool )
+    mTool->layoutReleaseEvent( event );
+  else
+    QGraphicsView::mouseReleaseEvent( event );
 }
 
 void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
-  QGraphicsView::mouseMoveEvent( event );
+  if ( mTool )
+    mTool->layoutMoveEvent( event );
+  else
+    QGraphicsView::mouseMoveEvent( event );
 }
 
 void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-  QGraphicsView::mouseDoubleClickEvent( event );
+  if ( mTool )
+    mTool->layoutDoubleClickEvent( event );
+  else
+    QGraphicsView::mouseDoubleClickEvent( event );
+}
+
+void QgsLayoutView::wheelEvent( QWheelEvent *event )
+{
+  if ( mTool )
+    mTool->wheelEvent( event );
+  else
+    QGraphicsView::wheelEvent( event );
+}
+
+void QgsLayoutView::keyPressEvent( QKeyEvent *event )
+{
+  if ( mTool )
+    mTool->keyPressEvent( event );
+  else
+    QGraphicsView::keyPressEvent( event );
+}
+
+void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( mTool )
+    mTool->keyReleaseEvent( event );
+  else
+    QGraphicsView::keyReleaseEvent( event );
 }

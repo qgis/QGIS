@@ -17,12 +17,14 @@
 #ifndef QGSLAYOUTVIEW_H
 #define QGSLAYOUTVIEW_H
 
-#include <QGraphicsView>
 #include "qgis.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include "qgis_gui.h"
+#include <QPointer>
+#include <QGraphicsView>
 
 class QgsLayout;
+class QgsLayoutViewTool;
 
 /**
  * \ingroup gui
@@ -38,6 +40,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     Q_OBJECT
 
     Q_PROPERTY( QgsLayout *currentLayout READ currentLayout WRITE setCurrentLayout NOTIFY layoutSet )
+    Q_PROPERTY( QgsLayoutViewTool *tool READ tool WRITE setTool NOTIFY toolSet )
 
   public:
 
@@ -67,6 +70,28 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void setCurrentLayout( QgsLayout *layout SIP_KEEPREFERENCE );
 
+    /**
+     * Returns the currently active tool for the view.
+     * \see setTool()
+     */
+    QgsLayoutViewTool *tool();
+
+    /**
+     * Sets the \a tool currently being used in the view.
+     * \see unsetTool()
+     * \see tool()
+     */
+    void setTool( QgsLayoutViewTool *tool );
+
+    /**
+     * Unsets the current view tool, if it matches the specified \a tool.
+     *
+     * This is called from destructor of view tools to make sure
+     * that the tool won't be used any more.
+     * You don't have to call it manually, QgsLayoutViewTool takes care of it.
+     */
+    void unsetTool( QgsLayoutViewTool *tool );
+
   signals:
 
     /**
@@ -76,11 +101,24 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void layoutSet( QgsLayout *layout );
 
+    /**
+     * Emitted when the current \a tool is changed.
+     * \see setTool()
+     */
+    void toolSet( QgsLayoutViewTool *tool );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
+
+  private:
+
+    QPointer< QgsLayoutViewTool > mTool;
 
 };
 

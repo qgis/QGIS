@@ -50,6 +50,29 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: layoutSet()
 %End
 
+    QgsLayoutViewTool *tool();
+%Docstring
+ Returns the currently active tool for the view.
+.. seealso:: setTool()
+ :rtype: QgsLayoutViewTool
+%End
+
+    void setTool( QgsLayoutViewTool *tool );
+%Docstring
+ Sets the ``tool`` currently being used in the view.
+.. seealso:: unsetTool()
+.. seealso:: tool()
+%End
+
+    void unsetTool( QgsLayoutViewTool *tool );
+%Docstring
+ Unsets the current view tool, if it matches the specified ``tool``.
+
+ This is called from destructor of view tools to make sure
+ that the tool won't be used any more.
+ You don't have to call it manually, QgsLayoutViewTool takes care of it.
+%End
+
   signals:
 
     void layoutSet( QgsLayout *layout );
@@ -57,6 +80,12 @@ class QgsLayoutView: QGraphicsView
  Emitted when a ``layout`` is set for the view.
 .. seealso:: currentLayout()
 .. seealso:: setCurrentLayout()
+%End
+
+    void toolSet( QgsLayoutViewTool *tool );
+%Docstring
+ Emitted when the current ``tool`` is changed.
+.. seealso:: setTool()
 %End
 
   protected:
@@ -67,6 +96,12 @@ class QgsLayoutView: QGraphicsView
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
 
 
 };

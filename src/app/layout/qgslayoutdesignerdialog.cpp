@@ -200,6 +200,10 @@ void QgsLayoutDesignerDialog::restoreWindowState()
 void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
 {
   QgsLogger::debug( QStringLiteral( "creating new %1 item  " ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName() ) );
+  if ( mView )
+  {
+    //mView->setTool( QgsLayoutView::ToolAddItem );
+  }
 }
 
 

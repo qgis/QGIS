@@ -159,6 +159,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutview.cpp
+  layout/qgslayoutviewtool.cpp
 
   locator/qgslocator.cpp
   locator/qgslocatorfilter.cpp
@@ -623,6 +624,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutview.h
+  layout/qgslayoutviewtool.h
 
   locator/qgslocator.h
   locator/qgslocatorfilter.h

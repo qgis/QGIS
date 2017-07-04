@@ -276,6 +276,7 @@
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutview.sip
+%Include layout/qgslayoutviewtool.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip
