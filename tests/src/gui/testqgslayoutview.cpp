@@ -17,6 +17,11 @@
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtool.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutitemregistryguiutils.h"
+#include "qgstestutils.h"
 #include <QtTest/QSignalSpy>
 
 class TestQgsLayoutView: public QObject
@@ -29,6 +34,8 @@ class TestQgsLayoutView: public QObject
     void cleanup(); // will be called after every testfunction.
     void basic();
     void tool();
+    void events();
+    void registryUtils();
 
   private:
 
@@ -99,6 +106,169 @@ void TestQgsLayoutView::tool()
   QCOMPARE( spyToolDeactivated2.count(), 1 );
 
   delete view;
+}
+
+class LoggingTool : public QgsLayoutViewTool
+{
+  public:
+
+    LoggingTool( QgsLayoutView *view )
+      : QgsLayoutViewTool( view, "logging" )
+    {}
+
+    bool receivedMoveEvent = false;
+    void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override
+    {
+      receivedMoveEvent = true;
+      QCOMPARE( event->layoutPoint().x(), 8.0 );
+      QCOMPARE( event->layoutPoint().y(), 6.0 );
+    }
+
+    bool receivedDoubleClickEvent = false;
+    void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event ) override
+    {
+      receivedDoubleClickEvent = true;
+      QCOMPARE( event->layoutPoint().x(), 8.0 );
+      QCOMPARE( event->layoutPoint().y(), 6.0 );
+    }
+
+    bool receivedPressEvent = false;
+    void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override
+    {
+      receivedPressEvent  = true;
+      QCOMPARE( event->layoutPoint().x(), 8.0 );
+      QCOMPARE( event->layoutPoint().y(), 6.0 );
+    }
+
+    bool receivedReleaseEvent = false;
+    void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override
+    {
+      receivedReleaseEvent  = true;
+      QCOMPARE( event->layoutPoint().x(), 8.0 );
+      QCOMPARE( event->layoutPoint().y(), 6.0 );
+    }
+
+    bool receivedWheelEvent = false;
+    void wheelEvent( QWheelEvent * ) override
+    {
+      receivedWheelEvent = true;
+    }
+
+    bool receivedKeyPressEvent = false;
+    void keyPressEvent( QKeyEvent * ) override
+    {
+      receivedKeyPressEvent  = true;
+    }
+
+    bool receivedKeyReleaseEvent = false;
+    void keyReleaseEvent( QKeyEvent * ) override
+    {
+      receivedKeyReleaseEvent = true;
+    }
+};
+
+void TestQgsLayoutView::events()
+{
+  QgsLayoutView *view = new QgsLayoutView();
+  QgsLayout *layout = new QgsLayout();
+  view->setCurrentLayout( layout );
+  layout->setSceneRect( 0, 0, 1000, 1000 );
+  view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  view->setFrameStyle( 0 );
+  view->resize( 100, 100 );
+  view->setFixedSize( 100, 100 );
+  QCOMPARE( view->width(), 100 );
+  QCOMPARE( view->height(), 100 );
+
+  QTransform transform;
+  transform.scale( 10, 10 );
+  view->setTransform( transform );
+
+  LoggingTool *tool = new LoggingTool( view );
+  view->setTool( tool );
+
+  QPointF point( 80, 60 );
+  QMouseEvent press( QEvent::MouseButtonPress, point,
+                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent move( QEvent::MouseMove, point,
+                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point,
+                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent dblClick( QEvent::MouseButtonDblClick, point,
+                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QWheelEvent wheelEvent( point, 10,
+                          Qt::LeftButton, Qt::NoModifier );
+  QKeyEvent keyPress( QEvent::KeyPress, 10, Qt::NoModifier );
+  QKeyEvent keyRelease( QEvent::KeyRelease, 10, Qt::NoModifier );
+
+  view->mouseMoveEvent( &move );
+  QVERIFY( tool->receivedMoveEvent );
+  view->mousePressEvent( &press );
+  QVERIFY( tool->receivedPressEvent );
+  view->mouseReleaseEvent( &releases );
+  QVERIFY( tool->receivedReleaseEvent );
+  view->mouseDoubleClickEvent( &dblClick );
+  QVERIFY( tool->receivedDoubleClickEvent );
+  view->wheelEvent( &wheelEvent );
+  QVERIFY( tool->receivedWheelEvent );
+  view->keyPressEvent( &keyPress );
+  QVERIFY( tool->receivedKeyPressEvent );
+  view->keyReleaseEvent( &keyRelease );
+  QVERIFY( tool->receivedKeyReleaseEvent );
+}
+
+//simple item for testing, since some methods in QgsLayoutItem are pure virtual
+class TestItem : public QgsLayoutItem
+{
+  public:
+
+    TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
+    ~TestItem() {}
+
+    //implement pure virtual methods
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
+    void draw( QPainter *, const QStyleOptionGraphicsItem *, QWidget * ) override
+    {    }
+};
+
+QgsLayout *mLayout = nullptr;
+QString mReport;
+
+bool renderCheck( QString testName, QImage &image, int mismatchCount );
+
+void TestQgsLayoutView::registryUtils()
+{
+  // add a dummy item to registry
+  auto create = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  {
+    return new TestItem( layout );
+  };
+
+  auto createRubberBand = []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
+  {
+    return new QgsLayoutViewRectangularRubberBand( view );
+  };
+
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QIcon(), create );
+  metadata->setRubberBandCreationFunction( createRubberBand );
+  QVERIFY( QgsApplication::layoutItemRegistry()->addLayoutItemType( metadata ) );
+
+  QgsLayoutView *view = new QgsLayoutView();
+  //should use metadata's method
+  QgsLayoutViewRubberBand *band = QgsApplication::layoutItemRegistry()->createItemRubberBand( 2, view );
+  QVERIFY( band );
+  QVERIFY( dynamic_cast< QgsLayoutViewRectangularRubberBand * >( band ) );
+  QCOMPARE( band->view(), view );
+  delete band;
+
+  //manually register a prototype
+  QgsLayoutItemRegistryGuiUtils::setItemRubberBandPrototype( 2, new QgsLayoutViewEllipticalRubberBand() );
+  band = QgsApplication::layoutItemRegistry()->createItemRubberBand( 2, view );
+  QVERIFY( band );
+  QVERIFY( dynamic_cast< QgsLayoutViewEllipticalRubberBand * >( band ) );
+  QCOMPARE( band->view(), view );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutView )

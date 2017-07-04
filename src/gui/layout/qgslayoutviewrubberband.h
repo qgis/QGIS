@@ -49,7 +49,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand
     /**
      * Constructor for QgsLayoutViewRubberBand.
      */
-    QgsLayoutViewRubberBand( QgsLayoutView *view );
+    QgsLayoutViewRubberBand( QgsLayoutView *view = nullptr );
 
     virtual ~QgsLayoutViewRubberBand() = default;
 
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
     /**
      * Constructor for QgsLayoutViewRectangularRubberBand.
      */
-    QgsLayoutViewRectangularRubberBand( QgsLayoutView *view );
+    QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewRectangularRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
     ~QgsLayoutViewRectangularRubberBand();
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
     /**
      * Constructor for QgsLayoutViewEllipticalRubberBand.
      */
-    QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view );
+    QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewEllipticalRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
     ~QgsLayoutViewEllipticalRubberBand();

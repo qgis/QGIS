@@ -113,6 +113,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     QPointer< QgsLayoutViewTool > mTool;
 
+    friend class TestQgsLayoutView;
+
 };
 
 #endif // QGSLAYOUTVIEW_H

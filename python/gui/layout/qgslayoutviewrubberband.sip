@@ -30,7 +30,7 @@ class QgsLayoutViewRubberBand
 %End
   public:
 
-    QgsLayoutViewRubberBand( QgsLayoutView *view );
+    QgsLayoutViewRubberBand( QgsLayoutView *view = 0 );
 %Docstring
  Constructor for QgsLayoutViewRubberBand.
 %End
@@ -101,7 +101,7 @@ class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 %End
   public:
 
-    QgsLayoutViewRectangularRubberBand( QgsLayoutView *view );
+    QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = 0 );
 %Docstring
  Constructor for QgsLayoutViewRectangularRubberBand.
 %End
@@ -131,7 +131,7 @@ class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 %End
   public:
 
-    QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view );
+    QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = 0 );
 %Docstring
  Constructor for QgsLayoutViewEllipticalRubberBand.
 %End
