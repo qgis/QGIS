@@ -880,7 +880,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
          * Constructor for a new VariableDefinition with the specified \a value and original
          * parameter \a source, and \a description.
          */
-        VariableDefinition( const QVariant &value, const QgsProcessingModelAlgorithm::ChildParameterSource &source, const QString &description = QString() )
+        VariableDefinition( const QVariant &value = QVariant(), const QgsProcessingModelAlgorithm::ChildParameterSource &source = QgsProcessingModelAlgorithm::ChildParameterSource::fromStaticValue( QVariant() ), const QString &description = QString() )
           : value( value )
           , source( source )
           , description( description )
