@@ -24,6 +24,8 @@
 #include <QIcon>
 #include <functional>
 
+#include "qgslayoutitem.h" // temporary
+
 class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
@@ -303,6 +305,27 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     friend class QgsLayoutItemRegistryGuiUtils;
 
 };
+
+#ifndef SIP_RUN
+///@cond TEMPORARY
+//simple item for testing
+class TestLayoutItem : public QgsLayoutItem
+{
+  public:
+
+    TestLayoutItem( QgsLayout *layout );
+    ~TestLayoutItem() {}
+
+    //implement pure virtual methods
+    int type() const { return QgsLayoutItemRegistry::LayoutItem + 102; }
+    void draw( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+  private:
+    QColor mColor;
+};
+
+///@endcond
+#endif
 
 #endif //QGSLAYOUTITEMREGISTRY_H
 

@@ -68,9 +68,11 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
     return;
   }
 
+  QRectF rect = QRectF( view()->mapToScene( mMousePressStartPos ),
+                        event->layoutPoint() );
   if ( mRubberBand )
   {
-    mRubberBand->finish( event->layoutPoint(), event->modifiers() );
+    rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
   }
 
   // click? or click-and-drag?
@@ -84,8 +86,9 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   }
   Q_UNUSED( clickOnly );
 
-
-  QgsLogger::debug( QStringLiteral( "creating new %1 item  " ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( mItemType )->visibleName() ) );
+  QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
+  item->setRect( rect );
+  layout()->addItem( item );
 }
 
 int QgsLayoutViewToolAddItem::itemType() const

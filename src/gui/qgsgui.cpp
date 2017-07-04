@@ -19,6 +19,8 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutviewrubberband.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
 #else
@@ -78,4 +80,13 @@ QgsGui::QgsGui()
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
+
+
+  QgsLayoutItemAbstractMetadata *abstractMetadata = QgsApplication::layoutItemRegistry()->itemMetadata( 101 );
+  QgsLayoutItemMetadata *metadata = dynamic_cast<QgsLayoutItemMetadata *>( abstractMetadata );
+  metadata->setRubberBandCreationFunction( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
+  {
+    return new QgsLayoutViewRectangularRubberBand( view );
+  } );
+
 }

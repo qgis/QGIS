@@ -55,10 +55,12 @@ class QgsLayoutViewRubberBand
  ending ``position`` (in layout coordinate space).
 %End
 
-    virtual void finish( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+    virtual QRectF finish( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
 %Docstring
  Called when a rubber band use has finished and the rubber
  band is no longer required.
+ Returns the final bounding box of the rubber band.
+ :rtype: QRectF
 %End
 
     QgsLayoutView *view() const;
@@ -114,7 +116,7 @@ class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
 
-    virtual void finish( QPointF, Qt::KeyboardModifiers );
+    virtual QRectF finish( QPointF, Qt::KeyboardModifiers );
 
 
 };
@@ -144,7 +146,7 @@ class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
 
-    virtual void finish( QPointF, Qt::KeyboardModifiers );
+    virtual QRectF finish( QPointF, Qt::KeyboardModifiers );
 
 
 };

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutItemAbstractMetadata
 {
 %Docstring
@@ -168,6 +169,7 @@ class QgsLayoutItemRegistry : QObject
   private:
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );
 };
+
 
 
 

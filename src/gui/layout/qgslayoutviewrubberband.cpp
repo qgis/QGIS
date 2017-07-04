@@ -150,14 +150,18 @@ void QgsLayoutViewRectangularRubberBand::update( QPointF position, Qt::KeyboardM
   mRubberBandItem->setTransform( t );
 }
 
-void QgsLayoutViewRectangularRubberBand::finish( QPointF, Qt::KeyboardModifiers )
+QRectF QgsLayoutViewRectangularRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
+  bool constrainSquare = modifiers & Qt::ShiftModifier;
+  bool fromCenter = modifiers & Qt::AltModifier;
+
   if ( mRubberBandItem )
   {
     layout()->removeItem( mRubberBandItem );
     delete mRubberBandItem;
     mRubberBandItem = nullptr;
   }
+  return updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
 }
 
 QgsLayoutViewEllipticalRubberBand::QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view )
@@ -211,12 +215,16 @@ void QgsLayoutViewEllipticalRubberBand::update( QPointF position, Qt::KeyboardMo
   mRubberBandItem->setTransform( t );
 }
 
-void QgsLayoutViewEllipticalRubberBand::finish( QPointF, Qt::KeyboardModifiers )
+QRectF QgsLayoutViewEllipticalRubberBand::finish( QPointF position, Qt::KeyboardModifiers modifiers )
 {
+  bool constrainSquare = modifiers & Qt::ShiftModifier;
+  bool fromCenter = modifiers & Qt::AltModifier;
+
   if ( mRubberBandItem )
   {
     layout()->removeItem( mRubberBandItem );
     delete mRubberBandItem;
     mRubberBandItem = nullptr;
   }
+  return updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
 }
