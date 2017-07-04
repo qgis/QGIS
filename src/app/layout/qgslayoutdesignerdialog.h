@@ -23,6 +23,7 @@
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
 class QgsLayoutViewToolAddItem;
+class QgsLayoutViewToolPan;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -113,6 +114,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutView *mView = nullptr;
 
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
+
+    QgsLayoutViewToolPan *mPanTool = nullptr;
 
 
     //! Save window state

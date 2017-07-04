@@ -46,6 +46,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
     return;
   }
 
+  mMousePressStartPos = event->pos();
   mRubberBand.reset( QgsApplication::layoutItemRegistry()->createItemRubberBand( mItemType, view() ) );
   if ( mRubberBand )
   {

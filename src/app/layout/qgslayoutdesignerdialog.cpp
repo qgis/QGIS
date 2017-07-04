@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
+#include "qgslayoutviewtoolpan.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -90,6 +91,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( QgsApplication::layoutItemRegistry(), &QgsLayoutItemRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
+  mPanTool = new QgsLayoutViewToolPan( mView );
+  mPanTool->setAction( mActionPan );
+  mToolsActionGroup->addAction( mActionPan );
+  connect( mActionPan, &QAction::triggered, mPanTool, [ = ] { mView->setTool( mPanTool ); } );
 
   restoreWindowState();
 }
