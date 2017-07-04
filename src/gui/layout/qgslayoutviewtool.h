@@ -26,6 +26,8 @@ class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
 class QgsLayoutView;
+class QgsLayoutViewMouseEvent;
+class QgsLayout;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -61,22 +63,22 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     /**
      * Mouse move event for overriding. Default implementation does nothing.
      */
-    virtual void layoutMoveEvent( QMouseEvent *event );
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
     /**
      * Mouse double click event for overriding. Default implementation does nothing.
      */
-    virtual void layoutDoubleClickEvent( QMouseEvent *event );
+    virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
 
     /**
      * Mouse press event for overriding. Default implementation does nothing.
      */
-    virtual void layoutPressEvent( QMouseEvent *event );
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
     /**
      * Mouse release event for overriding. Default implementation does nothing.
      */
-    virtual void layoutReleaseEvent( QMouseEvent *event );
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
     /**
      * Mouse wheel event for overriding. Default implementation does nothing.
@@ -129,6 +131,19 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      * Returns a user-visible, translated name for the tool.
      */
     QString toolName() const { return mToolName; }
+
+    /**
+     * Returns the view associated with the tool.
+     * \see layout()
+     */
+    QgsLayoutView *view() const;
+
+    /**
+     * Returns the layout associated with the tool.
+     * \see view()
+     */
+    QgsLayout *layout() const;
+
 
   signals:
 

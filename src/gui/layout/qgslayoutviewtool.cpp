@@ -25,27 +25,37 @@ QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
 
 }
 
+QgsLayoutView *QgsLayoutViewTool::view() const
+{
+  return mView;
+}
+
+QgsLayout *QgsLayoutViewTool::layout() const
+{
+  return mView->currentLayout();
+}
+
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
   mView->unsetTool( this );
 }
 
-void QgsLayoutViewTool::layoutMoveEvent( QMouseEvent * )
+void QgsLayoutViewTool::layoutMoveEvent( QgsLayoutViewMouseEvent * )
 {
 
 }
 
-void QgsLayoutViewTool::layoutDoubleClickEvent( QMouseEvent * )
+void QgsLayoutViewTool::layoutDoubleClickEvent( QgsLayoutViewMouseEvent * )
 {
 
 }
 
-void QgsLayoutViewTool::layoutPressEvent( QMouseEvent * )
+void QgsLayoutViewTool::layoutPressEvent( QgsLayoutViewMouseEvent * )
 {
 
 }
 
-void QgsLayoutViewTool::layoutReleaseEvent( QMouseEvent * )
+void QgsLayoutViewTool::layoutReleaseEvent( QgsLayoutViewMouseEvent * )
 {
 
 }

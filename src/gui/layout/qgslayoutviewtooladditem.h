@@ -20,6 +20,8 @@
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 
+class QGraphicsRectItem;
+
 /**
  * \ingroup gui
  * Layout view tool for adding items to a layout.
@@ -46,9 +48,26 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
      */
     void setItemType( int type );
 
+    void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
+    void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
+    void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+
   private:
 
     int mItemType = 0;
+
+    //! Rubber band item
+    QGraphicsRectItem *mRubberBandItem = nullptr;
+
+    //! Start position for mouse press
+    QPoint mMousePressStartPos;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+
+    //! Redraws the rectangular rubber band
+    void updateRubberBandRect( QPointF pos, const bool constrainSquare = false, const bool fromCenter = false );
+
 };
 
 #endif // QGSLAYOUTVIEWTOOLADDITEM_H

@@ -18,6 +18,8 @@
 #include "qgslayoutview.h"
 #include "qgslayout.h"
 #include "qgslayoutviewtool.h"
+#include "qgslayoutviewmouseevent.h"
+#include <memory>
 
 QgsLayoutView::QgsLayoutView( QWidget *parent )
   : QGraphicsView( parent )
@@ -75,7 +77,10 @@ void QgsLayoutView::unsetTool( QgsLayoutViewTool *tool )
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   if ( mTool )
-    mTool->layoutPressEvent( event );
+  {
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    mTool->layoutPressEvent( me.get() );
+  }
   else
     QGraphicsView::mousePressEvent( event );
 }
@@ -83,7 +88,10 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( mTool )
-    mTool->layoutReleaseEvent( event );
+  {
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    mTool->layoutReleaseEvent( me.get() );
+  }
   else
     QGraphicsView::mouseReleaseEvent( event );
 }
@@ -91,7 +99,10 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
   if ( mTool )
-    mTool->layoutMoveEvent( event );
+  {
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    mTool->layoutMoveEvent( me.get() );
+  }
   else
     QGraphicsView::mouseMoveEvent( event );
 }
@@ -99,7 +110,10 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mTool )
-    mTool->layoutDoubleClickEvent( event );
+  {
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    mTool->layoutDoubleClickEvent( me.get() );
+  }
   else
     QGraphicsView::mouseDoubleClickEvent( event );
 }
@@ -107,7 +121,9 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 void QgsLayoutView::wheelEvent( QWheelEvent *event )
 {
   if ( mTool )
+  {
     mTool->wheelEvent( event );
+  }
   else
     QGraphicsView::wheelEvent( event );
 }

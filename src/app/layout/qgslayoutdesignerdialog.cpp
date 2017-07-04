@@ -21,6 +21,7 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgslayoutview.h"
+#include "qgslayoutviewtooladditem.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -88,6 +89,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //..and listen out for new item types
   connect( QgsApplication::layoutItemRegistry(), &QgsLayoutItemRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
+  mAddItemTool = new QgsLayoutViewToolAddItem( mView );
+
   restoreWindowState();
 }
 
@@ -104,7 +107,7 @@ QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
-
+  mView->setCurrentLayout( layout );
 }
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
@@ -199,10 +202,10 @@ void QgsLayoutDesignerDialog::restoreWindowState()
 
 void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
 {
-  QgsLogger::debug( QStringLiteral( "creating new %1 item  " ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName() ) );
+  mAddItemTool->setItemType( type );
   if ( mView )
   {
-    //mView->setTool( QgsLayoutView::ToolAddItem );
+    mView->setTool( mAddItemTool );
   }
 }
 

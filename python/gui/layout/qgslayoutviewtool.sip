@@ -36,22 +36,22 @@ class QgsLayoutViewTool : QObject
 
     virtual ~QgsLayoutViewTool();
 
-    virtual void layoutMoveEvent( QMouseEvent *event );
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse move event for overriding. Default implementation does nothing.
 %End
 
-    virtual void layoutDoubleClickEvent( QMouseEvent *event );
+    virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse double click event for overriding. Default implementation does nothing.
 %End
 
-    virtual void layoutPressEvent( QMouseEvent *event );
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse press event for overriding. Default implementation does nothing.
 %End
 
-    virtual void layoutReleaseEvent( QMouseEvent *event );
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse release event for overriding. Default implementation does nothing.
 %End
@@ -109,6 +109,21 @@ class QgsLayoutViewTool : QObject
  Returns a user-visible, translated name for the tool.
  :rtype: str
 %End
+
+    QgsLayoutView *view() const;
+%Docstring
+ Returns the view associated with the tool.
+.. seealso:: layout()
+ :rtype: QgsLayoutView
+%End
+
+    QgsLayout *layout() const;
+%Docstring
+ Returns the layout associated with the tool.
+.. seealso:: view()
+ :rtype: QgsLayout
+%End
+
 
   signals:
 

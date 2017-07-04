@@ -22,7 +22,7 @@
 
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
-
+class QgsLayoutViewToolAddItem;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -111,6 +111,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QActionGroup *mToolsActionGroup = nullptr;
 
     QgsLayoutView *mView = nullptr;
+
+    QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
 
 
     //! Save window state

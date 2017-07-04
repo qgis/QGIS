@@ -159,6 +159,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutview.cpp
+  layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewtool.cpp
   layout/qgslayoutviewtooladditem.cpp
 
@@ -719,6 +720,8 @@ SET(QGIS_GUI_HDRS
 
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
+
+  layout/qgslayoutviewmouseevent.h
 
   locator/qgslocatorcontext.h
 

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring
@@ -34,6 +35,13 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
  Sets the item ``type`` for items created by the tool.
 .. seealso:: itemType()
 %End
+
+    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+
 
 };
 

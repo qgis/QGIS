@@ -42,6 +42,7 @@
 %Include editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
+%Include layout/qgslayoutviewmouseevent.sip
 %Include locator/qgslocatorcontext.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology-ng/qgssymbolwidgetcontext.sip
