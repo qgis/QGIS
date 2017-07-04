@@ -43,7 +43,6 @@ Build-Depends:
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
- libopenscenegraph-dev,
  libqscintilla2-dev,
  git,
  doxygen,
@@ -440,6 +439,7 @@ Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Suggests: xvfb
 Conflicts: qgis-mapserver
 Provides: qgis-mapserver
 Replaces: qgis-mapserver
