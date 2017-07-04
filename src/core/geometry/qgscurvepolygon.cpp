@@ -291,16 +291,16 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument &doc, int precision, const QSt
   elemOuterBoundaryIs.appendChild( outerRing );
   delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
-  QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
+    QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
     QgsLineString *interiorLineString = interiorRing( i )->curveToLine();
     QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
     innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInnerBoundaryIs.appendChild( innerRing );
     delete interiorLineString;
+    elemPolygon.appendChild( elemInnerBoundaryIs );
   }
-  elemPolygon.appendChild( elemInnerBoundaryIs );
   return elemPolygon;
 }
 
@@ -316,7 +316,6 @@ QDomElement QgsCurvePolygon::asGML3( QDomDocument &doc, int precision, const QSt
   elemExterior.appendChild( curveElem );
   elemCurvePolygon.appendChild( elemExterior );
 
-  elemCurvePolygon.appendChild( elemExterior );
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
