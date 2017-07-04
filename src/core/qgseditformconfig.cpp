@@ -269,6 +269,8 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
     addTab( attributeEditorWidget );
   }
 
+  onRelationsLoaded();
+
 
   //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
   /// SEE QgsEditorWidgetFactory::writeConfig
