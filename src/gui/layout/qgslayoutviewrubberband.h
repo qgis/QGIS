@@ -75,7 +75,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      * band is no longer required.
      * Returns the final bounding box of the rubber band.
      */
-    virtual QRectF finish( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) = 0;
 
     /**
      * Returns the view associated with the rubber band.
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF, Qt::KeyboardModifiers ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
 
   private:
 
@@ -156,7 +156,7 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF, Qt::KeyboardModifiers ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
 
   private:
 

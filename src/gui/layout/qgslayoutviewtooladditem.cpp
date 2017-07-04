@@ -46,6 +46,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
     return;
   }
 
+  mDrawing = true;
   mMousePressStartPos = event->pos();
   mRubberBand.reset( QgsApplication::layoutItemRegistry()->createItemRubberBand( mItemType, view() ) );
   if ( mRubberBand )
@@ -56,7 +57,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
 void QgsLayoutViewToolAddItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
-  if ( mRubberBand )
+  if ( mDrawing && mRubberBand )
   {
     mRubberBand->update( event->layoutPoint(), event->modifiers() );
   }
@@ -64,17 +65,13 @@ void QgsLayoutViewToolAddItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 
 void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
-  if ( event->button() != Qt::LeftButton )
+  if ( event->button() != Qt::LeftButton || !mDrawing )
   {
     return;
   }
+  mDrawing = false;
 
-  QRectF rect = QRectF( view()->mapToScene( mMousePressStartPos ),
-                        event->layoutPoint() );
-  if ( mRubberBand )
-  {
-    rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
-  }
+  QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
 
   // click? or click-and-drag?
   QPoint mousePressStopPoint = event->pos();
@@ -90,6 +87,17 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
   item->setRect( rect );
   layout()->addItem( item );
+}
+
+void QgsLayoutViewToolAddItem::deactivate()
+{
+  if ( mDrawing )
+  {
+    // canceled mid operation
+    mRubberBand->finish();
+    mDrawing = false;
+  }
+  QgsLayoutViewTool::deactivate();
 }
 
 int QgsLayoutViewToolAddItem::itemType() const

@@ -31,6 +31,8 @@ class QgsLayoutViewToolPan : QgsLayoutViewTool
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
+    virtual void deactivate();
+
 
 };
 

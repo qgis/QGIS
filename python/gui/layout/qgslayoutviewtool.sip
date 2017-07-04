@@ -49,11 +49,19 @@ class QgsLayoutViewTool : QObject
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse press event for overriding. Default implementation does nothing.
+ Note that subclasses must ensure that they correctly handle cases
+ when a layoutPressEvent is called without a corresponding
+ layoutReleaseEvent (e.g. due to tool being changed mid way
+ through a press-release operation).
 %End
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 %Docstring
  Mouse release event for overriding. Default implementation does nothing.
+ Note that subclasses must ensure that they correctly handle cases
+ when a layoutPressEvent is called without a corresponding
+ layoutReleaseEvent (e.g. due to tool being changed mid way
+ through a press-release operation).
 %End
 
     virtual void wheelEvent( QWheelEvent *event );

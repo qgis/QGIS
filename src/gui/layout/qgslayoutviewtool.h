@@ -72,11 +72,19 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
 
     /**
      * Mouse press event for overriding. Default implementation does nothing.
+     * Note that subclasses must ensure that they correctly handle cases
+     * when a layoutPressEvent is called without a corresponding
+     * layoutReleaseEvent (e.g. due to tool being changed mid way
+     * through a press-release operation).
      */
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
     /**
      * Mouse release event for overriding. Default implementation does nothing.
+     * Note that subclasses must ensure that they correctly handle cases
+     * when a layoutPressEvent is called without a corresponding
+     * layoutReleaseEvent (e.g. due to tool being changed mid way
+     * through a press-release operation).
      */
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 

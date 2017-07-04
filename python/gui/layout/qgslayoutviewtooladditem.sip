@@ -41,6 +41,8 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
+    virtual void deactivate();
+
 
 };
 

@@ -56,3 +56,9 @@ void QgsLayoutViewToolPan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
   mIsPanning = false;
   view()->setCursor( Qt::OpenHandCursor );
 }
+
+void QgsLayoutViewToolPan::deactivate()
+{
+  mIsPanning = false;
+  QgsLayoutViewTool::deactivate();
+}

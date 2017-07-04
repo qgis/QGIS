@@ -51,8 +51,11 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void deactivate() override;
 
   private:
+
+    bool mDrawing = false;
 
     int mItemType = 0;
 

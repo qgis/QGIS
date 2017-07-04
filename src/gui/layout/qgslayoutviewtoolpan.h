@@ -42,6 +42,7 @@ class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void deactivate() override;
 
   private:
 
