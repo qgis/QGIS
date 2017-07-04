@@ -44,13 +44,6 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
   public:
 
-    //! Current view tool
-    enum Tool
-    {
-      ToolSelect = 0,      //!< Select/move/resize item tool
-      ToolAddItem, //!< Add new item tool
-    };
-
     /**
      * Constructor for QgsLayoutView.
      */

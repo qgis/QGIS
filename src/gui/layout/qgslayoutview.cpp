@@ -67,7 +67,6 @@ void QgsLayoutView::unsetTool( QgsLayoutViewTool *tool )
   if ( mTool && mTool == tool )
   {
     mTool->deactivate();
-    mTool = nullptr;
     emit toolSet( nullptr );
     setCursor( Qt::ArrowCursor );
   }

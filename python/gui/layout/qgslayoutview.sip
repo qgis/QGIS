@@ -24,12 +24,6 @@ class QgsLayoutView: QGraphicsView
 %End
   public:
 
-    enum Tool
-    {
-      ToolSelect,
-      ToolAddItem,
-    };
-
     QgsLayoutView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsLayoutView.

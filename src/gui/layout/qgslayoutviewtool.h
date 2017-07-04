@@ -158,6 +158,8 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     //! Translated name of the map tool
     QString mToolName;
 
+    friend class TestQgsLayoutView;
+
 };
 
 #endif // QGSLAYOUTVIEWTOOL_H
