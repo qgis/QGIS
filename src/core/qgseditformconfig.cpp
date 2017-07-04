@@ -355,6 +355,8 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
         QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
         addTab( attributeEditorWidget );
       }
+
+      onRelationsLoaded();
     }
   }
 }
