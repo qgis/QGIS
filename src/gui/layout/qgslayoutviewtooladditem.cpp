@@ -21,6 +21,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslogger.h"
+#include "qgslayoutviewrubberband.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>
@@ -40,22 +41,24 @@ void QgsLayoutViewToolAddItem::setItemType( int itemType )
 
 void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
-  QTransform t;
-  mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
-  mRubberBandItem->setBrush( Qt::NoBrush );
-  mRubberBandItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
-  mMousePressStartPos = event->pos();
-  mRubberBandStartPos = QPointF( event->layoutPoint().x(), event->layoutPoint().y() );
-  t.translate( event->x(), event->y() );
-  mRubberBandItem->setTransform( t );
-  mRubberBandItem->setZValue( QgsLayout::ZMapTool );
-  layout()->addItem( mRubberBandItem );
-  layout()->update();
+  if ( event->button() != Qt::LeftButton )
+  {
+    return;
+  }
+
+  mRubberBand.reset( QgsApplication::layoutItemRegistry()->createItemRubberBand( mItemType, view() ) );
+  if ( mRubberBand )
+  {
+    mRubberBand->start( event->layoutPoint(), event->modifiers() );
+  }
 }
 
 void QgsLayoutViewToolAddItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
-  updateRubberBandRect( event->layoutPoint(), event->modifiers() & Qt::ShiftModifier, event->modifiers() & Qt::AltModifier );
+  if ( mRubberBand )
+  {
+    mRubberBand->update( event->layoutPoint(), event->modifiers() );
+  }
 }
 
 void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
@@ -63,6 +66,11 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( event->button() != Qt::LeftButton )
   {
     return;
+  }
+
+  if ( mRubberBand )
+  {
+    mRubberBand->finish( event->layoutPoint(), event->modifiers() );
   }
 
   // click? or click-and-drag?
@@ -74,86 +82,10 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   {
     clickOnly = true;
   }
+  Q_UNUSED( clickOnly );
 
-  if ( mRubberBandItem )
-  {
-    layout()->removeItem( mRubberBandItem );
-    delete mRubberBandItem;
-    mRubberBandItem = nullptr;
-  }
 
   QgsLogger::debug( QStringLiteral( "creating new %1 item  " ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( mItemType )->visibleName() ) );
-}
-
-void QgsLayoutViewToolAddItem::updateRubberBandRect( QPointF pos, const bool constrainSquare, const bool fromCenter )
-{
-  if ( !mRubberBandItem )
-  {
-    return;
-  }
-
-  double x = 0;
-  double y = 0;
-  double width = 0;
-  double height = 0;
-
-  double dx = pos.x() - mRubberBandStartPos.x();
-  double dy = pos.y() - mRubberBandStartPos.y();
-
-  if ( constrainSquare )
-  {
-    if ( fabs( dx ) > fabs( dy ) )
-    {
-      width = fabs( dx );
-      height = width;
-    }
-    else
-    {
-      height = fabs( dy );
-      width = height;
-    }
-
-    x = mRubberBandStartPos.x() - ( ( dx < 0 ) ? width : 0 );
-    y = mRubberBandStartPos.y() - ( ( dy < 0 ) ? height : 0 );
-  }
-  else
-  {
-    //not constraining
-    if ( dx < 0 )
-    {
-      x = pos.x();
-      width = -dx;
-    }
-    else
-    {
-      x = mRubberBandStartPos.x();
-      width = dx;
-    }
-
-    if ( dy < 0 )
-    {
-      y = pos.y();
-      height = -dy;
-    }
-    else
-    {
-      y = mRubberBandStartPos.y();
-      height = dy;
-    }
-  }
-
-  if ( fromCenter )
-  {
-    x = mRubberBandStartPos.x() - width;
-    y = mRubberBandStartPos.y() - height;
-    width *= 2.0;
-    height *= 2.0;
-  }
-
-  mRubberBandItem->setRect( 0, 0, width, height );
-  QTransform t;
-  t.translate( x, y );
-  mRubberBandItem->setTransform( t );
 }
 
 int QgsLayoutViewToolAddItem::itemType() const

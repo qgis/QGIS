@@ -25,7 +25,9 @@
 #include <functional>
 
 class QgsLayout;
+class QgsLayoutView;
 class QgsLayoutItem;
+class QgsLayoutViewRubberBand;
 
 /**
  * \ingroup core
@@ -74,6 +76,14 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     virtual QWidget *createItemWidget() SIP_FACTORY { return nullptr; }
 
     /**
+     * Creates a rubber band for use when creating layout items of this type. Can return nullptr if no rubber band
+     * should be created.
+     * \note not available in Python bindings. Python item subclasses must use QgsLayoutItemRegistryGuiUtils
+     * to override the default rubber band creation function.
+     */
+    virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_SKIP { Q_UNUSED( view ); return nullptr; }
+
+    /**
      * Resolve paths in the item's \a properties (if there are any paths).
      * When \a saving is true, paths are converted from absolute to relative,
      * when \a saving is false, paths are converted from relative to absolute.
@@ -98,6 +108,9 @@ typedef std::function<QgsLayoutItem *( QgsLayout *, const QVariantMap & )> QgsLa
 
 //! Layout item configuration widget creation function
 typedef std::function<QWidget *()> QgsLayoutItemWidgetFunc SIP_SKIP;
+
+//! Layout rubber band creation function
+typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
 
 //! Layout item path resolver function
 typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsLayoutItemPathResolverFunc SIP_SKIP;
@@ -152,6 +165,18 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      */
     void setWidgetFunction( QgsLayoutItemWidgetFunc function ) { mWidgetFunc = function; }
 
+    /**
+     * Returns the classes' rubber band creation function.
+     * \see setRubberBandCreationFunction()
+     */
+    QgsLayoutItemRubberBandFunc rubberBandCreationFunction() const { return mRubberBandFunc; }
+
+    /**
+     * Sets the classes' rubber band creation \a function.
+     * \see rubberBandCreationFunction()
+     */
+    void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
+
     QIcon icon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractMetadata::icon() : mIcon; }
     QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) override { return mCreateFunc ? mCreateFunc( layout, properties ) : nullptr; }
     QWidget *createItemWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
@@ -165,6 +190,7 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     QIcon mIcon;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemWidgetFunc mWidgetFunc = nullptr;
+    QgsLayoutItemRubberBandFunc mRubberBandFunc = nullptr;
     QgsLayoutItemPathResolverFunc mPathResolverFunc = nullptr;
 
 };
@@ -238,6 +264,12 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     QWidget *createItemWidget( int type ) const SIP_FACTORY;
 
     /**
+     * Creates a new rubber band item for the specified item \a type and destination \a view.
+     * \note not available from Python bindings
+     */
+    QgsLayoutViewRubberBand *createItemRubberBand( int type, QgsLayoutView *view ) const SIP_SKIP;
+
+    /**
      * Resolve paths in properties of a particular symbol layer.
      * This normally means converting relative paths to absolute paths when loading
      * and converting absolute paths to relative paths when saving.
@@ -263,6 +295,10 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 #endif
 
     QMap<int, QgsLayoutItemAbstractMetadata *> mMetadata;
+
+    QMap<int, QgsLayoutItemRubberBandFunc > mRubberBandFunctions;
+
+    friend class QgsLayoutItemRegistryGuiUtils;
 
 };
 

@@ -61,6 +61,7 @@ class QgsLayoutItemAbstractMetadata
  :rtype: QWidget
 %End
 
+
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
  Resolve paths in the item's ``properties`` (if there are any paths).
@@ -71,6 +72,7 @@ class QgsLayoutItemAbstractMetadata
 %End
 
 };
+
 
 
 
@@ -140,6 +142,7 @@ class QgsLayoutItemRegistry : QObject
  Creates a new instance of a layout item configuration widget for the specified item ``type``.
  :rtype: QWidget
 %End
+
 
     void resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 %Docstring

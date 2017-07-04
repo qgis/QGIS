@@ -19,8 +19,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
-
-class QGraphicsRectItem;
+#include "qgslayoutviewrubberband.h"
+#include <memory>
 
 /**
  * \ingroup gui
@@ -57,16 +57,13 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     int mItemType = 0;
 
     //! Rubber band item
-    QGraphicsRectItem *mRubberBandItem = nullptr;
+    std::unique_ptr< QgsLayoutViewRubberBand > mRubberBand;
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
 
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
-
-    //! Redraws the rectangular rubber band
-    void updateRubberBandRect( QPointF pos, const bool constrainSquare = false, const bool fromCenter = false );
 
 };
 

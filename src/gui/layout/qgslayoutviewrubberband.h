@@ -1,0 +1,169 @@
+/***************************************************************************
+                             qgslayoutviewrubberband.h
+                             -------------------------
+    Date                 : July 2017
+    Copyright            : (C) 2017 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSLAYOUTVIEWRUBBERBAND_H
+#define QGSLAYOUTVIEWRUBBERBAND_H
+
+#include <QMouseEvent>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+class QgsLayoutView;
+class QGraphicsRectItem;
+class QGraphicsEllipseItem;
+class QgsLayout;
+
+/**
+ * \ingroup gui
+ * QgsLayoutViewRubberBand is an abstract base class for temporary rubber band items
+ * in various shapes, for use within QgsLayoutView widgets.
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewRubberBand
+{
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsLayoutViewMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsLayoutViewMouseEvent;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutViewRubberBand.
+     */
+    QgsLayoutViewRubberBand( QgsLayoutView *view );
+
+    virtual ~QgsLayoutViewRubberBand() = default;
+
+    /**
+     * Creates a new instance of the QgsLayoutViewRubberBand subclass.
+     */
+    virtual QgsLayoutViewRubberBand *create( QgsLayoutView *view ) const = 0 SIP_FACTORY;
+
+    /**
+     * Called when a rubber band should be created at the specified
+     * starting \a position (in layout coordinate space).
+     */
+    virtual void start( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+
+    /**
+     * Called when a rubber band should be updated to reflect a temporary
+     * ending \a position (in layout coordinate space).
+     */
+    virtual void update( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+
+    /**
+     * Called when a rubber band use has finished and the rubber
+     * band is no longer required.
+     */
+    virtual void finish( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
+
+    /**
+     * Returns the view associated with the rubber band.
+     * \see layout()
+     */
+    QgsLayoutView *view() const;
+
+    /**
+     * Returns the layout associated with the rubber band.
+     * \see view()
+     */
+    QgsLayout *layout() const;
+
+  protected:
+
+    /**
+     * Calculates an updated bounding box rectangle from a original \a start position
+     * and new \a position. If \a constrainSquare is true then the bounding box will be
+     * forced to a square shape. If \a fromCenter is true then the original \a start
+     * position will form the center point of the returned rectangle.
+     */
+    QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
+
+  private:
+
+    QgsLayoutView *mView = nullptr;
+
+};
+
+
+/**
+ * \ingroup gui
+ * QgsLayoutViewRectangularRubberBand is rectangular rubber band for use within QgsLayoutView widgets.
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubberBand
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutViewRectangularRubberBand.
+     */
+    QgsLayoutViewRectangularRubberBand( QgsLayoutView *view );
+    QgsLayoutViewRectangularRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
+
+    ~QgsLayoutViewRectangularRubberBand();
+
+    void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void finish( QPointF, Qt::KeyboardModifiers ) override;
+
+  private:
+
+    //! Rubber band item
+    QGraphicsRectItem *mRubberBandItem = nullptr;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+
+};
+
+/**
+ * \ingroup gui
+ * QgsLayoutViewEllipseRubberBand is elliptical rubber band for use within QgsLayoutView widgets.
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberBand
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutViewEllipticalRubberBand.
+     */
+    QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view );
+    QgsLayoutViewEllipticalRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
+
+    ~QgsLayoutViewEllipticalRubberBand();
+
+    void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
+    void finish( QPointF, Qt::KeyboardModifiers ) override;
+
+  private:
+
+    //! Rubber band item
+    QGraphicsEllipseItem *mRubberBandItem = nullptr;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+
+};
+#endif // QGSLAYOUTVIEWRUBBERBAND_H
