@@ -73,7 +73,7 @@ Mouse move event for overriding. Default implementation does nothing.
 
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
 %Docstring
-Mouse double click event for overriding. Default implementation does nothing.
+Mouse double-click event for overriding. Default implementation does nothing.
 %End
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );

@@ -236,7 +236,7 @@
           <item row="2" column="0" colspan="5">
            <widget class="QTreeWidget" name="treeRecords">
             <property name="toolTip">
-             <string>Double click to see full record information</string>
+             <string>Double-click to see full record information</string>
             </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>

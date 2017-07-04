@@ -33,7 +33,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   //we will show this only when a message is set
   textEdit->hide();
 
-  //apply selected projection upon double click on item
+  //apply selected projection upon double-click on item
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 }
 

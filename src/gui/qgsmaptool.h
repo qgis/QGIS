@@ -103,7 +103,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Mouse move event for overriding. Default implementation does nothing.
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 
-    //! Mouse double click event for overriding. Default implementation does nothing.
+    //! Mouse double-click event for overriding. Default implementation does nothing.
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
 
     //! Mouse press event for overriding. Default implementation does nothing.

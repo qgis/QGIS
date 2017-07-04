@@ -1807,14 +1807,14 @@
                   <item>
                    <widget class="QCheckBox" name="cbxAddPostgisDC">
                     <property name="text">
-                     <string>Add PostGIS layers with double click and select in extended mode</string>
+                     <string>Add PostGIS layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="cbxAddOracleDC">
                     <property name="text">
-                     <string>Add Oracle layers with double click and select in extended mode</string>
+                     <string>Add Oracle layers with double-click and select in extended mode</string>
                     </property>
                    </widget>
                   </item>
@@ -2962,7 +2962,7 @@
                     <item>
                      <widget class="QLabel" name="label_15">
                       <property name="text">
-                       <string>Double click action in legend</string>
+                       <string>Double-click action in legend</string>
                       </property>
                      </widget>
                     </item>
