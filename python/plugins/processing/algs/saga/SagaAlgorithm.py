@@ -340,7 +340,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 files = [param.value]
             elif (isinstance(param, ParameterMultipleInput) and
-                    param.datatype == dataobjects.TYPE_RASTER):
+                    param.datatype == ParameterMultipleInput.TYPE_RASTER):
                 if param.value is not None:
                     files = param.value.split(";")
             for f in files:
