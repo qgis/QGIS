@@ -352,15 +352,15 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
-  if ( !query.exec( QStringLiteral( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
+  if ( !query.exec( QStringLiteral( "select f_geometry_column, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName, mTableName ) ) )
   {
     QgsDebugMsg( query.lastError().text() );
   }
   if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
-    mSRId = query.value( 2 ).toInt();
-    mWkbType = getWkbType( query.value( 3 ).toString(), query.value( 1 ).toInt() );
+    mSRId = query.value( 1 ).toInt();
+    mWkbType = getWkbType( query.value( 2 ).toString() );
   }
 }
 
@@ -1658,42 +1658,9 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     dim = 0;
 }
 
-QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType, int dim )
+QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType )
 {
-  if ( dim == 3 )
-  {
-    if ( geometryType == QLatin1String( "POINT" ) )
-      return QgsWkbTypes::Point25D;
-    if ( geometryType == QLatin1String( "LINESTRING" ) )
-      return QgsWkbTypes::LineString25D;
-    if ( geometryType == QLatin1String( "POLYGON" ) )
-      return QgsWkbTypes::Polygon25D;
-    if ( geometryType == QLatin1String( "MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint25D;
-    if ( geometryType == QLatin1String( "MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString25D;
-    if ( geometryType == QLatin1String( "MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon25D;
-    else
-      return QgsWkbTypes::Unknown;
-  }
-  else
-  {
-    if ( geometryType == QLatin1String( "POINT" ) )
-      return QgsWkbTypes::Point;
-    if ( geometryType == QLatin1String( "LINESTRING" ) )
-      return QgsWkbTypes::LineString;
-    if ( geometryType == QLatin1String( "POLYGON" ) )
-      return QgsWkbTypes::Polygon;
-    if ( geometryType == QLatin1String( "MULTIPOINT" ) )
-      return QgsWkbTypes::MultiPoint;
-    if ( geometryType == QLatin1String( "MULTILINESTRING" ) )
-      return QgsWkbTypes::MultiLineString;
-    if ( geometryType == QLatin1String( "MULTIPOLYGON" ) )
-      return QgsWkbTypes::MultiPolygon;
-    else
-      return QgsWkbTypes::Unknown;
-  }
+  return QgsWkbTypes::parseType( geometryType );
 }
 
 

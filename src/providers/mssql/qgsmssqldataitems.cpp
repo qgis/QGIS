@@ -542,24 +542,19 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName, QgsWkbTypes::displayString( wkbType ), layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
-  switch ( wkbType )
+  QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( wkbType );
+  switch ( flatType )
   {
     case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
     case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
     case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
     case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:
