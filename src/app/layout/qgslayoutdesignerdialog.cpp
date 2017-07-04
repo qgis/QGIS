@@ -20,6 +20,7 @@
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
+#include "qgslayoutview.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -54,6 +55,26 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 #if QT_VERSION >= 0x050600
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
 #endif
+
+  //create layout view
+  QGridLayout *viewLayout = new QGridLayout();
+  viewLayout->setSpacing( 0 );
+  viewLayout->setMargin( 0 );
+  viewLayout->setContentsMargins( 0, 0, 0, 0 );
+  centralWidget()->layout()->setSpacing( 0 );
+  centralWidget()->layout()->setMargin( 0 );
+  centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mView = new QgsLayoutView();
+  //mView->setMapCanvas( mQgis->mapCanvas() );
+  mView->setContentsMargins( 0, 0, 0, 0 );
+  //mView->setHorizontalRuler( mHorizontalRuler );
+  //mView->setVerticalRuler( mVerticalRuler );
+  viewLayout->addWidget( mView, 1, 1 );
+  //view does not accept focus via tab
+  mView->setFocusPolicy( Qt::ClickFocus );
+  mViewFrame->setLayout( viewLayout );
+  mViewFrame->setContentsMargins( 0, 0, 0, 1 ); // 1 is deliberate!
+  mView->setFrameShape( QFrame::NoFrame );
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 

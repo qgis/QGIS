@@ -21,7 +21,9 @@
 QgsLayoutView::QgsLayoutView( QWidget *parent )
   : QGraphicsView( parent )
 {
-
+  setResizeAnchor( QGraphicsView::AnchorViewCenter );
+  setMouseTracking( true );
+  viewport()->setMouseTracking( true );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()

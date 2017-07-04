@@ -21,6 +21,8 @@
 #include "qgslayoutdesignerinterface.h"
 
 class QgsLayoutDesignerDialog;
+class QgsLayoutView;
+
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -107,6 +109,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayout *mLayout = nullptr;
 
     QActionGroup *mToolsActionGroup = nullptr;
+
+    QgsLayoutView *mView = nullptr;
 
 
     //! Save window state
