@@ -82,6 +82,8 @@ QWidget* QgsFormAnnotationItem::createDesignerWidget( const QString& filePath )
   }
 
   QUiLoader loader;
+  loader.clearPluginPaths();
+
   QFileInfo fi( file );
   loader.setWorkingDirectory( fi.dir() );
   QWidget* widget = loader.load( &file, nullptr );
