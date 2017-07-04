@@ -673,9 +673,14 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     return s.replace( QRegularExpression( "[\\s'\"\\(\\):]" ), QStringLiteral( "_" ) );
   };
 
-  // numeric sources
-  ChildParameterSources sources = availableSourcesForChild( childId, QStringList() << QgsProcessingParameterNumber::typeName(),
-                                  QStringList() << QgsProcessingOutputNumber::typeName() );
+  // "static"/single value sources
+  ChildParameterSources sources = availableSourcesForChild( childId, QStringList() << QgsProcessingParameterNumber::typeName()
+                                  << QgsProcessingParameterBoolean::typeName()
+                                  << QgsProcessingParameterExpression::typeName()
+                                  << QgsProcessingParameterField::typeName()
+                                  << QgsProcessingParameterString::typeName(),
+                                  QStringList() << QgsProcessingOutputNumber::typeName()
+                                  << QgsProcessingOutputString::typeName() );
   Q_FOREACH ( const ChildParameterSource &source, sources )
   {
     QString name;
