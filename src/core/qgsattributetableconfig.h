@@ -71,7 +71,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     enum ActionWidgetStyle
     {
       ButtonList,   //!< A list of buttons
-      DropDown      //!< A tool button with a dropdown to select the current action
+      DropDown      //!< A tool button with a drop-down to select the current action
     };
 
     QgsAttributeTableConfig();

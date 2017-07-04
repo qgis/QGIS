@@ -800,7 +800,7 @@ changed so we will just provide a bullet list of key new features here.
  - Make NULL value string representation configurable.
  - Fix feature updates in feature form from attribute table.
  - Add support for NULL values in value maps (comboboxes).
- - Use layer names instead of ids in drop down list when loading value maps from layers.
+ - Use layer names instead of ids in drop-down list when loading value maps from layers.
  - Support feature form expression fields: line edits on the form which
       name prefix "expr_" are evaluated. Their value is interpreted as field
       calculator string and replaced with the calculated value.
