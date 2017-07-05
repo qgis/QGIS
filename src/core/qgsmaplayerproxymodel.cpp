@@ -120,7 +120,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
+      if ( mFilters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;
       if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
         return true;

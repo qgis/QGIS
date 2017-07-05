@@ -320,7 +320,7 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
   else
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-    return layer && layer->hasGeometryType();
+    return layer && layer->isSpatial();
   }
 }
 

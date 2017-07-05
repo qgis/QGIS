@@ -310,7 +310,7 @@ class OutputVector(Output):
     def hasGeometry(self):
         if self.base_layer is None:
             return True
-        return self.base_layer.hasGeometryType()
+        return self.base_layer.isSpatial()
 
     def getSupportedOutputVectorLayerExtensions(self):
         exts = QgsVectorFileWriter.supportedFormatExtensions()

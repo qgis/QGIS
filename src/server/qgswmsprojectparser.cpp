@@ -1806,7 +1806,7 @@ QDomDocument QgsWmsProjectParser::getStyles( QStringList &layerList ) const
 
       Q_FOREACH ( QString styleName, layer->styleManager()->styles() )
       {
-        if ( layer->hasGeometryType() )
+        if ( layer->isSpatial() )
         {
           layer->styleManager()->setCurrentStyle( styleName );
           if ( styleName.isEmpty() )

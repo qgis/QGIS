@@ -96,7 +96,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
     def checkSupports(self):
         """ update options available for the current input layer """
         allowSpatial = self.db.connector.hasSpatialSupport()
-        hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
+        hasGeomType = self.inLayer and self.inLayer.isSpatial()
         isShapefile = self.inLayer and self.inLayer.providerType() == "ogr" and self.inLayer.storageType() == "ESRI Shapefile"
 
         self.chkGeomColumn.setEnabled(allowSpatial and hasGeomType)
@@ -310,7 +310,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             if not pk:
                 pk = self.default_pk
 
-            if self.inLayer.hasGeometryType() and self.chkGeomColumn.isEnabled():
+            if self.inLayer.isSpatial() and self.chkGeomColumn.isEnabled():
                 geom = srcUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
                 if not geom:
                     geom = self.default_geom

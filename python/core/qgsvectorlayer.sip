@@ -679,12 +679,6 @@ Returns point, line or polygon
  :rtype: QgsWkbTypes.GeometryType
 %End
 
-    bool hasGeometryType() const;
-%Docstring
-Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
- :rtype: bool
-%End
-
     virtual QgsWkbTypes::Type wkbType() const;
 
 %Docstring
@@ -1084,6 +1078,10 @@ Returns true if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const;
+%Docstring
+Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
+ :rtype: bool
+%End
 
     virtual bool isModified() const;
 %Docstring

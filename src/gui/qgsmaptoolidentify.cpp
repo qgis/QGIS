@@ -199,7 +199,7 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
 
 bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPointXY &point )
 {
-  if ( !layer || !layer->hasGeometryType() )
+  if ( !layer || !layer->isSpatial() )
     return false;
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )

@@ -526,7 +526,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   int rc = sqlExec( db, sql );
 
   // add geometry column
-  if ( layer->hasGeometryType() )
+  if ( layer->isSpatial() )
   {
     QString geomType = QLatin1String( "" );
     switch ( layer->wkbType() )
@@ -576,7 +576,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     // add new layer
     QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
                                .arg( offlineDbPath,
-                                     tableName, layer->hasGeometryType() ? "(Geometry)" : "" );
+                                     tableName, layer->isSpatial() ? "(Geometry)" : "" );
     QgsVectorLayer *newLayer = new QgsVectorLayer( connectionString,
         layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
     if ( newLayer->isValid() )

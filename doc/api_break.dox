@@ -2411,6 +2411,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - annotationForm() and setAnnotationForm() have been removed. Form path is stored in individual QgsFormAnnotation objects.
 - setLayerTransparency, layerTransparency, and layerTransparencyChanged were removed. Use opacity, setOpacity and opacityChanged instead.
 - The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
+- hasGeometryType() has been removed, replaced by QgsMapLayer::isSpatial()
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
