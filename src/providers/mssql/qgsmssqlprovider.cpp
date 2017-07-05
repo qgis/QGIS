@@ -410,11 +410,16 @@ void QgsMssqlProvider::loadFields()
         }
         if ( sqlType == QVariant::String )
         {
+          int length = query.value( 7 ).toInt();
+          if ( sqlTypeName.startsWith( "n" ) )
+          {
+            length = length / 2;
+          }
           mAttributeFields.append(
             QgsField(
               query.value( 3 ).toString(), sqlType,
               sqlTypeName,
-              query.value( 7 ).toInt() ) );
+              length ) );
         }
         else if ( sqlType == QVariant::Double )
         {
