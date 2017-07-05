@@ -28,6 +28,7 @@ void QgsLayoutViewToolPan::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( event->button() != Qt::LeftButton )
   {
+    event->ignore();
     return;
   }
 
@@ -39,7 +40,10 @@ void QgsLayoutViewToolPan::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 void QgsLayoutViewToolPan::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( !mIsPanning )
+  {
+    event->ignore();
     return;
+  }
 
   view()->horizontalScrollBar()->setValue( view()->horizontalScrollBar()->value() - ( event->x() - mLastMousePos.x() ) );
   view()->verticalScrollBar()->setValue( view()->verticalScrollBar()->value() - ( event->y() - mLastMousePos.y() ) );
@@ -50,6 +54,7 @@ void QgsLayoutViewToolPan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( !mIsPanning || event->button() != Qt::LeftButton )
   {
+    event->ignore();
     return;
   }
 

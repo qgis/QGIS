@@ -36,6 +36,7 @@ void QgsLayoutViewToolZoom::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( event->button() != Qt::LeftButton )
   {
+    event->ignore();
     return;
   }
 
@@ -64,7 +65,10 @@ void QgsLayoutViewToolZoom::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 void QgsLayoutViewToolZoom::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( !mMarqueeZoom )
+  {
+    event->ignore();
     return;
+  }
 
   mRubberBand->update( event->layoutPoint(), 0 );
 }
@@ -73,6 +77,7 @@ void QgsLayoutViewToolZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( !mMarqueeZoom || event->button() != Qt::LeftButton )
   {
+    event->ignore();
     return;
   }
 
@@ -99,7 +104,7 @@ void QgsLayoutViewToolZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
 {
   //respond to changes in the alt key status and update cursor accordingly
-  if ( ! event->isAutoRepeat() )
+  if ( !event->isAutoRepeat() )
   {
     QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( event->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
     QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );

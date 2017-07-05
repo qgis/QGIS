@@ -80,8 +80,10 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
     mTool->layoutPressEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
   }
-  else
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::mousePressEvent( event );
 }
 
@@ -91,8 +93,10 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
     mTool->layoutReleaseEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
   }
-  else
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::mouseReleaseEvent( event );
 }
 
@@ -102,8 +106,10 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
     mTool->layoutMoveEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
   }
-  else
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::mouseMoveEvent( event );
 }
 
@@ -113,8 +119,10 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
     mTool->layoutDoubleClickEvent( me.get() );
+    event->setAccepted( me->isAccepted() );
   }
-  else
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::mouseDoubleClickEvent( event );
 }
 
@@ -124,22 +132,29 @@ void QgsLayoutView::wheelEvent( QWheelEvent *event )
   {
     mTool->wheelEvent( event );
   }
-  else
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::wheelEvent( event );
 }
 
 void QgsLayoutView::keyPressEvent( QKeyEvent *event )
 {
   if ( mTool )
+  {
     mTool->keyPressEvent( event );
-  else
+  }
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::keyPressEvent( event );
 }
 
 void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
 {
   if ( mTool )
+  {
     mTool->keyReleaseEvent( event );
-  else
+  }
+
+  if ( !mTool || !event->isAccepted() )
     QGraphicsView::keyReleaseEvent( event );
 }

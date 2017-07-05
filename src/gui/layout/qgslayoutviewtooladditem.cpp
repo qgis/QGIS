@@ -43,6 +43,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 {
   if ( event->button() != Qt::LeftButton )
   {
+    event->ignore();
     return;
   }
 
@@ -61,12 +62,17 @@ void QgsLayoutViewToolAddItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
   {
     mRubberBand->update( event->layoutPoint(), event->modifiers() );
   }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( event->button() != Qt::LeftButton || !mDrawing )
   {
+    event->ignore();
     return;
   }
   mDrawing = false;
