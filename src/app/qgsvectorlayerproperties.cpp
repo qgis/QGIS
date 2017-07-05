@@ -133,7 +133,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   QVBoxLayout *layout = nullptr;
 
-  if ( mLayer->hasGeometryType() )
+  if ( mLayer->isSpatial() )
   {
     // Create the Labeling dialog tab
     layout = new QVBoxLayout( labelingFrame );

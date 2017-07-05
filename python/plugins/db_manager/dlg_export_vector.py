@@ -66,7 +66,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
     def checkSupports(self):
         """ update options available for the current input layer """
         allowSpatial = self.db.connector.hasSpatialSupport()
-        hasGeomType = self.inLayer and self.inLayer.hasGeometryType()
+        hasGeomType = self.inLayer and self.inLayer.isSpatial()
         self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
         self.chkTargetSrid.setEnabled(allowSpatial and hasGeomType)
         # self.chkSpatialIndex.setEnabled(allowSpatial and hasGeomType)

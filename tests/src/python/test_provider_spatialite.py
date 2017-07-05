@@ -257,7 +257,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % self.dbname, "test_pg", "spatialite")
         self.assertTrue(layer.isValid())
-        self.assertTrue(layer.hasGeometryType())
+        self.assertTrue(layer.isSpatial())
         layer.startEditing()
         self.assertEqual(layer.splitFeatures([QgsPointXY(0.75, -0.5), QgsPointXY(0.75, 1.5)], 0), 0)
         self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.25), QgsPointXY(1.5, 0.25)], 0), 0)
@@ -268,7 +268,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         """Create spatialite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg_mk (geometry)" % self.dbname, "test_pg_mk", "spatialite")
         self.assertTrue(layer.isValid())
-        self.assertTrue(layer.hasGeometryType())
+        self.assertTrue(layer.isSpatial())
         layer.startEditing()
         self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0), 0)
         self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.5), QgsPointXY(1.5, 0.5)], 0), 0)

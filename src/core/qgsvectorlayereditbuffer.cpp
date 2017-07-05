@@ -189,7 +189,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds &fids )
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  if ( !L->hasGeometryType() )
+  if ( !L->isSpatial() )
   {
     return false;
   }
