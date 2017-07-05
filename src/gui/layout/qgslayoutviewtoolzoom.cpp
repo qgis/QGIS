@@ -96,6 +96,28 @@ void QgsLayoutViewToolZoom::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )
   view()->fitInView( newBoundsRect, Qt::KeepAspectRatio );
 }
 
+void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
+{
+  //respond to changes in the alt key status and update cursor accordingly
+  if ( ! event->isAutoRepeat() )
+  {
+    QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( event->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
+    QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
+    view()->viewport()->setCursor( zoomCursor );
+  }
+}
+
+void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
+{
+  //respond to changes in the alt key status and update cursor accordingly
+  if ( !event->isAutoRepeat() )
+  {
+    QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( event->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
+    QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
+    view()->viewport()->setCursor( zoomCursor );
+  }
+}
+
 void QgsLayoutViewToolZoom::deactivate()
 {
   if ( mMarqueeZoom )

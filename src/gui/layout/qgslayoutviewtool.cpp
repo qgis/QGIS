@@ -108,7 +108,7 @@ void QgsLayoutViewTool::activate()
   if ( mAction )
     mAction->setChecked( true );
 
-  mView->setCursor( mCursor );
+  mView->viewport()->setCursor( mCursor );
   emit activated();
 }
 

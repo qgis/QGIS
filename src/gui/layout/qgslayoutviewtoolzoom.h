@@ -42,6 +42,8 @@ class GUI_EXPORT QgsLayoutViewToolZoom : public QgsLayoutViewTool
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
     void deactivate() override;
 
   private:
