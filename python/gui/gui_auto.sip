@@ -282,6 +282,7 @@
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtoolpan.sip
+%Include layout/qgslayoutviewtoolzoom.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip
