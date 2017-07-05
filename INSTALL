@@ -730,7 +730,7 @@ successful install, they're not needed anymore.
 In order to check out QGIS sources from the repository, you need a git client.
 This installer should work fine:
 
-http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
+https://github.com/git-for-windows/git/releases/download/v2.13.2.windows.1/Git-2.13.2-32-bit.exe (32bit) or https://github.com/git-for-windows/git/releases/download/v2.13.2.windows.1/Git-2.13.2-64-bit.exe (64bit)
 
 
     4.2.6. CMake
