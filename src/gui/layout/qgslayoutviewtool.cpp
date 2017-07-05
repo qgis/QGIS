@@ -25,6 +25,17 @@ QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
 
 }
 
+bool QgsLayoutViewTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const
+{
+  int diffX = endViewPoint.x() - startViewPoint.x();
+  int diffY = endViewPoint.y() - startViewPoint.y();
+  if ( qAbs( diffX ) >= 2 || qAbs( diffY ) >= 2 )
+  {
+    return true;
+  }
+  return false;
+}
+
 QgsLayoutView *QgsLayoutViewTool::view() const
 {
   return mView;

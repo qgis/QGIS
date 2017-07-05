@@ -19,8 +19,6 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
-#include "qgslayoutviewrubberband.h"
-#include <memory>
 
 /**
  * \ingroup gui

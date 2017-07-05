@@ -173,6 +173,14 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     QgsLayoutViewTool( QgsLayoutView *view SIP_TRANSFERTHIS, const QString &name );
 
+    /**
+     * Returns true if a mouse press/release operation which started at
+     * \a startViewPoint and ended at \a endViewPoint should be considered
+     * a "click and drag". If false is returned, the operation should be
+     * instead treated as just a click on \a startViewPoint.
+     */
+    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+
   private:
 
     //! Pointer to layout view.

@@ -79,6 +79,14 @@ void TestQgsLayoutView::tool()
   QgsLayoutViewTool *tool = new QgsLayoutViewTool( view, QStringLiteral( "name" ) );
   QgsLayoutViewTool *tool2 = new QgsLayoutViewTool( view, QStringLiteral( "name2" ) );
 
+  QVERIFY( tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 5, 10 ) ) );
+  QVERIFY( tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 5, 15 ) ) );
+  QVERIFY( tool->isClickAndDrag( QPoint( 5, 10 ), QPoint( 5, 15 ) ) );
+  QVERIFY( !tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 1, 11 ) ) );
+  QVERIFY( !tool->isClickAndDrag( QPoint( 1, 10 ), QPoint( 1, 11 ) ) );
+  QVERIFY( !tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 1, 10 ) ) );
+  QVERIFY( !tool->isClickAndDrag( QPoint( 0, 10 ), QPoint( 0, 10 ) ) );
+
   QSignalSpy spySetTool( view, &QgsLayoutView::toolSet );
   QSignalSpy spyToolActivated( tool, &QgsLayoutViewTool::activated );
   QSignalSpy spyToolActivated2( tool2, &QgsLayoutViewTool::activated );

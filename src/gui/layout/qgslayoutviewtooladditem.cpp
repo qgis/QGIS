@@ -74,14 +74,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
 
   // click? or click-and-drag?
-  QPoint mousePressStopPoint = event->pos();
-  int diffX = mousePressStopPoint.x() - mMousePressStartPos.x();
-  int diffY = mousePressStopPoint.y() - mMousePressStartPos.y();
-  bool clickOnly = false;
-  if ( qAbs( diffX ) < 2 && qAbs( diffY ) < 2 )
-  {
-    clickOnly = true;
-  }
+  bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
   Q_UNUSED( clickOnly );
 
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
