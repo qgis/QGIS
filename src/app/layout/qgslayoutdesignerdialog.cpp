@@ -20,9 +20,11 @@
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
+#include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtoolpan.h"
+#include "qgslayoutviewtoolzoom.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -32,6 +34,11 @@ QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerD
 QgsLayout *QgsAppLayoutDesignerInterface::layout()
 {
   return mDesigner->currentLayout();
+}
+
+QgsLayoutView *QgsAppLayoutDesignerInterface::view()
+{
+  return mDesigner->view();
 }
 
 void QgsAppLayoutDesignerInterface::close()
@@ -95,6 +102,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanTool->setAction( mActionPan );
   mToolsActionGroup->addAction( mActionPan );
   connect( mActionPan, &QAction::triggered, mPanTool, [ = ] { mView->setTool( mPanTool ); } );
+  mZoomTool = new QgsLayoutViewToolZoom( mView );
+  mZoomTool->setAction( mActionZoomTool );
+  mToolsActionGroup->addAction( mActionZoomTool );
+  connect( mActionZoomTool, &QAction::triggered, mZoomTool, [ = ] { mView->setTool( mZoomTool ); } );
+
 
   restoreWindowState();
 }
@@ -132,8 +144,10 @@ void QgsLayoutDesignerDialog::open()
 {
   show();
   activate();
-#if 0 // TODO
   zoomFull(); // zoomFull() does not work properly until we have called show()
+
+#if 0 // TODO
+
   if ( mView )
   {
     mView->updateRulers();
@@ -157,6 +171,14 @@ void QgsLayoutDesignerDialog::activate()
 #endif
 }
 
+void QgsLayoutDesignerDialog::zoomFull()
+{
+  if ( mView )
+  {
+    mView->fitInView( mLayout->sceneRect(), Qt::KeepAspectRatio );
+  }
+}
+
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 {
   emit aboutToClose();
@@ -173,11 +195,16 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int type, const QString &name )
   action->setIcon( QgsApplication::layoutItemRegistry()->itemMetadata( type )->icon() );
   mToolsActionGroup->addAction( action );
   mItemMenu->addAction( action );
-  mItemToolbar->addAction( action );
+  mToolsToolbar->addAction( action );
   connect( action, &QAction::triggered, this, [this, type]()
   {
     activateNewItemCreationTool( type );
   } );
+}
+
+QgsLayoutView *QgsLayoutDesignerDialog::view()
+{
+  return mView;
 }
 
 void QgsLayoutDesignerDialog::saveWindowState()

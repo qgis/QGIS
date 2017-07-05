@@ -21,6 +21,7 @@
 #include <QObject>
 
 class QgsLayout;
+class QgsLayoutView;
 
 /** \ingroup gui
  * \class QgsLayoutDesignerInterface
@@ -49,8 +50,16 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 
     /**
      * Returns the layout displayed in the designer.
+     * \see view()
      */
     virtual QgsLayout *layout() = 0;
+
+
+    /**
+     * Returns the layout view utilized by the designer.
+     * \see layout()
+     */
+    virtual QgsLayoutView *view() = 0;
 
   public slots:
 

@@ -24,6 +24,7 @@ class QgsLayoutDesignerDialog;
 class QgsLayoutView;
 class QgsLayoutViewToolAddItem;
 class QgsLayoutViewToolPan;
+class QgsLayoutViewToolZoom;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -32,6 +33,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public:
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
+    QgsLayoutView *view() override;
 
   public slots:
 
@@ -66,6 +68,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayout *currentLayout();
 
     /**
+     * Returns the layout view utilized by the designer.
+     */
+    QgsLayoutView *view();
+
+    /**
      * Sets the current \a layout to edit in the designer.
      * \see currentLayout()
      */
@@ -75,6 +82,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Sets the icon \a size for the dialog.
      */
     void setIconSizes( int size );
+
 
   public slots:
 
@@ -87,6 +95,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Raise, unminimize and activate this window.
      */
     void activate();
+
+    /**
+     * Zooms to show full layout.
+     */
+    void zoomFull();
 
   signals:
 
@@ -114,8 +127,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutView *mView = nullptr;
 
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
-
     QgsLayoutViewToolPan *mPanTool = nullptr;
+    QgsLayoutViewToolZoom *mZoomTool = nullptr;
 
 
     //! Save window state

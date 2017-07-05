@@ -62,9 +62,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionPan"/>
   </widget>
-  <widget class="QToolBar" name="mItemToolbar">
+  <widget class="QToolBar" name="mToolsToolbar">
    <property name="windowTitle">
     <string>Toolbox</string>
    </property>
@@ -74,6 +73,8 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionZoomTool"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -122,6 +123,24 @@
    </property>
    <property name="shortcut">
     <string>P</string>
+   </property>
+  </action>
+  <action name="mActionZoomTool">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToArea.svg</normaloff>:/images/themes/default/mActionZoomToArea.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom</string>
+   </property>
+   <property name="shortcut">
+    <string>Z</string>
    </property>
   </action>
  </widget>
