@@ -310,19 +310,22 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   {
     if ( cap & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
-      for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
+      if ( provider->doesStrictFeatureTypeCheck() )
       {
-        if ( !featureIt->geometry() ||
-             featureIt->geometry()->isEmpty() ||
-             featureIt->geometry()->wkbType() == provider->geometryType() )
-          continue;
-
-        if ( !provider->convertToProviderType( featureIt->geometry() ) )
+        QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
+        for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
         {
-          commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
-          success = false;
-          break;
+          if ( !featureIt->geometry() ||
+               featureIt->geometry()->isEmpty() ||
+               featureIt->geometry()->wkbType() == provider->geometryType() )
+            continue;
+
+          if ( !provider->convertToProviderType( featureIt->geometry() ) )
+          {
+            commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
+            success = false;
+            break;
+          }
         }
       }
     }
