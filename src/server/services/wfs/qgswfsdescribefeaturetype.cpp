@@ -196,7 +196,7 @@ namespace QgsWfs
     extensionElem.appendChild( sequenceElem );
 
     //xsd:element
-    if ( layer->hasGeometryType() )
+    if ( layer->isSpatial() )
     {
       QDomElement geomElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
       geomElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );

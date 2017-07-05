@@ -904,7 +904,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || !layer->hasGeometryType() || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
   QgsRectangle rect = layer->boundingBoxOfSelected();
@@ -1027,7 +1027,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
     layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
-  if ( !layer || !layer->hasGeometryType() || layer->selectedFeatureCount() == 0 )
+  if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
     return;
 
   QgsRectangle rect = layer->boundingBoxOfSelected();

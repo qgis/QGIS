@@ -615,12 +615,6 @@ QgsWkbTypes::GeometryType QgsVectorLayer::geometryType() const
   return QgsWkbTypes::UnknownGeometry;
 }
 
-bool QgsVectorLayer::hasGeometryType() const
-{
-  QgsWkbTypes::GeometryType t = geometryType();
-  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
-}
-
 QgsWkbTypes::Type QgsVectorLayer::wkbType() const
 {
   return mWkbType;
@@ -628,7 +622,7 @@ QgsWkbTypes::Type QgsVectorLayer::wkbType() const
 
 QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 {
-  if ( !mValid || !hasGeometryType() || mSelectedFeatureIds.isEmpty() ) //no selected features
+  if ( !mValid || !isSpatial() || mSelectedFeatureIds.isEmpty() ) //no selected features
   {
     return QgsRectangle( 0, 0, 0, 0 );
   }
@@ -801,7 +795,7 @@ QgsRectangle QgsVectorLayer::extent() const
   QgsRectangle rect;
   rect.setMinimal();
 
-  if ( !hasGeometryType() )
+  if ( !isSpatial() )
     return rect;
 
   if ( !mValidExtent && mLazyExtent && mDataProvider )
@@ -922,7 +916,7 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
 bool QgsVectorLayer::simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const
 {
-  if ( mValid && mDataProvider && !mEditBuffer && ( hasGeometryType() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
+  if ( mValid && mDataProvider && !mEditBuffer && ( isSpatial() && geometryType() != QgsWkbTypes::PointGeometry ) && ( mSimplifyMethod.simplifyHints() & simplifyHint ) && renderContext.useRenderingOptimization() )
   {
     double maximumSimplificationScale = mSimplifyMethod.maximumScale();
 
@@ -1461,7 +1455,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && hasGeometryType() )
+    if ( !defaultLoadedFlag && isSpatial() )
     {
       // add single symbol renderer
       setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
@@ -1832,7 +1826,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
   bool result = true;
   emit readCustomSymbology( node.toElement(), errorMessage );
 
-  if ( hasGeometryType() )
+  if ( isSpatial() )
   {
     // try renderer v2 first
     QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
@@ -2132,7 +2126,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
   emit writeCustomSymbology( mapLayerNode, doc, errorMessage );
 
-  if ( hasGeometryType() )
+  if ( isSpatial() )
   {
     if ( mRenderer )
     {
@@ -2193,7 +2187,7 @@ bool QgsVectorLayer::readSld( const QDomNode &node, QString &errorMessage )
     errorMessage = QStringLiteral( "Warning: Name element not found within NamedLayer while it's required." );
   }
 
-  if ( hasGeometryType() )
+  if ( isSpatial() )
   {
     QgsFeatureRenderer *r = QgsFeatureRenderer::loadSld( node, geometryType(), errorMessage );
     if ( !r )
@@ -2222,7 +2216,7 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
     QgsSymbolLayerUtils::mergeScaleDependencies( maximumScale(), minimumScale(), localProps );
   }
 
-  if ( hasGeometryType() )
+  if ( isSpatial() )
   {
     node.appendChild( mRenderer->writeSld( doc, name(), localProps ) );
   }
@@ -2613,7 +2607,7 @@ void QgsVectorLayer::setCoordinateSystem()
   // for this layer
   //
 
-  if ( hasGeometryType() )
+  if ( isSpatial() )
   {
     // get CRS directly from provider
     setCrs( mDataProvider->crs() );
@@ -2698,7 +2692,8 @@ bool QgsVectorLayer::isEditable() const
 
 bool QgsVectorLayer::isSpatial() const
 {
-  return geometryType() != QgsWkbTypes::NullGeometry;
+  QgsWkbTypes::GeometryType t = geometryType();
+  return t != QgsWkbTypes::NullGeometry && t != QgsWkbTypes::UnknownGeometry;
 }
 
 bool QgsVectorLayer::isReadOnly() const
@@ -2725,7 +2720,7 @@ bool QgsVectorLayer::isModified() const
 
 void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 {
-  if ( !hasGeometryType() )
+  if ( !isSpatial() )
     return;
 
   if ( r != mRenderer )

@@ -397,7 +397,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   mFilterButton->addAction( mActionShowAllFilter );
   mFilterButton->addAction( mActionSelectedFilter );
-  if ( mLayer->hasGeometryType() )
+  if ( mLayer->isSpatial() )
   {
     mFilterButton->addAction( mActionVisibleFilter );
   }
@@ -622,7 +622,7 @@ void QgsAttributeTableDialog::filterSelected()
 
 void QgsAttributeTableDialog::filterVisible()
 {
-  if ( !mLayer->hasGeometryType() )
+  if ( !mLayer->isSpatial() )
   {
     filterShowAll();
     return;
