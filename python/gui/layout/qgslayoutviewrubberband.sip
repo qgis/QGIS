@@ -77,6 +77,36 @@ class QgsLayoutViewRubberBand
  :rtype: QgsLayout
 %End
 
+    QBrush brush() const;
+%Docstring
+ Returns the brush used for drawing the rubber band.
+.. seealso:: setBrush()
+.. seealso:: pen()
+ :rtype: QBrush
+%End
+
+    void setBrush( const QBrush &brush );
+%Docstring
+ Sets the ``brush`` used for drawing the rubber band.
+.. seealso:: brush()
+.. seealso:: setPen()
+%End
+
+    QPen pen() const;
+%Docstring
+ Returns the pen used for drawing the rubber band.
+.. seealso:: setPen()
+.. seealso:: brush()
+ :rtype: QPen
+%End
+
+    void setPen( const QPen &pen );
+%Docstring
+ Sets the ``pen`` used for drawing the rubber band.
+.. seealso:: pen()
+.. seealso:: setBrush()
+%End
+
   protected:
 
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );

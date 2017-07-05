@@ -99,6 +99,26 @@ QRectF QgsLayoutViewRubberBand::updateRect( QPointF start, QPointF position, boo
   return QRectF( x, y, width, height );
 }
 
+QPen QgsLayoutViewRubberBand::pen() const
+{
+  return mPen;
+}
+
+void QgsLayoutViewRubberBand::setPen( const QPen &pen )
+{
+  mPen = pen;
+}
+
+QBrush QgsLayoutViewRubberBand::brush() const
+{
+  return mBrush;
+}
+
+void QgsLayoutViewRubberBand::setBrush( const QBrush &brush )
+{
+  mBrush = brush;
+}
+
 
 QgsLayoutViewRectangularRubberBand::QgsLayoutViewRectangularRubberBand( QgsLayoutView *view )
   : QgsLayoutViewRubberBand( view )
@@ -123,8 +143,8 @@ void QgsLayoutViewRectangularRubberBand::start( QPointF position, Qt::KeyboardMo
 {
   QTransform t;
   mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
-  mRubberBandItem->setBrush( Qt::NoBrush );
-  mRubberBandItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+  mRubberBandItem->setBrush( brush() );
+  mRubberBandItem->setPen( pen() );
   mRubberBandStartPos = position;
   t.translate( position.x(), position.y() );
   mRubberBandItem->setTransform( t );
@@ -188,8 +208,8 @@ void QgsLayoutViewEllipticalRubberBand::start( QPointF position, Qt::KeyboardMod
 {
   QTransform t;
   mRubberBandItem = new QGraphicsEllipseItem( 0, 0, 0, 0 );
-  mRubberBandItem->setBrush( Qt::NoBrush );
-  mRubberBandItem->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+  mRubberBandItem->setBrush( brush() );
+  mRubberBandItem->setPen( pen() );
   mRubberBandStartPos = position;
   t.translate( position.x(), position.y() );
   mRubberBandItem->setTransform( t );

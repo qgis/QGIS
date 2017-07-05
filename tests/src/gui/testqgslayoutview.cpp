@@ -36,6 +36,7 @@ class TestQgsLayoutView: public QObject
     void tool();
     void events();
     void registryUtils();
+    void rubberBand();
 
   private:
 
@@ -269,6 +270,15 @@ void TestQgsLayoutView::registryUtils()
   QVERIFY( dynamic_cast< QgsLayoutViewEllipticalRubberBand * >( band ) );
   QCOMPARE( band->view(), view );
 
+}
+
+void TestQgsLayoutView::rubberBand()
+{
+  QgsLayoutViewRectangularRubberBand band;
+  band.setBrush( QBrush( QColor( 255, 0, 0 ) ) );
+  QCOMPARE( band.brush().color(), QColor( 255, 0, 0 ) );
+  band.setPen( QPen( QColor( 0, 255, 0 ) ) );
+  QCOMPARE( band.pen().color(), QColor( 0, 255, 0 ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutView )

@@ -20,6 +20,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QBrush>
+#include <QPen>
 
 class QgsLayoutView;
 class QGraphicsRectItem;
@@ -89,6 +91,34 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      */
     QgsLayout *layout() const;
 
+    /**
+     * Returns the brush used for drawing the rubber band.
+     * \see setBrush()
+     * \see pen()
+     */
+    QBrush brush() const;
+
+    /**
+     * Sets the \a brush used for drawing the rubber band.
+     * \see brush()
+     * \see setPen()
+     */
+    void setBrush( const QBrush &brush );
+
+    /**
+     * Returns the pen used for drawing the rubber band.
+     * \see setPen()
+     * \see brush()
+     */
+    QPen pen() const;
+
+    /**
+     * Sets the \a pen used for drawing the rubber band.
+     * \see pen()
+     * \see setBrush()
+     */
+    void setPen( const QPen &pen );
+
   protected:
 
     /**
@@ -102,6 +132,9 @@ class GUI_EXPORT QgsLayoutViewRubberBand
   private:
 
     QgsLayoutView *mView = nullptr;
+
+    QBrush mBrush = Qt::NoBrush;
+    QPen mPen = QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 );
 
 };
 
