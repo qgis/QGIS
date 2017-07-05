@@ -449,6 +449,15 @@ class CORE_EXPORT QgsExpression
      */
     static QString formatPreviewString( const QVariant &value );
 
+    /** Create an expression allowing to evaluate if a field is equal to a
+     *  value. The value may be null.
+     * \param fieldName the name of the field
+     * \param value the value of the field
+     * \returns the expression to evaluate field equality
+     * \since QGIS 3.0
+     */
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+
   private:
     void initGeomCalculator();
 

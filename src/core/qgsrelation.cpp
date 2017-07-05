@@ -170,18 +170,8 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
   {
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
-    const QString quotedColRef = QgsExpression::quotedColumnRef( fieldPair.referencingField() ) ;
-
     QVariant val( feature.attribute( fieldPair.referencedField() ) );
-
-    if ( val.isNull() )
-    {
-      conditions << QStringLiteral( "%1 IS NULL" ).arg( quotedColRef );
-    }
-    else
-    {
-      conditions << QStringLiteral( "%1 = %2" ).arg( quotedColRef, QgsExpression::quotedValue( val ) );
-    }
+    conditions << QgsExpression::createFieldEqualityExpression( fieldPair.referencingField(), val );
   }
 
   return conditions.join( QStringLiteral( " AND " ) );
