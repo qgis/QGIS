@@ -25,6 +25,7 @@ class QgsLayoutView;
 class QgsLayoutViewToolAddItem;
 class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
+class QgsLayoutViewToolSelect;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -129,7 +130,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
     QgsLayoutViewToolPan *mPanTool = nullptr;
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
-
+    QgsLayoutViewToolSelect *mSelectTool = nullptr;
 
     //! Save window state
     void saveWindowState();

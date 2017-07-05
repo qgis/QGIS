@@ -25,6 +25,7 @@
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtoolpan.h"
 #include "qgslayoutviewtoolzoom.h"
+#include "qgslayoutviewtoolselect.h"
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -106,6 +107,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mZoomTool->setAction( mActionZoomTool );
   mToolsActionGroup->addAction( mActionZoomTool );
   connect( mActionZoomTool, &QAction::triggered, mZoomTool, [ = ] { mView->setTool( mZoomTool ); } );
+  mSelectTool = new QgsLayoutViewToolSelect( mView );
+  mSelectTool->setAction( mActionSelectMoveItem );
+  mToolsActionGroup->addAction( mActionSelectMoveItem );
+  connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
 
 
   restoreWindowState();
