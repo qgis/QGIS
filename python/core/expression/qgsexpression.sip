@@ -495,6 +495,17 @@ return index of the function in Functions array
  :rtype: str
 %End
 
+    static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
+%Docstring
+ Create an expression allowing to evaluate if a field is equal to a
+  value. The value may be null.
+ \param fieldName the name of the field
+ \param value the value of the field
+ :return: the expression to evaluate field equality
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
 };
 
 

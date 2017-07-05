@@ -836,6 +836,18 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
   }
 }
 
+QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, const QVariant &value )
+{
+  QString expr;
+
+  if ( value.isNull() )
+    expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
+  else
+    expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );
+
+  return expr;
+}
+
 const QgsExpressionNode *QgsExpression::rootNode() const
 {
   return d->mRootNode;
