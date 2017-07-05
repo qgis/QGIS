@@ -14,7 +14,7 @@ Content-Type: text/xml; charset=utf-8
   </gml:boundedBy>
   <qgs:geometry>
    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-    <coordinates xmlns="http://www.opengis.net/gml">8.20345931,44.90139484</coordinates>
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20345931,44.90139484</coordinates>
    </Point>
   </qgs:geometry>
   <qgs:id>3</qgs:id>
