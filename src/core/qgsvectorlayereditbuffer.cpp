@@ -318,17 +318,20 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
   {
     if ( cap & QgsVectorDataProvider::AddFeatures )
     {
-      for ( QgsFeature f : mAddedFeatures )
+      if ( provider->doesStrictFeatureTypeCheck() )
       {
-        if ( ( ! f.hasGeometry() ) ||
-             ( f.geometry().wkbType() == provider->wkbType() ) )
-          continue;
-
-        if ( provider->convertToProviderType( f.geometry() ).isNull() )
+        for ( QgsFeature f : mAddedFeatures )
         {
-          commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
-          success = false;
-          break;
+          if ( ( ! f.hasGeometry() ) ||
+               ( f.geometry().wkbType() == provider->wkbType() ) )
+            continue;
+
+          if ( provider->convertToProviderType( f.geometry() ).isNull() )
+          {
+            commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
+            success = false;
+            break;
+          }
         }
       }
     }
