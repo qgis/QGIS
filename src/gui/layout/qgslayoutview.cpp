@@ -19,7 +19,12 @@
 #include "qgslayout.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewmouseevent.h"
+#include "qgssettings.h"
+#include "qgsrectangle.h"
 #include <memory>
+
+#define MIN_VIEW_SCALE 0.05
+#define MAX_VIEW_SCALE 1000.0
 
 QgsLayoutView::QgsLayoutView( QWidget *parent )
   : QGraphicsView( parent )
@@ -72,6 +77,14 @@ void QgsLayoutView::unsetTool( QgsLayoutViewTool *tool )
     emit toolSet( nullptr );
     setCursor( Qt::ArrowCursor );
   }
+}
+
+void QgsLayoutView::scaleSafe( double scale )
+{
+  double currentScale = transform().m11();
+  scale *= currentScale;
+  scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
+  setTransform( QTransform::fromScale( scale, scale ) );
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
@@ -134,7 +147,10 @@ void QgsLayoutView::wheelEvent( QWheelEvent *event )
   }
 
   if ( !mTool || !event->isAccepted() )
-    QGraphicsView::wheelEvent( event );
+  {
+    event->accept();
+    wheelZoom( event );
+  }
 }
 
 void QgsLayoutView::keyPressEvent( QKeyEvent *event )
@@ -157,4 +173,54 @@ void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
 
   if ( !mTool || !event->isAccepted() )
     QGraphicsView::keyReleaseEvent( event );
+}
+
+void QgsLayoutView::wheelZoom( QWheelEvent *event )
+{
+  //get mouse wheel zoom behavior settings
+  QgsSettings settings;
+  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
+
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //holding ctrl while wheel zooming results in a finer zoom
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
+  }
+
+  //calculate zoom scale factor
+  bool zoomIn = event->angleDelta().y() > 0;
+  double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
+
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
+
+  //transform the mouse pos to scene coordinates
+  QPointF scenePoint = mapToScene( event->pos() );
+
+  //adjust view center
+  QgsPointXY oldCenter( visibleRect.center() );
+  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                        scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  centerOn( newCenter.x(), newCenter.y() );
+
+  //zoom layout
+  if ( zoomIn )
+  {
+    scaleSafe( zoomFactor );
+  }
+  else
+  {
+    scaleSafe( 1 / zoomFactor );
+  }
+
+  //update layout for new zoom
+#if 0 // TODO
+  emit zoomLevelChanged();
+  updateRulers();
+#endif
+  update();
 }

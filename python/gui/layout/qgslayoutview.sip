@@ -67,6 +67,12 @@ class QgsLayoutView: QGraphicsView
  You don't have to call it manually, QgsLayoutViewTool takes care of it.
 %End
 
+    void scaleSafe( double scale );
+%Docstring
+ Scales the view in a safe way, by limiting the acceptable range
+ of the scale applied. The ``scale`` parameter specifies the zoom factor to scale the view by.
+%End
+
   signals:
 
     void layoutSet( QgsLayout *layout );

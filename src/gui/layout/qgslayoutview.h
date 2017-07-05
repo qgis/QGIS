@@ -85,6 +85,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void unsetTool( QgsLayoutViewTool *tool );
 
+    /**
+     * Scales the view in a safe way, by limiting the acceptable range
+     * of the scale applied. The \a scale parameter specifies the zoom factor to scale the view by.
+     */
+    void scaleSafe( double scale );
+
   signals:
 
     /**
@@ -110,6 +116,9 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
 
   private:
+
+    //! Zoom layout from a mouse wheel event
+    void wheelZoom( QWheelEvent *event );
 
     QPointer< QgsLayoutViewTool > mTool;
 
