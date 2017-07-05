@@ -467,29 +467,6 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
       return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, connection.uri().encodedUri() );
     }
   }
-  else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
-    {
-      QgsGeoNodeConnection connection( connectionName );
-      QString uri( connection.serviceUrl( QStringLiteral( "WMS" ) )[0] );
-      QgsDataSourceUri sourceUri( uri );
-      QgsSettings settings;
-      QString key( connection.pathGeoNodeConnection + "/" + connectionName );
-
-      QString dpiMode = settings.value( key + "/wms/dpiMode", "all" ).toString();
-      sourceUri.setParam( QStringLiteral( "url" ), uri );
-      if ( !dpiMode.isEmpty() )
-      {
-        sourceUri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
-      }
-
-      QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( sourceUri.encodedUri() ) ) );
-
-      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, sourceUri.encodedUri() );
-    }
-  }
 
   return nullptr;
 }

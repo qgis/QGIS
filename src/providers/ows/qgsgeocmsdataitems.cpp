@@ -1,10 +1,17 @@
-//
-// Created by myarjunar on 20/06/17.
-//
-
-//
-// Created by myarjunar on 25/04/17.
-//
+/***************************************************************************
+    qgsgeocmsconnection.h
+    ---------------------
+    begin                : Feb 2017
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgsproviderregistry.h"
 #include "qgsowsdataitems.h"
@@ -17,10 +24,10 @@
 typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 
 QgsGeoCMSConnectionItem::QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn )
-    : QgsDataCollectionItem( parent, name, path )
-    , mGeoCMSName( parent->name() )
-    , mUri( conn->uri().uri() )
-    , mConnection( conn )
+  : QgsDataCollectionItem( parent, name, path )
+  , mGeoCMSName( parent->name() )
+  , mUri( conn->uri().uri() )
+  , mConnection( conn )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
 }
@@ -79,10 +86,10 @@ void QgsGeoCMSConnectionItem::editConnection()
 }
 
 QgsGeoCMSServiceItem::QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCMSConnection *conn, QString serviceName, QString path )
-    : QgsDataCollectionItem( parent, serviceName, path )
-    , mName( conn->mConnName )
-    , mServiceName( serviceName )
-    , mConnection( conn )
+  : QgsDataCollectionItem( parent, serviceName, path )
+  , mName( conn->mConnName )
+  , mServiceName( serviceName )
+  , mConnection( conn )
 {
   if ( serviceName == "WMS" || serviceName == "XYZ" )
   {
@@ -103,7 +110,7 @@ QVector<QgsDataItem *> QgsGeoCMSServiceItem::createChildren()
   // Try to open with service provider
   bool skipProvider = false;
 
-  QgsGeoCMSConnectionItem *parentItem = dynamic_cast<QgsGeoCMSConnectionItem *>(mParent);
+  QgsGeoCMSConnectionItem *parentItem = dynamic_cast<QgsGeoCMSConnectionItem *>( mParent );
   QString pathPrefix = parentItem->mGeoCMSName.toLower() + ":/";
 
   while ( !skipProvider )

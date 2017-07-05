@@ -15,12 +15,12 @@
 //! Provider for Geonode root data item
 class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
 {
-public:
-  virtual QString name() override { return QStringLiteral( "GeoNode" ); }
+  public:
+    virtual QString name() override { return QStringLiteral( "GeoNode" ); }
 
-  virtual int capabilities() override { return QgsDataProvider::Net; }
+    virtual int capabilities() override { return QgsDataProvider::Net; }
 
-  virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif //QGSGEONODEDATAITEMS_H

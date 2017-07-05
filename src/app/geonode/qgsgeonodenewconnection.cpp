@@ -1,6 +1,19 @@
-//
-// Created by myarjunar on 27/03/17.
-//
+/***************************************************************************
+                              qgsgeonodenewconnection.cpp
+                              -------------------
+    begin                : Feb 2017
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -269,8 +282,6 @@ QNetworkReply *QgsGeoNodeNewConnection::request( QString &endPoint )
 
   QNetworkRequest request( layerUrl );
   request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
-  // Handle redirect
-  // request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
 
   QNetworkReply *reply = networkManager->get( request );
   while ( !reply->isFinished() )

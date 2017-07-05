@@ -13,53 +13,53 @@
 
 class QgsGeoCMSConnectionItem : public QgsDataCollectionItem
 {
-  Q_OBJECT
-public:
-  QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn );
-  QVector<QgsDataItem *> createChildren() override;
-  virtual QList<QAction *> actions() override;
+    Q_OBJECT
+  public:
+    QgsGeoCMSConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoCMSConnection *conn );
+    QVector<QgsDataItem *> createChildren() override;
+    virtual QList<QAction *> actions() override;
 
-  QString mGeoCMSName;
+    QString mGeoCMSName;
 
-private:
-  void editConnection();
-  void deleteConnection()
-  {
-    QgsGeoCMSConnection::deleteConnection( mParent->name(), mConnection->mConnName );
-    mParent->refresh();
-  };
+  private:
+    void editConnection();
+    void deleteConnection()
+    {
+      QgsGeoCMSConnection::deleteConnection( mParent->name(), mConnection->mConnName );
+      mParent->refresh();
+    };
 
-  QString mUri;
-  QgsGeoCMSConnection *mConnection = nullptr;
+    QString mUri;
+    QgsGeoCMSConnection *mConnection = nullptr;
 };
 
 class QgsGeoCMSServiceItem : public QgsDataCollectionItem
 {
-  Q_OBJECT
-public:
-  QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCMSConnection *conn, QString serviceName, QString path );
-  QVector<QgsDataItem *> createChildren() override;
+    Q_OBJECT
+  public:
+    QgsGeoCMSServiceItem( QgsDataItem *parent, QgsGeoCMSConnection *conn, QString serviceName, QString path );
+    QVector<QgsDataItem *> createChildren() override;
 
-private:
-  void replacePath( QgsDataItem *item, QString before, QString after );
-  QString mName;
-  QString mServiceName;
-  QString mUri;
-  QgsGeoCMSConnection *mConnection = nullptr;
+  private:
+    void replacePath( QgsDataItem *item, QString before, QString after );
+    QString mName;
+    QString mServiceName;
+    QString mUri;
+    QgsGeoCMSConnection *mConnection = nullptr;
 };
 
 class QgsGeoCMSRootItem : public QgsDataCollectionItem
 {
-  Q_OBJECT
-public:
-  QgsGeoCMSRootItem( QgsDataItem *parent, QString name, QString path );
+    Q_OBJECT
+  public:
+    QgsGeoCMSRootItem( QgsDataItem *parent, QString name, QString path );
 
-  QVector<QgsDataItem *> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
-  virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions() override;
 
-private slots:
-  void newConnection();
+  private slots:
+    void newConnection();
 };
 
 #endif //QGSGEOCMSDATAITEMS_H

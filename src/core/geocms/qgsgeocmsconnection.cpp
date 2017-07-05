@@ -2,7 +2,7 @@
     qgsgeocmsconnection.cpp
     ---------------------
     begin                : Feb 2017
-    copyright            : (C) 2017 by Rohmat, Ismail Sunni
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
     email                : rohmat at kartoza dot com, ismail at kartoza dot com
  ***************************************************************************
  *                                                                         *
@@ -29,8 +29,8 @@
 
 
 QgsGeoCMSConnection::QgsGeoCMSConnection( const QString &geoCMSName, const QString &connName )
-    : mGeoCMSName( geoCMSName )
-    , mConnName( connName )
+  : mGeoCMSName( geoCMSName )
+  , mConnName( connName )
 {
   QgsDebugMsg( "theConnName = " + connName );
 

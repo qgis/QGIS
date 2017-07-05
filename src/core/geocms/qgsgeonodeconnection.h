@@ -2,7 +2,7 @@
     qgsgeonodeconnection.h
     ---------------------
     begin                : Feb 2017
-    copyright            : (C) 2017 by Rohmat, Ismail Sunni
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
     email                : rohmat at kartoza dot com, ismail at kartoza dot com
  ***************************************************************************
  *                                                                         *
@@ -21,9 +21,6 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsgeocmsconnection.h"
-//#include "qgsstyle.h"
-//#include "../../providers/wms/qgswmsconnection.h"
-//#include "../../providers/wfs/qgswfsconnection.h"
 
 #include <QString>
 #include <QMultiMap>
