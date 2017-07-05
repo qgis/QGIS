@@ -213,7 +213,16 @@ QDomElement QgsPointV2::asGML2( QDomDocument& doc, int precision, const QString&
 {
   QDomElement elemPoint = doc.createElementNS( ns, "Point" );
   QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
-  QString strCoordinates = qgsDoubleToString( mX, precision ) + ',' + qgsDoubleToString( mY, precision );
+
+  // coordinate separator
+  QString cs = ",";
+  // tupel separator
+  QString ts = " ";
+
+  elemCoordinates.setAttribute( "cs", cs );
+  elemCoordinates.setAttribute( "ts", ts );
+
+  QString strCoordinates = qgsDoubleToString( mX, precision ) + cs + qgsDoubleToString( mY, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
   elemPoint.appendChild( elemCoordinates );
   return elemPoint;
