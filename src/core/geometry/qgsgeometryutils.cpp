@@ -714,12 +714,20 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequenceV2 &points, QD
 {
   QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
 
+  // coordinate separator
+  QString cs = ",";
+  // tupel separator
+  QString ts = " ";
+
+  elemCoordinates.setAttribute( "cs", cs );
+  elemCoordinates.setAttribute( "ts", ts );
+
   QString strCoordinates;
 
   Q_FOREACH ( const QgsPointV2& p, points )
-    strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
+    strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
 
-  if ( strCoordinates.endsWith( ' ' ) )
+  if ( strCoordinates.endsWith( ts ) )
     strCoordinates.chop( 1 ); // Remove trailing space
 
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
