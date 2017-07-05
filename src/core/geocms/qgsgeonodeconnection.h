@@ -57,8 +57,8 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
     static void setSelectedConnection( const QString &name );
 
     //! Return list of available layers
-    virtual QVariantList getLayers();
-    virtual QVariantList getLayers( QString serviceType );
+    virtual QList<LayerStruct> getLayers();
+    virtual QList<LayerStruct> getLayers( QString serviceType );
 
     //! Return list of available layers
     virtual QVariantList getMaps();

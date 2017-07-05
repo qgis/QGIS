@@ -25,6 +25,17 @@
 #include <QMultiMap>
 #include <QNetworkReply>
 
+struct LayerStruct
+{
+  QString uuid;
+  QString name;
+  QString typeName;
+  QString title;
+  QString wmsURL;
+  QString wfsURL;
+  QString xyzURL;
+};
+
 
 /** \ingroup core
  * Base class for all GeoCMS connection.
@@ -59,8 +70,8 @@ class CORE_EXPORT QgsGeoCMSConnection : public QObject
     static void setSelectedConnection( const QString &geoCMSName, const QString &name );
 
     //! Return list of available layers
-    virtual QVariantList getLayers() = 0;
-    virtual QVariantList getLayers( QString serviceType ) = 0;
+    virtual QList<LayerStruct> getLayers() = 0;
+    virtual QList<LayerStruct> getLayers( QString serviceType ) = 0;
 
     //! Return list of available layers
     virtual QVariantList getMaps() = 0;

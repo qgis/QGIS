@@ -136,20 +136,14 @@ void TestQgsGeoNodeConnection::testGetLayersOldGeoNode()
 
   QgsGeoNodeConnection geonodeConnection( mDemoGeoNodeName );
 
-  QVariantList layers = geonodeConnection.getLayers();
+  QList<LayerStruct> layers = geonodeConnection.getLayers();
 
   QVERIFY( layers.count() > 0 );
   // Example how to access it
-  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
-  QList<QString> keys = layer1.keys();
-  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
-  QVERIFY( keys.indexOf( "name" ) != -1 ); // Check if title is in the keys
-  QVERIFY( !layer1["typename"].toString().contains( "%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( keys.contains( "wms" ) );
-  QVERIFY( keys.contains( "wfs" ) );
-  QVERIFY( keys.contains( "xyz" ) );
-  QVERIFY( layer1["wms"].toString().length() > 0 );
-  QVERIFY( layer1["wfs"].toString().length() > 0 );
+  LayerStruct layer1 = layers[0];
+  QVERIFY( !layer1.typeName.contains( "%3A" ) ); // Check if there is not geonode prefix
+  QVERIFY( layer1.wmsURL.length() > 0 );
+  QVERIFY( layer1.wfsURL.length() > 0 );
 }
 
 // Test retrieving layers for QGIS Server Backend
@@ -162,18 +156,13 @@ void TestQgsGeoNodeConnection::testGetLayersQGISServer()
 
   QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeQGISServerName );
 
-  QVariantList layers = geonodeConnection.getLayers();
+  QList<LayerStruct> layers = geonodeConnection.getLayers();
 
   QVERIFY( layers.count() > 0 );
   // Example how to access it
-  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
-  QList<QString> keys = layer1.keys();
-  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
-  QVERIFY( !layer1["name"].toString().contains( "geonode%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( keys.contains( "wms" ) );
-  QVERIFY( keys.contains( "wfs" ) );
-  QVERIFY( keys.contains( "xyz" ) );
-  QVERIFY( layer1["xyz"].toString().length() > 0 );
+  LayerStruct layer1 = layers[0];
+  QVERIFY( !layer1.name.contains( "geonode%3A" ) ); // Check if there is not geonode prefix
+  QVERIFY( layer1.xyzURL.length() > 0 );
 }
 
 // Test retrieving layers for GeoNode v2.7 with GeoServer backend
@@ -186,20 +175,15 @@ void TestQgsGeoNodeConnection::testGetLayersGeoServer()
 
   QgsGeoNodeConnection geonodeConnection( mKartozaGeoNodeGeoServerName );
 
-  QVariantList layers = geonodeConnection.getLayers();
+  QList<LayerStruct> layers = geonodeConnection.getLayers();
 
   QVERIFY( layers.count() > 0 );
   // Example how to access it
-  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
-  QList<QString> keys = layer1.keys();
-  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
-  QVERIFY( !layer1["name"].toString().contains( "geonode%3A" ) ); // Check if there is not geonode prefix
-  QVERIFY( keys.contains( "wms" ) );
-  QVERIFY( keys.contains( "wfs" ) );
-  QVERIFY( keys.contains( "xyz" ) );
-  QVERIFY( layer1["wms"].toString().length() > 0 );
-  QVERIFY( layer1["wfs"].toString().length() > 0 );
-  QVERIFY( layer1["xyz"].toString().length() > 0 );
+  LayerStruct layer1 = layers[0];
+  QVERIFY( !layer1.name.contains( "geonode%3A" ) ); // Check if there is not geonode prefix
+  QVERIFY( layer1.wmsURL.length() > 0 );
+  QVERIFY( layer1.wfsURL.length() > 0 );
+  QVERIFY( layer1.xyzURL.length() > 0 );
 }
 
 // Test retrieving maps
