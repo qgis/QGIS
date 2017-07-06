@@ -386,3 +386,12 @@ void QgsLayerTreeView::collapseAllNodes()
   _expandAllNodes( layerTreeModel()->rootGroup(), false, layerTreeModel() );
   collapseAll();
 }
+
+void QgsLayerTreeView::dropEvent( QDropEvent *event )
+{
+  if ( event->keyboardModifiers() & Qt::AltModifier )
+  {
+    event->accept();
+  }
+  QTreeView::dropEvent( event );
+}
