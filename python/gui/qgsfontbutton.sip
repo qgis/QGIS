@@ -188,6 +188,9 @@ class QgsFontButton : QToolButton
     virtual void dropEvent( QDropEvent *e );
 
 
+    virtual void wheelEvent( QWheelEvent *event );
+
+
 };
 
 /************************************************************************
