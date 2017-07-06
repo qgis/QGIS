@@ -27,8 +27,9 @@
 
 class QgsVectorLayer;
 
-class QgsFeaturePool
+class QgsFeaturePool : public QObject
 {
+    Q_OBJECT
   public:
     QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, const QgsCoordinateTransform &layerToMapTransform, bool selectedOnly = false );
     bool get( QgsFeatureId id, QgsFeature &feature );
@@ -43,6 +44,8 @@ class QgsFeaturePool
     bool getSelectedOnly() const { return mSelectedOnly; }
     void clearLayer() { mLayer = nullptr; }
 
+  signals:
+    void featureIdsChanged( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid );
   private:
     struct MapEntry
     {
@@ -67,6 +70,9 @@ class QgsFeaturePool
     bool mSelectedOnly;
 
     bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double & ( *comparator )( const double &, const double & ), double init );
+
+  private slots:
+    void updateFeatureIds( const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid );
 };
 
 #endif // QGS_FEATUREPOOL_H

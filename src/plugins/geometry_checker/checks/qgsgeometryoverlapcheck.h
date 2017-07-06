@@ -51,6 +51,7 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
     }
 
     virtual QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1:%2" ).arg( mOverlappedFeature.first ).arg( mOverlappedFeature.second ); }
+    bool handleFidChanges( const QString& layerId, const QMap<QgsFeatureId, QgsFeatureId>& oldNewFidMap) override;
 
   private:
     QPair<QString, QgsFeatureId> mOverlappedFeature;

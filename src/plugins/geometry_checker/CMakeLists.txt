@@ -39,7 +39,6 @@ SET (geometrychecker_HDRS
     checks/qgsgeometrycheck.h
     qgsgeometrycheckerplugin.h
     qgsgeometrycheckfactory.h
-    utils/qgsfeaturepool.h
     utils/qgsgeometrycheckerutils.h
 )
 
@@ -71,6 +70,7 @@ SET (geometrychecker_MOC_HDRS
     ui/qgsgeometrycheckerresulttab.h
     ui/qgsgeometrycheckfixdialog.h
     ui/qgsgeometrycheckerfixsummarydialog.h
+    utils/qgsfeaturepool.h
 )
 
 SET (geometrychecker_UIS

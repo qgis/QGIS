@@ -18,6 +18,29 @@
 #include "qgsgeometrycollection.h"
 #include "../utils/qgsfeaturepool.h"
 
+bool QgsGeometryGapCheckError::handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap )
+{
+  bool changed = false;
+  if ( mNeighbors.contains( layerId ) )
+  {
+    QgsFeatureIds &fids = mNeighbors[layerId];
+    QgsFeatureIds newIds;
+    for ( auto it = fids.begin(), itEnd = fids.end(); it != itEnd; ++it )
+    {
+      const QgsFeatureId &fid = *it;
+      QgsFeatureId newId = oldNewFidMap.value( fid, fid );
+      if ( fid != newId )
+      {
+        it = fids.erase( it );
+        newIds.insert( newId );
+        changed = true;
+      }
+    }
+    fids.unite( newIds );
+  }
+  return changed;
+}
+
 
 void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {

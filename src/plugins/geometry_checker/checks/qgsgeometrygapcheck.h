@@ -66,6 +66,8 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       return mGapAreaBBox;
     }
 
+    bool handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap ) override;
+
   private:
     QMap<QString, QgsFeatureIds> mNeighbors;
     QgsRectangle mGapAreaBBox;

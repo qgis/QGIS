@@ -173,7 +173,9 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   }
   // Disable sorting to prevent crashes: if i.e. sorting by col 0, as soon as the item(row, 0) is set,
   // the row is potentially moved due to sorting, and subsequent item(row, col) reference wrong item
-  ui.tableWidgetErrors->setSortingEnabled( false );
+  bool sortingWasEnabled = ui.tableWidgetErrors->isSortingEnabled();
+  if ( sortingWasEnabled )
+    ui.tableWidgetErrors->setSortingEnabled( false );
 
   int row = mErrorMap.value( error ).row();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
@@ -211,7 +213,8 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   }
   ui.labelErrorCount->setText( tr( "Total errors: %1, fixed errors: %2" ).arg( mErrorCount ).arg( mFixedCount ) );
 
-  ui.tableWidgetErrors->setSortingEnabled( true );
+  if ( sortingWasEnabled )
+    ui.tableWidgetErrors->setSortingEnabled( true );
 }
 
 void QgsGeometryCheckerResultTab::exportErrors()
@@ -475,6 +478,9 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     return;
   }
 
+  // Disable sorting while fixing errors
+  ui.tableWidgetErrors->setSortingEnabled( false );
+
   //! Reset statistics, clear rubberbands *
   mStatistics = QgsGeometryCheckerFixSummaryDialog::Statistics();
   qDeleteAll( mCurrentRubberBands );
@@ -526,6 +532,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     parentWidget()->parentWidget()->parentWidget()->setEnabled( true );
   }
   mCloseable = true;
+  ui.tableWidgetErrors->setSortingEnabled( true );
 }
 
 void QgsGeometryCheckerResultTab::setRowStatus( int row, const QColor &color, const QString &message, bool selectable )

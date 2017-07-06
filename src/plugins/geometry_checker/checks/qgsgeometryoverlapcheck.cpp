@@ -17,6 +17,19 @@
 #include "qgsgeometryoverlapcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
+
+bool QgsGeometryOverlapCheckError::handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap )
+{
+  bool changed = QgsGeometryCheckError::handleFidChanges( layerId, oldNewFidMap );
+  if ( mOverlappedFeature.first == layerId )
+  {
+    QgsFeatureId oldId = mOverlappedFeature.second;
+    mOverlappedFeature.second = oldNewFidMap.value( mOverlappedFeature.second, mOverlappedFeature.second );
+    changed |= ( oldId != mOverlappedFeature.second );
+  }
+  return changed;
+}
+
 void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   double overlapThreshold = mThresholdMapUnits;

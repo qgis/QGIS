@@ -19,6 +19,24 @@
 #include "qgsgeometry.h"
 #include "../utils/qgsfeaturepool.h"
 
+
+bool QgsGeometryDuplicateCheckError::handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap )
+{
+  bool changed = QgsGeometryCheckError::handleFidChanges( layerId, oldNewFidMap );
+  if ( mDuplicates.contains( layerId ) )
+  {
+    QList<QgsFeatureId> &fids = mDuplicates[layerId];
+    for ( int i = 0, n = fids.size(); i < n; ++i )
+    {
+      QgsFeatureId oldId = fids[i];
+      fids[i] = oldNewFidMap.value( fids[i], fids[i] );
+      changed |= ( oldId != fids[i] );
+    }
+  }
+  return changed;
+}
+
+
 void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;

@@ -143,6 +143,17 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
   return true;
 }
 
+bool QgsGeometryCheckError::handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap )
+{
+  if ( layerId == mLayerId )
+  {
+    QgsFeatureId oldId = mFeatureId;
+    mFeatureId = oldNewFidMap.value( mFeatureId, mFeatureId );
+    return oldId != mFeatureId;
+  }
+  return false;
+}
+
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
 {
   QMap<QString, QgsFeatureIds> featureIds;

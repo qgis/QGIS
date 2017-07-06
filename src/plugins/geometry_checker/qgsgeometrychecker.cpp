@@ -29,6 +29,10 @@ QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks,
   : mChecks( checks )
   , mContext( context )
 {
+  for ( const QString &layerId : mContext->featurePools.keys() )
+  {
+    connect( mContext->featurePools[layerId], SIGNAL( featureIdsChanged( QString, QMap<QgsFeatureId, QgsFeatureId> ) ), this, SLOT( updateFeatureIds( QString, QMap<QgsFeatureId, QgsFeatureId> ) ) );
+  }
 }
 
 QgsGeometryChecker::~QgsGeometryChecker()
@@ -281,5 +285,16 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
   for ( QgsGeometryCheckError *error : errors )
   {
     emit errorAdded( error );
+  }
+}
+
+void QgsGeometryChecker::updateFeatureIds( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid )
+{
+  for ( QgsGeometryCheckError *error : mCheckErrors )
+  {
+    if ( error->handleFidChanges( layerId, oldNewFid ) )
+    {
+      emit errorUpdated( error, false );
+    }
   }
 }

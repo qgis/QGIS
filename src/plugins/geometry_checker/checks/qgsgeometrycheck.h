@@ -159,6 +159,7 @@ class QgsGeometryCheckError
     }
 
     virtual bool handleChanges( const QgsGeometryCheck::Changes &changes );
+    virtual bool handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap );
 
   protected:
     // Users of this constructor must ensure geometry and errorLocation are in map coordinates
