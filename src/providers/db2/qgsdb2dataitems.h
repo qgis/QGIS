@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgsdb2provider.h"
-#include "qgsdb2sourceselect.h"
+#include "qgsdb2tablemodel.h"
+
 #include <qgsdataitem.h>
 
 class QgsDb2RootItem;
@@ -41,13 +42,17 @@ class QgsDb2RootItem : public QgsDataCollectionItem
      */
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
 
     virtual QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     //void connectionsChanged();
     void newConnection();
+#endif
 };
 
 /**
@@ -83,10 +88,13 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
+#ifdef HAVE_GUI
+
     /**
      * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
      */
     virtual QList<QAction *> actions() override;
+#endif
 
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
@@ -99,6 +107,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
+#ifdef HAVE_GUI
 
     /**
      * Refresh with saved connection data.
@@ -114,6 +123,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
      * Delete saved connection data and remove from Browser Panel.
      */
     void deleteConnection();
+#endif
     //void setAllowGeometrylessTables( bool allow );
 
     //void setLayerType( QgsDb2LayerProperty layerProperty );

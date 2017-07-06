@@ -18,7 +18,11 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
+#include "qgsowssourceselect.h"
+#endif
 
 #include "qgsapplication.h"
 
@@ -129,6 +133,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
   return ( o && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsOWSConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -165,6 +170,7 @@ void QgsOWSConnectionItem::deleteConnection()
   mParent->refresh();
 #endif
 }
+#endif
 
 
 // ---------------------------------------------------------------------------
@@ -205,6 +211,7 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsOWSRootItem::actions()
 {
   QList<QAction *> lst;
@@ -244,6 +251,7 @@ void QgsOWSRootItem::newConnection()
   }
 #endif
 }
+#endif
 
 
 // ---------------------------------------------------------------------------

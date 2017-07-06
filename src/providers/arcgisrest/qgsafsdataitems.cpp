@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslogger.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 #include "qgsafsdataitems.h"
 #include "qgsafsprovider.h"
 #include "qgsarcgisrestutils.h"
+
+#ifdef HAVE_GUI
+#include "qgsnewhttpconnection.h"
 #include "qgsafssourceselect.h"
+#endif
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -46,6 +49,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAfsRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -75,6 +79,7 @@ void QgsAfsRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -114,6 +119,7 @@ bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAfsConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -145,6 +151,7 @@ void QgsAfsConnectionItem::deleteConnection()
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgisfeatureserver" ), mName );
   mParent->refresh();
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

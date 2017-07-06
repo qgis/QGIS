@@ -14,14 +14,17 @@
  ***************************************************************************/
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsnewhttpconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsconnection.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdataitems.h"
-#include "qgswfssourceselect.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgssettings.h"
+
+#ifdef HAVE_GUI
+#include "qgsnewhttpconnection.h"
+#include "qgswfssourceselect.h"
+#endif
 
 #include <QCoreApplication>
 #include <QEventLoop>
@@ -87,6 +90,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
   return layers;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWfsConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -120,7 +124,7 @@ void QgsWfsConnectionItem::deleteConnection()
   // the parent should be updated
   mParent->refresh();
 }
-
+#endif
 
 
 //////
@@ -152,6 +156,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsWfsRootItem::actions()
 {
   QList<QAction *> lst;
@@ -185,13 +190,16 @@ void QgsWfsRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 // ---------------------------------------------------------------------------
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsWFSSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

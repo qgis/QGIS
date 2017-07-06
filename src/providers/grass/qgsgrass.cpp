@@ -29,8 +29,11 @@
 #endif
 
 #include "qgsgrass.h"
-#include "qgsgrassoptions.h"
 #include "qgsgrassvector.h"
+
+#ifdef HAVE_GUI
+#include "qgsgrassoptions.h"
+#endif
 
 #include "qgsapplication.h"
 #include "qgsconfig.h"
@@ -2906,8 +2909,10 @@ void QgsGrass::setModulesDebug( bool debug )
 
 void QgsGrass::openOptions()
 {
+#ifdef HAVE_GUI
   QgsGrassOptions dialog;
   dialog.exec();
+#endif
 }
 
 void QgsGrass::warning( const QString &message )
