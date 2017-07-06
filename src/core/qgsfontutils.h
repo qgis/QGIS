@@ -165,6 +165,20 @@ class CORE_EXPORT QgsFontUtils
      * \since QGIS 2.16
      */
     static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
+
+    /**
+     * Adds a font \a family to the list of recently used font families.
+     * \since QGIS 3.0
+     * \see recentFontFamilies()
+     */
+    static void addRecentFontFamily( const QString &family );
+
+    /**
+     * Returns a list of recently used font families.
+     * \see addRecentFontFamily()
+     * \since QGIS 3.0
+     */
+    static QStringList recentFontFamilies();
 };
 
 #endif // QGSFONTUTILS_H
