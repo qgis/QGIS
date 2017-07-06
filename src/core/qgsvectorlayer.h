@@ -1926,9 +1926,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
     QgsFeatureId findFreeId();
 
-    //! Add joined attributes to a feature
-    //void addJoinedAttributes( QgsFeature& f, bool all = false );
-
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
 
