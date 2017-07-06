@@ -42,6 +42,14 @@ Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be
  :rtype: QgsCompoundCurve
 %End
 
+    QList<QgsPointLocator::Match> snappingMatches() const;
+%Docstring
+ Return a list of matches for each point on the captureCurve.
+
+.. versionadded:: 3.0
+ :rtype: list of QgsPointLocator.Match
+%End
+
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );

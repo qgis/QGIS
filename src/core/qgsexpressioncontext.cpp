@@ -912,6 +912,30 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   return scope;
 }
 
+QgsExpressionContextScope *QgsExpressionContextUtils::mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Map Tool Capture" ) );
+
+  QVariantList matchList;
+
+  for ( const QgsPointLocator::Match &match : matches )
+  {
+    QVariantMap matchMap;
+
+    matchMap.insert( QStringLiteral( "valid" ), match.isValid() );
+    matchMap.insert( QStringLiteral( "layer" ), QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( match.layer() ) ) );
+    matchMap.insert( QStringLiteral( "feature_id" ), match.featureId() );
+    matchMap.insert( QStringLiteral( "vertex_index" ), match.vertexIndex() );
+    matchMap.insert( QStringLiteral( "distance" ), match.distance() );
+
+    matchList.append( matchMap );
+  }
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "snapping_results" ), matchList ) );
+
+  return scope;
+}
+
 QgsExpressionContextScope *QgsExpressionContextUtils::updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope )
 {
   if ( !symbolScope )
