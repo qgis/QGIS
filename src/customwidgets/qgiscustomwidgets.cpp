@@ -28,6 +28,7 @@
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsfilewidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
+#include "qgsfontbuttonplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
 #include "qgsopacitywidgetplugin.h"
 #include "qgspasswordlineeditplugin.h"
@@ -57,6 +58,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
   mWidgets.append( new QgsFileWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
+  mWidgets.append( new QgsFontButtonPlugin( this ) );
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
   mWidgets.append( new QgsOpacityWidgetPlugin( this ) );
   mWidgets.append( new QgsPasswordLineEditPlugin( this ) );
