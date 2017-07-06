@@ -48,8 +48,9 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
-  bool res = action->addFeature( QgsAttributeMap(), showModal );
+  bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
   return res;
@@ -250,6 +251,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
+      QList<QgsPointLocator::Match> snappingMatchesList;
       QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
@@ -258,13 +260,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else
       {
         curveToAdd = captureCurve()->curveToLine();
+        snappingMatchesList = snappingMatches();
       }
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry *g = new QgsGeometry( curveToAdd );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( curveToAdd );
+        f->setGeometry( g );
       }
       else
       {
@@ -278,9 +280,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           poly = new QgsPolygonV2();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry *g = new QgsGeometry( poly );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( poly );
+        f->setGeometry( g );
 
         QgsGeometry featGeom = f->geometry();
         int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );

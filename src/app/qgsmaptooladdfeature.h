@@ -44,7 +44,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
     void setCheckGeometryType( bool checkGeometryType );
 
   private:
-    QVariant snappingMatchesAsVariable() const;
 
     /** Check if CaptureMode matches layer type. Default is true.
      * \since QGIS 2.12 */

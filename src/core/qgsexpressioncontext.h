@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsexpression.h"
 #include "qgsexpressionfunction.h"
+#include "qgspointlocator.h"
 
 class QgsExpression;
 class QgsExpressionNodeFunction;
@@ -742,6 +743,14 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, map scale and rotation.
      */
     static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) SIP_FACTORY;
+
+    /**
+     * Sets the expression context variables which are available for expressions triggered by
+     * a map tool capture like add feature.
+     *
+     * \since QGIS 3.0
+     */
+    static QgsExpressionContextScope *mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches ) SIP_FACTORY;
 
     /**
      * Updates a symbol scope related to a QgsSymbol to an expression context.

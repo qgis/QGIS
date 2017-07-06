@@ -809,6 +809,15 @@ class QgsExpressionContextUtils
  :rtype: QgsExpressionContextScope
 %End
 
+    static QgsExpressionContextScope *mapToolCaptureScope( const QList<QgsPointLocator::Match> &matches ) /Factory/;
+%Docstring
+ Sets the expression context variables which are available for expressions triggered by
+ a map tool capture like add feature.
+
+.. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
+%End
+
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = 0 );
 %Docstring
  Updates a symbol scope related to a QgsSymbol to an expression context.

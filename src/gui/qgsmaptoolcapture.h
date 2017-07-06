@@ -56,6 +56,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
+    /**
+     * Return a list of matches for each point on the captureCurve.
+     *
+     * \since QGIS 3.0
+     */
+    QList<QgsPointLocator::Match> snappingMatches() const;
+
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
@@ -192,6 +199,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
+
+    QList<QgsPointLocator::Match> mSnappingMatches;
 
     void validateGeometry();
     QStringList mValidationWarnings;

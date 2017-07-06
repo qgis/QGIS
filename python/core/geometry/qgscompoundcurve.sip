@@ -77,7 +77,7 @@ class QgsCompoundCurve: QgsCurve
 
     void addCurve( QgsCurve *c /Transfer/ );
 %Docstring
- Adds a curve to the geometr (takes ownership)
+ Adds a curve to the geometry (takes ownership)
 %End
 
     void removeCurve( int i );
