@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgeocmsconnection.h
+    qgsgeocmsdataitems.cpp
     ---------------------
     begin                : Feb 2017
     copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni

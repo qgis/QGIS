@@ -303,9 +303,9 @@ QVariantList QgsGeoNodeConnection::getMaps()
 QStringList QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceType )
 {
   // Example CSW url
-  // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=
+  // demo.geonode.org/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id= //#spellok
 
-  QString url = uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID );
+  QString url = uri().param( "url" ) + QString( "/catalogue/csw?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&id=%1" ).arg( resourceID ); //#spellok
   QUrl layerUrl( url );
   QString protocol = url.split( "://" )[0];
   layerUrl.setScheme( protocol );
