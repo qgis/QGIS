@@ -53,7 +53,7 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         return 'spatialiteexecutesql'
 
     def displayName(self):
-        return self.tr('Spatialite execute SQL')
+        return self.tr('SpatiaLite execute SQL')
 
     def processAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)

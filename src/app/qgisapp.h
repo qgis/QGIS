@@ -1136,7 +1136,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newVectorLayer();
     //! Create a new memory layer
     void newMemoryLayer();
-    //! Create a new empty spatialite layer
+    //! Create a new empty SpatiaLite layer
     void newSpatialiteLayer();
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();

@@ -1483,7 +1483,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            true  // Default value
                          ) );
 
-  // Will handle the spatialite alias
+  // Will handle the SpatiaLite alias
   datasetOptions.insert( QStringLiteral( "SPATIALITE" ), new HiddenOption(
                            QStringLiteral( "NO" )
                          ) );

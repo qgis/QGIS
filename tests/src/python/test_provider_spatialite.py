@@ -254,7 +254,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     ])
 
     def test_SplitFeature(self):
-        """Create spatialite database"""
+        """Create SpatiaLite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % self.dbname, "test_pg", "spatialite")
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
@@ -265,7 +265,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(layer.featureCount(), 4)
 
     def test_SplitFeatureWithMultiKey(self):
-        """Create spatialite database"""
+        """Create SpatiaLite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg_mk (geometry)" % self.dbname, "test_pg_mk", "spatialite")
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())

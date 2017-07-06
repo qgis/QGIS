@@ -1245,7 +1245,7 @@ osgEarth), try bypassing ccache.
   =========================================================
 
 Download William Kyngesburye's excellent GDAL Complete package that includes
-PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
+PROJ, GEOS, GDAL, SQLite3, SpatiaLite, and image libraries, as frameworks.
 There are also GSL and FreeType frameworks.
 
 http://www.kyngchaos.com/software/frameworks

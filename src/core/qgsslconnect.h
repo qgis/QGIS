@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsslconnect.h - thin wrapper class to connect to spatialite databases
+    qgsslconnect.h - thin wrapper class to connect to SpatiaLite databases
     ----------------------
     begin                : May 2015
     copyright            : (C) 2015 by Jürgen fischer
