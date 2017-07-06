@@ -25,7 +25,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
                                     const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                     const QgsPointXY &errorLocation,
                                     const QMap<QString, QList<QgsFeatureId>> &duplicates )
-      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( duplicates ) )
+      : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( check->getContext()->featurePools, duplicates ) )
       , mDuplicates( duplicates )
     { }
     QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }
@@ -43,21 +43,7 @@ class QgsGeometryDuplicateCheckError : public QgsGeometryCheckError
   private:
     QMap<QString, QList<QgsFeatureId>> mDuplicates;
 
-    static inline QString duplicatesString( const QMap<QString, QList<QgsFeatureId>> &duplicates )
-    {
-      QStringList str;
-      for ( const QString &layerId : duplicates.keys() )
-      {
-        str.append( layerId + ": " );
-        QStringList ids;
-        for ( QgsFeatureId id : duplicates[layerId] )
-        {
-          ids.append( QString::number( id ) );
-        }
-        str.append( ids.join( ", " ) );
-      }
-      return str.join( QStringLiteral( "; " ) );
-    }
+    static QString duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates );
 };
 
 class QgsGeometryDuplicateCheck : public QgsGeometryCheck

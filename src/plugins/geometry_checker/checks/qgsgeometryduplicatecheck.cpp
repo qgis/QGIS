@@ -36,6 +36,22 @@ bool QgsGeometryDuplicateCheckError::handleFidChanges( const QString &layerId, c
   return changed;
 }
 
+QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
+{
+  QStringList str;
+  for ( const QString &layerId : duplicates.keys() )
+  {
+    str.append( featurePools[layerId]->getLayer()->name() + ":" );
+    QStringList ids;
+    for ( QgsFeatureId id : duplicates[layerId] )
+    {
+      ids.append( QString::number( id ) );
+    }
+    str.back() += ids.join( "," );
+  }
+  return str.join( QStringLiteral( "; " ) );
+}
+
 
 void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {

@@ -56,9 +56,9 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
 
   for ( const QString &layerId : mChecker->getContext()->featurePools.keys() )
   {
-    QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layerId << "" );
-    QComboBox *attribCombo = new QComboBox();
     QgsVectorLayer *layer = mChecker->getContext()->featurePools[layerId]->getLayer();
+    QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layer->name() << "" );
+    QComboBox *attribCombo = new QComboBox();
     for ( int i = 0, n = layer->fields().count(); i < n; ++i )
     {
       attribCombo->addItem( layer->fields().at( i ).name() );
