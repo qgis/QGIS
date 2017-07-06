@@ -3501,6 +3501,18 @@ static QVariant fcnArrayGet( const QVariantList &values, const QgsExpressionCont
   return list.at( pos );
 }
 
+static QVariant fcnArrayFirst( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  return list.value( 0 );
+}
+
+static QVariant fcnArrayLast( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  const QVariantList list = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
+  return list.value( list.size() - 1 );
+}
+
 static QVariant convertToSameType( const QVariant &value, QVariant::Type type )
 {
   QVariant result = value;
@@ -4198,6 +4210,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_contains" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_find" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_get" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ), fcnArrayGet, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_first" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayFirst, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "array_last" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ), fcnArrayLast, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_append" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayAppend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_prepend" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayPrepend, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "array_insert" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "pos" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnArrayInsert, QStringLiteral( "Arrays" ) )
