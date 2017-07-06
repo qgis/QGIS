@@ -31,16 +31,33 @@ class QgsMapCanvas;
  * The button will open a detailed text format settings dialog when clicked. An attached drop down
  * menu allows for copying and pasting text styles, picking colors for the text, and for dropping
  * colors from other color widgets.
+ *
+ * The button can be used in two different modes(). The default behavior is to include
+ * all settings used for configuring QgsTextFormat/QgsTextRenderer classes. A cut down
+ * mode (without settings for color) is also available when the resultant font is
+ * used only in a QFont object.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsFontButton : public QToolButton
 {
     Q_OBJECT
 
+    Q_PROPERTY( Mode mode READ mode WRITE setMode )
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
+    Q_PROPERTY( QFont currentFont READ currentFont WRITE setCurrentFont NOTIFY changed )
     Q_PROPERTY( QgsTextFormat textFormat READ textFormat WRITE setTextFormat NOTIFY changed )
 
   public:
+
+    Q_ENUMS( Mode )
+
+    //! Available button modes.
+    enum Mode
+    {
+      ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
+      ModeQFont, //!< Configure font settings for use with QFont objects
+    };
 
     /**
      * Construct a new font button.
@@ -50,6 +67,21 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QgsFontButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
     virtual QSize sizeHint() const override;
+
+    /**
+     * Returns the current button mode.
+     * \see setMode()
+     */
+    QgsFontButton::Mode mode() const;
+
+    /**
+     * Sets the current button \a mode. This can be used to toggle between
+     * the full capabilities of the button (for configuring QgsTextFormat/QgsTextRenderer objects)
+     * and a cut-back version for configuring QFont object properties (i.e. with
+     * no color settings or the other advanced options QgsTextFormat allows).
+     * \see mode()
+     */
+    void setMode( const QgsFontButton::Mode &mode );
 
     /**
      * Sets the \a title for the text settings dialog window.
@@ -78,21 +110,39 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     /**
      * Returns the current text formatting set by the widget.
+     * This is only used when mode() is ModeTextRenderer.
      * \see setTextFormat()
      */
     QgsTextFormat textFormat() const { return mFormat; }
+
+    /**
+     * Returns the current QFont set by the widget.
+     * This is only used when mode() is ModeQFont.
+     * \see setCurrentFont()
+     */
+    QFont currentFont() const;
+
 
   public slots:
 
     /**
      * Sets the current text \a format to show in the widget.
+     * This is only used when mode() is ModeTextRenderer.
      * \see textFormat()
      */
     void setTextFormat( const QgsTextFormat &format );
 
     /**
+     * Sets the current text \a font to show in the widget.
+     * This is only used when mode() is ModeQFont.
+     * \see currentFont()
+     */
+    void setCurrentFont( const QFont &font );
+
+    /**
      * Sets the current \a color for the text. Will emit a changed signal if the color is different
      * to the previous text color.
+     * This is only used when mode() is ModeTextRenderer.
      */
     void setColor( const QColor &color );
 
@@ -108,7 +158,9 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     void pasteFormat();
 
-    /** Copies the current text color to the clipboard.
+    /**
+     * Copies the current text color to the clipboard.
+     * This is only used when mode() is ModeTextRenderer.
      * \see pasteColor()
      */
     void copyColor();
@@ -116,6 +168,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     /**
      * Pastes a color from the clipboard to the text format. If clipboard does not contain a valid
      * color or string representation of a color, then no change is applied.
+     * This is only used when mode() is ModeTextRenderer.
      * \see copyColor()
      */
     void pasteColor();
@@ -160,8 +213,11 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
   private:
 
+    Mode mMode = ModeTextRenderer;
+
     QString mDialogTitle;
     QgsTextFormat mFormat;
+    QFont mFont;
 
     QgsMapCanvas *mMapCanvas = nullptr;
 
@@ -172,13 +228,23 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QSize mIconSize;
 
     /**
-     * Attempts to parse mimeData as a text format.
+     * Attempts to parse \a mimeData as a text format.
      * \returns true if mime data could be intrepreted as a format
      * \param mimeData mime data
      * \param resultFormat destination for text format
      * \see colorFromMimeData
      */
     bool formatFromMimeData( const QMimeData *mimeData, QgsTextFormat &resultFormat ) const;
+
+
+    /**
+     * Attempts to parse \a mimeData as a QFont.
+     * \returns true if mime data could be intrepreted as a QFont
+     * \param mimeData mime data
+     * \param resultFont destination for font
+     * \see formatFromMimeData
+     */
+    bool fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const;
 
     /** Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
@@ -193,18 +259,18 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     /**
      * Create a \a color icon for display in the drop down menu.
      */
-    QPixmap createMenuIcon( const QColor &color ) const;
+    QPixmap createColorIcon( const QColor &color ) const;
 
     /**
      * Creates a drag icon showing the current font style.
      */
-    QPixmap createDragIcon( QSize size = QSize( 50, 50 ), const QgsTextFormat *tempFormat = nullptr ) const;
+    QPixmap createDragIcon( QSize size = QSize( 50, 50 ), const QgsTextFormat *tempFormat = nullptr, const QFont *tempFont = nullptr ) const;
 
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
      * is shown instead.
      */
-    void updatePreview( const QColor &color = QColor(), QgsTextFormat *tempFormat = nullptr );
+    void updatePreview( const QColor &color = QColor(), QgsTextFormat *tempFormat = nullptr, QFont *tempFont = nullptr );
 };
 
 #endif // QGSFONTBUTTON_H

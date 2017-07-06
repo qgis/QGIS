@@ -24,17 +24,19 @@
 #include "qgsdoublespinbox.h"
 #include "qgsunittypes.h"
 #include "qgsmenuheader.h"
+#include "qgsfontutils.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
 #include <QDesktopWidget>
+#include <QToolTip>
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Text Format" ) : dialogTitle )
   , mMenu( nullptr )
-
 {
+  setText( tr( "Font" ) );
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
   connect( this, &QAbstractButton::clicked, this, &QgsFontButton::showSettingsDialog );
@@ -58,22 +60,39 @@ QSize QgsFontButton::sizeHint() const
 
 void QgsFontButton::showSettingsDialog()
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  if ( panel && panel->dockMode() )
+  switch ( mMode )
   {
-    QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this );
-    formatWidget->setPanelTitle( mDialogTitle );
+    case ModeTextRenderer:
+    {
+      QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+      if ( panel && panel->dockMode() )
+      {
+        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this );
+        formatWidget->setPanelTitle( mDialogTitle );
 
-    connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
-    panel->openPanel( formatWidget );
-    return;
-  }
+        connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
+        panel->openPanel( formatWidget );
+        return;
+      }
 
-  QgsTextFormatDialog dialog( mFormat, mMapCanvas, this );
-  dialog.setWindowTitle( mDialogTitle );
-  if ( dialog.exec() )
-  {
-    setTextFormat( dialog.format() );
+      QgsTextFormatDialog dialog( mFormat, mMapCanvas, this );
+      dialog.setWindowTitle( mDialogTitle );
+      if ( dialog.exec() )
+      {
+        setTextFormat( dialog.format() );
+      }
+      break;
+    }
+
+    case ModeQFont:
+    {
+      bool ok;
+      QFont newFont = QgsGuiUtils::getFont( ok, mFont, mDialogTitle );
+      if ( ok )
+      {
+        setCurrentFont( newFont );
+      }
+    }
   }
 
   // reactivate button's window
@@ -112,15 +131,29 @@ void QgsFontButton::setColor( const QColor &color )
 
 void QgsFontButton::copyFormat()
 {
-  QApplication::clipboard()->setMimeData( mFormat.toMimeData() );
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+      QApplication::clipboard()->setMimeData( mFormat.toMimeData() );
+      break;
+
+    case ModeQFont:
+      QApplication::clipboard()->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      break;
+  }
 }
 
 void QgsFontButton::pasteFormat()
 {
   QgsTextFormat tempFormat;
-  if ( formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
+  QFont font;
+  if ( mMode == ModeTextRenderer && formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
   {
     setTextFormat( tempFormat );
+  }
+  else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), font ) )
+  {
+    setCurrentFont( font );
   }
 }
 
@@ -128,8 +161,21 @@ bool QgsFontButton::event( QEvent *e )
 {
   if ( e->type() == QEvent::ToolTip )
   {
-    QString toolTip = QStringLiteral( "%1\nSize: %2" ).arg( mFormat.font().family() ).arg( mFormat.size() );
-    setToolTip( toolTip );
+    QHelpEvent *helpEvent = static_cast< QHelpEvent *>( e );
+    QString toolTip;
+    double fontSize;
+    switch ( mMode )
+    {
+      case ModeTextRenderer:
+        fontSize = mFormat.size();
+        break;
+
+      case ModeQFont:
+        fontSize = mFont.pointSizeF();
+        break;
+    }
+    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mFormat.font().family() ).arg( fontSize );
+    QToolTip::showText( helpEvent->globalPos(), toolTip );
   }
   return QToolButton::event( e );
 }
@@ -166,9 +212,18 @@ void QgsFontButton::mouseMoveEvent( QMouseEvent *e )
     return;
   }
 
-  //user is dragging color
+  //user is dragging font
   QDrag *drag = new QDrag( this );
-  drag->setMimeData( mFormat.toMimeData() );
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+      drag->setMimeData( mFormat.toMimeData() );
+      break;
+
+    case ModeQFont:
+      drag->setMimeData( QgsFontUtils::toMimeData( mFont ) );
+      break;
+  }
   drag->setPixmap( createDragIcon() );
   drag->exec( Qt::CopyAction );
   setDown( false );
@@ -191,17 +246,23 @@ bool QgsFontButton::colorFromMimeData( const QMimeData *mimeData, QColor &result
 
 void QgsFontButton::dragEnterEvent( QDragEnterEvent *e )
 {
-  //is dragged data valid color data?
+  //is dragged data valid font data?
   QColor mimeColor;
   QgsTextFormat format;
+  QFont font;
   bool hasAlpha = false;
 
-  if ( formatFromMimeData( e->mimeData(), format ) )
+  if ( mMode == ModeTextRenderer && formatFromMimeData( e->mimeData(), format ) )
   {
     e->acceptProposedAction();
     updatePreview( QColor(), &format );
   }
-  else if ( colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
+  else if ( mMode == ModeQFont && fontFromMimeData( e->mimeData(), font ) )
+  {
+    e->acceptProposedAction();
+    updatePreview( QColor(), nullptr, &font );
+  }
+  else if ( mMode == ModeTextRenderer && colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
   {
     //if so, we accept the drag, and temporarily change the button's color
     //to match the dragged color. This gives immediate feedback to the user
@@ -220,16 +281,22 @@ void QgsFontButton::dragLeaveEvent( QDragLeaveEvent *e )
 
 void QgsFontButton::dropEvent( QDropEvent *e )
 {
-  //is dropped data valid color data?
+  //is dropped data valid format data?
   QColor mimeColor;
   QgsTextFormat format;
+  QFont font;
   bool hasAlpha = false;
-  if ( formatFromMimeData( e->mimeData(), format ) )
+  if ( mMode == ModeTextRenderer && formatFromMimeData( e->mimeData(), format ) )
   {
     setTextFormat( format );
     return;
   }
-  else if ( colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
+  else if ( mMode == ModeQFont && fontFromMimeData( e->mimeData(), font ) )
+  {
+    setCurrentFont( font );
+    return;
+  }
+  else if ( mMode == ModeTextRenderer && colorFromMimeData( e->mimeData(), mimeColor, hasAlpha ) )
   {
     //accept drop and set new color
     e->acceptProposedAction();
@@ -247,7 +314,7 @@ void QgsFontButton::dropEvent( QDropEvent *e )
   updatePreview();
 }
 
-QPixmap QgsFontButton::createMenuIcon( const QColor &color ) const
+QPixmap QgsFontButton::createColorIcon( const QColor &color ) const
 {
   //create an icon pixmap
   QPixmap pixmap( 16, 16 );
@@ -266,10 +333,12 @@ QPixmap QgsFontButton::createMenuIcon( const QColor &color ) const
   return pixmap;
 }
 
-QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempFormat ) const
+QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempFormat, const QFont *tempFont ) const
 {
   if ( !tempFormat )
     tempFormat = &mFormat;
+  if ( !tempFont )
+    tempFont = &mFont;
 
   //create an icon pixmap
   QPixmap pixmap( size.width(), size.height() );
@@ -279,7 +348,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
   p.setRenderHint( QPainter::Antialiasing );
   QRect rect( 0, 0, size.width(), size.height() );
 
-  if ( tempFormat->color().lightnessF() < 0.7 )
+  if ( mMode == ModeQFont || tempFormat->color().lightnessF() < 0.7 )
   {
     p.setBrush( QBrush( QColor( 255, 255, 255 ) ) );
     p.setPen( QPen( QColor( 150, 150, 150 ), 0 ) );
@@ -293,40 +362,54 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
   p.setBrush( Qt::NoBrush );
   p.setPen( Qt::NoPen );
 
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+    {
+      QgsRenderContext context;
+      QgsMapToPixel newCoordXForm;
+      newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
+      context.setMapToPixel( newCoordXForm );
 
-  QgsRenderContext context;
-  QgsMapToPixel newCoordXForm;
-  newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
-  context.setMapToPixel( newCoordXForm );
+      context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+      context.setUseAdvancedEffects( true );
+      context.setPainter( &p );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
-  context.setUseAdvancedEffects( true );
-  context.setPainter( &p );
+      // slightly inset text to account for buffer/background
+      double xtrans = 0;
+      if ( tempFormat->buffer().enabled() )
+        xtrans = context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
+      if ( tempFormat->background().enabled() && tempFormat->background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
+        xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
-  // slightly inset text to account for buffer/background
-  double xtrans = 0;
-  if ( tempFormat->buffer().enabled() )
-    xtrans = context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
-  if ( tempFormat->background().enabled() && tempFormat->background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-    xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
+      double ytrans = 0.0;
+      if ( tempFormat->buffer().enabled() )
+        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+      if ( tempFormat->background().enabled() )
+        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
-  double ytrans = 0.0;
-  if ( tempFormat->buffer().enabled() )
-    ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
-  if ( tempFormat->background().enabled() )
-    ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
+      QRectF textRect = rect;
+      textRect.setLeft( xtrans );
+      textRect.setWidth( textRect.width() - xtrans );
+      textRect.setTop( ytrans );
+      if ( textRect.height() > 300 )
+        textRect.setHeight( 300 );
+      if ( textRect.width() > 2000 )
+        textRect.setWidth( 2000 );
 
-  QRectF textRect = rect;
-  textRect.setLeft( xtrans );
-  textRect.setWidth( textRect.width() - xtrans );
-  textRect.setTop( ytrans );
-  if ( textRect.height() > 300 )
-    textRect.setHeight( 300 );
-  if ( textRect.width() > 2000 )
-    textRect.setWidth( 2000 );
-
-  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, QStringList() << tr( "Aa" ),
-                             context, *tempFormat );
+      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, QStringList() << tr( "Aa" ),
+                                 context, *tempFormat );
+    }
+    case ModeQFont:
+    {
+      p.setBrush( Qt::NoBrush );
+      p.setPen( QColor( 0, 0, 0 ) );
+      p.setFont( *tempFont );
+      QRectF textRect = rect;
+      textRect.setLeft( 2 );
+      p.drawText( textRect, Qt::AlignVCenter, tr( "Aa" ) );
+    }
+  }
 
   p.end();
   return pixmap;
@@ -376,18 +459,38 @@ void QgsFontButton::prepareMenu()
   sizeLayout->setContentsMargins( 0, 0, 0, 3 );
   sizeLayout->setSpacing( 2 );
 
-  QgsMenuHeader *sizeLabel = new QgsMenuHeader( tr( "Font size (%1)" ).arg( QgsUnitTypes::toString( mFormat.sizeUnit() ) ) );
+  QString fontHeaderLabel;
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+      fontHeaderLabel = tr( "Font size (%1)" ).arg( QgsUnitTypes::toString( mFormat.sizeUnit() ) );
+      break;
+
+    case ModeQFont:
+      fontHeaderLabel = tr( "Font size (pt)" );
+      break;
+  }
+
+  QgsMenuHeader *sizeLabel = new QgsMenuHeader( fontHeaderLabel );
   sizeLayout->addWidget( sizeLabel );
 
   QgsDoubleSpinBox *sizeSpin = new QgsDoubleSpinBox( nullptr );
   sizeSpin->setDecimals( 4 );
   sizeSpin->setMaximum( 1e+9 );
   sizeSpin->setShowClearButton( false );
-  sizeSpin->setValue( mFormat.size() );
+  sizeSpin->setValue( mMode == ModeTextRenderer ? mFormat.size() : mFont.pointSizeF() );
   connect( sizeSpin, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ),
            this, [ = ]( double value )
   {
-    mFormat.setSize( value );
+    switch ( mMode )
+    {
+      case ModeTextRenderer:
+        mFormat.setSize( value );
+        break;
+      case ModeQFont:
+        mFont.setPointSizeF( value );
+        break;
+    }
     updatePreview();
     emit changed();
   } );
@@ -413,11 +516,17 @@ void QgsFontButton::prepareMenu()
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QgsTextFormat tempFormat;
-  if ( formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
+  QFont tempFont;
+  if ( mMode == ModeTextRenderer && formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
   {
     tempFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
     tempFormat.setSize( 14 );
     pasteFormatAction->setIcon( createDragIcon( QSize( 16, 16 ), &tempFormat ) );
+  }
+  else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), tempFont ) )
+  {
+    tempFont.setPointSize( 8 );
+    pasteFormatAction->setIcon( createDragIcon( QSize( 16, 16 ), nullptr, &tempFont ) );
   }
   else
   {
@@ -426,66 +535,68 @@ void QgsFontButton::prepareMenu()
   mMenu->addAction( pasteFormatAction );
   connect( pasteFormatAction, &QAction::triggered, this, &QgsFontButton::pasteFormat );
 
-  mMenu->addSeparator();
-
-  QgsColorWheel *colorWheel = new QgsColorWheel( mMenu );
-  colorWheel->setColor( mFormat.color() );
-  QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
-  colorAction->setDismissOnColorSelection( false );
-  connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsFontButton::setColor );
-  mMenu->addAction( colorAction );
-
-  QgsColorRampWidget *alphaRamp = new QgsColorRampWidget( mMenu, QgsColorWidget::Alpha, QgsColorRampWidget::Horizontal );
-  QColor alphaColor = mFormat.color();
-  alphaColor.setAlphaF( mFormat.opacity() );
-  alphaRamp->setColor( alphaColor );
-  QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
-  alphaAction->setDismissOnColorSelection( false );
-  connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
+  if ( mMode == ModeTextRenderer )
   {
-    double opacity = color.alphaF();
-    mFormat.setOpacity( opacity );
-    updatePreview();
-    emit changed();
-  } );
-  connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
-         );
-  mMenu->addAction( alphaAction );
+    mMenu->addSeparator();
 
-  //get schemes with ShowInColorButtonMenu flag set
-  QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
-  QList< QgsColorScheme * >::iterator it = schemeList.begin();
-  for ( ; it != schemeList.end(); ++it )
-  {
-    QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "labeling" ), this );
-    colorAction->setBaseColor( mFormat.color() );
+    QgsColorWheel *colorWheel = new QgsColorWheel( mMenu );
+    colorWheel->setColor( mFormat.color() );
+    QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, mMenu, mMenu );
+    colorAction->setDismissOnColorSelection( false );
+    connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsFontButton::setColor );
     mMenu->addAction( colorAction );
-    connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::setColor );
-    connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::addRecentColor );
+
+    QgsColorRampWidget *alphaRamp = new QgsColorRampWidget( mMenu, QgsColorWidget::Alpha, QgsColorRampWidget::Horizontal );
+    QColor alphaColor = mFormat.color();
+    alphaColor.setAlphaF( mFormat.opacity() );
+    alphaRamp->setColor( alphaColor );
+    QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
+    alphaAction->setDismissOnColorSelection( false );
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
+    {
+      double opacity = color.alphaF();
+      mFormat.setOpacity( opacity );
+      updatePreview();
+      emit changed();
+    } );
+    connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
+           );
+    mMenu->addAction( alphaAction );
+
+    //get schemes with ShowInColorButtonMenu flag set
+    QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
+    QList< QgsColorScheme * >::iterator it = schemeList.begin();
+    for ( ; it != schemeList.end(); ++it )
+    {
+      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "labeling" ), this );
+      colorAction->setBaseColor( mFormat.color() );
+      mMenu->addAction( colorAction );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::setColor );
+      connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::addRecentColor );
+    }
+
+    mMenu->addSeparator();
+
+    QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+    mMenu->addAction( copyColorAction );
+    connect( copyColorAction, &QAction::triggered, this, &QgsFontButton::copyColor );
+
+    QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+    //enable or disable paste action based on current clipboard contents. We always show the paste
+    //action, even if it's disabled, to give hint to the user that pasting colors is possible
+    QColor clipColor;
+    bool hasAlpha = false;
+    if ( colorFromMimeData( QApplication::clipboard()->mimeData(), clipColor, hasAlpha ) )
+    {
+      pasteColorAction->setIcon( createColorIcon( clipColor ) );
+    }
+    else
+    {
+      pasteColorAction->setEnabled( false );
+    }
+    mMenu->addAction( pasteColorAction );
+    connect( pasteColorAction, &QAction::triggered, this, &QgsFontButton::pasteColor );
   }
-
-  mMenu->addSeparator();
-
-  QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
-  mMenu->addAction( copyColorAction );
-  connect( copyColorAction, &QAction::triggered, this, &QgsFontButton::copyColor );
-
-  QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
-  //enable or disable paste action based on current clipboard contents. We always show the paste
-  //action, even if it's disabled, to give hint to the user that pasting colors is possible
-  QColor clipColor;
-  bool hasAlpha = false;
-  if ( colorFromMimeData( QApplication::clipboard()->mimeData(), clipColor, hasAlpha ) )
-  {
-    pasteColorAction->setIcon( createMenuIcon( clipColor ) );
-  }
-  else
-  {
-    pasteColorAction->setEnabled( false );
-  }
-  mMenu->addAction( pasteColorAction );
-  connect( pasteColorAction, &QAction::triggered, this, &QgsFontButton::pasteColor );
-
 }
 
 void QgsFontButton::addRecentColor( const QColor &color )
@@ -493,10 +604,40 @@ void QgsFontButton::addRecentColor( const QColor &color )
   QgsRecentColorScheme::addRecentColor( color );
 }
 
+QFont QgsFontButton::currentFont() const
+{
+  return mFont;
+}
+
+void QgsFontButton::setCurrentFont( const QFont &font )
+{
+  mFont = font;
+  updatePreview();
+  emit changed();
+}
+
+QgsFontButton::Mode QgsFontButton::mode() const
+{
+  return mMode;
+}
+
+void QgsFontButton::setMode( const Mode &mode )
+{
+  mMode = mode;
+  updatePreview();
+}
+
 bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat &resultFormat ) const
 {
   bool ok = false;
   resultFormat = QgsTextFormat::fromMimeData( mimeData, &ok );
+  return ok;
+}
+
+bool QgsFontButton::fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const
+{
+  bool ok = false;
+  resultFont = QgsFontUtils::fromMimeData( mimeData, &ok );
   return ok;
 }
 
@@ -523,14 +664,19 @@ void QgsFontButton::resizeEvent( QResizeEvent *event )
   updatePreview();
 }
 
-void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format )
+void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, QFont *font )
 {
   QgsTextFormat tempFormat;
+  QFont tempFont;
 
   if ( format )
     tempFormat = *format;
   else
     tempFormat = mFormat;
+  if ( font )
+    tempFont = *font;
+  else
+    tempFont = mFont;
 
   if ( color.isValid() )
     tempFormat.setColor( color );
@@ -578,40 +724,55 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format )
   p.setRenderHint( QPainter::Antialiasing );
   QRect rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
 
-  QgsRenderContext context;
-  QgsMapToPixel newCoordXForm;
-  newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
-  context.setMapToPixel( newCoordXForm );
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+    {
+      QgsRenderContext context;
+      QgsMapToPixel newCoordXForm;
+      newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
+      context.setMapToPixel( newCoordXForm );
 
-  context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
-  context.setUseAdvancedEffects( true );
-  context.setPainter( &p );
+      context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+      context.setUseAdvancedEffects( true );
+      context.setPainter( &p );
 
-  // slightly inset text to account for buffer/background
-  double xtrans = 0;
-  if ( tempFormat.buffer().enabled() )
-    xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
-  if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-    xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+      // slightly inset text to account for buffer/background
+      double xtrans = 0;
+      if ( tempFormat.buffer().enabled() )
+        xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+      if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
+        xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
-  double ytrans = 0.0;
-  if ( tempFormat.buffer().enabled() )
-    ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
-  if ( tempFormat.background().enabled() )
-    ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+      double ytrans = 0.0;
+      if ( tempFormat.buffer().enabled() )
+        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+      if ( tempFormat.background().enabled() )
+        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
-  QRectF textRect = rect;
-  textRect.setLeft( xtrans );
-  textRect.setWidth( textRect.width() - xtrans );
-  textRect.setTop( ytrans );
-  if ( textRect.height() > 300 )
-    textRect.setHeight( 300 );
-  if ( textRect.width() > 2000 )
-    textRect.setWidth( 2000 );
+      QRectF textRect = rect;
+      textRect.setLeft( xtrans );
+      textRect.setWidth( textRect.width() - xtrans );
+      textRect.setTop( ytrans );
+      if ( textRect.height() > 300 )
+        textRect.setHeight( 300 );
+      if ( textRect.width() > 2000 )
+        textRect.setWidth( 2000 );
 
-  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << "Font",
-                             context, tempFormat );
+      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
+                                 context, tempFormat );
+    }
+    case ModeQFont:
+    {
+      p.setBrush( Qt::NoBrush );
+      p.setPen( QColor( 0, 0, 0 ) );
+      p.setFont( tempFont );
+      QRectF textRect = rect;
+      textRect.setLeft( 2 );
+      p.drawText( textRect, Qt::AlignVCenter, text() );
+    }
 
+  }
   p.end();
   setIconSize( currentIconSize );
   setIcon( pixmap );
