@@ -278,14 +278,14 @@ QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreat
     fieldFID = QStringLiteral( "FID" );
     return VerifyOk;
   }
-  // Database Postgis and Spatialite
+  // Database Postgis and SpatiaLite
   if ( providerType  == QLatin1String( "POSTGRES" ) || providerType  == QLatin1String( "SPATIALITE" ) )
   {
     fieldFID = mLayerTarget->dataProvider()->fields().at( 0 ).name();
     msg = tr( "Using the field \"%1\" for subset" ).arg( fieldFID );
     return VerifyTry;
   }
-  msg = tr( "Sorry! Only this providers are enabled: OGR, POSTGRES and SPATIALITE." );
+  msg = tr( "Sorry! Only these providers are enabled: OGR, POSTGRES and SPATIALITE." );
   return VerifyImpossible;
 } // TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset(QString &msg, QString &fieldFID)
 

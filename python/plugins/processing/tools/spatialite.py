@@ -63,14 +63,14 @@ class GeoDB(object):
         return str(self.dbname)
 
     def init_spatialite(self):
-        # Get spatialite version
+        # Get SpatiaLite version
         c = self.con.cursor()
         try:
             self._exec_sql(c, u'SELECT spatialite_version()')
             rep = c.fetchall()
             v = [int(x) if x.isdigit() else x for x in re.findall("\d+|[a-zA-Z]+", rep[0][0])]
 
-            # Add spatialite support
+            # Add SpatiaLite support
             if v >= [4, 1, 0]:
                 # 4.1 and above
                 sql = "SELECT initspatialmetadata(1)"

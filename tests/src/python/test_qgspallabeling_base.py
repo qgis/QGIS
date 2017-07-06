@@ -94,7 +94,7 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls._Iface = get_iface()
         cls._Canvas = cls._Iface.mapCanvas()
 
-        # verify that spatialite provider is available
+        # verify that SpatiaLite provider is available
         msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
         # noinspection PyArgumentList
         res = 'spatialite' in QgsProviderRegistry.instance().providerList()

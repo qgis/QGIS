@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsvirtuallayerblob.cpp : Functions to manipulate Spatialite geometry blobs
+  qgsvirtuallayerblob.cpp : Functions to manipulate SpatiaLite geometry blobs
 
 begin                : Nov 2015
 copyright            : (C) 2015 Hugo Mercier, Oslandia
@@ -73,7 +73,7 @@ void SpatialiteBlobHeader::writeTo( char *p ) const
 }
 
 //
-// Convert a QgsGeometry into a Spatialite geometry BLOB
+// Convert a QgsGeometry into a SpatiaLite geometry BLOB
 void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size )
 {
   const int header_len = SpatialiteBlobHeader::LENGTH;
@@ -114,7 +114,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 }
 
 //
-// Return the bounding box of a spatialite geometry blob
+// Return the bounding box of a SpatiaLite geometry blob
 QgsRectangle spatialiteBlobBbox( const char *blob, size_t size )
 {
   Q_UNUSED( size );
@@ -181,9 +181,9 @@ void copySpatialiteSingleWkbToQgsGeometry( QgsWkbTypes::Type type, const char *i
 }
 
 //
-// copy the spatialite blob to wkb for qgsgeometry
+// copy the SpatiaLite blob to wkb for qgsgeometry
 // the only difference is
-// each spatialite sub geometry begins with the byte 0x69 (ENTITY)
+// each SpatiaLite sub geometry begins with the byte 0x69 (ENTITY)
 // which should be converted to an endianness code
 void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uint32_t &osize, int endianness )
 {

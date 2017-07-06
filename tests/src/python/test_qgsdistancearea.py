@@ -81,7 +81,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # 1924-10-24 SRID=4326;POINT(13.37650707988041 52.50952361017194)
         # 1998-10-02 SRID=3068;POINT(23082.30 20267.80)
         # 1998-10-02 SRID=4326;POINT(13.37625537334001 52.50926345498337)
-        # values returned by spatialite
+        # values returned by SpatiaLite
         point_soldner_1924 = QgsPointXY(23099.49, 20296.69)
         point_soldner_1998 = QgsPointXY(23082.30, 20267.80)
         distance_soldner_meters = 33.617379
@@ -130,7 +130,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+
         #   | |
         # +-+ +
-        # checking returned length_mapunits/projected_points of diffferent world points with results from spatialite ST_Project
+        # checking returned length_mapunits/projected_points of diffferent world points with results from SpatiaLite ST_Project
         da_3068 = QgsDistanceArea()
         da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'))
         if (da_3068.sourceCrs().isGeographic()):

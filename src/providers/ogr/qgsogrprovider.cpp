@@ -3822,7 +3822,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   if ( !hLayer )
   {
     // if not create it
-    // Note: we use the same schema as in the spatialite and postgre providers
+    // Note: we use the same schema as in the SpatiaLite and postgre providers
     //for cross interoperability
 
     char **options = nullptr;

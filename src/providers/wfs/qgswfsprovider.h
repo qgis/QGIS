@@ -47,7 +47,7 @@ class QgsWFSSharedData;
  * QgsWFSSharedData class purpose:
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
- *   from the server. This cache is a Spatialite database.
+ *   from the server. This cache is a SpatiaLite database.
  *
  * QgsWFSRequest class purpose: abstract base class to create WFS network requests,
  * such as QgsWFSCapabilities, QgsWFSDescribeFeatureType, QgsWFSFeatureDownloader,

@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     //! QgsOSMDatabase cannot be copied.
     QgsOSMDatabase &operator=( const QgsOSMDatabase &rh ) = delete;
 
-    //! Setter for the spatialite database.
+    //! Setter for the SpatiaLite database.
     void setFileName( const QString &dbFileName ) { mDbFileName = dbFileName; }
     QString filename() const { return mDbFileName; }
     bool isOpen() const;
@@ -89,7 +89,7 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsPolyline wayPoints( QgsOSMId id ) const;
 
-    // export to spatialite
+    // export to SpatiaLite
 
     enum ExportType { Point, Polyline, Polygon };
     bool exportSpatiaLite( ExportType type, const QString &tableName,

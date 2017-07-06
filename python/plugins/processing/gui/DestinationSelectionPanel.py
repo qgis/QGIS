@@ -129,7 +129,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
-                    self.tr('Save to Spatialite table...'), self.btnSelect)
+                    self.tr('Save to SpatiaLite table...'), self.btnSelect)
                 actionSaveToSpatialite.triggered.connect(self.saveToSpatialite)
                 popupMenu.addAction(actionSaveToSpatialite)
                 actionSaveToPostGIS = QAction(
@@ -194,7 +194,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
         fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save Spatialite'), path, fileFilter, self.encoding)
+            self, self.tr('Save SpatiaLite'), path, fileFilter, self.encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
         fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)

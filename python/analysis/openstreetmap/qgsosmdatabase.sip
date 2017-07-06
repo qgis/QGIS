@@ -41,7 +41,7 @@ class QgsOSMDatabase
 
     void setFileName( const QString &dbFileName );
 %Docstring
-Setter for the spatialite database.
+Setter for the SpatiaLite database.
 %End
     QString filename() const;
 %Docstring

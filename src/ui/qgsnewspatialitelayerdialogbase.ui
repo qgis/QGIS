@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>New Spatialite Layer</string>
+   <string>New SpatiaLite Layer</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -144,7 +144,7 @@
          <item>
           <widget class="QToolButton" name="toolButtonNewDatabase">
            <property name="toolTip">
-            <string>Create a new Spatialite database</string>
+            <string>Create a new SpatiaLite database</string>
            </property>
            <property name="text">
             <string>…</string>

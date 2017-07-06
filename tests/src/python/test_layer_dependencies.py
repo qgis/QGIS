@@ -47,7 +47,7 @@ class TestLayerDependencies(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-        # create a temp spatialite db with a trigger
+        # create a temp SpatiaLite db with a trigger
         fo = tempfile.NamedTemporaryFile()
         fn = fo.name
         fo.close()
