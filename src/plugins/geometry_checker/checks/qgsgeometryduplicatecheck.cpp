@@ -60,12 +60,15 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
+    // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
+    layerIds.removeOne( layerFeatureA.layer().id() );
+
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
     QgsWkbTypes::GeometryType geomType = layerFeatureA.feature().geometry().type();
-    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, layerIds, bboxA, {geomType} );
+    QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, QList<QString>() << layerFeatureA.layer().id() << layerIds, bboxA, {geomType} );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       // > : only report overlaps within same layer once
@@ -101,8 +104,6 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     {
       errors.append( new QgsGeometryDuplicateCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), duplicates ) );
     }
-    // Don't check already checked layers
-    layerIds.removeOne( layerFeatureA.layer().id() );
   }
 }
 
