@@ -230,7 +230,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable int mWktFieldIndex;
 
     // mWktPrefix regexp is used to clean up
-    // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
+    // prefixes sometimes used for WKT (PostGIS EWKT, informix SRID)
     bool mWktHasPrefix;
 
     //! Layer extent

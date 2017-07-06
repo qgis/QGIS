@@ -80,7 +80,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
  \subsection postgres PostgreSQL data provider (postgres)
 
- Connects to a postgresql database. The url defines the connection parameters, table,
+ Connects to a PostgreSQL database. The url defines the connection parameters, table,
  geometry column, and other attributes. The url can be constructed using the
  QgsDataSourceUri class.
 

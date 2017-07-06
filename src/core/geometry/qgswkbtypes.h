@@ -76,7 +76,7 @@ class CORE_EXPORT QgsWkbTypes
       GeometryCollection = 7,
       CircularString = 8,
       CompoundCurve = 9,
-      CurvePolygon =  10, //13, //should be 10. Seems to be correct in newer postgis versions
+      CurvePolygon =  10, //13, //should be 10. Seems to be correct in newer PostGIS versions
       MultiCurve = 11,
       MultiSurface = 12,
       NoGeometry = 100, //attributes only

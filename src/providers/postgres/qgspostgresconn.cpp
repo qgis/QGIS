@@ -620,7 +620,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     for ( int i = 0; i < result.PQntuples(); i++ )
     {
       // Have the column name, schema name and the table name. The concept of a
-      // catalog doesn't exist in postgresql so we ignore that, but we
+      // catalog doesn't exist in PostgreSQL so we ignore that, but we
       // do need to get the geometry type.
 
       QString tableName  = result.PQgetvalue( i, 0 ); // relname
@@ -866,7 +866,7 @@ QString QgsPostgresConn::postgisVersion()
 
   mUseWkbHex = mPostgisVersionMajor < 1;
 
-  // apparently postgis 1.5.2 doesn't report capabilities in postgis_version() anymore
+  // apparently PostGIS 1.5.2 doesn't report capabilities in postgis_version() anymore
   if ( mPostgisVersionMajor > 1 || ( mPostgisVersionMajor == 1 && mPostgisVersionMinor >= 5 ) )
   {
     result = PQexec( QStringLiteral( "SELECT postgis_geos_version(),postgis_proj_version()" ) );

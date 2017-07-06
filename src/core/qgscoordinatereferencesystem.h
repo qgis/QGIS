@@ -220,7 +220,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */ // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
     explicit QgsCoordinateReferenceSystem( const QString &definition );
 
-    /** Constructor a CRS object using a postgis SRID, an EPSG code or an internal QGIS CRS ID.
+    /** Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      * \param id The ID valid for the chosen CRS ID type
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool createFromOgcWmsCrs( const QString &crs );
 
     /** Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
-     * \param srid The postgis SRID for the desired spatial reference system.
+     * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns True on success else false
      */     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
     bool createFromSrid( const long srid );
@@ -597,13 +597,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static QString proj4FromSrsId( const int srsId );
 
-    /** Set the QGIS  SrsId
+    /** Set the QGIS SrsId
      *  \param srsId The internal sqlite3 srs.db primary key for this CRS
      */
     void setInternalId( long srsId );
 
-    /** Set the postgis srid
-     *  \param srid The postgis spatial_ref_sys key for this CRS
+    /** Set the PostGIS srid
+     *  \param srid The PostGIS spatial_ref_sys key for this CRS
      */
     void setSrid( long srid );
 

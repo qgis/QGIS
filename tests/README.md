@@ -48,7 +48,7 @@ Make sure that you have enabled building of postgres test in CMake.
 `cmake -DENABLE_TESTS=ON -DENABLE_PGTEST=ON ..`
 
 To test the postgres provider you will need to have a database available to
-which the postgres provider can connect. The server will need to have postgis
+which the postgres provider can connect. The server will need to have PostGIS
 support enabled.
 
 By default the test uses one of the following connection string:
@@ -66,7 +66,7 @@ the sql-scripts:
 
     tests/testdata/provider/testdata_pg*.sql
 
-They take care of activating postgis for the test database and
+They take care of activating PostGIS for the test database and
 create some tables containing test data.
 
 For convenience, a shell script is provided to create the database

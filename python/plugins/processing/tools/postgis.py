@@ -49,7 +49,7 @@ def uri_from_name(conn_name):
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?
-        raise DbError(QCoreApplication.translate("postgis", 'There is no defined database connection "{0}".').format(conn_name))
+        raise DbError(QCoreApplication.translate("PostGIS", 'There is no defined database connection "{0}".').format(conn_name))
 
     uri = QgsDataSourceUri()
 
@@ -222,7 +222,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(QCoreApplication.translate("postgis", 'Action canceled by user'))
+                    raise DbError(QCoreApplication.translate("PostGIS", 'Action canceled by user'))
                 if user:
                     self.uri.setUsername(user)
                 if password:
@@ -263,7 +263,7 @@ class GeoDB(object):
         return c.fetchone()[0] > 0
 
     def get_postgis_info(self):
-        """Returns tuple about postgis support:
+        """Returns tuple about PostGIS support:
               - lib version
               - installed scripts version
               - released scripts version
@@ -314,7 +314,7 @@ class GeoDB(object):
         # LEFT OUTER JOIN: like LEFT JOIN but if there are more matches,
         # for join, all are used (not only one)
 
-        # First find out whether postgis is enabled
+        # First find out whether PostGIS is enabled
         if not self.has_postgis:
             # Get all tables and views
             sql = """SELECT pg_class.relname, pg_namespace.nspname,
@@ -502,7 +502,7 @@ class GeoDB(object):
         self._exec_sql_and_commit(sql)
 
     def delete_geometry_table(self, table, schema=None):
-        """Delete table with one or more geometries using postgis function."""
+        """Delete table with one or more geometries using PostGIS function."""
 
         if schema:
             schema_part = "'%s', " % self._quote_unicode(schema)
@@ -555,7 +555,7 @@ class GeoDB(object):
                                                self._quote(new_table))
         self._exec_sql_and_commit(sql)
 
-        # Update geometry_columns if postgis is enabled
+        # Update geometry_columns if PostGIS is enabled
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_table_name='%s' \
                    WHERE f_table_name='%s'" \
@@ -598,7 +598,7 @@ class GeoDB(object):
                                                 self._quote(new_schema))
         self._exec_sql_and_commit(sql)
 
-        # Update geometry_columns if postgis is enabled
+        # Update geometry_columns if PostGIS is enabled
         if self.has_postgis:
             sql = \
                 "UPDATE geometry_columns SET f_table_schema='%s' \
@@ -628,7 +628,7 @@ class GeoDB(object):
                                                   self._quote(name), self._quote(new_name))
         self._exec_sql_and_commit(sql)
 
-        # Update geometry_columns if postgis is enabled
+        # Update geometry_columns if PostGIS is enabled
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_geometry_column='%s' \
                    WHERE f_geometry_column='%s' AND f_table_name='%s'" \
@@ -704,7 +704,7 @@ class GeoDB(object):
                                                 self._quote(new_schema))
         self._exec_sql_and_commit(sql)
 
-        # Update geometry_columns if postgis is enabled
+        # Update geometry_columns if PostGIS is enabled
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_table_schema='%s' \
                    WHERE f_table_name='%s'" \
