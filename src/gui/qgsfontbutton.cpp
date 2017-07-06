@@ -305,6 +305,53 @@ void QgsFontButton::dropEvent( QDropEvent *e )
   updatePreview();
 }
 
+void QgsFontButton::wheelEvent( QWheelEvent *event )
+{
+  double size = 0;
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+      size = mFormat.size();
+      break;
+
+    case ModeQFont:
+      size = mFont.pointSizeF();
+      break;
+  }
+
+  double increment = event->modifiers() & Qt::ControlModifier ? 0.1 : 1;
+  if ( event->delta() > 0 )
+  {
+    size += increment;
+  }
+  else
+  {
+    size -= increment;
+  }
+  size = qMax( size, 1.0 );
+
+  switch ( mMode )
+  {
+    case ModeTextRenderer:
+    {
+      QgsTextFormat newFormat = mFormat;
+      newFormat.setSize( size );
+      setTextFormat( newFormat );
+      break;
+    }
+
+    case ModeQFont:
+    {
+      QFont newFont = mFont;
+      newFont.setPointSizeF( size );
+      setCurrentFont( newFont );
+      break;
+    }
+  }
+
+  event->accept();
+}
+
 QPixmap QgsFontButton::createColorIcon( const QColor &color ) const
 {
   //create an icon pixmap
