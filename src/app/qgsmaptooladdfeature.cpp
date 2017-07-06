@@ -68,6 +68,16 @@ void QgsMapToolAddFeature::activate()
   QgsMapToolCapture::activate();
 }
 
+bool QgsMapToolAddFeature::checkGeometryType() const
+{
+  return mCheckGeometryType;
+}
+
+void QgsMapToolAddFeature::setCheckGeometryType( bool checkGeometryType )
+{
+  mCheckGeometryType = checkGeometryType;
+}
+
 void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
