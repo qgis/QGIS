@@ -58,7 +58,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
-    // For some osbscure reson hiding does not work!
+    // For some obscure reson hiding does not work!
     // buttonBox->button( QDialogButtonBox::Close )->hide();
     buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->setHidden( true );
