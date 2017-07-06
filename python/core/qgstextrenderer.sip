@@ -1231,6 +1231,22 @@ class QgsTextFormat
  :rtype: QDomElement
 %End
 
+    QMimeData *toMimeData() const /Factory/;
+%Docstring
+ Returns new mime data representing the text format settings.
+ Caller takes responsibility for deleting the returned object.
+.. seealso:: fromMimeData()
+ :rtype: QMimeData
+%End
+
+    static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
+%Docstring
+ Attempts to parse the provided mime ``data`` as a QgsTextFormat.
+ If data can be parsed as a text format, ``ok`` will be set to true.
+.. seealso:: toMimeData()
+ :rtype: QgsTextFormat
+%End
+
     bool containsAdvancedEffects() const;
 %Docstring
  Returns true if any component of the font format requires advanced effects

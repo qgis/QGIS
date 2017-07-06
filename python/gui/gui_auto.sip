@@ -110,6 +110,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
+%Include qgsfontbutton.sip
 %Include qgsformannotation.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
