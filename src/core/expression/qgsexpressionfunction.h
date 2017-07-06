@@ -24,6 +24,7 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgsexpressionnode.h"
 
 class QgsExpressionNodeFunction;
 class QgsExpression;
@@ -273,6 +274,8 @@ class CORE_EXPORT QgsExpressionFunction
      */
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
 
+    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent );
+
     bool operator==( const QgsExpressionFunction &other ) const;
 
     virtual bool handlesNull() const;
@@ -451,6 +454,21 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     QSet<QString> mReferencedColumns;
     bool mIsStatic = false;
 };
+
+class QgsSetVariableExpressionFunction : public QgsExpressionFunction
+{
+  public:
+    QgsSetVariableExpressionFunction();
+
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+
+    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent ) override;
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override;
+
+    bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+};
+
 #endif
 
 #endif // QGSEXPRESSIONFUNCTION_H
