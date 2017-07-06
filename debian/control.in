@@ -38,7 +38,7 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid# libosgearth-dev,
-#oracle# oracle-instantclient12.1-devel,
+#oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch xenial yakkety zesty#Standards-Version: 3.9.7
@@ -433,7 +433,7 @@ Description: QGIS API documentation
 
 #oracle#Package: qgis-oracle-provider
 #oracle#Architecture: any
-#oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
+#oracle#Depends: libaio1, ${shlibs:Depends}, ${misc:Depends}
 #oracle#Section: contrib/database
 #oracle#Description: QGIS oracle provider
 #oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
