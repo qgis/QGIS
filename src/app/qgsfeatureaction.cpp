@@ -175,8 +175,6 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
 
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QVariant v;
-
     if ( defaultAttributes.contains( idx ) )
     {
       initialAttributeValues.insert( idx, defaultAttributes.value( idx ) );
