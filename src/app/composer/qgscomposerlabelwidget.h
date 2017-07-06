@@ -35,7 +35,6 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
   public slots:
     void on_mHtmlCheckBox_stateChanged( int i );
     void on_mTextEdit_textChanged();
-    void on_mFontButton_clicked();
     void on_mInsertExpressionButton_clicked();
     void on_mMarginXDoubleSpinBox_valueChanged( double d );
     void on_mMarginYDoubleSpinBox_valueChanged( double d );
@@ -49,6 +48,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 
   private slots:
     void setGuiElementValues();
+    void fontChanged();
 
   private:
     QgsComposerLabel *mComposerLabel = nullptr;

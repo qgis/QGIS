@@ -36,6 +36,8 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 {
   setupUi( this );
 
+  mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
+
   QgsSettings settings;
   //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
@@ -62,7 +64,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   updateGuiElements();
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationGridDialog::apply );
-
+  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()
@@ -102,6 +104,8 @@ void QgsDecorationGridDialog::updateGuiElements()
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
+
+  whileBlocking( mAnnotationFontButton )->setCurrentFont( mDeco.gridAnnotationFont() );
 
   updateInterval( false );
 
@@ -274,14 +278,9 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
   }
 }
 
-void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
+void QgsDecorationGridDialog::annotationFontChanged()
 {
-  bool ok;
-  QFont newFont = QgsGuiUtils::getFont( ok, mDeco.gridAnnotationFont() );
-  if ( ok )
-  {
-    mDeco.setGridAnnotationFont( newFont );
-  }
+  mDeco.setGridAnnotationFont( mAnnotationFontButton->currentFont() );
 }
 
 void QgsDecorationGridDialog::updateInterval( bool force )

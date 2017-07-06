@@ -46,7 +46,6 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mFindMaximumValueButton_clicked();
     void on_mRemoveCategoryPushButton_clicked();
-    void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
@@ -56,7 +55,6 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void showSizeLegendDialog();
 
   protected:
-    QFont mDiagramFont;
 
     QgsVectorLayer *mLayer = nullptr;
 

@@ -40,6 +40,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   setupUi( this );
   setPanelTitle( tr( "Table properties" ) );
 
+  mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
+  mHeaderFontToolButton->setMode( QgsFontButton::ModeQFont );
+
   blockAllSignals( true );
 
   mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
@@ -106,6 +109,9 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
     QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
     mainLayout->addWidget( itemPropertiesWidget );
   }
+
+  connect( mHeaderFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::headerFontChanged );
+  connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::contentFontChanged );
 }
 
 QgsComposerAttributeTableWidget::~QgsComposerAttributeTableWidget()
@@ -238,24 +244,19 @@ void QgsComposerAttributeTableWidget::on_mMarginSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
+void QgsComposerAttributeTableWidget::headerFontChanged()
 {
   if ( !mComposerTable )
     return;
 
-  bool ok;
-  QFont newFont = QgsGuiUtils::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
-  if ( ok )
-  {
-    QgsComposition *composition = mComposerTable->composition();
-    if ( composition )
-      composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
+  QgsComposition *composition = mComposerTable->composition();
+  if ( composition )
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
 
-    mComposerTable->setHeaderFont( newFont );
+  mComposerTable->setHeaderFont( mHeaderFontToolButton->currentFont() );
 
-    if ( composition )
-      composition->endMultiFrameCommand();
-  }
+  if ( composition )
+    composition->endMultiFrameCommand();
 }
 
 void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( const QColor &newColor )
@@ -277,26 +278,21 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontColorButton_colorChanged( co
   }
 }
 
-void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
+void QgsComposerAttributeTableWidget::contentFontChanged()
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-  bool ok;
-  QFont newFont = QgsGuiUtils::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
-  if ( ok )
-  {
-    QgsComposition *composition = mComposerTable->composition();
-    if ( composition )
-      composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
+  QgsComposition *composition = mComposerTable->composition();
+  if ( composition )
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
 
-    mComposerTable->setContentFont( newFont );
+  mComposerTable->setContentFont( mContentFontToolButton->currentFont() );
 
-    if ( composition )
-      composition->endMultiFrameCommand();
-  }
+  if ( composition )
+    composition->endMultiFrameCommand();
 }
 
 void QgsComposerAttributeTableWidget::on_mContentFontColorButton_colorChanged( const QColor &newColor )
@@ -479,6 +475,8 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
 
   mHeaderFontColorButton->setColor( mComposerTable->headerFontColor() );
   mContentFontColorButton->setColor( mComposerTable->contentFontColor() );
+  mHeaderFontToolButton->setCurrentFont( mComposerTable->headerFont() );
+  mContentFontToolButton->setCurrentFont( mComposerTable->contentFont() );
 
   if ( mComposerTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
@@ -628,6 +626,8 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mDrawEmptyCheckBox->blockSignals( b );
   mWrapStringLineEdit->blockSignals( b );
   mWrapBehaviorComboBox->blockSignals( b );
+  mContentFontToolButton->blockSignals( b );
+  mHeaderFontToolButton->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )

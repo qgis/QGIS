@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -45,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-342</y>
         <width>391</width>
-        <height>1102</height>
+        <height>1140</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -533,27 +542,6 @@
              <string>Table heading</string>
             </property>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="mHeaderFontPushButton">
-               <property name="text">
-                <string>Choose font...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Color</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_3">
                <item>
@@ -627,6 +615,33 @@
                </item>
               </widget>
              </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Color</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsFontButton" name="mHeaderFontToolButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Heading font</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -640,13 +655,6 @@
               <widget class="QLabel" name="lblContentsFont">
                <property name="text">
                 <string>Font</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="mContentFontPushButton">
-               <property name="text">
-                <string>Choose font...</string>
                </property>
               </widget>
              </item>
@@ -692,6 +700,19 @@
                 </spacer>
                </item>
               </layout>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsFontButton" name="mContentFontToolButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Contents font</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -775,11 +796,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -795,6 +811,16 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -840,10 +866,10 @@
   <tabstop>mDrawHorizontalGrid</tabstop>
   <tabstop>mDrawVerticalGrid</tabstop>
   <tabstop>groupBox_3</tabstop>
-  <tabstop>mHeaderFontPushButton</tabstop>
+  <tabstop>mHeaderFontToolButton</tabstop>
   <tabstop>mHeaderFontColorButton</tabstop>
   <tabstop>mHeaderHAlignmentComboBox</tabstop>
-  <tabstop>mContentFontPushButton</tabstop>
+  <tabstop>mContentFontToolButton</tabstop>
   <tabstop>mContentFontColorButton</tabstop>
   <tabstop>frameGroupBox</tabstop>
   <tabstop>mResizeModeComboBox</tabstop>
@@ -852,6 +878,29 @@
   <tabstop>mHideEmptyBgCheckBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

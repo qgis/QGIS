@@ -42,7 +42,6 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void on_mNumberOfSegmentsSpinBox_valueChanged( int i );
     void on_mUnitLabelLineEdit_textChanged( const QString &text );
     void on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
-    void on_mFontButton_clicked();
     void on_mFontColorButton_colorChanged( const QColor &newColor );
     void on_mFillColorButton_colorChanged( const QColor &newColor );
     void on_mFillColor2Button_colorChanged( const QColor &newColor );
@@ -61,6 +60,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void setGuiElements();
     void segmentSizeRadioChanged( QAbstractButton *radio );
     void composerMapChanged( QgsComposerItem *item );
+    void fontChanged();
 
   private:
     QgsComposerScaleBar *mComposerScaleBar = nullptr;
