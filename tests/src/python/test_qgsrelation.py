@@ -14,14 +14,19 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from PyQt4.QtCore import QFileInfo
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsRelation,
                        QgsGeometry,
                        QgsPoint,
-                       QgsMapLayerRegistry
+                       QgsMapLayerRegistry,
+                       QgsAttributeEditorElement,
+                       QgsProject
                        )
+from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+import os
 
 start_app()
 
@@ -79,22 +84,22 @@ class TestQgsRelation(unittest.TestCase):
 
     def test_isValid(self):
         rel = QgsRelation()
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setRelationId('rel1')
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setRelationName('Relation Number One')
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setReferencingLayer(self.referencingLayer.id())
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.setReferencedLayer(self.referencedLayer.id())
-        assert not rel.isValid()
+        self.assertFalse(rel.isValid())
 
         rel.addFieldPair('foreignkey', 'y')
-        assert rel.isValid()
+        self.assertTrue(rel.isValid())
 
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
@@ -110,7 +115,7 @@ class TestQgsRelation(unittest.TestCase):
         self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
         it = rel.getRelatedFeatures(feat)
-        assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
+        self.assertEqual([a.attributes() for a in it], [[u'test1', 123], [u'test2', 123]])
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
@@ -124,8 +129,8 @@ class TestQgsRelation(unittest.TestCase):
 
         f = rel.getReferencedFeature(feat)
 
-        assert f.isValid()
-        assert f[0] == 'foo'
+        self.assertTrue(f.isValid())
+        self.assertEqual(f[0], 'foo')
 
     def test_fieldPairs(self):
         rel = QgsRelation()
@@ -136,7 +141,37 @@ class TestQgsRelation(unittest.TestCase):
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
 
-        assert (rel.fieldPairs() == {'foreignkey': 'y'})
+        self.assertEqual(rel.fieldPairs(), {'foreignkey': 'y'})
+
+    def testValidRelationAfterChangingStyle(self):
+        # load project
+        myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
+        QgsProject.instance().read(QFileInfo(myPath))
+
+        # get referenced layer
+        relations = QgsProject.instance().relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        referencedLayer = relation.referencedLayer()
+
+        # check that the relation is valid
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
+
+        # update style
+        referencedLayer.styleManager().setCurrentStyle("custom")
+
+        # check that the relation is still valid
+        referencedLayer = relation.referencedLayer()
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
 
 
 if __name__ == '__main__':
