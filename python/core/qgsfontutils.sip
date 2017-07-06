@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFontUtils
 {
 
@@ -134,6 +135,24 @@ class QgsFontUtils
 .. seealso:: setFromXmlElement
 .. seealso:: toXmlElement
  :rtype: bool
+%End
+
+    static QMimeData *toMimeData( const QFont &font ) /Factory/;
+%Docstring
+ Returns new mime data representing the specified ``font`` settings.
+ Caller takes responsibility for deleting the returned object.
+.. seealso:: fromMimeData()
+.. versionadded:: 3.0
+ :rtype: QMimeData
+%End
+
+    static QFont fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
+%Docstring
+ Attempts to parse the provided mime ``data`` as a QFont.
+ If data can be parsed as a QFont, ``ok`` will be set to true.
+.. seealso:: toMimeData()
+.. versionadded:: 3.0
+ :rtype: QFont
 %End
 
     static QString translateNamedStyle( const QString &namedStyle );

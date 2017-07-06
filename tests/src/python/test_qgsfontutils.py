@@ -66,6 +66,28 @@ class TestQgsFontUtils(unittest.TestCase):
         msg = self._family + ' test font Bold Oblique at 14 pt not retrieved'
         assert res, msg
 
+    def testToFromMimeData(self):
+        """
+        Test converting QFonts to and from mime data
+        """
+        f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
+        mime_data = QgsFontUtils.toMimeData(f)
+        self.assertTrue(mime_data is not None)
+
+        res, ok = QgsFontUtils.fromMimeData(None)
+        self.assertFalse(ok)
+        res, ok = QgsFontUtils.fromMimeData(mime_data)
+        self.assertTrue(ok)
+
+        expected = (
+            res.family() == self._family and
+            res.bold() and
+            res.italic() and
+            res.pointSize() == 14
+        )
+        msg = self._family + ' test font Bold Oblique at 14 pt not retrieved from mime data'
+        self.assertTrue(res, msg)
+
 
 if __name__ == '__main__':
     unittest.main()

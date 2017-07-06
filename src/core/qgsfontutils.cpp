@@ -24,7 +24,8 @@
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QStringList>
-
+#include <QMimeData>
+#include <memory>
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {
@@ -358,6 +359,51 @@ bool QgsFontUtils::setFromXmlChildNode( QFont &font, const QDomElement &element,
   {
     return false;
   }
+}
+
+QMimeData *QgsFontUtils::toMimeData( const QFont &font )
+{
+  std::unique_ptr< QMimeData >mimeData( new QMimeData );
+
+  QDomDocument fontDoc;
+  QDomElement fontElem = toXmlElement( font, fontDoc, QStringLiteral( "font" ) );
+  fontDoc.appendChild( fontElem );
+  mimeData->setText( fontDoc.toString() );
+
+  return mimeData.release();
+}
+
+QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
+{
+  QFont font;
+  if ( ok )
+    *ok = false;
+
+  if ( !data )
+    return font;
+
+  QString text = data->text();
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      if ( elem.nodeName() != QStringLiteral( "font" ) )
+        elem = elem.firstChildElement( QStringLiteral( "font" ) );
+
+      if ( setFromXmlElement( font, elem ) )
+      {
+        if ( ok )
+          *ok = true;
+      }
+      return font;
+    }
+  }
+  return font;
 }
 
 static QMap<QString, QString> createTranslatedStyleMap()
