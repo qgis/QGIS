@@ -3315,6 +3315,31 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
 }
 
 
+static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QVariant result;
+  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+  if ( !vl )
+    return result;
+
+  QgsFeatureId fid = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+
+  QgsFeatureRequest req;
+  req.setFilterFid( fid );
+  req.setLimit( 1 );
+  if ( !parent->needsGeometry() )
+  {
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  QgsFeatureIterator fIt = vl->getFeatures( req );
+
+  QgsFeature fet;
+  if ( fIt.nextFeature( fet ) )
+    result = QVariant::fromValue( fet );
+
+  return result;
+}
+
 static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
@@ -4144,7 +4169,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << uuidFunc;
 
     sFunctions
-        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), 3, fcnGetFeature, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature" ), 3, fcnGetFeature, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "QgsExpressionUtils::getFeature" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "get_feature_by_id" ), 2, fcnGetFeatureById, QStringLiteral( "Record" ), QString(), false, QSet<QString>(), false );
 
     QgsStaticExpressionFunction *isSelectedFunc = new QgsStaticExpressionFunction(
       QStringLiteral( "is_selected" ),
