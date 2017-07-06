@@ -66,6 +66,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   }
   ui.listWidgetInputLayers->setIconSize( QSize( 16, 16 ) );
 
+  ui.lineEditFilenamePrefix->setText( QSettings().value( "/geometry_checker/previous_values/filename_prefix", tr( "checked_" ) ).toString() );
+
   connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
   connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
@@ -294,11 +296,13 @@ void QgsGeometryCheckerSetupTab::runChecks()
     QString outputExtension = metadata.ext;
 
     // List over input layers, check which existing project layers need to be removed and create output layers
+    QString filenamePrefix = ui.lineEditFilenamePrefix->text();
+    QSettings().setValue( "/geometry_checker/previous_values/filename_prefix", filenamePrefix );
     QStringList toRemove;
     QStringList createErrors;
     for ( QgsVectorLayer *layer : layers )
     {
-      QString outputPath = outputDir.absoluteFilePath( layer->name() + "." + outputExtension );
+      QString outputPath = outputDir.absoluteFilePath( filenamePrefix + layer->name() + "." + outputExtension );
 
       // Remove existing layer with same uri from project
       for ( QgsVectorLayer *projectLayer : QgsProject::instance()->layers<QgsVectorLayer *>() )
