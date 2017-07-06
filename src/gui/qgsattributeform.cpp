@@ -223,7 +223,7 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   emit modeChanged( mMode );
 }
 
-void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value )
+void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &value, const QString &hintText )
 {
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
@@ -231,6 +231,7 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
     if ( eww && eww->field().name() == field )
     {
       eww->setValue( value );
+      eww->setHint( hintText );
     }
   }
 }
@@ -1945,6 +1946,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
   if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
     return;
 
+  const QString hint = tr( "No feature joined" );
   Q_FOREACH ( const QgsVectorLayerJoinInfo *info, infos )
   {
     if ( !info->isDynamicFormEnabled() )
@@ -1959,11 +1961,15 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;
+        QString hintText = hint;
 
         if ( joinFeature.isValid() )
+        {
           val = joinFeature.attribute( field );
+          hintText.clear();
+        }
 
-        changeAttribute( prefixedName, val );
+        changeAttribute( prefixedName, val, hintText );
       }
     }
     else
@@ -1972,11 +1978,15 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;
+        QString hintText = hint;
 
         if ( joinFeature.isValid() )
+        {
           val = joinFeature.attribute( field.name() );
+          hintText.clear();
+        }
 
-        changeAttribute( prefixedName, val );
+        changeAttribute( prefixedName, val, hintText );
       }
     }
   }
