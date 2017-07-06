@@ -63,13 +63,6 @@
          <item row="0" column="1">
           <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
          </item>
-         <item row="1" column="0" colspan="2">
-          <widget class="QPushButton" name="mAnnotationFontButton">
-           <property name="text">
-            <string>Font...</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="QLabel" name="mDistanceToFrameLabel">
            <property name="text">
@@ -95,6 +88,19 @@
          </item>
          <item row="3" column="1">
           <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QgsFontButton" name="mAnnotationFontButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Font</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -327,6 +333,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>grpEnable</tabstop>
   <tabstop>mIntervalXEdit</tabstop>

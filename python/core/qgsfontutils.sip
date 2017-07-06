@@ -9,6 +9,7 @@
 
 
 
+
 class QgsFontUtils
 {
 
@@ -136,6 +137,24 @@ class QgsFontUtils
  :rtype: bool
 %End
 
+    static QMimeData *toMimeData( const QFont &font ) /Factory/;
+%Docstring
+ Returns new mime data representing the specified ``font`` settings.
+ Caller takes responsibility for deleting the returned object.
+.. seealso:: fromMimeData()
+.. versionadded:: 3.0
+ :rtype: QMimeData
+%End
+
+    static QFont fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
+%Docstring
+ Attempts to parse the provided mime ``data`` as a QFont.
+ If data can be parsed as a QFont, ``ok`` will be set to true.
+.. seealso:: toMimeData()
+.. versionadded:: 3.0
+ :rtype: QFont
+%End
+
     static QString translateNamedStyle( const QString &namedStyle );
 %Docstring
  Returns the localized named style of a font, if such a translation is available.
@@ -167,6 +186,21 @@ class QgsFontUtils
  :return: partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
 .. versionadded:: 2.16
  :rtype: str
+%End
+
+    static void addRecentFontFamily( const QString &family );
+%Docstring
+ Adds a font ``family`` to the list of recently used font families.
+.. versionadded:: 3.0
+.. seealso:: recentFontFamilies()
+%End
+
+    static QStringList recentFontFamilies();
+%Docstring
+ Returns a list of recently used font families.
+.. seealso:: addRecentFontFamily()
+.. versionadded:: 3.0
+ :rtype: list of str
 %End
 };
 

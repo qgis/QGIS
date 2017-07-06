@@ -123,7 +123,11 @@ namespace QgsGuiUtils
   QString GUI_EXPORT createFileFilter_( QString const &format );
 
   /**
-   * Show font selection dialog
+   * Show font selection dialog.
+   *
+   * It is strongly recommended that you do not use this method, and instead use the standard
+   * QgsFontButton widget to allow users consistent font selection behavior.
+   *
    * \param ok true on ok, false on cancel
    * \param initial initial font
    * \param title optional dialog title

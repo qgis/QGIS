@@ -29,6 +29,8 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   setupUi( this );
   setPanelTitle( tr( "Scalebar properties" ) );
 
+  mFontButton->setMode( QgsFontButton::ModeQFont );
+
   connectUpdateSignal();
 
   //add widget for general composer item properties
@@ -98,6 +100,8 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
 
   blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
+
+  connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerScaleBarWidget::fontChanged );
 }
 
 QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
@@ -128,6 +132,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   mFillColorButton->setColor( mComposerScaleBar->fillColor() );
   mFillColor2Button->setColor( mComposerScaleBar->fillColor2() );
   mStrokeColorButton->setColor( mComposerScaleBar->lineColor() );
+  mFontButton->setCurrentFont( mComposerScaleBar->font() );
 
   //map combo box
   mMapItemComboBox->setItem( mComposerScaleBar->composerMap() );
@@ -242,23 +247,18 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mFontButton_clicked()
+void QgsComposerScaleBarWidget::fontChanged()
 {
   if ( !mComposerScaleBar )
   {
     return;
   }
 
-  bool dialogAccepted;
-  QFont newFont = QgsGuiUtils::getFont( dialogAccepted, mComposerScaleBar->font() );
-  if ( dialogAccepted )
-  {
-    mComposerScaleBar->beginCommand( tr( "Scalebar font changed" ) );
-    disconnectUpdateSignal();
-    mComposerScaleBar->setFont( newFont );
-    connectUpdateSignal();
-    mComposerScaleBar->endCommand();
-  }
+  mComposerScaleBar->beginCommand( tr( "Scalebar font changed" ) );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setFont( mFontButton->currentFont() );
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
   mComposerScaleBar->update();
 }
 
@@ -561,6 +561,7 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mStrokeColorButton->blockSignals( block );
   mSegmentSizeRadioGroup.blockSignals( block );
   mMapItemComboBox->blockSignals( block );
+  mFontButton->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()

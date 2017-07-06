@@ -25,6 +25,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilewidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
+  qgsfontbuttonplugin.cpp
   qgsmaplayercomboboxplugin.cpp
   qgsopacitywidgetplugin.cpp
   qgspasswordlineeditplugin.cpp
@@ -54,6 +55,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilewidgetplugin.h
   qgsfilterlineeditplugin.h
+  qgsfontbuttonplugin.h
   qgsmaplayercomboboxplugin.h
   qgsopacitywidgetplugin.h
   qgspasswordlineeditplugin.h

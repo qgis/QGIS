@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFile>
@@ -24,7 +25,8 @@
 #include <QFontDatabase>
 #include <QFontInfo>
 #include <QStringList>
-
+#include <QMimeData>
+#include <memory>
 
 bool QgsFontUtils::fontMatchOnSystem( const QFont &f )
 {
@@ -360,6 +362,51 @@ bool QgsFontUtils::setFromXmlChildNode( QFont &font, const QDomElement &element,
   }
 }
 
+QMimeData *QgsFontUtils::toMimeData( const QFont &font )
+{
+  std::unique_ptr< QMimeData >mimeData( new QMimeData );
+
+  QDomDocument fontDoc;
+  QDomElement fontElem = toXmlElement( font, fontDoc, QStringLiteral( "font" ) );
+  fontDoc.appendChild( fontElem );
+  mimeData->setText( fontDoc.toString() );
+
+  return mimeData.release();
+}
+
+QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
+{
+  QFont font;
+  if ( ok )
+    *ok = false;
+
+  if ( !data )
+    return font;
+
+  QString text = data->text();
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      if ( elem.nodeName() != QStringLiteral( "font" ) )
+        elem = elem.firstChildElement( QStringLiteral( "font" ) );
+
+      if ( setFromXmlElement( font, elem ) )
+      {
+        if ( ok )
+          *ok = true;
+      }
+      return font;
+    }
+  }
+  return font;
+}
+
 static QMap<QString, QString> createTranslatedStyleMap()
 {
   QMap<QString, QString> translatedStyleMap;
@@ -459,4 +506,32 @@ QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )
   css += QStringLiteral( "font-size: %1px;" ).arg( font.pointSizeF() >= 0 ? font.pointSizeF() * pointToPixelScale : font.pixelSize() );
 
   return css;
+}
+
+void QgsFontUtils::addRecentFontFamily( const QString &family )
+{
+  if ( family.isEmpty() )
+  {
+    return;
+  }
+
+  QgsSettings settings;
+  QStringList recentFamilies = settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
+
+  //remove matching families
+  recentFamilies.removeAll( family );
+
+  //then add to start of list
+  recentFamilies.prepend( family );
+
+  //trim to 10 fonts
+  recentFamilies = recentFamilies.mid( 0, 10 );
+
+  settings.setValue( QStringLiteral( "fonts/recent" ), recentFamilies );
+}
+
+QStringList QgsFontUtils::recentFontFamilies()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
 }

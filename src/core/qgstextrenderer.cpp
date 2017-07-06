@@ -1594,6 +1594,49 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   return textStyleElem;
 }
 
+QMimeData *QgsTextFormat::toMimeData() const
+{
+  //set both the mime color data, and the text (format settings).
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setColorData( QVariant( color() ) );
+
+  QgsReadWriteContext rwContext;
+  QDomDocument textDoc;
+  QDomElement textElem = writeXml( textDoc, rwContext );
+  textDoc.appendChild( textElem );
+  mimeData->setText( textDoc.toString() );
+
+  return mimeData;
+}
+
+QgsTextFormat QgsTextFormat::fromMimeData( const QMimeData *data, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+  QgsTextFormat format;
+  if ( !data )
+    return format;
+
+  QString text = data->text();
+  if ( !text.isEmpty() )
+  {
+    QDomDocument doc;
+    QDomElement elem;
+    QgsReadWriteContext rwContext;
+
+    if ( doc.setContent( text ) )
+    {
+      elem = doc.documentElement();
+
+      format.readXml( elem, rwContext );
+      if ( ok )
+        *ok = true;
+      return format;
+    }
+  }
+  return format;
+}
+
 bool QgsTextFormat::containsAdvancedEffects() const
 {
   if ( d->blendMode != QPainter::CompositionMode_SourceOver )
