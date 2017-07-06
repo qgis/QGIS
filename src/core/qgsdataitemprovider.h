@@ -55,7 +55,7 @@ class CORE_EXPORT QgsDataItemProvider
       Q_UNUSED( path );
       Q_UNUSED( parentItem );
       return QVector<QgsDataItem *>() ;
-    }
+    } SIP_SKIP
 };
 
 #endif // QGSDATAITEMPROVIDER_H
