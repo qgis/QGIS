@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
-#include "qgsdb2newconnection.h" // needed for ENV_ZOS, ENV_LUW
 #include <QtSql>
 #include <qgslogger.h>
 

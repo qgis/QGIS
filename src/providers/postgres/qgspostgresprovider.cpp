@@ -32,12 +32,15 @@
 #include "qgspostgresprovider.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
+
+#ifdef HAVE_GUI
+#include "qgspgsourceselect.h"
+#endif
 
 const QString POSTGRES_KEY = QStringLiteral( "postgres" );
 const QString POSTGRES_DESCRIPTION = QStringLiteral( "PostgreSQL/PostGIS data provider" );
@@ -4262,10 +4265,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsPgSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsPgSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

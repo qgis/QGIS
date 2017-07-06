@@ -44,6 +44,8 @@
 
 #cmakedefine USING_NINJA
 
+#cmakedefine HAVE_GUI
+
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_ORACLE

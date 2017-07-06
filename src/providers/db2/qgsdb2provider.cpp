@@ -25,6 +25,10 @@
 #include <qgslogger.h>
 #include "qgscredentials.h"
 
+#ifdef HAVE_GUI
+#include "qgsdb2sourceselect.h"
+#endif
+
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
@@ -1714,10 +1718,12 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsDb2SourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {

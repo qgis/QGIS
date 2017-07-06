@@ -30,8 +30,13 @@ ADD_LIBRARY (owsprovider MODULE ${OWS_SRCS} ${OWS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (owsprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (owsprovider
+    qgis_gui
+  )
+ENDIF ()
 
 INSTALL(TARGETS owsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

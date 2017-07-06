@@ -17,8 +17,7 @@
 
 #include "qgsmssqldataitems.h"
 
-#include "qgsmssqlsourceselect.h"
-#include "qgsmssqlnewconnection.h"
+#include "qgsmssqlgeomcolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayer.h"
@@ -27,6 +26,11 @@
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+
+#ifdef HAVE_GUI
+#include "qgsmssqlsourceselect.h"
+#include "qgsmssqlnewconnection.h"
+#endif
 
 #include <QMessageBox>
 #include <QSqlDatabase>
@@ -326,10 +330,10 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlConnectionItem::actions()
 {
   QList<QAction *> lst;
-
   QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), this );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
@@ -372,6 +376,7 @@ void QgsMssqlConnectionItem::deleteConnection()
   // the parent should be updated
   mParent->refresh();
 }
+#endif
 
 bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -599,6 +604,7 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsMssqlRootItem::actions()
 {
   QList<QAction *> lst;
@@ -630,3 +636,4 @@ void QgsMssqlRootItem::newConnection()
     refresh();
   }
 }
+#endif

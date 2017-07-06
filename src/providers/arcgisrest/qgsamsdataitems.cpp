@@ -15,11 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsamsdataitems.h"
-#include "qgsamssourceselect.h"
 #include "qgsarcgisrestutils.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 #include "qgsproviderregistry.h"
+
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgsnewhttpconnection.h"
+#endif
 
 #include <QImageReader>
 
@@ -44,6 +47,7 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAmsRootItem::actions()
 {
   QAction *actionNew = new QAction( tr( "New Connection..." ), this );
@@ -74,6 +78,7 @@ void QgsAmsRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -130,6 +135,7 @@ bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsAmsConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -161,6 +167,7 @@ void QgsAmsConnectionItem::deleteConnection()
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
   mParent->refresh();
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

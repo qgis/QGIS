@@ -14,8 +14,13 @@ INCLUDE_DIRECTORIES(
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
 
 ###############################################################################
 
@@ -25,16 +30,23 @@ SET (AFS_SRCS
   qgsafsfeatureiterator.cpp
   qgsafsprovider.cpp
   qgsafsproviderextern.cpp
-  qgsafssourceselect.cpp
   qgsafsshareddata.cpp
 )
 SET (AFS_MOC_HDRS
   qgsarcgisrestutils.h
   qgsafsdataitems.h
   qgsafsprovider.h
-  qgsafssourceselect.h
   qgsafsshareddata.h
 )
+
+IF (WITH_GUI)
+  SET(AFS_SRCS ${AFS_SRCS}
+    qgsafssourceselect.cpp
+  )
+  SET(AFS_MOC_HDRS ${AFS_MOC_HDRS}
+    qgsafssourceselect.h
+  )
+ENDIF ()
 
 QT5_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})
 
@@ -42,8 +54,13 @@ ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS} ${AFS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
+    qgis_gui
+  )
+ENDIF ()
 
 INSTALL (TARGETS arcgisfeatureserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
@@ -56,14 +73,21 @@ SET (AMS_SRCS
   qgsamsdataitems.cpp
   qgsamsprovider.cpp
   qgsamsproviderextern.cpp
-  qgsamssourceselect.cpp
 )
 SET (AMS_MOC_HDRS
   qgsarcgisrestutils.h
   qgsamsdataitems.h
   qgsamsprovider.h
-  qgsamssourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(AMS_SRCS ${AMS_SRCS}
+    qgsamssourceselect.cpp
+  )
+  SET(AMS_MOC_HDRS ${AMS_MOC_HDRS}
+    qgsamssourceselect.h
+  )
+ENDIF ()
 
 QT5_WRAP_CPP (AMS_MOC_SRCS ${AMS_MOC_HDRS})
 
@@ -71,8 +95,13 @@ ADD_LIBRARY(arcgismapserverprovider MODULE ${AMS_SRCS} ${AMS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgismapserverprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES(arcgismapserverprovider
+    qgis_gui
+  )
+ENDIF ()
 
 INSTALL (TARGETS arcgismapserverprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

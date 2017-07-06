@@ -28,13 +28,16 @@ class QgsWfsRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
-
     virtual QWidget *paramWidget() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void connectionsChanged();
     void newConnection();
+#endif
 };
 
 class QgsWfsConnection;
@@ -49,11 +52,15 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
   private slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   private:
     QString mUri;

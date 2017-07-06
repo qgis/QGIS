@@ -8,8 +8,6 @@ SET(PG_SRCS
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
   qgspostgrestransaction.cpp
-  qgspgsourceselect.cpp
-  qgspgnewconnection.cpp
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
   qgspostgresexpressioncompiler.cpp
@@ -17,8 +15,6 @@ SET(PG_SRCS
 
 SET(PG_MOC_HDRS
   qgscolumntypethread.h
-  qgspgnewconnection.h
-  qgspgsourceselect.h
   qgspgtablemodel.h
   qgspostgresconn.h
   qgspostgresconnpool.h
@@ -27,6 +23,17 @@ SET(PG_MOC_HDRS
   qgspostgrestransaction.h
 
 )
+
+IF (WITH_GUI)
+  SET(PG_SRCS ${PG_SRCS}
+    qgspgsourceselect.cpp
+    qgspgnewconnection.cpp
+  )
+  SET(PG_MOC_HDRS ${PG_MOC_HDRS}
+    qgspgnewconnection.h
+    qgspgsourceselect.h
+  )
+ENDIF ()
 
 SET(PG_HDRS
   qgspostgresexpressioncompiler.h
@@ -54,23 +61,37 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
+
 ADD_LIBRARY (postgresprovider_a STATIC ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_HDRS} ${PG_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (postgresprovider_a
   ${POSTGRES_LIBRARY}
   qgis_core
-  qgis_gui
 )
 TARGET_LINK_LIBRARIES (postgresprovider
   ${POSTGRES_LIBRARY}
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (postgresprovider_a
+    qgis_gui
+  )
+  TARGET_LINK_LIBRARIES (postgresprovider
+    qgis_gui
+  )
+ENDIF ()
+
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

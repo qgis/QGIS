@@ -23,10 +23,14 @@ class QgsSLLayerItem : public QgsLayerItem
   public:
     QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
 
+#ifdef HAVE_GUI
     QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void deleteLayer();
+#endif
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
@@ -38,14 +42,18 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   protected:
     QString mDbPath;
@@ -59,13 +67,16 @@ class QgsSLRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-
     virtual QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void connectionsChanged();
     void newConnection();
+#endif
     void createDatabase();
 };
 

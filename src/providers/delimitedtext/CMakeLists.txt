@@ -6,14 +6,21 @@ SET (DTEXT_SRCS
   qgsdelimitedtextfeatureiterator.cpp
   qgsdelimitedtextprovider.cpp
   qgsdelimitedtextfile.cpp
-  qgsdelimitedtextsourceselect.cpp
 )
 
 SET (DTEXT_MOC_HDRS
   qgsdelimitedtextfile.h
   qgsdelimitedtextprovider.h
-  qgsdelimitedtextsourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(DTEXT_SRCS ${DTEXT_SRCS}
+    qgsdelimitedtextsourceselect.cpp
+  )
+  SET(DTEXT_MOC_HDRS ${DTEXT_MOC_HDRS}
+    qgsdelimitedtextsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
@@ -39,8 +46,13 @@ ADD_LIBRARY(delimitedtextprovider MODULE ${DTEXT_SRCS} ${DTEXT_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(delimitedtextprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (delimitedtextprovider
+    qgis_gui
+  )
+ENDIF ()
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

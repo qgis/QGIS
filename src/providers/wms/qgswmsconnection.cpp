@@ -21,7 +21,6 @@
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgsdatasourceuri.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"

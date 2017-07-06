@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMSSQLTABLEMODEL_H
+#define QGSMSSQLTABLEMODEL_H
+
 #include <QStandardItemModel>
 
 #include "qgis.h"
@@ -84,3 +87,4 @@ class QgsMssqlTableModel : public QStandardItemModel
     int mTableCount;
 };
 
+#endif

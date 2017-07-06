@@ -3,16 +3,23 @@ SET (WCS_SRCS
   ../gdal/qgsgdalproviderbase.cpp
   qgswcsprovider.cpp
   qgswcscapabilities.cpp
-  qgswcssourceselect.cpp
   qgswcsdataitems.cpp
 )
 
 SET (WCS_MOC_HDRS
   qgswcsprovider.h
   qgswcscapabilities.h
-  qgswcssourceselect.h
   qgswcsdataitems.h
 )
+
+IF (WITH_GUI)
+  SET(WCS_SRCS ${WCS_SRCS}
+    qgswcssourceselect.cpp
+  )
+  SET(WCS_MOC_HDRS ${WCS_MOC_HDRS}
+    qgswcssourceselect.h
+  )
+ENDIF ()
 
 QT5_WRAP_CPP (WCS_MOC_SRCS ${WCS_MOC_HDRS})
 
@@ -42,8 +49,13 @@ ADD_LIBRARY(wcsprovider MODULE ${WCS_SRCS} ${WCS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(wcsprovider
   qgis_core
-  qgis_gui
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (wcsprovider
+    qgis_gui
+  )
+ENDIF ()
 
 INSTALL (TARGETS wcsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

@@ -28,11 +28,10 @@
 #include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
-#include <QThread>
 
 class QPushButton;
 class QStringList;
-class QgsGeomColumnTypeThread;
+class QgsMssqlGeomColumnTypeThread;
 class QgisApp;
 
 class QgsMssqlSourceSelectDelegate : public QItemDelegate
@@ -48,35 +47,7 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-// A class that determines the geometry type of a given database
-// schema.table.column, with the option of doing so in a separate
-// thread.
 
-class QgsMssqlGeomColumnTypeThread : public QThread
-{
-    Q_OBJECT
-  public:
-    QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata );
-
-    // These functions get the layer types and pass that information out
-    // by emitting the setLayerType() signal.
-    virtual void run() override;
-
-  signals:
-    void setLayerType( const QgsMssqlLayerProperty &layerProperty );
-
-  public slots:
-    void addGeometryColumn( const QgsMssqlLayerProperty &layerProperty );
-    void stop();
-
-  private:
-    QgsMssqlGeomColumnTypeThread() {}
-
-    QString mConnectionName;
-    bool mUseEstimatedMetadata;
-    bool mStopped;
-    QList<QgsMssqlLayerProperty> layerProperties;
-};
 
 
 /** \class QgsMssqlSourceSelect

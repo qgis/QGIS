@@ -22,7 +22,8 @@
 
 #include "qgsdataitem.h"
 
-#include "qgsmssqlsourceselect.h"
+#include "qgsmssqltablemodel.h"
+class QgsMssqlGeomColumnTypeThread;
 
 class QgsMssqlRootItem;
 class QgsMssqlConnectionItem;
@@ -37,13 +38,16 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-
     virtual QList<QAction *> actions() override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void connectionsChanged();
     void newConnection();
+#endif
 };
 
 class QgsMssqlConnectionItem : public QgsDataCollectionItem
@@ -55,7 +59,9 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
+#ifdef HAVE_GUI
     virtual QList<QAction *> actions() override;
+#endif
 
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
@@ -68,9 +74,11 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( const QgsMssqlLayerProperty & );
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
     void setAllowGeometrylessTables( bool allow );
+#endif
 
     void setLayerType( QgsMssqlLayerProperty layerProperty );
 

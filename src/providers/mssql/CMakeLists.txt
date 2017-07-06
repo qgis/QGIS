@@ -1,21 +1,30 @@
 SET(MSSQL_SRCS
   qgsmssqlprovider.cpp
   qgsmssqlgeometryparser.cpp
-  qgsmssqlsourceselect.cpp
   qgsmssqltablemodel.cpp
-  qgsmssqlnewconnection.cpp
   qgsmssqldataitems.cpp
   qgsmssqlexpressioncompiler.cpp
   qgsmssqlfeatureiterator.cpp
+  qgsmssqlgeomcolumntypethread.cpp
 )
 
 SET(MSSQL_MOC_HDRS
   qgsmssqlprovider.h
-  qgsmssqlsourceselect.h
   qgsmssqltablemodel.h
-  qgsmssqlnewconnection.h
   qgsmssqldataitems.h
+  qgsmssqlgeomcolumntypethread.h
 )
+
+IF (WITH_GUI)
+  SET(MSSQL_SRCS ${MSSQL_SRCS}
+    qgsmssqlsourceselect.cpp
+    qgsmssqlnewconnection.cpp
+  )
+  SET(MSSQL_MOC_HDRS ${MSSQL_MOC_HDRS}
+    qgsmssqlsourceselect.h
+    qgsmssqlnewconnection.h
+  )
+ENDIF ()
 
 SET(MSSQL_HDRS
   qgsmssqlexpressioncompiler.h
@@ -41,18 +50,29 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
 
 
 ADD_LIBRARY(mssqlprovider MODULE ${MSSQL_SRCS} ${MSSQL_MOC_SRCS} ${MSSQL_HDRS})
 
 TARGET_LINK_LIBRARIES(mssqlprovider
   qgis_core
-  qgis_gui
   ${QT_QTSQL_LIBRARY}
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (mssqlprovider
+    qgis_gui
+  )
+ENDIF ()
+
 ########################################################
 # Install
 

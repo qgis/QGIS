@@ -16,7 +16,10 @@
 
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
+
+#ifdef HAVE_GUI
 #include "qgsspatialitesourceselect.h"
+#endif
 
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
@@ -26,6 +29,7 @@
 #include "qgssettings.h"
 
 #include <QAction>
+#include <QFileDialog>
 #include <QMessageBox>
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
@@ -36,6 +40,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString name, QString path,
   setState( Populated ); // no children are expected
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLLayerItem::actions()
 {
   QList<QAction *> lst;
@@ -67,6 +72,7 @@ void QgsSLLayerItem::deleteLayer()
     mParent->refresh();
   }
 }
+#endif
 
 // ------
 
@@ -158,6 +164,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
   return o && mPath == o->mPath && mName == o->mName;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -188,6 +195,7 @@ void QgsSLConnectionItem::deleteConnection()
   // the parent should be updated
   mParent->refresh();
 }
+#endif
 
 bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -286,6 +294,7 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsSLRootItem::actions()
 {
   QList<QAction *> lst;
@@ -320,6 +329,7 @@ void QgsSLRootItem::newConnection()
     refresh();
   }
 }
+#endif
 
 QGISEXTERN bool createDb( const QString &dbPath, QString &errCause );
 
@@ -350,11 +360,13 @@ void QgsSLRootItem::createDatabase()
 
 // ---------------------------------------------------------------------------
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsSpatiaLiteSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   // TODO: this should be somewhere else
   return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

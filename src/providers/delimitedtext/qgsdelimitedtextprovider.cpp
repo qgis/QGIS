@@ -42,9 +42,12 @@
 #include "qgis.h"
 #include "qgsproviderregistry.h"
 
-#include "qgsdelimitedtextsourceselect.h"
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
+
+#ifdef HAVE_GUI
+#include "qgsdelimitedtextsourceselect.h"
+#endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "delimitedtext" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Delimited text data provider" );
@@ -1188,7 +1191,9 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
 }
+#endif

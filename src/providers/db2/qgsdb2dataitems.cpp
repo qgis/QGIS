@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsdb2dataitems.h"
-#include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
@@ -25,6 +24,11 @@
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
 #include "qgsmessageoutput.h"
+
+#ifdef HAVE_GUI
+#include "qgsdb2newconnection.h"
+#include "qgsdb2sourceselect.h"
+#endif
 
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -245,6 +249,7 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsDb2ConnectionItem::actions()
 {
   QList<QAction *> lst;
@@ -305,6 +310,7 @@ void QgsDb2ConnectionItem::refreshConnection()
   }
   refresh();
 }
+#endif
 
 
 bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
@@ -423,6 +429,7 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
   return connections;
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsDb2RootItem::actions()
 {
   QList<QAction *> actionList;
@@ -450,6 +457,7 @@ void QgsDb2RootItem::newConnection()
   }
 
 }
+#endif
 
 // ---------------------------------------------------------------------------
 QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperty )
