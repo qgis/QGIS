@@ -32,6 +32,8 @@ class QgsCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
+class QgsLayout;
+class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
@@ -294,6 +296,21 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see openComposer()
      */
     virtual void closeComposer( QgsComposition *composition ) = 0;
+
+    /**
+     * Returns all currently open layout designers.
+     * \since QGIS 3.0
+     */
+    virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
+
+    /**
+     * Opens a new layout designer dialog for the specified \a layout, or
+     * brings an already open designer window to the foreground if one
+     * is already created for the layout.
+     * \since QGIS 3.0
+     * \see closeComposer()
+     */
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
 
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force
@@ -720,6 +737,30 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see composerOpened()
      */
     void composerClosed( QgsComposerInterface *composer );
+
+    /**
+     * This signal is emitted when a new layout \a designer has been opened.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     */
+    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted before a layout \a designer is going to be closed
+     * and deleted.
+     * \since QGIS 3.0
+     * \see layoutDesignerClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+
+    /**
+     * This signal is emitted after a layout designer window is closed.
+     * \since QGIS 3.0
+     * \see layoutDesignerWillBeClosed()
+     * \see layoutDesignerOpened()
+     */
+    void layoutDesignerClosed();
 
     /**
      * This signal is emitted when the initialization is complete

@@ -125,6 +125,9 @@ SET(TESTS
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
  testqgslayertree.cpp
+ testqgslayout.cpp
+ testqgslayoutitem.cpp
+ testqgslayoutobject.cpp
  testqgslayoutunits.cpp
  testqgslegendrenderer.cpp
  testqgscentroidfillsymbol.cpp

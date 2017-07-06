@@ -208,6 +208,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsComposerInterface *> openComposers() override;
     QgsComposerInterface *openComposer( QgsComposition *composition ) override;
     void closeComposer( QgsComposition *composition ) override;
+
+    QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
+    QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
+
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
     //! Return changeable options built from settings and/or defaults
