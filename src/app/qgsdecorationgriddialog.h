@@ -47,7 +47,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
     // from composer map
     /* void on_mLineColorButton_clicked(); */
-    void on_mAnnotationFontButton_clicked();
+    void annotationFontChanged();
 
   private:
     QgsDecorationGrid &mDeco;

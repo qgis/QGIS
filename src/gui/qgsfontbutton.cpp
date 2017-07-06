@@ -37,6 +37,7 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   , mMenu( nullptr )
 {
   setText( tr( "Font" ) );
+
   setAcceptDrops( true );
   connect( this, &QAbstractButton::clicked, this, &QgsFontButton::showSettingsDialog );
 
@@ -81,6 +82,7 @@ void QgsFontButton::showSettingsDialog()
       {
         setCurrentFont( newFont );
       }
+      break;
     }
   }
 
@@ -388,6 +390,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
 
       QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, QStringList() << tr( "Aa" ),
                                  context, *tempFormat );
+      break;
     }
     case ModeQFont:
     {
@@ -397,6 +400,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       QRectF textRect = rect;
       textRect.setLeft( 2 );
       p.drawText( textRect, Qt::AlignVCenter, tr( "Aa" ) );
+      break;
     }
   }
 
@@ -750,6 +754,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
                                  context, tempFormat );
+      break;
     }
     case ModeQFont:
     {
@@ -759,6 +764,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       QRectF textRect = rect;
       textRect.setLeft( 2 );
       p.drawText( textRect, Qt::AlignVCenter, text() );
+      break;
     }
 
   }

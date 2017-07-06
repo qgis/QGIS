@@ -72,6 +72,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   // get rid of annoying outer focus rect on Mac
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
+  mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
+
   mDiagramTypeComboBox->blockSignals( true );
   QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
   mDiagramTypeComboBox->addItem( pix, tr( "No diagrams" ), "None" );
@@ -254,7 +256,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     if ( !settingList.isEmpty() )
     {
       mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
-      mDiagramFont = settingList.at( 0 ).font;
+      mDiagramFontButton->setCurrentFont( settingList.at( 0 ).font );
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
       mOpacityWidget->setOpacity( settingList.at( 0 ).opacity );
@@ -608,13 +610,6 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   mMaxValueSpinBox->setValue( maxValue );
 }
 
-void QgsDiagramProperties::on_mDiagramFontButton_clicked()
-{
-  bool ok;
-  mDiagramFont = QgsGuiUtils::getFont( ok, mDiagramFont );
-}
-
-
 void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   switch ( column )
@@ -732,7 +727,7 @@ void QgsDiagramProperties::apply()
 
   QgsDiagramSettings ds;
   ds.enabled = ( mDiagramTypeComboBox->currentIndex() != 0 );
-  ds.font = mDiagramFont;
+  ds.font = mDiagramFontButton->currentFont();
   ds.opacity = mOpacityWidget->opacity();
 
   QList<QColor> categoryColors;

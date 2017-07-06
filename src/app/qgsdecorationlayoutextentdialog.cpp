@@ -45,8 +45,6 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
   connect( mSymbolButton, &QPushButton::clicked, this, &QgsDecorationLayoutExtentDialog::changeSymbol );
-  connect( mButtonFontStyle, &QPushButton::clicked, this, &QgsDecorationLayoutExtentDialog::changeFont );
-
 }
 
 void QgsDecorationLayoutExtentDialog::updateGuiElements()
@@ -59,7 +57,7 @@ void QgsDecorationLayoutExtentDialog::updateGuiElements()
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol.get(), mSymbolButton->iconSize() );
     mSymbolButton->setIcon( icon );
   }
-  mTextFormat = mDeco.textFormat();
+  mButtonFontStyle->setTextFormat( mDeco.textFormat() );
   mCheckBoxLabelExtents->setChecked( mDeco.labelExtents() );
 }
 
@@ -71,7 +69,7 @@ void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
   {
     mDeco.setSymbol( mSymbol->clone() );
   }
-  mDeco.setTextFormat( mTextFormat );
+  mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
 }
 
@@ -118,11 +116,4 @@ void QgsDecorationLayoutExtentDialog::changeSymbol()
       mSymbolButton->setIcon( icon );
     }
   }
-}
-
-void QgsDecorationLayoutExtentDialog::changeFont()
-{
-  QgsTextFormatDialog dlg( mTextFormat, QgisApp::instance()->mapCanvas(), this );
-  if ( dlg.exec() )
-    mTextFormat = dlg.format();
 }
