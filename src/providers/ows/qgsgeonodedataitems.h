@@ -1,6 +1,19 @@
-//
-// Created by myarjunar on 25/04/17.
-//
+/***************************************************************************
+                              qgsgeonodedataitems.cpp
+                              -------------------
+    begin                : Feb 2017
+    copyright            : (C) 2017 by Muhammad Yarjuna Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGSGEONODEDATAITEMS_H
 #define QGSGEONODEDATAITEMS_H

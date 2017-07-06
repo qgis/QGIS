@@ -80,6 +80,7 @@ class CORE_EXPORT QgsGeoCMSConnection : public QObject
     //! Return WMS / WFS url for the layer / map / resource ID
     virtual QStringList serviceUrl( QString &resourceID, QString serviceType ) = 0;
     virtual QStringList serviceUrl( QString serviceType ) = 0;
+    virtual QgsStringMap serviceUrlData( QString serviceType ) = 0;
 
     //! The GeoCMS name
     QString mGeoCMSName;
@@ -92,10 +93,6 @@ class CORE_EXPORT QgsGeoCMSConnection : public QObject
 
     //! Property of mUri
     QgsDataSourceUri mUri;
-
-    QMultiMap<QString, QString> mLayers;
-    QMultiMap<QString, QString> mMaps;
-    QString mData;
 };
 
 

@@ -66,37 +66,7 @@ class CORE_EXPORT QgsGeoNodeConnection : public QgsGeoCMSConnection
     //! Return WMS / WFS url for the geonode
     virtual QStringList serviceUrl( QString serviceType );
 
-    QVariantMap serviceUrlData( QString serviceType );
-
-    // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
-
-//    //! Get all layer IDs from the geonode instances
-//    QStringList layerIDs();
-
-//    //! Get all map IDs from the geonode instances
-//    QStringList mapIDs();
-
-//    //! Get all style IDs from the geonode instances
-//    QStringList styleIDs();
-
-//    //! Get all style IDs of a layer from the geonode instances
-//    QStringList layerStyleIDs( QString &layerID );
-
-//    QgsWMSConnection layerWMSConnection( QString &layerID );
-
-//    QgsWfsConnection layerWFSConnection( QString &layerID );
-
-//    QgsWMSConnection mapWMSConnection( QString &mapID );
-
-//    void downloadLayer( QString &layerID, QString &location );
-//    void downloadStyle( QString &styleID, QString &location );
-//    void downloadLayerMetadata( QString &layerID, QString &location );
-
-//    void downloadQGISProject( QString &mapID, QString &location );
-
-//    void publishLayerFile( QgsMapLayer &layer );
-//    void publishQGISProject( QgsProject &project );
-//    void publishStyle( QgsStyle &style );
+    virtual QgsStringMap serviceUrlData( QString serviceType );
 
     // Path in QSetting
     static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";

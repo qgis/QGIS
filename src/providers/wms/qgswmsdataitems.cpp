@@ -622,16 +622,16 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
     if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
-      QVariantMap urlData( connection.serviceUrlData( QStringLiteral( "XYZ" ) ) );
+      QgsStringMap urlData( connection.serviceUrlData( QStringLiteral( "XYZ" ) ) );
 
       if ( !urlData.isEmpty() )
       {
         Q_FOREACH ( QString layerName, urlData.keys() )
         {
-          QgsDebugMsg( urlData[ layerName].toString() );
+          QgsDebugMsg( urlData[ layerName] );
           QgsDataSourceUri uri;
           uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-          uri.setParam( QStringLiteral( "url" ), urlData[ layerName].toString() );
+          uri.setParam( QStringLiteral( "url" ), urlData[ layerName ] );
 
           QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
           if ( item )

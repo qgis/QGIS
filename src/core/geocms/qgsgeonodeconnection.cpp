@@ -270,7 +270,7 @@ QList<LayerStruct> QgsGeoNodeConnection::getLayers( QString serviceType )
   return layers;
 }
 
-// Currently copy and paste from getLayers. It can be refactored easily, difference in url only.
+// Not yet implemented
 QVariantList QgsGeoNodeConnection::getMaps()
 {
   QString url = uri().param( "url" ) + QStringLiteral( "/api/maps/" );
@@ -296,7 +296,8 @@ QVariantList QgsGeoNodeConnection::getMaps()
   QVariantMap jsonVariantMap = jsonObject.toVariantMap();
   QVariantList layerList = jsonVariantMap["objects"].toList();
 
-  return layerList;
+  QVariantList mapList;
+  return mapList;
 }
 
 QStringList QgsGeoNodeConnection::serviceUrl( QString &resourceID, QString serviceType )
@@ -407,10 +408,10 @@ QStringList QgsGeoNodeConnection::serviceUrl( QString serviceType )
   return *urls;
 }
 
-QVariantMap QgsGeoNodeConnection::serviceUrlData( QString serviceType )
+QgsStringMap QgsGeoNodeConnection::serviceUrlData( QString serviceType )
 {
   QList<LayerStruct> layers = getLayers();
-  QVariantMap *urls = new QVariantMap;
+  QgsStringMap *urls = new QgsStringMap;
 
   for ( int i = 0; i < layers.count(); i++ )
   {
