@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFile>
@@ -505,4 +506,32 @@ QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )
   css += QStringLiteral( "font-size: %1px;" ).arg( font.pointSizeF() >= 0 ? font.pointSizeF() * pointToPixelScale : font.pixelSize() );
 
   return css;
+}
+
+void QgsFontUtils::addRecentFontFamily( const QString &family )
+{
+  if ( family.isEmpty() )
+  {
+    return;
+  }
+
+  QgsSettings settings;
+  QStringList recentFamilies = settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
+
+  //remove matching families
+  recentFamilies.removeAll( family );
+
+  //then add to start of list
+  recentFamilies.prepend( family );
+
+  //trim to 10 fonts
+  recentFamilies = recentFamilies.mid( 0, 10 );
+
+  settings.setValue( QStringLiteral( "fonts/recent" ), recentFamilies );
+}
+
+QStringList QgsFontUtils::recentFontFamilies()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "fonts/recent" ) ).toStringList();
 }

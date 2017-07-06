@@ -70,6 +70,7 @@ void QgsFontButton::showSettingsDialog()
       if ( dialog.exec() )
       {
         setTextFormat( dialog.format() );
+        QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
       }
       break;
     }
@@ -80,6 +81,7 @@ void QgsFontButton::showSettingsDialog()
       QFont newFont = QgsGuiUtils::getFont( ok, mFont, mDialogTitle );
       if ( ok )
       {
+        QgsFontUtils::addRecentFontFamily( newFont.family() );
         setCurrentFont( newFont );
       }
       break;
@@ -141,9 +143,11 @@ void QgsFontButton::pasteFormat()
   if ( mMode == ModeTextRenderer && formatFromMimeData( QApplication::clipboard()->mimeData(), tempFormat ) )
   {
     setTextFormat( tempFormat );
+    QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
   }
   else if ( mMode == ModeQFont && fontFromMimeData( QApplication::clipboard()->mimeData(), font ) )
   {
+    QgsFontUtils::addRecentFontFamily( font.family() );
     setCurrentFont( font );
   }
 }
@@ -280,10 +284,12 @@ void QgsFontButton::dropEvent( QDropEvent *e )
   if ( mMode == ModeTextRenderer && formatFromMimeData( e->mimeData(), format ) )
   {
     setTextFormat( format );
+    QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
     return;
   }
   else if ( mMode == ModeQFont && fontFromMimeData( e->mimeData(), font ) )
   {
+    QgsFontUtils::addRecentFontFamily( font.family() );
     setCurrentFont( font );
     return;
   }
@@ -463,34 +469,6 @@ void QgsFontButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
-#if 0 // too slow if many fonts...
-  QMenu *fontMenu = new QMenu( mFormat.font().family(), mMenu );
-  QFontDatabase db;
-  Q_FOREACH ( const QString &family, db.families() )
-  {
-    QAction *fontAction = new QAction( family, fontMenu );
-    QFont f = fontAction->font();
-    f.setFamily( family );
-    fontAction->setFont( f );
-    fontAction->setToolTip( family );
-    fontMenu->addAction( fontAction );
-    if ( family == mFormat.font().family() )
-    {
-      fontAction->setCheckable( true );
-      fontAction->setChecked( true );
-    }
-    auto setFont = [this, family]
-    {
-      QFont f = mFormat.font();
-      f.setFamily( family );
-      mFormat.setFont( f );
-      updatePreview();
-      emit changed();
-    };
-    connect( fontAction, &QAction::triggered, this, setFont );
-  }
-  mMenu->addMenu( fontMenu );
-#endif
 
   QWidgetAction *sizeAction = new QWidgetAction( mMenu );
   QWidget *sizeWidget = new QWidget();
@@ -544,6 +522,49 @@ void QgsFontButton::prepareMenu()
   sizeWidget->setFocusProxy( sizeSpin );
   sizeWidget->setFocusPolicy( Qt::StrongFocus );
   mMenu->addAction( sizeAction );
+
+  QMenu *recentFontMenu = new QMenu( tr( "Recent fonts" ), mMenu );
+  Q_FOREACH ( const QString &family, QgsFontUtils::recentFontFamilies() )
+  {
+    QAction *fontAction = new QAction( family, recentFontMenu );
+    QFont f = fontAction->font();
+    f.setFamily( family );
+    fontAction->setFont( f );
+    fontAction->setToolTip( family );
+    recentFontMenu->addAction( fontAction );
+    if ( ( mMode == ModeTextRenderer && family == mFormat.font().family() )
+         || ( mMode == ModeQFont && family == mFont.family() ) )
+    {
+      fontAction->setCheckable( true );
+      fontAction->setChecked( true );
+    }
+    auto setFont = [this, family]
+    {
+      switch ( mMode )
+      {
+        case ModeTextRenderer:
+        {
+          QgsTextFormat newFormat = mFormat;
+          QFont f = newFormat.font();
+          f.setFamily( family );
+          newFormat.setFont( f );
+          setTextFormat( newFormat );
+          QgsFontUtils::addRecentFontFamily( mFormat.font().family() );
+          break;
+        }
+        case ModeQFont:
+        {
+          QFont font = mFont;
+          font.setFamily( family );
+          setCurrentFont( font );
+          QgsFontUtils::addRecentFontFamily( family );
+          break;
+        }
+      }
+    };
+    connect( fontAction, &QAction::triggered, this, setFont );
+  }
+  mMenu->addMenu( recentFontMenu );
 
   QAction *configureAction = new QAction( tr( "Configure format..." ), this );
   mMenu->addAction( configureAction );

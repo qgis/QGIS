@@ -187,6 +187,21 @@ class QgsFontUtils
 .. versionadded:: 2.16
  :rtype: str
 %End
+
+    static void addRecentFontFamily( const QString &family );
+%Docstring
+ Adds a font ``family`` to the list of recently used font families.
+.. versionadded:: 3.0
+.. seealso:: recentFontFamilies()
+%End
+
+    static QStringList recentFontFamilies();
+%Docstring
+ Returns a list of recently used font families.
+.. seealso:: addRecentFontFamily()
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
 };
 
 /************************************************************************
