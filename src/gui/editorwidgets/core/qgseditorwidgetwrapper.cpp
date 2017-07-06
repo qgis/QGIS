@@ -211,3 +211,8 @@ bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
   if ( qobject_cast<const QTableView *>( parent ) ) return true;
   return isInTable( parent->parentWidget() );
 }
+
+void QgsEditorWidgetWrapper::setHint( const QString &hintText )
+{
+  widget()->setToolTip( hintText );
+}

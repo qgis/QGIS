@@ -164,6 +164,13 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     QString constraintFailureReason() const;
 
+    /**
+     * Add a hint text on the widget
+     * \param hintText The hint text to display
+     * \since QGIS 3.0
+     */
+    virtual void setHint( const QString &hintText );
+
   signals:
 
     /**

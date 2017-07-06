@@ -156,6 +156,13 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  :rtype: str
 %End
 
+    virtual void setHint( const QString &hintText );
+%Docstring
+ Add a hint text on the widget
+ \param hintText The hint text to display
+.. versionadded:: 3.0
+%End
+
   signals:
 
     void valueChanged( const QVariant &value );

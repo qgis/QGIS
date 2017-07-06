@@ -167,7 +167,7 @@ class QgsAttributeForm : QWidget
 
   public slots:
 
-    void changeAttribute( const QString &field, const QVariant &value );
+    void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
 %Docstring
  Call this to change the content of a given attribute. Will update the editor(s) related to this field.
 
