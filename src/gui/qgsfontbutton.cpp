@@ -38,7 +38,6 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
 {
   setText( tr( "Font" ) );
   setAcceptDrops( true );
-  setMinimumSize( QSize( 24, 16 ) );
   connect( this, &QAbstractButton::clicked, this, &QgsFontButton::showSettingsDialog );
 
   //setup dropdown menu
@@ -46,16 +45,6 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   connect( mMenu, &QMenu::aboutToShow, this, &QgsFontButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
-}
-
-QSize QgsFontButton::sizeHint() const
-{
-  //make sure height of button looks good under different platforms
-#ifdef Q_OS_WIN
-  return QSize( 120, 22 );
-#else
-  return QSize( 120, 28 );
-#endif
 }
 
 void QgsFontButton::showSettingsDialog()

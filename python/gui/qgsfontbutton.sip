@@ -45,8 +45,6 @@ class QgsFontButton : QToolButton
  Use ``dialogTitle`` string to define the title to show in the text settings dialog.
 %End
 
-    virtual QSize sizeHint() const;
-
     QgsFontButton::Mode mode() const;
 %Docstring
  Returns the current button mode.
