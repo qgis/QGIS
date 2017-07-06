@@ -240,3 +240,16 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   if ( mLineEdit )
     mLineEdit->setText( v );
 }
+
+void QgsTextEditWrapper::setHint( const QString &hintText )
+{
+  if ( hintText.isNull() )
+    mPlaceholderText = mPlaceholderTextBackup;
+  else
+  {
+    mPlaceholderTextBackup = mPlaceholderText;
+    mPlaceholderText = hintText;
+  }
+
+  mLineEdit->setPlaceholderText( mPlaceholderText );
+}
