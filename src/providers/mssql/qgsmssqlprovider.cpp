@@ -44,10 +44,12 @@
 #include "qgsrectangle.h"
 #include "qgis.h"
 
-#include "qgsmssqlsourceselect.h"
 #include "qgsmssqldataitems.h"
-
 #include "qgsmssqlfeatureiterator.h"
+
+#ifdef HAVE_GUI
+#include "qgsmssqlsourceselect.h"
+#endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
@@ -1956,10 +1958,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsMssqlSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

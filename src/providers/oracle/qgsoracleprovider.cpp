@@ -27,10 +27,13 @@
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
-#include "qgsoraclesourceselect.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleconnpool.h"
+
+#ifdef HAVE_GUI
+#include "qgsoraclesourceselect.h"
+#endif
 
 #include <QSqlRecord>
 #include <QSqlField>
@@ -3040,10 +3043,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
+#ifdef HAVE_GUI
 QGISEXTERN QgsOracleSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
   return new QgsOracleSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {

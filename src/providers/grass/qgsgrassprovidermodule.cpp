@@ -16,18 +16,22 @@
 
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
-#include "qgsnewnamedialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include "qgsgrassprovidermodule.h"
 #include "qgsgrassprovider.h"
-#include "qgsgrassoptions.h"
 #include "qgsgrass.h"
 #include "qgsgrassvector.h"
+
+#ifdef HAVE_GUI
+#include "qgsnewnamedialog.h"
+#include "qgsgrassoptions.h"
+#endif
 
 #include <QAction>
 #include <QFileInfo>
@@ -39,6 +43,7 @@
 #include <QTextEdit>
 
 //----------------------- QgsGrassItemActions ------------------------------
+#ifdef HAVE_GUI
 QgsGrassItemActions::QgsGrassItemActions( const QgsGrassObject &grassObject, bool valid, QObject *parent )
   : QObject( parent )
   , mGrassObject( grassObject )
@@ -313,6 +318,7 @@ void QgsGrassItemActions::newPolygonLayer()
 {
   newLayer( QStringLiteral( "polygon" ) );
 }
+#endif
 
 //----------------------- QgsGrassObjectItemBase ------------------------------
 
@@ -336,7 +342,9 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem *parent, QString dirPath
   QString gisdbase = dir.path();
 
   mGrassObject = QgsGrassObject( gisdbase, mName, QLatin1String( "" ), QLatin1String( "" ), QgsGrassObject::Location );
+#ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
+#endif
 
   mIconName = QStringLiteral( "grass_location.png" );
 
@@ -383,7 +391,9 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QS
   QString gisdbase = dir.path();
 
   mGrassObject = QgsGrassObject( gisdbase, location, mName, QLatin1String( "" ), QgsGrassObject::Mapset );
+#ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
+#endif
 
   // emit data changed to possibly change icon
   connect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassMapsetItem::updateIcon );
@@ -684,7 +694,6 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
   QStringList errors;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
 
   Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
   {
@@ -763,6 +772,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
     // TODO: add a method in QgsGrass to convert a name to GRASS valid name
     QString destName = srcName.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+#ifdef HAVE_GUI
+    Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
     if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity )
          || !regExp.exactMatch( destName ) )
     {
@@ -774,6 +785,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       }
       destName = dialog.name();
     }
+#endif
 
     QgsGrassImport *import = 0;
     if ( useCopy )
@@ -967,7 +979,9 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject gras
   , mActions( 0 )
 {
   setState( Populated ); // no children, to show non expandable in browser
+#ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
+#endif
 }
 
 bool QgsGrassObjectItem::equal( const QgsDataItem *other )
@@ -993,7 +1007,9 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
     setState( Populated );
     setIconName( QStringLiteral( "/mIconDelete.png" ) );
   }
+#ifdef HAVE_GUI
   mActions = new QgsGrassItemActions( mGrassObject, mValid, this );
+#endif
 
   QString watchPath = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name();
   QgsDebugMsg( "add watcher on " + watchPath );
@@ -1108,6 +1124,7 @@ QIcon QgsGrassGroupItem::icon()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterGroup.svg" ) );
 }
 
+#ifdef HAVE_GUI
 //----------------------- QgsGrassImportItemWidget ------------------------------
 QgsGrassImportItemWidget::QgsGrassImportItemWidget( QWidget *parent )
   : QWidget( parent )
@@ -1142,6 +1159,7 @@ void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, con
   mProgressBar->setRange( min, max );
   mProgressBar->setValue( value );
 }
+#endif
 
 //----------------------- QgsGrassImportItem ------------------------------
 
@@ -1163,6 +1181,7 @@ QgsGrassImportItem::~QgsGrassImportItem()
   QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImportItem::updateIcon );
 }
 
+#ifdef HAVE_GUI
 QList<QAction *> QgsGrassImportItem::actions()
 {
   QList<QAction *> lst;
@@ -1204,6 +1223,7 @@ void QgsGrassImportItem::cancel()
   setName( name() + " : " + tr( "canceling" ) );
   updateIcon();
 }
+#endif
 
 QIcon QgsGrassImportItem::icon()
 {

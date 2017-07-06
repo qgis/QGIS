@@ -7,18 +7,25 @@ SET(DB2_SRCS
   qgsdb2expressioncompiler.cpp
   qgsdb2provider.cpp
   qgsdb2dataitems.cpp
-  qgsdb2newconnection.cpp
   qgsdb2tablemodel.cpp
   qgsdb2featureiterator.cpp
-  qgsdb2sourceselect.cpp
 )
 SET(DB2_MOC_HDRS
   qgsdb2provider.h
   qgsdb2dataitems.h
-  qgsdb2newconnection.h
   qgsdb2tablemodel.h
-  qgsdb2sourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(DB2_SRCS ${DB2_SRCS}
+    qgsdb2newconnection.cpp
+    qgsdb2sourceselect.cpp
+  )
+  SET(DB2_MOC_HDRS ${DB2_MOC_HDRS}
+    qgsdb2newconnection.h
+    qgsdb2sourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
@@ -43,17 +50,26 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}
-  ${QSCINTILLA_INCLUDE_DIR}
 )
+
+IF (WITH_GUI)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${QSCINTILLA_INCLUDE_DIR}
+  )
+ENDIF ()
 
 ADD_LIBRARY (db2provider MODULE ${DB2_SRCS} ${DB2_HDRS} ${DB2_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (db2provider
   qgis_core
-  qgis_gui
   ${QT_QTSQL_LIBRARY}
 )
 
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (db2provider
+    qgis_gui
+  )
+ENDIF ()
 
 ########################################################
 # Install
