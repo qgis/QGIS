@@ -19,9 +19,12 @@ from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsAttributeEditorElement,
                        QgsProject
                        )
+from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+import os
 
 start_app()
 
@@ -155,6 +158,36 @@ class TestQgsRelation(unittest.TestCase):
         rel.addFieldPair('foreignkey', 'y')
 
         assert (rel.fieldPairs() == {'foreignkey': 'y'})
+
+    def testValidRelationAfterChangingStyle(self):
+        # load project
+        myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
+        QgsProject.instance().read(myPath)
+
+        # get referenced layer
+        relations = QgsProject.instance().relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        referencedLayer = relation.referencedLayer()
+
+        # check that the relation is valid
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
+
+        # update style
+        referencedLayer.styleManager().setCurrentStyle("custom")
+
+        # check that the relation is still valid
+        referencedLayer = relation.referencedLayer()
+        valid = False
+        for tab in referencedLayer.editFormConfig().tabs():
+            for t in tab.children():
+                if (t.type() == QgsAttributeEditorElement.AeTypeRelation):
+                    valid = t.relation().isValid()
+        self.assertTrue(valid)
 
 
 if __name__ == '__main__':
